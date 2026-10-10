@@ -75,13 +75,17 @@ def map_overlays(data, recs, tail):
             groups[(r["C"], r["seg"])].append(r)
     made = []
     for (c, seg), rs in sorted(groups.items()):
-        start = min(r["off"] for r in rs)
-        end = max(r["off"] + r["size"] for r in rs)
         name = "OVL_%04X" % seg
         para = base_para + seg
-        ea_start = para * 16 + start
-        ea_end = ea_start + (end - start)
+        ea_base = para * 16
+        # each record has its own off/size within the segment
+        # create one segment covering the full span, place each record at its offset
+        start = min(r["off"] for r in rs)
+        end = max(r["off"] + r["size"] for r in rs)
+        ea_start = ea_base + start
+        ea_end = ea_base + end
         if _force_add_segm(ea_start, ea_end, name, "CODE", para):
+            # zero-fill the segment, then write each record at its offset
             blob = bytearray(end - start)
             for r in rs:
                 fo = tail + r["off"]
