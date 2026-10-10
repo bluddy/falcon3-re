@@ -1,6 +1,7 @@
 # OVL_1E10 Registry
-# Large overlay segment (para 0x1E10, linear 0x2E100-0x3A00B)
-# RTLink group C=0, 4 records, 34.5 KB
+# Large overlay segment (para 0x1E10, linear 0x2E100-0x3A00B in IDA)
+# RTLink group C=0, 4 records, 34.5 KB total
+# 12 thunks point to this record (dir id=7) but ljmp to various 5cd9:xxxx offsets
 
 overlay:
   name: "OVL_1E10"
@@ -8,49 +9,56 @@ overlay:
   base_linear: 0x303A5  # (0x1000+0x1E10)*16 + 0x22A5
   size: 40038
   records: 4
-  thunk_ids: [2, 4]  # thunks 2 and 4 jump into this segment
+  dir_id: 7
+  thunk_count: 12
+  thunk_ljmp_targets:
+    - "5cd9:09b7"
+    - "5cd9:0a73"
+    - "5cd9:0a82"
+    - "5cd9:06cc"
+    - "5cd9:0970"
+    - "5cd9:09ac"
+    - "5cd9:0984"
+    - "5cd9:0a36"
+    - "5cd9:00b1"
+    - "5cd9:000f"
+    - "5cd9:072a"
+    - "5cd9:0aa0"
 
 records:
-  - id: 2
-    off: 0x1FB6
-    size: 89
-    thunk_target: "1CF6:04BF"  # wait, thunk 2 goes to 1CF6...
-    notes: "Record 2 empty? thunk 2 targets 1CF6:04BF"
-  - id: 3
-    off: 0x1FB6
-    size: 89
-    thunk_target: "1CF6:0D01"
-  - id: 4
-    off: 0x201C
-    size: 282
-    thunk_target: "1CF6:000A"
-  - id: 5
-    off: 0x2137
-    size: 277
-    thunk_target: "1CF6:002B"
-
-# Wait - the thunk targets for ids 2-5 are in segment 1CF6, not 1E10.
-# This means the 18-byte dir records for seg=1E10 are NOT the targets of thunks 2-5.
-# The thunk table shows:
-#   id 1 -> 1D31:000A
-#   id 2 -> 1CF6:04BF, 1CF6:0D01
-#   id 4 -> 1CF6:000A, 1CF6:002B
-#   id 5 -> 1EFE:0205, ...
-#   id 7 -> 5CD9:09B7
-# So the 18-byte dir seg=1E10 records have ids that DON'T match these thunks?
-# Let me check: 18-byte dir id field matches thunk id.
-# The 18-byte dir has records with seg=1E10 and ids... need to check.
-# This needs resolution: map 18-byte dir.id -> thunk table -> target segment.
-
-# TODO: Build complete id -> (thunk target) -> (18-byte dir record) mapping.
-
-functions_found:
-  - ea: 0x303A5
-    size: 1
-    notes: "Autoanalysis found 1 function in this overlay"
+  - id: 7
+    off: 0x22a5
+    A: 16073
+    B: 3529
+    C: 0
+    notes: "Main record, 16KB"
+  - id: 29
+    off: 0x75a0
+    A: 1204
+    B: 1061
+    C: 0
+    thunk_id: 29
+    thunk_target: "3f70:0092"
+  - id: 30
+    off: 0x7b5e
+    A: 2792
+    B: 215
+    C: 0
+    thunk_id: 30
+    thunk_targets: ["569f:49da", "569f:4a92"]
+  - id: 31
+    off: 0x867c
+    A: 14479
+    B: 6974
+    C: 0
+    thunk_id: 31
+    thunk_target: "569f:0737"
 
 notes: |
-  This overlay's thunk targets don't match its segment - need to reconcile.
-  Possibly the 18-byte dir C=0 seg=1E10 records have ids that map to thunks
-  targeting OTHER segments (indirect overlay chaining?).
-  Priority: resolve id mapping, then analyze record code.
+  CRITICAL: The thunk ljmp targets for dir_id=7 are all in segment 5cd9,
+  but the directory record says seg=1e10. This suggests either:
+  1. The directory 'seg' field is an overlay group/file number, not runtime segment
+  2. The thunk ljmp targets are patched by the overlay loader at runtime
+  3. The 1e10 record contains code for multiple runtime segments
+  
+  Priority: examine overlay loader at 0x1DBBD to understand dispatch logic.

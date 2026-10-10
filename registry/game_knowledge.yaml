@@ -44,17 +44,37 @@ thunk_table:
   base: "0x1AA3:0x157F"
   entry_size: 10
   format: "E8 disp16 (call loader) + EA off seg (ljmp) + word record_id"
-  known_ids:
-    1:  "1D31:000A"
-    2:  "1CF6:04BF"
-    2b: "1CF6:0D01"
-    4:  "1CF6:000A"
-    4b: "1CF6:002B"
-    5:  "1EFE:0205"
-    5b: "1EFE:020C"
-    5c: "1EFE:0000"
-    7:  "5CD9:09B7"
-    0xC: "5DFF:0F41"
+  loader_addr: "0x1DBBD (0x1AA3:0x058D)"
+  total_entries: 86
+  summary:
+    id=1: 1 thunk, NO DIR, ljmp 1d31:000a (startup)
+    id=2: 2 thunks, dir seg=1cf6 A=0 C=ffff, ljmp 1cf6:04bf, 1cf6:0d01
+    id=4: 2 thunks, dir seg=1cf6 A=282, ljmp 1cf6:000a, 1cf6:002b
+    id=5: 6 thunks, dir seg=1cf6 A=277, ljmp 1efe:0205/020c/0000 + 2ab9/2acf/2b83
+    id=6: 4 thunks, dir seg=1cf6 A=59, ljmp 5cd9:001e/00aa/0a1f/0339
+    id=7: 12 thunks, dir seg=1e10 A=16073, ljmp 5cd9:xxxx (12 targets)
+    id=8: 8 thunks, dir seg=5cd9 A=294, ljmp 5cd9:xxxx (8 targets)
+    id=9: 1 thunk, dir seg=5cd9 A=174, ljmp 5dff:003a
+    id=10: 1 thunk, dir seg=5cd9 A=117, ljmp 5dff:00d6
+    id=12: 30 thunks, dir seg=5dff A=53, ljmp 5dff:xxxx (30 targets, dispatch table)
+    id=14: 2 thunks, dir seg=5dff A=382, ljmp 5e0b:xxxx
+    id=15: 4 thunks, dir seg=5dff A=12, ljmp 5e0b:xxxx
+    id=17: 1 thunk, dir seg=5e0b A=611 C=0xD, ljmp 5e8f:0000
+    id=18: 1 thunk, dir seg=5dff A=144, ljmp 5e8f:0000
+    id=19: 1 thunk, dir seg=5e8f A=368, ljmp 5f6c:0000
+    id=20: 1 thunk, dir seg=5e8f A=221, ljmp 5f6c:0000
+    id=21-27: 7 thunks, dir seg=5f6c A=39-62 C=0x12, ljmp 5f6c:0000
+    id=28: 2 thunks, dir seg=5f6c A=39, ljmp 1e10:0280, 1f86:9577
+    id=29: 1 thunk, dir seg=1e10 A=1204, ljmp 3f70:0092
+    id=30: 2 thunks, dir seg=1e10 A=2792, ljmp 569f:49da, 569f:4a92
+    id=31: 1 thunk, dir seg=1e10 A=14479, ljmp 569f:0737
+    id=32: 2 thunks, dir seg=569f A=1932, ljmp 569f:0795, 569f:211e
+    id=43: 1 thunk, dir seg=569f A=449, ljmp 569f:0015
+    id=44: 1 thunk, dir seg=569f A=0, ljmp 569f:0000
+    id=45: 1 thunk, dir seg=569f A=61, ljmp 569f:0000
+    id=53: 2 thunks, dir seg=569f A=750, ljmp 5cb6:xxxx
+    id=56: 1 thunk, dir seg=569f A=410, ljmp 569f:0000
+    id=58: 2 thunks, dir seg=569f A=834, ljmp 569f:3be2, 569f:3b29
 
 rtlink_directory_18byte:
   file_offset: 0x1E24F
