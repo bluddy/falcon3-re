@@ -9,21 +9,21 @@
 
 ## Phase 1: Overlay Decoding & Coverage (1-2 weeks)
 
-### 1.1 Record Format Decoding
-- [ ] Decode record headers in tail (bytes before `A` data)
-- [ ] Map fixup tables (related to field `B`)
-- [ ] Determine if records are contiguous per segment or scattered
-- [ ] Verify 39-record C=0x1D group (0x569F, 64 KB span) layout
+### 1.1 Record Format Decoding ✅
+- [x] Decode record headers in tail (bytes before `A` data)
+- [x] Map fixup tables (related to field `B`) - 1569 entries, 14 types
+- [x] Determine if records are contiguous per segment or scattered
+- [x] Verify 39-record C=0x1D group (0x569F, 64 KB span) layout
 
-### 1.2 Full Overlay Mapping
-- [ ] Place all 70 records at correct runtime offsets
-- [ ] Run autoanalysis on each overlay segment
+### 1.2 Full Overlay Mapping ✅ (partial)
+- [x] Place all 70 records at correct runtime offsets (1569 fixups applied)
+- [x] Run autoanalysis on each overlay segment - 22 overlay functions found
 - [ ] Target: >2000 functions total, >200 KB code coverage
 - [ ] Identify overlay subsystems (graphics, sound, sim, UI, etc.)
 
-### 1.3 Thunk → Record Resolution
-- [ ] Link thunk table IDs to 18-byte dir `id` to record `off`
-- [ ] Build call graph: resident → overlay entry points
+### 1.3 Thunk → Record Resolution ✅
+- [x] Link thunk table IDs to 18-byte dir `id` to record `off`
+- [x] Build call graph: resident → overlay entry points (86 thunks mapped)
 - [ ] Verify overlay unload/reload semantics
 
 ### 1.4 PKWARE Asset Extraction

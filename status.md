@@ -18,8 +18,8 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 | Compression | ✅ PKWARE DCL | Strings, `PK\x03\x04` in tail |
 | CRT | ❌ MSC 6.0 | No `B430CD21`, no error strings |
 | CRT | ❌ Borland | No "Borland" strings in main EXEs |
-| Compiler | ✅ **MSC 5.1 (C) + hand-ASM** | 30 `ENTER`, 84 `558BEC`, 0 `83EC` |
-| Code model | ✅ Far/large | 466/817 far, retf, stack args `[BP+6]` |
+| Compiler | ✅ **MSC 5.1 (C) + hand-ASM** | **30 `ENTER`, 84 `558BEC`, 0 `83EC`** |
+| Code model | ✅ Far/large | 468/839 far, retf, stack args `[BP+6]` |
 | Overlays | ✅ RTLink | 70 records, 9 segment groups, thunk dispatch |
 | RESETALL.EXE | ✅ Borland C++ 1991 | Copyright string (garbled) |
 
@@ -27,12 +27,18 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 
 | Region | Functions | Code Bytes | Notes |
 |--------|-----------|------------|-------|
-| Resident image (seg000-022) | 815 | ~82 KB | Entry, overlay mgr, video, input, core sim |
-| Overlay 0x1E10 | 1 | 1 | Large (34 KB), partially analyzed |
-| Overlay 0x5CD9 | 1 | 1 | Small (617 B) |
-| Other 7 overlay groups | 0 | 0 | Need fixup processing / manual analysis |
+| Resident image (seg000-022) | 817 | ~82 KB | Entry, overlay mgr, video, input, core sim |
+| Overlay 0x1E10 | 14 | ~1 KB | Large (34 KB), functions found |
+| Overlay 0x569F | 14 | ~1 KB | 64 KB span, functions found |
+| Overlay 0x5CD9 | 2 | ~1 KB | Small (617 B) |
+| Overlay 0x5DFF | 4 | ~1 KB | |
+| Overlay 0x5E0B | 1 | ~1 KB | |
+| Overlay 0x5E8F | 1 | ~1 KB | |
+| Overlay 0x5F6C | 1 | ~1 KB | |
+| Overlay 0x606E | 1 | ~1 KB | |
+| Other overlay groups | 0 | 0 | Need deeper analysis |
 
-**Total**: 817 functions, 82 KB. Gap: ~1.2 MB tail mostly asset data + unprocessed overlays.
+**Total**: 839 functions, 83 KB. Gap: ~1.2 MB tail mostly asset data + unprocessed overlays.
 
 ## Immediate Next Steps
 
