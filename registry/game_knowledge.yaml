@@ -1,0 +1,138 @@
+# Falcon3 Game Knowledge Base
+# Generated from fresh IDA Pro 9.1 snapshot + RTLink analysis
+# Update as subsystems are reverse-engineered
+
+version: 1
+date: "2026-10-10"
+snapshot: "analysis/ida_falconcd/FALCONCD.EXE.i64"
+toolchain: "Unknown C + ASM, far/large model, RTLink/Plus linker, PKWARE DCL compression"
+
+memory_model:
+  type: "far/large"
+  description: "CS/DS/ES/SS can differ; overlays load at runtime paragraphs relative to load base; DS remapped freely; EMS/XMS used"
+
+load_base:
+  paragraph: 0x1000
+  linear: 0x10000
+  description: "IDA places MZ image at 0x10000 (para 0x1000); DOS loads at variable PSP-relative paragraph"
+
+resident_image:
+  range: "0x10000 - 0x2CF51"
+  size_bytes: 118609
+  segments: 23
+  functions: 815
+  key_addresses:
+    entry: "0x2B19C (0x1AA3:0x076C)"
+    thunk_table: "0x2BAFF (0x1AA3:0x157F)"
+    overlay_dir: "0x2E24F (0x1AA3:0x0C1F) - 70 entries x 18 bytes"
+    overlay_loader: "0x2DBC0 (0x1AA3:0x0590)"
+
+overlay_segments:
+  # (base_para, name, linear_range, size, record_count, notes)
+  - {para: 0x2CF6, name: "OVL_1CF6", linear: "0x2CF60-0x2EF16", size: 202, records: 4, notes: "Core overlay stubs"}
+  - {para: 0x2E10, name: "OVL_1E10", linear: "0x303A5-0x3A00B", size: 40038, records: 4, notes: "Large, likely graphics/sim"}
+  - {para: 0x569F, name: "OVL_569F", linear: "0x66A5D-0x686F0", size: 7315, records: 39, notes: "64 KB span, 39 records sparse"}
+  - {para: 0x5CD9, name: "OVL_5CD9", linear: "0x73271-0x734DA", size: 617, records: 3, notes: "Small"}
+  - {para: 0x5DFF, name: "OVL_5DFF_a", linear: "0x74742-0x74C2C", size: 1258, records: 6, notes: "Group C=5"}
+  - {para: 0x5E0B, name: "OVL_5E0B", linear: "0x74C2C-0x7505F", size: 1075, records: 2, notes: "Group C=0xD"}
+  - {para: 0x5DFF, name: "OVL_5DFF_b", linear: "0x7505F-0x75074", size: 21, records: 1, notes: "Group C=0xFFFF duplicate para"}
+  - {para: 0x5E8F, name: "OVL_5E8F", linear: "0x75998-0x75C58", size: 704, records: 2, notes: "Group C=0x10"}
+  - {para: 0x5F6C, name: "OVL_5F6C", linear: "0x76A70-0x76C55", size: 485, records: 8, notes: "Group C=0x12"}
+  - {para: 0x606E, name: "OVL_606E", linear: "0x741A0-0x74742", size: 1442, records: 1, notes: "Group C=0xFFFF"}
+
+thunk_table:
+  base: "0x1AA3:0x157F"
+  entry_size: 10
+  format: "E8 disp16 (call loader) + EA off seg (ljmp) + word record_id"
+  known_ids:
+    1:  "1D31:000A"
+    2:  "1CF6:04BF"
+    2b: "1CF6:0D01"
+    4:  "1CF6:000A"
+    4b: "1CF6:002B"
+    5:  "1EFE:0205"
+    5b: "1EFE:020C"
+    5c: "1EFE:0000"
+    7:  "5CD9:09B7"
+    0xC: "5DFF:0F41"
+
+rtlink_directory_18byte:
+  file_offset: 0x1E24F
+  entry_count: 70
+  struct:
+    seg: uint16
+    const_12ED: uint16 # always 0x12ED
+    tail_off: uint32
+    const_400: uint16 # always 0x0400
+    A: uint16 # record size
+    B: uint16 # ?
+    C: uint16 # group: 0,5,0xD,0x10,0x12,0x1D,0xFFFF
+    id: uint16 # thunk index
+    A2: uint16 # duplicate of A
+
+tail_4byte_dir:
+  file_offset: 0x1FB61
+  entry_count: 51
+  format: "uint16 off, uint16 seg"
+  segs: [0x1CF6, 0x1D0D, 0x1D31]
+  notes: "Initial overlay load list for core segments"
+
+compression:
+  library: "PKWARE Data Compression Library 1.11 (Patent 5,051,745)"
+  signatures_in_tail: ["0x67F", "0x6B6", "0x4DEBB", "0x6D67A", "0x6D8EE", "0x9FF54", "0xA0DE2", "0xA179B", "0xA2031", "0xA27FB"]
+  assets_likely: ["DISPLAY.DAT", "ARMSDATA\\ARMSTABL.DAT", "ARMSDATA\\ARMSmmaa.DAT"]
+
+strings_notable:
+  overlay_errors:
+    - "Cannot find overlay file \""
+    - "Open error on overlay file \""
+    - "Read error on overlay file \""
+    - "Commit error - section "
+    - "H intersects committed section "
+    - "Vector at xxxx:xxxx is corrupted."
+    - "Overlay Manager Internal Reload Stack Overflow"
+    - "Overlay Manager Internal Reload Stack Underflow"
+  fatal: "Internal error in .RTLink(R)/Plus run-time code."
+  joystick_calib:
+    - "MOVE THROTTLE ALL THE WAY FORWARD AND BACK"
+    - "MOVE RUDDER ALL THE WAY RIGHT AND THEN LEFT"
+    - "SEPARATE THROTTLE CONTROL ... ACTIVATE IT , Y/N?"
+    - "SEPARATE RUDDER CONTROL ... ACTIVATE IT , Y/N?"
+
+crt_evidence:
+  msc6_signature_B430CD21: false
+  msc_error_strings: false
+  borland_strings: false
+  custom_startup: true
+  notes: "No standard CRT linked; likely custom asm startup + C modules"
+
+compiler_hypothesis:
+  likely: ["Microsoft C 5.1", "Borland C++ 2.0/3.0", "Watcom C 9.0/10.0"]
+  ruled_out: ["Microsoft C 6.0", "Borland C++ 4.x"]
+  evidence: "Far model, 55 8B EC prologues, retf, caller cleanup ADD SP, large hand-ASM portions"
+
+variants:
+  HORNETCD.EXE: {cs_ip: "0x1A99:0x076C", size: 1412635, notes: "Same structure, different assets"}
+  MIGCD.EXE: {cs_ip: "0x1A4E:0x076C", size: 1369383, notes: "Same structure, different assets"}
+  RESETALL.EXE: {compiler: "Borland C++ 1991", size: 7433, notes: "Separate utility"}
+
+ems_xms:
+  ems_int: 0x67
+  xms_multiplex: 0x2F
+  notes: "Used for extended memory; overlay manager may swap via EMS"
+
+known_data_structs:
+  - name: "OverlayDirEntry"
+    source: "18-byte dir at 0x1AA3:0x0C1F"
+  - name: "ThunkEntry"
+    source: "Thunk table at 0x1AA3:0x157F"
+  - name: "RTLinkRecord"
+    source: "Tail records at tail_off + header + data + fixups"
+  - name: "SimState"
+    source: "Memory dumps (MEMDUMP_sim.BIN)"
+  - name: "MissionState"
+    source: "Memory dumps (MEMDUMP_mission.BIN)"
+  - name: "MenuState"
+    source: "Memory dumps (MEMDUMP_menu.BIN)"
+  - name: "CockpitState"
+    source: "cockpit_*.BIN dumps"

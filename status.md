@@ -1,0 +1,65 @@
+# Falcon3 Decompilation Status
+
+**Date**: 2026-10-10
+**Branch**: main (initial)
+**Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
+
+## Executive Summary
+
+Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using **RTLink/Plus** overlay linker and **PKWARE DCL** compression. The codebase is **hand-written x86 ASM + C** with **no standard CRT** (not MSC 6.0, not Borland). The EXE is 1.37 MB with a 118 KB resident image and 1.2 MB overlay/asset tail.
+
+**Fresh IDA Pro 9.1 snapshot created** — 817 functions, 82 KB code, 9 overlay groups mapped at correct runtime addresses using 16-bit segment bases (allowing CS/DS overlap). This replaces prior DOSBox-dump IDBs which had limited code coverage.
+
+## Verified Facts
+
+| Item | Status | Evidence |
+|------|--------|----------|
+| Linker | ✅ RTLink/Plus | Strings, 18-byte directory, thunk table |
+| Compression | ✅ PKWARE DCL | Strings, `PK\x03\x04` in tail |
+| CRT | ❌ MSC 6.0 | No `B430CD21`, no error strings |
+| CRT | ❌ Borland | No "Borland" strings in main EXEs |
+| Compiler | 🔍 Unknown | C + ASM mix, far model, custom startup |
+| Code model | ✅ Far/large | 466/817 far, retf, stack args `[BP+6]` |
+| Overlays | ✅ RTLink | 70 records, 9 segment groups, thunk dispatch |
+| RESETALL.EXE | ✅ Borland C++ 1991 | Copyright string (garbled) |
+
+## Code Coverage
+
+| Region | Functions | Code Bytes | Notes |
+|--------|-----------|------------|-------|
+| Resident image (seg000-022) | 815 | ~82 KB | Entry, overlay mgr, video, input, core sim |
+| Overlay 0x1E10 | 1 | 1 | Large (34 KB), partially analyzed |
+| Overlay 0x5CD9 | 1 | 1 | Small (617 B) |
+| Other 7 overlay groups | 0 | 0 | Need fixup processing / manual analysis |
+
+**Total**: 817 functions, 82 KB. Gap: ~1.2 MB tail mostly asset data + unprocessed overlays.
+
+## Immediate Next Steps
+
+1. **Process overlay fixups** — decode record headers/fixups to place all 70 records correctly (currently only record data `A` bytes mapped).
+2. **Extract PKWARE assets** — `DISPLAY.DAT`, `ARMSDATA\*.DAT` from tail for mission/cockpit data.
+3. **Identify compiler** — test MSC 5.1, Borland C++ 2.0/3.0, Watcom against function prologues/epilogues.
+4. **Port `libscan.py` to MSC 5.1 libs** — sibling `f19re` uses MSC 5.1; Falcon3 may too.
+5. **Map thunk→record→function** — link thunk table IDs to overlay records to entry points.
+
+## Blockers
+
+- Overlay record format (headers/fixups) not fully decoded → can't map all 70 records cleanly.
+- 1.2 MB tail structure unknown beyond 68 KB of records → asset extraction needed.
+- No FLIRT signatures for 16-bit far model → manual compiler ID required.
+- EMS/XMS memory views not represented in static IDB.
+
+## Reference Projects
+
+| Project | Status | Relevance |
+|---------|--------|-----------|
+| `f19re` | Full rebuild (MSC 5.1) | Compiler/linker toolchain, portcheck workflow |
+| `gunship_2000` | In progress (MSC 6.0) | RTLink overlay extraction, registry YAML, Ghidra placement |
+
+## Artifacts
+
+- `analysis/ida_falconcd/FALCONCD.EXE.i64` — fresh IDA Pro 9.1 DB
+- `analysis/ida_falconcd/survey.json` — segments, functions, strings, overlays
+- `analysis/ida_falconcd/functions.tsv` — function list for registry
+- `analysis/ida_falconcd/overlays.json` — RTLink directory parsed
+- `docs/toolchain.md`, `docs/structures.md`, `docs/prior_art.md`

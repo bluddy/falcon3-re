@@ -1,0 +1,160 @@
+# FALCONCD.EXE Registry
+# Main executable - resident image + RTLink overlay manager
+# Snapshot: analysis/ida_falconcd/FALCONCD.EXE.i64 (IDA Pro 9.1)
+
+file: "FALCONCD.EXE"
+size: 1373671
+md5: "TODO"
+snapshot_date: "2026-10-10"
+ida_db: "analysis/ida_falconcd/FALCONCD.EXE.i64"
+
+mz_header:
+  magic: "MZ"
+  last_page: 0x151
+  pages: 0xFE
+  nreloc: 2717
+  hdr_paras: 0x2C0
+  min_alloc: 0x58D7
+  max_alloc: 0xFFFF
+  init_ss: 0x752C
+  init_sp: 0x0800
+  checksum: 0
+  init_ip: 0x076C
+  init_cs: 0x1AA3
+  reloc_off: 0x1E
+  overlay_no: 0
+
+derived:
+  hdr_size: 0x2C00
+  image_size: 0x1CF51
+  tail_start: 0x1FB51
+  tail_size: 0x12FA96
+  entry_linear: 0x1B19C
+  entry_ida: 0x2B19C  # with load base 0x10000
+
+segments:
+  - name: "seg000"
+    range: "0x10000-0x10210"
+    class: "CODE"
+    notes: "PSP area?"
+  - name: "seg005"
+    range: "0x11BA0-0x168E0"
+    class: "CODE"
+    notes: "Early init, video setup"
+  - name: "seg020"
+    range: "0x1F6C0-0x2AA30"
+    class: "CODE"
+    notes: "Main resident code (346 funcs, 28KB)"
+  - name: "seg021"
+    range: "0x2AA30-0x2C970"
+    class: "CODE"
+    notes: "Resident tail, strings, overlay dir"
+
+resident_key_functions:
+  - ea: 0x2B19C
+    name: "start"
+    desc: "Entry point, ljmp to thunk table"
+  - ea: 0x2DBC0
+    name: "overlay_loader"
+    desc: "RTLink overlay load dispatch (thunk target)"
+  - ea: 0x2E24F
+    name: "overlay_dir"
+    desc: "18-byte directory, 70 entries"
+  - ea: 0x2BAFF
+    name: "thunk_table"
+    desc: "10-byte stubs, ~50 entries"
+
+overlay_thunks:  # thunk_table[record_id] -> target
+  1:  {target: "1D31:000A", loader_call: "0x58D"}
+  2:  {target: "1CF6:04BF", loader_call: "0x58D"}
+  3:  {target: "1CF6:0D01", loader_call: "0x58D"}
+  4:  {target: "1CF6:000A", loader_call: "0x58D"}
+  5:  {target: "1CF6:002B", loader_call: "0x58D"}
+  6:  {target: "1EFE:0205", loader_call: "0x58D"}
+  7:  {target: "1EFE:020C", loader_call: "0x58D"}
+  8:  {target: "1EFE:0000", loader_call: "0x58D"}
+  9:  {target: "5CD9:09B7", loader_call: "0x58D"}
+  0xC: {target: "5DFF:0F41", loader_call: "0x58D"}
+
+overlay_groups:  # from 18-byte dir, grouped by (C, seg)
+  - C: 0
+    seg: 0x1CF6
+    records: 4
+    tail_span: "0x1FB6..0x22A2"
+    size: 707
+    notes: "Core overlay, adjacent to resident"
+  - C: 0
+    seg: 0x1E10
+    records: 4
+    tail_span: "0x22A5..0xBF0B"
+    size: 34548
+    notes: "Large, likely graphics/sim"
+  - C: 5
+    seg: 0x5CD9
+    records: 3
+    tail_span: "0x64E1..0x674A"
+    size: 585
+  - C: 5
+    seg: 0x5DFF
+    records: 6
+    tail_span: "0x6752..0x7084"
+    size: 1142
+  - C: 0xD
+    seg: 0x5E0B
+    records: 2
+    tail_span: "0x6B7C..0x6FAF"
+    size: 1029
+  - C: 0x10
+    seg: 0x5E8F
+    records: 2
+    tail_span: "0x70A8..0x7368"
+    size: 589
+  - C: 0x12
+    seg: 0x5F6C
+    records: 8
+    tail_span: "0x73B0..0x7595"
+    size: 390
+  - C: 0x1D
+    seg: 0x569F
+    records: 39
+    tail_span: "0x006D..0xFF82"
+    size: 23949
+    notes: "64 KB span, sparse records"
+  - C: 0xFFFF
+    seg: 0x1CF6
+    records: 1
+    size: 0
+    notes: "Empty placeholder"
+  - C: 0xFFFF
+    seg: 0x606E
+    records: 1
+    tail_span: "0x3AC0..0x4FFE"
+    size: 5438
+
+strings_key:
+  - ea: 0x2AA54
+    str: "Cannot find overlay file \""
+  - ea: 0x2CBB8
+    str: "Internal error in .RTLink(R)/Plus run-time code."
+  - ea: 0x2E2F4
+    str: "ARMSDATA\\ARMSmmaa.DAT"
+  - ea: 0x2E30A
+    str: "  mm   aa ARMSDATA\\ARMSTABL.DAT"
+
+crt_check:
+  msc6_sig_B430CD21: false
+  error_strings: false
+  custom_startup: true
+
+compiler_notes:
+  - "Far model: retf, stack args [BP+6], 55 8B EC prologues"
+  - "C caller cleanup: ADD SP, imm after CALL"
+  - "ASM regions: register dispatch, INT 15h/21h, self-modifying code"
+  - "No FLIRT matches (IDA 9.1, 16-bit)"
+
+todo:
+  - Decode RTLink record headers/fixups for all 70 records
+  - Map thunk IDs to overlay records to entry functions
+  - Identify compiler via libscan against MSC 5.1/Borland/Watcom
+  - Extract PKWARE assets from tail (DISPLAY.DAT, ARMSDATA)
+  - Document EMS/XMS usage (INT 67h, INT 2Fh)

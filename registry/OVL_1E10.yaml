@@ -1,0 +1,56 @@
+# OVL_1E10 Registry
+# Large overlay segment (para 0x1E10, linear 0x2E100-0x3A00B)
+# RTLink group C=0, 4 records, 34.5 KB
+
+overlay:
+  name: "OVL_1E10"
+  para: 0x1E10
+  base_linear: 0x303A5  # (0x1000+0x1E10)*16 + 0x22A5
+  size: 40038
+  records: 4
+  thunk_ids: [2, 4]  # thunks 2 and 4 jump into this segment
+
+records:
+  - id: 2
+    off: 0x1FB6
+    size: 89
+    thunk_target: "1CF6:04BF"  # wait, thunk 2 goes to 1CF6...
+    notes: "Record 2 empty? thunk 2 targets 1CF6:04BF"
+  - id: 3
+    off: 0x1FB6
+    size: 89
+    thunk_target: "1CF6:0D01"
+  - id: 4
+    off: 0x201C
+    size: 282
+    thunk_target: "1CF6:000A"
+  - id: 5
+    off: 0x2137
+    size: 277
+    thunk_target: "1CF6:002B"
+
+# Wait - the thunk targets for ids 2-5 are in segment 1CF6, not 1E10.
+# This means the 18-byte dir records for seg=1E10 are NOT the targets of thunks 2-5.
+# The thunk table shows:
+#   id 1 -> 1D31:000A
+#   id 2 -> 1CF6:04BF, 1CF6:0D01
+#   id 4 -> 1CF6:000A, 1CF6:002B
+#   id 5 -> 1EFE:0205, ...
+#   id 7 -> 5CD9:09B7
+# So the 18-byte dir seg=1E10 records have ids that DON'T match these thunks?
+# Let me check: 18-byte dir id field matches thunk id.
+# The 18-byte dir has records with seg=1E10 and ids... need to check.
+# This needs resolution: map 18-byte dir.id -> thunk table -> target segment.
+
+# TODO: Build complete id -> (thunk target) -> (18-byte dir record) mapping.
+
+functions_found:
+  - ea: 0x303A5
+    size: 1
+    notes: "Autoanalysis found 1 function in this overlay"
+
+notes: |
+  This overlay's thunk targets don't match its segment - need to reconcile.
+  Possibly the 18-byte dir C=0 seg=1E10 records have ids that map to thunks
+  targeting OTHER segments (indirect overlay chaining?).
+  Priority: resolve id mapping, then analyze record code.
