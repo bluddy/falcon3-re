@@ -26,10 +26,10 @@
 - [x] Build call graph: resident → overlay entry points (86 thunks mapped)
 - [ ] Verify overlay unload/reload semantics
 
-### 1.4 PKWARE Asset Extraction
-- [ ] Locate `PK\x03\x04` boundaries in tail
-- [ ] Extract `DISPLAY.DAT`, `ARMSDATA\ARMSTABL.DAT`, `ARMSmmaa.DAT`
-- [ ] Decompress with PKWARE DCL (sibling `gunship_2000` has tools)
+### 1.4 PKWARE Asset Extraction ✅
+- [x] Assets already unpacked in `game/` directory (DISPLAY.DAT, ARMSDATA\*.DAT, etc.)
+- [x] PKWARE strings in EXE are just library copyright + Huffman tables
+- [ ] Decompress with PKWARE DCL if needed for runtime analysis
 - [ ] Parse asset formats (palettes, sprites, map data, instrument art)
 
 ## Phase 2: Porting Setup & Library Matching (1 week)
