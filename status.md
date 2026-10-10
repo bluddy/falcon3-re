@@ -6,7 +6,7 @@
 
 ## Executive Summary
 
-Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using **RTLink/Plus** overlay linker and **PKWARE DCL** compression. The codebase is **hand-written x86 ASM + C** with **no standard CRT** (not MSC 6.0, not Borland). The EXE is 1.37 MB with a 118 KB resident image and 1.2 MB overlay/asset tail.
+Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using **RTLink/Plus** overlay linker and **PKWARE DCL** compression. The codebase is **Microsoft C 5.1 (C modules) + hand-written ASM** with **no standard CRT** (not MSC 6.0, not Borland). The EXE is 1.37 MB with a 118 KB resident image and 1.2 MB overlay/asset tail.
 
 **Fresh IDA Pro 9.1 snapshot created** — 817 functions, 82 KB code, 9 overlay groups mapped at correct runtime addresses using 16-bit segment bases (allowing CS/DS overlap). This replaces prior DOSBox-dump IDBs which had limited code coverage.
 
@@ -18,7 +18,7 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 | Compression | ✅ PKWARE DCL | Strings, `PK\x03\x04` in tail |
 | CRT | ❌ MSC 6.0 | No `B430CD21`, no error strings |
 | CRT | ❌ Borland | No "Borland" strings in main EXEs |
-| Compiler | 🔍 Unknown | C + ASM mix, far model, custom startup |
+| Compiler | ✅ **MSC 5.1 (C) + hand-ASM** | 30 `ENTER`, 84 `558BEC`, 0 `83EC` |
 | Code model | ✅ Far/large | 466/817 far, retf, stack args `[BP+6]` |
 | Overlays | ✅ RTLink | 70 records, 9 segment groups, thunk dispatch |
 | RESETALL.EXE | ✅ Borland C++ 1991 | Copyright string (garbled) |
@@ -38,9 +38,9 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 
 1. **Process overlay fixups** — decode record headers/fixups to place all 70 records correctly (currently only record data `A` bytes mapped).
 2. **Extract PKWARE assets** — `DISPLAY.DAT`, `ARMSDATA\*.DAT` from tail for mission/cockpit data.
-3. **Identify compiler** — test MSC 5.1, Borland C++ 2.0/3.0, Watcom against function prologues/epilogues.
-4. **Port `libscan.py` to MSC 5.1 libs** — sibling `f19re` uses MSC 5.1; Falcon3 may too.
-5. **Map thunk→record→function** — link thunk table IDs to overlay records to entry points.
+3. **Full overlay mapping** — apply fixups to all 70 records → re-run IDA snapshot → target >2000 functions, >200 KB code.
+4. **Map thunk→record→function** — link thunk table IDs to overlay records to entry points.
+5. **Port MSC 5.1 libraries** — extend `libscan.py` with MSC 5.1 libs (from `f19re` toolchain).
 
 ## Blockers
 

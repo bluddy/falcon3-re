@@ -2,13 +2,34 @@
 
 ## Compiler
 
-**Not Microsoft C 6.0**. Evidence:
-- MSC 6.0 CRT signature `B4 30 CD 21 3C 02 73` (mov ah,30h / int 21h / cmp al,2 / jnc) **absent** from FALCONCD.EXE (0 hits for `B430CD21`).
-- No CRT error strings: "Microsoft", "Borland", "R6000", "Abnormal program termination", "run-time error" — none present in FALCONCD/HORNETCD/MIGCD.
-- MSC 6.0 `crt0.asm` uses `extrn __acrtmsg:abs` to pull in the message module; absence of messages ⇒ no standard MSC 6.0 CRT linked.
-- `libscan.py` fuzzy match (174s) against MSC 6.0 libraries (MLIBCE/LLIBCE/SLIBCE/CLIBCE = 610 modules each) found only one false-positive 90% hit (`qcfpvars.asm`, all-zero block).
+**Microsoft C 5.1 for C modules + hand-written ASM**. Evidence:
 
-**Likely**: hand-written ASM + C in far/large model, custom startup (no standard CRT). Falcon3 predates MSC 7.0 (1992); possible compilers: **Microsoft C 5.1**, **Borland C++ 2.0/3.0**, **Watcom C**, or pure MASM/TASM with C modules. No compiler fingerprints matched yet.
+### Ruled out
+- **MSC 6.0**: No `B430CD21` signature, no CRT error strings, libscan found no matches.
+- **Borland C++**: No Borland strings in main EXEs (only RESETALL.EXE has Borland 1991 strings).
+- **Watcom**: No Watcom signatures detected.
+
+### Confirmed: Microsoft C 5.1 for C modules
+- **30 functions use `ENTER` instruction (opcode C8)** with various stack sizes (0x02-0x5A) — **Microsoft C 5.1 hallmark**.
+- `ENTER` stack sizes observed: 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0A, 0x0E, 0x10, 0x14, 0x16, 0x1C, 0x38, 0x3C, 0x54, 0x5A — matches MSC 5.1 codegen.
+
+### Hand-written ASM majority
+- **84 functions use manual `55 8B EC` (push bp; mov bp, sp)** with **highly variable register save order** — hand-tuned ASM.
+- First register saved after `55 8B EC`: SI (66), `mov ax` (37), `mov` (7), DS (7), `sub` (7), `push` (5), etc. — no consistent compiler pattern.
+- **0 functions use `55 8B EC 83 EC`** (standard C `sub sp, XX` for locals) — no standard C stack frames.
+- 170 prologues with segment overrides (CS/DS/ES/SS) — heavy far-pointer/segment manipulation.
+
+### Calling convention
+- **Far model**: 466/817 functions far (`retf`), 488 `retf` instructions.
+- **C modules**: Use `ENTER` / `LEAVE` / `RETF` (4 functions with `LEAVE;RETF`).
+- **ASM modules**: Manual `push bp; mov bp, sp` + custom register save + `RETF`/`RET`.
+- **No standard C stack frames**: **0 functions** use `sub sp, XX` (`83 EC`) for locals.
+- Parameter passing: Stack-based `[BP+6]` for far calls, registers for ASM.
+
+### CRT / Startup
+- **No standard CRT**: No MSC 6.0 signature `B4 30 CD 21`, no CRT error strings.
+- Custom ASM startup (`start` at 0x2B19C) → jumps to thunk table → overlay loader.
+- `RESETALL.EXE` is Borland C++ 1991 (separate utility).
 
 ## Linker
 

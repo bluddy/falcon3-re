@@ -32,21 +32,20 @@
 - [ ] Decompress with PKWARE DCL (sibling `gunship_2000` has tools)
 - [ ] Parse asset formats (palettes, sprites, map data, instrument art)
 
-## Phase 2: Compiler Identification & Porting Setup (1 week)
+## Phase 2: Porting Setup & Library Matching (1 week)
 
-### 2.1 Compiler Fingerprinting
-- [ ] Build MSC 5.1 / 6.0 / Borland C++ 2.0/3.0 / Watcom test objects
-- [ ] Compare prologue/epilogue patterns, register usage, stack frames
-- [ ] Test against Falcon3 function samples (large C functions at 0x1AB34, 0x1EA58, etc.)
-- [ ] Check library function signatures (memcpy, strcpy, printf-like)
+### 2.1 MSC 5.1 Environment Setup
+- [ ] Set up DOSBox + MSC 5.1 toolchain (from `f19re` reference)
+- [ ] Verify `CL.EXE` / `LINK.EXE` produce compatible objects
+- [ ] Test object-to-EXE roundtrip for a small test function
 
 ### 2.2 Library Matching
-- [ ] Extend `libscan.py` with MSC 5.1 libraries (from `f19re`)
+- [ ] Extend `libscan.py` with MSC 5.1 libraries (from `f19re` toolchain)
 - [ ] Run against resident image and overlays
-- [ ] Identify any linked CRT modules
+- [ ] Identify any linked CRT modules (likely custom/none)
 
 ### 2.3 Reproducible Build Environment
-- [ ] Document DOSBox + compiler + linker versions
+- [ ] Document DOSBox + MSC 5.1 + LINK versions
 - [ ] Create `compile_falcon.bat` / `compile_falcon.py` (cf. `gunship_2000/scripts/compile_msc6.py`)
 - [ ] Verify object-to-EXE roundtrip for a small test function
 
@@ -107,7 +106,7 @@ For each major function:
 | Milestone | Target | Deliverable |
 |-----------|--------|-------------|
 | M1: Overlay decode | Week 2 | All 70 records placed, functions found |
-| M2: Compiler ID | Week 3 | Confirmed compiler + build env |
+| M2: MSC 5.1 env + libs | Week 3 | Confirmed build env + libscan matches |
 | M3: Registry v1 | Week 5 | `registry/*.yaml`, `game_knowledge.yaml` |
 | M4: First C port | Week 7 | One subsystem ported, verified |
 | M5: Full rebuild | Week 12 | Byte-equivalent EXE (modulo timestamps) |
@@ -118,7 +117,7 @@ For each major function:
 |------|------------|
 | Overlay format too complex | Focus on resident + largest overlays first; asset extraction separate |
 | No 16-bit decompiler | Use Ghidra with 16-bit analyzer + manual porting; `f19re` did it |
-| Compiler mismatch | Test all period candidates; MSC 5.1 most likely (era 1991-92) |
+| MSC 5.1 env setup | Reference `f19re` DOSBox + MSC 5.1 setup; `gunship_2000` has MSC 6.0 |
 | EMS/XMS dynamic views | Model as separate segment bases in IDA; document DS aliasing |
 | Asset formats undocumented | Extract from memory dumps (`MEMDUMP_*.BIN`) + PKWARE decompress |
 
