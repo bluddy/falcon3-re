@@ -40,13 +40,22 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 
 **Total**: 839 functions, 83 KB. Gap: ~1.2 MB tail mostly asset data + unprocessed overlays.
 
+## Portcheck Pipeline ✅
+- C source → DOSBox-X + MSC 5.1 → .OBJ + .COD
+- .COD parsing → byte extraction (verified with `hello.c` and `getans.c`)
+- Compare with original EXE bytes (via IDA segment:offset mapping)
+
+**Tested:**
+- `hello.c` → `main(){return 0;}` → `b8 2a 00 c3` (mov ax, 42; ret) ✅
+- `getans.c` → `get_answer(){return 42;}` → `b8 2a 00 c3` ✅
+
 ## Immediate Next Steps
 
-1. **Process overlay fixups** — decode record headers/fixups to place all 70 records correctly (currently only record data `A` bytes mapped).
-2. **Extract PKWARE assets** — `DISPLAY.DAT`, `ARMSDATA\*.DAT` from tail for mission/cockpit data.
-3. **Full overlay mapping** — apply fixups to all 70 records → re-run IDA snapshot → target >2000 functions, >200 KB code.
-4. **Map thunk→record→function** — link thunk table IDs to overlay records to entry points.
-5. **Port MSC 5.1 libraries** — extend `libscan.py` with MSC 5.1 libs (from `f19re` toolchain).
+1. **Identify target functions** from survey.json small functions for verification
+2. **Write C equivalents** for target functions
+3. **Run portcheck** to verify byte-for-byte match
+4. **Build registry** of verified functions
+5. **Port MSC 5.1 libraries** — extend `libscan.py` with MSC 5.1 libs (from `f19re` toolchain)
 
 ## Blockers
 
