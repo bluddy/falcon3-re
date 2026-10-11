@@ -34,10 +34,10 @@
 
 ## Phase 2: Porting Setup & Library Matching (1 week)
 
-### 2.1 MSC 5.1 Environment Setup
-- [ ] Set up DOSBox + MSC 5.1 toolchain (from `f19re` reference)
-- [ ] Verify `CL.EXE` / `LINK.EXE` produce compatible objects
-- [ ] Test object-to-EXE roundtrip for a small test function
+### 2.1 MSC 5.1 Environment Setup ✅
+- [x] Set up DOSBox + MSC 5.1 toolchain (from `f19re` reference)
+- [x] Verify `CL.EXE` / `LINK.EXE` produce compatible objects
+- [x] Test object-to-EXE roundtrip for a small test function
 
 ### 2.2 Library Matching
 - [ ] Extend `libscan.py` with MSC 5.1 libraries (from `f19re` toolchain)
