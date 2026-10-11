@@ -106,15 +106,18 @@ content identical to what we listed here. Record idx1's *data* starts at
 struct rtlink_rec {          // 70 entries at file 0x1E24F (ids 2..71 = index+2)
   uint16_t w0;               // load base (LINK para) — runtime = w0 + 0x1000
   uint16_t w1;               // filename ptr (constant 0x12ED region)
-  uint16_t w2;               // file para of fixup table (file_off = w2*16) [base per-row OPEN]
+  uint16_t w2;               // file para of fixup table (file_off = w2*16);
+                             //   chain rows 0..49: direct; cluster-B rows 50..69:
+                             //   window = 0xFFFA0 + w2*16 (finding 20; row69 code-first,
+                             //   fixup table at window+0x60, data = w8*16)
   uint16_t w3;               // low: 0x0400; HIGH BYTE = flags: 0x04 transient, 0x01 startup
-  uint16_t w4;               // allocated span
+  uint16_t w4;               // allocated span (PARAS)
   uint16_t w5;               // fixup count in DWORDS  => fixup bytes = w5*4
   uint16_t w6;               // 0xFFFF
   uint16_t w7;               // id (2..71); loader indexes table by 0-based idx: ax*18+0xC1F
-  uint16_t w8;               // data size (== w4 for most)
+  uint16_t w8;               // data size in paras (== w4 for most; row69 uses w8*16 for data)
 };
-// record layout: [fixup table w5 dwords][align16][data]  (data-first for small-w2 rows: finding 18)
+// record layout: [fixup table w5 dwords][align16][data]   (row69: code-first)
 // data_start = w2*16 + align16(w5*4)
 ```
 Runtime placement (finding 18, CONFIRMED):
@@ -122,6 +125,13 @@ Runtime placement (finding 18, CONFIRMED):
 block = [(0x1000 + w0) << 4, + w4*16)      // transient records sharing w0 OVERLAP
 thunk word = 0-based dir row index         // loader loads row[word], jumps to ljmp target
 fixup seg field ∈ [w0, w0 + w4) (any paragraph in the record's block)
+```
+Fixup application (finding 21, APPLIED to IDB — 25,222 patches):
+```
+location = (seg + 0x1000) << 4 + off       // link-time seg -> IDA runtime (+L)
+word[loc] += 0x1000                        // dominant far-pointer type; ~14 types exist,
+                                           // exotic before-words pending per-type decode
+// guard: only where IDB byte == file byte (clip-shadow overlaps skipped: 177+144)
 ```
 Thunk table: 10B = `E8 disp16; EA off seg; dw index` — index = 0-based dir row
 (verified: rows 6,7,8 → seg 5CD9 targets etc.). Thunk ljmp operands are NOT MZ-relocated
