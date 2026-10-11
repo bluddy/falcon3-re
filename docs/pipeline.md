@@ -17,6 +17,33 @@ Comparison to sibling projects:
 
 ---
 
+## Knowledge Capture Protocol (MOST IMPORTANT — never lose a learning)
+
+Every finding has exactly one canonical sink. Fill them **as you learn**, and update
+them **as you disprove**; the findings log is append-only history, the registries are
+current state.
+
+| # | Sink | Holds | Write when |
+|---|------|-------|-----------|
+| 1 | `docs/findings_log.md` | Chronological history: hypotheses, evidence, confirmations, **disprovals, dead ends** | Every session, append only. Mark disproved entries `DISPROVEN` — never delete |
+| 2 | `registry/routines.yaml` | Per-routine convergence ledger: `{ea, class, hypothesis, port_status, port_file, verified}` | Classify / hypothesize / port / verify / disprove a routine |
+| 3 | `registry/game_knowledge.yaml`, `registry/FALCONCD.EXE.yaml` | Game systems & file-level facts (segments, thunks, strings, groups) | Discovered game mechanic or file-level structure |
+| 4 | `docs/structures.md` | Byte-level struct layouts of anything in files/memory | A format is decoded (even partially — mark what's unverified) |
+| 5 | C sources in `src/` | **Renames + comments**: meaningful function/variable/global names, `// why` comments | As part of porting; when a hypothesis renames a symbol, rename here too |
+| 6 | ASM listings/transcriptions | **Comments** annotating hand-ASM routines (intent, register roles) | As routines are transcribed/classified |
+
+Rules of thumb:
+- **Hypothesis made** → registry entry (`class`/`hypothesis`) + findings log line.
+- **Hypothesis disproved** → flip the registry value, leave a `notes:` trail, append the
+  disproval to the findings log (see Finding 09 for the pattern).
+- **Routine verified** → `port_status: verified`, source file kept in `src/`,
+  byte recipe noted (e.g. `/AL + int far`).
+- **Rename** lands in three places consistently: registry `hypothesis`, the C/ASM file,
+  and (if it changes understanding) a findings-log entry.
+- Structures never overwrite — extend `structures.md` sections and mark decode status.
+
+---
+
 ## Repository Structure (Key Paths)
 
 ```
@@ -59,15 +86,17 @@ C:\Users\yotam\projects\falcon3\
 │   └── msc5.1/                     # MSC 5.1 installed (RBIN\CL.EXE, LIB\, INCLUDE\)
 │       └── compile.log             # Last compile log (debug)
 ├── registry/
-│   ├── game_knowledge.yaml         # 379 lines: modes, weapons, campaign, controls
-│   ├── FALCONCD.EXE.yaml           # Per-file registry
-│   └── OVL_1E10.yaml               # Per-overlay registry
+│   ├── routines.yaml                # Per-routine convergence ledger (class/hypothesis/status)
+│   ├── game_knowledge.yaml          # 379 lines: modes, weapons, campaign, controls
+│   ├── FALCONCD.EXE.yaml            # Per-file registry
+│   └── OVL_1E10.yaml                # Per-overlay registry
 ├── docs/
-│   ├── pipeline.md                 # THIS FILE
-│   ├── toolchain.md                # Compiler/linker evidence
-│   ├── structures.md               # MZ/RTLink/data structures
-│   ├── overlay_fixups.md           # 14 fixup types decoded
-│   └── prior_art.md                # Previous attempt history
+│   ├── pipeline.md                  # THIS FILE
+│   ├── findings_log.md              # Append-only history of findings/disprovals
+│   ├── toolchain.md                 # Compiler/linker evidence
+│   ├── structures.md                # MZ/RTLink/data structures (byte-level formats)
+│   ├── overlay_fixups.md            # 14 fixup types decoded
+│   └── prior_art.md                 # Previous attempt history
 ├── status.md / plan.md             # Current status + phased plan
 └── venv\                           # Python 3.14 venv (pymupdf, etc.)
 ```
@@ -225,7 +254,7 @@ The GS2000 workflow converges on ground truth via two mutually-checking tracks:
 | Track 1: relink original binary | ❌ **No relink — original linker is RTLink/Plus, no binary available** | Use **splice-in-place** Track 1 (below) |
 | Full asm skeleton (IDA .lst → UASM) | ❌ We have `function_bytes.json`/TSV, no instruction listing, no data/code boundary map | IDA listing export + `lst2asm`-style generator (adapt gunship scripts) |
 | Track 2 batch driver | ⚠️ `portcheck_falcon.py` verifies one routine at a time | Add batch driver + pass/fail convergence metric |
-| Registry with per-routine hypotheses | ❌ `game_knowledge.yaml` is game trivia; no per-routine entries | Add per-routine schema: `{ea, ida_name, class, hypothesis, port_status, port_file}` |
+| Registry with per-routine hypotheses | ⚠️ Schema + first entries exist (`registry/routines.yaml`); 3/839 tracked | Keep filling on classify/verify; renames land there + in C files |
 | `mzdiff` verification | ✅ **Reusable, not game-specific** — WSL binary exists (see below) | Only `.map` files are per-EXE (`mzmap` makes them, can ingest IDA `.lst`) |
 | Ghidra decompile → draft C | ❌ Not wired in (Ghidra installed; gunship has `ghidra_dump_to_lst_final.py`) | Add dump script, human-verify via portcheck |
 | Coverage ground truth | ⚠️ 839 resident+22 overlay functions (est. 2000+); DS/EMS views absent | Expand overlay analysis; accept resident-first scope |

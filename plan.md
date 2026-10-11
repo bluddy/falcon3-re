@@ -1,5 +1,10 @@
 # Falcon3 Decompilation Plan
 
+> **Knowledge capture** (see `docs/pipeline.md` "Knowledge Capture Protocol"):
+> log every finding/disproval in `docs/findings_log.md` (append-only),
+> keep per-routine state in `registry/routines.yaml`,
+> byte-level formats in `docs/structures.md`, renames+comments in `src/` files.
+
 ## Phase 0: Foundation (DONE ✅)
 - [x] Fresh IDA Pro 9.1 headless snapshot of FALCONCD.EXE
 - [x] RTLink 18-byte directory parsed, 9 overlay groups mapped with 16-bit segment bases

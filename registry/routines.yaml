@@ -1,0 +1,74 @@
+# Falcon3 Routine Registry — the convergence ledger
+# One entry per routine we have learned something about.
+# Updated when: classified, hypothesized (named), ported, verified, or disproven.
+# History/rationale lives in docs/findings_log.md; byte-level formats in docs/structures.md.
+#
+# Schema (per entry):
+#   ea:           linear address in IDA (load base 0x10000)
+#   seg / ofs:    segment:offset (ea >> 4, ea & 0xF)
+#   size:         bytes
+#   far:          is far function (retf)
+#   class:        C | ASM | DATA | THUNK | UNKNOWN       (classification)
+#   hypothesis:   semantic name we believe it has        (rename target; null if none)
+#   port_status:  unported | draft | verified | not_c-portable
+#   port_file:    src/<name>.c or src/<name>.asm
+#   verified:     MATCH | MISMATCH | null
+#   notes:        free-form (evidence, disprovals, cross-refs)
+#   updated:      date
+#
+# Conventions:
+#   - "verified" means portcheck_falcon.py produced byte-identical output vs
+#     function_bytes.json ground truth.
+#   - Renaming: when hypothesis solidifies, rename in this file, in the C/ASM
+#     source, and record in docs/findings_log.md.
+#   - Never delete entries; set class/status to disproven values with notes.
+
+version: 1
+ground_truth: analysis/ida_falconcd/function_bytes.json
+source_of_names: analysis/ida_falconcd/survey.json
+
+routines:
+  - ea: 0x16FDD
+    seg: 0x16FD
+    ofs: 0xD
+    size: 4
+    far: true
+    class: C
+    hypothesis: "always_true"          # returns constant 1
+    port_status: verified
+    port_file: src/sub_16FDD.c
+    verified: MATCH
+    notes: "b8 01 00 cb; /AL + int far needed. First green portcheck on real code."
+    updated: "2026-10-11"
+
+  - ea: 0x2CB6E
+    seg: 0x2CB6
+    ofs: 0xE
+    size: 4
+    far: true
+    class: C
+    hypothesis: "always_false"         # returns constant -1
+    port_status: verified
+    port_file: src/sub_2CB6E.c
+    verified: MATCH
+    notes: "b8 ff ff cb; same /AL + int far recipe."
+    updated: "2026-10-11"
+
+  - ea: 0x10340
+    seg: 0x1034
+    ofs: 0x0
+    size: 8
+    far: true
+    class: ASM
+    hypothesis: null
+    port_status: not_c-portable
+    port_file: null
+    verified: null
+    notes: "d1 e3 2e 89 87 25 00 cb = sal bx,1; mov cs:[bx+25h],ax; retf — hand ASM. Finding 09."
+    updated: "2026-10-11"
+
+counts:
+  tracked: 3
+  verified: 2
+  c_candidates_est: null     # TODO: classification pass over all 839
+  total_functions: 839

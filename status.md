@@ -89,5 +89,9 @@ Track C plan using `mzdiff` from `f19re/mzretools`, plus all naming/near-far got
 - `analysis/ida_falconcd/FALCONCD.EXE.i64` — fresh IDA Pro 9.1 DB
 - `analysis/ida_falconcd/survey.json` — segments, functions, strings, overlays
 - `analysis/ida_falconcd/functions.tsv` — function list for registry
+- `analysis/ida_falconcd/function_bytes.json` — **ground truth bytes** (IDA, relocated)
 - `analysis/ida_falconcd/overlays.json` — RTLink directory parsed
-- `docs/toolchain.md`, `docs/structures.md`, `docs/prior_art.md`
+- `docs/pipeline.md` — full pipeline + convergence model + knowledge capture protocol
+- `docs/findings_log.md` — append-only findings history
+- `registry/routines.yaml` — per-routine convergence ledger
+- `docs/toolchain.md`, `docs/structures.md`, `docs/prior_art.md`, `docs/overlay_fixups.md`
