@@ -41,21 +41,34 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 **Total**: 839 functions, 83 KB. Gap: ~1.2 MB tail mostly asset data + unprocessed overlays.
 
 ## Portcheck Pipeline ✅
-- C source → DOSBox-X + MSC 5.1 → .OBJ + .COD
-- .COD parsing → byte extraction (verified with `hello.c` and `getans.c`)
-- Compare with original EXE bytes (via IDA segment:offset mapping)
+- C source → DOSBox-X + MSC 5.1 (`/AL` large model) → .OBJ + .COD
+- .COD parsing → byte extraction
+- Compare against `function_bytes.json` (IDA ground truth, fixups applied)
 
 **Tested and working:**
 - `hello.c` → `main(){return 0;}` → `b8 2a 00 c3` (mov ax, 42; ret) ✅
 - `getans.c` → `get_answer(){return 42;}` → `b8 2a 00 c3` ✅
+- **`sub_16FDD` → `b8 01 00 cb` MATCH** (`int far` + `/AL` was the fix) ✅
+- **`sub_2CB6E` → `b8 ff ff cb` MATCH** ✅
+
+**Pipeline doc**: `docs/pipeline.md` (modeled on gunship_2000's PIPELINE.md; adds
+Track C plan using `mzdiff` from `f19re/mzretools`, plus all naming/near-far gotchas).
+
+## Game Knowledge Base ✅
+- Extracted full text from `manual.pdf` (254 pages, 484 KB)
+- Added comprehensive sections: game modes, weapons, avionics, aircraft, file formats, controls, campaign structure
+- Registry expanded: 158 → 379 lines
 
 ## Immediate Next Steps
 
 1. **Identify target functions** from survey.json small functions for verification
-2. **Write C equivalents** for target functions
-3. **Run portcheck** to verify byte-for-byte match
+   - ✅ `sub_16FDD` (return 1) and `sub_2CB6E` (return -1) verified byte-for-byte
+   - ❌ `sub_10340` is hand-written ASM (not C) — port as asm or skip
+2. **Write C equivalents** for target functions (filter size ≤ 10, far, nretf=1, C prologues)
+3. **Run portcheck** to verify byte-for-byte match; log verified set in registry
 4. **Build registry** of verified functions
 5. **Port MSC 5.1 libraries** — extend `libscan.py` with MSC 5.1 libs (from `f19re` toolchain)
+6. **Track C setup** — copy gunship's `extract_routines.py`/`replace_routines.py`, build `mzretools` for `mzdiff`
 
 ## Blockers
 

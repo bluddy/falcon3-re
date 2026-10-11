@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
 """
 Portcheck for Falcon3 - compile C routines with MSC 5.1 under DOSBox-X
-and verify against original binary bytes.
+and verify against original binary bytes (from IDA database with fixups applied).
 """
 
 import argparse
+import json
 import os
 import subprocess
 import sys
@@ -15,6 +16,9 @@ from pathlib import Path
 # DOSBox-X and MSC 5.1 paths
 DOSBOX_X = r"C:\dosbox-x\dosbox-x.exe"
 MSC_ROOT = r"C:\Users\yotam\projects\falcon3\dos_compilers\msc5.1"
+
+# Function bytes from IDA database (with fixups/relocations applied)
+FUNCTION_BYTES_PATH = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\function_bytes.json"
 
 # 8.3 filename constraints
 def to_83(name: str) -> str:
@@ -76,6 +80,30 @@ def to_83_cod(name: str) -> str:
     """Convert routine name to 8.3 .cod filename."""
     base = name.upper()[:8]
     return base + ".COD"
+
+
+# Load function bytes from IDA database
+FUNCTION_BYTES = {}
+def load_function_bytes():
+    global FUNCTION_BYTES
+    if os.path.exists(FUNCTION_BYTES_PATH):
+        with open(FUNCTION_BYTES_PATH, "r") as f:
+            FUNCTION_BYTES = json.load(f)
+        print(f"Loaded {len(FUNCTION_BYTES)} function byte records from IDA database")
+    else:
+        print(f"Warning: {FUNCTION_BYTES_PATH} not found, falling back to raw EXE")
+
+load_function_bytes()
+
+
+def get_original_bytes_from_ida(routine_name: str, length: int) -> bytes:
+    """Get original bytes from IDA database for a routine."""
+    if routine_name in FUNCTION_BYTES:
+        data = FUNCTION_BYTES[routine_name]
+        if data.get('bytes'):
+            hex_bytes = data['bytes']
+            return bytes.fromhex(hex_bytes)[:length]
+    return None
 
 
 def get_original_bytes(exe_path: str, segment: int, offset: int, length: int) -> bytes:
@@ -146,7 +174,7 @@ path c:\\rbin;c:\\rbinb
 set INCLUDE=c:\\include
 set LIB=c:\\lib
 set PATH=c:\\rbin;c:\\rbinb
-rbin\\cl /c /Gs /Fc{cod_83[:-4]} /Ic:\\include {c_83} > compile.log
+rbin\\cl /c /AL /Gs /Fc{cod_83[:-4]} /Ic:\\include {c_83} > compile.log
 exit
 """
         config_path = os.path.join(tmpdir, "dosbox_portcheck.conf")
@@ -175,7 +203,14 @@ exit
             return False
         
         actual_length = len(routine_bytes)
-        original_bytes = get_original_bytes("game/FALCONCD.EXE", segment, offset, actual_length)
+        
+        # Try IDA database first (relocated bytes), fall back to raw EXE
+        original_bytes = get_original_bytes_from_ida(routine_name, actual_length)
+        if original_bytes is None:
+            original_bytes = get_original_bytes("game/FALCONCD.EXE", segment, offset, actual_length)
+            print(f"  Using raw EXE bytes (IDA not found)")
+        else:
+            print(f"  Using IDA database bytes")
         
         # Cleanup MSC dir
         for fname in [c_83, f"{routine_name[:8]}.OBJ", "compile.log", cod_83]:
