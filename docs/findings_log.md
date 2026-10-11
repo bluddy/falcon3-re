@@ -110,5 +110,62 @@ Status: CONFIRMED
 (379 lines): modes, campaign structure, pilot abilities, weapons, HUD/REO/DED, ACMI,
 file mentions (TOPTEN, *.mis, replay tapes).
 
+## 2026-10-11 13 - Classification pass over all 839 functions
+Status: CONFIRMED (heuristic, confidence-tagged)
+
+`tools/classify_routines.py` → `analysis/ida_falconcd/classification.json`.
+Counts: **ASM 622 (74%), C 83 (9%), DATA 65 (7%), LEAF 62 (7%), NEARTHUNK 7**.
+- `C` = ENTER prologue with proper encoding (`c8 NNNN 00`, level 0) or frame+LEAVE.
+  65 resident C functions decode as genuine MSC 5.1 code (arg pushes `[bp+6]/[bp+8]`,
+  `59 59` caller cleanup, `[bp-2]/[bp-4]` return-pair stores).
+- Resident C smallest → first real port queue: `sub_1A6D4` (44 B, ea 0x1A6D4),
+  then sub_19CB0 (55 B), sub_17AD4 (61 B)… full list in classification.json.
+
+## 2026-10-11 14 - Frameless LEAF families dissected (capstone, 16-bit)
+Status: CONFIRMED
+
+Disassembled the frameless small functions; four distinct families:
+1. `b8 xx xx cb` — **ret const → C-portable** (sub_16FDD, sub_2CB6E verified).
+2. `2e a0/a1/a2/a3 xx xx cb` — `mov ax, cs:[X]` / `mov cs:[X], al` — **CS-relative
+   near-data accessors** (hand-ASM: small data tables embedded in the code segment;
+   MSC 5.1 large model emits DS-relative, so NOT C-portable as written). ~13 routines.
+3. `2e ff 1e xx xx cb` — `lcall cs:[table]; retf` — **indirect far dispatch stubs**
+   (call through CS function-pointer table, then far-return). ~15 routines.
+4. `e8 01 00 cb` (7×) — `call next_func; retf` — **far→near trampoline**: a far entry
+   stub that near-calls the *following* near function (which ends `c3`), then retf.
+   Layout `[far stub][near function]`. Structural, NOT C. Classified `NEARTHUNK`.
+Also seen: `sub_25741`-family `mov al, cs:[A]; mov cs:[B], al; retf` byte-copy pairs.
+Note: IDA names/boundaries for these are placeholder — rename via registry.
+
+## 2026-10-11 15 - Ground truth validated: IDA bytes = raw EXE + MZ relocations (+0x1000)
+Status: CONFIRMED — hard proof of `function_bytes.json` correctness
+
+Compared all 839 functions' IDA bytes vs raw file at `hdr + (ea - 0x10000)`:
+- **434 identical, 405 differ — and every single difference is a relocated word
+  (+0x1000 = load base paragraph) at a position covered by the 2717-entry MZ
+  relocation table. 815/815 resident functions fully explained, 0 anomalies**
+  (`tools/_validate_relocs.py`; diff dump in `raw_vs_ida_diffs.json`).
+- Consequence: `function_bytes.json` = **runtime image at load base 0x10000**; raw EXE
+  = link-time base 0. For a routine containing far-pointer words, the two differ by
+  exactly +0x1000 at reloc positions.
+- **Portcheck TODO**: when comparing compiled `.cod` bytes for routines containing far
+  calls (e.g. `9a .. .. 64 1f`), normalize: allow word = raw±0x1000 at reloc positions,
+  or compare against raw-EXE + applying relocs. Our two verified routines had no far
+  pointers, so this hasn't bitten yet.
+- **Splice rule**: patch *unrelocated* (file/link-time) bytes into the EXE copy —
+  DOS applies relocations at load. Never splice IDA-relocated bytes.
+
+## 2026-10-11 16 - OVERLAY function bytes are SUSPECT (resident validated, overlays not)
+Status: HYPOTHESIS (strong evidence) — do NOT trust overlay function bytes yet
+
+Sampled overlay-range "C" functions (sub_32D07, sub_385A6, sub_33FA4, sub_37020,
+sub_3141F, sub_67F1A, sub_671C6): all decode as **nonsense** (negative ENTER levels,
+`lidt`, `hlt`, stray `pop ds`) — while resident C functions decode perfectly.
+Two candidate causes: (a) our 1569 RTLink fixups were applied wrongly to some records,
+corrupting bytes in the IDB; (b) IDA created spurious functions in data regions of
+overlay records. Resident 815 are proven fine (Finding 15), so scope is overlays only.
+Next: re-audit `apply_fixups_ida.py` against known-good record, or decode raw tail
+bytes for one record and compare; re-run autoanalysis after fix.
+
 ---
 (append new findings below)

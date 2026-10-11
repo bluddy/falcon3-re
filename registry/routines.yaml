@@ -70,5 +70,16 @@ routines:
 counts:
   tracked: 3
   verified: 2
-  c_candidates_est: null     # TODO: classification pass over all 839
   total_functions: 839
+  classification:            # tools/classify_routines.py → classification.json (finding 13)
+    ASM: 622
+    C: 83                    # 65 resident (good bytes) + 18 overlay (SUSPECT, finding 16)
+    DATA: 65
+    LEAF: 62
+    NEARTHUNK: 7
+  leaf_families:             # finding 14
+    ret_const: 2 verified C-portable
+    cs_data_access: ~13   # 2e a1/a2/a3 → hand-ASM near-data getters
+    lcall_dispatch: ~15   # 2e ff 1e → indirect far dispatch stubs
+    near_thunk: 7         # e8 0100 cb → far stub over following near func
+  portcheck_reloc_note: "routines with far pointers need ±0x1000 word normalization (finding 15)"

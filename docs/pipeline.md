@@ -371,6 +371,7 @@ mzdiff [--map ref.map] [--tmap tgt.map] [--loose] [--verbose] ref.exe[:entry] tg
 | `tools/analyze_all_records.py` | Record/segment-group analysis | A |
 | `tools/rtlink_scan.py` | RTLink directory scanner | A |
 | `tools/portcheck_falcon.py` | Single-routine C verify (Track B driver) | B |
+| `tools/classify_routines.py` | All 839 → C/ASM/DATA/LEAF/NEARTHUNK + port queue | A |
 | `tools/compile_msc51.py` | Standalone MSC 5.1 compile wrapper | B |
 | `tools/libscan.py` | Library signature matching (needs MSC 5.1 libs) | A/B |
 | `tools/mzhdr.py`, `mzparse.py` | MZ header/relocation tools | A |
@@ -412,6 +413,9 @@ Shell notes: Windows PowerShell 5.1 — **no heredocs**; write script files firs
 | DOSBox compile fails, empty log | Config path escaping | Paths in config need `\\` doubled; run with `cwd=repo root` |
 | IDA hangs / conflicts | Interactive IDA holds another DB | Only run `idat.exe` headless; never open falcon in MCP IDA |
 | `fixup` mismatches in survey bytes | Survey era vs fixup-era IDB | Always extract fresh `function_bytes.json` after re-running fixups |
+| Routine has far call (`9a xx xx seg off`), bytes never match | IDA bytes have load-base `+0x1000` in relocated words (finding 15) | Normalize: allow ±0x1000 on words at MZ reloc positions, or compare vs raw-EXE+relocs |
+| Splicing bytes from `function_bytes.json` breaks relocations | Those are *relocated* (runtime) bytes | Splice **unrelocated** file bytes — DOS re-applies relocs at load |
+| Overlay function bytes decode as garbage | Overlay fixups possibly mis-applied (finding 16) | Don't trust overlay function bytes until re-audited; resident 815 proven good |
 
 ---
 
