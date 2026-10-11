@@ -70,13 +70,14 @@ routines:
 counts:
   tracked: 3
   verified: 2
-  total_functions: 956        # 815 resident + 141 overlay (rebuilt IDB, finding 19)
-  classification:            # tools/classify_routines.py → classification.json (findings 13/19)
-    ASM: 680
-    C: 98                    # resident 65 + overlay 33 (ENTER prologues in rebuilt overlays)
-    DATA: 98
-    LEAF: 73
+  total_functions: 1007       # 815 resident + 192 overlay (findings 19-21)
+  classification:            # tools/classify_routines.py → classification.json
+    ASM: 695
+    C: 97                    # DGROUP operands relocated (+0x1000, finding 21)
+    DATA: 129
+    LEAF: 79
     NEARTHUNK: 7
+  overlay_fixups_applied: 25222   # word += 0x1000, byte-guarded (finding 21)
   leaf_families:             # finding 14
     ret_const: 2 verified C-portable
     cs_data_access: ~13   # 2e a1/a2/a3 → hand-ASM near-data getters

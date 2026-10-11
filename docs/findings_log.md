@@ -333,5 +333,49 @@ Pipeline executed (`prep_overlay_placement.py` → `rebuild_overlay_segments.py`
 entries; fixup application (raw bytes now, far ptrs still link-time segs);
 segment display names show numbers (cosmetic).
 
+## 2026-10-11 20 - Cluster-B records located (B0 = 0xFFFA0) — ALL 70 rows placed
+Status: CONFIRMED
+
+`tools/find_cluster_b.py`: scanned for row50's 466-pair fixup run →
+**B0 = 0xFFFA0**: cluster-B window = `0xFFFA0 + w2*16`.
+- rows 50–68: fixups-first at window, **fixup fractions 0.80–0.99** (chain tiles:
+  window deltas exactly `(w2[i+1]-w2[i])*16`, content fits with slack).
+- row69 (flags=0x01 **startup**): code-first at window (disassembles as real code:
+  `mov ax,0x6894; mov es,ax` DGROUP pattern), fixup table at **window+0x60**
+  (frac 1.00), data len = w8×16 = 84,368 B (fits to EOF with 0x1F7 slack).
+- Placement regenerated: **9 real + 59 synthetic + 2 skipped, 1,053,376 B**;
+  row69 owns the 606E arena (real at 0x706E0). Rebuilt IDB: 68 segments.
+- Entries recomputed: **250 (was 184)** → marked → **192 overlay functions**
+  (was 141); nomatch 16→10. Cluster-B rows now contribute (53:8, 54:7, 64:8, 67:3…).
+
+## 2026-10-11 21 - Overlay fixups APPLIED (+0x1000): 25,222 patches, byte-verified
+Status: CONFIRMED (dominant type) / CAVEAT (minor types)
+
+Semantics validated host-side first: every in-block pair (off,seg) locates a word at
+`(seg+0x1000)<<4 + off` whose BEFORE value is a **link-time paragraph** — resident
+link segs (0x1AA3 ×936, 0x0F6C ×2068 ✓ matching the MZ-reloc histogram), overlay
+w0s (0x569F ×550), record-internal paras (0x6894 ×4110, 0x502E ×2322 …) — each
+needing **+0x1000 (L)** to become IDA runtime space (gunship's "runtime = link + L"
+generalizes). Block-membership filter: 25,543 in-block / 677 out.
+
+Applied via `tools/apply_overlay_fixups.py` (per-segment `RTFIX` marker,
+word_before guard): **25,222 applied, 0 silent corruption**:
+- 177 mismatches = **clip-shadow zones**: record A's block overlapped neighbor
+  arena's real segment (e.g. row9 5DFF-block extends past 5E0B arena start), so
+  the IDB content there belongs to the neighbor — skipped by guard (by design).
+- 144 out-of-written-bounds (rel ≥ clipped ida_len) — same cause.
+- Post-apply extraction proves correctness: `mov ax,0x6894`→`0x7894`,
+  `0x502E`→`0x602E`, far-call seg `0x0F6C`→`0x1F6C`, word 0→0x1000 (link seg 0
+  = image base ✓).
+
+**Caveat**: ~14 fixup *types* exist (overlay_fixups.md); +L validated for the
+dominant far-pointer type; a minority of before-words (e.g. 0xC08E, 0x26C0) may
+belong to exotic types — re-verify when per-type semantics are decoded.
+
+**Final state this session**: **1,007 functions (815 resident + 192 overlay)**,
+97 C-class (with relocated DGROUP operands visible: `b8 94 78` etc.), 6 ret-const
+(portable), fixups applied. plan 1.2b: **5/5 core items done** (fixup semantics
+dominant-type caveat noted).
+
 ---
 (append new findings below)

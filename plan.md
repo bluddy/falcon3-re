@@ -26,19 +26,20 @@
 - [ ] Target: >2000 functions total, >200 KB code coverage
 - [ ] Identify overlay subsystems (graphics, sound, sim, UI, etc.)
 
-### 1.2b Overlay ground-truth rebuild (from findings_log 16/17 — HIGHEST overlay priority)
-- [x] Re-derive record schema — **obtained from gunship_2000 discovery_log (finding 17)**
-      + validated on Falcon rows idx7/idx1 (fixup-then-data layout exact)
-- [x] Validate file base per row — **w2×16 confirmed (61/70; scanner 46/70 exact);
-      small-w2 rows = data-first at tail-para base (finding 18)**
-- [x] Runtime placement model solved: block = [(0x1000+w0)<<4, +span×16), same-w0
-      records OVERLAP (transient), thunk word = row index (finding 18)
-- [ ] Re-decode fixup semantics ((off,seg) pairs; seg ∈ [w0, w0+span); apply +L)
-      — validate each patched word before trusting; ~15 rows' exact fixup pos pending
-- [x] **Rebuild IDB overlay segments** — 48 segments / 778,640 B written (finding 19)
-- [x] **Re-run function discovery + classification** — 141 overlay fns (was 22-wrong),
-      total 956; C-class 65→98 (finding 19). Open: cluster-B rows 50–69 file
-      location, 16 unresolvable thunk entries, fixup application (raw bytes now)
+### 1.2b Overlay ground-truth rebuild (findings 16–21) ✅ 5/5 core done
+- [x] Re-derive record schema — gunship_2000 discovery_log (finding 17),
+      validated on Falcon rows idx7/idx1
+- [x] Validate file base per row — w2×16 chain + fixup scanner (finding 18);
+      **cluster-B (rows 50–69) found at B0=0xFFFA0 (finding 20)** — all 70 placed
+- [x] Runtime placement model solved: block=[(0x1000+w0)<<4, +span×16), transient
+      overlap, thunk word = row index (finding 18)
+- [x] **Rebuild IDB overlay segments** — 68 segments / 1,053,376 B (findings 19/20)
+- [x] **Function discovery + classification** — **192 overlay fns (was 22-wrong),
+      1,007 total; C-class 97** (findings 19/20)
+- [x] **Fixup application** — 25,222 × +0x1000 applied, byte-guarded (finding 21);
+      caveat: dominant far-ptr type verified, ~14 types exist (recheck per-type)
+- Open (follow-ups, not blocking): 10 unresolvable thunk entries; clip-shadow
+  fixups (177) skipped by design; exotic fixup types; segment display names
 
 ### 1.3 Thunk → Record Resolution ✅
 - [x] Link thunk table IDs to 18-byte dir `id` to record `off`

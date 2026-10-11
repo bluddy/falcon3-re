@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status
 
-**Last updated**: 2026-10-11 (session 3, same night — see Time Log; always bump + append row)
+**Last updated**: 2026-10-11 (session 4, same night — see Time Log; always bump + append row)
 **Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
 
@@ -15,12 +15,13 @@
 | 2026-10-11 (late night) | same day | **Finding 17: RTLink record schema cracked via gunship_2000** (w2×16 fixup base, flags 0x04/0x01, thunk=index, 4-byte-dir=misread fixup table); loader disassembled (`sub_2AFBD`/`sub_2AC4C`); structures.md + plan 1.2b updated. Open: per-row file base validation → IDB rebuild |
 | 2026-10-11 (deep night) | same day | **Finding 18: runtime placement model SOLVED** — block=[(0x1000+w0)<<4, +span×16), same-w0 overlap (transient), thunk word=row index (63/63 self-consistent), paras containment 250/250; w2×16 base 61/70 + scanner 46/70; small-w2 rows=data-first. plan 1.2b: 2/5 items done. Next: `rebuild_overlay_segments.py` |
 | 2026-10-11 (session 3) | same day | **Finding 19: overlay IDB REBUILT** — 48 segments / 778,640 B (8 real + 40 synthetic; cluster-B 50–69 unplaced), 184 thunk entries marked → **141 overlay functions, 956 total**, C-class 65→98; `function_bytes.json` re-extracted (live); plan 1.2b 4/5 (fixup application + cluster-B remain) |
+| 2026-10-11 (session 4) | same day | **Findings 20+21: cluster-B FOUND (B0=0xFFFA0)** — all 70 rows placed → 68 segments / 1,053,376 B; **fixups applied: 25,222 × +0x1000** byte-guarded; entries 250 → **192 overlay fns, 1,007 total**; C=97 with relocated DGROUP. **plan 1.2b 5/5 core done** |
 
 ## Executive Summary
 
 Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using **RTLink/Plus** overlay linker and **PKWARE DCL** compression. The codebase is **Microsoft C 5.1 (C modules) + hand-written ASM** with **no standard CRT** (not MSC 6.0, not Borland). The EXE is 1.37 MB with a 118 KB resident image and 1.2 MB overlay/asset tail.
 
-**Resident ground truth is PROVEN**: all 815 resident functions = raw EXE + MZ relocations (findings 15). **Overlay IDB rebuilt from scratch** (findings 17–19): RTLink schema + placement model → 48 segments / 778 KB raw bytes → 141 overlay functions marked from thunk entries → **956 functions total**; C-class 98 (incl. 33 new overlay C functions). Remaining overlay work: cluster-B file location (rows 50–69), fixup application, 16 unresolvable entries (plan 1.2b 4/5).
+**Resident ground truth is PROVEN**: all 815 resident functions = raw EXE + MZ relocations (findings 15). **Overlay ground truth COMPLETE (plan 1.2b 5/5)**: RTLink schema + placement model (17/18), IDB rebuilt — all 70 rows placed incl. cluster-B at B0=0xFFFA0 (19/20) — 68 segments / 1.05 MB, **25,222 fixups applied** byte-guarded (21), **192 overlay functions → 1,007 total**, C-class 97 with relocated far pointers. Follow-ups: 10 straggler entries, exotic fixup types, then resume C-port queue.
 
 ## Verified Facts
 
