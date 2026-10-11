@@ -156,3 +156,224 @@ known_data_structs:
     source: "Memory dumps (MEMDUMP_menu.BIN)"
   - name: "CockpitState"
     source: "cockpit_*.BIN dumps"
+
+game_modes:
+  - name: "Instant Action"
+    description: "Novice mode, unlimited fuel/weapons/time, endless waves of enemies"
+    scoring: "Based on air/ground kills, weapon accuracy, multiplied by realism setting"
+    data_files: ["TOPTEN (high scores)"]
+  
+  - name: "Red Flag / Mission Editor"
+    description: "Training ground + scenario editor at Nellis AFB, Nevada"
+    features:
+      - "Mission files (save/load/delete, max 8-char names)"
+      - "Nellis Command: aircraft/ground placement, waypoints, formations"
+      - "Aircraft types: max 6 types per mission (excl. F-16), 4 flights/side"
+      - "Waypoints: up to 8 per flight, with altitude (0-70000 ft AGL), speed (160-1350 kts), action"
+      - "Actions: ESCORT, INTERCEPT, BOMB, LAND, etc."
+      - "Formations: V STACK, H STACK, C STACK, LADDER, WEDGE, VIC, ECHELON"
+      - "Map views: Tactical (Tact 1-3) and Strategic (Strat 1-3)"
+      - "Zoom: 1x to 999x with 3D perspective"
+    data_files: ["*.mis mission files"]
+  
+  - name: "Campaign"
+    description: "Core mode - squadron commander in 3 theaters (Israel, Kuwait, Panama)"
+    theaters: ["Kuwait", "Israel", "Panama"]
+    structure:
+      - "30 pilots per squadron, 18 F-16s initially"
+      - "4 missions/day, pilot fatigue management"
+      - "Supply convoys (C-130) can be intercepted"
+      - "Air Tasking Orders (ATO) from Central Command"
+      - "Victory conditions set by White House per theater"
+    phases:
+      - "Campaign Information (date, time, weather)"
+      - "Mission Planning (route, pilots, weapons)"
+      - "Flying Mission (lead F-16 #1 of Flight #1)"
+      - "Debriefing (stats, medals, records)"
+    pilot_abilities: ["Dogfighting", "Bombing Accuracy", "Flying Ability", "Fatigue"]
+    pilot_status: ["Active", "MIA", "KIA", "Back in X days"]
+    enemy_categories:
+      air:
+        - "Class A Fighters (Su-27, MiG-29, Mirage F1)"
+        - "Class B Fighters (MiG-21, MiG-23, Mirage III)"
+        - "Striker/Bombers (Tu-22, Su-24)"
+        - "Close Air/Attack (Su-25, Tornado)"
+        - "Helicopters (Mi-24, SA 342)"
+        - "Transports/AWACS (IL-76, AN-12)"
+      ground:
+        - "Class A (bunkers, SAM sites)"
+        - "Class B (runways, bridges)"
+        - "Class C (buildings, tanks)"
+        - "Class D (infantry, jeeps, trucks)"
+    data_files: ["Campaign state, squadron records, pilot logs"]
+  
+  - name: "Air Combat School"
+    description: "10 lessons + 2 reviews in Red Flag, teaches F-16 systems"
+    lessons:
+      - "1: Takeoff and Flight"
+      - "2: HUD and G Forces"
+      - "3: View Manipulation"
+      - "4: Landing (ILS, AOA)"
+      - "Review 1: Takeoff-Landing"
+      - "5: Weapons Selection + SAM Radar"
+      - "6: Air-to-Air Weapons Delivery"
+      - "7: Air-to-Ground Weapons Delivery"
+      - "8: Padlock View"
+      - "Review 2: Full A-A/A-G mission"
+    requirement: "Intermediate skill level"
+  
+  - name: "ACMI"
+    description: "Air Combat Maneuvering Instrumentation - replay/analysis"
+    requirement: "EMS memory (1 MB EMS = ~20 min replay)"
+    modes: ["Replay (VCR-like)", "ACMI (3D wireframe tactical)"]
+    avtr: "Airborne Video Tape Recorder - Ctrl+R to record, Ctrl+S to save"
+    features:
+      - "Index markers (Ctrl+R off creates index)"
+      - "Load/Save tapes (L/S/W/Z/u/y/q/t keys)"
+      - "Counter, Timer, Index No, Total, Tape Scale, Replay %"
+      - "Views: 9 standard + Independent (WASD + U/Y)"
+      - "ACMI options: Trails, altitude/speed/heading lines"
+    data_files: ["Replay tapes (*.tap?)"]
+  
+  - name: "Communications (Head-to-Head)"
+    description: "Modem, network (IPX/NetWare), or null-modem serial"
+    modes: ["Duel (free-for-all)", "Head-to-Head Campaign"]
+    setup: "Caller invites players in order, configures connection"
+    requirements: "Network drivers loaded high for NetWare"
+
+weapons_systems:
+  air_to_air:
+    - "AIM-9P/M Sidewinder (SRM HUD mode)"
+    - "AIM-120 AMRAAM (MRM HUD mode)"
+    - "M61A1 20mm Gun (DGFT HUD mode, funnel sight)"
+  air_to_ground:
+    - "AGM-65B/D Maverick (cross hairs lock-on)"
+    - "GBU-15 (cross hairs lock-on)"
+    - "LAU rockets (bombsight)"
+    - "Mk-82/84 iron bombs (CCIP - designate + auto release)"
+    - "CBU cluster bombs (bombsight)"
+  hud_modes:
+    - "SRM: Short Range Missile (AIM-9)"
+    - "MRM: Medium Range Missile (AIM-120)"
+    - "DGFT: Dogfight (Gun)"
+    - "CCIP: Continuously Computed Impact Point"
+    - "ILS: Instrument Landing System"
+    - "STRF: Strafe"
+    - "SAM: Situation Awareness Mode (radar)"
+
+avionics:
+  hud:
+    elements:
+      - "Center Point / Aiming Reticle / Pitch Ladder"
+      - "Heading + Waypoint Caret (>xxx<)"
+      - "Range / Closure Rate / Waypoint Dist / AGL Alt"
+      - "MSL Alt (right) / G-force (top-left) / Airspeed (left)"
+      - "Mach / Armament count + HUD mode code (e.g., SRM, MRM)"
+  reo:
+    modes:
+      - "Air-to-Air: SAD (Situation Awareness Display), waterline, target altitude/heading/airspeed/aspect/closure"
+      - "Air-to-Ground: Maverick/GBU sensor video with cross hairs"
+  threat_warning:
+    - "RWR: diamonds=aircraft, large squares=SAM, small squares=AAM"
+    - "LCK light (radar lock), LNH light (missile launch)"
+  ded:
+    - "Data Entry Display for navigation/weapon programming"
+
+aircraft_flyable:
+  - "F-16A Fighting Falcon (primary)"
+  # Enemy aircraft from manual (not flyable in campaign but in Red Flag)
+  enemy_aircraft:
+    - "MiG-29 Fulcrum (Class A)"
+    - "Su-27 Flanker (Class A)"
+    - "Mirage F1 (Class A)"
+    - "MiG-21 Fishbed (Class B)"
+    - "MiG-23 Flogger (Class B)"
+    - "Mirage III (Class B)"
+    - "Su-24 Fencer (Striker/Bomber)"
+    - "Tu-22 Blinder (Striker/Bomber)"
+    - "Su-25 Frogfoot (Close Air/Attack)"
+    - "Tornado (Close Air/Attack)"
+    - "Mi-24 Hind (Helo)"
+    - "SA 342 Gazelle (Helo)"
+    - "IL-76 Candid (Transport)"
+    - "AN-12 Cub (Transport)"
+
+file_formats_mentioned:
+  - name: "TOPTEN"
+    description: "Instant Action high scores"
+  - name: "*.mis"
+    description: "Red Flag mission files (max 8 chars)"
+  - name: "Replay tapes"
+    description: "ACMI recordings, saved from EMS to disk"
+  - name: "Campaign state"
+    description: "Squadron records, pilot logs, theater progress"
+  - name: "DISPLAY.DAT"
+    description: "Graphics assets (PKWARE compressed)"
+  - name: "ARMSDATA\\ARMSTABL.DAT"
+    description: "Weapons data table"
+  - name: "ARMSDATA\\ARMSmmaa.DAT"
+    description: "Weapon variant data"
+
+configuration_options:
+  - "Skill Level: Novice/Intermediate/Veteran/Ace"
+  - "Enemy Logic Level"
+  - "Realism settings (affects scoring)"
+  - "Redout/Blackout (G-force effects)"
+  - "Altitude Data in EMS"
+  - "Object Data in EMS"
+  - "Sound card: Ad Lib, Sound Blaster, Roland MT-32, LAPC-1"
+  - "Joystick: CH FlightStick Pro, ThrustMaster FCS/WCS, rudder pedals"
+
+keyboard_controls:
+  flight:
+    stick: "Arrow keys or numpad (8/2/4/6)"
+    throttle: "+ / -"
+    afterburner: "/ to engage, < > to scale stages"
+    weapons_select: "e (A-A), B (A-G)"
+    fire: "z"
+    chaff: "Ins (numpad 0)"
+    flares: "Del (numpad .)"
+  views:
+    front: "1 / j / numpad 1"
+    left: "4 / h / numpad 7"
+    right: "6 / u / numpad 9"
+    rear: "5 / y / numpad 3"
+    satellite: "1 / numpad 1"
+    ground: "2 / numpad 2"
+    wingman: "7"
+    track: "9"
+    chase: "0"
+    padlock: "1 (numpad /)"
+  views_zoom_rotate: "1/2 zoom, 3/4 rotate (in external views)"
+  acmi:
+    load: "L"
+    save: "S"
+    play: "V"
+    stop: "B"
+    frame: "N"
+    ff: "M"
+    prev_index: "<"
+    next_index: ">"
+    counter_reset: "C"
+    mode_toggle: "t"
+    view_cycle: "up/down arrows"
+    independent_move: "WASD + U/Y"
+  radar_target: "T"
+  pause: "P"
+  menu: "q"
+
+campaign_structure:
+  days: "Continuous, 4 missions/day"
+  supply: "Periodic C-130 convoys (escort mission)"
+  replacement_pilots: "Arrive periodically"
+  victory: "Theater-specific objectives from War Update"
+  loss: "Squadron destroyed or objectives failed"
+  carryover: "Squadron persists across theaters"
+
+squadron_management:
+  max_pilots: 30
+  initial_f16s: 18
+  pilot_transfer: "Between squadrons via Pilot Transfer screen"
+  comms_pilot: "Select pilot for head-to-head play"
+  sierra_hotel: "Top pilots list by recognition"
+  records: "Squadron totals (missions, sorties, kills, targets, active/kia/mia)"
