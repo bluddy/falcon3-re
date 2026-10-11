@@ -257,7 +257,7 @@ The GS2000 workflow converges on ground truth via two mutually-checking tracks:
 | Registry with per-routine hypotheses | ⚠️ Schema + first entries exist (`registry/routines.yaml`); 3/839 tracked | Keep filling on classify/verify; renames land there + in C files |
 | `mzdiff` verification | ✅ **Reusable, not game-specific** — WSL binary exists (see below) | Only `.map` files are per-EXE (`mzmap` makes them, can ingest IDA `.lst`) |
 | Ghidra decompile → draft C | ❌ Not wired in (Ghidra installed; gunship has `ghidra_dump_to_lst_final.py`) | Add dump script, human-verify via portcheck |
-| Coverage ground truth | ⚠️ 839 resident+22 overlay functions (est. 2000+); DS/EMS views absent | Expand overlay analysis; accept resident-first scope |
+| Coverage ground truth | ⚠️ Resident **proven** (815/815 = raw+relocs, finding 15); **overlay IDB layout wrong** (finding 16) | Rebuild overlay placement from primary anchors (plan 1.2b) |
 
 ### Track 1 without RTLink: splice-in-place
 

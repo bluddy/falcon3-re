@@ -26,6 +26,13 @@
 - [ ] Target: >2000 functions total, >200 KB code coverage
 - [ ] Identify overlay subsystems (graphics, sound, sim, UI, etc.)
 
+### 1.2b Overlay ground-truth rebuild (from findings_log 16 — HIGHEST overlay priority)
+- [ ] Re-derive runtime placement from primary anchors (thunk `ljmp seg:off`, MZ
+      relocs, 4-byte tail dir, 18-byte dir) — do NOT trust old analysis scripts
+- [ ] Rebuild IDB overlay segments from raw tail record bytes at verified placements
+- [ ] Re-decode fixup format from primary data; validate each patched word
+- [ ] Re-run function discovery + classification on rebuilt overlays
+
 ### 1.3 Thunk → Record Resolution ✅
 - [x] Link thunk table IDs to 18-byte dir `id` to record `off`
 - [x] Build call graph: resident → overlay entry points (86 thunks mapped)

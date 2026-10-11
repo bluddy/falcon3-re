@@ -155,17 +155,52 @@ Compared all 839 functions' IDA bytes vs raw file at `hdr + (ea - 0x10000)`:
 - **Splice rule**: patch *unrelocated* (file/link-time) bytes into the EXE copy —
   DOS applies relocations at load. Never splice IDA-relocated bytes.
 
-## 2026-10-11 16 - OVERLAY function bytes are SUSPECT (resident validated, overlays not)
-Status: HYPOTHESIS (strong evidence) — do NOT trust overlay function bytes yet
+## 2026-10-11 16 - Overlay layout in the IDB is WRONG; resident validated good
+Status: CONFIRMED (superseded the "maybe garbage decode" phrasing) — remediation required
 
-Sampled overlay-range "C" functions (sub_32D07, sub_385A6, sub_33FA4, sub_37020,
-sub_3141F, sub_67F1A, sub_671C6): all decode as **nonsense** (negative ENTER levels,
-`lidt`, `hlt`, stray `pop ds`) — while resident C functions decode perfectly.
-Two candidate causes: (a) our 1569 RTLink fixups were applied wrongly to some records,
-corrupting bytes in the IDB; (b) IDA created spurious functions in data regions of
-overlay records. Resident 815 are proven fine (Finding 15), so scope is overlays only.
-Next: re-audit `apply_fixups_ida.py` against known-good record, or decode raw tail
-bytes for one record and compare; re-run autoanalysis after fix.
+**Resident: 815/815 functions = raw EXE + MZ relocations (+0x1000/word at exactly the
+2717 reloc positions). Zero unexplained. Resident bytes are trusted ground truth.**
+
+Overlay investigation (artifacts: `ida_record_bytes.json`, `ida_overlay_dump.json`,
+`tools/dump_record_bytes.py`, `tools/dump_overlay_ranges.py`, `tools/_compare_records.py`):
+
+1. Raw record payloads (from `rtlink_records.json`) DO exist in the IDB — but at
+   **cluster bases 0x2D7B4 / 0x660A4 / 0x2F492** (content = base + tail_off, records in
+   tail-file order), **not** at runtime positions. E.g. record id=56 (seg 0x569F,
+   tail 0x1174) found at 0x67218 = 0x660A4+0x1174, while the runtime formula gives
+   0x67B64 — whose content is unrelated tail bytes.
+2. Content AT runtime-correct positions comes from **wrong tail offsets**: the bytes at
+   id=8's runtime spot (0x73271 = (0x1000+0x5CD9)<<4 + 0x64E1) are actually tail bytes
+   at tail_off 0xD1CD (file 0x2CD1E), not record 8 (tail 0x64E1).
+3. **~30 of 70 record payloads not found anywhere** in the dumped overlay ranges.
+4. The placement formula itself is now suspect: applying it to seg-0x569F record id=32
+   (tail 0xC5DB → 0x72FCB..0x73753) **overlaps** seg-0x5CD9's record id=8
+   (0x73271..0x734DA). Either some group's offsets are group-relative (not
+   tail-absolute), or a 64-bit wrap/group-origin rule exists — must re-derive from
+   primary anchors (thunk `ljmp seg:off` targets + 4-byte tail directory), not from the
+   earlier analysis scripts (game_knowledge ranges were derived from the same pipeline
+   and may share its errors).
+5. Fixup parse output is also suspect: `type_counts` contain values like 49757/64070,
+   and implausible splits (record 55: code 47 B / fixup 1975 B) — the "1569 entries,
+   14 types" decode needs re-derivation from primary data
+   (`docs/overlay_fixups.md` hypotheses are NOT proven).
+6. Old-content clusters also mean previous overlay function discoveries (22 functions,
+   joystick strings placement) may sit at wrong addresses.
+
+**Consequence**: overlay function bytes in `function_bytes.json`/classification are
+untrusted (the 18 "C"-class overlay functions decode as nonsense: negative ENTER
+levels, `lidt`, `hlt` — while the 65 resident C functions decode perfectly).
+
+**Remediation plan (ordered)**:
+1. Re-derive runtime placement from primary anchors: thunk table `ljmp seg:off`
+   (stored segs are pre-relocation; runtime = stored + 0x1000), MZ relocation list,
+   4-byte tail directory (51 entries), 18-byte dir `seg`+`tail_off`.
+2. Rebuild IDB overlay segments: write raw tail record bytes at verified placements,
+   discard all old overlay content, re-run analysis.
+3. Re-decode fixup format from primary bytes; validate each applied word against
+   expected far-pointer semantics before trusting it.
+4. Re-run classification + function discovery on rebuilt overlays; only then trust
+   overlay `function_bytes`.
 
 ---
 (append new findings below)
