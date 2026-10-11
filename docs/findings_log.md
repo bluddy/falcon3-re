@@ -247,5 +247,45 @@ code (e.g. idx53 → file 0x1FDCB = `07 1f cb; push ds; push es;…`). Two candi
 per row; next step = script that validates each row's base via disasm-sanity +
 thunk-target containment, then rebuild the IDB.
 
+## 2026-10-11 18 - Runtime placement model SOLVED (validators + assignment solver)
+Status: CONFIRMED (high confidence) — completes finding 17's open item
+
+Artifacts: `tools/validate_record_bases.py`, `tools/locate_fixup_tables.py`,
+`tools/solve_thunk_assignment.py`, `analysis/.../record_validation.json`,
+`analysis/.../record_fixup_located.json`.
+
+**Runtime model (all 63 thunk words self-consistent under `word == 0-based dir row`):**
+- Record runtime block = `[(0x1000 + w0) << 4, + span(w4) × 16)`.
+- Records sharing the same w0 **all load at the arena base (overlapping)** — transient
+  records are alternate occupants; overlap in the IDB is *expected*, not corruption.
+- Thunk word = 0-based dir row index (word ∈ own block for all 63 words; only-1-word
+  anomalies under packing models vanish under overlap model).
+- Parity check: packing spans in **paras** = 250/250 thunks contained (bytes: 195/55).
+
+**File side:**
+- `fixup_file = w2 × 16` (gunship formula) confirmed: base-scoring A=61/70; fixup
+  scanner located tables ≥80% valid for 46/70 (mostly "fixups-first",
+  data = base + align16(fixups×4)); rows 5/16/28/30 have valid tables at base but
+  later entries' segs outside my OVSET — because fixup segs may be ANY paragraph
+  within `[w0, w0+span)` (GS model), not just record w0s. Extend OVSET = w0+range.
+- Diagnostic dumps prove rows 5/16/28/30/30 tables at base are genuine (16/16 first
+  segs valid).
+- Small-w2 rows (C=0x1D group, w2 < 0x1000): `w2×16` lands in MZ header (impossible);
+  row50's window at `0x1FB50 + w2×16` = **strings data (data-first)** ✓, fixups at
+  `base + span×16` (row50: 0x21BA0, ends 8 B before row51's window ✓✓).
+  For these rows: layout = **data-first**; exact fixup pos needs one more pass
+  (likely seg/word order variant or OVSET extension).
+
+**Also learned:**
+- Loader `sub_2AC4C` seek math: dx = (fixup-size-derived) high bits | [bx+4], cl=[bx+6]
+  → 32-bit file offset — consistent with w2×16 para addressing.
+- word2 minor note: its two targets straddle rows 1–2 under packing; benign under
+  overlap model (both ∈ row1∪row2 blocks... row2 covers both ✓).
+
+**Next (plan 1.2b final step)**: `rebuild_overlay_segments.py` — write each record's
+data bytes into the IDB at its runtime block base (arena base), handle overlaps
+(e.g. keep per-arena record sets separately / annotate), re-run analysis, re-classify.
+Residual: ~15 rows' fixup exact positions (non-blocking for data placement).
+
 ---
 (append new findings below)

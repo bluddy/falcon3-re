@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status
 
-**Last updated**: 2026-10-11 late night (see Time Log below — always bump this + append a row)
+**Last updated**: 2026-10-11 (session 2, same night — see Time Log below; always bump + append row)
 **Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
 
@@ -13,12 +13,13 @@
 | 2026-10-11 (late) | same day | pipeline.md (convergence/mzdiff); knowledge protocol + findings log 1-12; first 2 verified routines |
 | 2026-10-11 (night) | same day | Findings 13-16: classification 839, LEAF families, resident 815/815 validated, **overlay IDB layout proven wrong** + remediation plan 1.2b |
 | 2026-10-11 (late night) | same day | **Finding 17: RTLink record schema cracked via gunship_2000** (w2×16 fixup base, flags 0x04/0x01, thunk=index, 4-byte-dir=misread fixup table); loader disassembled (`sub_2AFBD`/`sub_2AC4C`); structures.md + plan 1.2b updated. Open: per-row file base validation → IDB rebuild |
+| 2026-10-11 (deep night) | same day | **Finding 18: runtime placement model SOLVED** — block=[(0x1000+w0)<<4, +span×16), same-w0 overlap (transient), thunk word=row index (63/63 self-consistent), paras containment 250/250; w2×16 base 61/70 + scanner 46/70; small-w2 rows=data-first. plan 1.2b: 2/5 items done. Next: `rebuild_overlay_segments.py` |
 
 ## Executive Summary
 
 Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using **RTLink/Plus** overlay linker and **PKWARE DCL** compression. The codebase is **Microsoft C 5.1 (C modules) + hand-written ASM** with **no standard CRT** (not MSC 6.0, not Borland). The EXE is 1.37 MB with a 118 KB resident image and 1.2 MB overlay/asset tail.
 
-**Resident ground truth is PROVEN**: all 815 resident functions = raw EXE + MZ relocations (findings 15). **Overlay IDB layout is WRONG** (finding 16) — but the **RTLink record schema is now cracked** (finding 17, via gunship_2000 + validated on 2 Falcon rows): fixup-table-then-data at `w2×16`, flags byte, thunk=index. Remaining before IDB rebuild: per-row file-base validation (plan 1.2b).
+**Resident ground truth is PROVEN**: all 815 resident functions = raw EXE + MZ relocations (findings 15). **Overlay system now understood**: schema (finding 17) + **runtime placement model solved** (finding 18: arena blocks, transient overlap, thunk=row index) — file bases confirmed for 61/70 rows. Old IDB overlay layout remains wrong (finding 16); rebuild script is the next step (plan 1.2b, 2/5 items done).
 
 ## Verified Facts
 

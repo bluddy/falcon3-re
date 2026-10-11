@@ -29,11 +29,13 @@
 ### 1.2b Overlay ground-truth rebuild (from findings_log 16/17 — HIGHEST overlay priority)
 - [x] Re-derive record schema — **obtained from gunship_2000 discovery_log (finding 17)**
       + validated on Falcon rows idx7/idx1 (fixup-then-data layout exact)
-- [ ] Validate file base per row (w2×16 vs tail-relative) for all 70 rows via
-      disasm-sanity + thunk-target containment → `tools/validate_record_bases.py`
-- [ ] Rebuild IDB overlay segments from raw bytes at verified placements
-- [ ] Re-decode fixup semantics ((off,seg) pairs seen; apply +0x1000 like MZ relocs?)
-      — validate each patched word before trusting
+- [x] Validate file base per row — **w2×16 confirmed (61/70; scanner 46/70 exact);
+      small-w2 rows = data-first at tail-para base (finding 18)**
+- [x] Runtime placement model solved: block = [(0x1000+w0)<<4, +span×16), same-w0
+      records OVERLAP (transient), thunk word = row index (finding 18)
+- [ ] Rebuild IDB overlay segments from raw bytes at verified placements (`rebuild_overlay_segments.py`)
+- [ ] Re-decode fixup semantics ((off,seg) pairs; seg ∈ [w0, w0+span); apply +L)
+      — validate each patched word before trusting; ~15 rows' exact fixup pos pending
 - [ ] Re-run function discovery + classification on rebuilt overlays
 
 ### 1.3 Thunk → Record Resolution ✅

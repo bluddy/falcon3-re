@@ -114,8 +114,14 @@ struct rtlink_rec {          // 70 entries at file 0x1E24F (ids 2..71 = index+2)
   uint16_t w7;               // id (2..71); loader indexes table by 0-based idx: ax*18+0xC1F
   uint16_t w8;               // data size (== w4 for most)
 };
-// record layout: [fixup table w5 dwords][align16][data]
+// record layout: [fixup table w5 dwords][align16][data]  (data-first for small-w2 rows: finding 18)
 // data_start = w2*16 + align16(w5*4)
+```
+Runtime placement (finding 18, CONFIRMED):
+```
+block = [(0x1000 + w0) << 4, + w4*16)      // transient records sharing w0 OVERLAP
+thunk word = 0-based dir row index         // loader loads row[word], jumps to ljmp target
+fixup seg field ∈ [w0, w0 + w4) (any paragraph in the record's block)
 ```
 Thunk table: 10B = `E8 disp16; EA off seg; dw index` — index = 0-based dir row
 (verified: rows 6,7,8 → seg 5CD9 targets etc.). Thunk ljmp operands are NOT MZ-relocated
