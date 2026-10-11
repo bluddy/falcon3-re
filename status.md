@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status
 
-**Last updated**: 2026-10-11 (session 4, same night — see Time Log; always bump + append row)
+**Last updated**: 2026-10-11 (session 5, same night — see Time Log; always bump + append row)
 **Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
 
@@ -16,6 +16,7 @@
 | 2026-10-11 (deep night) | same day | **Finding 18: runtime placement model SOLVED** — block=[(0x1000+w0)<<4, +span×16), same-w0 overlap (transient), thunk word=row index (63/63 self-consistent), paras containment 250/250; w2×16 base 61/70 + scanner 46/70; small-w2 rows=data-first. plan 1.2b: 2/5 items done. Next: `rebuild_overlay_segments.py` |
 | 2026-10-11 (session 3) | same day | **Finding 19: overlay IDB REBUILT** — 48 segments / 778,640 B (8 real + 40 synthetic; cluster-B 50–69 unplaced), 184 thunk entries marked → **141 overlay functions, 956 total**, C-class 65→98; `function_bytes.json` re-extracted (live); plan 1.2b 4/5 (fixup application + cluster-B remain) |
 | 2026-10-11 (session 4) | same day | **Findings 20+21: cluster-B FOUND (B0=0xFFFA0)** — all 70 rows placed → 68 segments / 1,053,376 B; **fixups applied: 25,222 × +0x1000** byte-guarded; entries 250 → **192 overlay fns, 1,007 total**; C=97 with relocated DGROUP. **plan 1.2b 5/5 core done** |
+| 2026-10-11 (session 5) | same day | **Finding 22: COMPILER REVISED — Borland C++ 2.0 `bcc -c -ml -1 -O`** (user installed; enter/leave = BC; MSC 5.1/6.0 re-tested → no enter, DISPROVEN for C); **sub_1A6D4 44B MATCH** end-to-end via new portcheck `--cc bcc` + `obj_extract.py`; toolchain.md rewritten. C-port queue resumed |
 
 ## Executive Summary
 
@@ -29,9 +30,11 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 |------|--------|----------|
 | Linker | ✅ RTLink/Plus | Strings, 18-byte directory, thunk table |
 | Compression | ✅ PKWARE DCL | Strings, `PK\x03\x04` in tail |
-| CRT | ❌ MSC 6.0 | No `B430CD21`, no error strings |
-| CRT | ❌ Borland | No "Borland" strings in main EXEs |
-| Compiler | ✅ **MSC 5.1 (C) + hand-ASM** | **30 `ENTER`, 84 `558BEC`, 0 `83EC`** |
+| CRT | ❌ MSC 6.0 | No `B430CD21` — but inconclusive: no CRT embedded at all (finding 22) |
+| CRT | ❌ Borland CRT | No "Borland" strings — same fallacy (strings come from absent CRT) |
+| Compiler (C) | ✅ **Borland C++ 2.0** (`bcc -c -ml -1 -O`) | **sub_1A6D4 44B byte-exact match**; enter/leave/imm0/or-si codegen (finding 22) |
+| ~~Compiler (C)~~ | ~~MSC 5.1~~ | **DISPROVEN for C** — version-verified 5.10 + 6.00ax emit no enter under any flag (finding 22) |
+| Compiler (ASM) | ✅ Hand-written | 84 × `558BEC` with variable register saves (unaffected) |
 | Code model | ✅ Far/large | 468/839 far, retf, stack args `[BP+6]` |
 | Overlays | ✅ RTLink | 70 records, 9 segment groups, thunk dispatch |
 | RESETALL.EXE | ✅ Borland C++ 1991 | Copyright string (garbled) |

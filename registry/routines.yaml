@@ -26,6 +26,10 @@
 version: 1
 ground_truth: analysis/ida_falconcd/function_bytes.json
 source_of_names: analysis/ida_falconcd/survey.json
+compiler:
+  c_functions: "Borland C++ 2.0: bcc -c -ml -1 -O (finding 22, byte-proven on sub_1A6D4)"
+  asm: hand-written
+  msc51: "installed, DISPROVEN for C; --cc msc comparison only"
 
 routines:
   - ea: 0x16FDD
@@ -67,9 +71,22 @@ routines:
     notes: "d1 e3 2e 89 87 25 00 cb = sal bx,1; mov cs:[bx+25h],ax; retf — hand ASM. Finding 09."
     updated: "2026-10-11"
 
+  - ea: 0x1A6D4
+    seg: 0x1A6D
+    ofs: 0x4
+    size: 44
+    far: true
+    class: C
+    hypothesis: "long_accumulate"      # acc += a, n times; returns 32-bit (dx:ax)
+    port_status: verified
+    port_file: src/sub_1A6D4.c
+    verified: MATCH
+    notes: "44B byte-exact with bcc -c -ml -1 -O (finding 22). ENTER/LEAVE/imm0/or-si. First real C port."
+    updated: "2026-10-11"
+
 counts:
-  tracked: 3
-  verified: 2
+  tracked: 4
+  verified: 3
   total_functions: 1007       # 815 resident + 192 overlay (findings 19-21)
   classification:            # tools/classify_routines.py → classification.json
     ASM: 695

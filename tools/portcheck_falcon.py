@@ -16,6 +16,10 @@ from pathlib import Path
 # DOSBox-X and MSC 5.1 paths
 DOSBOX_X = r"C:\dosbox-x\dosbox-x.exe"
 MSC_ROOT = r"C:\Users\yotam\projects\falcon3\dos_compilers\msc5.1"
+# Borland C++ 2.0 (finding 22: the ACTUAL C compiler for Falcon's C functions;
+# recipe: bcc -c -ml -1 -O  -> enter/leave codegen)
+BCC_ROOT = r"C:\Users\yotam\projects\falcon3\dos_compilers\bcc2.0"
+BCC_DEFAULT_FLAGS = "-c -ml -1 -O"
 
 # Function bytes from IDA database (with fixups/relocations applied)
 FUNCTION_BYTES_PATH = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\function_bytes.json"
@@ -135,8 +139,114 @@ def to_83(name: str) -> str:
     ext = ext[:4]  # including dot
     return f"{base}{ext}"
 
-def verify_routine(routine_name: str, c_source: str, 
-                   segment: int, offset: int, length: int, src_basename: str) -> bool:
+
+def _compile_bcc_extract(routine_name: str, c_source: str, cflags: str) -> bytes:
+    """Compile with Borland C++ 2.0 (finding 22 recipe) and extract routine bytes.
+
+    bcc -c -ml -1 -O <probe\file.c>  -> <file>.OBJ (root or probe dir)
+    bytes parsed from the OBJ via obj_extract (PUBDEF+LEDATA).
+    """
+    from obj_extract import extract
+
+    base83 = to_83(routine_name[:8] + ".c")
+    probe = os.path.join(BCC_ROOT, "probe")
+    os.makedirs(probe, exist_ok=True)
+    src_path = os.path.join(probe, base83)
+    with open(src_path, "w", encoding="ascii") as f:
+        f.write(c_source)
+
+    obj_stem = os.path.splitext(base83)[0]
+    # clean stale objs (case-insensitive)
+    for d in (BCC_ROOT, probe):
+        for f in os.listdir(d):
+            if f.lower().endswith(".obj") and os.path.splitext(f)[0].lower() == obj_stem.lower():
+                os.remove(os.path.join(d, f))
+
+    flags = (BCC_DEFAULT_FLAGS + " " + cflags).strip()
+    with tempfile.TemporaryDirectory() as tmpdir:
+        config_content = f"""[sdl]
+fullscreen=false
+[dosbox]
+machine=svga_s3
+memsize=16
+[cpu]
+core=normal
+cputype=386
+cycles=max
+[mixer]
+nosound=true
+[autoexec]
+mount c {BCC_ROOT.replace('\\', '\\\\')}
+c:
+BIN\\BCC {flags} probe\\{base83} > compile.log 2>&1
+exit
+"""
+        config_path = os.path.join(tmpdir, "dosbox_bcc.conf")
+        with open(config_path, "w", encoding="ascii") as f:
+            f.write(config_content)
+        success, _ = run_dosbox(config_path)
+
+    obj_path = None
+    for d in (BCC_ROOT, probe):
+        for f in os.listdir(d):
+            if f.lower().endswith(".obj") and os.path.splitext(f)[0].lower() == obj_stem.lower():
+                obj_path = os.path.join(d, f)
+    if not obj_path:
+        log = os.path.join(BCC_ROOT, "compile.log")
+        if os.path.exists(log):
+            print("BCC compile log:")
+            print(open(log, encoding="cp437", errors="ignore").read())
+        print("BCC: no OBJ produced for", routine_name)
+        return b""
+
+    try:
+        data = extract(obj_path, routine_name)
+    finally:
+        os.remove(obj_path)
+        if os.path.exists(src_path):
+            os.remove(src_path)
+        log = os.path.join(BCC_ROOT, "compile.log")
+        if os.path.exists(log):
+            os.remove(log)
+    return data
+
+
+def _compare_with_original(routine_name: str, routine_bytes: bytes,
+                           segment: int, offset: int, how: str) -> bool:
+    ida_hex = get_original_bytes_from_ida(routine_name, 1 << 30)
+    if ida_hex is not None:
+        expected = ida_hex
+        print("  Using IDA database bytes")
+    else:
+        expected = get_original_bytes("game/FALCONCD.EXE", segment, offset,
+                                      len(routine_bytes))
+        print("  Using raw EXE bytes (IDA not found)")
+
+    if routine_bytes == expected:
+        print(f"OK {routine_name}: MATCH ({len(routine_bytes)} bytes, {how})")
+        return True
+    # tolerate segment-alignment padding after the routine (BCC .obj segment end)
+    if (len(routine_bytes) > len(expected)
+            and routine_bytes[:len(expected)] == expected
+            and all(b in (0x00, 0x90, 0xCC) for b in routine_bytes[len(expected):])):
+        print(f"OK {routine_name}: MATCH ({len(expected)} bytes + "
+              f"{len(routine_bytes) - len(expected)} pad, {how})")
+        return True
+    print(f"FAIL {routine_name}: MISMATCH ({how})")
+    print(f"  Expected ({len(expected)}): {expected.hex()}")
+    print(f"  Got      ({len(routine_bytes)}): {routine_bytes.hex()}")
+    n = min(len(expected), len(routine_bytes))
+    for i in range(n):
+        if expected[i] != routine_bytes[i]:
+            print(f"  first diff @{i}: expected {expected[i]:02x} got {routine_bytes[i]:02x}")
+            break
+    else:
+        print("  prefix equal, length differs")
+    return False
+
+def verify_routine(routine_name: str, c_source: str,
+                   segment: int, offset: int, length: int, src_basename: str,
+                   cflags: str = "", cc: str = "bcc") -> bool:
     """Compile C routine and verify against original binary."""
     
     msc_dir = os.path.join(os.getcwd(), r"dos_compilers\msc5.1")
@@ -148,7 +258,14 @@ def verify_routine(routine_name: str, c_source: str,
     # .cod filename is based on the 8.3 source filename
     cod_base = os.path.splitext(c_83)[0].upper()
     cod_83 = f"{cod_base}.COD"
-    
+
+    if cc == "bcc":
+        routine_bytes = _compile_bcc_extract(routine_name, c_source, cflags)
+        if not routine_bytes:
+            return False
+        return _compare_with_original(routine_name, routine_bytes,
+                                      segment, offset, "BCC 2.0")
+
     with tempfile.TemporaryDirectory() as tmpdir:
         # Write C source with 8.3 name in MSC dir
         c_path = os.path.join(msc_dir, c_83)
@@ -174,7 +291,7 @@ path c:\\rbin;c:\\rbinb
 set INCLUDE=c:\\include
 set LIB=c:\\lib
 set PATH=c:\\rbin;c:\\rbinb
-rbin\\cl /c /AL /Gs /Fc{cod_83[:-4]} /Ic:\\include {c_83} > compile.log
+rbin\\cl /c /AL /Gs {cflags} /Fc{cod_83[:-4]} /Ic:\\include {c_83} > compile.log
 exit
 """
         config_path = os.path.join(tmpdir, "dosbox_portcheck.conf")
@@ -235,19 +352,25 @@ def main():
     parser.add_argument("--segment", type=lambda x: int(x, 0), required=True, help="Segment (hex)")
     parser.add_argument("--offset", type=lambda x: int(x, 0), required=True, help="Offset (hex)")
     parser.add_argument("--length", type=lambda x: int(x, 0), help="Length (optional)")
-    
+    parser.add_argument("--cflags", default="", help="Extra compiler flags")
+    parser.add_argument("--cc", choices=["bcc", "msc"], default="bcc",
+                        help="compiler: bcc = Borland C++ 2.0 -c -ml -1 -O (default, finding 22); msc = MSC 5.1 /AL")
+
     args = parser.parse_args()
-    
+
     with open(args.source, "r") as f:
         c_source = f.read()
-    
+
     # Use routine name as the base for 8.3 filenames
     src_basename = args.routine
-    
+
     length = args.length if args.length else 0
-    
-    ok = verify_routine(args.routine, c_source, 
-                       args.segment, args.offset, length, src_basename)
+
+    if args.cflags:
+        print(f"cflags: {args.cflags}")
+    ok = verify_routine(args.routine, c_source,
+                       args.segment, args.offset, length, src_basename,
+                       cflags=args.cflags, cc=args.cc)
     
     sys.exit(0 if ok else 1)
 

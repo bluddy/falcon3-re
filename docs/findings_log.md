@@ -377,5 +377,39 @@ belong to exotic types — re-verify when per-type semantics are decoded.
 (portable), fixups applied. plan 1.2b: **5/5 core items done** (fixup semantics
 dominant-type caveat noted).
 
+## 2026-10-11 22 - COMPILER REVISED: Borland C++ 2.0 (NOT MSC 5.1) — first 44B port verified
+Status: CONFIRMED — supersedes the "MSC 5.1 for C modules" conclusion (finding 01)
+
+**The C functions were compiled with Borland C++ 2.0**, recipe: **`bcc -c -ml -1 -O`**
+(large model / 80186 target / optimize). User installed BC 2.0 in
+`dos_compilers/bcc2.0`; Google-confirmed that BC was the enter/lead emitter —
+empirically proven byte-for-byte:
+
+- **`sub_1A6D4` (44 B): MATCH, all 44 bytes** via `tools/obj_extract.py` on BCC's
+  native `.OBJ` (PUBDEF 0x90 + LEDATA 0xA0, TASM dialect) and via new portcheck
+  `--cc bcc` mode end-to-end. C source: `src/sub_1A6D4.c`
+  (`long far f(unsigned a, unsigned n){ long acc=0; while(n){acc+=a;n--;} return acc; }`)
+- Codegen fingerprints now explained: `enter 4,0` / `leave;retf` / `mov word [bp-N],0`
+  (imm-zero stores) / `adc hi,0` (unsigned) / `or si,si` zero-tests / SI-held loop
+  counter — **all Borland**, all reproduced by `-ml -1`.
+- **`-1` (80186) is mandatory for ENTER** — without it BC emits
+  `push bp; mov bp,sp; sub sp,N` (v1/v6 probes). `-2` also works. Without `-O`
+  BC emits a redundant `jmp short $+2` before `pop si` (the `eb 00` we hit even
+  in native OBJs); **`-O` elides it** → byte-exact.
+- MSC 5.1 (our rbin, C 5.10 Feb 1988 — version banner verified) and MSC 6.00ax
+  (gunship's) both emit `push bp` and `mov sp,bp; pop bp`, never enter/leave,
+  under every flag tried (grid: /O /Os /Ot /Ox /Od /Oa /Og /Oe /Oa combos).
+  → **toolchain.md's "ENTER = MSC 5.1 hallmark" was WRONG** (findings_log 01
+  partially DISPROVEN: C modules = BC++ 2.0; hand-ASM conclusion unaffected;
+  the 2 earlier trivial leaf matches (`b8 xx cb`) are compiler-agnostic).
+- "No Borland strings in main EXEs" was never probative: Falcon embeds no CRT
+  (strings come from CRT) — classic reasoning error, now documented.
+- Infrastructure added: `tools/obj_extract.py` (Borland OBJ byte extraction),
+  portcheck `--cc bcc|msc` (default **bcc**; flags `-c -ml -1 -O`), `--cflags`
+  passthrough, `_compare_with_original` (pad-tolerant).
+
+**Consequences**: the 97 ENTER/C-class functions are now portable with BCC;
+MSC 5.1 remains installed only for comparison runs (`--cc msc`).
+
 ---
 (append new findings below)

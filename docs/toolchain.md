@@ -1,30 +1,44 @@
 # Falcon3 Toolchain & Build Evidence
 
-## Compiler
+## Compiler — REVISED 2026-10-11 (finding 22): **Borland C++ 2.0**
 
-**Microsoft C 5.1 for C modules + hand-written ASM**. Evidence:
+**C functions: Borland C++ 2.0** (`dos_compilers/bcc2.0`), exact recipe:
+```
+bcc -c -ml -1 -O        (large model / 80186 / optimize)
+```
+**Proof**: `sub_1A6D4` (44 B) compiles byte-for-byte identical to the IDB
+(`tools/obj_extract.py` on native BCC OBJ; portcheck `--cc bcc` green end-to-end).
 
-### Ruled out
-- **MSC 6.0**: No `B430CD21` signature, no CRT error strings, libscan found no matches.
-- **Borland C++**: No Borland strings in main EXEs (only RESETALL.EXE has Borland 1991 strings).
-- **Watcom**: No Watcom signatures detected.
+### BC codegen fingerprints (present in original, reproduced by BC only)
+- `enter size,0` prologue + `leave; retf` epilogue — **requires `-1`/`-2`** (80186+);
+  without `-1` BC emits `push bp; mov bp,sp; sub sp,N`
+- `mov word ptr [bp-N],0` (imm-zero) for `long = 0` (MSC: xor+stores)
+- `adc word [bp-N],0` for unsigned long accumulation (MSC: `cwd` sign-extend)
+- `or reg,reg` for zero tests; SI-held loop counters (params not written back)
+- **`-O` required**: without it BC emits redundant `jmp short $+2` (`eb 00`)
+  before epilogue pops (seen in native OBJs)
 
-### Confirmed: Microsoft C 5.1 for C modules
-- **30 functions use `ENTER` instruction (opcode C8)** with various stack sizes (0x02-0x5A) — **Microsoft C 5.1 hallmark**.
-- `ENTER` stack sizes observed: 0x02, 0x04, 0x06, 0x08, 0x0A, 0x0C, 0x0A, 0x0E, 0x10, 0x14, 0x16, 0x1C, 0x38, 0x3C, 0x54, 0x5A — matches MSC 5.1 codegen.
+### Ruled out (re-tested with version-verified binaries)
+- **Microsoft C 5.10** (Feb 1988 banner verified in `rbin\CL.EXE`): no flag
+  combination (`/O /Os /Ot /Ox /Od /Oa /Og /Oe` + combos) emits enter/leave;
+  prologues always `push bp`, epilogues `mov sp,bp; pop bp`.
+- **Microsoft C 6.00ax** (gunship's install): same — `push bp; mov bp,sp; sub sp,N`.
+- **MSC 6.0 CRT signature** `B4 30 CD 21`: irrelevant — Falcon embeds **no CRT**
+  (startup is custom ASM), so CRT-derived negatives prove nothing.
+- **"No Borland strings in main EXEs"**: same fallacy — strings came from the CRT
+  Falcon doesn't link. (RESETALL.EXE separately = Borland C++ 1991.)
+- Watcom: no signatures detected (still low-priority).
 
-### Hand-written ASM majority
-- **84 functions use manual `55 8B EC` (push bp; mov bp, sp)** with **highly variable register save order** — hand-tuned ASM.
-- First register saved after `55 8B EC`: SI (66), `mov ax` (37), `mov` (7), DS (7), `sub` (7), `push` (5), etc. — no consistent compiler pattern.
-- **0 functions use `55 8B EC 83 EC`** (standard C `sub sp, XX` for locals) — no standard C stack frames.
-- 170 prologues with segment overrides (CS/DS/ES/SS) — heavy far-pointer/segment manipulation.
+### What remains true from the old analysis
+- **Hand-written ASM majority**: 84 functions with manual `55 8B EC` and highly
+  variable register-save order (findings 13: ASM class ≈ 695 incl. data).
+- Far/large model, stack args `[BP+6]`, caller-cleanup — unchanged observations.
+- The 2 initially verified leaves (`b8 xx cb`) are compiler-agnostic bytes.
 
-### Calling convention
-- **Far model**: 466/817 functions far (`retf`), 488 `retf` instructions.
-- **C modules**: Use `ENTER` / `LEAVE` / `RETF` (4 functions with `LEAVE;RETF`).
-- **ASM modules**: Manual `push bp; mov bp, sp` + custom register save + `RETF`/`RET`.
-- **No standard C stack frames**: **0 functions** use `sub sp, XX` (`83 EC`) for locals.
-- Parameter passing: Stack-based `[BP+6]` for far calls, registers for ASM.
+### Prior (DISPROVEN) claim — kept for history
+~~**Microsoft C 5.1 for C modules**: 30 `ENTER` prologues = "MSC 5.1 hallmark".~~
+ENTER turned out to be **Borland's** with `-1`; see findings_log 22. MSC 5.1
+remains installed (`dos_compilers/msc5.1`) for `--cc msc` comparison runs only.
 
 ### CRT / Startup
 - **No standard CRT**: No MSC 6.0 signature `B4 30 CD 21`, no CRT error strings.
