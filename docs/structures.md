@@ -91,16 +91,35 @@ C=FFFF  seg=606E  1  0x3AC0..0x4FFE   5,438
 
 Total record data: ~68 KB. Tail is 1.2 MB → remaining data is asset packages (PKWARE compressed `DISPLAY.DAT`, etc.).
 
-## 4-Byte Directory (Tail Start)
+## 4-Byte Directory (Tail Start) — REINTERPRETED, see finding 17
 
-At tail + 0x10 = file `0x1FB61`. 51 entries of `uint16_t off, uint16_t seg`:
+~~At tail + 0x10 = file `0x1FB61`. 51 entries of `uint16_t off, uint16_t seg`:~~
+**This "directory" is actually record idx1's FIXUP TABLE** at file 0x1FB60
+(w2=0x1F.B6 × 16): 50 dword (off,seg) pairs targeting seg 0x1CF6/0x1D0D/0x1D31 —
+content identical to what we listed here. Record idx1's *data* starts at
+0x1FC30 = filename string table (`MYTEMP`, `DISPLAY.DAT`, `FALCON3.`).
+(True runtime locations of records = finding 17; file base per-row validation open.)
+
+## RTLink Record Header (9 words / 18 bytes) — from gunship_2000 (finding 17)
+
+```c
+struct rtlink_rec {          // 70 entries at file 0x1E24F (ids 2..71 = index+2)
+  uint16_t w0;               // load base (LINK para) — runtime = w0 + 0x1000
+  uint16_t w1;               // filename ptr (constant 0x12ED region)
+  uint16_t w2;               // file para of fixup table (file_off = w2*16) [base per-row OPEN]
+  uint16_t w3;               // low: 0x0400; HIGH BYTE = flags: 0x04 transient, 0x01 startup
+  uint16_t w4;               // allocated span
+  uint16_t w5;               // fixup count in DWORDS  => fixup bytes = w5*4
+  uint16_t w6;               // 0xFFFF
+  uint16_t w7;               // id (2..71); loader indexes table by 0-based idx: ax*18+0xC1F
+  uint16_t w8;               // data size (== w4 for most)
+};
+// record layout: [fixup table w5 dwords][align16][data]
+// data_start = w2*16 + align16(w5*4)
 ```
-0: off=0x010B seg=0x1CF6
-1: off=0x0110 seg=0x1CF6
-2: off=0x00D2 seg=0x1CF6
-...
-```
-All segs ∈ {0x1CF6, 0x1D0D, 0x1D31}. Likely initial overlay load list for the three "core" overlay segments.
+Thunk table: 10B = `E8 disp16; EA off seg; dw index` — index = 0-based dir row
+(verified: rows 6,7,8 → seg 5CD9 targets etc.). Thunk ljmp operands are NOT MZ-relocated
+(the loader patches them; runtime para = stored + 0x1000).
 
 ## Record Layout in Tail
 

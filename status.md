@@ -1,14 +1,24 @@
 # Falcon3 Decompilation Status
 
-**Date**: 2026-10-10
-**Branch**: main (initial)
+**Last updated**: 2026-10-11 late night (see Time Log below — always bump this + append a row)
+**Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
+
+## Time Log
+
+| Date/time | Elapsed since prev | What changed |
+|-----------|--------------------|--------------|
+| 2026-10-10 (evening) | — | Initial status: fresh IDA snapshot, toolchain ID, RTLink decode |
+| 2026-10-11 (day) | ~1 day | Portcheck pipeline; manual → game_knowledge.yaml; function_bytes ground truth |
+| 2026-10-11 (late) | same day | pipeline.md (convergence/mzdiff); knowledge protocol + findings log 1-12; first 2 verified routines |
+| 2026-10-11 (night) | same day | Findings 13-16: classification 839, LEAF families, resident 815/815 validated, **overlay IDB layout proven wrong** + remediation plan 1.2b |
+| 2026-10-11 (late night) | same day | **Finding 17: RTLink record schema cracked via gunship_2000** (w2×16 fixup base, flags 0x04/0x01, thunk=index, 4-byte-dir=misread fixup table); loader disassembled (`sub_2AFBD`/`sub_2AC4C`); structures.md + plan 1.2b updated. Open: per-row file base validation → IDB rebuild |
 
 ## Executive Summary
 
 Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using **RTLink/Plus** overlay linker and **PKWARE DCL** compression. The codebase is **Microsoft C 5.1 (C modules) + hand-written ASM** with **no standard CRT** (not MSC 6.0, not Borland). The EXE is 1.37 MB with a 118 KB resident image and 1.2 MB overlay/asset tail.
 
-**Fresh IDA Pro 9.1 snapshot created** — 817 functions, 82 KB code, 9 overlay groups mapped at correct runtime addresses using 16-bit segment bases (allowing CS/DS overlap). This replaces prior DOSBox-dump IDBs which had limited code coverage.
+**Resident ground truth is PROVEN**: all 815 resident functions = raw EXE + MZ relocations (findings 15). **Overlay IDB layout is WRONG** (finding 16) — but the **RTLink record schema is now cracked** (finding 17, via gunship_2000 + validated on 2 Falcon rows): fixup-table-then-data at `w2×16`, flags byte, thunk=index. Remaining before IDB rebuild: per-row file-base validation (plan 1.2b).
 
 ## Verified Facts
 

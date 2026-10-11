@@ -26,11 +26,14 @@
 - [ ] Target: >2000 functions total, >200 KB code coverage
 - [ ] Identify overlay subsystems (graphics, sound, sim, UI, etc.)
 
-### 1.2b Overlay ground-truth rebuild (from findings_log 16 — HIGHEST overlay priority)
-- [ ] Re-derive runtime placement from primary anchors (thunk `ljmp seg:off`, MZ
-      relocs, 4-byte tail dir, 18-byte dir) — do NOT trust old analysis scripts
-- [ ] Rebuild IDB overlay segments from raw tail record bytes at verified placements
-- [ ] Re-decode fixup format from primary data; validate each patched word
+### 1.2b Overlay ground-truth rebuild (from findings_log 16/17 — HIGHEST overlay priority)
+- [x] Re-derive record schema — **obtained from gunship_2000 discovery_log (finding 17)**
+      + validated on Falcon rows idx7/idx1 (fixup-then-data layout exact)
+- [ ] Validate file base per row (w2×16 vs tail-relative) for all 70 rows via
+      disasm-sanity + thunk-target containment → `tools/validate_record_bases.py`
+- [ ] Rebuild IDB overlay segments from raw bytes at verified placements
+- [ ] Re-decode fixup semantics ((off,seg) pairs seen; apply +0x1000 like MZ relocs?)
+      — validate each patched word before trusting
 - [ ] Re-run function discovery + classification on rebuilt overlays
 
 ### 1.3 Thunk → Record Resolution ✅

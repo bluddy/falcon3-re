@@ -202,5 +202,50 @@ levels, `lidt`, `hlt` — while the 65 resident C functions decode perfectly).
 4. Re-run classification + function discovery on rebuilt overlays; only then trust
    overlay `function_bytes`.
 
+## 2026-10-11 17 - RTLink record schema obtained from gunship_2000 + Falcon validation
+Status: CONFIRMED (schema) / PARTIAL (per-row file base) — the breakthrough of this session
+
+**Source**: `gunship_2000/logs/discovery_log.md` decoded the 9-word/18-byte RTLink
+record header on GS.GS2 (same linker family). Schema:
+
+| word | offset | meaning |
+|------|--------|---------|
+| w0 | +0 | load base (LINK para; runtime = w0 + 0x1000) |
+| w1 | +2 | filename ptr (GS: 17D1:0DB8 → "GS.EXE"; Falcon: constant 0x12ED = "FALCONCD.EXE" region) |
+| w2 | +4 | file para of fixup table (**w2 × 16 = file offset of fixup table**) |
+| w3 | +6 | high byte = **flags**: 0x04 = transient, 0x01 = startup-load |
+| w4 | +8 | allocated span |
+| w5 | +10 | fixup count (DWORDS = (off,seg) pairs) |
+| w6 | +12 | 0xFFFF |
+| w7 | +14 | id (Falcon: 2..71) |
+| w8 | +16 | actual data size (A2) |
+| | | data_start = w2×16 + align16(w5×4) (fixups first, then data) |
+
+**Falcon validations**:
+- idx7 (w2=0x661C, B=43): fixup@0x661C0 = (off,seg) pairs all seg 0x5CD9 ✓,
+  data@0x66270 = **sane code** (`push ds; push ax; mov ax,5BE0h; ... retf`, followed
+  by `call 0x66270`) — layout formula **exact**.
+- idx1 (w2=0x1FB6, B=50): fixup@0x1FB60 = pairs (010B,1CF6),(0110,1CF6),(00D2,1CF6)…
+  = **exactly the previously-misdecoded "4-byte tail directory"** (structures.md entry
+  was reading record idx1's fixup table 1 byte off!). data@0x1FC30 = string table
+  (`\0MYTEMP\0DISPLAY.DAT\0FALCON3.\0`) — runtime filename records ✓ (matches GS w1).
+- Flags decode: w3-high = 0x04 (transient) for rows 0..68; **row 69 has 0x01 =
+  startup-load** (its @6 = 0x0101 — the earlier "anomaly" explained).
+- Loader code: `sub_2AFBD` = thunk entry (reads record word at retaddr+5),
+  `sub_2AC4C(ax)` = load/evict worker, dir lookup `0x2B040` = **ax × 18 + 0xC1F**
+  (table at CS:0xC1F, count at CS:0xC19, resident IDA ~0x2B64F).
+- **Thunk word field = 0-based table index** (values 1..68 fit rows 0..69; field-based
+  id interpretation failed cross-checks): word6,7,8 → rows 6,7,8 (seg 5CD9 ✓ targets
+  5CD9 ✓), word9,10→rows seg 5DFF ✓, word17,18→5E8F ✓, word19..26→5F6C ✓.
+- Old `rtlink_records.json` field labels (A/B/C as sizes) misread: B = fixup dword
+  count, A = span (semantics of A vs A2 still open — GS says paras, Falcon gaps don't
+  yet fit — see open question).
+
+**OPEN**: small w2 values (0x6D..0x39B0, the C=0x1D group) make w2×16 land inside the
+MZ header — for those rows the earlier tail-relative read (0x1FB51 + w2) yielded sane
+code (e.g. idx53 → file 0x1FDCB = `07 1f cb; push ds; push es;…`). Two candidate bases
+per row; next step = script that validates each row's base via disasm-sanity +
+thunk-target containment, then rebuild the IDB.
+
 ---
 (append new findings below)

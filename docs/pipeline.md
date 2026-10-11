@@ -31,6 +31,7 @@ current state.
 | 4 | `docs/structures.md` | Byte-level struct layouts of anything in files/memory | A format is decoded (even partially — mark what's unverified) |
 | 5 | C sources in `src/` | **Renames + comments**: meaningful function/variable/global names, `// why` comments | As part of porting; when a hypothesis renames a symbol, rename here too |
 | 6 | ASM listings/transcriptions | **Comments** annotating hand-ASM routines (intent, register roles) | As routines are transcribed/classified |
+| 7 | `status.md` | **Bump `Last updated` + append a Time Log row every status change** (so staleness is measurable) | Whenever project state changes meaningfully |
 
 Rules of thumb:
 - **Hypothesis made** → registry entry (`class`/`hypothesis`) + findings log line.
