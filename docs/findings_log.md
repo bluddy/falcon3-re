@@ -497,5 +497,32 @@ BC 2.0 codegen rules learned (via two deliberate iterations):
 Verified: **7 routines** (2 trivial leaves + sub_1A6D4 + sub_17A85 + sub_17AD4
 + sub_197EA + sub_19CB0), 382 verified bytes total.
 
+## 2026-10-11 26 - Keyboard unit: 10/10 routines byte-exact (570B) + IDA-missed function found
+Status: CONFIRMED
+
+The contiguous block **0x19CB0-0x19EF9 is ONE translation unit** (verified via call
+displacement arithmetic): `sub_19CB0 | CE7 | D25 | D65 | DA6 | DE6 | E27 | E3B | E7B |
+EBA` — sizes 55+62+64+65+64+65+20+64+63+63 = 570 B, all calling `sub_19CB0`
+intra-module (`push cs; call rel16`). Ported as `src/kb_unit_19CB0.c`;
+**portcheck: 10/10 MATCH**.
+
+Semantics (registry hypotheses): keyboard-state records — 14-byte structs in DGROUP
+(base index at `idx_0020` @ DGROUP:0x20, records at link-off 0x22), fields +0x22..+0x25
+read/written through DGROUP far externs (fixup-masked). `sub_19CB0` = far-ptr field
+reader feeding all of them; `sub_19E27` = `sub_19DE6(a,b,0)` clear-wrapper.
+
+**New codegen rule (spill-forcer)**: `int r = f();` decl-init keeps r in **SI**;
+`if ((r = f()) == -1)` assignment-in-condition **spills r to the stack** (enter grows).
+Original uses BOTH styles across sibling functions — match per function:
+CE7=decl-init(SI), all others=assign-in-cond(stack). Local declaration order picks
+the [bp-2] slot (first-declared wins).
+
+**IDA-missed function**: 65 B at 0x19D65 (between D25 and DA6) was absent from IDA's
+function list — found because the unit's contiguous call-displacement arithmetic
+required it. Registered in the IDB (`add_func` + name, saved), re-extracted:
+function_bytes 1007 → **1008**. Worth a future sweep for other gap-hidden functions.
+
+**Totals: 16 verified routines / 846 bytes** (up from 7/382).
+
 ---
 (append new findings below)

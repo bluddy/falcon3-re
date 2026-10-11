@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status
 
-**Last updated**: 2026-10-11 (session 7, same night — see Time Log; always bump + append row)
+**Last updated**: 2026-10-11 (session 8, same night — see Time Log; always bump + append row)
 **Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
 
@@ -19,6 +19,7 @@
 | 2026-10-11 (session 5) | same day | **Finding 22: COMPILER REVISED — Borland C++ 2.0 `bcc -c -ml -1 -O`** (user installed; enter/leave = BC; MSC 5.1/6.0 re-tested → no enter, DISPROVEN for C); **sub_1A6D4 44B MATCH** end-to-end via new portcheck `--cc bcc` + `obj_extract.py`; toolchain.md rewritten. C-port queue resumed |
 | 2026-10-11 (session 6) | same day | **Finding 23: chained same-module port** — sub_17A85 (79B, 4 fixups masked) + sub_17AD4 (61B incl. adjacency-dependent `call 0xFF7B`) **BOTH MATCH**; BC large-model rules decoded (char* = far!; `(char near*)` → DS conversion; decl-order of `int i=0`; one-expr flags). Fixup masking + ±0x1000 reloc normalization now in portcheck compare. **Verified: 5 routines** |
 | 2026-10-11 (session 7) | same day | **Findings 24+25: sub_197EA (69B switch) + sub_19CB0 (55B) MATCH** — case table recovered from EXE via CS-base jump-target matching (CS=0x180F0); union far-ptr arithmetic + decl-order slot rules. **Verified: 7 routines / 382 bytes** |
+| 2026-10-11 (session 8) | same day | **Finding 26: keyboard unit 10/10 MATCH (570B)** — contiguous 0x19CB0-0x19EF9 single translation unit ported (`kb_unit_19CB0.c`); assign-in-cond spill rule; **IDA-missed function sub_19D65 discovered via gap arithmetic + registered in IDB** (1008 fns); **totals: 16 verified / 846 bytes** |
 
 ## Executive Summary
 
@@ -64,12 +65,14 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
   (fixup masking + ±0x1000 reloc normalization + trailing-data tolerance)
 - MSC 5.1 path retained (`--cc msc`) for comparison only
 
-**Verified routines (7):**
-- `sub_16FDD` (`return 1`, 4B) ✅ · `sub_2CB6E` (`return -1`, 4B) ✅
+**Verified routines (16 / 846 bytes):**
+- Leaves: `sub_16FDD` (1), `sub_2CB6E` (-1) ✅
 - `sub_1A6D4` (44B long accumulate) ✅ — finding 22
-- `sub_17A85` (79B, chained same-module) ✅ · `sub_17AD4` (61B, call 0xFF7B) ✅ — finding 23
+- `sub_17A85` (79B) + `sub_17AD4` (61B) chained unit ✅ — finding 23
 - `sub_197EA` (69B switch; case table recovered from EXE) ✅ — finding 24
-- `sub_19CB0` (55B far-ptr field reader; union in-place +12) ✅ — finding 25
+- `sub_19CB0` (55B far-ptr field reader) ✅ — finding 25
+- **Keyboard unit 10/10**: `19CB0, 19CE7, 19D25, 19D65(missed-by-IDA), 19DA6, 19DE6,
+  19E27, 19E3B, 19E7B, 19EBA` (570B, one .c) ✅ — finding 26
 
 **Pipeline doc**: `docs/pipeline.md` (modeled on gunship_2000's PIPELINE.md; adds
 Track C plan using `mzdiff` from `f19re/mzretools`, plus all naming/near-far gotchas).

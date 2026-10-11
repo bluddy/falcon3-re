@@ -136,10 +136,127 @@ routines:
     notes: "55B, 4 fixup bytes masked (lcall 0994:0D22). union in-place far-ptr +12; 'int w' declared first for slot order (finding 25)."
     updated: "2026-10-11"
 
+- ea: 0x19CE7
+    seg: 0x19CE
+    ofs: 0x7
+    size: 62
+    far: true
+    class: C
+    hypothesis: "kb_field_get_22"       # w = rec_0022[idx_0020*14 + r]
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit (finding 26); r in SI via decl-init style"
+    updated: "2026-10-11"
+
+  - ea: 0x19D25
+    seg: 0x19D2
+    ofs: 0x5
+    size: 64
+    far: true
+    class: C
+    hypothesis: "kb_field_get_23"
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit; spilled r needs 'if ((r=f())==-1)' assign-in-cond (finding 26)"
+    updated: "2026-10-11"
+
+  - ea: 0x19D65
+    seg: 0x19D6
+    ofs: 0x5
+    size: 65
+    far: true
+    class: C
+    hypothesis: "kb_field_set_23"       # rec_0023[...] = c; return 1/0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "IDA-MISSED function - discovered by unit gap analysis, added to IDB (finding 26). compared vs raw EXE (pre-registration)"
+    updated: "2026-10-11"
+
+  - ea: 0x19DA6
+    seg: 0x19DA
+    ofs: 0x6
+    size: 64
+    far: true
+    class: C
+    hypothesis: "kb_field_get_24"
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit; w-first decl for slot order"
+    updated: "2026-10-11"
+
+  - ea: 0x19DE6
+    seg: 0x19DE
+    ofs: 0x6
+    size: 65
+    far: true
+    class: C
+    hypothesis: "kb_field_set_24"
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit"
+    updated: "2026-10-11"
+
+  - ea: 0x19E27
+    seg: 0x19E2
+    ofs: 0x7
+    size: 20
+    far: true
+    class: C
+    hypothesis: "kb_clear_24"           # return sub_19DE6(a,b,0)
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "manual push-bp frame (no locals); 0 fixups"
+    updated: "2026-10-11"
+
+  - ea: 0x19E3B
+    seg: 0x19E3
+    ofs: 0xB
+    size: 64
+    far: true
+    class: C
+    hypothesis: "kb_field_get_25"
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit"
+    updated: "2026-10-11"
+
+  - ea: 0x19E7B
+    seg: 0x19E7
+    ofs: 0xB
+    size: 63
+    far: true
+    class: C
+    hypothesis: "kb_field_set_25_1"     # rec_0025[...] = 1
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit"
+    updated: "2026-10-11"
+
+  - ea: 0x19EBA
+    seg: 0x19EB
+    ofs: 0xA
+    size: 63
+    far: true
+    class: C
+    hypothesis: "kb_field_set_25_0"     # rec_0025[...] = 0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "keyboard unit"
+    updated: "2026-10-11"
+
 counts:
-  tracked: 8
-  verified: 7
-  total_functions: 1007       # 815 resident + 192 overlay (findings 19-21)
+  tracked: 17
+  verified: 16
+  total_functions: 1008       # 815 resident + 192 overlay (findings 19-21)
   classification:            # tools/classify_routines.py → classification.json
     ASM: 695
     C: 97                    # DGROUP operands relocated (+0x1000, finding 21)
