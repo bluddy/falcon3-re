@@ -209,36 +209,116 @@ Internal flow:
 
 ---
 
-## Track C: Hybrid Rebuild + mzdiff (PLANNED — adapted from gunship_2000)
+## Convergence Model (adapted from gunship_2000)
 
-Goal: replace verified C routines **inside** a full assembled image and diff against
-the original with `mzdiff` (from `f19re/mzretools`), which compares instruction streams
-with segment maps rather than raw bytes — tolerant of relocations.
+The GS2000 workflow converges on ground truth via two mutually-checking tracks:
+
+- **Track 1** = end-to-end byte-identical rebuild → *prevents veering from ground truth*.
+- **Track 2** = incremental C ports → each verified port + registry rename records a
+  learning/hypothesis; over time the C files and registry become the knowledge store,
+  and Track 1 keeps re-proving nothing drifted.
+
+### Falcon3 gap analysis vs this model
+
+| GS2000 element | Falcon3 status | Action |
+|---|---|---|
+| Track 1: relink original binary | ❌ **No relink — original linker is RTLink/Plus, no binary available** | Use **splice-in-place** Track 1 (below) |
+| Full asm skeleton (IDA .lst → UASM) | ❌ We have `function_bytes.json`/TSV, no instruction listing, no data/code boundary map | IDA listing export + `lst2asm`-style generator (adapt gunship scripts) |
+| Track 2 batch driver | ⚠️ `portcheck_falcon.py` verifies one routine at a time | Add batch driver + pass/fail convergence metric |
+| Registry with per-routine hypotheses | ❌ `game_knowledge.yaml` is game trivia; no per-routine entries | Add per-routine schema: `{ea, ida_name, class, hypothesis, port_status, port_file}` |
+| `mzdiff` verification | ✅ **Reusable, not game-specific** — WSL binary exists (see below) | Only `.map` files are per-EXE (`mzmap` makes them, can ingest IDA `.lst`) |
+| Ghidra decompile → draft C | ❌ Not wired in (Ghidra installed; gunship has `ghidra_dump_to_lst_final.py`) | Add dump script, human-verify via portcheck |
+| Coverage ground truth | ⚠️ 839 resident+22 overlay functions (est. 2000+); DS/EMS views absent | Expand overlay analysis; accept resident-first scope |
+
+### Track 1 without RTLink: splice-in-place
+
+We cannot relink with RTLink/Plus, but Track 1's purpose — *prove we haven't veered* —
+is achievable without it:
+
+1. Original FALCONCD.EXE is an **immutable scaffold** (MZ header, 2717 relocations,
+   RTLink directory, 1.2 MB overlay tail all verbatim).
+2. Overwrite a routine's file-offset range (`hdr + (ea - 0x10000)`, length = IDA size)
+   with our reassembled/recompiled bytes.
+3. Require **byte-identity at every patched site** (portcheck already enforces this).
+4. Verify the whole image with `mzdiff` (instruction-stream diff + `mzmap` maps).
+5. Functional smoke test in DOSBox-X.
+
+Because portcheck guarantees identical bytes, all MZ relocations and the RTLink tail
+remain valid for free — no RTLink needed. As verified routines accumulate, the
+"regenerated" fraction of the resident image grows toward 100% while the container
+stays ground truth. This is GS2000's assurance inverted: *original-around-us* instead
+of *rebuild-matching-it*.
+
+---
+
+## How the Code Interprets Embedded Data (Parser RE)
+
+The EXE is not just code: runtime code parses structures **stored inside the EXE
+itself** (and external DAT files). Reversing these parsers is a first-class goal —
+each one (a) unlocks a data format for the registry, (b) is itself a self-contained,
+byte-verifiable porting target, and (c) constrains how a rebuild must lay data out.
+
+Known/anticipated embedded-data parsers, priority order:
+
+| Data interpreted by code | Where it lives | Status |
+|---|---|---|
+| RTLink overlay directory (70 × 18 B) | resident image `0x1AA3:0x0C1F` (file `0x1E24F`) | ✅ struct decoded statically; **loader code at `0x1AA3:0x0590` not yet read** |
+| RTLink thunk dispatch (86 × 10 B) | `0x1AA3:0x157F` | ✅ struct decoded; dispatch code is the gateway resident→overlay |
+| Fixup tables (1569 entries, 14 types) | per-record tail | ✅ decoded statically; the applier routine proves the format |
+| Tail 4-byte directory (51 entries) | file `0x1FB61` | ⚠️ parsed; runtime use unverified |
+| PKWARE DCL streams | `PK\x03\x04` in tail + Huffman tables in code | ⚠️ library identified; stream framing per-asset not mapped |
+| External DAT formats (`ARMSTABL.DAT`, `DISPLAY.DAT`, mission/save/ACMI files) | `game\` dir (already unpacked) | ❌ parsers in EXE not yet identified — find via string xrefs |
+| MZ header + relocation table | file head | ✅ decoded (`mzhdr.py`); DOS applies at load |
+
+Method: locate the parse code (xref from the loader/string), document the format in
+`docs/structures.md`, then treat the parser as a normal Track 2 porting candidate.
+
+---
+
+## Track C: Splice Rebuild + mzdiff (PLANNED — adapted from gunship_2000)
+
+Goal: replace verified C routines **inside** the original MZ image (splice-in-place,
+see "Convergence Model" above) and prove no drift with `mzdiff`, which compares
+instruction streams via segment maps rather than raw bytes — relocation-tolerant.
+
+### mzdiff availability (verified 2026-10-11) — NOT game-specific
+
+`mzdiff`/`mzmap` are **generic MZ tools** from `f19re/mzretools`; only the `.map`
+files are per-EXECUTABLE (`mzmap` generates them and can ingest an IDA `.lst` directly).
+No build needed — reuse the existing WSL binary (GS2000's doc says `build/mzdiff`;
+actual location is **`debug/`**):
+
+```
+/mnt/c/Users/yotam/projects/gunship_2000/tools/f19re/mzretools/debug/mzdiff   # v1.0.20 ✅ runs
+/mnt/c/Users/yotam/projects/gunship_2000/tools/f19re/mzretools/debug/mzmap    # v1.0.20 ✅ runs
+```
+
+Usage:
+```
+mzmap FALCONCD.EXE falconcd.map            # once per EXE (or feed IDA .lst)
+mzdiff [--map ref.map] [--tmap tgt.map] [--loose] [--verbose] ref.exe[:entry] tgt.exe[:entry]
+```
 
 ### Components to build
 
-1. **IDA listing export** → `.lst` (or reuse `functions.tsv` + `function_bytes.json`)
+1. **IDA listing export** → `.lst` (mzmap can use it directly as a map; also feeds
+   the asm-skeleton generator below)
 2. **`extract_routines.py`** (borrow gunship): parse MSC `.cod` → per-routine `.asm` + auto-`EXTRN` for far calls
 3. **`replace_routines.py`** (borrow gunship): take IDA-generated asm skeleton, swap target routines with C-generated asm
-4. **Assemble**: UASM (`uasm -0 -q`) → `.obj`
-   - *Difference from gunship*: Falcon's original linker is **RTLink/Plus, not LINK.EXE**.
-     No RTLink binary is available, so a faithful final link is **not possible yet**.
-     Options: (a) link resident-only image with LINK 3.65 + compare code sections with
-     `mzdiff --loose`; (b) locate/replace routines in-place in the MZ image and run
-     `mzdiff` on the image before/after patch.
-5. **`mzdiff`**: build `f19re/mzretools` (MSVC or WSL) once, reuse gunship's build if present:
-   - WSL: `/mnt/c/Users/yotam/projects/gunship_2000/tools/f19re/mzretools/build/mzdiff`
-   - or build our own copy: `dos_compilers` sibling `tools/mzretools/` + `./build.sh`
-   - Usage: `mzdiff [options] reference.exe[:entrypoint] target.exe[:entrypoint]`
-     with `--loose --sdiff N --map <map>` for instruction-level comparison
-6. **`mzmap`**: generate segment maps (`.tgt` / `.map`) for both EXEs so `mzdiff` can map
-   segment aliasing (CS/DS overlap is common in Falcon — overlay segments share paragraphs)
+4. **Splice driver** (`tools/splice.py`, new): write verified routine bytes into a
+   copy of FALCONCD.EXE at `hdr + (ea - 0x10000)`; refuse if bytes differ
+5. **Assemble**: UASM (`uasm -0 -q`) for transcribed hand-ASM routines → extract bytes → splice
+   - Note: no RTLink binary ⇒ a faithful final *link* is impossible; splice sidesteps it
+     (header/relocs/tail verbatim, code byte-identical ⇒ structurally valid by construction)
+6. **`mzdiff` whole-image check**: `mzdiff falconcd.map original.exe splice.exe` —
+   instruction-stream equality across the resident image
 
 ### Why not just byte-compare the whole EXE?
 - RTLink overlay records + fixups live in a 1.2 MB tail whose full structure is not yet
   decoded (68 KB of records known, rest likely PKWARE assets)
 - Relocations (2717 MZ + 1569 RTLink) make naive whole-file diffs useless
 - `mzdiff` normalizes via segment maps → compares the *code stream*
+- Splice guard: byte-identity at each patch site ⇒ relocs/tail stay valid automatically
 
 ### Verification levels
 
@@ -267,7 +347,8 @@ with segment maps rather than raw bytes — tolerant of relocations.
 | `tools/mzhdr.py`, `mzparse.py` | MZ header/relocation tools | A |
 | `scripts/extract_routines.py` | **TODO (copy gunship)** `.cod` → `.asm` + EXTRN | C |
 | `scripts/replace_routines.py` | **TODO (copy gunship)** hybrid asm builder | C |
-| `mzdiff` (mzretools) | Instruction-stream diff with segment maps | C |
+| `tools/splice.py` | **TODO** patch verified bytes into EXE copy (Track 1) | C |
+| `mzdiff` / `mzmap` (WSL, shared w/ gunship) | Instruction-stream diff / segment map gen — generic, not game-specific | C |
 
 ---
 
@@ -281,7 +362,7 @@ with segment maps rather than raw bytes — tolerant of relocations.
 | MSC 5.1 root | `C:\Users\yotam\projects\falcon3\dos_compilers\msc5.1` (RBIN\CL.EXE) |
 | Python venv | `C:\Users\yotam\projects\falcon3\venv\Scripts\python.exe` |
 | Ground truth bytes | `analysis\ida_falconcd\function_bytes.json` |
-| mzretools source | `C:\Users\yotam\projects\f19re\mzretools` (+ gunship copy with build/) |
+| mzretools | Shared WSL binaries: `/mnt/c/.../gunship_2000/tools/f19re/mzretools/debug/{mzdiff,mzmap}` v1.0.20 (source: `C:\Users\yotam\projects\f19re\mzretools`) |
 | Reference projects | `C:\Users\yotam\projects\f19re` (MSC 5.1 rebuild), `C:\Users\yotam\projects\gunship_2000` (RTLink + registry + this doc's template) |
 
 Shell notes: Windows PowerShell 5.1 — **no heredocs**; write script files first.
@@ -312,8 +393,9 @@ Shell notes: Windows PowerShell 5.1 — **no heredocs**; write script files firs
    no thunk — verify constants/globals getters next (IDB names via `function_bytes.json`).
 3. **Classify hand-ASM vs C**: `prologues.json`/`epilogues.json` already extracted;
    C-compiled candidates are the ones with `ENTER` or consistent frames.
-4. **Copy gunship's `extract_routines.py` / `replace_routines.py`** into `scripts/`
-   and build `mzretools` (or symlink gunship's) to start Track C.
+4. **Track C setup**: copy gunship's `extract_routines.py`/`replace_routines.py` into
+   `scripts/`; write `tools/splice.py`; `mzdiff`/`mzmap` already available in WSL at
+   `gunship_2000/tools/f19re/mzretools/debug/` — just run `mzmap FALCONCD.EXE falconcd.map` once.
 5. **Extend `libscan.py`** with MSC 5.1 libraries from the `f19re` toolchain.
 6. **Registry**: once routines verify, record them in `registry/FALCONCD.EXE.yaml`
    (name, ea, bytes hash, port status) per gunship's registry YAML format.

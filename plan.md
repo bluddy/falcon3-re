@@ -60,8 +60,18 @@
 6. **Sound/Music** — `FALCON3.SMP`, AdLib/SB drivers
 7. **Asset Pipeline** — PKWARE decompression, DAT parsing
 
+### 3.1b Embedded-data parser RE (see docs/pipeline.md "Parser RE")
+- [ ] Read the RTLink loader/dispatch code (proves our static struct decodings)
+- [ ] Find DAT-format parsers via string xrefs (`ARMSTABL.DAT`, `DISPLAY.DAT`, mission/save/ACMI)
+- [ ] Document each format in `docs/structures.md` → each parser is a porting target
+
+### 3.1c Routine classification (drives all porting)
+- [ ] Classify all 839 functions: C-compiled (`ENTER`/consistent frames) vs hand-ASM vs data
+- [ ] C-compiled set = Track B port targets; hand-ASM set = transcribe to `.asm`
+
 ### 3.2 Registry YAML (per `gunship_2000/registry/`)
-- [ ] `game_knowledge.yaml` — memory map, segment purposes, key variables
+- [x] `game_knowledge.yaml` — game systems from manual (modes, weapons, controls)
+- [ ] **Per-routine schema** (convergence ledger): `{ea, ida_name, class, hypothesis, port_status, port_file}` — renames land in registry AND C files
 - [ ] Per-file: `FALCONCD.EXE.yaml`, `HORNETCD.EXE.yaml`, `MIGCD.EXE.yaml`
 - [ ] Per-overlay: `OVL_1E10.yaml`, `OVL_569F.yaml`, etc.
 - [ ] Data structures: `entity_t`, `vehicle_t`, `mission_t`, `cockpit_t`, etc.
@@ -71,28 +81,39 @@
 - [ ] Identify global variables (DS-relative, EMS/XMS handles)
 - [ ] Document segment aliasing (CS/DS/EMS/XMS views)
 
-## Phase 4: C Porting & Rebuild (4-6 weeks)
+## Phase 4: C Porting & Splice Rebuild (4-6 weeks)
 
-### 4.1 Function Porting Loop
+Convergence model (see `docs/pipeline.md` "Convergence Model"):
+**Track B** (per-routine C ports, registry renames accumulate knowledge) ↔
+**Track 1** (splice verified bytes into original EXE + `mzdiff` proves no drift).
+Note: no RTLink binary ⇒ classic relink impossible; splice-in-place replaces it.
+
+### 4.0 Ground-truth infrastructure
+- [ ] IDA full-listing export (`.lst`) → feeds `mzmap` + asm-skeleton generator
+- [ ] Routine classification pass (3.1c) → port set vs transcribe set
+- [ ] Batch portcheck driver (`scripts/build_track2.py`-style) + pass/fail metric
+- [ ] Wire Ghidra 16-bit decompile (adapt gunship's `ghidra_dump_to_lst_final.py`) for draft C
+
+### 4.1 Function porting loop
 For each major function:
-1. Decompile (Hex-Rays not available for 16-bit → manual / Ghidra)
-2. Write C equivalent matching stack frame / calling convention
-3. Compile with target compiler, diff object (`mzdiff`)
-4. Verify in DOSBox
+1. Draft C (Ghidra decompile + manual reading); ASM routines transcribed instead
+2. Compile with MSC 5.1 (`/AL`, far) → portcheck byte-verify
+3. Record in registry: hypothesis name + status; rename in C file
+4. Splice into EXE copy (`tools/splice.py`), run `mzdiff` (WSL, shared with gunship)
 
 ### 4.2 Assembly Stubs
 - Keep hand-written ASM for: interrupt handlers, BIOS/DPMI calls, tight loops
 - Document calling convention for C↔ASM boundary
 
-### 4.3 Linker Script
-- Reproduce RTLink `.LNK` / response file
-- Segment ordering, overlay groups, STACK/HEAP sizes
-- PKWARE compression step for assets
+### 4.3 Splice verification (Track 1)
+- [ ] `tools/splice.py`: patch verified routine bytes at `hdr + (ea - 0x10000)`
+      (guard: refuse if existing bytes ≠ IDA ground truth)
+- [ ] `mzmap FALCONCD.EXE` → map once; `mzdiff` original vs spliced after each batch
+- [ ] Functional test in DOSBox: menus, instant action, joystick
 
-### 4.4 Full Rebuild Verification
-- `mzdiff` original vs rebuilt EXE
-- Binary equivalence for code sections (allow timestamps/debug info diff)
-- Functional test in DOSBox: missions, menus, sim, joystick
+### 4.4 Full coverage milestone
+- Byte-identical splice covering 100% of resident code segments;
+  RTLink header/tail remain verbatim from original (= ground truth by construction)
 
 ## Phase 5: Variants & Extras (1 week)
 
@@ -109,7 +130,7 @@ For each major function:
 | M2: MSC 5.1 env + libs | Week 3 | Confirmed build env + libscan matches |
 | M3: Registry v1 | Week 5 | `registry/*.yaml`, `game_knowledge.yaml` |
 | M4: First C port | Week 7 | One subsystem ported, verified |
-| M5: Full rebuild | Week 12 | Byte-equivalent EXE (modulo timestamps) |
+| M5: Splice convergence | Week 12 | 100% resident code splice-verified + `mzdiff` clean + runs in DOSBox |
 
 ## Risks & Mitigations
 
