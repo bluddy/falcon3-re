@@ -99,18 +99,27 @@ def get_original_bytes(exe_path: str, segment: int, offset: int, length: int) ->
         return f.read(length)
 
 
+def to_83(name: str) -> str:
+    """Convert filename to 8.3 format."""
+    base, ext = os.path.splitext(name)
+    # Truncate base to 8 chars max, ext to 3 chars max
+    base = base[:8]
+    ext = ext[:4]  # including dot
+    return f"{base}{ext}"
+
 def verify_routine(routine_name: str, c_source: str, 
                    segment: int, offset: int, length: int, src_basename: str) -> bool:
     """Compile C routine and verify against original binary."""
     
     msc_dir = os.path.join(os.getcwd(), r"dos_compilers\msc5.1")
     
-    # 8.3 names - .c file named after routine, .cod file named after source file
-    c_83 = f"{routine_name[:8]}.c"
-    # .cod filename is based on source file basename
-    # For hello.c -> HELLO.COD
-    src_basename_83 = os.path.splitext(src_basename)[0].upper()[:8]
-    cod_83 = f"{src_basename_83}.COD"
+    # 8.3 names - .c file named after routine (truncated to 8.3)
+    c_83 = to_83(f"{routine_name[:8]}.c")
+    # .c file will be truncated to 8.3 when written to MSC dir
+    c_83 = to_83(c_83)
+    # .cod filename is based on the 8.3 source filename
+    cod_base = os.path.splitext(c_83)[0].upper()
+    cod_83 = f"{cod_base}.COD"
     
     with tempfile.TemporaryDirectory() as tmpdir:
         # Write C source with 8.3 name in MSC dir
@@ -157,9 +166,8 @@ exit
             return False
         
         # Parse routine bytes from .cod
-        # The .cod file is created in the src directory (d: drive)
-        src_dir = os.path.join(os.getcwd(), "src")
-        cod_path = os.path.join(src_dir, cod_83)
+        # The .cod file is created in the MSC directory (c: drive)
+        cod_path = os.path.join(msc_dir, cod_83)
         routine_bytes = parse_cod_listing(cod_path, routine_name)
         
         if not routine_bytes:
@@ -169,15 +177,11 @@ exit
         actual_length = len(routine_bytes)
         original_bytes = get_original_bytes("game/FALCONCD.EXE", segment, offset, actual_length)
         
-        # Cleanup MSC dir and src dir
-        for fname in [c_83, f"{routine_name[:8]}.OBJ", "compile.log"]:
+        # Cleanup MSC dir
+        for fname in [c_83, f"{routine_name[:8]}.OBJ", "compile.log", cod_83]:
             fpath = os.path.join(msc_dir, fname)
             if os.path.exists(fpath):
                 os.remove(fpath)
-        # Cleanup .cod file in src dir
-        cod_fpath = os.path.join(os.getcwd(), "src", cod_83)
-        if os.path.exists(cod_fpath):
-            os.remove(cod_fpath)
         
         if routine_bytes[:actual_length] == original_bytes:
             print(f"OK {routine_name}: MATCH ({len(routine_bytes)} bytes)")
@@ -202,13 +206,13 @@ def main():
     with open(args.source, "r") as f:
         c_source = f.read()
     
-    # Extract source basename for .cod filename
-    src_basename = os.path.splitext(os.path.basename(args.source))[0]
+    # Use routine name as the base for 8.3 filenames
+    src_basename = args.routine
     
     length = args.length if args.length else 0
     
     ok = verify_routine(args.routine, c_source, 
-                       args.segment, args.offset, args.length, src_basename)
+                       args.segment, args.offset, length, src_basename)
     
     sys.exit(0 if ok else 1)
 
