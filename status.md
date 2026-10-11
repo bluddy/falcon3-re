@@ -45,7 +45,7 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 - .COD parsing → byte extraction (verified with `hello.c` and `getans.c`)
 - Compare with original EXE bytes (via IDA segment:offset mapping)
 
-**Tested:**
+**Tested and working:**
 - `hello.c` → `main(){return 0;}` → `b8 2a 00 c3` (mov ax, 42; ret) ✅
 - `getans.c` → `get_answer(){return 42;}` → `b8 2a 00 c3` ✅
 
