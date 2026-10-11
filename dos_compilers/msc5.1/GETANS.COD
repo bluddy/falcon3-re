@@ -1,0 +1,33 @@
+;	Static Name Aliases
+;
+	TITLE   get_answ.c
+	NAME    get_answ
+
+	.8087
+_TEXT	SEGMENT  WORD PUBLIC 'CODE'
+_TEXT	ENDS
+_DATA	SEGMENT  WORD PUBLIC 'DATA'
+_DATA	ENDS
+CONST	SEGMENT  WORD PUBLIC 'CONST'
+CONST	ENDS
+_BSS	SEGMENT  WORD PUBLIC 'BSS'
+_BSS	ENDS
+DGROUP	GROUP	CONST, _BSS, _DATA
+	ASSUME  CS: _TEXT, DS: DGROUP, SS: DGROUP
+EXTRN	__acrtused:ABS
+_TEXT      SEGMENT
+	ASSUME	CS: _TEXT
+;|*** 
+;|*** int get_answer() {
+; Line 2
+	PUBLIC	_get_answer
+_get_answer	PROC NEAR
+;|***     return 42;
+; Line 3
+	*** 000000	b8 2a 00 		mov	ax,42
+	*** 000003	c3 			ret	
+
+_get_answer	ENDP
+_TEXT	ENDS
+END
+;|*** }
