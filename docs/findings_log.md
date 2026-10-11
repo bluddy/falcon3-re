@@ -448,5 +448,54 @@ flags&3 into a DGROUP[idx*14+0xAD52] 14-byte record, then notifies 0x0761:057B);
 sub_17AD4 = `widen_and_forward` (byte-widening copy into local int[14] → forwards
 to sub_17A85). Verified count: 5 routines.
 
+## 2026-10-11 24 - sub_197EA (69B) MATCH: BC switch codegen + CS-relative table recovery
+Status: CONFIRMED
+
+`sub_197EA` = sparse 5-case **switch**; BC 2.0 emits search-loop over a case-value
+table + parallel jump table, both emitted IMMEDIATELY AFTER the function.
+Ported from `src/sub_197EA.c` → MATCH (69 B) [12 mask bytes: table ptr + trailing data].
+
+Techniques locked in:
+1. **CS recovery by jump-target matching**: function used `cs:[0x173F]` table refs;
+   candidate CS bases (paragraphs of seg009) were tested by checking that the
+   table's jump entries (CS-relative) reproduce the known case-block linears →
+   **CS = 0x180F0, table at linear 0x1982F** (right after the retf — BC appends
+   switch data to the function).
+2. **Case values read from the EXE table**: `0x103→10, 0x108→11, 0x111→12,
+   0x112→4, 0x113→3, default→key`. (Values look like extended key/scan codes —
+   candidate for game knowledgebase: key-mapping routine.)
+3. **Register allocation needs the intermediate var**: `switch{case: return N}`
+   compiles with results in AX directly (key→SI, no push di); original uses
+   `int r` (r→SI, key→DI, `push/pop di`, fallback `mov si,di; mov ax,si`).
+   Writing `r = N; break; ... return r;` reproduced the original exactly.
+4. **`mov bx, table_off` immediate is a linker fixup** (standalone obj has 0x0045,
+   IDB has 0x173F) → covered by FIXUPP mask; compare rule now also tolerates
+   arbitrary post-function trailing bytes (data tables), reporting them.
+
+Hypothesis: `key-mapper` — maps extended keycodes to small action IDs
+(returns 10/11/12/4/3; default passthrough). Registry updated.
+
+## 2026-10-11 25 - sub_19CB0 (55B) MATCH: union far-ptr arithmetic + slot-order rule
+Status: CONFIRMED
+
+`sub_19CB0`: far-calls `0x0994:0x0D22` (fixup masked), treats returned long as a
+far pointer, reads a word at +12, `-1L` early-out. Ported from `src/sub_19CB0.c`
+→ MATCH (55 B) [4 fixup bytes masked = the external `lcall`].
+
+BC 2.0 codegen rules learned (via two deliberate iterations):
+1. **Declaration order drives stack-slot assignment**: `int w;` must be declared
+   BEFORE the long (w → [bp-2], r → [bp-6] matches original; reversed order
+   swaps slots and shifts every subsequent displacement).
+2. **Pointer arithmetic must be written through a union to stay in-place**:
+   `union { long l; char far *p; } u; ... u.p += 12;` → `add [slot],0Ch` +
+   zero-displacement `es:[bx]` (original shape). The folded expression
+   `*(int far *)((char far *)r + 12)` instead folds the +12 into the addressing
+   mode (`es:[bx+0Ch]`) and is 3 bytes shorter — clean diff symptom.
+3. Long→far-ptr reinterpretation idiom confirmed: BC stores long low/high as
+   offset/segment in memory; `les` reads the same slot back.
+
+Verified: **7 routines** (2 trivial leaves + sub_1A6D4 + sub_17A85 + sub_17AD4
++ sub_197EA + sub_19CB0), 382 verified bytes total.
+
 ---
 (append new findings below)

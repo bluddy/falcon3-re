@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status
 
-**Last updated**: 2026-10-11 (session 6, same night — see Time Log; always bump + append row)
+**Last updated**: 2026-10-11 (session 7, same night — see Time Log; always bump + append row)
 **Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
 
@@ -18,6 +18,7 @@
 | 2026-10-11 (session 4) | same day | **Findings 20+21: cluster-B FOUND (B0=0xFFFA0)** — all 70 rows placed → 68 segments / 1,053,376 B; **fixups applied: 25,222 × +0x1000** byte-guarded; entries 250 → **192 overlay fns, 1,007 total**; C=97 with relocated DGROUP. **plan 1.2b 5/5 core done** |
 | 2026-10-11 (session 5) | same day | **Finding 22: COMPILER REVISED — Borland C++ 2.0 `bcc -c -ml -1 -O`** (user installed; enter/leave = BC; MSC 5.1/6.0 re-tested → no enter, DISPROVEN for C); **sub_1A6D4 44B MATCH** end-to-end via new portcheck `--cc bcc` + `obj_extract.py`; toolchain.md rewritten. C-port queue resumed |
 | 2026-10-11 (session 6) | same day | **Finding 23: chained same-module port** — sub_17A85 (79B, 4 fixups masked) + sub_17AD4 (61B incl. adjacency-dependent `call 0xFF7B`) **BOTH MATCH**; BC large-model rules decoded (char* = far!; `(char near*)` → DS conversion; decl-order of `int i=0`; one-expr flags). Fixup masking + ±0x1000 reloc normalization now in portcheck compare. **Verified: 5 routines** |
+| 2026-10-11 (session 7) | same day | **Findings 24+25: sub_197EA (69B switch) + sub_19CB0 (55B) MATCH** — case table recovered from EXE via CS-base jump-target matching (CS=0x180F0); union far-ptr arithmetic + decl-order slot rules. **Verified: 7 routines / 382 bytes** |
 
 ## Executive Summary
 
@@ -57,16 +58,18 @@ Falcon3 (FALCONCD.EXE + variants) is a **DOS 16-bit far/large model** game using
 
 **Total**: 839 functions, 83 KB. Gap: ~1.2 MB tail mostly asset data + unprocessed overlays.
 
-## Portcheck Pipeline ✅
-- C source → DOSBox-X + MSC 5.1 (`/AL` large model) → .OBJ + .COD
-- .COD parsing → byte extraction
-- Compare against `function_bytes.json` (IDA ground truth, fixups applied)
+## Portcheck Pipeline ✅ (BCC 2.0 primary, finding 22)
+- C source → DOSBox-X + **Borland C++ 2.0** (`bcc -c -ml -1 -O`) → .OBJ →
+  `obj_extract.py` (PUBDEF/LEDATA/FIXUPP) → compare vs `function_bytes.json`
+  (fixup masking + ±0x1000 reloc normalization + trailing-data tolerance)
+- MSC 5.1 path retained (`--cc msc`) for comparison only
 
-**Tested and working:**
-- `hello.c` → `main(){return 0;}` → `b8 2a 00 c3` (mov ax, 42; ret) ✅
-- `getans.c` → `get_answer(){return 42;}` → `b8 2a 00 c3` ✅
-- **`sub_16FDD` → `b8 01 00 cb` MATCH** (`int far` + `/AL` was the fix) ✅
-- **`sub_2CB6E` → `b8 ff ff cb` MATCH** ✅
+**Verified routines (7):**
+- `sub_16FDD` (`return 1`, 4B) ✅ · `sub_2CB6E` (`return -1`, 4B) ✅
+- `sub_1A6D4` (44B long accumulate) ✅ — finding 22
+- `sub_17A85` (79B, chained same-module) ✅ · `sub_17AD4` (61B, call 0xFF7B) ✅ — finding 23
+- `sub_197EA` (69B switch; case table recovered from EXE) ✅ — finding 24
+- `sub_19CB0` (55B far-ptr field reader; union in-place +12) ✅ — finding 25
 
 **Pipeline doc**: `docs/pipeline.md` (modeled on gunship_2000's PIPELINE.md; adds
 Track C plan using `mzdiff` from `f19re/mzretools`, plus all naming/near-far gotchas).

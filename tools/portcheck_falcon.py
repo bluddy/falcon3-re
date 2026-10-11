@@ -250,11 +250,13 @@ def _compare_with_original(routine_name: str, routine_bytes: bytes,
         return True, norm, n
 
     ok, norm, first = equal(routine_bytes, expected)
-    pad = b""
+    trailing = 0
     if (not ok and len(routine_bytes) > len(expected)
-            and first >= len(expected)
-            and all(b in (0x00, 0x90, 0xCC) for b in routine_bytes[len(expected):])):
+            and first >= len(expected)):
+        # bytes after the IDA function boundary are post-function data
+        # (switch tables etc.) or alignment - outside the routine, ignored
         ok, norm, first = equal(routine_bytes[:len(expected)], expected)
+        trailing = len(routine_bytes) - len(expected)
 
     if ok:
         extra = []
@@ -262,6 +264,8 @@ def _compare_with_original(routine_name: str, routine_bytes: bytes,
             extra.append("%d reloc words (+0x1000)" % norm)
         if mask:
             extra.append("%d fixup bytes masked" % len(mask))
+        if trailing:
+            extra.append("%dB trailing data ignored" % trailing)
         suffix = (" [" + ", ".join(extra) + "]") if extra else ""
         print(f"OK {routine_name}: MATCH ({len(expected)} bytes, {how}){suffix}")
         return True

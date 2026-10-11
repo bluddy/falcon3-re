@@ -110,9 +110,35 @@ routines:
     notes: "61B incl. adjacency-dependent push cs; call 0xFF7B (callee must be exactly 79B in same unit). Finding 23."
     updated: "2026-10-11"
 
+- ea: 0x197EA
+    seg: 0x197E
+    ofs: 0xA
+    size: 69
+    far: true
+    class: C
+    hypothesis: "key_mapper"            # sparse switch: 103->10,108->11,111->12,112->4,113->3, default key
+    port_status: verified
+    port_file: src/sub_197EA.c
+    verified: MATCH
+    notes: "69B; switch table recovered from EXE (CS=0x180F0, table @0x1982F); 'int r' needed for reg alloc; table-ptr fixup masked (finding 24)."
+    updated: "2026-10-11"
+
+- ea: 0x19CB0
+    seg: 0x19CB
+    ofs: 0x0
+    size: 55
+    far: true
+    class: C
+    hypothesis: "farptr_field_reader"   # r=fn(a,b); r==-1L?-1: *(int far*)(r+12)
+    port_status: verified
+    port_file: src/sub_19CB0.c
+    verified: MATCH
+    notes: "55B, 4 fixup bytes masked (lcall 0994:0D22). union in-place far-ptr +12; 'int w' declared first for slot order (finding 25)."
+    updated: "2026-10-11"
+
 counts:
-  tracked: 6
-  verified: 5
+  tracked: 8
+  verified: 7
   total_functions: 1007       # 815 resident + 192 overlay (findings 19-21)
   classification:            # tools/classify_routines.py → classification.json
     ASM: 695
