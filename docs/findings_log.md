@@ -411,5 +411,42 @@ empirically proven byte-for-byte:
 **Consequences**: the 97 ENTER/C-class functions are now portable with BCC;
 MSC 5.1 remains installed only for comparison runs (`--cc msc`).
 
+## 2026-10-11 23 - Chained same-module port: sub_17A85 + sub_17AD4 (79B+61B) MATCH
+Status: CONFIRMED — methodology + BC large-model codegen rules learned
+
+**Both routines byte-match** (`portcheck --cc bcc`):
+- `sub_17AD4` (61 B) MATCH — full body + call displacement reproduced
+- `sub_17A85` (79 B) MATCH [4 fixup bytes masked] — far target `0x0761:057B` is
+  link-resolved (MZ-relocated); placeholder masked, not compared
+
+**Methodology: same-module chained ports.** `sub_17AD4` calls `sub_17A85`
+adjacently (`push cs; call rel16 0xFF7B`). An EXTERNAL declaration compiles to
+`call far 0000:0000` (5 B) instead of `push cs; call rel` (4 B) → both functions
+must live in ONE translation unit, callee first, and the callee must compile to
+exactly its original size (79 B) for the displacement to fall out right.
+The original binary was built from exactly such a multi-function .c file.
+
+**BC 2.0 large-model codegen rules (byte-exact recipe), all discovered by diffing:**
+1. In `-ml`, **plain `char *` is a FAR pointer** — `(char *)(int_expr)` converts
+   int→far with **segment 0** (`mov word [bp-N],0`). To get the DS-segmented
+   conversion the original uses (`mov [bp-2],ds; mov [bp-4],ax`), the right side
+   must be **explicitly NEAR**: `dst = (char near *)(expr);`.
+2. A separate near-ptr *variable* either spills to stack (enter grows 4→8, +14 B)
+   or, with `register`, hijacks SI/DI and reshuffles the whole allocation — do NOT
+   introduce intermediate pointer variables; direct cast keeps BC's register
+   choice identical to the original (idx→DI, loop counter→SI, result in AX).
+3. `int i = 0;` at declaration emits `xor si,si` BEFORE later statements —
+   matches original ordering; loop must then be `for (; i < n; i++)` (no re-init).
+4. `*dst = (char)(flags &= 3);` as ONE expression → `and [bp+C],3; mov ax,[bp+C];
+   les bx; mov es:[bx],al` (separate statements reorder the les vs load).
+5. Fixup masking (obj_extract): BCC placeholders (`9a 00000000`, `e8 0000`) masked
+   from FIXUPP locats + zero-pattern scan; portcheck compare also accepts
+   `got+0x1000 == expected` words (MZ/RTLink reloc signature, finding 15 TODO — now implemented).
+
+**Registry**: sub_17A85 hypothesis = `dgroup_record_writer` (copies 13 bytes +
+flags&3 into a DGROUP[idx*14+0xAD52] 14-byte record, then notifies 0x0761:057B);
+sub_17AD4 = `widen_and_forward` (byte-widening copy into local int[14] → forwards
+to sub_17A85). Verified count: 5 routines.
+
 ---
 (append new findings below)

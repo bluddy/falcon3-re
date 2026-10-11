@@ -17,6 +17,11 @@ bcc -c -ml -1 -O        (large model / 80186 / optimize)
 - `or reg,reg` for zero tests; SI-held loop counters (params not written back)
 - **`-O` required**: without it BC emits redundant `jmp short $+2` (`eb 00`)
   before epilogue pops (seen in native OBJs)
+- **Pointers**: in `-ml` plain `char *` is FAR (int→far cast yields seg:0!);
+  DS-segmented conversion needs an explicitly `near`-typed right side
+  (finding 23); intermediate pointer vars spill/hijack registers
+- **Same-module far calls** compile to `push cs; call rel16` (4 B); externals to
+  `call far imm` (5 B) + fixup — original units bundled adjacent functions
 
 ### Ruled out (re-tested with version-verified binaries)
 - **Microsoft C 5.10** (Feb 1988 banner verified in `rbin\CL.EXE`): no flag

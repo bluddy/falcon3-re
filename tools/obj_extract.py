@@ -15,8 +15,10 @@ def parse_obj(data: bytes):
     segs = []          # list of (name, length) in index order (1-based)
     pubs = {}          # name -> (seg_index, offset)
     contents = {}      # seg_index -> {offset: bytes}
+    fixups = {}        # seg_index -> set of offsets needing relocation
     pos = 0
     last_lname = None
+    last_ledata = None  # (seg, offset) of most recent LEDATA (FIXUPP attaches to it)
     while pos + 3 <= len(data):
         rtype = data[pos]
         rlen = struct.unpack_from("<H", data, pos + 1)[0]
@@ -46,39 +48,84 @@ def parse_obj(data: bytes):
                 off = struct.unpack_from("<H", payload, i)[0]; i += 2
                 i += 1                        # type index
                 pubs[name] = (seg, off)
-        elif rtype == 0xA0:                    # LEDATA (TASM dialect)
+        elif rtype == 0xA0:                    # LEDATA (TASM/BCC dialect)
             seg = payload[0]
             off = struct.unpack_from("<H", payload, 1)[0]
             contents.setdefault(seg, {})[off] = payload[3:]
-        # 0x80 THEADR, 0x88 COMENT, 0x8a, 0xa1 etc ignored
-    return segs, pubs, contents
+            last_ledata = (seg, off)
+        elif rtype in (0x9C, 0x8A):            # FIXUPP (BCC native / TASM)
+            # locat (2B, bit7 of first set) -> record offset in last LEDATA,
+            # then fixdata (1B, bit7 clear) + target/index (1B, no disp case)
+            if last_ledata is None:
+                continue
+            base_seg, base_off = last_ledata
+            i = 0
+            while i + 1 < len(payload):
+                if payload[i] & 0x80:
+                    locat = (payload[i] << 8) | payload[i + 1]
+                    rec_off = locat & 0x3FF
+                    fixups.setdefault(base_seg, set()).add(base_off + rec_off)
+                    i += 2
+                    # consume fixdata + index bytes (bit7-clear run), cap generously
+                    j = i
+                    while j < len(payload) and not (payload[j] & 0x80):
+                        j += 1
+                    # Borland simple case: fixdata(1) + index(1)
+                    i = min(j, i + 2) if j > i else i + 1
+                else:
+                    i += 1
+        # 0x80 THEADR, 0x88 COMENT, 0x8C EXTDEF, 0x8a end etc ignored
+    return segs, pubs, contents, fixups
 
 
-def extract(obj_path: str, routine: str) -> bytes:
+def extract_ex(obj_path: str, routine: str):
+    """Returns (bytes, fixup_offsets_within_routine) — see extract()."""
     data = Path(obj_path).read_bytes()
-    segs, pubs, contents = parse_obj(data)
+    segs, pubs, contents, fixups = parse_obj(data)
     key = "_" + routine
     if key not in pubs:
-        # case-insensitive fallback
         matches = [k for k in pubs if k.lower() == key.lower()]
         if not matches:
             raise SystemExit("pub %s not found; have: %s" % (key, list(pubs)[:10]))
         key = matches[0]
     seg, off = pubs[key]
-    # end = next pub in same seg, else seg length
     ends = [o for n, (s, o) in pubs.items() if s == seg and o > off]
     end = min(ends) if ends else segs[seg - 1][1]
-    size = end - off
     blob = bytearray()
     chunks = contents.get(seg, {})
-    for a in range(off, end):
+    fx = fixups.get(seg, set())
+
+    def at(a):
         for start, b in chunks.items():
             if start <= a < start + len(b):
-                blob.append(b[a - start])
-                break
-        else:
-            blob.append(0)
-    return bytes(blob)
+                return b[a - start]
+        return 0
+
+    for a in range(off, end):
+        blob.append(at(a))
+    # fixup positions relative to routine; if locat points at an E8 opcode,
+    # the relocated field is the disp16 that follows (locat+1..+2)
+    rel = set()
+    for fp in fx:
+        if off <= fp < end:
+            k = fp - off
+            if k < len(blob) and blob[k] == 0xE8:
+                rel.update((k + 1, k + 2))     # near call disp16
+            elif k < len(blob) and blob[k] == 0x9A:
+                rel.update(range(k + 1, k + 5))   # far call off16:seg16 (link-resolved)
+            else:
+                rel.update((k, k + 1))
+    # placeholder scans: link-time unresolved operands embedded as zeros
+    for i in range(len(blob) - 4):
+        if blob[i] == 0x9A and blob[i + 1:i + 5] == b"\x00\x00\x00\x00":
+            rel.update(range(i + 1, i + 5))
+        if blob[i] == 0xE8 and blob[i + 1:i + 3] == b"\x00\x00":
+            rel.update((i + 1, i + 2))
+    return bytes(blob), sorted(rel)
+
+
+def extract(obj_path: str, routine: str) -> bytes:
+    return extract_ex(obj_path, routine)[0]
 
 
 if __name__ == "__main__":

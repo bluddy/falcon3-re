@@ -140,19 +140,21 @@ def to_83(name: str) -> str:
     return f"{base}{ext}"
 
 
-def _compile_bcc_extract(routine_name: str, c_source: str, cflags: str) -> bytes:
+def _compile_bcc_extract(routine_name: str, c_source: str, cflags: str):
     """Compile with Borland C++ 2.0 (finding 22 recipe) and extract routine bytes.
 
-    bcc -c -ml -1 -O <probe\file.c>  -> <file>.OBJ (root or probe dir)
-    bytes parsed from the OBJ via obj_extract (PUBDEF+LEDATA).
+    Returns (bytes, fixup_mask_offsets). bcc -c -ml -1 -O <probe\\file.c>
+    -> <file>.OBJ; bytes via obj_extract (PUBDEF+LEDATA+FIXUPP).
+    fixup offsets = link-time-determined fields (call displacements, far
+    pointers) -> masked during comparison (finding 15 normalization).
     """
-    from obj_extract import extract
+    from obj_extract import extract_ex
 
     base83 = to_83(routine_name[:8] + ".c")
     probe = os.path.join(BCC_ROOT, "probe")
     os.makedirs(probe, exist_ok=True)
     src_path = os.path.join(probe, base83)
-    with open(src_path, "w", encoding="ascii") as f:
+    with open(src_path, "w", encoding="ascii", errors="replace") as f:
         f.write(c_source)
 
     obj_stem = os.path.splitext(base83)[0]
@@ -197,10 +199,10 @@ exit
             print("BCC compile log:")
             print(open(log, encoding="cp437", errors="ignore").read())
         print("BCC: no OBJ produced for", routine_name)
-        return b""
+        return b"", []
 
     try:
-        data = extract(obj_path, routine_name)
+        data, fixup_mask = extract_ex(obj_path, routine_name)
     finally:
         os.remove(obj_path)
         if os.path.exists(src_path):
@@ -208,11 +210,12 @@ exit
         log = os.path.join(BCC_ROOT, "compile.log")
         if os.path.exists(log):
             os.remove(log)
-    return data
+    return data, fixup_mask
 
 
 def _compare_with_original(routine_name: str, routine_bytes: bytes,
-                           segment: int, offset: int, how: str) -> bool:
+                           segment: int, offset: int, how: str,
+                           fixup_mask=()) -> bool:
     ida_hex = get_original_bytes_from_ida(routine_name, 1 << 30)
     if ida_hex is not None:
         expected = ida_hex
@@ -222,23 +225,58 @@ def _compare_with_original(routine_name: str, routine_bytes: bytes,
                                       len(routine_bytes))
         print("  Using raw EXE bytes (IDA not found)")
 
-    if routine_bytes == expected:
-        print(f"OK {routine_name}: MATCH ({len(routine_bytes)} bytes, {how})")
-        return True
-    # tolerate segment-alignment padding after the routine (BCC .obj segment end)
-    if (len(routine_bytes) > len(expected)
-            and routine_bytes[:len(expected)] == expected
+    mask = set(fixup_mask)
+
+    def equal(a: bytes, b: bytes) -> tuple:
+        """(ok, n_reloc_normalized, first_diff) with mask + +/-0x1000 word logic."""
+        norm = 0
+        n = min(len(a), len(b))
+        i = 0
+        while i < n:
+            if i in mask:
+                i += 1
+                continue
+            if a[i] != b[i]:
+                # MZ/RTLink relocation signature: got + 0x1000 == expected
+                if i + 1 < n and (i + 1) not in mask:
+                    gw = a[i] | (a[i + 1] << 8)
+                    ew = b[i] | (b[i + 1] << 8)
+                    if ((gw + 0x1000) & 0xFFFF) == ew:
+                        norm += 1
+                        i += 2
+                        continue
+                return False, norm, i
+            i += 1
+        return True, norm, n
+
+    ok, norm, first = equal(routine_bytes, expected)
+    pad = b""
+    if (not ok and len(routine_bytes) > len(expected)
+            and first >= len(expected)
             and all(b in (0x00, 0x90, 0xCC) for b in routine_bytes[len(expected):])):
-        print(f"OK {routine_name}: MATCH ({len(expected)} bytes + "
-              f"{len(routine_bytes) - len(expected)} pad, {how})")
+        ok, norm, first = equal(routine_bytes[:len(expected)], expected)
+
+    if ok:
+        extra = []
+        if norm:
+            extra.append("%d reloc words (+0x1000)" % norm)
+        if mask:
+            extra.append("%d fixup bytes masked" % len(mask))
+        suffix = (" [" + ", ".join(extra) + "]") if extra else ""
+        print(f"OK {routine_name}: MATCH ({len(expected)} bytes, {how}){suffix}")
         return True
+
     print(f"FAIL {routine_name}: MISMATCH ({how})")
     print(f"  Expected ({len(expected)}): {expected.hex()}")
     print(f"  Got      ({len(routine_bytes)}): {routine_bytes.hex()}")
     n = min(len(expected), len(routine_bytes))
-    for i in range(n):
+    for i in range(first, n):
+        if i in mask:
+            continue
         if expected[i] != routine_bytes[i]:
             print(f"  first diff @{i}: expected {expected[i]:02x} got {routine_bytes[i]:02x}")
+            print(f"  expected ctx: {expected[max(0, i - 4):i + 8].hex()}")
+            print(f"  got ctx:      {routine_bytes[max(0, i - 4):i + 8].hex()}")
             break
     else:
         print("  prefix equal, length differs")
@@ -260,11 +298,12 @@ def verify_routine(routine_name: str, c_source: str,
     cod_83 = f"{cod_base}.COD"
 
     if cc == "bcc":
-        routine_bytes = _compile_bcc_extract(routine_name, c_source, cflags)
+        routine_bytes, fixup_mask = _compile_bcc_extract(routine_name, c_source, cflags)
         if not routine_bytes:
             return False
         return _compare_with_original(routine_name, routine_bytes,
-                                      segment, offset, "BCC 2.0")
+                                      segment, offset, "BCC 2.0",
+                                      fixup_mask=fixup_mask)
 
     with tempfile.TemporaryDirectory() as tmpdir:
         # Write C source with 8.3 name in MSC dir

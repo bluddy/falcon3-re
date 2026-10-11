@@ -84,9 +84,35 @@ routines:
     notes: "44B byte-exact with bcc -c -ml -1 -O (finding 22). ENTER/LEAVE/imm0/or-si. First real C port."
     updated: "2026-10-11"
 
+  - ea: 0x17A85
+    seg: 0x17A8
+    ofs: 0x5
+    size: 79
+    far: true
+    class: C
+    hypothesis: "dgroup_record_writer"  # 13B + flags&3 into DGROUP[idx*14+0xAD52], notify 0761:057B
+    port_status: verified
+    port_file: src/sub_17AD4.c         # same translation unit as sub_17AD4 (adjacency!, finding 23)
+    verified: MATCH
+    notes: "79B, 4 far-call fixup bytes masked (link-resolved 0x0761:057B). Rules: (char near*) cast for DS conversion; no intermediate ptr vars; int i=0 decl order (finding 23)."
+    updated: "2026-10-11"
+
+  - ea: 0x17AD4
+    seg: 0x17AD
+    ofs: 0x4
+    size: 61
+    far: true
+    class: C
+    hypothesis: "widen_and_forward"     # byte->int widen copy[13], calls sub_17A85
+    port_status: verified
+    port_file: src/sub_17AD4.c
+    verified: MATCH
+    notes: "61B incl. adjacency-dependent push cs; call 0xFF7B (callee must be exactly 79B in same unit). Finding 23."
+    updated: "2026-10-11"
+
 counts:
-  tracked: 4
-  verified: 3
+  tracked: 6
+  verified: 5
   total_functions: 1007       # 815 resident + 192 overlay (findings 19-21)
   classification:            # tools/classify_routines.py → classification.json
     ASM: 695
