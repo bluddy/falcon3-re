@@ -33,10 +33,12 @@
       small-w2 rows = data-first at tail-para base (finding 18)**
 - [x] Runtime placement model solved: block = [(0x1000+w0)<<4, +span×16), same-w0
       records OVERLAP (transient), thunk word = row index (finding 18)
-- [ ] Rebuild IDB overlay segments from raw bytes at verified placements (`rebuild_overlay_segments.py`)
 - [ ] Re-decode fixup semantics ((off,seg) pairs; seg ∈ [w0, w0+span); apply +L)
       — validate each patched word before trusting; ~15 rows' exact fixup pos pending
-- [ ] Re-run function discovery + classification on rebuilt overlays
+- [x] **Rebuild IDB overlay segments** — 48 segments / 778,640 B written (finding 19)
+- [x] **Re-run function discovery + classification** — 141 overlay fns (was 22-wrong),
+      total 956; C-class 65→98 (finding 19). Open: cluster-B rows 50–69 file
+      location, 16 unresolvable thunk entries, fixup application (raw bytes now)
 
 ### 1.3 Thunk → Record Resolution ✅
 - [x] Link thunk table IDs to 18-byte dir `id` to record `off`

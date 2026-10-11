@@ -1,0 +1,28 @@
+Add a new segment, second form. Segment alignment is set to saRelByte. Segment combination is "public" or "stack" (if segment class is "STACK"). Addressing mode of segment is taken as default (16bit or 32bit). Default segment registers are set to BADSEL. If a segment already exists at the specified range of addresses, this segment will be truncated. Instructions and data in the old segment will be deleted if the new segment has another addressing mode or another segment base address. 
+        
+@param para: segment base paragraph. if paragraph can't fit in 16bit, then a new selector is allocated and mapped to the paragraph.
+@param start: start address of the segment. if start==BADADDR then start <- to_ea(para,0).
+@param end: end address of the segment. end address should be higher than start address. For emulate empty segments, use SEG_NULL segment type. If the end address is lower than start address, then fail. If end==BADADDR, then a segment up to the next segment will be created (if the next segment doesn't exist, then 1 byte segment will be created). If 'end' is too high and the new segment would overlap the next segment, 'end' is adjusted properly.
+@param name: name of new segment. may be nullptr
+@param sclass: class of the segment. may be nullptr. type of the new segment is modified if class is one of predefined names:
+* "CODE" -> SEG_CODE
+* "DATA" -> SEG_DATA
+* "CONST" -> SEG_DATA
+* "STACK" -> SEG_BSS
+* "BSS" -> SEG_BSS
+* "XTRN" -> SEG_XTRN
+* "COMM" -> SEG_COMM
+* "ABS" -> SEG_ABSSYM
+@param flags: Add segment flags
+@retval 1: ok
+@retval 0: failed, a warning message is displayed
+---
+Add a new segment. If a segment already exists at the specified range of addresses, this segment will be truncated. Instructions and data in the old segment will be deleted if the new segment has another addressing mode or another segment base address. 
+        
+@param name: name of new segment. may be nullptr. if specified, the segment is immediately renamed
+@param sclass: class of the segment. may be nullptr. if specified, the segment class is immediately changed
+@param flags: Add segment flags
+@retval 1: ok
+@retval 0: failed, a warning message is displayed
+---
+Get number of segments.

@@ -72,9 +72,18 @@ def classify(name, info, survey_flags):
 
 def main():
     fb = json.load(open(FB_PATH))
-    survey = json.load(open(SURVEY_PATH))
-    flags = {f["name"]: {"is_far": f.get("is_far"), "is_thunk": f.get("is_thunk")}
-             for f in survey["functions"]}
+    # survey flags are stale for rebuilt overlay funcs -> prefer function_bytes
+    try:
+        survey = json.load(open(SURVEY_PATH))
+        flags = {f["name"]: {"is_far": f.get("is_far"), "is_thunk": f.get("is_thunk")}
+                 for f in survey["functions"]}
+    except Exception:
+        flags = {}
+    for name, info in fb.items():
+        flags.setdefault(name, {})
+        flags[name]["is_far"] = info.get("is_far", flags[name].get("is_far"))
+        if "is_thunk" not in flags[name]:
+            flags[name]["is_thunk"] = False
 
     out = {}
     counts = Counter()
@@ -84,6 +93,7 @@ def main():
             "ea": info["ea"],
             "size": info["size"],
             "far": info.get("is_far"),
+            "overlay": info.get("overlay", info["ea"] >= 0x2CF60),
             "class": cls,
             "confidence": conf,
             "reason": reason,

@@ -287,5 +287,51 @@ data bytes into the IDB at its runtime block base (arena base), handle overlaps
 (e.g. keep per-arena record sets separately / annotate), re-run analysis, re-classify.
 Residual: ~15 rows' fixup exact positions (non-blocking for data placement).
 
+## 2026-10-11 19 - Overlay IDB REBUILT: 48 segments, 141 overlay functions (was 22-wrong)
+Status: CONFIRMED — plan 1.2b rebuild + discovery done
+
+Pipeline executed (`prep_overlay_placement.py` → `rebuild_overlay_segments.py` →
+`prep_overlay_entries.py` → `mark_overlay_entries.py` → `extract_ida_bytes.py`):
+
+1. **Placement**: 70 rows → 8 real arena segments + 40 synthetic (first-per-arena
+   keeps real address; transient overlap means others go to 0x100000+; cluster-B
+   rows 50–69 = 20 rows *honestly unplaced*, file location still open) + 2
+   zero-span placeholders skipped. **778,640 bytes written** from verified file
+   bases. Cross-check tiling: row N data-end == row N+1 window start exactly
+   (e.g. row5: 0x26180+257168 == row6 base 0x64E10 ✓).
+2. **Entries**: 184 thunk entry points computed as
+   `entry = record_ida_ea + (target − real_arena_base)` (validates model 18:
+   records load at arena+0). Content-driven marking with candidate rows
+   (index → id-field → any-containing): **145 created + 23 pre-covered,
+   16 unresolvable** (bytes at those spots aren't decodable code — usually
+   thunk→row mapping hits a data record; candidates: word4/7/9/10/12/17).
+3. **Result: 956 functions total (815 resident + 141 overlay)** — vs 839 with
+   22 wrong-overlay before. `function_bytes.json` re-extracted by live
+   enumeration (survey.json now stale for overlay names — extract script
+   no longer reads it).
+4. **Classification on new IDB**: ASM 680 / C 98 / DATA 98 / LEAF 73 /
+   NEARTHUNK 7. C rose 65→98: new overlay C functions found (`r48_e89` 11 B,
+   `r36_e107` 13 B, `r35_e92` 30 B … ENTER prologues, e.g.
+   `c8 020000; push 0x6894`) — first *overlay* port targets.
+5. Row assignments from successful entries **confirm word==row-index** for the
+   dominant cases (30→30 ×30, 12→12 ×21, 33→33 ×12, 36→36 ×12, 39→39 ×12,
+   8→8 ×7, 6→6 ×6 …).
+
+**Toolchain learnings (IDA 9 headless, worth remembering):**
+- `ida_segment.add_segm(para, start, end, name, sclass, flags)` (6 args);
+  `getnseg` not `getn_seg`; `ida_ua.create_insn`; `ida_bytes.set_cmt`;
+  `segment_t.name` attr; **`ida_loader.get_idb_path()` does not exist** —
+  hardcode the IDB path for `save_database`.
+- Headless `-A` script stdout is swallowed → always write results to a log file.
+- Headless sometimes auto-saves on exit even after script errors (observed) —
+  but ALWAYS call `save_database` explicitly right after `auto_wait`, before
+  any reporting code.
+- Edit-tool multi-line replacements in Python scripts repeatedly corrupted
+  indentation → always `ast.parse` the file after editing before running IDA.
+
+**Open after this:** cluster-B (rows 50–69) file location; 16 unresolvable
+entries; fixup application (raw bytes now, far ptrs still link-time segs);
+segment display names show numbers (cosmetic).
+
 ---
 (append new findings below)
