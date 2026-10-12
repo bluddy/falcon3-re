@@ -45,6 +45,58 @@ Rules of thumb:
 
 ---
 
+## Ground Truth & Reproducibility
+
+**Authoritative byte source: `analysis/ida_falconcd/function_bytes.json`** (committed,
+text) — per-function bytes *as they exist at runtime* (raw EXE + MZ relocations +
+RTLink fixups). `portcheck_falcon.py` compares C output against it. The IDB is the
+*analysis* ground truth (boundaries, names, segments, fixups, comments) but is
+**binary, local-only, and never committed** — everything that must survive lives in
+committed JSON/C/YAML/markdown instead.
+
+| Artifact | Role | In git? |
+|---|---|---|
+| `game/FALCONCD.EXE` (+variants) | primary raw input | ❌ local (`game/` ignored) |
+| `FALCONCD.EXE.i64` (+.id0/.id1/…) | analysis DB: boundaries, names, fixup state, comments | ❌ local (binary, regenerable) |
+| `function_bytes.json` | **byte ground truth for portcheck** | ✅ |
+| `classification.json`, `overlay_placement.json`, `overlay_entries.json`, `fixups_to_apply.json`, `rtlink_records.json`, `record_fixup_located.json`… | derived analysis state | ✅ |
+| `survey.json`, `functions.tsv`, `prologues.json`… | regenerable intermediates | ❌ (ignored, rerun scripts) |
+| `src/*.c`, `src/asm/*.asm` | ported code + annotations (protocol sinks 5/6) | ✅ |
+| `registry/*.yaml`, `docs/*`, `findings_log.md` | hypotheses + history (sinks 1–4) | ✅ |
+
+### IDB regeneration runbook (fresh clone / lost IDB)
+
+Prereqs: local `game/FALCONCD.EXE`, IDA Pro 9.1 at
+`C:\Program Files\IDA Professional 9.1\idat.exe`. Committed JSONs make the host-side
+steps unnecessary unless the EXE itself changed.
+
+```
+:: 1. fresh analysis (creates survey.json etc.; legacy overlay layout - will be replaced)
+idat -A -S tools\ida_snapshot.py       analysis\ida_falconcd\FALCONCD.EXE.i64
+
+:: 2. IDA: rebuild overlays from committed placement + mark entries + fixups + extract
+idat -A -S tools\rebuild_overlay_segments.py    analysis\ida_falconcd\FALCONCD.EXE.i64
+idat -A -S tools\_add_missed_fn.py              analysis\ida_falconcd\FALCONCD.EXE.i64
+idat -A -S tools\mark_overlay_entries.py        analysis\ida_falconcd\FALCONCD.EXE.i64
+idat -A -S tools\apply_overlay_fixups.py        analysis\ida_falconcd\FALCONCD.EXE.i64
+idat -A -S tools\extract_ida_bytes.py           analysis\ida_falconcd\FALCONCD.EXE.i64
+
+:: 3. host: classification + sanity portcheck
+venv\Scripts\python tools\classify_routines.py
+venv\Scripts\python tools\portcheck_falcon.py sub_16FDD --source src\sub_16FDD.c --segment 0x16FD --offset 0xD
+```
+(Host-side regen of the committed JSONs, only if the EXE changed:
+`prep_overlay_placement.py` → `prep_overlay_entries.py` → `validate_fixup_semantics.py`,
+then steps 2–3.)
+
+**Rules**: any IDB-modifying step → re-run `extract_ida_bytes.py` + `classify_routines.py`
+and commit both; names/comments set only in the IDB are conveniences — canonical text
+belongs in `src/asm/`, `registry/`, or `docs/` (IDB is never the only copy).
+**The IDB is not committed** (binary, `*.i64` ignored): losing it costs one runbook
+pass (~6 headless IDA runs), not the knowledge.
+
+---
+
 ## Repository Structure (Key Paths)
 
 ```
@@ -81,6 +133,7 @@ C:\Users\yotam\projects\falcon3\
 │   ├── mzhdr.py / mzparse.py       # MZ header/reloc tools
 │   └── fingerprint.py              # Compiler fingerprinting
 ├── src/                            # C ports (8.3 names, one function per file)
+│   ├── asm/                        # annotated hand-ASM family notes (sink #6)
 │   ├── hello.c, getans.c           # Pipeline smoke tests
 │   └── sub_*.c                     # Attempted game-routine ports
 ├── dos_compilers/
