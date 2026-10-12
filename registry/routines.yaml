@@ -253,6 +253,19 @@ routines:
     notes: "keyboard unit"
     updated: "2026-10-11"
 
+  - ea: 0x19EF9
+    seg: 0x19EF
+    ofs: 0x9
+    size: 64
+    far: true
+    class: C
+    hypothesis: "kb_field_get_26"        # read byte rec_0026[idx*14+r] @ +0x26, cwde
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "64B, 8 fixup bytes masked. 11th keyboard-unit member; same farptr_field_reader pattern (finding 27)."
+    updated: "2026-10-12"
+
 counts:
   tracked: 17
   verified: 16
