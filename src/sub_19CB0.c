@@ -7,7 +7,7 @@
  *     (a folded cast-expression would emit es:[bx+0Ch] instead, -3 bytes) */
 extern long far fn_0994_0D22(int, int);
 
-int far sub_19CB0(int a, int b) {
+int far farptr_field_reader(int a, int b) {
     int w;
     union { long l; char far *p; } u;
     u.l = fn_0994_0D22(a, b);

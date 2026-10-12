@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status
 
-**Last updated**: 2026-10-11 (session 8, same night — see Time Log; always bump + append row)
+**Last updated**: 2026-10-12 (session 9 — see Time Log; always bump + append row)
 **Branch**: master
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1 headless)
 
@@ -20,6 +20,7 @@
 | 2026-10-11 (session 6) | same day | **Finding 23: chained same-module port** — sub_17A85 (79B, 4 fixups masked) + sub_17AD4 (61B incl. adjacency-dependent `call 0xFF7B`) **BOTH MATCH**; BC large-model rules decoded (char* = far!; `(char near*)` → DS conversion; decl-order of `int i=0`; one-expr flags). Fixup masking + ±0x1000 reloc normalization now in portcheck compare. **Verified: 5 routines** |
 | 2026-10-11 (session 7) | same day | **Findings 24+25: sub_197EA (69B switch) + sub_19CB0 (55B) MATCH** — case table recovered from EXE via CS-base jump-target matching (CS=0x180F0); union far-ptr arithmetic + decl-order slot rules. **Verified: 7 routines / 382 bytes** |
 | 2026-10-11 (session 8) | same day | **Finding 26: keyboard unit 10/10 MATCH (570B)** — contiguous 0x19CB0-0x19EF9 single translation unit ported (`kb_unit_19CB0.c`); assign-in-cond spill rule; **IDA-missed function sub_19D65 discovered via gap arithmetic + registered in IDB** (1008 fns); **totals: 16 verified / 846 bytes** |
+| 2026-10-12 (session 9) | ~9 h | **Naming/annotation system built** (user push: reproduce IDA's naming layer outside the binary DB): `registry/naming.yaml` ledger (16 renames) + `registry/structs.yaml` (5 structs) + globals inventory (1,968 `data_symbols.json`) + `tools/naming.py` (list/resolve/apply/revert/check/push-ida) + **21-test suite green**; all 16 C files renamed to semantic names; names pushed into IDB with key-stable re-extract verified; portcheck resolves ida⇄semantic; ground-truth regen runbook + rebuild verdict documented in pipeline.md |
 
 ## Executive Summary
 

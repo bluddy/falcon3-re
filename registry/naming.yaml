@@ -1,0 +1,90 @@
+# Falcon3 Naming Ledger — canonical semantic names for binary symbols
+# Managed by tools/naming.py (apply / check / resolve / push-ida). DO NOT hand-edit
+# name/ida pairs unless you also run `naming.py check` afterwards.
+#
+# Schema:
+#   ida:    immutable machine ID (matches IDB names + function_bytes.json keys)
+#           NEVER changes; safe to reference everywhere in tooling.
+#   name:   semantic rename (C identifier rules: [a-z_][a-z0-9_]*).
+#           null = keep ida name for now.
+#   kind:   function | global | struct | field
+#   notes:  why this name (evidence / hypothesis source); update when disproven.
+#
+# Apply targets: src/**.c, src/asm/**.asm (text), function_bytes.json +
+# data_symbols.json ("name" fields only - keys stay ida), IDB (push-ida).
+# routines.yaml `hypothesis` must equal `name` here when both exist (naming.py check).
+
+schema: 1
+
+symbols:
+  # --- verified C ports (findings 22-26); names from registry/routines.yaml hypotheses
+  - ida: sub_16FDD
+    name: always_true
+    kind: function
+    notes: "returns constant 1 (finding 08/22)"
+  - ida: sub_2CB6E
+    name: always_false
+    kind: function
+    notes: "returns constant -1 (finding 08/22)"
+  - ida: sub_1A6D4
+    name: long_accumulate
+    kind: function
+    notes: "acc += a, n times -> 32-bit (dx:ax); finding 22"
+  - ida: sub_17A85
+    name: dgroup_record_writer
+    kind: function
+    notes: "writes 13B + flags&3 into DGROUP[idx*14+0xAD52], notifies 0761:057B; finding 23"
+  - ida: sub_17AD4
+    name: widen_and_forward
+    kind: function
+    notes: "byte->int widen copy[13] -> dgroup_record_writer; finding 23"
+  - ida: sub_197EA
+    name: key_mapper
+    kind: function
+    notes: "sparse switch on keycodes 103h/108h/111h/112h/113h -> 10/11/12/4/3; finding 24"
+  - ida: sub_19CB0
+    name: farptr_field_reader
+    kind: function
+    notes: "long->farptr+12 word read; feeds kb_* family; finding 25"
+  - ida: sub_19CE7
+    name: kb_field_get_22
+    kind: function
+    notes: "keyboard unit field +0x22 getter; finding 26"
+  - ida: sub_19D25
+    name: kb_field_get_23
+    kind: function
+    notes: "keyboard unit field +0x23 getter; finding 26"
+  - ida: sub_19D65
+    name: kb_field_set_23
+    kind: function
+    notes: "keyboard unit field +0x23 setter; IDA-missed fn; finding 26"
+  - ida: sub_19DA6
+    name: kb_field_get_24
+    kind: function
+    notes: "keyboard unit field +0x24 getter; finding 26"
+  - ida: sub_19DE6
+    name: kb_field_set_24
+    kind: function
+    notes: "keyboard unit field +0x24 setter; finding 26"
+  - ida: sub_19E27
+    name: kb_clear_24
+    kind: function
+    notes: "kb_field_set_24(a,b,0); finding 26"
+  - ida: sub_19E3B
+    name: kb_field_get_25
+    kind: function
+    notes: "keyboard unit field +0x25 getter; finding 26"
+  - ida: sub_19E7B
+    name: kb_field_set_25_1
+    kind: function
+    notes: "keyboard unit field +0x25 = 1; finding 26"
+  - ida: sub_19EBA
+    name: kb_field_set_25_0
+    kind: function
+    notes: "keyboard unit field +0x25 = 0; finding 26"
+
+  # --- globals: add entries as hypotheses form, e.g.
+  # - ida: word_12345
+  #   name: kbd_head_index
+  #   kind: global
+  #   notes: "DGROUP:0x20 keyboard ring index (finding 26 hypothesis)"

@@ -4,7 +4,7 @@
  *   0x103->10, 0x108->11, 0x111->12, 0x112->4, 0x113->3, default->key.
  * Intermediate 'r' is required: it drives BC's register choice (r->SI,
  * key->DI, push/pop di); direct 'return const' in cases allocates differently. */
-int far sub_197EA(int key) {
+int far key_mapper(int key) {
     int r;
     switch (key) {
     case 0x103: r = 10; break;

@@ -289,12 +289,20 @@ def _compare_with_original(routine_name: str, routine_bytes: bytes,
 def verify_routine(routine_name: str, c_source: str,
                    segment: int, offset: int, length: int, src_basename: str,
                    cflags: str = "", cc: str = "bcc") -> bool:
-    """Compile C routine and verify against original binary."""
-    
+    """Compile C routine and verify against original binary.
+
+    routine_name may be the IDA name or a semantic rename from registry/naming.yaml;
+    extraction uses the C-side name, comparison the IDA name (naming.resolve).
+    """
+    from naming import resolve
+    ida_name, c_name = resolve(routine_name)
+    if c_name != routine_name:
+        print(f"  resolved {routine_name} -> ida={ida_name} c={c_name}")
+
     msc_dir = os.path.join(os.getcwd(), r"dos_compilers\msc5.1")
-    
-    # 8.3 names - .c file named after routine (truncated to 8.3)
-    c_83 = to_83(f"{routine_name[:8]}.c")
+
+    # 8.3 names - .c file named after the C function (renamed source files)
+    c_83 = to_83(f"{c_name[:8]}.c")
     # .c file will be truncated to 8.3 when written to MSC dir
     c_83 = to_83(c_83)
     # .cod filename is based on the 8.3 source filename
@@ -302,10 +310,10 @@ def verify_routine(routine_name: str, c_source: str,
     cod_83 = f"{cod_base}.COD"
 
     if cc == "bcc":
-        routine_bytes, fixup_mask = _compile_bcc_extract(routine_name, c_source, cflags)
+        routine_bytes, fixup_mask = _compile_bcc_extract(c_name, c_source, cflags)
         if not routine_bytes:
             return False
-        return _compare_with_original(routine_name, routine_bytes,
+        return _compare_with_original(ida_name, routine_bytes,
                                       segment, offset, "BCC 2.0",
                                       fixup_mask=fixup_mask)
 
@@ -356,7 +364,7 @@ exit
         # Parse routine bytes from .cod
         # The .cod file is created in the MSC directory (c: drive)
         cod_path = os.path.join(msc_dir, cod_83)
-        routine_bytes = parse_cod_listing(cod_path, routine_name)
+        routine_bytes = parse_cod_listing(cod_path, c_name)
         
         if not routine_bytes:
             print(f"Could not extract bytes for {routine_name}")
@@ -365,7 +373,7 @@ exit
         actual_length = len(routine_bytes)
         
         # Try IDA database first (relocated bytes), fall back to raw EXE
-        original_bytes = get_original_bytes_from_ida(routine_name, actual_length)
+        original_bytes = get_original_bytes_from_ida(ida_name, actual_length)
         if original_bytes is None:
             original_bytes = get_original_bytes("game/FALCONCD.EXE", segment, offset, actual_length)
             print(f"  Using raw EXE bytes (IDA not found)")
@@ -373,7 +381,7 @@ exit
             print(f"  Using IDA database bytes")
         
         # Cleanup MSC dir
-        for fname in [c_83, f"{routine_name[:8]}.OBJ", "compile.log", cod_83]:
+        for fname in [c_83, f"{c_name[:8]}.OBJ", "compile.log", cod_83]:
             fpath = os.path.join(msc_dir, fname)
             if os.path.exists(fpath):
                 os.remove(fpath)

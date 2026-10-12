@@ -1,0 +1,79 @@
+# Falcon3 Struct Definitions — machine-readable structure annotations
+# Validated by `python tools/naming.py check` (sizes, field overlap, dup names).
+# Narrative/history lives in docs/structures.md; this file is the structured form
+# (future: push-ida to create IDA structs from it).
+#
+# Schema per struct:
+#   name:    PascalCase identifier
+#   size:    total size in bytes
+#   status:  confirmed | hypothesis
+#   source:  evidence reference (docs/findings_log.md #, docs/structures.md section)
+#   fields:  [{offset, size, name, type, comment}]
+#     type:  uint8 | uint16 | uint32 | int8 | int16 | int32 | ptr16 | far_ptr |
+#            bytes | seg16 | flags8
+
+schema: 1
+
+structs:
+  - name: MZHeader
+    size: 28            # 0x1C
+    status: confirmed
+    source: docs/structures.md §MZ Header
+    fields:
+      - {offset: 0x00, size: 2, name: magic,        type: uint16, comment: "'MZ'"}
+      - {offset: 0x02, size: 2, name: last_page,    type: uint16}
+      - {offset: 0x04, size: 2, name: pages,        type: uint16}
+      - {offset: 0x06, size: 2, name: nreloc,       type: uint16, comment: 2717}
+      - {offset: 0x08, size: 2, name: hdr_paras,    type: uint16, comment: 704}
+      - {offset: 0x0A, size: 2, name: min_alloc,    type: uint16}
+      - {offset: 0x0C, size: 2, name: max_alloc,    type: uint16}
+      - {offset: 0x0E, size: 2, name: init_ss,      type: uint16}
+      - {offset: 0x10, size: 2, name: init_sp,      type: uint16}
+      - {offset: 0x12, size: 2, name: checksum,     type: uint16}
+      - {offset: 0x14, size: 2, name: init_ip,      type: uint16}
+      - {offset: 0x16, size: 2, name: init_cs,      type: uint16, comment: 0x1AA3}
+      - {offset: 0x18, size: 2, name: reloc_off,    type: uint16, comment: 0x1E}
+      - {offset: 0x1A, size: 2, name: overlay_no,   type: uint16}
+
+  - name: RTLinkDirEntry            # the 18-byte overlay directory record
+    size: 18
+    status: confirmed
+    source: docs/structures.md §18-Byte Overlay Directory + findings 17
+    fields:
+      - {offset: 0,  size: 2, name: seg,        type: uint16, comment: "load base (LINK para); runtime = seg+0x1000"}
+      - {offset: 2,  size: 2, name: const_12ED, type: uint16, comment: "always 0x12ED"}
+      - {offset: 4,  size: 2, name: w2,         type: uint16, comment: "file para of fixup table (x16); cluster-B rows use 0xFFFA0-base (finding 20)"}
+      - {offset: 6,  size: 1, name: const_04,   type: uint8,  comment: "0x04"}
+      - {offset: 7,  size: 1, name: flags,      type: flags8, comment: "0x04 transient, 0x01 startup"}
+      - {offset: 8,  size: 2, name: span,       type: uint16, comment: "allocated span in PARAS"}
+      - {offset: 10, size: 2, name: fixup_count, type: uint16, comment: "fixups in DWORDS"}
+      - {offset: 12, size: 2, name: const_FFFF, type: uint16, comment: "usually 0xFFFF"}
+      - {offset: 14, size: 2, name: id,         type: uint16, comment: "record id (idx+2); loader indexes by 0-based idx"}
+      - {offset: 16, size: 2, name: data_size,  type: uint16, comment: "data size (== span for most)"}
+
+  - name: RTLinkThunkEntry           # 10-byte overlay call stub
+    size: 10
+    status: confirmed
+    source: docs/structures.md §Thunk Table + findings 17/18
+    fields:
+      - {offset: 0, size: 1, name: call_op,   type: uint8,  comment: "0xE8 near call"}
+      - {offset: 1, size: 2, name: call_disp, type: int16,  comment: "rel16 -> loader (sub_2AFBD)"}
+      - {offset: 3, size: 1, name: jmp_op,    type: uint8,  comment: "0xEA ljmp"}
+      - {offset: 4, size: 2, name: jmp_off,   type: uint16}
+      - {offset: 6, size: 2, name: jmp_seg,   type: seg16,  comment: "link para; runtime = +0x1000 (NOT MZ-relocated, loader patches)"}
+      - {offset: 8, size: 2, name: row_index, type: uint16, comment: "0-based dir row (finding 18)"}
+
+  - name: RTLinkFixupEntry           # one dword in a record's fixup table
+    size: 4
+    status: confirmed
+    source: findings 17/21
+    fields:
+      - {offset: 0, size: 2, name: off, type: uint16, comment: "record-relative offset"}
+      - {offset: 2, size: 2, name: seg, type: seg16,  comment: "para within [w0, w0+span); word[off] += 0x1000 at load (finding 21)"}
+
+  - name: KbRecord                   # 14-byte keyboard state record (DGROUP)
+    size: 14
+    status: hypothesis
+    source: "findings 26 (code evidence: stride 14, base link 0x22; exact field map TBD)"
+    fields:
+      - {offset: 0, size: 14, name: raw, type: bytes, comment: "field layout unknown - see kb_field_get/set_* hypotheses in registry/naming.yaml"}

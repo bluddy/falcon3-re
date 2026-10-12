@@ -19,8 +19,8 @@
 # Conventions:
 #   - "verified" means portcheck_falcon.py produced byte-identical output vs
 #     function_bytes.json ground truth.
-#   - Renaming: when hypothesis solidifies, rename in this file, in the C/ASM
-#     source, and record in docs/findings_log.md.
+#   - Renaming: GOES THROUGH registry/naming.yaml + tools/naming.py (apply/check/
+#     push-ida). This file holds port status; hypothesis must equal the ledger name.
 #   - Never delete entries; set class/status to disproven values with notes.
 
 version: 1
@@ -110,7 +110,7 @@ routines:
     notes: "61B incl. adjacency-dependent push cs; call 0xFF7B (callee must be exactly 79B in same unit). Finding 23."
     updated: "2026-10-11"
 
-- ea: 0x197EA
+  - ea: 0x197EA
     seg: 0x197E
     ofs: 0xA
     size: 69
@@ -123,7 +123,7 @@ routines:
     notes: "69B; switch table recovered from EXE (CS=0x180F0, table @0x1982F); 'int r' needed for reg alloc; table-ptr fixup masked (finding 24)."
     updated: "2026-10-11"
 
-- ea: 0x19CB0
+  - ea: 0x19CB0
     seg: 0x19CB
     ofs: 0x0
     size: 55
@@ -136,7 +136,7 @@ routines:
     notes: "55B, 4 fixup bytes masked (lcall 0994:0D22). union in-place far-ptr +12; 'int w' declared first for slot order (finding 25)."
     updated: "2026-10-11"
 
-- ea: 0x19CE7
+  - ea: 0x19CE7
     seg: 0x19CE
     ofs: 0x7
     size: 62
