@@ -29,6 +29,7 @@
 | 2026-10-11 (session 7) | same day | **Findings 24+25: sub_197EA (69B switch) + sub_19CB0 (55B) MATCH** — case table recovered from EXE via CS-base jump-target matching (CS=0x180F0); union far-ptr arithmetic + decl-order slot rules. **Verified: 7 routines / 382 bytes** |
 | 2026-10-11 (session 8) | same day | **Finding 26: keyboard unit 10/10 MATCH (570B)** — contiguous 0x19CB0-0x19EF9 single translation unit ported (`kb_unit_19CB0.c`); assign-in-cond spill rule; **IDA-missed function sub_19D65 discovered via gap arithmetic + registered in IDB** (1008 fns); **totals: 16 verified / 846 bytes** |
 | 2026-10-12 (session 9) | ~9 h | **Naming/annotation system built**: `registry/naming.yaml` ledger (16 renames) + `registry/structs.yaml` (5 structs) + globals inventory (1,968 `data_symbols.json`) + `tools/naming.py` (list/resolve/apply/revert/check/push-ida) + **21-test suite green**; C files renamed to semantic names; names pushed into IDB with key-stable re-extract verified; portcheck resolves ida⇄semantic; ground-truth regen runbook + rebuild verdict documented in pipeline.md |
+| 2026-10-12 (session 10) | ~1 h | **Finding 27: sub_19EF9 (64B) MATCH** — 11th keyboard-unit member (`kb_field_get_26`, reads byte `rec_0026[idx*14+r]` @ +0x26, cwde sign-extend, same `farptr_field_reader` pattern); appended to `kb_unit_19CB0.c` (nothing shifts). **Verified: 17 routines / 910 bytes**. Queue advanced to overlay C-class. |
 
 ---
 
