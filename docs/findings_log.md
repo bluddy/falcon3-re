@@ -587,4 +587,26 @@ flag_0010, name_0012[], ptr_000c, rec_002d[]. DGROUP segment immediates masked
 entries; keyboard unit fully ledgered in naming.yaml (44 entries) + routines.yaml.
 
 ---
+
+## 2026-10-13 29 - BC 2.0 codegen constraint: intra-module call chains required for byte-exact ports
+Status: CONFIRMED
+
+Porting attempts on new resident C functions from gap sweep (`sub_1B631` 83B, `sub_1AAA4` 85B, `sub_1C12F` 87B) revealed a critical constraint: **BC 2.0 only produces byte-exact output for functions with ≤1 external far call + intra-module `push cs; call rel16` call chains**.
+
+**The pattern that works** (keyboard unit `kb_unit_19CB0.c`, 38 functions, 2270B):
+- 1 external far call (`fn_0994_0D22` at 0x0994:0D22, fixup-masked)
+- Multiple intra-module calls via `push cs; call rel16` (same TU, address-ordered)
+- No local buffers larger than scalars; stack args passed directly
+
+**The pattern that breaks** (new C functions):
+- Multiple external far calls to different segments (e.g., `sub_1B631` calls `fn_1994_2CA`, `fn_1994_30C`, `fn_1994_3A7`, `fn_1994_4E7`, `fn_1994_57A`, `fn_1994_2A8` — all different fixup targets)
+- Local array buffers (16+ bytes) + multiple external far calls passing buffer pointers
+- BC 2.0 emits: extra frame bytes (ENTER 0x14 vs 0x10), spurious register saves (push di), indirect call sequences via stack slots instead of direct `lcall` operands, spurious calls to self/same-module
+
+**Implication**: The viable porting targets are **resident C functions forming intra-module call chains** (same segment, `push cs; call rel16` adjacency). Overlay C functions with multiple external far calls are not tractable with current BC 2.0 setup. Next step: scan resident C functions for same-segment call chains and port as single TUs.
+
+Artifacts: classification.json (107 C-class, 757 ASM), function_bytes.json (1080 fns), portcheck_falcon.py test runs on `sub_1B631`/`sub_1AAA4`.
+
+---
+
 (append new findings below)

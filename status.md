@@ -1,7 +1,7 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-10-13 (session 12 — see Time Log; always bump + append row)
-**Branch**: master (HEAD `eb53f8b` at time of writing)
+**Last updated**: 2026-10-13 (session 13 — see Time Log; always bump + append row)
+**Branch**: master (HEAD `6fb6902` at time of writing)
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1, headless only)
 **IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at
   `C:\Program Files\IDA Professional 9.1\idat.exe`; interactive IDA must NEVER open
@@ -35,6 +35,7 @@
 | 2026-10-12 (session 10) | ~1 h | **Finding 27: sub_19EF9 (64B) MATCH** — 11th keyboard-unit member (`kb_field_get_26`, reads byte `rec_0026[idx*14+r]` @ +0x26, cwde sign-extend, same `farptr_field_reader` pattern); appended to `kb_unit_19CB0.c` (nothing shifts). **Verified: 17 routines / 910 bytes**. Queue advanced to overlay C-class. |
 | 2026-10-13 (session 11) | ~1 day | **Finding 28: keyboard unit COMPLETE — 38/38 ported, 37 MATCH + 1 known-diff (2270B)**; unit boundary confirmed 0x19BFF..0x1A4CA; **11 IDA-missed fns registered** (function_bytes 1008→1021); push-only param SI/DI caching difference resolved via scoped `#pragma option -r-`; array fns matched via `struct kb_ab` param; count-spill via assign-in-cond; kb_record_name_get accepted 2B NUL-peephole diff; **totals: 43 verified / 2282 bytes**; naming ledger 44 entries; temp `_var*.c` cleanup |
 | 2026-10-13 (session 12) | ~2 h | **Gap sweep completed** — 235 gaps ≥8B scanned, 60 code-like; **59 new resident functions registered** in IDB via `add_gap_functions.py` (function_bytes 1021→1080); extraction re-run; new C-class candidates added to port queue. |
+| 2026-10-13 (session 13) | ~2 h | **Classification re-run** → 107 C-class / 757 ASM; **porting attempt on new C fns** (`sub_1B631`, `sub_1AAA4`, `sub_1C12F`) showed multi-external-far-call + local-buffer pattern defeats BCC codegen; **key insight**: keyboard unit succeeded because single external far call + intra-module `push cs; call rel16` chain. Next: hunt resident C functions with intra-module call chains for TU porting. |
 
 ---
 
@@ -47,11 +48,14 @@ asset compression, **no embedded CRT**. 1.37 MB: 118 KB resident image + 1.2 MB
 overlay/asset tail.
 
 **Where we are** (all proven, see Current State):
-- Ground truth: **1,021 functions** with exact runtime bytes; resident validated
-  815/815 against raw EXE + MZ relocations; overlay system fully decoded and IDB
+- Ground truth: **1,080 functions** with exact runtime bytes; resident validated
+  888/888 against raw EXE + MZ relocations; overlay system fully decoded and IDB
   rebuilt (68 segments, 25,222 fixups applied, plan 1.2b 5/5).
 - **43 C routines / 2,282 bytes ported byte-exact** through a working portcheck
   loop, including the completed 2,270-byte keyboard translation unit (38 functions).
+- **Key codegen insight (finding 29)**: BC 2.0 produces byte-exact output for functions with
+  ≤1 external far call + intra-module `push cs; call rel16` call chains (same TU).
+  Multiple external far calls + local buffers trigger spilling/frame growth.
 - The **rename/annotation layer exists outside the IDA DB** (ledger + structs + globals
   inventory + tested Python tooling + IDB push), so the fragile binary DB is now a
   regenerable view, not a dependency.
@@ -66,7 +70,7 @@ overlay/asset tail.
 | Metric | Value | Source |
 |---|---|---|
 | Functions in ground truth | **1,080** (888 resident + 192 overlay + 59 gap-sweep registered) | `function_bytes.json` |
-| Classification | ASM 695 / C 98 / DATA 129 / LEAF 79 / NEARTHUNK 7 | `classification.json` |
+| Classification | ASM 757 / C 107 / DATA 129 / LEAF 80 / NEARTHUNK 7 | `classification.json` |
 | Verified routines | **43 / 2,282 bytes** | `registry/routines.yaml` (`verified: MATCH`) |
 | Rename ledger | 44 entries, all renamed + pushed to IDB | `registry/naming.yaml` |
 | Struct definitions | 5 (4 confirmed, 1 hypothesis) | `registry/structs.yaml` |
@@ -75,7 +79,7 @@ overlay/asset tail.
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–28 (append-only) | `docs/findings_log.md` |
+| Findings logged | 1–29 (append-only) | `docs/findings_log.md` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
 
 ## Verified Facts
@@ -257,7 +261,7 @@ Unverified tracked: `sub_10340` (hand ASM, `not_c-portable`).
 | Resident image | 888 | entry, overlay mgr, video, input, sim core, keyboard unit (complete) + 59 gap-sweep |
 | Overlay (rebuilt IDB) | 192 | via 184 thunk entries + analysis; cluster-B included |
 | IDA-missed registered | 72 | kb-unit gap fns (findings 26/28) + 59 gap-sweep fns |
-| **Total** | **1,080** | C-class 98 → 43 ported (+1 known-diff), **~54 remaining queue** |
+| **Total** | **1,080** | C-class 107 → 43 ported (+1 known-diff), **~64 remaining queue** |
 
 Remaining tail: ~1.2 MB = RTLink record data + PKWARE assets (formats partially
 decoded; `game/` has unpacked assets).
@@ -268,7 +272,7 @@ decoded; `game/` has unpacked assets).
 
 ## Immediate Next Steps (in order)
 
-1. **Port queue** (loop above): classify new gap-sweep functions (`classify_routines.py` on updated IDB), then port smallest C-class — overlay C functions (`r33_e85` 45B, `r32_e73` 50B) and new resident C-class by size.
+1. **Port queue — resident C intra-module call chains**: scan resident C functions for same-segment `call rel16` chains (intra-module calls). Port as single TUs like keyboard unit (`sub_17A85`/`sub_17AD4` was first proven example). Target: find next contiguous TU with 1 external far call + multiple intra-module calls.
 2. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
 3. **Track C setup**: copy gunship's `extract_routines.py`/`replace_routines.py`, write `tools/splice.py`, build/locate `mzdiff` (WSL binary exists — see pipeline.md), then the first splice + mzdiff verification.
 4. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
