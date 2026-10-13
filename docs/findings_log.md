@@ -525,4 +525,66 @@ function_bytes 1007 → **1008**. Worth a future sweep for other gap-hidden func
 **Totals: 16 verified routines / 846 bytes** (up from 7/382).
 
 ---
+
+## 2026-10-13 28 - Keyboard unit COMPLETE: 38/38 ported, 37 MATCH + 1 known-diff (2270B)
+Status: CONFIRMED
+
+**Unit boundary**: 0x19BFF..0x1A4CA = 38 functions / 2270 B, one TU. The unit
+starts with four tiny DGROUP accessors (kb_record_base/kb_index_get/kb_farptr_get/
+kb_name_copy) and ends with four flag/long accessors (kb_flag_get_10, two flag
+setters, dgroup_long_get_08). All 38 now live in `src/kb_unit_19CB0.c` (the old
+`src/sub_19CB0.c` reader was folded in). **37/38 portcheck MATCH**; the 38th
+(kb_record_name_get, 19C4C) is a documented 2-byte peephole diff (below).
+
+**13 IDA-missed functions registered this session** (14 total in the unit incl.
+sub_19D65 from finding 26): gap analysis of the unit's `push cs; call rel16`
+displacement arithmetic exposed functions absent from IDA's function list.
+Batch 1 (2 fns): sub_19F7A, sub_19F8E. Batch 2 (11 fns): 19BFF, 1A00F, 1A0BC,
+1A123, 1A1D6, 1A2DE, 1A348, 1A3B3, 1A423, 1A4A2, 1A4B6 — all add_func'd + named
+in the IDB (addfunc2/3.log). function_bytes.json 1008 → **1021**. The batch
+registrar is now committed as `tools/add_missed_functions.py` so the regen
+runbook is reproducible; `tools/gap_sweep.py` (resident-window gap detector,
+242 candidate gaps logged) generalizes the technique beyond one unit.
+Confirms finding 26's lesson: IDA under-counts small leaf functions;
+unit-boundary arithmetic is the reliable detector.
+
+**Codegen difference 1 — push-only param SI/DI caching (the unit's big trap)**:
+our bcc caches multi-use push-only params into SI/DI under default `-r`; the
+original compiler build does NOT (it only allocates registers for register-context
+params/locals: 1A2DE's i→SI, 19C4C's i→DI, get_22's r→SI). Symptoms: get_2c-style
+functions put a in SI and b in DI; the original leaves them memory-only. Global
+`-r-` reproduces get_2c exactly but breaks SI-using functions in the same TU;
+the `register` keyword is IGNORED under `-r-`. **`#pragma option -r-` / `-r`
+(BC 2.0, byte-proven) is the working tool**: a scoped region disables register
+allocation for get_2c..count_2c only; the pragma-restored region keeps SI-using
+fns correct. All 6 field fns in that region MATCH.
+
+**Codegen difference 2 — array fns: struct param workaround**: array_get/set_1/2
+need i→SI with a,b memory-only (original). Plain `(int a, int b, int i)` gives
+si/di to a,b (cached above). `(struct kb_ab ab, int i)` forces a,b into a 2-word
+struct (memory, identical stack layout/pushes) leaving i the sole scalar → i→SI.
+`register int i` alone still cached a→DI. All 4 array fns MATCH with the struct.
+
+**Codegen difference 3 — count spill via assign-in-cond**: array_get_2/set_2 hold
+both count (plain assign, 2 uses) and r (assign-in-cond). Original spills BOTH to
+stack; our BC cached count in DI. Rewriting as `if ((count = kb_count_2c(...)) <= i)`
+invokes finding 26's spill-forcer → both stack-resident → byte-exact.
+
+**Known unfixable diff — NUL-test peephole (19C4C, kb_record_name_get)**:
+`if (p[k] == 0)` char test: our BC emits `cmp byte ptr es:[bx],0` (4B); the
+original emits `mov al,es:[bx]; cbw; or ax,ax` (6B) + dependent jmp displacement
+shifts. Not suppressible via int cast, volatile, -Z, -O-, -r-. Accepted as a
+known build difference; function stays port_status draft / verified MISMATCH
+(98B vs 100B). All other bytes (i→DI, k→SI, the copy loop) match.
+
+**Other notes**: word/long field access requires explicit `(int far *)` / `(long
+far *)` casts off char pointers (get_31/set_31 at +0x31, get_28/set_28 at +0x28);
+set_28 takes `long v` and stores only the low word. New DGROUP externs: lng_0008,
+flag_0010, name_0012[], ptr_000c, rec_002d[]. DGROUP segment immediates masked
+(b89478 vs b80000), plus the usual rec_* displacements and ±0x1000 fixup words.
+
+**Totals: 43 verified routines / 2282 bytes** (up from 16/846); registry now 45
+entries; keyboard unit fully ledgered in naming.yaml (44 entries) + routines.yaml.
+
+---
 (append new findings below)

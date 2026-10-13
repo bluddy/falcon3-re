@@ -86,6 +86,116 @@ symbols:
     name: kb_field_get_26
     kind: function
     notes: "keyboard unit field +0x26 byte getter (cwde sign-extend); finding 27"
+  - ida: sub_19F39
+    name: kb_field_set_26
+    kind: function
+    notes: "keyboard unit field +0x26 byte setter; finding 28"
+  - ida: sub_19F7A
+    name: kb_clear_26
+    kind: function
+    notes: "kb_field_set_26(a,b,0); IDA-MISSED fn found by unit gap analysis; finding 28"
+  - ida: sub_19F8E
+    name: kb_field_get_27
+    kind: function
+    notes: "keyboard unit field +0x27 byte getter (cwde); IDA-MISSED fn found by unit gap analysis; finding 28"
+  - ida: sub_19FCE
+    name: kb_field_set_27
+    kind: function
+    notes: "keyboard unit field +0x27 byte setter; finding 28"
+
+  # --- keyboard unit accessors + field fns (unit 0x19BFF..0x1A4CA, finding 28)
+  - ida: sub_19BFF
+    name: kb_record_base
+    kind: function
+    notes: "returns far ptr MK_FP(DGROUP,0x22) = record array base; 11B unit-head fn"
+  - ida: sub_19C0A
+    name: kb_index_get
+    kind: function
+    notes: "returns word @DGROUP:0x20 (idx_0020); external lcall callers"
+  - ida: sub_19C18
+    name: kb_farptr_get
+    kind: function
+    notes: "returns far ptr stored @DGROUP:0x0c/0x0e (dx:ax)"
+  - ida: sub_19C2B
+    name: kb_name_copy
+    kind: function
+    notes: "copies 13B @DGROUP:0x12 to caller far-ptr arg (void)"
+  - ida: sub_19C4C
+    name: kb_record_name_get
+    kind: function
+    notes: "clear dest[13]; if idx_0020 < i return 0; copy record[i] name (<=12B, NUL-stop); return 1"
+  - ida: sub_1A00F
+    name: kb_field_set_27_1
+    kind: function
+    notes: "kb_field_set_27(a,b,1); manual push-bp wrapper"
+  - ida: sub_1A023
+    name: kb_field_get_28
+    kind: function
+    notes: "long getter @+0x28 (lo@0x28,hi@0x2a); -1L on reader fail"
+  - ida: sub_1A073
+    name: kb_field_set_28
+    kind: function
+    notes: "long setter @+0x28; stores [bp+0xc]->+0x2a, [bp+0xa]->+0x28 (param order TBD by portcheck)"
+  - ida: sub_1A0BC
+    name: kb_clear_28
+    kind: function
+    notes: "kb_field_set_28(a,b,0,0); manual push-bp wrapper"
+  - ida: sub_1A0D2
+    name: kb_field_get_2c
+    kind: function
+    notes: "byte getter @+0x2c, guard get_22==0, else 0"
+  - ida: sub_1A123
+    name: kb_field_set_2c
+    kind: function
+    notes: "byte setter @+0x2c, guard get_22==0"
+  - ida: sub_1A176
+    name: kb_field_get_2d
+    kind: function
+    notes: "long getter @+0x2d (lo@0x2d,hi@0x2f), guard get_22==0"
+  - ida: sub_1A1D6
+    name: kb_field_get_31
+    kind: function
+    notes: "word getter @+0x31; guards get_22==0, get_25!=0, get_24==2"
+  - ida: sub_1A24B
+    name: kb_field_set_31
+    kind: function
+    notes: "word setter @+0x31"
+  - ida: sub_1A28C
+    name: kb_count_2c
+    kind: function
+    notes: "byte @+0x2c when mode get_22==1, else 0; array bound for indexed fns"
+  - ida: sub_1A2DE
+    name: kb_array_get_1
+    kind: function
+    notes: "indexed byte read @base+0x2d+i; guards mode==1, i<count"
+  - ida: sub_1A348
+    name: kb_array_set_1
+    kind: function
+    notes: "indexed byte write @base+0x2d+i; guards mode==1, i<count"
+  - ida: sub_1A3B3
+    name: kb_array_get_2
+    kind: function
+    notes: "indexed byte read @base+0x2d+count+i; guards mode==1, i<count"
+  - ida: sub_1A423
+    name: kb_array_set_2
+    kind: function
+    notes: "indexed byte write @base+0x2d+count+i; guards mode==1, i<count"
+  - ida: sub_1A494
+    name: kb_flag_get_10
+    kind: function
+    notes: "returns word @DGROUP:0x10"
+  - ida: sub_1A4A2
+    name: kb_flag_set_10_1
+    kind: function
+    notes: "DGROUP:0x10 = 1; return 1"
+  - ida: sub_1A4B6
+    name: kb_flag_set_10_0
+    kind: function
+    notes: "DGROUP:0x10 = 0; return 1"
+  - ida: sub_1A4CA
+    name: dgroup_long_get_08
+    kind: function
+    notes: "returns long @DGROUP:0x08/0x0a (dx:ax); unit-tail getter"
 
   # --- globals: add entries as hypotheses form, e.g.
   # - ida: word_12345

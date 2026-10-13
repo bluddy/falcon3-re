@@ -1,12 +1,15 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-10-12 (session 9 — see Time Log; always bump + append row)
+**Last updated**: 2026-10-13 (session 11 — see Time Log; always bump + append row)
 **Branch**: master (HEAD `eb53f8b` at time of writing)
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1, headless only)
+**IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at
+  `C:\Program Files\IDA Professional 9.1\idat.exe`; interactive IDA must NEVER open
+  Falcon — it holds the Gunship DB)
 
 > This file is the **entry point for a future agent**. It states the exact current
 > state and the exact method. Deep rationale lives in `docs/findings_log.md`
-> (append-only history, findings 1–26), detailed procedures in `docs/pipeline.md`.
+> (append-only history, findings 1–28), detailed procedures in `docs/pipeline.md`.
 > Protocol: **Knowledge Capture** — 7 sinks, findings log append-only, status
 > Time Log bumped on every change.
 
@@ -23,13 +26,14 @@
 | 2026-10-11 (late night) | same day | **Finding 17: RTLink record schema cracked via gunship_2000** (w2×16 fixup base, flags 0x04/0x01, thunk=index, 4-byte-dir=misread fixup table); loader disassembled (`sub_2AFBD`/`sub_2AC4C`); structures.md + plan 1.2b updated. Open: per-row file base validation → IDB rebuild |
 | 2026-10-11 (deep night) | same day | **Finding 18: runtime placement model SOLVED** — block=[(0x1000+w0)<<4, +span×16), same-w0 overlap (transient), thunk word=row index (63/63 self-consistent), paras containment 250/250; w2×16 base 61/70 + scanner 46/70; small-w2 rows=data-first. plan 1.2b: 2/5 items done. Next: `rebuild_overlay_segments.py` |
 | 2026-10-11 (session 3) | same day | **Finding 19: overlay IDB REBUILT** — 48 segments / 778,640 B (8 real + 40 synthetic; cluster-B 50–69 unplaced), 184 thunk entries marked → **141 overlay functions, 956 total**, C-class 65→98; `function_bytes.json` re-extracted (live); plan 1.2b 4/5 (fixup application + cluster-B remain) |
-| 2026-10-11 (session 4) | same day | **Findings 20+21: cluster-B FOUND (B0=0xFFFA0)** — all 70 rows placed → 68 segments / 1,053,376 B; **fixups applied: 25,222 × +0x1000** byte-guarded; entries 250 → **192 overlay fns, 1,007 total**; C=97 with relocated DGROUP. **plan 1.2b 5/5 core done** |
+| 2026-10-11 (session 4) | same day | **Findings 20+21: cluster-B FOUND (B0=0xFFFA0)** — all 70 rows placed → 68 segments / 1,053,376 B; **fixups applied: 25,222 × +0x1000** byte-guarded; entries 192 overlay fns, **1,007 total**; C=97 with relocated DGROUP. **plan 1.2b 5/5 core done** |
 | 2026-10-11 (session 5) | same day | **Finding 22: COMPILER REVISED — Borland C++ 2.0 `bcc -c -ml -1 -O`** (user installed; enter/leave = BC; MSC 5.1/6.0 re-tested → no enter, DISPROVEN for C); **sub_1A6D4 44B MATCH** end-to-end via new portcheck `--cc bcc` + `obj_extract.py`; toolchain.md rewritten. C-port queue resumed |
 | 2026-10-11 (session 6) | same day | **Finding 23: chained same-module port** — sub_17A85 (79B, 4 fixups masked) + sub_17AD4 (61B incl. adjacency-dependent `call 0xFF7B`) **BOTH MATCH**; BC large-model rules decoded (char* = far!; `(char near*)` → DS conversion; decl-order of `int i=0`; one-expr flags). Fixup masking + ±0x1000 reloc normalization now in portcheck compare. **Verified: 5 routines** |
 | 2026-10-11 (session 7) | same day | **Findings 24+25: sub_197EA (69B switch) + sub_19CB0 (55B) MATCH** — case table recovered from EXE via CS-base jump-target matching (CS=0x180F0); union far-ptr arithmetic + decl-order slot rules. **Verified: 7 routines / 382 bytes** |
 | 2026-10-11 (session 8) | same day | **Finding 26: keyboard unit 10/10 MATCH (570B)** — contiguous 0x19CB0-0x19EF9 single translation unit ported (`kb_unit_19CB0.c`); assign-in-cond spill rule; **IDA-missed function sub_19D65 discovered via gap arithmetic + registered in IDB** (1008 fns); **totals: 16 verified / 846 bytes** |
 | 2026-10-12 (session 9) | ~9 h | **Naming/annotation system built**: `registry/naming.yaml` ledger (16 renames) + `registry/structs.yaml` (5 structs) + globals inventory (1,968 `data_symbols.json`) + `tools/naming.py` (list/resolve/apply/revert/check/push-ida) + **21-test suite green**; C files renamed to semantic names; names pushed into IDB with key-stable re-extract verified; portcheck resolves ida⇄semantic; ground-truth regen runbook + rebuild verdict documented in pipeline.md |
 | 2026-10-12 (session 10) | ~1 h | **Finding 27: sub_19EF9 (64B) MATCH** — 11th keyboard-unit member (`kb_field_get_26`, reads byte `rec_0026[idx*14+r]` @ +0x26, cwde sign-extend, same `farptr_field_reader` pattern); appended to `kb_unit_19CB0.c` (nothing shifts). **Verified: 17 routines / 910 bytes**. Queue advanced to overlay C-class. |
+| 2026-10-13 (session 11) | ~1 day | **Finding 28: keyboard unit COMPLETE — 38/38 ported, 37 MATCH + 1 known-diff (2270B)**; unit boundary confirmed 0x19BFF..0x1A4CA; **11 IDA-missed fns registered** (function_bytes 1008→1021); push-only param SI/DI caching difference resolved via scoped `#pragma option -r-`; array fns matched via `struct kb_ab` param; count-spill via assign-in-cond; kb_record_name_get accepted 2B NUL-peephole diff; **totals: 43 verified / 2282 bytes**; naming ledger 44 entries; temp `_var*.c` cleanup |
 
 ---
 
@@ -42,11 +46,11 @@ asset compression, **no embedded CRT**. 1.37 MB: 118 KB resident image + 1.2 MB
 overlay/asset tail.
 
 **Where we are** (all proven, see Current State):
-- Ground truth: 1,008 functions with exact runtime bytes; resident validated 815/815
-  against raw EXE + MZ relocations; overlay system fully decoded and IDB rebuilt
-  (68 segments, 25,222 fixups applied, plan 1.2b 5/5).
-- **16 C routines / 846 bytes ported byte-exact** through a working portcheck loop,
-  including one 570-byte multi-function translation unit and one IDA-missed function.
+- Ground truth: **1,021 functions** with exact runtime bytes; resident validated
+  815/815 against raw EXE + MZ relocations; overlay system fully decoded and IDB
+  rebuilt (68 segments, 25,222 fixups applied, plan 1.2b 5/5).
+- **43 C routines / 2,282 bytes ported byte-exact** through a working portcheck
+  loop, including the completed 2,270-byte keyboard translation unit (38 functions).
 - The **rename/annotation layer exists outside the IDA DB** (ledger + structs + globals
   inventory + tested Python tooling + IDB push), so the fragile binary DB is now a
   regenerable view, not a dependency.
@@ -60,17 +64,17 @@ overlay/asset tail.
 
 | Metric | Value | Source |
 |---|---|---|
-| Functions in ground truth | **1,008** (816 resident + 192 overlay) | `function_bytes.json` |
+| Functions in ground truth | **1,021** (816 resident + 192 overlay + 13 registered missed) | `function_bytes.json` |
 | Classification | ASM 695 / C 98 / DATA 129 / LEAF 79 / NEARTHUNK 7 | `classification.json` |
-| Verified routines | **16 / 846 bytes** | `registry/routines.yaml` (`verified: MATCH`) |
-| Rename ledger | 16 entries, all renamed + pushed to IDB | `registry/naming.yaml` |
+| Verified routines | **43 / 2,282 bytes** | `registry/routines.yaml` (`verified: MATCH`) |
+| Rename ledger | 44 entries, all renamed + pushed to IDB | `registry/naming.yaml` |
 | Struct definitions | 5 (4 confirmed, 1 hypothesis) | `registry/structs.yaml` |
 | Globals inventoried | **1,968** (name=null until renamed) | `data_symbols.json` |
 | Tests | **21 green** (`python -m unittest discover -s tests`) | `tests/test_naming.py` |
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
-| IDB regen cost | ~5 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–26 (append-only) | `docs/findings_log.md` |
+| IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
+| Findings logged | 1–28 (append-only) | `docs/findings_log.md` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
 
 ## Verified Facts
@@ -138,9 +142,9 @@ venv\Scripts\python tools\naming.py check        # must be green (exit 0)
 Multi-function translation units: when routines call each other with
 `push cs; call rel16`, they must live in ONE .c file **in address order** and every
 callee must compile to its exact original size (finding 23) — see
-`src/kb_unit_19CB0.c` as the model (10 functions, one file).
+`src/kb_unit_19CB0.c` as the model (38 functions, 2,270 B, one file).
 
-### 2. Borland C++ 2.0 codegen rules (byte-exact cheat sheet; findings 22–26)
+### 2. Borland C++ 2.0 codegen rules (byte-exact cheat sheet; findings 22–28)
 
 | # | Rule |
 |---|------|
@@ -154,6 +158,10 @@ callee must compile to its exact original size (finding 23) — see
 | 8 | Sparse `switch` → search-loop + case/jump tables appended after the function; case values may be missing from C context → read them from the EXE (CS-recovery technique, finding 24). |
 | 9 | Comparisons tolerate: FIXUPP-masked operands (call disp/far ptrs/table ptrs), `got+0x1000 == expected` words (MZ/RTLink relocs), trailing post-function bytes (data tables). |
 | 10 | Long→far-ptr reinterpretation idiom: `union { long l; char far *p; }` → in-place `add [slot],12` + `les` (a folded cast instead folds +12 into addressing — 3B shorter, wrong). |
+| 11 | **Push-only param caching (finding 28)**: under default `-r`, our bcc caches multi-use push-only params into SI/DI; the original build does NOT. Fix: wrap the affected functions in `#pragma option -r-` ... `#pragma option -r` (BCC 2.0 supports per-region pragmas; global `-r-` breaks SI-using fns in the same TU; `register` keyword is ignored under `-r-`). |
+| 12 | **Array fns with SI index (finding 28)**: if the original has i→SI with a,b memory-only, pass a,b as a 2-word struct: `f(struct kb_ab ab, int i)` forces a,b to memory (identical stack) leaving i as the sole scalar → SI. `register int i` alone still caches a→DI. |
+| 13 | **Plain-assign locals with 2 uses (finding 28)**: our BC may cache them in DI; the original spills them. Wrap in assign-in-cond (`if ((count = f()) <= i)`) to invoke rule 5's spill-forcer. |
+| 14 | Known unfixable: `if (p[k] == 0)` char NUL test peepholes to `cmp byte,0` (4B) vs original `mov al/cbw/or ax,ax` (6B); not suppressible — accept as documented diff (finding 28, kb_record_name_get). |
 
 ### 3. Naming workflow (renames never touch the ledger's `ida`)
 
@@ -175,6 +183,7 @@ python -m unittest discover -s tests           # 21 tests; run after touching na
 idat -A -S tools\ida_snapshot.py               <IDB>   # fresh analysis (legacy overlays!)
 idat -A -S tools\rebuild_overlay_segments.py   <IDB>   # correct layout from committed placement
 idat -A -S tools\_add_missed_fn.py             <IDB>   # sub_19D65 (manual fn)
+idat -A -S tools\add_missed_functions.py       <IDB>   # 11 kb-unit gap fns (finding 28)
 idat -A -S tools\mark_overlay_entries.py       <IDB>   # 184 thunk entries -> ~192 fns
 idat -A -S tools\apply_overlay_fixups.py       <IDB>   # 25,222 fixups
 idat -A -S tools\extract_ida_bytes.py          <IDB>   # regenerate ground truth (keys stable)
@@ -188,7 +197,7 @@ venv\Scripts\python tools\naming.py push-ida           # re-sync semantic names
 
 ---
 
-## Verified Routines (16 / 846 bytes)
+## Verified Routines (43 / 2,282 bytes)
 
 | IDA name | Semantic name | ea | B | Source | Finding |
 |---|---|---|---|---|---|
@@ -198,6 +207,10 @@ venv\Scripts\python tools\naming.py push-ida           # re-sync semantic names
 | sub_17A85 | dgroup_record_writer | 0x17A85 | 79 | `src/sub_17AD4.c` (unit) | 23 |
 | sub_17AD4 | widen_and_forward | 0x17AD4 | 61 | `src/sub_17AD4.c` (unit) | 23 |
 | sub_197EA | key_mapper | 0x197EA | 69 | `src/sub_197EA.c` | 24 |
+| sub_19BFF | kb_record_base | 0x19BFF | 11 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_19C0A | kb_index_get | 0x19C0A | 14 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_19C18 | kb_farptr_get | 0x19C18 | 19 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_19C2B | kb_name_copy | 0x19C2B | 33 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
 | sub_19CB0 | farptr_field_reader | 0x19CB0 | 55 | `src/kb_unit_19CB0.c` | 25 |
 | sub_19CE7 | kb_field_get_22 | 0x19CE7 | 62 | `src/kb_unit_19CB0.c` | 26 |
 | sub_19D25 | kb_field_get_23 | 0x19D25 | 64 | `src/kb_unit_19CB0.c` | 26 |
@@ -208,16 +221,41 @@ venv\Scripts\python tools\naming.py push-ida           # re-sync semantic names
 | sub_19E3B | kb_field_get_25 | 0x19E3B | 64 | `src/kb_unit_19CB0.c` | 26 |
 | sub_19E7B | kb_field_set_25_1 | 0x19E7B | 63 | `src/kb_unit_19CB0.c` | 26 |
 | sub_19EBA | kb_field_set_25_0 | 0x19EBA | 63 | `src/kb_unit_19CB0.c` | 26 |
+| sub_19EF9 | kb_field_get_26 | 0x19EF9 | 64 | `src/kb_unit_19CB0.c` | 27 |
+| sub_19F39 | kb_field_set_26 | 0x19F39 | 65 | `src/kb_unit_19CB0.c` | 28 |
+| sub_19F7A | kb_clear_26 | 0x19F7A | 20 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_19F8E | kb_field_get_27 | 0x19F8E | 64 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_19FCE | kb_field_set_27 | 0x19FCE | 65 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A00F | kb_field_set_27_1 | 0x1A00F | 20 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_1A023 | kb_field_get_28 | 0x1A023 | 80 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A073 | kb_field_set_28 | 0x1A073 | 73 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A0BC | kb_clear_28 | 0x1A0BC | 22 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_1A0D2 | kb_field_get_2c | 0x1A0D2 | 81 | `src/kb_unit_19CB0.c` | 28 (pragma -r-) |
+| sub_1A123 | kb_field_set_2c | 0x1A123 | 83 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_1A176 | kb_field_get_2d | 0x1A176 | 96 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A1D6 | kb_field_get_31 | 0x1A1D6 | 117 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_1A24B | kb_field_set_31 | 0x1A24B | 65 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A28C | kb_count_2c | 0x1A28C | 82 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A2DE | kb_array_get_1 | 0x1A2DE | 106 | `src/kb_unit_19CB0.c` | 28 (struct param) |
+| sub_1A348 | kb_array_set_1 | 0x1A348 | 107 | `src/kb_unit_19CB0.c` | 28 (struct param) |
+| sub_1A3B3 | kb_array_get_2 | 0x1A3B3 | 112 | `src/kb_unit_19CB0.c` | 28 (struct param) |
+| sub_1A423 | kb_array_set_2 | 0x1A423 | 113 | `src/kb_unit_19CB0.c` | 28 (struct param) |
+| sub_1A494 | kb_flag_get_10 | 0x1A494 | 14 | `src/kb_unit_19CB0.c` | 28 |
+| sub_1A4A2 | kb_flag_set_10_1 | 0x1A4A2 | 20 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_1A4B6 | kb_flag_set_10_0 | 0x1A4B6 | 20 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
+| sub_1A4CA | dgroup_long_get_08 | 0x1A4CA | 19 | `src/kb_unit_19CB0.c` | 28 (IDA-missed fn) |
 
+Known-diff tracked: `sub_19C4C` (kb_record_name_get, 98B vs 100B NUL-peephole, finding 28).
 Unverified tracked: `sub_10340` (hand ASM, `not_c-portable`).
 
 ## Code Coverage (fresh)
 
 | Region | Functions | Notes |
 |--------|-----------|-------|
-| Resident image | 816 | entry, overlay mgr, video, input, sim core, keyboard unit |
+| Resident image | 816 | entry, overlay mgr, video, input, sim core, keyboard unit (complete) |
 | Overlay (rebuilt IDB) | 192 | via 184 thunk entries + analysis; cluster-B included |
-| **Total** | **1,008** | C-class 98 → 16 ported, **82 remaining queue** |
+| IDA-missed registered | 13 | kb-unit gap fns (findings 26/28) |
+| **Total** | **1,021** | C-class 98 → 43 ported (+1 known-diff), **~54 remaining queue** |
 
 Remaining tail: ~1.2 MB = RTLink record data + PKWARE assets (formats partially
 decoded; `game/` has unpacked assets).

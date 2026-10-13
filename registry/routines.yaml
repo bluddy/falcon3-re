@@ -131,10 +131,10 @@ routines:
     class: C
     hypothesis: "farptr_field_reader"   # r=fn(a,b); r==-1L?-1: *(int far*)(r+12)
     port_status: verified
-    port_file: src/sub_19CB0.c
+    port_file: src/kb_unit_19CB0.c      # moved from src/sub_19CB0.c (unit completion)
     verified: MATCH
     notes: "55B, 4 fixup bytes masked (lcall 0994:0D22). union in-place far-ptr +12; 'int w' declared first for slot order (finding 25)."
-    updated: "2026-10-11"
+    updated: "2026-10-13"
 
   - ea: 0x19CE7
     seg: 0x19CE
@@ -266,10 +266,361 @@ routines:
     notes: "64B, 8 fixup bytes masked. 11th keyboard-unit member; same farptr_field_reader pattern (finding 27)."
     updated: "2026-10-12"
 
+  - ea: 0x19F39
+    seg: 0x19F3
+    ofs: 0x9
+    size: 65
+    far: true
+    class: C
+    hypothesis: "kb_field_set_26"        # rec_0026[idx*14+r] = c; return 1/0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "65B, 8 fixup bytes masked. byte store @ +0x26; xchg ax,bx idiom; 12th keyboard-unit member (finding 28)."
+    updated: "2026-10-12"
+
+  - ea: 0x19F7A
+    seg: 0x19F7
+    ofs: 0xA
+    size: 20
+    far: true
+    class: C
+    hypothesis: "kb_clear_26"           # return kb_field_set_26(a,b,0)
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "20B, manual push-bp frame (no locals), 0 fixups. IDA-MISSED function - found by unit gap analysis between sub_19F39 (end 0x19F7A) and sub_19F8E; compared vs raw EXE (pre-registration)."
+    updated: "2026-10-12"
+
+  - ea: 0x19F8E
+    seg: 0x19F8
+    ofs: 0xE
+    size: 64
+    far: true
+    class: C
+    hypothesis: "kb_field_get_27"        # read byte rec_0027[idx*14+r] @ +0x27, cwde
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "64B, 8 fixup bytes masked. byte getter @ +0x27 (DGROUP seg 0x6894 relocated, finding 21). IDA-MISSED function - found by unit gap analysis; compared vs raw EXE (pre-registration)."
+    updated: "2026-10-12"
+
+  - ea: 0x19FCE
+    seg: 0x19FC
+    ofs: 0xE
+    size: 65
+    far: true
+    class: C
+    hypothesis: "kb_field_set_27"        # rec_0027[idx*14+r] = c; return 1/0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "65B, 8 fixup bytes masked. byte store @ +0x27; 14th keyboard-unit member (finding 28)."
+    updated: "2026-10-12"
+
+  - ea: 0x19BFF
+    seg: 0x19BF
+    ofs: 0xF
+    size: 11
+    far: true
+    class: C
+    hypothesis: "kb_record_base"         # return rec_002d; first byte of kb TU @0x19BFF
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "11B, 0 fixups. TU start marker (finding 28). IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x19C0A
+    seg: 0x19C0
+    ofs: 0xA
+    size: 14
+    far: true
+    class: C
+    hypothesis: "kb_index_get"           # return idx_0020
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "14B, 2 fixup bytes masked (DGROUP)."
+    updated: "2026-10-13"
+
+  - ea: 0x19C18
+    seg: 0x19C1
+    ofs: 0x8
+    size: 19
+    far: true
+    class: C
+    hypothesis: "kb_farptr_get"          # return ptr_000c (char far * far @0x0c)
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "19B, 4 fixup bytes masked."
+    updated: "2026-10-13"
+
+  - ea: 0x19C2B
+    seg: 0x19C2
+    ofs: 0xB
+    size: 33
+    far: true
+    class: C
+    hypothesis: "kb_name_copy"           # copy name_0012[13] to dest
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "33B, 4 fixup bytes masked."
+    updated: "2026-10-13"
+
+  - ea: 0x19C4C
+    seg: 0x19C4
+    ofs: 0xC
+    size: 100
+    far: true
+    class: C
+    hypothesis: "kb_record_name_get"     # clear dest[13]; idx guard; copy <=12B NUL-stopped
+    port_status: draft
+    port_file: src/kb_unit_19CB0.c
+    verified: MISMATCH
+    notes: "98B vs 100B: our bcc peepholes 'p[k]==0' char NUL test to cmp-byte (4B) vs original mov-al/cbw/or-ax (6B) + dependent jmp disp shifts; accepted known diff (finding 28). i->DI, k->SI; decl-init caching."
+    updated: "2026-10-13"
+
+  - ea: 0x1A00F
+    seg: 0x1A00
+    ofs: 0xF
+    size: 20
+    far: true
+    class: C
+    hypothesis: "kb_field_set_27_1"      # return kb_field_set_27(a,b,1)
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "20B, manual push-bp frame, 2 fixup bytes masked. IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A023
+    seg: 0x1A02
+    ofs: 0x3
+    size: 80
+    far: true
+    class: C
+    hypothesis: "kb_field_get_28"        # read int rec_0028[idx*14+r] @ +0x28
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "80B, 10 fixup bytes masked. int getter; (int far*) cast (finding 28)."
+    updated: "2026-10-13"
+
+  - ea: 0x1A073
+    seg: 0x1A07
+    ofs: 0x3
+    size: 73
+    far: true
+    class: C
+    hypothesis: "kb_field_set_28"        # rec_0028[idx*14+r] = (int)v; return 1/0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "73B, 10 fixup bytes masked. long v param: lo@+0xa hi@+0xc; store low word only (finding 28)."
+    updated: "2026-10-13"
+
+  - ea: 0x1A0BC
+    seg: 0x1A0B
+    ofs: 0xC
+    size: 22
+    far: true
+    class: C
+    hypothesis: "kb_clear_28"            # return kb_field_set_28(a,b,0L)
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "22B, manual push-bp frame, 2 fixup bytes masked. IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A0D2
+    seg: 0x1A0D
+    ofs: 0x2
+    size: 81
+    far: true
+    class: C
+    hypothesis: "kb_field_get_2c"        # read byte rec_002c[idx*14+r] @ +0x2c
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "81B, 8 fixup bytes masked. #pragma option -r- region (si/di push-only caching disabled, finding 28)."
+    updated: "2026-10-13"
+
+  - ea: 0x1A123
+    seg: 0x1A12
+    ofs: 0x3
+    size: 83
+    far: true
+    class: C
+    hypothesis: "kb_field_set_2c"        # rec_002c[idx*14+r] = c; return 1/0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "83B, 8 fixup bytes masked. pragma -r- region. IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A176
+    seg: 0x1A17
+    ofs: 0x6
+    size: 96
+    far: true
+    class: C
+    hypothesis: "kb_field_get_2d"        # read byte rec_002d[idx*14+r] @ +0x2d
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "96B, 8 fixup bytes masked. pragma -r- region."
+    updated: "2026-10-13"
+
+  - ea: 0x1A1D6
+    seg: 0x1A1D
+    ofs: 0x6
+    size: 117
+    far: true
+    class: C
+    hypothesis: "kb_field_get_31"        # read int rec_002d[idx*14+r] @ +0x31
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "117B, 8 fixup bytes masked. (int far*)(rec_002d+...) word-read cast at +0x31 (finding 28). IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A24B
+    seg: 0x1A24
+    ofs: 0xB
+    size: 65
+    far: true
+    class: C
+    hypothesis: "kb_field_set_31"        # rec_002d[idx*14+r] = v; return 1/0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "65B, 8 fixup bytes masked. int word-write at +0x31 (finding 28)."
+    updated: "2026-10-13"
+
+  - ea: 0x1A28C
+    seg: 0x1A28
+    ofs: 0xC
+    size: 82
+    far: true
+    class: C
+    hypothesis: "kb_count_2c"            # count bytes rec_002c[idx*14+r] @ +0x2c until 0
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "82B, 8 fixup bytes masked. pragma -r- region end."
+    updated: "2026-10-13"
+
+  - ea: 0x1A2DE
+    seg: 0x1A2D
+    ofs: 0xE
+    size: 106
+    far: true
+    class: C
+    hypothesis: "kb_array_get_1"         # read rec_002d[idx*14+farptr+i]; struct kb_ab param
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "106B, 8 fixup bytes masked. struct kb_ab forces a,b to memory; i->SI (finding 28). IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A348
+    seg: 0x1A34
+    ofs: 0x8
+    size: 107
+    far: true
+    class: C
+    hypothesis: "kb_array_set_1"         # write rec_002d[idx*14+farptr+i] = c
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "107B, 8 fixup bytes masked. struct kb_ab param (finding 28). IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A3B3
+    seg: 0x1A3B
+    ofs: 0x3
+    size: 112
+    far: true
+    class: C
+    hypothesis: "kb_array_get_2"         # read rec_002d[idx*14+farptr+count+i]
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "112B, 8 fixup bytes masked. assign-in-cond for count forces stack spill (finding 28). IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A423
+    seg: 0x1A42
+    ofs: 0x3
+    size: 113
+    far: true
+    class: C
+    hypothesis: "kb_array_set_2"         # write rec_002d[idx*14+farptr+count+i] = c
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "113B, 8 fixup bytes masked. assign-in-cond for count (finding 28). IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A494
+    seg: 0x1A49
+    ofs: 0x4
+    size: 14
+    far: true
+    class: C
+    hypothesis: "kb_flag_get_10"         # return flag_0010
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "14B, 4 fixup bytes masked."
+    updated: "2026-10-13"
+
+  - ea: 0x1A4A2
+    seg: 0x1A4A
+    ofs: 0x2
+    size: 20
+    far: true
+    class: C
+    hypothesis: "kb_flag_set_10_1"       # flag_0010 = 1; return 1
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "20B, 4 fixup bytes masked. IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A4B6
+    seg: 0x1A4B
+    ofs: 0x6
+    size: 20
+    far: true
+    class: C
+    hypothesis: "kb_flag_set_10_0"       # flag_0010 = 0; return 1
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "20B, 4 fixup bytes masked. IDA-MISSED - registered via tools/add_missed_functions.py."
+    updated: "2026-10-13"
+
+  - ea: 0x1A4CA
+    seg: 0x1A4C
+    ofs: 0xA
+    size: 19
+    far: true
+    class: C
+    hypothesis: "dgroup_long_get_08"     # return lng_0008 (long @0x08)
+    port_status: verified
+    port_file: src/kb_unit_19CB0.c
+    verified: MATCH
+    notes: "19B, 6 fixup bytes masked. TU end marker @0x1A4CA (finding 28)."
+    updated: "2026-10-13"
+
 counts:
-  tracked: 17
-  verified: 16
-  total_functions: 1008       # 815 resident + 192 overlay (findings 19-21)
+  tracked: 45
+  verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
+  total_functions: 1021           # matches function_bytes.json; kb TU gap analysis registered 13 missed fns (finding 28)
   classification:            # tools/classify_routines.py → classification.json
     ASM: 695
     C: 97                    # DGROUP operands relocated (+0x1000, finding 21)
