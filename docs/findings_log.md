@@ -591,10 +591,10 @@ entries; keyboard unit fully ledgered in naming.yaml (44 entries) + routines.yam
 ## 2026-10-13 29 - BC 2.0 codegen constraint: intra-module call chains required for byte-exact ports
 Status: CONFIRMED
 
-Porting attempts on new resident C functions from gap sweep (`sub_1B631` 83B, `sub_1AAA4` 85B, `sub_1C12F` 87B) revealed a critical constraint: **BC 2.0 only produces byte-exact output for functions with ≤1 external far call + intra-module `push cs; call rel16` call chains**.
+Porting attempts on new resident C functions from gap sweep (`sub_1B631` 83B, `sub_1AAA4` 85B, `sub_1C12F` 87B, `sub_1C0E4` 75B) revealed a critical constraint: **BC 2.0 only produces byte-exact output for functions with ≤1 external far call + intra-module `push cs; call rel16` call chains**.
 
 **The pattern that works** (keyboard unit `kb_unit_19CB0.c`, 38 functions, 2270B):
-- 1 external far call (`fn_0994_0D22` at 0x0994:0D22, fixup-masked)
+- 1 external far call (`fn_0994_0D22` at 0x0994:0D22, fixup masked)
 - Multiple intra-module calls via `push cs; call rel16` (same TU, address-ordered)
 - No local buffers larger than scalars; stack args passed directly
 
@@ -603,9 +603,13 @@ Porting attempts on new resident C functions from gap sweep (`sub_1B631` 83B, `s
 - Local array buffers (16+ bytes) + multiple external far calls passing buffer pointers
 - BC 2.0 emits: extra frame bytes (ENTER 0x14 vs 0x10), spurious register saves (push di), indirect call sequences via stack slots instead of direct `lcall` operands, spurious calls to self/same-module
 
-**Implication**: The viable porting targets are **resident C functions forming intra-module call chains** (same segment, `push cs; call rel16` adjacency). Overlay C functions with multiple external far calls are not tractable with current BC 2.0 setup. Next step: scan resident C functions for same-segment call chains and port as single TUs.
+**IDB boundary reliability**: Gap-sweep functions and many resident C functions have **unreliable IDA boundaries** — overlapping ranges, missing RETs, rel16 calls to mid-function addresses. Only the keyboard unit (0x19BFF..0x1A4CA) and `sub_17A85`/`sub_17AD4` have verified-correct boundaries via call-displacement arithmetic.
 
-Artifacts: classification.json (107 C-class, 757 ASM), function_bytes.json (1080 fns), portcheck_falcon.py test runs on `sub_1B631`/`sub_1AAA4`.
+**Implication**: Viable porting targets are **resident C functions forming verified intra-module call chains** (same segment, `push cs; call rel16` adjacency). No new clean TUs found beyond the two already ported. Overlay C functions and gap-sweep C functions are not tractable with current BC 2.0 setup due to boundary issues and multi-external-call codegen.
+
+**Next step**: Track C (splice setup) — verified bytes patched into original scaffold keep all relocations/RTLink structures valid by construction; `mzdiff` is the verifier.
+
+Artifacts: classification.json (107 C-class, 757 ASM), function_bytes.json (1080 fns), portcheck_falcon.py test runs on `sub_1B631`/`sub_1AAA4`/`sub_1C0E4`/`sub_1C12F`.
 
 ---
 

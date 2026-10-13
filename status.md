@@ -35,7 +35,7 @@
 | 2026-10-12 (session 10) | ~1 h | **Finding 27: sub_19EF9 (64B) MATCH** — 11th keyboard-unit member (`kb_field_get_26`, reads byte `rec_0026[idx*14+r]` @ +0x26, cwde sign-extend, same `farptr_field_reader` pattern); appended to `kb_unit_19CB0.c` (nothing shifts). **Verified: 17 routines / 910 bytes**. Queue advanced to overlay C-class. |
 | 2026-10-13 (session 11) | ~1 day | **Finding 28: keyboard unit COMPLETE — 38/38 ported, 37 MATCH + 1 known-diff (2270B)**; unit boundary confirmed 0x19BFF..0x1A4CA; **11 IDA-missed fns registered** (function_bytes 1008→1021); push-only param SI/DI caching difference resolved via scoped `#pragma option -r-`; array fns matched via `struct kb_ab` param; count-spill via assign-in-cond; kb_record_name_get accepted 2B NUL-peephole diff; **totals: 43 verified / 2282 bytes**; naming ledger 44 entries; temp `_var*.c` cleanup |
 | 2026-10-13 (session 12) | ~2 h | **Gap sweep completed** — 235 gaps ≥8B scanned, 60 code-like; **59 new resident functions registered** in IDB via `add_gap_functions.py` (function_bytes 1021→1080); extraction re-run; new C-class candidates added to port queue. |
-| 2026-10-13 (session 13) | ~2 h | **Classification re-run** → 107 C-class / 757 ASM; **porting attempt on new C fns** (`sub_1B631`, `sub_1AAA4`, `sub_1C12F`) showed multi-external-far-call + local-buffer pattern defeats BCC codegen; **key insight**: keyboard unit succeeded because single external far call + intra-module `push cs; call rel16` chain. Next: hunt resident C functions with intra-module call chains for TU porting. |
+| 2026-10-13 (session 13) | ~2 h | **Classification re-run** → 107 C-class / 757 ASM; **porting attempt on new C fns** (`sub_1B631`, `sub_1AAA4`, `sub_1C12F`, `sub_1C0E4`) showed multi-external-far-call + local-buffer pattern defeats BCC codegen; **Finding 29**: no new clean TUs — IDB boundaries unreliable for gap-sweep/overlay C fns. Pivot to Track C. |
 
 ---
 
@@ -272,10 +272,10 @@ decoded; `game/` has unpacked assets).
 
 ## Immediate Next Steps (in order)
 
-1. **Port queue — resident C intra-module call chains**: scan resident C functions for same-segment `call rel16` chains (intra-module calls). Port as single TUs like keyboard unit (`sub_17A85`/`sub_17AD4` was first proven example). Target: find next contiguous TU with 1 external far call + multiple intra-module calls.
+1. **Track C setup (splice pipeline)**: copy gunship's `extract_routines.py`/`replace_routines.py`, write `tools/splice.py`, build/locate `mzdiff` (WSL binary exists — see pipeline.md), then the first splice + mzdiff verification of a verified routine (e.g., `sub_1A6D4`).
 2. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
-3. **Track C setup**: copy gunship's `extract_routines.py`/`replace_routines.py`, write `tools/splice.py`, build/locate `mzdiff` (WSL binary exists — see pipeline.md), then the first splice + mzdiff verification.
-4. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
+3. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
+4. *Port queue on hold* — no new clean TUs found (Finding 29: IDB boundaries unreliable for gap-sweep/overlay C fns; only keyboard unit + `sub_17A85`/`sub_17AD4` have verified boundaries).
 
 ## Open Items (not blockers — tracked in findings log)
 
