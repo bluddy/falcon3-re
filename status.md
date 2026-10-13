@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-10-13 (session 11 — see Time Log; always bump + append row)
+**Last updated**: 2026-10-13 (session 12 — see Time Log; always bump + append row)
 **Branch**: master (HEAD `eb53f8b` at time of writing)
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1, headless only)
 **IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at
@@ -34,6 +34,7 @@
 | 2026-10-12 (session 9) | ~9 h | **Naming/annotation system built**: `registry/naming.yaml` ledger (16 renames) + `registry/structs.yaml` (5 structs) + globals inventory (1,968 `data_symbols.json`) + `tools/naming.py` (list/resolve/apply/revert/check/push-ida) + **21-test suite green**; C files renamed to semantic names; names pushed into IDB with key-stable re-extract verified; portcheck resolves ida⇄semantic; ground-truth regen runbook + rebuild verdict documented in pipeline.md |
 | 2026-10-12 (session 10) | ~1 h | **Finding 27: sub_19EF9 (64B) MATCH** — 11th keyboard-unit member (`kb_field_get_26`, reads byte `rec_0026[idx*14+r]` @ +0x26, cwde sign-extend, same `farptr_field_reader` pattern); appended to `kb_unit_19CB0.c` (nothing shifts). **Verified: 17 routines / 910 bytes**. Queue advanced to overlay C-class. |
 | 2026-10-13 (session 11) | ~1 day | **Finding 28: keyboard unit COMPLETE — 38/38 ported, 37 MATCH + 1 known-diff (2270B)**; unit boundary confirmed 0x19BFF..0x1A4CA; **11 IDA-missed fns registered** (function_bytes 1008→1021); push-only param SI/DI caching difference resolved via scoped `#pragma option -r-`; array fns matched via `struct kb_ab` param; count-spill via assign-in-cond; kb_record_name_get accepted 2B NUL-peephole diff; **totals: 43 verified / 2282 bytes**; naming ledger 44 entries; temp `_var*.c` cleanup |
+| 2026-10-13 (session 12) | ~2 h | **Gap sweep completed** — 235 gaps ≥8B scanned, 60 code-like; **59 new resident functions registered** in IDB via `add_gap_functions.py` (function_bytes 1021→1080); extraction re-run; new C-class candidates added to port queue. |
 
 ---
 
@@ -64,7 +65,7 @@ overlay/asset tail.
 
 | Metric | Value | Source |
 |---|---|---|
-| Functions in ground truth | **1,021** (816 resident + 192 overlay + 13 registered missed) | `function_bytes.json` |
+| Functions in ground truth | **1,080** (888 resident + 192 overlay + 59 gap-sweep registered) | `function_bytes.json` |
 | Classification | ASM 695 / C 98 / DATA 129 / LEAF 79 / NEARTHUNK 7 | `classification.json` |
 | Verified routines | **43 / 2,282 bytes** | `registry/routines.yaml` (`verified: MATCH`) |
 | Rename ledger | 44 entries, all renamed + pushed to IDB | `registry/naming.yaml` |
@@ -184,6 +185,7 @@ idat -A -S tools\ida_snapshot.py               <IDB>   # fresh analysis (legacy 
 idat -A -S tools\rebuild_overlay_segments.py   <IDB>   # correct layout from committed placement
 idat -A -S tools\_add_missed_fn.py             <IDB>   # sub_19D65 (manual fn)
 idat -A -S tools\add_missed_functions.py       <IDB>   # 11 kb-unit gap fns (finding 28)
+idat -A -S tools\add_gap_functions.py          <IDB>   # 59 gap-sweep fns (finding 28 follow-up)
 idat -A -S tools\mark_overlay_entries.py       <IDB>   # 184 thunk entries -> ~192 fns
 idat -A -S tools\apply_overlay_fixups.py       <IDB>   # 25,222 fixups
 idat -A -S tools\extract_ida_bytes.py          <IDB>   # regenerate ground truth (keys stable)
@@ -252,10 +254,10 @@ Unverified tracked: `sub_10340` (hand ASM, `not_c-portable`).
 
 | Region | Functions | Notes |
 |--------|-----------|-------|
-| Resident image | 816 | entry, overlay mgr, video, input, sim core, keyboard unit (complete) |
+| Resident image | 888 | entry, overlay mgr, video, input, sim core, keyboard unit (complete) + 59 gap-sweep |
 | Overlay (rebuilt IDB) | 192 | via 184 thunk entries + analysis; cluster-B included |
-| IDA-missed registered | 13 | kb-unit gap fns (findings 26/28) |
-| **Total** | **1,021** | C-class 98 → 43 ported (+1 known-diff), **~54 remaining queue** |
+| IDA-missed registered | 72 | kb-unit gap fns (findings 26/28) + 59 gap-sweep fns |
+| **Total** | **1,080** | C-class 98 → 43 ported (+1 known-diff), **~54 remaining queue** |
 
 Remaining tail: ~1.2 MB = RTLink record data + PKWARE assets (formats partially
 decoded; `game/` has unpacked assets).
@@ -266,16 +268,10 @@ decoded; `game/` has unpacked assets).
 
 ## Immediate Next Steps (in order)
 
-1. **Port queue** (loop above): next targets — `sub_19EF9` (64B, keyboard-unit tail),
-   then overlay C functions (`r33_e85` 45B, `r32_e73` 50B — same DGROUP patterns,
-   fixup masking already handles their far ptrs), then the remaining C-class by size.
-2. **Gap sweep** for more IDA-missed functions (technique proven by `sub_19D65`:
-   contiguous call-displacement arithmetic; extend beyond one unit).
-3. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
-4. **Track C setup**: copy gunship's `extract_routines.py`/`replace_routines.py`,
-   write `tools/splice.py`, build/locate `mzdiff` (WSL binary exists — see pipeline.md),
-   then the first splice + mzdiff verification.
-5. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
+1. **Port queue** (loop above): classify new gap-sweep functions (`classify_routines.py` on updated IDB), then port smallest C-class — overlay C functions (`r33_e85` 45B, `r32_e73` 50B) and new resident C-class by size.
+2. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
+3. **Track C setup**: copy gunship's `extract_routines.py`/`replace_routines.py`, write `tools/splice.py`, build/locate `mzdiff` (WSL binary exists — see pipeline.md), then the first splice + mzdiff verification.
+4. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
 
 ## Open Items (not blockers — tracked in findings log)
 
