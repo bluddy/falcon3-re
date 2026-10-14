@@ -613,4 +613,28 @@ Artifacts: classification.json (107 C-class, 757 ASM), function_bytes.json (1080
 
 ---
 
+## 2026-10-13 30 - Dynamic trace harvester (DOSBox-Staging) to resolve IDB boundary unreliability
+Status: PLANNED
+
+**Problem**: Finding 29 established that static IDA boundaries are unreliable for gap-sweep/overlay C functions — overlapping ranges, missing RETs, rel16 calls to mid-function. Only keyboard unit and sub_17A85/sub_17AD4 have verified boundaries via call-displacement arithmetic.
+
+**Solution** (per advice.md §3): Build instrumented DOSBox-Staging (src/dosbox-staging) with debugger enabled. Hook CPU core to log at three boundaries (advice.md §3.3):
+1. **Function entry** (CALL FAR/NEAR, RTLink thunk jumps): Record symbolic DS/ES (SEG_DGROUP, SEG_OVERLAY_ID(n), SEG_HEAP_ALLOC(callsite))
+2. **Memory dereferences** (EA calculation with DS:/ES:): Record resolved segment + offset range per instruction
+3. **Indirect CALL/JMP** (CALL DWORD PTR [bx]): Record resolved (Overlay_ID, Offset) pairs
+
+Also log: RTLink overlay loads (segment ↔ overlay ID), INT 21h file I/O (filename ↔ function).
+
+**Deliverables**:
+- DOSBox-Staging build with debugger + trace hooks (output JSONL trace)
+- Redumped menu/mission/sim memory (accurate addresses, replaces old DOSBox 0.74 dumps)
+- Segment classification JSON (maps runtime segments → symbolic origins)
+- Updated function_bytes.json with verified runtime boundaries
+
+**Impact**: Turns unreliable static boundaries into ground-truth runtime mappings. Enables reliable porting of remaining C functions by identifying true intra-module call chains.
+
+**Dependencies**: src/dosbox-staging (CMake, SDL2), debugger build config.
+
+---
+
 (append new findings below)
