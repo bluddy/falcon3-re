@@ -746,10 +746,10 @@ headless (`tools/apply_trace_functions.py`; 2 iterations of add/split +
 
 | Metric | Before | After |
 |---|---|---|
-| Functions in ground truth | 1,080 | **1,186** (+106) |
-| Targets EXACT (on a fn start) | 204 | **311** |
-| Targets UNKNOWN (missed fns) | 251 | 132 |
-| Resident MID (boundary errors) | 27 | 27 (see below) |
+| Functions in ground truth | 1,080 | **1,215** (+135) |
+| Targets EXACT (on a fn start) | 204 | **340** |
+| Targets UNKNOWN (missed fns) | 251 | 87 |
+| Resident MID (boundary errors) | 27 | 37 (mostly dispatch labels — see below) |
 
 Method notes:
 - **Validation before registration**: 97 % of UNKNOWN resident candidates
@@ -767,6 +767,12 @@ Method notes:
   (list in `analysis/traces/boundary_report.json`).
 - Overlay targets joined via `rtlink_loads.json` record→ida_ea mapping;
   18 overlay fns registered (rec1/5/6 entries), 31 remain.
+- **Iteration 3 (v2 `apply_trace_functions.py`)**: forcing chunk conversion
+  (`del_items` + `create_insn` before `add_func`) recovered 29 more fns —
+  many v2 failures were "not a code chunk" (seg000 startup, data-adjacent).
+  Final: **1,215 functions**, EXACT **340**, UNKNOWN **87** (MID rose to 62
+  — new fns revealed second-order merges; dispatch-label rule still applies,
+  diminishing returns — further loops not worth DB churn).
 
 Impact: finding 29's "unreliable IDB boundaries" problem is now *quantified
 and partly repaired* from dynamic ground truth; remaining port-queue C
