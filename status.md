@@ -41,6 +41,7 @@
 | 2026-10-14 (session 16) | ~1 day | **Finding 31: PKWARE claims RETRACTED** — 0 × `PK\x03\x04` in FALCONCD.EXE (both copies, md5 `2BDD74F4…`); only 2 DCL copyright strings; **nothing was ever decompressed by us**; `game/` assets came from the game install. Certainty levels added to Verified Facts + `game_knowledge.yaml` (also fixed its broken YAML). **Finding 30 progress: instrumented dosbox-staging BUILT** (`OPT_DEBUGGER=ON` + trace hooks: INT 21h open/read/seek/close + far CALL/JMP aggregation with entry DS/ES; env `FALCON_TRACE=<prefix>`; smoke-tested) via new `tools/build_dosbox_debugger.ps1`. **Memdump tracker created** (`docs/memdump.md`) + first-pass inventory (`tools/memdump_inventory.py` → `analysis/memdump/inventory.json`): game PSP 0x118 / main PSP 0x192 (load seg 0x1A2?), menu-vs-sim 47 % paragraph diff, MCB arena 650 KB. |
 | 2026-10-14 (session 16b) | same day | **First real dynamic harvest (finding 30)**: `tools/run_falcon_traced.ps1` (FALCON_TRACE launcher) + debugger `MEMDUMPBIN` recipe documented; user captured **9 × 1 MB dumps** (title→main menu→briefing→edit/waypoints/pilots/armament→takeoff→outside view) + **2 FALCON_TRACE runs** — all committed under `memdump/` (un-gitignored); inventory re-run over all 12 dumps (menu-family ~16–18 % para delta vs main menu; flight dumps ~42 % = overlay swap); tracker updated. |
 | 2026-10-14 (session 16c) | same day | **Finding 32: trace mining DONE** (`tools/mine_traces.py` → `analysis/traces/`) — session-A load base **PROVEN** image para `0x1F5` / PSP `0x1E5` (entry bytes + MCB + 30 records + 3 seg020 fns cross-validated) ⇒ `runtime = ida - 0xE0B`, records `= w0 + 0x1F5`, `file = ida_lin - 0xD400`; **top far-call target `0x1161` = seg020** (346-fn main code hub, 1.44 M calls); 41 overlay file-offset→segment maps stable across runs; 33 RTLink records joined (30 stable, 3 transient); VGA ES confirmed; DS per-phase (DGROUP open). |
+| 2026-10-14 (session 16d) | same day | **Finding 33: trace-driven boundary repair** — 914 far-call targets diffed vs ground truth (`tools/verify_boundaries.py`): 97 % prologue-valid candidates, retf-preceded boundaries; headless IDA applied (`tools/apply_trace_functions.py`, 2 iterations): **1,080 → 1,186 functions**, EXACT targets 204→311, 29 splits (dispatch-table labels identified, stopping rule set); classification ASM 834/C 108/DATA 145/LEAF 89/NEARTHUNK 10. Throttle added to far-transfer aggregation (`FALCON_TRACE_THROTTLE_MS`, default 1 ms/target + `elapsed_ms`); rebuilt + smoke-tested. |
 
 ---
 
@@ -54,7 +55,8 @@ assets is **UNKNOWN**, finding 31), **no embedded CRT**. 1.37 MB: 118 KB residen
 image + 1.2 MB overlay/asset tail.
 
 **Where we are** (all proven, see Current State):
-- Ground truth: **1,080 functions** with exact runtime bytes; resident validated
+- Ground truth: **1,186 functions** with exact runtime bytes (106 recovered
+  from runtime far-call entries, finding 33); resident validated
   888/888 against raw EXE + MZ relocations; overlay system fully decoded and IDB
   rebuilt (68 segments, 25,222 fixups applied, plan 1.2b 5/5).
 - **43 C routines / 2,282 bytes ported byte-exact** through a working portcheck
@@ -75,8 +77,9 @@ image + 1.2 MB overlay/asset tail.
 
 | Metric | Value | Source |
 |---|---|---|
-| Functions in ground truth | **1,080** (888 resident + 192 overlay + 59 gap-sweep registered) | `function_bytes.json` |
-| Classification | ASM 757 / C 107 / DATA 129 / LEAF 80 / NEARTHUNK 7 | `classification.json` |
+| Functions in ground truth | **1,186** (888 resident + 192 overlay + 59 gap-sweep + **106 trace-verified**, finding 33) | `function_bytes.json` |
+| Classification | ASM 834 / C 108 / DATA 145 / LEAF 89 / NEARTHUNK 10 | `classification.json` |
+| Boundary verification | far-call targets EXACT 204→**311**; 29 splits applied; 124 resident + 31 overlay candidates remain | `tools/verify_boundaries.py` → `analysis/traces/boundary_report.json` |
 | Verified routines | **43 / 2,282 bytes** | `registry/routines.yaml` (`verified: MATCH`) |
 | Rename ledger | 44 entries, all renamed + pushed to IDB | `registry/naming.yaml` |
 | Struct definitions | 5 (4 confirmed, 1 hypothesis) | `registry/structs.yaml` |
@@ -85,7 +88,7 @@ image + 1.2 MB overlay/asset tail.
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–31 (append-only) | `docs/findings_log.md` |
+| Findings logged | 1–33 (append-only) | `docs/findings_log.md` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
 | Dynamic dumps | **12 × 1 MB** conventional-RAM dumps committed: 9 from instrumented build (provenance PROVEN, menu→flight) + 3 legacy (UNKNOWN); first-pass inventory DONE | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |
 | Traces | 2 × FALCON_TRACE runs **mined** (4.8 M far calls; fileio + fartrans → `analysis/traces/` incl. RTLink load map) | `memdump/trace_20261014_*`, `docs/memdump.md` |
@@ -284,8 +287,8 @@ Unverified tracked: `sub_10340` (hand ASM, `not_c-portable`).
 |--------|-----------|-------|
 | Resident image | 888 | entry, overlay mgr, video, input, sim core, keyboard unit (complete) + 59 gap-sweep |
 | Overlay (rebuilt IDB) | 192 | via 184 thunk entries + analysis; cluster-B included |
-| IDA-missed registered | 72 | kb-unit gap fns (findings 26/28) + 59 gap-sweep fns |
-| **Total** | **1,080** | C-class 107 → 43 ported (+1 known-diff), **~64 remaining queue** |
+| IDA-missed registered | 178 | kb-unit gap fns (findings 26/28) + 59 gap-sweep + **106 trace-verified (finding 33)** |
+| **Total** | **1,186** | C-class 108 → 43 ported (+1 known-diff), **~65 remaining queue** |
 
 Remaining tail: ~1.2 MB = RTLink record data + undecoded bulk — **compression
 format of the tail is UNKNOWN, nothing extracted by us** (finding 31);
@@ -297,7 +300,7 @@ format of the tail is UNKNOWN, nothing extracted by us** (finding 31);
 
 ## Immediate Next Steps (in order)
 
-1. **Trace-driven boundary verification (finding 32 follow-up)**: the 807 far-call target IPs are *true runtime function entries* — diff them against `function_bytes.json`/`classification.json` (esp. seg020 runtime `0x1161`, ida `0x1F6C0`, `runtime = ida - 0xE0B`) to repair finding-29 unreliable IDB boundaries; register missing/extra functions.
+1. ~~Trace-driven boundary verification~~ **DONE (finding 33)**: 106 functions recovered (1,080 → 1,186), EXACT 204→311, 29 splits applied. Remaining: 124 resident + 31 overlay candidates in `boundary_report.json` (incl. `01F5:018F`, 132K calls, IDA refuses — chunk not code); re-check port-queue C candidates against new boundaries.
 2. **Finish segment classification** (`docs/memdump.md` checklist): per-function DGROUP (`0x6C27`/`0x46A4` per phase) + SEG_OVERLAY_ID(n) for the 5–6 pool code segs + heap call-site tagging (advice.md §3.3 hooks 2–3: memory-deref + indirect-target logging still unimplemented); thunk-state merge across the 12 dumps.
 3. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
 4. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
@@ -338,6 +341,9 @@ format of the tail is UNKNOWN, nothing extracted by us** (finding 31);
   `extract_ida_bytes.py`), `tests/test_naming.py`
 - `tools/build_dosbox_debugger.ps1` (instrumented dosbox-staging build),
   `tools/memdump_inventory.py` + `analysis/memdump/inventory.json` (dump inventory)
+- `tools/mine_traces.py`, `tools/verify_boundaries.py`,
+  `tools/apply_trace_functions.py` + `analysis/traces/*` (trace mining +
+  boundary repair, findings 32/33)
 - `docs/memdump.md` (dynamic-dump tracker)
 - Local-only (NOT committed): `game/*.EXE`, `dos_compilers/` (BC 2.0 + MSC 5.1),
   IDB `*.i64*`

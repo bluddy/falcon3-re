@@ -653,9 +653,12 @@ Also log: RTLink overlay loads (segment ↔ overlay ID), INT 21h file I/O (filen
 - Memdump tracker `docs/memdump.md` created; first-pass inventory of the three
   1 MB dumps via `tools/memdump_inventory.py` (game PSP para 0x118, main PSP
   para 0x192 owning 482 KB block, menu-vs-sim 47 % paragraph diff).
-- Remaining: run Falcon under the instrumented build, collect traces at
-  menu/mission/sim, re-dump 1 MB images with known provenance, build the
-  segment-classification JSON.
+- Remaining: finish segment classification (per-function DGROUP,
+  SEG_OVERLAY_ID(n), heap call-sites), memory-deref + indirect-target hooks
+  (advice.md §3.3 hooks 2-3). Throttle added: far-transfer aggregation is
+  wall-clock sampled (`FALCON_TRACE_THROTTLE_MS`, default 1 ms per target;
+  `elapsed_ms` in jsonl) so hot thunks cannot flood histograms; disabled-run
+  cost is one flag check per far transfer.
 
 ---
 
@@ -731,6 +734,43 @@ Open: identity of per-phase data segs `0x6C27`/`0x46A4` vs DGROUP; pool
 segments hosting code (5-6 per run) → SEG_OVERLAY_ID(n) naming; thunk-state
 merge across dumps; memory-dereference + indirect-target hooks (advice §3.3
 hooks 2-3) not yet implemented.
+
+## 2026-10-14 33 - Trace-driven boundary repair: 106 functions recovered from far-call targets
+Status: CONFIRMED
+
+The 914 merged far-call/far-jump targets (finding 32) are TRUE runtime
+function entries. Converted via `runtime = ida - 0xE0B` and diffed against
+`function_bytes.json` (`tools/verify_boundaries.py`), then applied to the IDB
+headless (`tools/apply_trace_functions.py`; 2 iterations of add/split +
+`extract_ida_bytes.py` + `classify_routines.py` regen):
+
+| Metric | Before | After |
+|---|---|---|
+| Functions in ground truth | 1,080 | **1,186** (+106) |
+| Targets EXACT (on a fn start) | 204 | **311** |
+| Targets UNKNOWN (missed fns) | 251 | 132 |
+| Resident MID (boundary errors) | 27 | 27 (see below) |
+
+Method notes:
+- **Validation before registration**: 97 % of UNKNOWN resident candidates
+  start with plausible entry bytes; 100/202 are preceded by `CB` (retf) —
+  textbook boundaries; MID candidates 100 % prologue-valid, 24/27 retf-preceded.
+- **Splits work but hit a floor**: 29 MID splits applied (top: `sub_25E0E`
+  +0x34 with 14,684 calls); remaining MID cases are (a) **jump-table
+  dispatch labels** — several targets sharing one call count (e.g. 5×1,328
+  into `sub_222AA`) are case labels, not functions — and (b) splits IDA
+  rejects because the remainder is < function size. Do not loop further.
+- Classification shift: ASM 757→834, LEAF 80→89, DATA 129→145,
+  NEARTHUNK 7→10, C 107→108.
+- Highest-value still-missed: `01F5:018F` (132K calls, image-start area,
+  IDA refuses — chunk not code); 124 resident + 31 overlay UNKNOWN remain
+  (list in `analysis/traces/boundary_report.json`).
+- Overlay targets joined via `rtlink_loads.json` record→ida_ea mapping;
+  18 overlay fns registered (rec1/5/6 entries), 31 remain.
+
+Impact: finding 29's "unreliable IDB boundaries" problem is now *quantified
+and partly repaired* from dynamic ground truth; remaining port-queue C
+candidates should be re-checked against the new boundaries.
 
 ---
 

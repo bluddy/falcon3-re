@@ -35,6 +35,9 @@ debugger `MEMDUMPBIN 0 0 100000` (see recipe below).
 Paired traces from the same runs (committed):
 `trace_20261014_231428_{fileio.jsonl,fartrans.jsonl,meta.json}` (menu states) and
 `trace_20261014_232757_*` (full run incl. flight; 23:27–23:34).
+Note: these two runs predate the throttle — their `calls`/`jumps` counts are
+unsampled full counts. Newer runs wall-clock sample per target
+(`FALCON_TRACE_THROTTLE_MS`, default 1 ms; `elapsed_ms` recorded).
 
 ### Session B — legacy dumps (2026-02-13, provenance **UNKNOWN**)
 
