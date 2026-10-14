@@ -1,11 +1,17 @@
 # Falcon3 Game Knowledge Base
 # Generated from fresh IDA Pro 9.1 snapshot + RTLink analysis
 # Update as subsystems are reverse-engineered
+#
+# CERTAINTY LEVELS (see status.md "Verified Facts"): every factual block may
+# carry a `certainty:` key — PROVEN (byte-level), STRONG (multi-signal),
+# HYPOTHESIS (educated guess), UNKNOWN (we do not know), DISPROVEN.
+# Blocks without a `certainty:` key predate the scheme (treat as HYPOTHESIS).
 
 version: 1
-date: "2026-10-10"
+date: "2026-10-14"
 snapshot: "analysis/ida_falconcd/FALCONCD.EXE.i64"
-toolchain: "Unknown C + ASM, far/large model, RTLink/Plus linker, PKWARE DCL compression"
+toolchain: "Borland C++ 2.0 for C modules (byte-proven, finding 22) + hand-written ASM, far/large model, RTLink/Plus linker; compression UNKNOWN (PKWARE DCL linked — hypothesis only, finding 31)"
+certainty: STRONG
 
 memory_model:
   type: "far/large"
@@ -98,9 +104,12 @@ tail_4byte_dir:
   notes: "Initial overlay load list for core segments"
 
 compression:
-  library: "PKWARE Data Compression Library 1.11 (Patent 5,051,745)"
-  signatures_in_tail: ["0x67F", "0x6B6", "0x4DEBB", "0x6D67A", "0x6D8EE", "0x9FF54", "0xA0DE2", "0xA179B", "0xA2031", "0xA27FB"]
-  assets_likely: ["DISPLAY.DAT", "ARMSDATA\\ARMSTABL.DAT", "ARMSDATA\\ARMSmmaa.DAT"]
+  certainty: UNKNOWN
+  library_linked: "PKWARE Data Compression Library 1.11 (Patent 5,051,745) — strings present in EXE (PROVEN the library is linked)"
+  format_of_tail: "UNKNOWN — 0 x PK\x03\x04 signatures in FALCONCD.EXE (finding 31); previous 'signatures_in_tail' offsets contained ordinary code bytes and have been removed; no decompression routine confirmed or exercised; nothing ever decompressed by this project"
+  hypothesis: "tail/assets may use PKWARE DCL implode (based solely on the linked library + advice.md prior)"
+  suggested_tests: ["carve tail blobs and run through blast (zlib/contrib/blast)", "dump decompressed buffers from RAM (see advice.md §2/§4, docs/memdump.md)"]
+  assets_likely: ["ARMSDATA\\ARMSTABL.DAT", "ARMSDATA\\ARMSmmaa.DAT"]  # from manual; DISPLAY.DAT does not exist in game/
 
 strings_notable:
   overlay_errors:
@@ -281,22 +290,23 @@ avionics:
 
 aircraft_flyable:
   - "F-16A Fighting Falcon (primary)"
-  # Enemy aircraft from manual (not flyable in campaign but in Red Flag)
-  enemy_aircraft:
-    - "MiG-29 Fulcrum (Class A)"
-    - "Su-27 Flanker (Class A)"
-    - "Mirage F1 (Class A)"
-    - "MiG-21 Fishbed (Class B)"
-    - "MiG-23 Flogger (Class B)"
-    - "Mirage III (Class B)"
-    - "Su-24 Fencer (Striker/Bomber)"
-    - "Tu-22 Blinder (Striker/Bomber)"
-    - "Su-25 Frogfoot (Close Air/Attack)"
-    - "Tornado (Close Air/Attack)"
-    - "Mi-24 Hind (Helo)"
-    - "SA 342 Gazelle (Helo)"
-    - "IL-76 Candid (Transport)"
-    - "AN-12 Cub (Transport)"
+
+# Enemy aircraft from manual (not flyable in campaign but in Red Flag)
+enemy_aircraft:
+  - "MiG-29 Fulcrum (Class A)"
+  - "Su-27 Flanker (Class A)"
+  - "Mirage F1 (Class A)"
+  - "MiG-21 Fishbed (Class B)"
+  - "MiG-23 Flogger (Class B)"
+  - "Mirage III (Class B)"
+  - "Su-24 Fencer (Striker/Bomber)"
+  - "Tu-22 Blinder (Striker/Bomber)"
+  - "Su-25 Frogfoot (Close Air/Attack)"
+  - "Tornado (Close Air/Attack)"
+  - "Mi-24 Hind (Helo)"
+  - "SA 342 Gazelle (Helo)"
+  - "IL-76 Candid (Transport)"
+  - "AN-12 Cub (Transport)"
 
 file_formats_mentioned:
   - name: "TOPTEN"
@@ -308,7 +318,8 @@ file_formats_mentioned:
   - name: "Campaign state"
     description: "Squadron records, pilot logs, theater progress"
   - name: "DISPLAY.DAT"
-    description: "Graphics assets (PKWARE compressed)"
+    description: "Graphics assets (mentioned in manual; file NOT present in game/ install; compression UNKNOWN)"
+    certainty: HYPOTHESIS
   - name: "ARMSDATA\\ARMSTABL.DAT"
     description: "Weapons data table"
   - name: "ARMSDATA\\ARMSmmaa.DAT"

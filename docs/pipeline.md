@@ -106,7 +106,8 @@ pass (~6 headless IDA runs), not the knowledge.
   `mzdiff` proves it instruction-by-instruction.
 - **From-scratch rebuild (no original EXE)** additionally needs: all data
   (non-function bytes) regenerated, MZ relocation table recomputed, RTLink
-  container (directory/thunks/fixup tables) re-emitted, PKWARE assets packed.
+  container (directory/thunks/fixup tables) re-emitted, tail assets re-packed
+  (packing format still UNKNOWN, finding 31).
   Not required for the splice path; the RTLink linker itself does not exist as a
   binary, so a faithful relink is off the table either way.
 - Current code coverage: 16 routines / 846 bytes verified out of ~83 KB resident
@@ -177,7 +178,7 @@ C:\Users\yotam\projects\falcon3\
 │   ├── RESETALL.EXE                # Borland C++ 1991 utility (separate toolchain)
 │   ├── FALCON3.SMP                 # Sound/music (format TBS)
 │   ├── manual.pdf                  # 254-page flight manual → manual_full.txt
-│   └── DISPLAY.DAT, ARMSDATA\*.DAT # PKWARE-packed assets (already unpacked)
+│   └── ARMSDATA\*.DAT, REPORT.DAT # plain asset files (from game install; DISPLAY.DAT does not exist in game/)
 ├── analysis/
 │   └── ida_falconcd/
 │       ├── FALCONCD.EXE.i64        # IDA Pro 9.1 DB (fixups applied) — GROUND TRUTH
@@ -419,8 +420,8 @@ Known/anticipated embedded-data parsers, priority order:
 | RTLink thunk dispatch (86 × 10 B) | `0x1AA3:0x157F` | ✅ struct decoded; dispatch code is the gateway resident→overlay |
 | Fixup tables (1569 entries, 14 types) | per-record tail | ✅ decoded statically; the applier routine proves the format |
 | Tail 4-byte directory (51 entries) | file `0x1FB61` | ⚠️ parsed; runtime use unverified |
-| PKWARE DCL streams | `PK\x03\x04` in tail + Huffman tables in code | ⚠️ library identified; stream framing per-asset not mapped |
-| External DAT formats (`ARMSTABL.DAT`, `DISPLAY.DAT`, mission/save/ACMI files) | `game\` dir (already unpacked) | ❌ parsers in EXE not yet identified — find via string xrefs |
+| Tail compression (if any) | 1.2 MB tail | ❌ **UNKNOWN** — DCL library linked (2 strings) but 0 × `PK\x03\x04` in file; framing never mapped; nothing decompressed (findings 04 superseded by 31) — test via `blast` carving + runtime dumps |
+| External DAT formats (`ARMSTABL.DAT`, mission/save/ACMI files) | `game\` dir (plain files from install) | ❌ parsers in EXE not yet identified — find via string xrefs |
 | MZ header + relocation table | file head | ✅ decoded (`mzhdr.py`); DOS applies at load |
 
 Method: locate the parse code (xref from the loader/string), document the format in
@@ -468,7 +469,7 @@ mzdiff [--map ref.map] [--tmap tgt.map] [--loose] [--verbose] ref.exe[:entry] tg
 
 ### Why not just byte-compare the whole EXE?
 - RTLink overlay records + fixups live in a 1.2 MB tail whose full structure is not yet
-  decoded (68 KB of records known, rest likely PKWARE assets)
+  decoded (68 KB of records known, rest undecoded; compression format UNKNOWN, finding 31)
 - Relocations (2717 MZ + 1569 RTLink) make naive whole-file diffs useless
 - `mzdiff` normalizes via segment maps → compares the *code stream*
 - Splice guard: byte-identity at each patch site ⇒ relocs/tail stay valid automatically

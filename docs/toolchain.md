@@ -72,12 +72,12 @@ Fields: `seg` = runtime segment, `tail_off` = offset in tail (relative to `0x1FB
 - Resident image loads at paragraph `0x1000` (IDA linear `0x10000`). Entry `CS:IP = 0x1AA3:0x076C` → linear `0x2B19C`.
 - Overlay segments load at runtime paragraphs `0x1CF6, 0x1D0D, 0x1D31, 0x1E10, 0x569F, 0x5CD9, 0x5DFF, 0x5E0B, 0x5E8F, 0x5F6C, 0x606E, ...` relative to load base.
 - Thunk table at `0x1AA3:0x157F` (file `0x1EBAF`): 10-byte entries `E8 disp16` (call loader) + `EA off seg` (ljmp) + `word id`.
-- 9 distinct overlay groups in 18-byte directory covering ~68 KB of records; tail is 1.2 MB ⇒ majority of tail uses different structure (likely PKWARE-compressed assets, `DISPLAY.DAT` etc.).
+- 9 distinct overlay groups in 18-byte directory covering ~68 KB of records; tail is 1.2 MB ⇒ majority of tail uses different structure (compression/format **UNKNOWN** — previously misattributed to PKWARE, finding 31).
 - CS/DS overlap: multiple overlay groups share runtime paragraphs (e.g., `0x569F` group spans 64 KB). DS can be remapped anywhere; EMS/XMS used for additional memory views.
 
 ## Compression
 
-**PKWARE Data Compression Library** (strings: "Copyright 1990-92 PKWARE Inc.", Patent 5,051,745). Multiple `PK\x03\x04` signatures in tail.
+**PKWARE Data Compression Library** (strings: "Copyright 1990-92 PKWARE Inc.", Patent 5,051,745) — the DCL runtime **is linked into the EXE** (2 copyright strings). However: **0 × `PK\x03\x04` signatures exist anywhere in FALCONCD.EXE** (finding 31), and no decompression routine has been confirmed or exercised. Whether/how the 1.2 MB tail is compressed is **UNKNOWN** (HYPOTHESIS: DCL `implode`, based on the linked library alone).
 
 ## Code Composition
 

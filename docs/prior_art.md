@@ -46,7 +46,7 @@
 
 ### Gaps / Why Stuck
 1. **Overlay file format**: RTLink record structure not fully decoded (headers, fixups, grouping)
-2. **Asset containers**: `DISPLAY.DAT` and `ARMSDATA\*.DAT` packed with PKWARE DCL — extraction incomplete
+2. **Asset containers**: `DISPLAY.DAT`/`ARMSDATA\*.DAT` assumed PKWARE DCL-packed — unverified; extraction never completed (superseded: format UNKNOWN, finding 31)
 3. **EMS/XMS handling**: Dynamic memory views not captured in static dumps
 4. **CS/DS aliasing**: Same linear memory accessed via different segment:offset pairs
 5. **Tooling**: IDA Free lacked FLIRT for 16-bit, no decompiler, limited scripting

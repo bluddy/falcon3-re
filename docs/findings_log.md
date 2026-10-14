@@ -39,7 +39,7 @@ Types seen: 0x33ae, 0x400c, 0x39ab, 0x3e52, 0x393c, 0x3de4, 0x3f25, 0x3bdd, 0x3d
 `docs/overlay_fixups.md`), proof = disassembling the applier.
 
 ## 2026-10-10 04 - Compression: PKWARE DCL; assets already unpacked
-Status: CONFIRMED
+Status: SUPERSEDED (see finding 31 — nothing decompressed; `PK\x03\x04` claims false; only the linked DCL library + "already extracted in game/" observation survive)
 
 PKWARE copyright + patent strings, `PK\x03\x04` in tail. Asset files already extracted
 in `game/` (DISPLAY.DAT, ARMSDATA\*.DAT). Per-asset stream framing: NOT YET MAPPED.
@@ -614,7 +614,7 @@ Artifacts: classification.json (107 C-class, 757 ASM), function_bytes.json (1080
 ---
 
 ## 2026-10-13 30 - Dynamic trace harvester (DOSBox-Staging) to resolve IDB boundary unreliability
-Status: PLANNED
+Status: IN PROGRESS (2026-10-14 session 16: instrumented build DONE — see progress note at end)
 
 **Problem**: Finding 29 established that static IDA boundaries are unreliable for gap-sweep/overlay C functions — overlapping ranges, missing RETs, rel16 calls to mid-function. Only keyboard unit and sub_17A85/sub_17AD4 have verified boundaries via call-displacement arithmetic.
 
@@ -633,7 +633,60 @@ Also log: RTLink overlay loads (segment ↔ overlay ID), INT 21h file I/O (filen
 
 **Impact**: Turns unreliable static boundaries into ground-truth runtime mappings. Enables reliable porting of remaining C functions by identifying true intra-module call chains.
 
-**Dependencies**: src/dosbox-staging (CMake, SDL2), debugger build config.
+**Dependencies**: src/dosbox-staging (CMake, SDL3 via vcpkg), debugger build config.
+
+**Progress 2026-10-14 (session 16)**:
+- Built: `src/dosbox-staging/build/falcon/dosbox_with_debugger.exe`
+  (0.84.0-alpha @ c1e7c24, `OPT_DEBUGGER=ON`, `OPT_TESTS=OFF`, Ninja + clang-cl
+  + vcpkg x64-windows). Reproduce with `tools\build_dosbox_debugger.ps1`
+  (vcpkg root `C:\Users\yotam\tools\vcpkg`, bootstrapped this session).
+- Trace hooks landed in the staging tree (`src/misc/falcon_trace.{h,cpp}` +
+  hooks in `dos.cpp` INT 21h 3D/3E/3F/42, `cpu.cpp` CPU_CALL/CPU_JMP real-mode
+  far transfers, init/shutdown in `dosbox.cpp`). Enabled via env
+  `FALCON_TRACE=<prefix>` → `<prefix>_fileio.jsonl` (chronological open/read/
+  seek/close with filename, file offset, buffer seg:off; reads <512 B filtered)
+  + `<prefix>_fartrans.jsonl` (aggregated far CALL/JMP targets with entry
+  DS/ES histograms) + `<prefix>_meta.json`. Smoke-tested (empty-session run
+  wrote all three files).
+- Hooks 2/3 of advice.md §3.3 (far-transfer entry DS/ES; file I/O) implemented;
+  memory-dereference and indirect-target logging NOT yet implemented.
+- Memdump tracker `docs/memdump.md` created; first-pass inventory of the three
+  1 MB dumps via `tools/memdump_inventory.py` (game PSP para 0x118, main PSP
+  para 0x192 owning 482 KB block, menu-vs-sim 47 % paragraph diff).
+- Remaining: run Falcon under the instrumented build, collect traces at
+  menu/mission/sim, re-dump 1 MB images with known provenance, build the
+  segment-classification JSON.
+
+---
+
+## 2026-10-14 31 - PKWARE compression claims RETRACTED (finding 04 partly SUPERSEDED)
+Status: CONFIRMED (retraction); earlier claims SUPERSEDED
+
+We never found how to decompress the tail, and never decompressed anything ourselves.
+Corrections, all byte-verified today against both copies of FALCONCD.EXE
+(`game/` and `analysis/ida_falconcd/`, md5 `2BDD74F4B50729B8583224CCE471805A`,
+size 1,373,671):
+
+1. **`PK\x03\x04` count in the whole file: 0** (also 0 × `PK\x05\x06`). status.md,
+   toolchain.md and game_knowledge.yaml used to claim "multiple `PK\x03\x04`
+   signatures in tail" — false. The 10 `signatures_in_tail` offsets recorded in
+   game_knowledge.yaml (0x67F, 0x6B6, 0x4DEBB, 0x6D67A, 0x6D8EE, 0x9FF54,
+   0xA0DE2, 0xA179B, 0xA2031, 0xA27FB) contain ordinary code/data bytes; field
+   removed from the YAML.
+2. **What IS true**: 2 × "PKWARE Data Compression Library(tm)" copyright strings
+   → the DCL runtime is linked in. That is the entire evidence.
+3. **"assets already unpacked in `game/`"** — `game/` is a plain game install
+   (1,181 files), not an extraction of the EXE tail; `DISPLAY.DAT` does not exist
+   in it at all. Per-asset stream framing (finding 04) was, and remains, NOT MAPPED.
+4. Per knowledge-protocol: certainty levels added — status.md Verified Facts
+   gained a Certainty column (PROVEN/STRONG/HYPOTHESIS/UNKNOWN/DISPROVEN);
+   game_knowledge.yaml `compression:` block now `certainty: UNKNOWN`.
+
+**Method going forward** (per advice.md §2/§4): do not guess the algorithm —
+carve tail blobs → try `blast` (zlib/contrib/blast); dump decompressed buffers
+from RAM at runtime; find the in-EXE decompressor via its static Huffman tables
+(ChBits/ChCode/LenBits/LenCode/ExLenBits) or via INT 21h read traces from the
+instrumented dosbox-staging build (finding 30).
 
 ---
 

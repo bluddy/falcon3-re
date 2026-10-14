@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-10-13 (session 13 — see Time Log; always bump + append row)
+**Last updated**: 2026-10-14 (session 16 — see Time Log; always bump + append row)
 **Branch**: master (HEAD `6fb6902` at time of writing)
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1, headless only)
 **IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at
@@ -38,6 +38,7 @@
 | 2026-10-13 (session 13) | ~2 h | **Classification re-run** → 107 C-class / 757 ASM; **porting attempt on new C fns** (`sub_1B631`, `sub_1AAA4`, `sub_1C12F`, `sub_1C0E4`) showed multi-external-far-call + local-buffer pattern defeats BCC codegen; **Finding 29**: no new clean TUs — IDB boundaries unreliable for gap-sweep/overlay C fns. Pivot to Track C. |
 | 2026-10-13 (session 14) | ~1 h | **Track C tools committed**: `extract_routines.py` (adapted from gunship_2000), `splice.py` (routine replacement in IDB assembly), `mzdiff.py` (EXE byte comparison at verified EAs). Pipeline ready for first splice test. Found raw EXE vs ground truth fixup diff (DGROUP segment 0x9468 vs 0x9478) — expected. |
 | 2026-10-13 (session 15) | ~2 h | **DOSBox-Staging debugger build + dynamic trace harvester**: build src/dosbox-staging with debugger enabled; add hooks for overlay loads, file I/O (INT 21h), function entry DS/ES logging; redump menu/mission/sim memory for accurate address matching. Per advice.md §3: segment classification schema (SEG_DGROUP, SEG_OVERLAY_ID, SEG_HEAP_ALLOC), snapshot splicing pipeline. |
+| 2026-10-14 (session 16) | ~1 day | **Finding 31: PKWARE claims RETRACTED** — 0 × `PK\x03\x04` in FALCONCD.EXE (both copies, md5 `2BDD74F4…`); only 2 DCL copyright strings; **nothing was ever decompressed by us**; `game/` assets came from the game install. Certainty levels added to Verified Facts + `game_knowledge.yaml` (also fixed its broken YAML). **Finding 30 progress: instrumented dosbox-staging BUILT** (`OPT_DEBUGGER=ON` + trace hooks: INT 21h open/read/seek/close + far CALL/JMP aggregation with entry DS/ES; env `FALCON_TRACE=<prefix>`; smoke-tested) via new `tools/build_dosbox_debugger.ps1`. **Memdump tracker created** (`docs/memdump.md`) + first-pass inventory (`tools/memdump_inventory.py` → `analysis/memdump/inventory.json`): game PSP 0x118 / main PSP 0x192 (load seg 0x1A2?), menu-vs-sim 47 % paragraph diff, MCB arena 650 KB. |
 
 ---
 
@@ -45,9 +46,10 @@
 
 Falcon 3.0 (`FALCONCD.EXE` + variants) is a **DOS 16-bit far/large-model** game:
 **Borland C++ 2.0** for C modules (`bcc -c -ml -1 -O` — finding 22, byte-proven),
-**hand-written ASM** for the rest, **RTLink/Plus** overlay linker, **PKWARE DCL**
-asset compression, **no embedded CRT**. 1.37 MB: 118 KB resident image + 1.2 MB
-overlay/asset tail.
+**hand-written ASM** for the rest, **RTLink/Plus** overlay linker, a linked-in
+**PKWARE DCL** library (string evidence only — the actual compression of the tail
+assets is **UNKNOWN**, finding 31), **no embedded CRT**. 1.37 MB: 118 KB resident
+image + 1.2 MB overlay/asset tail.
 
 **Where we are** (all proven, see Current State):
 - Ground truth: **1,080 functions** with exact runtime bytes; resident validated
@@ -81,22 +83,29 @@ overlay/asset tail.
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–29 (append-only) | `docs/findings_log.md` |
+| Findings logged | 1–31 (append-only) | `docs/findings_log.md` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
+| Dynamic dumps | 3 × 1 MB raw conventional-RAM dumps (menu/mission/sim); provenance UNKNOWN; **first-pass inventory DONE** (PSP/MCB/paragraph-diff) | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |
+| dosbox-staging build | **DONE**: `src/dosbox-staging/build/falcon/dosbox_with_debugger.exe` (0.84.0-alpha, `OPT_DEBUGGER=ON` + falcon trace hooks, smoke-tested) | `tools/build_dosbox_debugger.ps1`; trace via env `FALCON_TRACE=<prefix>` |
 
 ## Verified Facts
 
-| Item | Status | Evidence |
-|------|--------|----------|
-| Linker | ✅ RTLink/Plus | Strings, 18-byte directory, thunk table, loader disasm (findings 17/18) |
-| Compression | ✅ PKWARE DCL | Strings, `PK\x03\x04` in tail; assets already unpacked in `game/` |
-| CRT | ❌ none embedded | No CRT strings at all (startup is custom ASM) — CRT-based negatives are inconclusive (finding 22) |
-| Compiler (C) | ✅ **Borland C++ 2.0** `bcc -c -ml -1 -O` | `sub_1A6D4` 44B byte-exact; enter/leave/imm0/or-si fingerprints (finding 22) |
-| ~~Compiler (C)~~ | ~~MSC 5.1~~ | **DISPROVEN for C** — version-verified 5.10 + 6.00ax emit no enter under any flag (finding 22) |
-| Compiler (ASM) | ✅ hand-written | 84 × `558BEC` with variable register saves |
-| Code model | ✅ far/large | `retf`, stack args `[BP+6]`, caller cleanup |
-| Overlays | ✅ RTLink | 70 records, schema + placement + fixups decoded (findings 17–21) |
-| RESETALL.EXE | ✅ Borland C++ 1991 | Separate utility |
+Certainty levels used across the knowledge bases: **PROVEN** (byte-level,
+reproducible evidence), **STRONG** (multiple independent signals, not yet
+byte-verified), **HYPOTHESIS** (educated guess), **UNKNOWN** (we do not know —
+do not state as fact), **DISPROVEN**.
+
+| Item | Status | Certainty | Evidence |
+|------|--------|-----------|----------|
+| Linker | ✅ RTLink/Plus | PROVEN | Strings, 18-byte directory, thunk table, loader disasm (findings 17/18) |
+| Compression | ⚠️ **UNKNOWN — nothing decompressed by us** | HYPOTHESIS (PKWARE DCL) / UNKNOWN (format) | 2 × DCL copyright strings only; **0 × `PK\x03\x04` in the whole EXE** (finding 31); `game/` assets came from the game install, not from an extraction we performed |
+| CRT | ❌ none embedded | STRONG | No CRT strings at all (startup is custom ASM) — CRT-based negatives are inconclusive (finding 22) |
+| Compiler (C) | ✅ **Borland C++ 2.0** `bcc -c -ml -1 -O` | PROVEN | `sub_1A6D4` 44B byte-exact; enter/leave/imm0/or-si fingerprints (finding 22) |
+| ~~Compiler (C)~~ | ~~MSC 5.1~~ | DISPROVEN for C | version-verified 5.10 + 6.00ax emit no enter under any flag (finding 22) |
+| Compiler (ASM) | ✅ hand-written | PROVEN | 84 × `558BEC` with variable register saves |
+| Code model | ✅ far/large | PROVEN | `retf`, stack args `[BP+6]`, caller cleanup |
+| Overlays | ✅ RTLink | PROVEN | 70 records, schema + placement + fixups decoded (findings 17–21) |
+| RESETALL.EXE | ✅ Borland C++ 1991 | STRONG | Strings/version resource (separate utility) |
 
 ---
 
@@ -275,8 +284,9 @@ Unverified tracked: `sub_10340` (hand ASM, `not_c-portable`).
 | IDA-missed registered | 72 | kb-unit gap fns (findings 26/28) + 59 gap-sweep fns |
 | **Total** | **1,080** | C-class 107 → 43 ported (+1 known-diff), **~64 remaining queue** |
 
-Remaining tail: ~1.2 MB = RTLink record data + PKWARE assets (formats partially
-decoded; `game/` has unpacked assets).
+Remaining tail: ~1.2 MB = RTLink record data + undecoded bulk — **compression
+format of the tail is UNKNOWN, nothing extracted by us** (finding 31);
+`game/` assets came from the game install.
 
 ## Game Knowledge Base ✅
 - `manual.pdf` (254 pp) → `manual_full.txt` → `registry/game_knowledge.yaml` (379 lines):
@@ -284,11 +294,12 @@ decoded; `game/` has unpacked assets).
 
 ## Immediate Next Steps (in order)
 
-1. **DOSBox-Staging debugger build + dynamic trace harvester** (advice.md §3): build src/dosbox-staging with debugger enabled; instrument CPU core to log: (a) RTLink overlay loads (segment ↔ overlay ID), (b) INT 21h file I/O (filename ↔ function), (c) function entry DS/ES (symbolic classification: SEG_DGROUP, SEG_OVERLAY_ID(n), SEG_HEAP_ALLOC(callsite)). Redump menu/mission/sim for accurate address matching.
-2. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
-3. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
-4. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
-5. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
+1. **Run Falcon under the instrumented build** (finding 30, build DONE): launch `src\dosbox-staging\build\falcon\dosbox_with_debugger.exe` with `game\` mounted and `FALCON_TRACE=analysis\memdump\falcon` set; walk menu → mission → sim; collect `*_fileio.jsonl` (filename↔offset↔RAM-segment map incl. RTLink overlay reads) + `*_fartrans.jsonl` (thunk/overlay call graph with entry DS/ES); then re-dump menu/mission/sim 1 MB images from this build to replace the provenance-UNKNOWN dumps (docs/memdump.md checklist).
+2. **Memdump progress tracking** (`docs/memdump.md`): inventory the 3 existing 1 MB dumps in `./memdump` (provenance unknown — establish whether they're usable), then run the advice.md §“Snapshot Splicing” pipeline (IVT/MCB walk, paragraph diff menu-vs-sim, thunk-state merge).
+3. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
+4. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
+5. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
+6. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
 
 ## Open Items (not blockers — tracked in findings log)
 
@@ -298,6 +309,11 @@ decoded; `game/` has unpacked assets).
 - Overlay byte content for 2 skipped rows (zero-span placeholders, finding 19).
 - EMS/XMS runtime memory views not representable in the static IDB.
 - Batch portcheck driver + per-routine asm transcripts (Track C) not built yet.
+- **Compression of the 1.2 MB tail UNKNOWN** — no `PK\x03\x04` anywhere; only DCL
+  copyright strings; per-asset framing never mapped; never decompressed anything
+  (findings 04 vs 31). Decide format empirically via `blast` carving + runtime dumps.
+- Provenance of `./memdump/*.BIN` (Feb 2026, tool unknown) — must be re-established
+  or replaced by dumps from the instrumented dosbox-staging build.
 
 ## Reference Projects
 
@@ -312,10 +328,13 @@ decoded; `game/` has unpacked assets).
   `overlay_placement.json`, `overlay_entries.json`, `fixups_to_apply.json`,
   `rtlink_records.json`, `record_fixup_located.json` — analysis ground truth
 - `registry/{naming,routines,structs,game_knowledge,FALCONCD.EXE,OVL_1E10}.yaml`
-- `docs/{pipeline,findings_log,toolchain,structures,overlay_fixups,prior_art}.md`
+- `docs/{pipeline,findings_log,toolchain,structures,overlay_fixups,prior_art,advice,memdump}.md`
 - `src/*.c` (annotated ports), `src/asm/frameless_families.asm` (59 annotated)
 - `tools/naming.py`, `portcheck_falcon.py`, `obj_extract.py`, `classify_routines.py`,
   `gen_asm_families.py`, rebuild pipeline (`prep_*`, `rebuild_*`, `mark_*`, `apply_*`,
   `extract_ida_bytes.py`), `tests/test_naming.py`
+- `tools/build_dosbox_debugger.ps1` (instrumented dosbox-staging build),
+  `tools/memdump_inventory.py` + `analysis/memdump/inventory.json` (dump inventory)
+- `docs/memdump.md` (dynamic-dump tracker)
 - Local-only (NOT committed): `game/*.EXE`, `dos_compilers/` (BC 2.0 + MSC 5.1),
   IDB `*.i64*`

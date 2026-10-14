@@ -89,7 +89,7 @@ C=FFFF  seg=1CF6  1  0x0000..0x0000      0 (empty)
 C=FFFF  seg=606E  1  0x3AC0..0x4FFE   5,438
 ```
 
-Total record data: ~68 KB. Tail is 1.2 MB → remaining data is asset packages (PKWARE compressed `DISPLAY.DAT`, etc.).
+Total record data: ~68 KB. Tail is 1.2 MB → remaining data is undecoded bulk (compression/format **UNKNOWN**, finding 31 — previously assumed PKWARE-compressed `DISPLAY.DAT`, which does not exist in `game/`).
 
 ## 4-Byte Directory (Tail Start) — REINTERPRETED, see finding 17
 
