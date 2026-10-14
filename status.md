@@ -37,6 +37,7 @@
 | 2026-10-13 (session 12) | ~2 h | **Gap sweep completed** — 235 gaps ≥8B scanned, 60 code-like; **59 new resident functions registered** in IDB via `add_gap_functions.py` (function_bytes 1021→1080); extraction re-run; new C-class candidates added to port queue. |
 | 2026-10-13 (session 13) | ~2 h | **Classification re-run** → 107 C-class / 757 ASM; **porting attempt on new C fns** (`sub_1B631`, `sub_1AAA4`, `sub_1C12F`, `sub_1C0E4`) showed multi-external-far-call + local-buffer pattern defeats BCC codegen; **Finding 29**: no new clean TUs — IDB boundaries unreliable for gap-sweep/overlay C fns. Pivot to Track C. |
 | 2026-10-13 (session 14) | ~1 h | **Track C tools committed**: `extract_routines.py` (adapted from gunship_2000), `splice.py` (routine replacement in IDB assembly), `mzdiff.py` (EXE byte comparison at verified EAs). Pipeline ready for first splice test. Found raw EXE vs ground truth fixup diff (DGROUP segment 0x9468 vs 0x9478) — expected. |
+| 2026-10-13 (session 15) | ~2 h | **DOSBox-Staging debugger build + dynamic trace harvester**: build src/dosbox-staging with debugger enabled; add hooks for overlay loads, file I/O (INT 21h), function entry DS/ES logging; redump menu/mission/sim memory for accurate address matching. Per advice.md §3: segment classification schema (SEG_DGROUP, SEG_OVERLAY_ID, SEG_HEAP_ALLOC), snapshot splicing pipeline. |
 
 ---
 
@@ -283,10 +284,11 @@ decoded; `game/` has unpacked assets).
 
 ## Immediate Next Steps (in order)
 
-1. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
-2. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
-3. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
-4. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
+1. **DOSBox-Staging debugger build + dynamic trace harvester** (advice.md §3): build src/dosbox-staging with debugger enabled; instrument CPU core to log: (a) RTLink overlay loads (segment ↔ overlay ID), (b) INT 21h file I/O (filename ↔ function), (c) function entry DS/ES (symbolic classification: SEG_DGROUP, SEG_OVERLAY_ID(n), SEG_HEAP_ALLOC(callsite)). Redump menu/mission/sim for accurate address matching.
+2. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
+3. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
+4. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
+5. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
 
 ## Open Items (not blockers — tracked in findings log)
 
