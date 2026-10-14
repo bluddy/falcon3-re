@@ -36,6 +36,7 @@
 | 2026-10-13 (session 11) | ~1 day | **Finding 28: keyboard unit COMPLETE — 38/38 ported, 37 MATCH + 1 known-diff (2270B)**; unit boundary confirmed 0x19BFF..0x1A4CA; **11 IDA-missed fns registered** (function_bytes 1008→1021); push-only param SI/DI caching difference resolved via scoped `#pragma option -r-`; array fns matched via `struct kb_ab` param; count-spill via assign-in-cond; kb_record_name_get accepted 2B NUL-peephole diff; **totals: 43 verified / 2282 bytes**; naming ledger 44 entries; temp `_var*.c` cleanup |
 | 2026-10-13 (session 12) | ~2 h | **Gap sweep completed** — 235 gaps ≥8B scanned, 60 code-like; **59 new resident functions registered** in IDB via `add_gap_functions.py` (function_bytes 1021→1080); extraction re-run; new C-class candidates added to port queue. |
 | 2026-10-13 (session 13) | ~2 h | **Classification re-run** → 107 C-class / 757 ASM; **porting attempt on new C fns** (`sub_1B631`, `sub_1AAA4`, `sub_1C12F`, `sub_1C0E4`) showed multi-external-far-call + local-buffer pattern defeats BCC codegen; **Finding 29**: no new clean TUs — IDB boundaries unreliable for gap-sweep/overlay C fns. Pivot to Track C. |
+| 2026-10-13 (session 14) | ~1 h | **Track C tools committed**: `extract_routines.py` (adapted from gunship_2000), `splice.py` (routine replacement in IDB assembly), `mzdiff.py` (EXE byte comparison at verified EAs). Pipeline ready for first splice test. Found raw EXE vs ground truth fixup diff (DGROUP segment 0x9468 vs 0x9478) — expected. |
 
 ---
 
@@ -198,6 +199,16 @@ venv\Scripts\python tools\naming.py push-ida           # re-sync semantic names
 # host-side JSON regen only if the EXE changed: prep_overlay_placement.py ->
 # prep_overlay_entries.py -> validate_fixup_semantics.py (then IDA steps above)
 ```
+
+### 5. Track C splice pipeline (verification)
+
+```
+idat -A -S tools\ida_export.asm                <IDB>   # export full assembly listing
+venv\Scripts\python tools\extract_routines.py  listing.asm  src/routines/
+venv\Scripts\python tools\splice.py            listing.asm  listing_spliced.asm  src/routines/  --verified registry/routines.yaml
+# Assemble listing_spliced.asm → spliced.exe (TASM/MASM + TLINK or BCC)
+venv\Scripts\python tools\mzdiff.py            game/FALCONCD.EXE  spliced.exe  --functions analysis/ida_falconcd/function_bytes.json  --routines registry/routines.yaml
+```
 `idat` fails **exit=4** if the IDB is open in interactive IDA — close it first.
 (Also: never open Falcon in the MCP-connected IDA — it holds the Gunship DB.)
 
@@ -272,10 +283,10 @@ decoded; `game/` has unpacked assets).
 
 ## Immediate Next Steps (in order)
 
-1. **Track C setup (splice pipeline)**: copy gunship's `extract_routines.py`/`replace_routines.py`, write `tools/splice.py`, build/locate `mzdiff` (WSL binary exists — see pipeline.md), then the first splice + mzdiff verification of a verified routine (e.g., `sub_1A6D4`).
-2. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
-3. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
-4. *Port queue on hold* — no new clean TUs found (Finding 29: IDB boundaries unreliable for gap-sweep/overlay C fns; only keyboard unit + `sub_17A85`/`sub_17AD4` have verified boundaries).
+1. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
+2. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
+3. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
+4. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
 
 ## Open Items (not blockers — tracked in findings log)
 
