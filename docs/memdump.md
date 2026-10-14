@@ -13,13 +13,42 @@ disproved. Every derived claim carries a certainty level
 
 ## Inventory
 
-| File | Size | MD5 | Timestamp | Provenance |
-|---|---|---|---|---|
-| `memdump/MEMDUMP_menu.BIN` | 1,048,576 | `394275fcb9556c02e852a0a8499cde32` | 2026-02-13 | **UNKNOWN** (dump tool/build unknown; likely old DOSBox 0.74 — finding 30) |
-| `memdump/MEMDUMP_mission.BIN` | 1,048,576 | `bdcd9664bb0eaebb8a9a65171ff50c65` | 2026-02-13 | UNKNOWN (as above) |
-| `memdump/MEMDUMP_sim.BIN` | 1,048,576 | `74765360fd38940073d5d9149d65e5e1` | 2026-02-13 | UNKNOWN (as above) |
+All dumps below are committed (1 MB each, linear conventional RAM).
 
-Regenerate the machine-readable inventory (paragraph diffs, IVT, MCB walk):
+### Session A — instrumented build (2026-10-14, `dosbox_with_debugger.exe` + `FALCON_TRACE`)
+
+Provenance: **PROVEN** — captured via `tools\run_falcon_traced.ps1`, dumps via
+debugger `MEMDUMPBIN 0 0 100000` (see recipe below).
+
+| File | MD5 | State |
+|---|---|---|
+| `MEMDUMP1_opening.BIN` | `6579bdbe22458394db8f48523c92342a` | opening / title |
+| `MEMDUMP2_main_menu.BIN` | `3debffd982dc201d83baae1e8441dd54` | main menu (baseline for diffs) |
+| `MEMDUMP3_briefing.BIN` | `c3fc08ed87a618a7ed1915457fae62e4` | briefing |
+| `MEMDUMP4_edit_flights_zoom.BIN` | `e8a214bac0178dcfbd8fdd68f180d0b9` | edit flights (zoomed) |
+| `MEMDUMP5_waypoints.BIN` | `875268acd6102fc22c2d98a1099bcdd3` | waypoints |
+| `MEMDUMP6_pilots.BIN` | `33d882685b17bbb878e81763c8f113d8` | pilots |
+| `MEMDUMP6_flight_takeoff.BIN` | `7d0c481cd894e10aebf8cd4e4cd3da67` | flight — takeoff |
+| `MEMDUMP7_armament.BIN` | `223708388164dbcd6276c1d4efddd3c2` | armament |
+| `MEMDUMP7_flight_outside_view.BIN` | `5128252a03bbda5946032d90a42c6148` | flight — outside view |
+
+Paired traces from the same runs (committed):
+`trace_20261014_231428_{fileio.jsonl,fartrans.jsonl,meta.json}` (menu states) and
+`trace_20261014_232757_*` (full run incl. flight; 23:27–23:34).
+
+### Session B — legacy dumps (2026-02-13, provenance **UNKNOWN**)
+
+| File | MD5 |
+|---|---|
+| `MEMDUMP_menu.BIN` | `394275fcb9556c02e852a0a8499cde32` |
+| `MEMDUMP_mission.BIN` | `bdcd9664bb0eaebb8a9a65171ff50c65` |
+| `MEMDUMP_sim.BIN` | `74765360fd38940073d5d9149d65e5e1` |
+
+Predate this repo (likely old DOSBox 0.74 — finding 30). Kept for comparison
+only; treat session A as the ground truth.
+
+Regenerate the machine-readable inventory (paragraph diffs vs baseline, IVT,
+MCB walk over all `memdump/*.BIN`):
 
 ```bash
 C:\Python314\python.exe tools\memdump_inventory.py   # -> analysis/memdump/inventory.json
@@ -27,39 +56,41 @@ C:\Python314\python.exe tools\memdump_inventory.py   # -> analysis/memdump/inven
 
 ## First-pass results (2026-10-14, session 16 — `tools/memdump_inventory.py`)
 
-All claims below are **HYPOTHESIS** until re-verified against a dump from the
-instrumented build.
+All claims below are **HYPOTHESIS** until cross-checked against the trace logs
+(`trace_20261014_*_fartrans.jsonl` / `*_fileio.jsonl`).
 
-1. **Layout sanity**: linear 1 MB image; real-mode IVT at `0000:0000` with
-   BIOS vectors at `F000:xxxx` → the dumps really are conventional-RAM flats.
-2. **DOS arena** (MCB walk, DOSBox `sMCB` layout): real chain starts at
-   paragraph `0x117`; **game PSP = paragraph `0x118`** (small 1.4 KB block,
-   probably a launcher/stub) and **main program PSP = paragraph `0x192`**
-   which owns a 30,141-paragraph (482 KB) block + two more large blocks
-   (12 KB, 65 KB) → likely image + far-heap allocations of the game.
-   Tentative runtime load segment of the main image: **`0x1A2`**
-   (= PSP `0x192` + 0x10).
-3. **Runtime-vs-static mapping (to verify)**: with IDA image base para
-   `0x1000`, the working hypothesis is
-   `runtime_para = ida_para - 0x1000 + 0x1A2` (= `ida_para - 0xE5E`).
-   Check against known overlay load list segments (e.g. `0x1CF6` → `0x1E98`).
-4. **Paragraph diffs** (16-byte granularity):
-   - menu vs mission: **17.3 % differ** (same session family — mission screen
-     inside the menu system)
-   - menu vs sim: **47.1 % differ**, sim vs mission: **45.1 % differ**
-     → large overlay-pool swap between menu system and 3D sim, exactly as
-     advice.md predicts (identical paragraphs ≈ resident code).
-   - MCB block counts: menu/mission ~10 blocks vs sim ~48 → sim allocates
-     far more heap (terrain/object pools).
-5. IVT: 105 vectors point above the DOS kernel (`CS >= 0x100`) in every dump.
+### Session A (instrumented build — use these)
+
+1. **Within-set paragraph diffs** (baseline `MEMDUMP2_main_menu`):
+   - menu-family screens (briefing 15.6 %, edit-flights 17.7 %, waypoints
+     17.8 %, pilots 17.8 %, armament 18.4 %) → same overlay family, small
+     deltas;
+   - flight dumps (takeoff 42.3 %, outside view 42.3 %) → the expected big
+     menu↔sim overlay swap;
+   - opening screen 36.8 % (splash/intro overlays differ from menu).
+2. MCB arena behaves as advice.md predicts: menu-family dumps ~63–110 heads,
+   flight/pilots dumps up to 220 heads (far more heap allocation in sim).
+3. Legacy-vs-session-A diffs are 57–70 % — **do not compare across sessions**
+   (different DOSBox build, different load addresses); each session is only
+   meaningful against itself.
+4. IVT stable: 106 vectors above the DOS kernel in every session-A dump.
+
+### Session B (legacy, Feb 2026)
+
+1. Linear 1 MB image; real-mode IVT at `0000:0000` → genuine conventional-RAM flats.
+2. Game PSP para `0x118`, main program PSP para `0x192` (load seg `0x1A2`?),
+   arena ~650 KB. Tentative mapping `runtime_para = ida_para - 0xE5E` —
+   re-verify on session A before trusting.
+3. menu vs sim 47.1 % differ, menu vs mission 17.3 %.
 
 ## Progress checklist (advice.md mapping)
 
 - [x] Inventory: hashes, sizes, timestamps (this file)
 - [x] First-pass paragraph diff menu/mission/sim (`tools/memdump_inventory.py`)
 - [x] MCB-chain walk + PSP discovery (same script)
-- [ ] **Re-dump** menu/mission/sim from the instrumented dosbox-staging build
-      (provenance UNKNOWN → PROVEN) — depends on finding 30 build
+- [x] **Re-dump** menu/mission/sim from the instrumented dosbox-staging build
+      (provenance UNKNOWN → PROVEN) — DONE 2026-10-14: 9 dumps + 2 FALCON_TRACE
+      runs (session A above)
 - [ ] Verify `runtime = ida - 0xE5E` against known runtime segments
       (thunk/overlay load list, finding 18)
 - [ ] Merge menu+sim+briefing dumps to resolve **live thunk states**
@@ -75,6 +106,27 @@ instrumented build.
       `*_fartrans.jsonl` + these dumps
 - [ ] Cross-check carved overlay bytes against `function_bytes.json` ground
       truth (validates fixup application, finding 21)
+
+## How to re-dump 1 MB images from the instrumented build
+
+The debugger **is compiled in** (`dosbox_with_debugger.exe`, `OPT_DEBUGGER=ON`)
+— it is entered via hotkey, not a separate mode:
+
+1. Run the game via `tools\run_falcon_traced.ps1` (trace runs in parallel).
+2. Navigate to the state you want (menu / mission / sim).
+3. Press **Alt+Pause** (Alt+Break) — the debugger window opens. (Default
+   binding from `debugger.cpp: MAPPER_AddHandler(DEBUG_Enable, SDL_SCANCODE_PAUSE, MMOD2, ...)`.
+   If your keyboard swallows Pause, remap: **Ctrl+F1** → Hotkeys → "Debugger".)
+4. In the debugger command line type:
+   ```
+   MEMDUMPBIN 0 0 100000
+   ```
+   (hex seg=0, ofs=0, count=0x100000 → full 1 MB linear dump). It writes
+   **`MEMDUMP.BIN` in the process working directory** (the debug message shows
+   the absolute path) — rename it to `MEMDUMP_<state>.BIN` immediately.
+5. Press **F5** (Run Program) to resume.
+6. Repeat 3–5 for each state, then update the inventory table above and run
+   `tools\memdump_inventory.py`.
 
 ## Usage notes
 

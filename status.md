@@ -39,6 +39,7 @@
 | 2026-10-13 (session 14) | ~1 h | **Track C tools committed**: `extract_routines.py` (adapted from gunship_2000), `splice.py` (routine replacement in IDB assembly), `mzdiff.py` (EXE byte comparison at verified EAs). Pipeline ready for first splice test. Found raw EXE vs ground truth fixup diff (DGROUP segment 0x9468 vs 0x9478) — expected. |
 | 2026-10-13 (session 15) | ~2 h | **DOSBox-Staging debugger build + dynamic trace harvester**: build src/dosbox-staging with debugger enabled; add hooks for overlay loads, file I/O (INT 21h), function entry DS/ES logging; redump menu/mission/sim memory for accurate address matching. Per advice.md §3: segment classification schema (SEG_DGROUP, SEG_OVERLAY_ID, SEG_HEAP_ALLOC), snapshot splicing pipeline. |
 | 2026-10-14 (session 16) | ~1 day | **Finding 31: PKWARE claims RETRACTED** — 0 × `PK\x03\x04` in FALCONCD.EXE (both copies, md5 `2BDD74F4…`); only 2 DCL copyright strings; **nothing was ever decompressed by us**; `game/` assets came from the game install. Certainty levels added to Verified Facts + `game_knowledge.yaml` (also fixed its broken YAML). **Finding 30 progress: instrumented dosbox-staging BUILT** (`OPT_DEBUGGER=ON` + trace hooks: INT 21h open/read/seek/close + far CALL/JMP aggregation with entry DS/ES; env `FALCON_TRACE=<prefix>`; smoke-tested) via new `tools/build_dosbox_debugger.ps1`. **Memdump tracker created** (`docs/memdump.md`) + first-pass inventory (`tools/memdump_inventory.py` → `analysis/memdump/inventory.json`): game PSP 0x118 / main PSP 0x192 (load seg 0x1A2?), menu-vs-sim 47 % paragraph diff, MCB arena 650 KB. |
+| 2026-10-14 (session 16b) | same day | **First real dynamic harvest (finding 30)**: `tools/run_falcon_traced.ps1` (FALCON_TRACE launcher) + debugger `MEMDUMPBIN` recipe documented; user captured **9 × 1 MB dumps** (title→main menu→briefing→edit/waypoints/pilots/armament→takeoff→outside view) + **2 FALCON_TRACE runs** — all committed under `memdump/` (un-gitignored); inventory re-run over all 12 dumps (menu-family ~16–18 % para delta vs main menu; flight dumps ~42 % = overlay swap); tracker updated. |
 
 ---
 
@@ -85,7 +86,8 @@ image + 1.2 MB overlay/asset tail.
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
 | Findings logged | 1–31 (append-only) | `docs/findings_log.md` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
-| Dynamic dumps | 3 × 1 MB raw conventional-RAM dumps (menu/mission/sim); provenance UNKNOWN; **first-pass inventory DONE** (PSP/MCB/paragraph-diff) | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |
+| Dynamic dumps | **12 × 1 MB** conventional-RAM dumps committed: 9 from instrumented build (provenance PROVEN, menu→flight) + 3 legacy (UNKNOWN); first-pass inventory DONE | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |
+| Traces | 2 × FALCON_TRACE runs committed (fileio + fartrans jsonl, 2026-10-14) | `memdump/trace_20261014_*` |
 | dosbox-staging build | **DONE**: `src/dosbox-staging/build/falcon/dosbox_with_debugger.exe` (0.84.0-alpha, `OPT_DEBUGGER=ON` + falcon trace hooks, smoke-tested) | `tools/build_dosbox_debugger.ps1`; trace via env `FALCON_TRACE=<prefix>` |
 
 ## Verified Facts

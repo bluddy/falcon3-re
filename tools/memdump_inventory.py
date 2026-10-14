@@ -27,12 +27,18 @@ ROOT = Path(__file__).resolve().parent.parent
 DUMP_DIR = ROOT / "memdump"
 OUT_PATH = ROOT / "analysis" / "memdump" / "inventory.json"
 
-DUMPS = ["MEMDUMP_menu.BIN", "MEMDUMP_mission.BIN", "MEMDUMP_sim.BIN"]
 PARA = 16
 PARAS = 0x100000 // PARA
 # DOSBox loads the game low (observed PSP at para 0x118 in the menu dump),
 # so "above the DOS kernel" is a better filter than a fixed game range.
 IVT_CS_MIN = 0x0100
+# All dumps are diffed against this baseline (plus the legacy trio pairwise).
+BASELINE = "MEMDUMP2_main_menu.BIN"
+LEGACY_PAIRS = [
+    ("MEMDUMP_menu.BIN", "MEMDUMP_sim.BIN"),
+    ("MEMDUMP_menu.BIN", "MEMDUMP_mission.BIN"),
+    ("MEMDUMP_sim.BIN", "MEMDUMP_mission.BIN"),
+]
 
 
 def md5(data: bytes) -> str:
@@ -135,12 +141,14 @@ def mcb_scan(mem: bytes) -> dict:
 
 
 def main() -> int:
+    names = sorted(p.name for p in DUMP_DIR.glob("*.BIN"))
+    if not names:
+        print(f"no *.BIN dumps in {DUMP_DIR}", file=sys.stderr)
+        return 1
+
     data: dict[str, bytes] = {}
-    for name in DUMPS:
+    for name in names:
         path = DUMP_DIR / name
-        if not path.exists():
-            print(f"missing dump: {path}", file=sys.stderr)
-            return 1
         data[name] = path.read_bytes()
         if len(data[name]) != 0x100000:
             print(f"WARNING: {name} is {len(data[name])} bytes, expected 1 MB")
@@ -149,11 +157,15 @@ def main() -> int:
     for name, blob in data.items():
         inv["dumps"][name] = {"size": len(blob), "md5": md5(blob)}
 
-    pairs = [
-        ("MEMDUMP_menu.BIN", "MEMDUMP_sim.BIN"),
-        ("MEMDUMP_menu.BIN", "MEMDUMP_mission.BIN"),
-        ("MEMDUMP_sim.BIN", "MEMDUMP_mission.BIN"),
-    ]
+    pairs: list[tuple[str, str]] = []
+    baseline = BASELINE if BASELINE in data else names[0]
+    for name in names:
+        if name != baseline:
+            pairs.append((baseline, name))
+    for pair in LEGACY_PAIRS:
+        if pair[0] in data and pair[1] in data and pair not in pairs:
+            pairs.append(pair)
+
     for a, b in pairs:
         key = f"{a[:-4]}__vs__{b[:-4]}"
         inv["pairwise_diff"][key] = diff_pair(data[a], data[b])
@@ -174,7 +186,7 @@ def main() -> int:
         print(f"{key}: {d['same_paras']} same / {d['diff_paras']} diff paras ({pct:.1f}% differ)")
     for name, d in inv["per_dump"].items():
         mcb = d["mcb"]
-        print(f"{name}: IVT->game {len(d['ivt']['in_game_range'])} vectors; "
+        print(f"{name}: IVT->above-kernel {len(d['ivt']['in_game_range'])} vectors; "
               f"MCB heads {mcb['candidate_heads']}, chains>=3: {len(mcb['chains_ge3'])}")
     print(f"wrote {OUT_PATH}")
     return 0
