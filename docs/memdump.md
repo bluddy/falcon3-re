@@ -83,6 +83,26 @@ All claims below are **HYPOTHESIS** until cross-checked against the trace logs
    re-verify on session A before trusting.
 3. menu vs sim 47.1 % differ, menu vs mission 17.3 %.
 
+## Trace mining results (2026-10-14, finding 32 — `tools/mine_traces.py`)
+
+Artifacts in `analysis/traces/` (`summary.json`, per-run `file_summary` /
+`overlay_reads` / `segment_classes`, `overlay_load_map.json`,
+`rtlink_loads.json`). Key results (PROVEN unless noted):
+
+- **Session-A load base**: image para **`0x1F5`**, PSP **`0x1E5`** (MCB owner
+  + `CD 20` verified in `MEMDUMP2`); both trace runs identical.
+  - `runtime_seg = ida_seg - 0xE0B` · `runtime_lin = ida_lin - 0xE0B0`
+  - `file_off = ida_lin - 0xD400` · RTLink records: `runtime = w0 + 0x1F5`
+  - Supersedes the legacy `ida - 0xE5E` guess (session-dependent — re-derive).
+- **`0x1161` = resident `seg020`** — main code hub: 1.44 M far calls, ≥7 hot
+  IPs verified byte-for-byte against the EXE.
+- **Overlay loads**: 41 tail file-offsets → segments, stable across both
+  runs; 33 RTLink records joined (30 stable, 3 transient: idx 5, 29, 69);
+  0 unmatched reads.
+- **VGA**: ES `0xA000`/`0xA400`/`0xA800` at call entries.
+- **DS is per-phase** (`0x6C27` menu-heavy vs `0x46A4` in run 2) — DGROUP
+  classification must be per-function (open).
+
 ## Progress checklist (advice.md mapping)
 
 - [x] Inventory: hashes, sizes, timestamps (this file)
@@ -91,19 +111,22 @@ All claims below are **HYPOTHESIS** until cross-checked against the trace logs
 - [x] **Re-dump** menu/mission/sim from the instrumented dosbox-staging build
       (provenance UNKNOWN → PROVEN) — DONE 2026-10-14: 9 dumps + 2 FALCON_TRACE
       runs (session A above)
-- [ ] Verify `runtime = ida - 0xE5E` against known runtime segments
-      (thunk/overlay load list, finding 18)
+- [x] Verify runtime↔static mapping — session A: `runtime = ida - 0xE0B`,
+      records `= w0 + 0x1F5` (finding 32; re-derive per session)
 - [ ] Merge menu+sim+briefing dumps to resolve **live thunk states**
       (advice.md "Fixing the Live Thunk Trap") → patch thunks to live targets
-- [ ] Identify resident vs overlay-pool segment ranges per dump (identical
-      paragraphs = resident; differing low ranges = overlay pool)
+- [x] Identify resident vs overlay-pool segment ranges per dump — image
+      `[0x1F5..~0x1E96]` + seg020 `0x1161` / seg021 entry `0x1C98` runtime
+      segs identified; pool segs from tail reads (5-6 host code, finding 32)
 - [ ] Carve heap blocks (MCB-owned, owner=0x192) → scan DGROUP for far
       pointers into them (advice.md §4) → **find decompressed asset buffers**
       (compression format UNKNOWN, finding 31 — do this instead of guessing
       the algorithm)
 - [ ] Emit segment classification JSON (SEG_DGROUP / SEG_STATIC /
       SEG_OVERLAY_ID(n) / SEG_HEAP_ALLOC(callsite)) from the trace build's
-      `*_fartrans.jsonl` + these dumps
+      `*_fartrans.jsonl` + these dumps — **partial**: VGA + overlay pool +
+      target segs emitted (`analysis/traces/segment_classes.json`); DGROUP
+      per-function + heap call-site tagging open
 - [ ] Cross-check carved overlay bytes against `function_bytes.json` ground
       truth (validates fixup application, finding 21)
 

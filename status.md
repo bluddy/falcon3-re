@@ -40,6 +40,7 @@
 | 2026-10-13 (session 15) | ~2 h | **DOSBox-Staging debugger build + dynamic trace harvester**: build src/dosbox-staging with debugger enabled; add hooks for overlay loads, file I/O (INT 21h), function entry DS/ES logging; redump menu/mission/sim memory for accurate address matching. Per advice.md §3: segment classification schema (SEG_DGROUP, SEG_OVERLAY_ID, SEG_HEAP_ALLOC), snapshot splicing pipeline. |
 | 2026-10-14 (session 16) | ~1 day | **Finding 31: PKWARE claims RETRACTED** — 0 × `PK\x03\x04` in FALCONCD.EXE (both copies, md5 `2BDD74F4…`); only 2 DCL copyright strings; **nothing was ever decompressed by us**; `game/` assets came from the game install. Certainty levels added to Verified Facts + `game_knowledge.yaml` (also fixed its broken YAML). **Finding 30 progress: instrumented dosbox-staging BUILT** (`OPT_DEBUGGER=ON` + trace hooks: INT 21h open/read/seek/close + far CALL/JMP aggregation with entry DS/ES; env `FALCON_TRACE=<prefix>`; smoke-tested) via new `tools/build_dosbox_debugger.ps1`. **Memdump tracker created** (`docs/memdump.md`) + first-pass inventory (`tools/memdump_inventory.py` → `analysis/memdump/inventory.json`): game PSP 0x118 / main PSP 0x192 (load seg 0x1A2?), menu-vs-sim 47 % paragraph diff, MCB arena 650 KB. |
 | 2026-10-14 (session 16b) | same day | **First real dynamic harvest (finding 30)**: `tools/run_falcon_traced.ps1` (FALCON_TRACE launcher) + debugger `MEMDUMPBIN` recipe documented; user captured **9 × 1 MB dumps** (title→main menu→briefing→edit/waypoints/pilots/armament→takeoff→outside view) + **2 FALCON_TRACE runs** — all committed under `memdump/` (un-gitignored); inventory re-run over all 12 dumps (menu-family ~16–18 % para delta vs main menu; flight dumps ~42 % = overlay swap); tracker updated. |
+| 2026-10-14 (session 16c) | same day | **Finding 32: trace mining DONE** (`tools/mine_traces.py` → `analysis/traces/`) — session-A load base **PROVEN** image para `0x1F5` / PSP `0x1E5` (entry bytes + MCB + 30 records + 3 seg020 fns cross-validated) ⇒ `runtime = ida - 0xE0B`, records `= w0 + 0x1F5`, `file = ida_lin - 0xD400`; **top far-call target `0x1161` = seg020** (346-fn main code hub, 1.44 M calls); 41 overlay file-offset→segment maps stable across runs; 33 RTLink records joined (30 stable, 3 transient); VGA ES confirmed; DS per-phase (DGROUP open). |
 
 ---
 
@@ -87,7 +88,7 @@ image + 1.2 MB overlay/asset tail.
 | Findings logged | 1–31 (append-only) | `docs/findings_log.md` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
 | Dynamic dumps | **12 × 1 MB** conventional-RAM dumps committed: 9 from instrumented build (provenance PROVEN, menu→flight) + 3 legacy (UNKNOWN); first-pass inventory DONE | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |
-| Traces | 2 × FALCON_TRACE runs committed (fileio + fartrans jsonl, 2026-10-14) | `memdump/trace_20261014_*` |
+| Traces | 2 × FALCON_TRACE runs **mined** (4.8 M far calls; fileio + fartrans → `analysis/traces/` incl. RTLink load map) | `memdump/trace_20261014_*`, `docs/memdump.md` |
 | dosbox-staging build | **DONE**: `src/dosbox-staging/build/falcon/dosbox_with_debugger.exe` (0.84.0-alpha, `OPT_DEBUGGER=ON` + falcon trace hooks, smoke-tested) | `tools/build_dosbox_debugger.ps1`; trace via env `FALCON_TRACE=<prefix>` |
 
 ## Verified Facts
@@ -296,8 +297,8 @@ format of the tail is UNKNOWN, nothing extracted by us** (finding 31);
 
 ## Immediate Next Steps (in order)
 
-1. **Run Falcon under the instrumented build** (finding 30, build DONE): launch `src\dosbox-staging\build\falcon\dosbox_with_debugger.exe` with `game\` mounted and `FALCON_TRACE=analysis\memdump\falcon` set; walk menu → mission → sim; collect `*_fileio.jsonl` (filename↔offset↔RAM-segment map incl. RTLink overlay reads) + `*_fartrans.jsonl` (thunk/overlay call graph with entry DS/ES); then re-dump menu/mission/sim 1 MB images from this build to replace the provenance-UNKNOWN dumps (docs/memdump.md checklist).
-2. **Memdump progress tracking** (`docs/memdump.md`): inventory the 3 existing 1 MB dumps in `./memdump` (provenance unknown — establish whether they're usable), then run the advice.md §“Snapshot Splicing” pipeline (IVT/MCB walk, paragraph diff menu-vs-sim, thunk-state merge).
+1. **Trace-driven boundary verification (finding 32 follow-up)**: the 807 far-call target IPs are *true runtime function entries* — diff them against `function_bytes.json`/`classification.json` (esp. seg020 runtime `0x1161`, ida `0x1F6C0`, `runtime = ida - 0xE0B`) to repair finding-29 unreliable IDB boundaries; register missing/extra functions.
+2. **Finish segment classification** (`docs/memdump.md` checklist): per-function DGROUP (`0x6C27`/`0x46A4` per phase) + SEG_OVERLAY_ID(n) for the 5–6 pool code segs + heap call-site tagging (advice.md §3.3 hooks 2–3: memory-deref + indirect-target logging still unimplemented); thunk-state merge across the 12 dumps.
 3. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
 4. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
 5. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).

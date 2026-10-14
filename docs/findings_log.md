@@ -688,6 +688,50 @@ from RAM at runtime; find the in-EXE decompressor via its static Huffman tables
 (ChBits/ChCode/LenBits/LenCode/ExLenBits) or via INT 21h read traces from the
 instrumented dosbox-staging build (finding 30).
 
+## 2026-10-14 32 - Dynamic ground truth from traces: session load base, seg020 hub, RTLink loads
+Status: CONFIRMED (tool: `tools/mine_traces.py` → `analysis/traces/`)
+
+First mining pass over the two committed FALCON_TRACE runs
+(`memdump/trace_20261014_23{1428,2757}_*.jsonl`, 4.8 M far calls, 1,024 file
+events, both runs from `dosbox_with_debugger.exe`):
+
+1. **Session-A load base PROVEN = image paragraph `0x1F5` (PSP `0x1E5`)**,
+   identical in both runs (DOSBox loads deterministically):
+   - `runtime_seg = ida_seg - 0x1000 + 0x1F5` (= `ida_seg - 0xE0B`);
+     `runtime_lin = ida_lin - 0xE0B0`
+   - `file_off = ida_lin - 0xD400` (load-module file `0x2C00` ↔ ida `0x10000`)
+   - Verified three independent ways: (a) entry `0x2B19C` ida → file `0x1DD9C`
+     ↔ dump linear `0x1D0EC` matches byte-for-byte (tail bytes are relocated
+     segments), (b) 30/33 RTLink records at `runtime = w0 + 0x1F5`, (c) three
+     hot functions of runtime `0x1161` match EXE bytes at constant
+     `file = runtime_lin + 0xCB0`.
+   - Supersedes the session-B legacy guess `runtime = ida - 0xE5E` (session
+     bases differ — always re-derive per session).
+2. **Top far-call target `0x1161` = resident `seg020`** (main resident code,
+   346 funcs / 28 KB, ida `0x1F6C0`): 1.44 M far calls, ≥7 hot entry IPs
+   (`52C4`, `797F`, `151B`, `69EF`, `2BCF`, `2BC5`, `59C7` — all verified
+   against file bytes). This segment is the call-graph hub; C-class ports
+   should preferentially target it.
+3. **RTLink overlay loads mapped (finding 30 deliverable (a))**: 41 distinct
+   EXE-tail file offsets → buffer segments, **0 unstable across both runs**;
+   joined to `overlay_placement.json` → **33 records loaded at runtime, 30 at
+   a stable segment**, 3 transient (records 5, 29, 69 — pool reuse, consistent
+   with finding 18's transient overlap); 0 unmatched reads.
+   Artifacts: `analysis/traces/{rtlink_loads,overlay_load_map}.json`.
+4. **VGA confirmed at entry hooks**: ES = `0xA000` / `0xA400` (+ `0xA800`
+   rare) → SEG_VGA_VRAM classification live.
+5. **DS is NOT single-valued across a run** (run1 dominant `0x6C27` 58 %,
+   run2 dominant `0x46A4` 41 %; both present in both) → per-phase data
+   segments; DGROUP must be classified per-function, not globally (open).
+6. File I/O: `FALCONCD.EXE` reads dominate (3.7 MB / 2.1 MB per run —
+   overlay swapping); plain asset files (`israel.map`, `cockpit`, `madbuff.tmp`,
+   `button1`, ...) read directly, unencrypted.
+
+Open: identity of per-phase data segs `0x6C27`/`0x46A4` vs DGROUP; pool
+segments hosting code (5-6 per run) → SEG_OVERLAY_ID(n) naming; thunk-state
+merge across dumps; memory-dereference + indirect-target hooks (advice §3.3
+hooks 2-3) not yet implemented.
+
 ---
 
 (append new findings below)
