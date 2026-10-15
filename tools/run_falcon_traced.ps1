@@ -35,6 +35,7 @@ if ($ThrottleMs -ge 0) { $env:FALCON_TRACE_THROTTLE_MS = "$ThrottleMs" }
 else { Remove-Item Env:FALCON_TRACE_THROTTLE_MS -ErrorAction SilentlyContinue }
 
 $dosboxArgs = @(
+    "-c", "config -set cpu core=normal",
     "-c", "mount c `"$GameDir`"",
     "-c", "c:",
     "-c", $GameExe

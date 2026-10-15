@@ -53,7 +53,7 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 
 2. ~~**Fresh traced run** (populate SEG_HEAP_ALLOC)~~ ✅ DONE (session 17): `trace_20261015_211031` — 3.97M far calls, 82 target CS, 1,093 overlay reads, **674 heap blocks → 655 SEG_HEAP_ALLOC segments** with call-site attribution. Traces mined (`mine_traces.py`), segments classified (`classify_segments.py` → `segment_classification.json`).
 
-3. **Memory-deref + indirect-target hooks** (advice.md §3.3 hooks 2-3): Implement memory-deref (`LES`, `LDS`, `MOV ES:[BX]`) and indirect `CALL/JMP [BX]` logging in `falcon_trace`. Currently unimplemented.
+3. ~~**Memory-deref + indirect-target hooks**~~ ✅ DONE (session 17): Hooks 2+3 implemented in `falcon_trace` + interpreter core. **Hook 2** (memderef): `DO_PREFIX_SEG` logs every DS:/ES: segment-override instruction → `<prefix>_memderef.jsonl` (8,352 unique CS:IP sites in test run). **Hook 3** (indirect far): `CALL Ep`/`JMP Ep` in GRP5 log resolved targets → `<prefix>_fileio.jsonl` events (379,498 in test run). Requires `core=normal` (forced at startup when `FALCON_TRACE` set — dynamic core bypasses `prefix_none.h`). Debug fix: `falcon_trace_enabled` was defined twice (anonymous namespace + file scope), `FalconTrace_Active()` read the wrong one.
 
 4. **Re-check port-queue C candidates** against new boundaries (post boundary repair). The 87 UNKNOWN candidates include many dispatch-table labels (same call counts) — not functions. Documented, not pursued.
 ## Open Items

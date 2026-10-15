@@ -888,6 +888,51 @@ Status: CONFIRMED
 - `mine_traces.py` + `classify_segments.py` re-run over all 6 traces;
   overlay offsets: 53 tracked, 0 unstable across runs.
 
+---
+
+## 2026-10-16 36 — Advice §3.3 hooks 2+3 implemented (memderef + indirect far)
+Status: CONFIRMED
+
+**Hook 2 (memory dereference, DS:/ES: segment override):**
+- `DO_PREFIX_SEG` in `core_normal.cpp` now calls `FalconTrace_MemDeref` for
+  every segment-override prefix. Per-CS:IP histogram of seen symbolic
+  segments (capped at 4, SS ignored per advice).
+- Output: `<prefix>_memderef.jsonl` — **8,352 unique CS:IP sites** in the
+  smoke test (`debug_test`).
+- Initially hooked at SAVEIP after instruction execution — missed all
+  control-flow instructions (JMP/Jcc use `continue` to skip SAVEIP). Moved
+  to prefix-decode time; GETIP then points at the instruction after the
+  prefix byte, which is the deref site.
+
+**Hook 3 (indirect far CALL/JMP through memory):**
+- `CALL Ep` (FF /3) and `JMP Ep` (FF /5) in `prefix_none.h` GRP5 handler
+  call `FalconTrace_IndirectFar` before `CPU_CALL`/`CPU_JMP`.
+- Output: `indirect_far` events in `<prefix>_fileio.jsonl` —
+  **379,498 events** in the smoke test. Each records target, caller CS:IP,
+  and entry DS/ES.
+
+**Three bugs found and fixed during bring-up:**
+1. **Dynamic core bypass**: `core = auto` on x86 selects the dynamic
+   recompiler, which never runs `prefix_none.h`. `ConfigureCpuCore` now
+   forces `CPU_Core_Normal_Run` when `FALCON_TRACE` is set. The
+   `config -set cpu core=normal` runtime command does NOT re-run
+   `Configure()` — only startup does.
+2. **Duplicate `falcon_trace_enabled`**: defined both inside the anonymous
+   namespace (internal linkage — what `FalconTrace_Init` set to `true`) and
+   at file scope (external linkage — what `FalconTrace_Active()` read,
+   staying `false`). Every hook silently no-opped. Fixed to a single
+   file-scope definition.
+3. **SAVEIP miss**: control-flow instructions `continue` back to the loop
+   head, skipping SAVEIP. Deref hook moved into `DO_PREFIX_SEG`.
+
+**Smoke test** (`memdump/debug_test*`, 2026-10-16 01:05): 385,637 fileio
+events, 1,120 far targets, 8,352 deref sites, 379,498 indirect-far events.
+
+Impact: advice.md §3.3 all three hooks now active. Next traced run will
+emit `<prefix>_memderef.jsonl` alongside the existing outputs — ready for
+struct-reconstruction agents (deref offset ranges) and dispatch-table
+recovery (indirect far targets).
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
