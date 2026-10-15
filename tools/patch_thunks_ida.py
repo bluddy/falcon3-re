@@ -1,104 +1,133 @@
 #!/usr/bin/env python3
-"""Patch the static thunk table in IDA with live runtime targets from thunk_states.json.
+"""Safely patch the 303 .RTLink thunks in IDA Pro and rebuild code/xrefs.
 
-Run this inside IDA Pro (File -> Script File...).
+Run inside IDA: idat.exe -A -S"tools/patch_thunks_ida.py" FALCONCD.EXE.i64
 
-Reads:
-- analysis/traces/thunk_states.json (resolved targets per rec_id)
-- Uses the static overlay_entries.json mapping (already in IDA as comments/names)
-
-Patches:
-- The thunk table at 0x1EBAF (file offset) / corresponding IDA address
-- Each 10-byte entry: E8 disp16 (3) + EA off seg (5) + word rec_id (2)
-- Patches the EA off seg (bytes 3-7) with the live target segment:offset
+Matches each thunk by (rec_id, orig_off) against thunk_states.json.
+Converts runtime segs (normalized to load_base 0x01A2) to IDA segs (+0x0E5E).
+Output goes to analysis/ida_falconcd/patch_thunks.log (IDA doesn't pipe stdout).
 """
 import json
+import os
+import ida_auto
 import ida_bytes
-import ida_name
-import ida_segment
+import ida_ua
 import idc
 
-THUNK_TABLE_EA = 0x1EBAF  # IDA linear address of thunk table start
+THUNK_STATES_PATH = r"C:\Users\yotam\projects\falcon3\analysis\traces\thunk_states.json"
+LOG_PATH = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\patch_thunks.log"
+THUNK_COUNT = 303
 THUNK_LEN = 10
-EXPECTED_RECORDS = 66
+
+# JSON segs are normalized to load_base 0x01A2; IDA loads MZ at 0x1000.
+# IDA_SEG = JSON_SEG - 0x01A2 + 0x1000 = JSON_SEG + 0x0E5E
+JSON_SEG_TO_IDA_SEG_DELTA = 0x0E5E
+
+DRY_RUN = os.environ.get("DRY_RUN", "0") == "1"
+
+_log = open(LOG_PATH, "w")
+
+
+def log(msg):
+    _log.write(msg + "\n")
+    _log.flush()
+
+
+def find_thunk_table_ea():
+    """Locate the 303-entry E8..EA thunk table in IDA."""
+    candidates = [0x2BD9D, 0x2BFAB, 0x1EBAF]
+    for ea in candidates:
+        if ida_bytes.get_byte(ea) == 0xE8 and ida_bytes.get_byte(ea + 3) == 0xEA:
+            log(f"[+] Found thunk table at IDA linear EA 0x{ea:X}")
+            return ea
+    log(f"[!] Could not find E8..EA thunk table at {[hex(x) for x in candidates]}")
+    raise RuntimeError("thunk table not found")
 
 
 def main():
-    # Load thunk states
-    thunk_states_path = r"C:\Users\yotam\projects\falcon3\analysis\traces\thunk_states.json"
-    with open(thunk_states_path, 'r') as f:
-        thunk_states = json.load(f)
+    with open(THUNK_STATES_PATH, "r") as f:
+        data = json.load(f)
 
-    # Build rec_id -> live target mapping (seg, off)
-    live_targets = {}
-    for rec in thunk_states["records"]:
-        if rec["resolved_targets"]:
-            t = rec["resolved_targets"][0]
-            seg_str, off_str = t.split(":")
-            seg = int(seg_str, 16)
-            off = int(off_str, 16)
-            live_targets[rec["rec_id"]] = (seg, off)
+    rec_targets = {}
+    for rec in data["records"]:
+        rid = rec["rec_id"]
+        parsed = []
+        for t in rec["resolved_targets"]:
+            s_str, o_str = t.split(":")
+            parsed.append((int(s_str, 16), int(o_str, 16)))
+        rec_targets[rid] = parsed
 
-    print(f"Loaded {len(live_targets)} live targets from thunk_states.json")
+    base_ea = find_thunk_table_ea()
+    log(f"Thunk table: 0x{base_ea:X} .. 0x{base_ea + THUNK_COUNT * THUNK_LEN:X}")
+    log(f"DRY_RUN={DRY_RUN}")
+    log(f"Records in JSON: {len(rec_targets)}")
 
-    # Scan thunk table in IDA to map rec_id -> list of entry EAs
-    rec_to_eas = {}
-    ea = THUNK_TABLE_EA
-    for idx in range(500):  # enough for 303 entries
-        entry_ea = THUNK_TABLE_EA + idx * 10
-        if ea >= idc.get_segm_end(idc.get_segm_start(ea)):
-            break
-        rec_id = ida_bytes.get_word(ea + 8)
-        if rec_id > 0:
-            rec_to_eas.setdefault(rec_id, []).append(ea)
-
-    print(f"Found {len(rec_to_eas)} distinct rec_ids in IDA thunk table")
-
-    # Patch each entry
+    matched = 0
+    unmatched = 0
     patched = 0
-    skipped = 0
-    for rec_id, eas in sorted(rec_to_eas.items()):
-        if rec_id not in live_targets:
-            print(f"  Rec {rec_id}: no live target, skipping")
+
+    for idx in range(THUNK_COUNT):
+        entry_ea = base_ea + idx * THUNK_LEN
+        b0 = ida_bytes.get_byte(entry_ea)
+        b3 = ida_bytes.get_byte(entry_ea + 3)
+        orig_off = ida_bytes.get_word(entry_ea + 4)
+        orig_seg = ida_bytes.get_word(entry_ea + 6)
+        rec_id = ida_bytes.get_word(entry_ea + 8)
+
+        if b0 != 0xE8 or b3 != 0xEA:
+            log(
+                f"  [!] Thunk #{idx:03d} @ 0x{entry_ea:X}: "
+                f"unexpected bytes {b0:02X}..{b3:02X}, skipping"
+            )
+            unmatched += 1
             continue
 
-        seg, off = live_targets[rec_id]
-        for ea in eas:
-            # Verify rec_id matches
-            existing_rec = ida_bytes.get_word(ea + 8)
-            if existing_rec != rec_id:
-                print(f"  WARNING: rec_id mismatch at 0x{ea:X} (expected {rec_id}, got {existing_rec})")
-                continue
+        candidates = rec_targets.get(rec_id, [])
+        matches = [(s, o) for (s, o) in candidates if o == orig_off]
 
-            # Patch the ljmp target (EA off seg) at ea+3
-            # EA opcode at ea+3, then off (2 bytes), seg (2 bytes)
-            patch_ea = ea + 3
-            if idc.get_byte(patch_ea) != 0xEA:
-                print(f"  WARNING: expected EA opcode at 0x{patch_ea:X}, got {ida_bytes.get_byte(patch_ea):02X}")
-                continue
+        if len(matches) == 1:
+            json_seg, target_off = matches[0]
+            ida_seg = json_seg + JSON_SEG_TO_IDA_SEG_DELTA
+            matched += 1
+            if idx < 20 or not DRY_RUN:
+                log(
+                    f"  Thunk #{idx:03d} @ 0x{entry_ea:X} (rec {rec_id:02d}): "
+                    f"orig={orig_seg:04X}:{orig_off:04X} -> "
+                    f"JSON={json_seg:04X}:{target_off:04X} -> "
+                    f"IDA={ida_seg:04X}:{target_off:04X}"
+                )
+            if not DRY_RUN:
+                ida_bytes.patch_word(entry_ea + 4, target_off)
+                ida_bytes.patch_word(entry_ea + 6, ida_seg)
+                ida_bytes.patch_byte(entry_ea + 0, 0x90)
+                ida_bytes.patch_byte(entry_ea + 1, 0x90)
+                ida_bytes.patch_byte(entry_ea + 2, 0x90)
+                ida_bytes.del_items(entry_ea, ida_bytes.DELIT_SIMPLE, THUNK_LEN)
+                ida_ua.create_insn(entry_ea)
+                ida_ua.create_insn(entry_ea + 3)
+                patched += 1
+        else:
+            unmatched += 1
+            log(
+                f"  [!] Thunk #{idx:03d} @ 0x{entry_ea:X} (rec {rec_id:02d}): "
+                f"orig={orig_seg:04X}:{orig_off:04X} had {len(matches)} "
+                f"offset matches in {len(candidates)} candidates"
+            )
 
-            # Patch off (2 bytes) + seg (2 bytes)
-            ida_bytes.patch_byte(patch_ea + 1, off & 0xFF)
-            ida_bytes.patch_byte(patch_ea + 2, (off >> 8) & 0xFF)
-            ida_bytes.patch_byte(patch_ea + 3, rec_id & 0xFF)  # Wait, seg is the target segment
-            # Actually the ljmp target is seg:off where seg is the TARGET segment
-            # The live target gives us (seg, off)
-            ida_bytes.patch_byte(patch_ea + 1, live_targets[rec_id][1] & 0xFF)
-            ida_bytes.patch_byte(patch_ea + 2, (live_targets[rec_id][1] >> 8) & 0xFF)
-            ida_bytes.patch_byte(patch_ea + 3, live_targets[rec_id][0] & 0xFF)
-            ida_bytes.patch_byte(patch_ea + 4, (live_targets[rec_id][0] >> 8) & 0xFF)
+    if not DRY_RUN:
+        ida_auto.plan_and_wait(base_ea, base_ea + THUNK_COUNT * THUNK_LEN)
+        log(f"\nSaved. {patched} thunks patched.")
 
-            # Verify
-            new_seg = ida_bytes.get_word(patch_ea + 3)
-            new_off = ida_bytes.get_word(patch_ea + 1)
-            if new_seg == seg and new_off == off:
-                print(f"  Patched rec {rec_id} @ 0x{ea:X} -> {seg:04X}:{off:04X}")
-            else:
-                print(f"  WARNING: verify failed for rec {rec_id} @ 0x{ea:X}")
-
-    print("Done. Remember to save the IDB!")
+    log(f"\nSummary (DRY_RUN={DRY_RUN}): "
+        f"{matched}/{THUNK_COUNT} matched, {unmatched} unmatched/ambiguous.")
 
 
 if __name__ == "__main__":
-    import json
-    main()
+    try:
+        main()
+    except Exception as e:
+        log(f"[ERROR] {e}")
+        import traceback
+        log(traceback.format_exc())
+    finally:
+        _log.close()

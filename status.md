@@ -49,7 +49,7 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 
 ## Immediate Next Steps (in order)
 
-1. **Patch static thunk table in IDA** (unblocks Track C): Run `tools/patch_thunks_ida.py` in IDA Pro to patch the static thunk table with the 66/66 live targets from `thunk_states.json`. This gives agents the true call graph.
+1. ~~**Patch static thunk table in IDA**~~ ✅ DONE (session 17): `tools/patch_thunks_ida.py` ran headless. Thunk table at IDA EA **0x2BD9D** (not 0x1EBAF). 299/303 thunks patched — E8 trap at +0..+2 replaced with NOPs so IDA flows into JMP FAR at +3. Segments converted (JSON seg + 0x0E5E = IDA seg). 4 ambiguous (dup offset 0x000A in recs 1/53) skipped — segments already correct. Log: `analysis/ida_falconcd/patch_thunks.log`.
 
 2. **Fresh traced run** (populate SEG_HEAP_ALLOC): Run `tools/run_falcon_traced.ps1` with `FALCON_TRACE` env. The AH=48h/49h hooks will populate `SEG_HEAP_ALLOC` with call-site attribution.
 

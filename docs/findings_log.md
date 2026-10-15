@@ -857,6 +857,26 @@ Status: CONFIRMED
   Mode X page-flipping). Any function entering with ES in {0xA000, 0xA400,
   0xA800} is a graphics rasterizer or blitter.
 
+**Thunk table patched in IDA (299/303):**
+- `tools/patch_thunks_ida.py` (rewritten after external review found 4
+  critical bugs in the original: `ea` never advanced in scan loop; rec_id
+  grouping clobbered per-thunk offsets; E8 trap left active blocking flow
+  into JMP FAR; no runtime→IDA segment conversion).
+- Thunk table located at IDA EA **0x2BD9D** (not file offset 0x1EBAF —
+  the original script had the wrong address; 0x1EBAF is the file offset,
+  IDA linear = file_off + 0xD400 = 0x2BFAB, but the actual table start
+  verified by E8/EA signature is 0x2BD9D).
+- For each of 303 thunks: matched by (rec_id, orig_off) against
+  `thunk_states.json` resolved targets; segment converted
+  (JSON_seg + 0x0E5E = IDA_seg, since JSON segs are normalized to
+  load_base 0x01A2 and IDA loads MZ at 0x1000); E8 trap at +0..+2 replaced
+  with NOPs so IDA flows into JMP FAR at +3; `del_items` + `create_insn`
+  forces re-analysis.
+- **299/303 matched cleanly**. 4 ambiguous (thunks #032, #053, #261, #262)
+  had duplicate offset 0x000A within recs 1/53 — skipped; their IDA
+  segments were already correct.
+- Log: `analysis/ida_falconcd/patch_thunks.log`.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
