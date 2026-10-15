@@ -1,0 +1,20 @@
+## Immediate Next Steps (in order)
+
+1. ~~Trace-driven boundary verification~~ **DONE (finding 33)**: 135 functions recovered (1,080 → 1,215), EXACT 204→340. Remaining: 87 UNKNOWN candidates in `boundary_report.json` (incl. `01F5:018F`, 132K calls, IDA refuses even with chunk conversion); MID cases are mostly dispatch-table labels — documented, not pursued. Re-check port-queue C candidates against new boundaries.
+2. ~~Segment classification + thunk-state merge~~ **DONE (finding 34)**: `segment_classification.json` (multi-kind, DGROUP 27687 HYPOTHESIS, resident base PROVEN) + `thunk_states.json` (66/66 stable). Remaining: (a) **fresh traced run** to populate `SEG_HEAP_ALLOC` — the AH=48h/49h call-site hook postdates both committed traces; (b) confirm DGROUP via a dump-side pointer check (promote HYPOTHESIS → PROVEN); (c) **patch the static thunk table to the live targets** so agents see the true call graph; (d) memory-deref + indirect-target logging (advice.md §3.3 hooks 2–3) still unimplemented.
+3. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
+4. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
+5. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).
+6. `libscan.py` with compiler libs (MSC 5.1 *and* BC 2.0) for library-function ID.
+
+## Open Items
+
+See [Open Items](docs/open_items.md)
+
+## Reference Projects
+
+See [Reference Projects](docs/reference_projects.md)
+
+## Artifacts
+
+See [Artifacts](docs/artifacts.md)
