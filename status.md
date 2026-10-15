@@ -9,7 +9,7 @@
 
 > This file is the **entry point for a future agent**. It states the exact current
 > state and the exact method. Deep rationale lives in `docs/findings_log.md`
-> (append-only history, findings 1–28), detailed procedures in `docs/pipeline.md`.
+> (append-only history, findings 1–34), detailed procedures in `docs/pipeline.md`.
 > Protocol: **Knowledge Capture** — 7 sinks, findings log append-only, status
 > Time Log bumped on every change.
 
@@ -42,6 +42,7 @@
 | 2026-10-14 (session 16b) | same day | **First real dynamic harvest (finding 30)**: `tools/run_falcon_traced.ps1` (FALCON_TRACE launcher) + debugger `MEMDUMPBIN` recipe documented; user captured **9 × 1 MB dumps** (title→main menu→briefing→edit/waypoints/pilots/armament→takeoff→outside view) + **2 FALCON_TRACE runs** — all committed under `memdump/` (un-gitignored); inventory re-run over all 12 dumps (menu-family ~16–18 % para delta vs main menu; flight dumps ~42 % = overlay swap); tracker updated. |
 | 2026-10-14 (session 16c) | same day | **Finding 32: trace mining DONE** (`tools/mine_traces.py` → `analysis/traces/`) — session-A load base **PROVEN** image para `0x1F5` / PSP `0x1E5` (entry bytes + MCB + 30 records + 3 seg020 fns cross-validated) ⇒ `runtime = ida - 0xE0B`, records `= w0 + 0x1F5`, `file = ida_lin - 0xD400`; **top far-call target `0x1161` = seg020** (346-fn main code hub, 1.44 M calls); 41 overlay file-offset→segment maps stable across runs; 33 RTLink records joined (30 stable, 3 transient); VGA ES confirmed; DS per-phase (DGROUP open). |
 | 2026-10-14 (session 16d) | same day | **Finding 33: trace-driven boundary repair** — 914 far-call targets diffed vs ground truth (`tools/verify_boundaries.py`): 97 % prologue-valid candidates, retf-preceded boundaries; headless IDA applied (`tools/apply_trace_functions.py`, 3 iterations, v2 forces chunk conversion): **1,080 → 1,215 functions**, EXACT targets 204→**340**, UNKNOWN 251→87, splits applied (dispatch-table labels identified, stopping rule set); classification ASM 855/C 108/DATA 152/LEAF 90/NEARTHUNK 10. Throttle added to far-transfer aggregation (`FALCON_TRACE_THROTTLE_MS`, default 1 ms/target + `elapsed_ms`); rebuilt + smoke-tested. |
+| 2026-10-14 (session 16e) | same day | **Finding 34: segment classification + thunk-state merge.** `tools/classify_segments.py` → `analysis/traces/segment_classification.json` (116–119 segs/run; **multi-kind segments** per user choice: `kinds[]` + highest-rank `kind`, e.g. `27687` = DATA+OVERLAY_DATA(7)+DGROUP; DGROUP ranked by distinct entry-IP coverage → stable **27687**, HYPOTHESIS; resident base 0x1F5 PROVEN). `tools/merge_thunk_states.py` → `analysis/traces/thunk_states.json`: **66/66 record ids stable across all 12 dumps** (303 thunks/dump) after load-base normalization (table Δ 0x530 between sessions). New INT 21h AH=48h/49h alloc hook (call-site CS:IP) added to `falcon_trace` — predates both committed traces, 0 heap blocks so far; needs a fresh traced run. |
 
 ---
 
@@ -88,7 +89,9 @@ image + 1.2 MB overlay/asset tail.
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–33 (append-only) | `docs/findings_log.md` |
+| Findings logged | 1–34 (append-only) | `docs/findings_log.md` |
+| Segment classification | 116–119 segs/run, **multi-kind** (`kinds[]`+`kind`); DGROUP 27687 HYPOTHESIS, resident base 0x1F5 PROVEN; 0 heap blocks (hook postdates traces) | `tools/classify_segments.py` → `analysis/traces/segment_classification.json` |
+| Thunk states | **66/66 record ids stable across 12 dumps** (303 thunks/dump); live targets resolved, load-base normalized | `tools/merge_thunk_states.py` → `analysis/traces/thunk_states.json` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
 | Dynamic dumps | **12 × 1 MB** conventional-RAM dumps committed: 9 from instrumented build (provenance PROVEN, menu→flight) + 3 legacy (UNKNOWN); first-pass inventory DONE | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |
 | Traces | 2 × FALCON_TRACE runs **mined** (4.8 M far calls; fileio + fartrans → `analysis/traces/` incl. RTLink load map) | `memdump/trace_20261014_*`, `docs/memdump.md` |
@@ -301,7 +304,7 @@ format of the tail is UNKNOWN, nothing extracted by us** (finding 31);
 ## Immediate Next Steps (in order)
 
 1. ~~Trace-driven boundary verification~~ **DONE (finding 33)**: 135 functions recovered (1,080 → 1,215), EXACT 204→340. Remaining: 87 UNKNOWN candidates in `boundary_report.json` (incl. `01F5:018F`, 132K calls, IDA refuses even with chunk conversion); MID cases are mostly dispatch-table labels — documented, not pursued. Re-check port-queue C candidates against new boundaries.
-2. **Finish segment classification** (`docs/memdump.md` checklist): per-function DGROUP (`0x6C27`/`0x46A4` per phase) + SEG_OVERLAY_ID(n) for the 5–6 pool code segs + heap call-site tagging (advice.md §3.3 hooks 2–3: memory-deref + indirect-target logging still unimplemented); thunk-state merge across the 12 dumps.
+2. ~~Segment classification + thunk-state merge~~ **DONE (finding 34)**: `segment_classification.json` (multi-kind, DGROUP 27687 HYPOTHESIS, resident base PROVEN) + `thunk_states.json` (66/66 stable). Remaining: (a) **fresh traced run** to populate `SEG_HEAP_ALLOC` — the AH=48h/49h call-site hook postdates both committed traces; (b) confirm DGROUP via a dump-side pointer check (promote HYPOTHESIS → PROVEN); (c) **patch the static thunk table to the live targets** so agents see the true call graph; (d) memory-deref + indirect-target logging (advice.md §3.3 hooks 2–3) still unimplemented.
 3. **Track C first splice test**: Export IDB assembly (`idat -A -Stools/ida_export.asm`), run `extract_routines.py` → `splice.py` with keyboard unit verified routines → reassemble → `mzdiff.py` verification against function_bytes.json ground truth.
 4. **Fix mzdiff fixup handling**: Apply RTLink fixups when extracting bytes from EXE for accurate comparison.
 5. **10 straggler thunk entries** (user explicitly deferred; findings 19/26).

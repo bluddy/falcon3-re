@@ -780,4 +780,53 @@ candidates should be re-checked against the new boundaries.
 
 ---
 
+## 2026-10-14 34 - Segment classification emitted; thunk states merged (66/66 stable)
+Status: CONFIRMED
+
+Two advice.md deliverables from the committed traces:
+
+**Segment classification** — `tools/classify_segments.py` →
+`analysis/traces/segment_classification.json`. Per run: 116–119 observed
+segments (47–48 `SEG_DATA`, 18 `SEG_STATIC`, 1 `SEG_DGROUP`, 3
+`SEG_VGA_VRAM`, 15 `SEG_OVERLAY_ID(n)` pool slots + 80–90
+`SEG_OVERLAY_DATA(n)` carved from them).
+
+- **Multi-kind segments** (user choice over rank precedence): a segment
+  carries `kinds[]` plus a highest-rank `kind`. Example: `27687` =
+  `["SEG_DATA","SEG_OVERLAY_DATA(7)","SEG_DGROUP"]` — it is DS-anchored
+  data *and* sits inside pool block 7. Consumers wanting one label use
+  `kind`; the authoritative view is `kinds` with per-kind `evidence`.
+- **DGROUP ranking**: by *distinct entry-IP coverage*, not raw observation
+  count. The naive count disagreed across runs (27687 vs 18084) because it
+  measures which module ran most; coverage measures how many call sites
+  anchor DS there, and is stable → 27687. Certainty **HYPOTHESIS** until a
+  dump-side pointer check confirms it.
+- **Resident base = 0x1F5, PROVEN** (finding 32/33), not re-derived.
+- Heap call-site tagging (`SEG_HEAP_ALLOC`) needs the new INT 21h AH=48h
+  hook, which is in the source but **postdates both committed traces** — 0
+  heap blocks observed so far. A fresh traced run will populate it.
+
+**Thunk-state merge** — `tools/merge_thunk_states.py` →
+`analysis/traces/thunk_states.json`. Locates the 10-byte thunk table
+(`E8 disp16` `EA off seg` `word rec_id`) by signature in all 12 dumps
+(303 thunks each), joins `rec_id` → `overlay_entries.json`.
+
+- **Key trap**: the two capture sessions have different DOS load bases
+  (table at `0x1D7BD` vs `0x1DCED`, Δ 0x530), so absolute `seg:off` targets
+  do not compare across dumps — naive grouping gave `stable: 0`. Normalizing
+  each dump's targets against the reference base (subtract the table delta)
+  makes them comparable.
+- Result: **66/66 record ids resolve to a stable target across all 12
+  dumps**; 0 transient. Resolved targets are the live `seg:off` per record
+  (e.g. rec 6 → `5E7B:001E`, `5E7B:00AA`, …).
+- Remaining: patch the static thunk table in the analysis DB to these live
+  targets so agents see the true call graph (advice.md "Patch the Thunks
+  for Static Analysis").
+
+Impact: the segment-classification JSON is the schema advice.md §2 asks
+for, and thunk resolution is no longer blocked by the multi-session
+load-base problem.
+
+---
+
 (append new findings below)

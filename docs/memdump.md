@@ -116,20 +116,36 @@ Artifacts in `analysis/traces/` (`summary.json`, per-run `file_summary` /
       runs (session A above)
 - [x] Verify runtime↔static mapping — session A: `runtime = ida - 0xE0B`,
       records `= w0 + 0x1F5` (finding 32; re-derive per session)
-- [ ] Merge menu+sim+briefing dumps to resolve **live thunk states**
-      (advice.md "Fixing the Live Thunk Trap") → patch thunks to live targets
+- [x] Merge menu+sim+briefing dumps to resolve **live thunk states**
+      (advice.md "Fixing the Live Thunk Trap") — DONE 2026-10-14:
+      `tools/merge_thunk_states.py` finds the 10-byte thunk table by
+      `E8..EA` signature in all 12 dumps (303 thunks each), joins `rec_id`
+      to `overlay_entries.json`, and normalizes targets against the
+      reference base (0x1D7BD) to absorb the two DOS load bases.
+      **66/66 record ids resolve stably across all 12 dumps** →
+      `analysis/traces/thunk_states.json`. Patching thunks in the static
+      table to these targets is the remaining step.
 - [x] Identify resident vs overlay-pool segment ranges per dump — image
       `[0x1F5..~0x1E96]` + seg020 `0x1161` / seg021 entry `0x1C98` runtime
       segs identified; pool segs from tail reads (5-6 host code, finding 32)
 - [ ] Carve heap blocks (MCB-owned, owner=0x192) → scan DGROUP for far
-      pointers into them (advice.md §4) → **find decompressed asset buffers**
+      pointers into them (advice.md A4) → **find decompressed asset buffers**
       (compression format UNKNOWN, finding 31 — do this instead of guessing
       the algorithm)
-- [ ] Emit segment classification JSON (SEG_DGROUP / SEG_STATIC /
+- [x] Emit segment classification JSON (SEG_DGROUP / SEG_STATIC /
       SEG_OVERLAY_ID(n) / SEG_HEAP_ALLOC(callsite)) from the trace build's
-      `*_fartrans.jsonl` + these dumps — **partial**: VGA + overlay pool +
-      target segs emitted (`analysis/traces/segment_classes.json`); DGROUP
-      per-function + heap call-site tagging open
+      `*_fartrans.jsonl` + these dumps — DONE 2026-10-14:
+      `tools/classify_segments.py` → `analysis/traces/segment_classification.json`.
+      **Multi-kind segments** (per user choice): each segment carries a
+      `kinds[]` list plus a highest-rank `kind` for single-label consumers.
+      Per run: 116-119 segments, 47-48 `SEG_DATA`, 18 `SEG_STATIC`,
+      1 `SEG_DGROUP` (27687, stable across both runs), 3 `SEG_VGA_VRAM`,
+      15 overlay pool ids + 80-90 `SEG_OVERLAY_DATA(n)` carved from them.
+      DGROUP certainty = HYPOTHESIS (ranked by distinct entry-IP coverage,
+      not raw observation count); resident base = PROVEN (finding 32/33).
+      Heap call-site (`SEG_HEAP_ALLOC`) needs the new INT 21h AH=48h hook —
+      the two committed traces predate it, so 0 heap blocks so far; a fresh
+      traced run will populate it.
 - [ ] Cross-check carved overlay bytes against `function_bytes.json` ground
       truth (validates fixup application, finding 21)
 
