@@ -12,6 +12,7 @@ param(
     [string]$GameExe = "FALCONCD.EXE",
     [string]$OutDir = "",                     # default <repo>\memdump
     [int]$ReadMin = -1,                       # FALCON_TRACE_READ_MIN; -1 = leave default (512)
+    [int]$ThrottleMs = -1,                    # FALCON_TRACE_THROTTLE_MS; -1 = leave default (1)
     [string]$ExtraConfArgs = "",              # extra dosbox args, e.g. "-noconsole"
     [switch]$DryRun                           # print the command, don't launch
 )
@@ -30,6 +31,8 @@ New-Item -ItemType Directory -Force -Path $OutDir | Out-Null
 $env:FALCON_TRACE = Join-Path $OutDir $Name
 if ($ReadMin -ge 0) { $env:FALCON_TRACE_READ_MIN = "$ReadMin" }
 else { Remove-Item Env:FALCON_TRACE_READ_MIN -ErrorAction SilentlyContinue }
+if ($ThrottleMs -ge 0) { $env:FALCON_TRACE_THROTTLE_MS = "$ThrottleMs" }
+else { Remove-Item Env:FALCON_TRACE_THROTTLE_MS -ErrorAction SilentlyContinue }
 
 $dosboxArgs = @(
     "-c", "mount c `"$GameDir`"",
@@ -47,6 +50,7 @@ $code = $LASTEXITCODE
 
 Remove-Item Env:FALCON_TRACE -ErrorAction SilentlyContinue
 Remove-Item Env:FALCON_TRACE_READ_MIN -ErrorAction SilentlyContinue
+Remove-Item Env:FALCON_TRACE_THROTTLE_MS -ErrorAction SilentlyContinue
 
 Write-Host ""
 Write-Host "dosbox exited with code $code; trace files:"
