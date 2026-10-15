@@ -933,6 +933,74 @@ emit `<prefix>_memderef.jsonl` alongside the existing outputs — ready for
 struct-reconstruction agents (deref offset ranges) and dispatch-table
 recovery (indirect far targets).
 
+---
+
+## 2026-10-16 37 — Step 4: port-queue C re-check + 19 missed fns registered
+Status: CONFIRMED
+
+**Port-queue C candidates (the step-4 ask) — all clean:**
+- **108 C candidates, 0 defects**: no overlap with any function, none missing
+  from `function_bytes.json`, no classif-vs-extracted size mismatch, and
+  **108/108 carry the `c8` (ENTER)** Borland C++ prologue (finding 22).
+- Boundary verification improved sharply against the new comprehensive
+  trace: C candidates **EXACT 8 → 33**, `NO_FARCALL` 100 → 75. (Most C fns
+  are reached by *near* calls/thunks, so NO_FARCALL is expected, not a
+  defect — but the richer trace confirmed many more entry points.)
+- **Clean reloc-free port targets: 4** — `r36_e115` (13B, overlay),
+  `sub_1A6D4` (44B, already MATCH), `sub_17AD4` (61B, already MATCH),
+  `sub_197EA` (69B, already MATCH).
+
+**The 87 UNKNOWN — claim confirmed, and better:**
+- **67 = `.RTLink` thunk-table entries** (exact 10-byte stride,
+  ida_ea inside 0x2BD9D..0x2C973). Not functions — matches the documented
+  "dispatch-table labels, not functions".
+- **13 = data / dispatch labels** (zero-fill; far-pointer tables with the
+  recurring `xx 9f 56` = segment 0x569F pattern).
+- **4 = real code** → all registered (see below).
+
+**New: comprehensive trace exposed far more missed functions (19 total):**
+Re-running `verify_boundaries.py` over the hook-rich trace raised the
+target set (EXACT 340→466, UNKNOWN 87→163 as the denominator grew).
+Decomposing the new UNKNOWN: 120 thunk entries, 40 data labels, **21 real
+code candidates**, of which 19 registered cleanly:
+
+| ea | size | term | calls | note |
+|----|------|------|-------|------|
+| `0x22AFF` | 40B | iret | **174,766** | 2nd-hottest target; PIC EOI handler (`out 20h,al`) |
+| `0x1018F` | 122B | retf | 132,401 | far dispatcher, 11 je converge to off 110 |
+| `0x260F4` | 348B | retf | 2,587 | |
+| `0x208E7` | 403B | retf | 498 | |
+| `0x2100F` | 280B | retf | 18 | |
+| `0x6DE83` | 164B | ret | 3,039 | |
+| `0x211C9` | 157B | retf | 480 | |
+| + 12 more | 6–41B | retf | ≤1,105 | |
+
+Function count **1,215 → 1,234**; all newly registered targets resolve to
+**EXACT** in `boundary_report.json`.
+
+**Four toolchain gotchas (each cost a debugging round):**
+1. **Naive terminator scan gives false positives** — `c3`/`cf` as the *second
+   byte* of `3b c3` (`cmp bx,ax`) / `3b cf` (`cmp cx,di`) looked like `ret`/
+   `iret`. Must disassemble to instruction boundaries (handled in
+   `add_trace_functions.py`).
+2. **`ida_bytes.next_head()` returns BADADDR after `del_items`** — it only
+   finds *already-created* item heads. Advance with `get_item_size()` instead.
+   Symptom: every candidate "SKIP (no terminator)".
+3. **`idaapi.auto_wait()` re-decides bodies and shrinks explicitly-registered
+   functions** (348B → 1B). Fix (`fix_trace_functions.py`): disable
+   autoanalysis (`ida_auto.enable_auto(False)`), force-decode every
+   instruction, `set_func_end`, and save **without** `auto_wait`.
+4. **`file_off = ida_lin - 0xD400` is resident-only.** Host-side byte peeks
+   at overlay addresses (≥ ~0x6xxxx) read zeros — always trust IDA's own
+   disassembly for overlay code.
+
+Tools added: `add_boundary_functions.py`, `add_trace_functions.py`,
+`fix_trace_functions.py`.
+
+Impact: port queue confirmed sound; 19 previously-invisible functions
+(including the game's #2 hot path) now in the IDB; boundary EXACT coverage
+340→466.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
