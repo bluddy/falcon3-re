@@ -51,7 +51,7 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 
 1. ~~**Patch static thunk table in IDA**~~ ✅ DONE (session 17): `tools/patch_thunks_ida.py` ran headless. Thunk table at IDA EA **0x2BD9D** (not 0x1EBAF). 299/303 thunks patched — E8 trap at +0..+2 replaced with NOPs so IDA flows into JMP FAR at +3. Segments converted (JSON seg + 0x0E5E = IDA seg). 4 ambiguous (dup offset 0x000A in recs 1/53) skipped — segments already correct. Log: `analysis/ida_falconcd/patch_thunks.log`.
 
-2. **Fresh traced run** (populate SEG_HEAP_ALLOC): Run `tools/run_falcon_traced.ps1` with `FALCON_TRACE` env. The AH=48h/49h hooks will populate `SEG_HEAP_ALLOC` with call-site attribution.
+2. ~~**Fresh traced run** (populate SEG_HEAP_ALLOC)~~ ✅ DONE (session 17): `trace_20261015_211031` — 3.97M far calls, 82 target CS, 1,093 overlay reads, **674 heap blocks → 655 SEG_HEAP_ALLOC segments** with call-site attribution. Traces mined (`mine_traces.py`), segments classified (`classify_segments.py` → `segment_classification.json`).
 
 3. **Memory-deref + indirect-target hooks** (advice.md §3.3 hooks 2-3): Implement memory-deref (`LES`, `LDS`, `MOV ES:[BX]`) and indirect `CALL/JMP [BX]` logging in `falcon_trace`. Currently unimplemented.
 

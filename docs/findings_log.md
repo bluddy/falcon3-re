@@ -877,6 +877,17 @@ Status: CONFIRMED
   segments were already correct.
 - Log: `analysis/ida_falconcd/patch_thunks.log`.
 
+**Fresh traced run — SEG_HEAP_ALLOC populated:**
+- `trace_20261015_211031` (thorough walkthrough): 3.97M far calls, 82
+  target CS segments, 1,093 overlay reads, 16,297 fileio events.
+- **674 mcb_alloc / 1,354 mcb_free events** → **655 unique SEG_HEAP_ALLOC
+  segments** in `segment_classification.json`, each with call-site
+  attribution (dominant site `1161:2F53` = main code hub).
+- 806 segments classified total (75 data, 22 static, 4 VGA, 1 DGROUP,
+  674 heap). DGROUP still 27687 (HYPOTHESIS), resident base 501 (PROVEN).
+- `mine_traces.py` + `classify_segments.py` re-run over all 6 traces;
+  overlay offsets: 53 tracked, 0 unstable across runs.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
