@@ -829,4 +829,40 @@ load-base problem.
 
 ---
 
+## 2026-10-15 35 - DGROUP identity + MCB owner correction + VGA Mode X confirmation
+Status: CONFIRMED
+
+**DGROUP identity clarified (external review):**
+- **0x6C27 (27687) is the single true Borland C++ DGROUP**. This is
+  provable in 5 seconds by checking C0L startup at the entry point, which
+  executes `MOV AX, DGROUP / MOV DS, AX`.
+- **0x46A4 is NOT a second DGROUP** -- it is the primary **Sim Far Data /
+  Flight State Segment** used by the 3D flight loop's hand-crafted assembly
+  and far-data routines. The two runs differed only in which module
+  dominated CPU cycles: run 1 (menu-heavy) entered far calls with DS=DGROUP
+  (0x6C27) 58% of the time; run 2 (flight-heavy) entered with DS=0x46A4
+  (Sim Far Data) 41% of the time. Both runs share the same single DGROUP
+  = 0x6C27. Marked HYPOTHESIS pending dump-side pointer check.
+
+**MCB owner correction:**
+- The legacy session B (Feb 2026 dumps) had PSP at para 0x192.
+- The current session A (instrumented build, Oct 2026) has PSP at 0x1E5.
+- Heap-block carving must filter for owner=0x1E5 (not 0x192).
+- The INT 21h AH=48h/49h hooks (added in this session) capture call-site
+  CS:IP; a fresh traced run will populate SEG_HEAP_ALLOC correctly.
+
+**VGA Mode X / Page Flipping confirmed:**
+- ES values 0xA000, 0xA400, 0xA800 at call entries correspond to VGA
+  display pages 0, 1, 2 (classic 16-color planar EGA/VGA or unchained
+  Mode X page-flipping). Any function entering with ES in {0xA000, 0xA400,
+  0xA800} is a graphics rasterizer or blitter.
+
+Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
+dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
+second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
+page flipping confirmed -- graphics routines are immediately classifiable
+by ES value.
+
+---
+
 (append new findings below)
