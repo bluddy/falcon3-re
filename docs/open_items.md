@@ -50,5 +50,16 @@
   + 9B of data), `sub_27697` (2), `sub_257B1` (2), `sub_10E03` (2),
   `sub_23036` (≥4), `sub_128A1`, `sub_22996`, `sub_127D4`, `sub_25A06`,
   `sub_26FF4`, `sub_1509E`, `sub_23D85`, `sub_26FE4`; `sub_2BFCD` is 8B of
-  code in a 210B range (rest = resident-tail data); **`sub_10E03` classified
-  DATA but is code**, and its callee `sub_224C2` likewise.
+   code in a 210B range (rest = resident-tail data); **`sub_10E03` classified
+   DATA but is code**, and its callee `sub_224C2` likewise; batch 5 adds
+   **`sub_13755`** (DATA-class but called by `entity_seg_reset`) and
+   **`sub_10BE2`** (DATA-class but is `stack_reset_dispatch` — resets SP,
+   `pushf/call far/popf`, dispatches to 8+ subsystems). 5 DATA-but-code now.
+- **`op_dispatch` targets are only starting to resolve**: `sub_22699`
+  (`file_create`, AH=3Ch) and `sub_227D3` both list `op_dispatch` among their
+  static callers — i.e. they *are* dispatch targets. ~15 more unidentified.
+- **Level-1 dynamic evidence is now EXHAUSTED** (finding 47): batch 5's tail
+  reached `dyn=0`, so all 143 dyn>0 Level-1 nodes are named and the remaining
+  **207 have zero dynamic-call weight**. Batching by dyn no longer ranks
+  anything — switch to static fan-in ordering, or move to Level 2 / the bulk
+  cleanup pass.

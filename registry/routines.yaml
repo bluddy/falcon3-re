@@ -2689,8 +2689,399 @@ routines:
     updated: "2026-10-16"
 
 
+  - ea: 0x1053A
+    seg: 0x1053
+    ofs: 0xA
+    size: 141
+    far: true
+    class: ASM
+    hypothesis: "ems_init"
+    sig: "far: cs:10218=0; sub_105E6 -> CF set -> return; INT 67h AH=40 (status) fail -> return; AH=41 (page frame) -> cs:10219=BX; AH=42 (unallocated) -> cs:1021B/1021D = BX-1; AH=43 BX=1 (allocate) -> cs:1022B=DX; BX=0, AX=3, DX=handle, AH=44 (map) int 67h; zero cs:1021F/10221/10223/10225; sets 10218/10245/10240=1"
+    port_status: unported
+    verified: null
+    notes: "141B, dyn=5, self-called only; full EMS/LIM page-frame bring-up -- confirms mem_unmap_all's INT 67h reading. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x10BE2
+    seg: 0x10BE
+    ofs: 0x2
+    size: 68
+    far: false
+    class: DATA
+    hypothesis: "stack_reset_dispatch"
+    sig: "far: SP = cs:10846 (stack reset); push AX; pushf; call far sub_2BE3D; popf; pop AX; CF clear -> jmp loc_10B1C; CF set -> sub_10348(0,{0,2,3}) x3, AL==0 -> cs:10844=7 then jmp loc_10A93; otherwise jmp loc_10A93"
+    port_status: unported
+    verified: null
+    notes: "68B, dyn=5, self-called but is the static CALLER of ~8 nodes (all tail bridges, mode_slot_setup_wrap, program_terminate, state_swap_far_call) -- a subsystem dispatcher. conf: low"
+    updated: "2026-10-16"
+
+  - ea: 0x10F60
+    seg: 0x10F6
+    ofs: 0x0
+    size: 121
+    far: true
+    class: ASM
+    hypothesis: "state_swap_far_call"
+    sig: "far: slot_check_wrap(2); irq_unmask_with_ds loop until nonzero; mode_check_wrap; sub_10E24(0); copy 0x59 bytes seg R69_606E:0 -> 7075h:0F1h; sub_25736; sub_25670(0); sub_10DFE(2); call far sub_2BE47; sub_10DFE(0); sub_10E24(1); copy 0x59 bytes back 7075h:0F1h -> R69_606E:0"
+    port_status: unported
+    verified: null
+    notes: "121B, dyn=1, 2 callers (sub_10BE2, self); shadows 0x59 bytes around one far call. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x11A5E
+    seg: 0x11A5
+    ofs: 0xE
+    size: 137
+    far: true
+    class: ASM
+    hypothesis: "cb_args_invoke"
+    sig: "far: if CX==0 -> sub_1189E only; else cb_args_save, cs_word_store, cb_args_table_set(BX=2), ES:BX = result, sub_11B25, sub_1189E, sub_11AE7, cb_args_restore; keeps CS:1186A/11868 (CX,SI) and 1186C/1186E across"
+    port_status: unported
+    verified: null
+    notes: "137B, dyn=5, 2 callers (self + sub_224D3); brackets a call with the cb_args save/restore/table triple. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x11D2B
+    seg: 0x11D2
+    ofs: 0xB
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "entity_seg_reset"
+    sig: "far: sub_11D40; DS=ES=71C1h; sub_12EA7; sub_13755 (DATA-class but called -- misclassification); pop ES/DS; retf"
+    port_status: unported
+    verified: null
+    notes: "21B, dyn=1, 0 static callers; entity-segment init. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x133A8
+    seg: 0x133A
+    ofs: 0x8
+    size: 94
+    far: true
+    class: ASM
+    hypothesis: "entity_tables_init"
+    sig: "far: cs:11BE8 = sub_26CA7().DX; sub_11D40; ES=71C1h; cs:11BC4/11BC2 = cs:11C26/C24 + 5; zero cs:11C44/42/48/46; ES:1F2h <- 8 words of 0; ES:150h <- 9 words of 0xFFFF (empty sentinels); cs:11BB8=cs:11BB9=0"
+    port_status: unported
+    verified: null
+    notes: "94B, dyn=8, 1 caller (entity_setup_step). conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x1657E
+    seg: 0x1657
+    ofs: 0xE
+    size: 48
+    far: false
+    class: ASM
+    hypothesis: "tile_index_resolve"
+    sig: "AX &= 0x1FF -> CX = AX&0xF, AX >>= 4; BX &= 0x1FF -> DX = (BX&0xF)<<4, BX = (BX&0xFFF0)<<1; SI = BX; sub_12F27; return AL=BL"
+    port_status: unported
+    verified: null
+    notes: "48B, dyn=0, 4 callers (sub_142DA, sub_14956, sub_14EAE, sub_1656F); 9-bit coord split into hi/lo nibbles then lookup. conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x165AE
+    seg: 0x165A
+    ofs: 0xE
+    size: 64
+    far: true
+    class: ASM
+    hypothesis: "slot2_alloc"
+    sig: "far: cs:11BB8=0; sub_12BB3; op_dispatch(AX=cs:11C14, BX=0x0E, CH=2) -> cs:11BA6+6/+8; add 0x3FFF then *4; AX=DX; BX=2; sub_10340; sub_12BD5"
+    port_status: unported
+    verified: null
+    notes: "64B, dyn=7, 0 static callers; pairs with slot2_copy_chunks. conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x165EE
+    seg: 0x165E
+    ofs: 0xE
+    size: 108
+    far: true
+    class: ASM
+    hypothesis: "slot3_alloc"
+    sig: "far: cs:11BB9=0; sub_13EA4; op_dispatch(AX=cs:11BDA, BX=0x0E, CH=2) -> cs:11BA6+0E/+10; op_dispatch(AX=cs:11BDC, BX=0x0E, CH=2) -> cs:11BA6+0A/+0C; add+shift both by 0x3FFF then *4; BX=3; sub_10340; sub_13EDF"
+    port_status: unported
+    verified: null
+    notes: "108B, dyn=7, 0 static callers; writes the same 11BA6+0A/+0C words that slot3_copy_chunks reads. conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x1665A
+    seg: 0x1665
+    ofs: 0xA
+    size: 117
+    far: true
+    class: ASM
+    hypothesis: "slot2_copy_chunks"
+    sig: "far: gate sub_10463(BX=2), ZF clear -> return; cs:11BB8=0; sub_105D7 -> DS; sub_12BB3 lock; loop over 0x4000-byte chunks of the 32-bit count at cs:11BA6+6/+8: sub_103B1 + op_dispatch(AX=cs:11C14, BX=0x0A, DX=0) + BX++; tail chunk; sub_12BD5 unlock; cs:11BB8=1"
+    port_status: unported
+    verified: null
+    notes: "117B, dyn=7, self-called; pairs with slot2_alloc (same 11BA6+6/+8 words). conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x166CF
+    seg: 0x166C
+    ofs: 0xF
+    size: 210
+    far: true
+    class: ASM
+    hypothesis: "slot3_copy_chunks"
+    sig: "far: gate sub_10463(BX=3), ZF clear -> return; cs:11BB9=0; DS from sub_105D7; sub_13EA4; chunk loop over 0x4000 of cs:11BA6+0A/+0C via sub_103C6 + op_dispatch(BX=0x0A); then sub_26505 -> ES:AX, fill 0x800 words with 0xFFFF, loop CX=0x40 x sub_167A1 (DX+=4), swap+movsw copy 0x800 words; sub_13EDF; cs:11BB9=1"
+    port_status: unported
+    verified: null
+    notes: "210B, dyn=7, self-called; pairs with slot3_alloc. conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x17D6C
+    seg: 0x17D6
+    ofs: 0xC
+    size: 148
+    far: true
+    class: ASM
+    hypothesis: "adlib_operator_write"
+    sig: "DI*0xE indexes 5 byte arrays at DS:-52A5/-52A4/-52A9/-52A3/-52AD -> SI = (0x80|0x40|0x20|0x10 bits) + ([..AD]&0xF); AX = ([DI-6631h] + 0x20); hw_reg_write_pair(reg=SI, val=AX)"
+    port_status: unported
+    verified: null
+    notes: "148B, dyn=0, 3 callers (sub_17B11, sub_17B8B, self); hw_reg_write_pair is the same writer sound_device_init feeds with port 0x388. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x1852E
+    seg: 0x1852
+    ofs: 0xE
+    size: 440
+    far: true
+    class: C
+    hypothesis: "kb_record_commit"
+    sig: "kb_field_get_2d -> DX:AX saved; kb_field_get_23 -> DI (0|1 short-circuit); sub_18711 gate else kb_clear_24 + return 0; sub_22598(seg,0,0,6) -> SI (-1 -> sub_18872 + clear); sub_187DC(SI), sub_184D3, sub_22598(0,0,SI,8), kb_field_set_24(1,...); 18 callees"
+    port_status: unported
+    verified: null
+    notes: "440B (C-class = port candidate), dyn=1, 3 callers (kb_records_rebuild, self, sub_1914E). conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x188CC
+    seg: 0x188C
+    ofs: 0xC
+    size: 57
+    far: true
+    class: ASM
+    hypothesis: "accumulate_wait"
+    sig: "AX: sub_1A62C != 0 -> proceed; else sub_19B78(arg0,arg2) == 0 -> AX=0; loop: sub_1A5C4 -> DX:AX vs [bp+arg2]:[bp+arg0]; reached -> AX=1, else repeat"
+    port_status: unported
+    verified: null
+    notes: "57B, dyn=4, 3 callers (sub_1852E, self, sub_1B684); spins until a 32-bit accumulator passes a target. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x1950C
+    seg: 0x1950
+    ofs: 0xC
+    size: 184
+    far: true
+    class: ASM
+    hypothesis: "mode_slot_enter"
+    sig: "AX: SI:slot, 0 rejected; sub_19103 validates -> es:7753C+25Bh=0/AX=0 on fail; no-op if already current; lazy init: es:[SI*2+43Ah]==0 -> sub_17400 gate then =1; es:[SI*2+428h]==0 -> irq_unmask_and_query + state_mode_check(0) + sub_180FA + sub_1816E(1,SI) then =1 + sub_18126; finally es:7753C+25Bh=SI, AX=1"
+    port_status: unported
+    verified: null
+    notes: "184B, dyn=8, 2 callers; the active-mode setter with two-stage lazy init. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x19B78
+    seg: 0x19B7
+    ofs: 0x8
+    size: 112
+    far: true
+    class: ASM
+    hypothesis: "kb_record_process"
+    sig: "sub_1A611/1A5A9/1A64E; kb_flag_get_10 == 0 -> AX=0; sub_105D7 -> AX -> es:7753C+263h; sub_1A62C != 0 -> AX=1; else sub_1A700(1,0x4000,arg0,arg2), AX+1, long_accumulate(AX+1,0x4000), sub_1A5D7, sub_1A5A9/1A63A, AX=1"
+    port_status: unported
+    verified: null
+    notes: "112B, dyn=5, 3 callers (kb_records_rebuild, sub_188CC, self); core kb accumulator over 0x4000. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x1D3DB
+    seg: 0x1D3D
+    ofs: 0xB
+    size: 37
+    far: true
+    class: ASM
+    hypothesis: "state_flags_clear"
+    sig: "AX: if [bp+arg0]!=0 -> es:778C8+182h = 0; call sub_17607; ds:9A36h = 0; return AX=1"
+    port_status: unported
+    verified: null
+    notes: "37B, dyn=5, **6 callers** (irq_state_init, sub_1914E, sub_19402, sub_198BA, self, sub_1D400); inverse of the ds:9A36h=1 setter. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x1FB3C
+    seg: 0x1FB3
+    ofs: 0xC
+    size: 375
+    far: false
+    class: ASM
+    hypothesis: "record_xform_apply"
+    sig: "DI record: test [DI+24h],0x8000 else return; table_dword_get(BX=[DI+22h]) -> -1 abort; sub_24536(record DI+0C -> 43EAh); flag_byte_get -> CL; shift 3 words at es:7F4A8+0A/0C/0E by CL; DX=0x140<<CL; permute 43D2/43D8/43DE/43E4; sub_248D1 x4; loop BP=0xC x ([BX+18h]+3)"
+    port_status: unported
+    verified: null
+    notes: "375B, dyn=0, 2 callers; record geometry transform with fixed-point scale. conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x2224C
+    seg: 0x2224
+    ofs: 0xC
+    size: 29
+    far: false
+    class: DATA
+    hypothesis: "program_terminate"
+    sig: "sub_100A2, sub_1047C, sub_2A767, sub_26CBF, sub_229C0 (5 cleanup calls); AH=0x4C int 21h (DOS terminate)"
+    port_status: unported
+    verified: null
+    notes: "29B, dyn=3, 2 callers (sub_10BE2, sub_224D3); the process-exit path. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x22699
+    seg: 0x2269
+    ofs: 0x9
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "file_create"
+    sig: "sub_2262F; CX=AX; AH=0x3Ch int 21h (DOS create file); CF clear -> return handle; CF set -> OR cs:22248,1, cs:22249=2, AX=0xFFFF"
+    port_status: unported
+    verified: null
+    notes: "29B, dyn=0, 2 callers (**op_dispatch + self** = a resolved op_dispatch target); sibling of sub_227D3. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x229DD
+    seg: 0x229D
+    ofs: 0xD
+    size: 103
+    far: true
+    class: ASM
+    hypothesis: "config_defaults_init"
+    sig: "far: OR cs:22248,0x80 (critical section); sub_2A96C; ES=CS, DI=0x29C0, sub_2AA0F; AND cs:22248,0x7F; DS=ES=7B0Eh; set cs:1F738/1F73A/1F73B/1F72D/1F72F/1F737/1F72E=0xFF, 1F739=2, 1F731/1F730/1F732=0; sub_20AC1; sub_25736"
+    port_status: unported
+    verified: null
+    notes: "103B, dyn=5, 0 static callers; writes 11 config bytes to defaults inside a cli-equivalent bracket. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x22A44
+    seg: 0x22A4
+    ofs: 0x4
+    size: 53
+    far: true
+    class: ASM
+    hypothesis: "int0_vector_hook"
+    sig: "far: AX=0x3500 int 21h (get INT0) -> cs:22218/2221A; DS=CS, DX=0x342B, AX=0x2500 int 21h (install INT0 handler); then sub_252D5, sub_252B8, sub_22ADC(BX=0x1000,AX=0), sub_22A9F"
+    port_status: unported
+    verified: null
+    notes: "53B, dyn=5, 0 static callers; hooks divide-by-zero then runs 4 hw inits. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x23F62
+    seg: 0x23F6
+    ofs: 0x2
+    size: 32
+    far: false
+    class: ASM
+    hypothesis: "vec3_dot"
+    sig: "sub_23E77; DX:AX = [SI]*[DI] + [SI+2]*[DI+2] + [SI+4]*[DI+4] (32-bit accumulate via BX:CX); retn"
+    port_status: unported
+    verified: null
+    notes: "32B, dyn=0, 0 static callers; unambiguous 3-component dot product. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x251CF
+    seg: 0x251C
+    ofs: 0xF
+    size: 60
+    far: true
+    class: ASM
+    hypothesis: "flag_table_pop"
+    sig: "far: DS=CS; scan CX=11 bytes at cs:5C6Eh for first nonzero; none -> AX=0; found -> clear that byte (CH=0), compute SI=(11-CX)*8 + bit-position scan of AL, AX = (AH=SI_hi<<8 | AL) with AH+=1 -> call sub_253FC(AX)"
+    port_status: unported
+    verified: null
+    notes: "60B, dyn=7, 3 callers; 11-entry flag table, same width as mouse_wait_click. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x25522
+    seg: 0x2552
+    ofs: 0x2
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "regload_far_wrap"
+    sig: "far: BX=[bp+6], DI=[bp+8], BP=[bp+0Ah], CX=[bp+0Ch], AX=[bp+0Eh], DX=[bp+10h]; push CS; near call sub_25540(6B); pop DI/BP; retf"
+    port_status: unported
+    verified: null
+    notes: "30B, dyn=5, 0 static callers; 6-argument stack-to-register far trampoline. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x29F20
+    seg: 0x29F2
+    ofs: 0x0
+    size: 405
+    far: false
+    class: ASM
+    hypothesis: "line_from_points"
+    sig: "SI = cs:2796E + CX*0x10, copy 8 words; bit-3 test on ds:43BA/43BC; cross-product form (ax=[si+2]*[bx+4] - [bx+2]*[si+4]) then idiv with saturating clamp to 0x8001/0x7FFF; [DI+2]=quot, [DI+4]=-2*quot; sub_279A4"
+    port_status: unported
+    verified: null
+    notes: "405B, dyn=0, 2 callers (sub_29B82, self); two-point line/segment fit with overflow clamping. conf: low-med"
+    updated: "2026-10-16"
+
+  - ea: 0x2BDB1
+    seg: 0x2BDB
+    ofs: 0x1
+    size: 8
+    far: false
+    class: DATA
+    hypothesis: "tail_bridge_r01_e02"
+    sig: "call sub_2AFBD(131B) -> jmp far loc_2D426+1 (tail jump; graph callee r01_e02)"
+    port_status: unported
+    verified: null
+    notes: "8B, dyn=8, 1 caller (sub_10BE2); sibling of tail_bridge_r30_e66. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x2BDF7
+    seg: 0x2BDF
+    ofs: 0x7
+    size: 8
+    far: false
+    class: DATA
+    hypothesis: "tail_bridge_38da2"
+    sig: "call sub_2AFBD(131B) -> jmp far unk_38DA2 (graph callee sub_2E2F0, the 51,644B blob)"
+    port_status: unported
+    verified: null
+    notes: "8B, dyn=7, 1 caller (sub_10BE2). conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x2BE33
+    seg: 0x2BE3
+    ofs: 0x3
+    size: 8
+    far: false
+    class: DATA
+    hypothesis: "tail_bridge_2f6d0"
+    sig: "call sub_2AFBD(131B) -> jmp far unk_2F6D0 (graph callee sub_2E2F0)"
+    port_status: unported
+    verified: null
+    notes: "8B, dyn=7, 1 caller (sub_10BE2). conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x2CA64
+    seg: 0x2CA6
+    ofs: 0x4
+    size: 140
+    far: true
+    class: DATA
+    hypothesis: "far_entry_register"
+    sig: "far: walk 6-byte records cs:[0x14C..0x17B] until both words 0 (BX=record); first time only (cs:2CA77): store 0xFFFF and patch es:[0Ah]/es:[0Ch] = loc_2CB21:CS (cli/sti, ES=cs:2C9C2); record DX:DS+AL at cs:[BX],[BX+2],[BX+4]; if BX==0x17C -> sub_2CAF0 (table-full handler)"
+    port_status: unported
+    verified: null
+    notes: "140B, dyn=5, 2 callers; 128 x 6-byte far-ptr registry + one-time vector patch. conf: low-med"
+    updated: "2026-10-16"
+
+
 counts:
-  tracked: 205
+  tracked: 235
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
   total_functions: 1238           # matches classification.json (findings 39-43)
   classification:            # tools/classify_routines.py → classification.json

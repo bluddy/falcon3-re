@@ -1644,4 +1644,84 @@ drift is repaired.
 
 ---
 
+## 2026-10-16 47 — Level-1 batch 5: 30 named; **dynamic evidence for Level-1 is exhausted**
+Status: CONFIRMED
+
+Level-1 batch 5 (next 30 dyn>0, **dyn 8 → 0**). Ledger **204 → 234**,
+`routines.yaml` **205 → 235**, `check` green, `verify_rebuild` faithful
+(1,238/1,238), assertions pass, **read-back `match=234 / mismatch=0`**.
+
+**The batch tail hit `dyn=0`, which ends a strategy.** Because nodes are
+sorted by descending dynamic-call weight, reaching rank 25 at `dyn=0` means
+**every Level-1 node with any dynamic evidence is now named** — 143 of them.
+The remaining **207 have zero dynamic-call weight**, exactly mirroring Level-0
+(203 of 328 endpoints). Sorting by dyn therefore no longer ranks anything, so
+batch-by-dyn is finished; what's left needs static fan-in ordering, Level-2
+target resolution, or the bulk cleanup pass. Recorded in Open Items rather
+than discovered again next session.
+
+**High-confidence system finds (these anchor subsystems):**
+- **`ems_init` (`sub_1053A`)** — a textbook EMS/LIM bring-up: `INT 67h`
+  `AH=40` status → `AH=41` page frame → `AH=42` unallocated pages →
+  `AH=43` allocate → `AH=44` map, storing the handle at `cs:unk_1022B`.
+  This **retroactively validates** batch 4's low-confidence `mem_unmap_all`,
+  which reads the very same `unk_1022B` handle and issues the same `AH=44`.
+  One function confirms another 30 lines earlier — the value of leaving
+  confidence levels visible instead of upgrading them silently.
+- **`program_terminate` (`sub_2224C`)** — five cleanup calls then
+  `AH=4Ch int 21h`. Process exit, unambiguous.
+- **`vec3_dot` (`sub_23F62`)** — three 16×16 products accumulated into
+  DX:AX. Unambiguous geometry primitive.
+- **`file_create` (`sub_22699`)** — `AH=3Ch int 21h` with error-flag
+  side effects. Critically, its caller list is **`op_dispatch, sub_22699`**:
+  this is a *confirmed `op_dispatch` dispatch target*, the first concrete
+  evidence feeding Level 2 (alongside `sub_227D3`). ~15 targets remain.
+- **`adlib_operator_write` (`sub_17D6C`)** — builds a register index from
+  five per-channel byte arrays and calls `hw_reg_write_pair`, the same writer
+  `sound_device_init` feeds with port `0x388`. The AdLib path now has two
+  independent confirmations.
+
+**Structural finds:**
+- **`mode_slot_enter` (`sub_1950C`)** is the *active-mode setter*: two-stage
+  lazy init on `es:[SI*2+43Ah]` (initialized) and `es:[SI*2+428h]`
+  (activated), then writes `es:7753C+25Bh = SI`. It complements
+  `mode_slot_select`/`mode_slot_setup` from batch 4 — together they are the
+  slot state machine.
+- **`state_flags_clear` (`sub_1D3DB`)** has **6 callers** — the highest
+  fan-in in this batch.
+- **`sub_10BE2` (`stack_reset_dispatch`)** resets SP, does
+  `pushf/call far/popf`, and branches on CF — yet its *outgoing* edges reach
+  all four `tail_bridge_*` thunks, `program_terminate`, `state_swap_far_call`
+  and `mode_slot_setup_wrap`. It is a subsystem dispatcher; kept `conf: low`
+  because the CF semantics aren't pinned down.
+- **A 4-function buffer pair discovered by cross-reference**: `slot2_alloc`
+  ↔ `slot2_copy_chunks` and `slot3_alloc` ↔ `slot3_copy_chunks` share the
+  `cs:11BA6+6/+8` and `+0A/+0C` word pairs respectively, and the `_copy_`
+  half is gated on `sub_10463(BX=2)` / `(BX=3)` — the same index predicate
+  batch 4 named `slot_flag_query`. `conf: low-med`, but the pairing is
+  evidence-based rather than name-guessed.
+
+**New cleanup evidence:** `sub_13755` is **DATA-class yet called** by
+`entity_seg_reset` — the 3rd DATA-but-code instance after `sub_228BF` and
+`sub_10E03`. Worse, a post-batch audit of `classification.json` showed
+**`sub_10BE2` itself is classed DATA** despite resetting SP and doing
+`pushf / call far / popf` with CF-based branching — the 4th, and the most
+damaging so far because it is a dispatcher with 8+ outgoing edges that had
+been silently excluded from every DATA-based sweep. **A C-class audit also
+corrected a status figure:** 42 C-class functions are now named (12 from
+batches 1–5), not the 11 previously written in `status.md` — the earlier
+number counted only what I had *explicitly annotated*, not what the
+classification file says. Three more `call sub_2AFBD; jmp far` bridges
+(`sub_2BDB1`, `sub_2BDF7`, `sub_2BE33`) confirm the `2BExx` thunk cluster as
+a family of four-plus.
+
+Impact: **234 ledger entries**; Level-1's dynamic half is complete and the
+remaining 207 nodes are documented as evidence-free rather than quietly
+batched; the EMS reading from finding 46 is confirmed by finding 47 rather
+than left as a guess; **the first `op_dispatch` target (`file_create`) is
+resolved**, which makes Level 2 a concrete, actionable next step instead of a
+pending idea.
+
+---
+
 (append new findings below)
