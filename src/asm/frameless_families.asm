@@ -79,7 +79,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0105D7  2ea10900       mov      ax, word ptr cs:[9]
     0105DB  cb             retf     
 
-; sub_10CBE  ea=010CBE  size=5
+; cs_word_get_10842  ea=010CBE  size=5
     010CBE  2ea10200       mov      ax, word ptr cs:[2]
     010CC2  cb             retf     
 
@@ -137,7 +137,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0254BB  2ea0e05d       mov      al, byte ptr cs:[0x5de0]
     0254BF  cb             retf     
 
-; sub_25567  ea=025567  size=5
+; cs_word_get_25499  ea=025567  size=5
     025567  2ea1d95d       mov      ax, word ptr cs:[0x5dd9]
     02556B  cb             retf     
 
@@ -161,7 +161,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     025760  2ea2c85d       mov      byte ptr cs:[0x5dc8], al
     025764  c3             ret      
 
-; sub_25F3E  ea=025F3E  size=5
+; cs_byte_set_25488  ea=025F3E  size=5
     025F3E  2ea2c85d       mov      byte ptr cs:[0x5dc8], al
     025F42  cb             retf     
 
@@ -192,11 +192,11 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     02063B  2eff1ef029     lcall    cs:[0x29f0]
     020640  c3             ret      
 
-; sub_2295E  ea=02295E  size=6
+; far_cb_5  ea=02295E  size=6
     02295E  2eff1eec29     lcall    cs:[0x29ec]
     022963  cb             retf     
 
-; sub_254F9  ea=0254F9  size=6
+; far_cb_9  ea=0254F9  size=6
     0254F9  2eff1e942a     lcall    cs:[0x2a94]
     0254FE  cb             retf     
 
@@ -224,19 +224,19 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     0256B8  2eff1ee429     lcall    cs:[0x29e4]
     0256BD  c3             ret      
 
-; sub_25DE5  ea=025DE5  size=6
+; far_cb_8  ea=025DE5  size=6
     025DE5  2eff1e3c2a     lcall    cs:[0x2a3c]
     025DEA  cb             retf     
 
-; sub_25E08  ea=025E08  size=6
+; far_cb_4  ea=025E08  size=6
     025E08  2eff1e402a     lcall    cs:[0x2a40]
     025E0D  cb             retf     
 
-; sub_25E6C  ea=025E6C  size=6
+; far_cb_3  ea=025E6C  size=6
     025E6C  2eff1ed029     lcall    cs:[0x29d0]
     025E71  cb             retf     
 
-; sub_25E8C  ea=025E8C  size=6
+; far_cb_7  ea=025E8C  size=6
     025E8C  2eff1ec829     lcall    cs:[0x29c8]
     025E91  cb             retf     
 
@@ -256,7 +256,7 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     0260A9  2eff1e042a     lcall    cs:[0x2a04]
     0260AE  cb             retf     
 
-; sub_263EA  ea=0263EA  size=6
+; far_cb_6  ea=0263EA  size=6
     0263EA  2eff1e002a     lcall    cs:[0x2a00]
     0263EF  cb             retf     
 

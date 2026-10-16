@@ -1227,6 +1227,71 @@ two things that were missing (binary provenance, rebuild verification) are now
 tracked. Remaining known non-reproducibility: the EXE (by design) and the
 intentionally-unreferenced legacy scripts.
 
+---
+
+## 2026-10-16 41 — Level-0 batch 2 (23 named) + two YAML type bugs found
+Status: CONFIRMED
+
+**Level-0 naming batch 2** (endpoints 24..48 by dynamic call count): **23 new**
+identifications — the 24th slot was `sub_1A6D4`, already the verified
+`long_accumulate`. Ledger **68 → 91 symbols**; `registry/routines.yaml`
+**45 → 92 entries**; all pushed into the IDB; `naming.py check` green.
+
+Groups identified:
+- **`far_cb_3..9`** — completes the CS callback-trampoline family: **10**
+  6B stubs (`far_cb_0..9`) each bound to one far-fn-ptr slot in the table
+  `cs:22088..22154`, plus `far_cb_with_args` / `far_cb_gated` variants that
+  prime ES/BP/args first.
+- **callback-argument block cluster** (cs:24BB8 word, 24BBA/24BBB bytes,
+  24BBC flag, backup 24BC0..24BBF): `cs_word_store`, `cb_args_save`,
+  `cb_args_restore` (exact inverse pair), `cb_args_table_set` (indexes table
+  `cs:54F0`, returns seg 0x834A — the same ES the trampolines load).
+- **tables/geometry**: `table_dword_get` (4B-stride read → DX:AX),
+  `table_rec_load_scaled` (8B record copy with field4 `<<4`), `clip_flags_batch`
+  (Cohen–Sutherland-like outcode bits into a 16B-record array, helper at
+  0x28E17), `index_limit_check`, `list_node_unlink` (**doubly-linked word-array
+  removal**, `664h`=next / `6ACh`=back, set to 0xFFFF — conf: high),
+  `group_all_free_check` (8-slot release predicate).
+- **state getters/setters**: `cs_word_get_25499`, `cs_word_get_10842`
+  (IDA mis-labels it `byte_10842` but it's read as a word), `cs_byte_set_25488`,
+  `cs_state_copy_es` (4 CS words → ES:DI), `flag2224a_clear`/`flag2224a_set`.
+
+Address-encoding names (`cs_word_get_25499`) are deliberate: the access target
+is certain, the meaning of the value is not yet known.
+
+### Two YAML schema bugs — and why `naming.py check` stayed green
+
+1. **Duplicate insert (116 → 92 entries).** The routines insert helper wrote
+   `ea` as a quoted hex **string** (`ea: '0x11223'`) while YAML-native entries
+   are **ints** (`ea: 0x16FDD`, YAML hex literal → int). Its own skip-check
+   compared `int in {ints + strs}` → never matched → **24 entries inserted
+   twice**. Fixed with a *text-level* dedupe (keeps first block per ea, drops
+   later ones, preserves all inline comments — deliberately NOT a
+   yaml.safe_load/dump round-trip, which would have destroyed them).
+
+2. **Silent validation bypass (the dangerous one).** `naming.py check`'s
+   hypothesis-sync does `fb[k]['ea'] == ent['ea']` — `fb` holds **ints**, my
+   entries held **strings**, so the comparison *never matched* and the check
+   **silently skipped every entry I had added** while still printing
+   `check OK`. Detected only because I questioned why `inserted 47` when 23
+   were new. Fixed by unquoting `ea`/`seg`/`ofs` (`ea: '0x…'` → `ea: 0x…`);
+   now **91/91 hypothesis-sync resolvable** and `counts.tracked` refreshed
+   116 → 92 (it had gone stale too).
+
+Also self-inflicted: my first unquote regex anchored `^ea`, which never
+matches the `  - ea:` / `    seg:` line prefixes — 47 entries stayed strings
+after "the fix"; second pass used `^(  - |    )`.
+
+**Rule: when adding to an existing YAML schema, match the native scalar types
+exactly — a type mismatch turns a downstream key-join into a silent no-op, and
+a green `check` is then evidence of nothing. Always assert the round-trip**
+(`unique ea == count`, `types == {int}`, `resolvable == all`).
+
+Impact: 47 Level-0 leaves now named (383K+ cumulative dynamic calls across
+batch 1+2); the callback-trampoline family and its argument block are mapped;
+two registry bugs that made validation vacuous are fixed and a regression
+rule recorded.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X

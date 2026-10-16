@@ -17,7 +17,11 @@ LOG = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\level0_disasm.log"
 CG = r"C:\Users\yotam\projects\falcon3\analysis\traces\callgraph_partial.json"
 CLS = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\classification.json"
 
-N = 24
+# batch range: L0_START..L0_END over the dyn-sorted Level-0 list (finding 39+)
+import os
+L0_START = int(os.environ.get("L0_START", "0"))
+L0_END = int(os.environ.get("L0_END", "24"))
+N = L0_END
 
 log = []
 try:
@@ -25,7 +29,8 @@ try:
     cls = json.loads(open(CLS).read())
     lvl0 = [k for k in cg["levels"][0] if k in cls]
     lvl0.sort(key=lambda k: -cg["dyn_target_calls"].get(k, 0))
-    top = lvl0[:N]
+    top = lvl0[L0_START:L0_END]
+    log.append("batch [%d:%d] of %d endpoints" % (L0_START, L0_END, len(lvl0)))
 
     for name in top:
         ea = cls[name]["ea"]

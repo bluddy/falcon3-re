@@ -333,6 +333,135 @@ symbols:
     sig: "ES=0x7B0E; [ES:0EBC]=0"
     notes: "18B, 12K calls. sets CX=14h but stosw shows no REP prefix — verify whether IDA dropped a `rep`. conf: low"
 
+  # --- Level-0 batch 2 (finding 41: endpoints 24..48 by dyn count).
+  #     Names that encode an address (cs_word_get_25499 etc.) are deliberate:
+  #     the access target is certain, the meaning of the value is not yet known.
+  - ida: sub_25567
+    name: cs_word_get_25499
+    kind: function
+    sig: "AX = cs:word_25499; clobbers none"
+    notes: "5B, 10K calls. getter near the view-limit block (2547C..25482). conf: high on shape, value meaning unknown"
+  - ida: sub_10CBE
+    name: cs_word_get_10842
+    kind: function
+    sig: "AX = word at cs:10842 (2 bytes; IDA labels it byte_10842 — mis-typed label); clobbers none"
+    notes: "5B, 9K calls, 5 callers in 0x18xxx. conf: high on shape"
+  - ida: sub_25F3E
+    name: cs_byte_set_25488
+    kind: function
+    sig: "cs:byte_25488 = AL; clobbers none"
+    notes: "5B, 539 calls; callers sub_26A49/sub_26CD8 (same module as segment_clip_test). conf: high on shape"
+  - ida: sub_2033F
+    name: cs_state_copy_es
+    kind: function
+    sig: "ES:DI=out (stosw x4); copies cs:1F6CC/1F6CE/1F6D0/1F6D2 -> 8 bytes; clobbers AX,DI"
+    notes: "21B, 7.3K calls; 4-word CS state block written to caller buffer. conf: med"
+
+  # --- far_cb_* family: 6B trampolines, one per far-fn-ptr slot in the CS
+  #     callback table (cs:22088..22154). Slot recorded in sig/notes.
+  - ida: sub_25E6C
+    name: far_cb_3
+    kind: function
+    sig: "void; near call through far ptr at cs:22090 then retf"
+    notes: "6B, 4.6K calls. conf: high"
+  - ida: sub_25E08
+    name: far_cb_4
+    kind: function
+    sig: "void; near call through far ptr at cs:22100 then retf"
+    notes: "6B, 2.9K calls. conf: high"
+  - ida: sub_2295E
+    name: far_cb_5
+    kind: function
+    sig: "void; near call through far ptr at cs:220AC then retf"
+    notes: "6B, 2.9K calls. conf: high"
+  - ida: sub_263EA
+    name: far_cb_6
+    kind: function
+    sig: "void; near call through far ptr at cs:220C0 then retf"
+    notes: "6B, 2K calls; caller sub_260F4. conf: high"
+  - ida: sub_25E8C
+    name: far_cb_7
+    kind: function
+    sig: "void; near call through far ptr at cs:22088 then retf"
+    notes: "6B, 1.6K calls. conf: high"
+  - ida: sub_25DE5
+    name: far_cb_8
+    kind: function
+    sig: "void; near call through far ptr at cs:220FC then retf"
+    notes: "6B, 1.5K calls. conf: high"
+  - ida: sub_254F9
+    name: far_cb_9
+    kind: function
+    sig: "void; near call through far ptr at cs:22154 then retf"
+    notes: "6B, 790 calls, 4 callers. conf: high"
+  - ida: sub_24D64
+    name: far_cb_gated
+    kind: function
+    sig: "void; ES=0x834A; if cs:24BBC&0xC0 -> pass (BH flags, al=24BBB, bp=24BB8) into far ptr cs:220A8; always then bp=24BB8, al=24BBA -> same ptr; clobbers ES,BP,AL"
+    notes: "60B, 7K calls; conditional-args variant of far_cb_with_args. conf: med"
+
+  # --- callback-argument block cluster (cs:24BB8 word, 24BBA/24BBB bytes,
+  #     24BBC flag, backup at 24BC0..24BBF) used by the far_cb_* family.
+  #     sub_24CF7 (cs_word_store) already declared in batch 1 above.
+  - ida: sub_24CA4
+    name: cb_args_save
+    kind: function
+    sig: "void; cs:24BB8/24BBC/24BBA/24BBB -> backup cs:24BC0/24BBD/24BBE/24BBF; clobbers AX"
+    notes: "33B, 2.5K calls. conf: high (exact inverse of cb_args_restore)"
+  - ida: sub_24CC5
+    name: cb_args_restore
+    kind: function
+    sig: "void; backup cs:24BC0/24BBD/24BBE/24BBF -> cs:24BB8/24BBC/24BBA/24BBB; clobbers AX"
+    notes: "33B, 2.4K calls. conf: high (inverse of cb_args_save)"
+  - ida: sub_24D0D
+    name: cb_args_table_set
+    kind: function
+    sig: "BH -> cs:24BBC (flag); index (BX&0x3FFF) into word table cs:54F0 -> cs:24BB8; returns DX=0x834A (segment)"
+    notes: "24B, 2.4K calls; 0x834A is the ES used by far_cb_with_args/gated. conf: med"
+
+  # --- tables / geometry / lists
+  - ida: sub_1FE54
+    name: table_dword_get
+    kind: function
+    sig: "DS=0x7B0E; index BX (*4) -> reads [bx+3052],[bx+3054]; returns DX:AX 32-bit; clobbers BX"
+    notes: "20B, 2.6K calls; 4-byte-stride table read. conf: high"
+  - ida: sub_260BF
+    name: table_rec_load_scaled
+    kind: function
+    sig: "DS=0x7B0E; index BX (*8) -> copies 4 words from table 3FDAh into state at 7EF88h+128h, field4 scaled <<4; clobbers AX,BX"
+    notes: "53B, 2.8K calls; caller sub_260B3 only. conf: med"
+  - ida: sub_27E7E
+    name: clip_flags_batch
+    kind: function
+    sig: "loop CX x over 16B records at ES:DI (ES=DS); computes bounds/outcode bits (1,2,4,8,16) from fields +0/+2/+4 into field +6; calls helper when bits==0"
+    notes: "86B, 6.7K calls; Cohen-Sutherland-like outcode classification over an array; helper at 0x28E17. conf: med"
+  - ida: sub_1B430
+    name: index_limit_check
+    kind: function
+    sig: "ES=0x7772; AX=1 if arg_0 > es:[77D60+8Ah] else (arg_0==that && es:[..+8Ch] <= arg_2) ? 0 : 1...; pure predicate"
+    notes: "57B, 577 calls; index-vs-limit predicate with secondary threshold. conf: med"
+  - ida: sub_1A784
+    name: list_node_unlink
+    kind: function
+    sig: "ES=0x7772; si=[di*2+664h]; if si!=0xFFFF: [si*2+6ACh]=0xFFFF, [di*2+664h]=0xFFFF (doubly-linked word arrays 664h=next, 6ACh=back)"
+    notes: "63B, 565 calls; classic doubly-linked-list removal. conf: high"
+  - ida: sub_1AAA4
+    name: group_all_free_check
+    kind: function
+    sig: "ES=0x7772; reads far ptr [arg_0*4+0F34h] -> count at es:[bx]; scans si=1..8 for [si*2+6ACh]==0xFFFF decrementing count; AX=1 iff count reaches 0"
+    notes: "85B, 552 calls; 'are all 8 slots released' predicate. conf: med"
+  - ida: sub_22574
+    name: flag2224a_clear
+    kind: function
+    sig: "void; cs:byte_2224A = 0"
+    notes: "7B, 601 calls; pairs with flag2224a_set (both callers sub_11071, sub_27703). conf: high"
+  - ida: sub_2256D
+    name: flag2224a_set
+    kind: function
+    sig: "void; cs:byte_2224A = 1"
+    notes: "7B, 580 calls; pairs with flag2224a_clear. conf: high"
+
+
 
   # --- globals: add entries as hypotheses form, e.g.
   # - ida: word_12345
