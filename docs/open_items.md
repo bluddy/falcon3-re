@@ -45,8 +45,10 @@
 - **`op_dispatch` (`sub_2257B`) is the graph's highest-fan-in node (39
   callers, 17 table targets)** — resolving its 17 targets is the single best
   next move for Level-2 work.
-- **More boundary/classification errors from Level-1 batch 3** (finding 45):
-  multi-entry ranges `sub_254C0` (7 entries!), `sub_27697` (2),
-  `sub_257B1` (2), `sub_10E03` (2); `sub_2BFCD` is 8B of code in a 210B range
-  (rest = resident-tail data); **`sub_10E03` classified DATA but is code**,
-  and its callee `sub_224C2` (called by `draw_from_struct`) likewise.
+- **More boundary/classification errors from Level-1 batches 3–4** (findings
+  45–46): multi-entry ranges `sub_254C0` (7 entries!), `sub_10D8C` (4 entries
+  + 9B of data), `sub_27697` (2), `sub_257B1` (2), `sub_10E03` (2),
+  `sub_23036` (≥4), `sub_128A1`, `sub_22996`, `sub_127D4`, `sub_25A06`,
+  `sub_26FF4`, `sub_1509E`, `sub_23D85`, `sub_26FE4`; `sub_2BFCD` is 8B of
+  code in a 210B range (rest = resident-tail data); **`sub_10E03` classified
+  DATA but is code**, and its callee `sub_224C2` likewise.

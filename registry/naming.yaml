@@ -917,6 +917,156 @@ symbols:
     kind: function
     sig: "farptr_table_get -> 4x MOVSW copy; SI+=4; near call sub_14EAE (SI=SI-0xC); then STOSW/zero/3x MOVSW"
     notes: "33B, 1.5K calls; object copy + invoke + extend. conf: med"
+  - ida: sub_25A31
+    name: farptr_lds_invoke
+    kind: function
+    sig: "far: LDS SI,[bp+arg0] (load far ptr) -> push CS; near call sub_25A41(21B) -> pop DS/SI/BP; retf"
+    notes: "16B, dyn=84 (highest in batch 4); far->DS:SI loader stub. conf: med"
+  - ida: sub_182C9
+    name: key_code_resolve
+    kind: function
+    sig: "AX: SI=key id; gates on es:77A54+2Ah, es:778C8+186h, es:7753C+25Dh, si<0x16 -> remap via es:7753C+3F0h table; mode 1 => key_mapper(SI); high byte set => sub_18E1A else sub_19402(SI,arg2). returns AX"
+    notes: "191B, dyn=83, 4 callers (irq_state_init, sub_1BAD6); core key-id translator. conf: med"
+  - ida: sub_12FC4
+    name: block_words_fetch
+    kind: function
+    sig: "far: DS=7075h; op_dispatch(ax=2,bx=6) -> AX=seg; sub_26CA7 -> DX; read 9 words [0..8] into cs:11C16/11C18/11C1A/11C0A; op_dispatch(bx=0Ah/8) x2; call sub_12BEA"
+    notes: "118B, dyn=74, 1 caller (sub_130D5); op_dispatch-heavy block fetch. conf: low"
+  - ida: sub_25546
+    name: farptr_lds_bx_invoke
+    kind: function
+    sig: "far: LDS SI,[bp+arg0]; BX=[bp+arg4]; push CS; near call sub_2555C(6B); pop DI/SI/DS/BP; retf"
+    notes: "22B, dyn=67; DS:SI + BX arg loader stub. conf: med"
+  - ida: sub_10C60
+    name: farptr_7075_pick
+    kind: function
+    sig: "far ret: if (cs:1084D.2==0 && cs_word_get_25499()==3) AX=0x34 else AX=0xB6; DX=0x7075 -> far ptr 7075:0034|7075:00B6"
+    notes: "30B, dyn=63, 2 callers; picks between two buffers in seg 7075h. conf: med"
+  - ida: sub_12534
+    name: entity_step_flags
+    kind: function
+    sig: "SI/DX saved; sub_1260C -> CF=err; then dispatch on CL bits {0x40,1,4,8,0x10} -> sub_12703/12696/1273A/12771/12781/13E0A/13E25/13E45/13E5A; returns AX=0 with CF set on failure"
+    notes: "216B, dyn=55; called only by entity_setup_step. conf: med"
+  - ida: sub_1BAD6
+    name: mode_slot_masks
+    kind: function
+    sig: "DI:slot; requires slot<=0x18; sub_17F40 / sub_1902A / state_mode_check(0); writes 16 bytes at es:506h = 0x3F (mode 2/3 and state 2/3) else 0x7F; stores [bp+arg6] -> es:77A54+0E6h"
+    notes: "492B (C-class = port candidate), dyn=47, 3 callers. conf: med"
+  - ida: sub_17501
+    name: int8_vector_unhook
+    kind: function
+    sig: "far: sub_17460(0); AX=0x2508 (AH=25h AL=8), DS:DX = saved vector (es:777FC / es:777B0+4Ah) -> int 21h set INT8 vector"
+    notes: "33B, dyn=39, 1 caller (sub_1C059); restores the timer IRQ vector. conf: high"
+  - ida: sub_174AB
+    name: int8_vector_hook
+    kind: function
+    sig: "far: es:777B0+42h=2000; AX=0x3508 (AH=35h AL=8) int 21h get vector 8 -> save BX->es:0DAh, AX->es:0DCh; then AH=25h AL=8 DX=0C57h DS=CS int 21h (install cs:0C57h)"
+    notes: "86B, dyn=39, 1 caller (sub_1BFF2); paired with int8_vector_unhook. conf: high"
+  - ida: sub_26C22
+    name: farptr_table_entry_store
+    kind: function
+    sig: "far: farptr_table_get -> ES:DI entry; if es:[di+24h].6 set: AX=es:[di+22h] -> sub_2647E -> BX; DI+=0x2A (+2 if result==2|3); es:[di]=BX"
+    notes: "40B, dyn=37; conditional slot store into farptr table. conf: med"
+  - ida: sub_18E1A
+    name: key_action_execute
+    kind: function
+    sig: "AX: SI=key id; requires es:77B44+10h or sub_1970F(SI); mode es:7753C+25Dh==4 => sub_1F090 + sub_1E9A3 else sub_1D88C + sub_1E062; clears es:77A54+2Ch when it equals SI; SI=0x100/0x102 toggle es:77A54+2Eh bits 0/1; further dispatches sub_18BC8 (594B C)"
+    notes: "411B, dyn=36, 6 callers incl. key_code_resolve; the key action driver. conf: med"
+  - ida: sub_10E39
+    name: mode_flags_apply
+    kind: function
+    sig: "far: DS=*(far*)cs:10842; sub_254BB -> AL; branches on AL&3 -> call sub_10EA5 / sub_10EB6 with 0/1 (flag pair setters); result AX pushed twice into irq_state_init"
+    notes: "108B, dyn=34; applies a 2-bit mode to the 10842 flag pair. conf: med"
+  - ida: sub_24D01
+    name: cb_args_table_set_wrap
+    kind: function
+    sig: "far: BX=[bp+arg0]; push CS; near call cb_args_table_set; pop BP; retf"
+    notes: "12B, dyn=31; one-arg far wrapper. conf: high"
+  - ida: sub_24CE6
+    name: cs_word_store_wrap
+    kind: function
+    sig: "far: AX=[bp+arg0], BX=[bp+arg2]; AH=BL; push CS; near call cs_word_store; pop BP; retf"
+    notes: "17B, dyn=31; two-arg far wrapper. conf: high"
+  - ida: sub_18088
+    name: mode_check_wrap
+    kind: function
+    sig: "far: DS=cs_word_get_10842(); state_mode_check() with SP entry -> restore ES/DS; retf"
+    notes: "21B, dyn=28, 2 callers (sub_10BE2, sub_10F60). conf: med"
+  - ida: sub_180D0
+    name: slot_check_wrap
+    kind: function
+    sig: "far: DS=cs_word_get_10842(); call sub_1BF3F(91B) -> restore ES/DS; retf"
+    notes: "21B, dyn=25, 1 caller (sub_10F60); identical shape to mode_check_wrap, different predicate. conf: low"
+  - ida: sub_10456
+    name: slot_flag_query
+    kind: function
+    sig: "far: BX=[bp+arg0]; push CS; near call sub_10463(10B LEAF) -> AX status; callers test AX as boolean"
+    notes: "13B, dyn=24, 3 callers all in kb_* family (sub_1914E, sub_19402, sub_1B4E8). conf: med"
+  - ida: sub_27703
+    name: far_op_execute
+    kind: function
+    sig: "far: saves AL->cs:25484, DS:DX->cs:276FF/27701; op_dispatch(ax=0/2,bx=6) x2 with a byte patched to 0x42 between; flag2224a_set/clear bracket; op_dispatch(bx=0Ah/8/9); far_cb_0/1/5/9 + farptr_table_invoke; restores orig byte"
+    notes: "325B, dyn=20, 2 callers; far-callback orchestrator with op_dispatch. conf: med"
+  - ida: sub_10D8C
+    name: stub_bundle_10d8c
+    kind: function
+    sig: "MERGED RANGE: 4 disjoint retf routines at 0x10D8C (ES=7075h,AX=0), 0x10D9B (DS=AX; BX*=2; AX=[BX+0Dh]), 0x10DA7 (sub_25247 + mouse_buttons_get poll), 0x10DBC (AH=48h BX=0xFFFFh int 21h mem-size query); plus 9B of data at 0x10D97"
+    notes: "58B, dyn=18; IDA BOUNDARY ERROR (4 entries in one fn) - see finding 46 cleanup list. conf: low"
+  - ida: sub_1BEC3
+    name: mode_slot_select
+    kind: function
+    sig: "AX: SI:slot; no-op if SI==es:77B44+2 (already current); sub_1BF9A(SI) validates; if es:[bx+43Ah]==0 -> sub_17400 + set es:[bx+43Ah]=1; state_mode_check(0); store es:77B44+2=SI; returns AX=1"
+    notes: "124B, dyn=18, 3 callers; selects the active mode slot. conf: med"
+  - ida: sub_1AA0B
+    name: step_dir_apply
+    kind: function
+    sig: "SI:delta; si>0 -> es:77D60+8Eh=1, si<0 -> =-1, si==0 -> skip; es:77C30+7Eh=0; mode es:7753C+25Dh in {2,3} => sub_1E239(SI), ==4 => sub_1F50B(SI)"
+    notes: "97B, dyn=17, 2 callers; sign -> direction flag + mode dispatch. conf: med"
+  - ida: sub_195C4
+    name: mode_slot_setup
+    kind: function
+    sig: "AX: SI:slot; sub_19128(SI) or clear mode es:7753C+25Dh=0; sub_17400 + set es:[bx+43Ah]=1; SI==0 -> sub_1BEC3; slot not in {1,4} + es:77A54+0DCh==0 -> sub_1A8BF+sub_1E086 gate; slot==4 -> sub_172E1+sub_26CA7+sub_1BAD6(...,0x18); includes irq_unmask_and_query"
+    notes: "279B (C-class = port candidate), dyn=16, 2 callers; full slot activation path. conf: med"
+  - ida: sub_18040
+    name: mode_slot_setup_wrap
+    kind: function
+    sig: "far: BX=0x26 -> sub_10DE2 -> AX seg; DS=cs_word_get_10842(); mode_slot_setup(seg) then mode_slot_select(seg) with AX preserved across both"
+    notes: "34B, dyn=16, 1 caller (sub_10BE2); setup+select pair wrapper. conf: med"
+  - ida: sub_1740D
+    name: sound_device_init
+    kind: function
+    sig: "AX=device type: 1 -> always_true; 2 -> DS=ES=7A32h, sub_17625(0x388 /*AdLib base*/); 3 -> sub_1727E; 4 -> sub_172E1; other -> AX=0. returns AX, retf"
+    notes: "69B, dyn=15, 2 callers; type 2 hits the 0x388 OPL port + hw_reg_write_pair family. conf: med-high"
+  - ida: sub_2BDCF
+    name: tail_bridge_r30_e66
+    kind: function
+    sig: "call sub_2AFBD(131B) -> jmp r30_e66 (204B C) (tail call)"
+    notes: "8B, dyn=12, 1 caller (sub_10BE2); 0x1E from overlay_tail_bridge_b = sibling bridge. conf: med-high"
+  - ida: sub_10710
+    name: mem_unmap_all
+    kind: function
+    sig: "far: if cs:unk_10243 -> sub_1035B(0); if cs:unk_1023F -> sub_103DB(0); if cs:unk_10240 -> AX=0x4403 DX=cs:unk_1022B int 67h; retf"
+    notes: "54B, dyn=12; three conditional bank releases, third via INT 67h. conf: low"
+  - ida: sub_1B4E8
+    name: kb_records_rebuild
+    kind: function
+    sig: "AX: mode es:7753C+25Bh must be nonzero; kb_farptr_get -> far ptr, sub_19B78, slot_flag_query, kb_index_get -> DI; loop SI=0..DI: kb_record_name_get + kb_field_get_22/25 else sub_1852E; named path -> sub_1B684; tail -> sub_1A5A9"
+    notes: "329B, dyn=12, 1 caller; drives 11 kb_* field accessors. conf: med-high"
+  - ida: sub_11198
+    name: stub_to_1119c
+    kind: function
+    sig: "call sub_1119C(135B) -> retf"
+    notes: "4B, dyn=11; far entry point forwarding to sub_1119C. conf: high"
+  - ida: sub_19941
+    name: kb_record_load
+    kind: function
+    sig: "LES BX far ptr arg; sets es:778C8+186h = 1 if [BX] in {'o','O'} else 0; sub_22598(6,far ptr) -> DI; then sub_22598 x4 with seg 7894h + constant offsets (0x20/0x0C/0x12/0x10); clears 13 bytes at 7894:12h; sub_105C7 -> es:788F0+60h flag"
+    notes: "562B (C-class = port candidate), dyn=10, 2 callers (sub_184F1 + self). conf: low"
+  - ida: sub_25102
+    name: mouse_wait_click
+    kind: function
+    sig: "loop: mouse_buttons_get -> if AL!=0 return; sub_25268(ES=CS, DI=0x5762); scan CX=11 bytes at cs:5762h -> if any nonzero return; else restart; index += 8 each lap"
+    notes: "56B, dyn=9, 2 callers; sits directly after mouse_buttons_test in the 250xx cluster. conf: med-high"
 
   # --- globals: add entries as hypotheses form, e.g.
   # - ida: word_12345

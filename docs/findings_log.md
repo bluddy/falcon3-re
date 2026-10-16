@@ -888,6 +888,12 @@ Status: CONFIRMED
 - `mine_traces.py` + `classify_segments.py` re-run over all 6 traces;
   overlay offsets: 53 tracked, 0 unstable across runs.
 
+Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
+dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
+second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
+page flipping confirmed -- graphics routines are immediately classifiable
+by ES value.
+
 ---
 
 ## 2026-10-16 36 — Advice §3.3 hooks 2+3 implemented (memderef + indirect far)
@@ -1560,11 +1566,81 @@ correctly; 5 more C port candidates surfaced; the merge-error list keeps
 growing in a *systematic* way (multi-entry ranges are clearly a recurring
 class of IDA limitation here, worth one bulk cleanup pass later).
 
-Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
-dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
-second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
-page flipping confirmed -- graphics routines are immediately classifiable
-by ES value.
+---
+
+## 2026-10-16 46 — Level-1 batch 4: 30 named; two tooling traps caught before they corrupted a batch
+Status: CONFIRMED
+
+Level-1 batch 4 (next 30 dyn>0, **dyn 84 → 9**). Ledger **174 → 204**,
+`routines.yaml` **175 → 205**, `check` green, `verify_rebuild` faithful
+(1,238/1,238), assertions pass (205 unique ea, all `int`, 204 resolvable).
+
+**New gate added — positive IDA read-back.** `push-ida` reports `MISSING`
+whenever an *old* `sub_XXXXX` name no longer resolves, which is the normal
+sign that a *previous* push already renamed it — so its OK/MISSING counts
+cannot prove correctness. Added an IDA script that walks all 204
+`function_bytes.json` entries and compares `get_func_name(ea)` against the
+ledger: **`match=204 mismatch=0`**. (`push-ida` output alone would have left
+this unproven.)
+
+**Trap 1 — `L0_START`/`L0_END` silently index the wrong list.** The batch
+bounds name the *unnamed* node list, which **shrinks by N every batch**. I
+first ran batch 4 as `[144:174]` (carrying the arithmetic from the ledger
+count) and got back 30 plausible-looking disassemblies for *much* lower-dyn
+functions — the script happily returns whatever slice it is handed. Caught
+only because the header printed `batch [144:174] of 267 UNNAMED` while the
+top of the log started at `dyn=84`. **Rule: every batch starts at
+`L0_START=0`; the ledger size is never the slice index.**
+
+**Trap 2 — PowerShell 5.1 writes a BOM that IDAPython refuses.**
+`Set-Content -Encoding UTF8` emits U+FEFF, and IDAPython's `compile()` dies
+with `invalid non-printable character U+FEFF` before running a line — the
+IDA run exits 1 and *no log is produced*, which looks like a crash rather
+than a one-character encoding bug. Fix: `[IO.File]::WriteAllText($p, $s,
+(New-Object Text.UTF8Encoding($false)))`.
+
+**Docs integrity fix:** an `Impact:` paragraph about DGROUP `0x6C27` /
+`0x46A4` / MCB owner `0x1E5` / VGA Mode X was dangling at the very end of
+`findings_log.md` with **no `##` header**, directly under finding 45 — it is
+finding 35's Impact line, written to the wrong offset. Relocated beneath
+finding 35, where its content already lives. (An append-only log that
+accumulates orphaned fragments defeats its own purpose; worth a periodic
+structural check.)
+
+**Identified (30):**
+- **Interrupt vectoring (highest confidence in batch)**: `int8_vector_hook`
+  (`sub_174AB`, `AH=35h/AL=8` get + save + `AH=25h/AL=8` install `cs:0C57h`)
+  and `int8_vector_unhook` (`sub_17501`, restore saved seg:off) — a matched
+  pair around the system timer IRQ.
+- **Hardware/sound**: `sound_device_init` (`sub_1740D`) dispatches on a
+  device type; type 2 passes **`0x388`** (the AdLib/OPL2 base port) into the
+  `hw_reg_write_pair` family — this is the first *port number* to confirm the
+  sound path. `mem_unmap_all` releases three banks conditionally, third via
+  `INT 67h`.
+- **Key/mode pipeline**: `key_code_resolve` (dyn=83) and
+  `key_action_execute` (411B) form the key-id translator + action driver;
+  `mode_slot_select` / `mode_slot_setup` / `mode_slot_setup_wrap` /
+  `mode_slot_masks` / `mode_flags_apply` / `mode_check_wrap` / `step_dir_apply`
+  are the slot-state machine that repeatedly appears around
+  `state_mode_check`. `kb_records_rebuild` drives 11 `kb_*` field accessors.
+- **Far-stub thunks** (all `high`): `cb_args_table_set_wrap`,
+  `cs_word_store_wrap`, `stub_to_1119c`, `farptr_lds_invoke`,
+  `farptr_lds_bx_invoke`, `farptr_7075_pick`, `tail_bridge_r30_e66`.
+- **`mouse_wait_click`** (`sub_25102`) closes the cluster begun by
+  `mouse_buttons_get` / `mouse_buttons_test` / `flag_block_build`.
+
+**New cleanup evidence:** `sub_10D8C` is **4 disjoint `retf` routines in one
+58B range** (far-ptr getter, table looker-up, mouse poll, `AH=48h` mem-size
+query) plus 9B of embedded data — a 5th multi-entry range, taking the list to
+~17. **3 C-class port candidates** named: `mode_slot_masks` (492B),
+`mode_slot_setup` (279B), `kb_record_load` (562B).
+
+Impact: **204 ledger entries named** (83 → 113 of 351 Level-1 nodes across
+batches 1–4); dyn-weight of the remaining unnamed Level-1 top has dropped to
+9 per node; the push-verification gap is closed with a real read-back gate;
+two tooling traps that would have silently produced a *wrong* batch and a
+*crashed* script are now documented as rules; the findings log's structural
+drift is repaired.
 
 ---
 
