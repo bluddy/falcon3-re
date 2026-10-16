@@ -3080,8 +3080,399 @@ routines:
     updated: "2026-10-16"
 
 
+  - ea: 0x225F4
+    seg: 0x225F
+    ofs: 0x4
+    size: 50
+    far: false
+    class: ASM
+    hypothesis: "dos_mem_alloc"
+    sig: "op_dispatch opcode 0 (BX=0): paras = ((AX&0xF)+0xF)>>4 + (AX>>4); AH=48h int 21h; CF -> OR cs:22248,1, cs:22249=0, AX=0xFFFF"
+    port_status: unported
+    verified: null
+    notes: "50B; op_dispatch_table[0]. DOS memory alloc. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x22626
+    seg: 0x2262
+    ofs: 0x6
+    size: 9
+    far: false
+    class: LEAF
+    hypothesis: "dos_mem_free"
+    sig: "op_dispatch opcode 1 (BX=2): ES=AX (segment), AH=49h int 21h free; ES restored"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF; op_dispatch_table[1]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x226B6
+    seg: 0x226B
+    ofs: 0x6
+    size: 41
+    far: false
+    class: ASM
+    hypothesis: "file_open"
+    sig: "op_dispatch opcode 3 (BX=6): DS pushed, sub_2262F (path setup), AH=3Dh int 21h open; CF -> sub_22655 + retry once; still CF -> cs:22249=4, AX=0xFFFF"
+    port_status: unported
+    verified: null
+    notes: "41B; op_dispatch_table[3]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x226DF
+    seg: 0x226D
+    ofs: 0xF
+    size: 9
+    far: false
+    class: LEAF
+    hypothesis: "file_close"
+    sig: "op_dispatch opcode 4 (BX=8): BX=AX (handle), AH=3Eh int 21h close; BX restored"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF; op_dispatch_table[4]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x226E8
+    seg: 0x226E
+    ofs: 0x8
+    size: 42
+    far: false
+    class: ASM
+    hypothesis: "file_read"
+    sig: "op_dispatch opcode 5 (BX=10): cli; cs:2224B=1; sti; BX=AX (handle); AH=3Fh int 21h with caller CX=count and DS:DX=buffer; CF -> cs:22249=6, AX=0xFFFF; cs:2224B=0"
+    port_status: unported
+    verified: null
+    notes: "42B; op_dispatch_table[5]. Cross-check: slot2_copy_chunks passes BX=10 with CX=0x4000, DX=0. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x22712
+    seg: 0x2271
+    ofs: 0x2
+    size: 42
+    far: false
+    class: ASM
+    hypothesis: "file_write"
+    sig: "op_dispatch opcode 6 (BX=12): same cs:2224B bracket as file_read; AH=40h int 21h write; CF -> cs:22249=8, AX=0xFFFF"
+    port_status: unported
+    verified: null
+    notes: "42B; op_dispatch_table[6]. Cross-check: caller at 0x27571 passes BX=12. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x2273C
+    seg: 0x2273
+    ofs: 0xC
+    size: 36
+    far: false
+    class: ASM
+    hypothesis: "file_lseek"
+    sig: "op_dispatch opcode 7 (BX=14): BX=AX (handle); AH=42h, AL=CH (origin 0/1/2), CH=0 so CX:DX = offset; CF -> AX=DX=0xFFFF; cs:2224B bracket"
+    port_status: unported
+    verified: null
+    notes: "36B; op_dispatch_table[7]. Cross-check: slot2_alloc passes BX=14 with CH=2 (seek-to-end = file size). conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x22760
+    seg: 0x2276
+    ofs: 0x0
+    size: 55
+    far: false
+    class: ASM
+    hypothesis: "file_find_first"
+    sig: "op_dispatch opcode 8: sub_2262F, cs:2224B bracket, CX=AX, AH=4Eh int 21h find-first; retry via sub_22655; returns AX=1 found / 0 not found"
+    port_status: unported
+    verified: null
+    notes: "55B; op_dispatch_table[8]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x22797
+    seg: 0x2279
+    ofs: 0x7
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "file_find_next"
+    sig: "op_dispatch opcode 9: cs:2224B bracket; AH=4Fh int 21h find-next; AX=1 found / 0 not found"
+    port_status: unported
+    verified: null
+    notes: "29B; op_dispatch_table[9]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x227B4
+    seg: 0x227B
+    ofs: 0x4
+    size: 11
+    far: false
+    class: LEAF
+    hypothesis: "file_get_dta"
+    sig: "op_dispatch opcode 10: AH=2Fh int 21h get DTA; DX:AX = ES:BX"
+    port_status: unported
+    verified: null
+    notes: "11B LEAF; op_dispatch_table[10]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x227BF
+    seg: 0x227B
+    ofs: 0xF
+    size: 9
+    far: false
+    class: LEAF
+    hypothesis: "mem_copy_fwd"
+    sig: "op_dispatch opcode 11: SHR CX,1 / MOVSW / ADC CX,CX / MOVSB -- copy CX bytes DS:SI -> ES:DI with odd-tail fixup"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF; op_dispatch_table[11]; not a DOS call, a string primitive. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x227C8
+    seg: 0x227C
+    ofs: 0x8
+    size: 11
+    far: false
+    class: LEAF
+    hypothesis: "mem_store_fwd"
+    sig: "op_dispatch opcode 12: AH=AL / SHR CX,1 / STOSW / ADC CX,CX / STOSB -- fill CX bytes at ES:DI with AL"
+    port_status: unported
+    verified: null
+    notes: "11B LEAF; op_dispatch_table[12]; string primitive. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x227D3
+    seg: 0x227D
+    ofs: 0x3
+    size: 25
+    far: false
+    class: ASM
+    hypothesis: "file_delete"
+    sig: "op_dispatch opcode 14 (BX=28): sub_2262F, AH=41h int 21h delete; CF -> OR cs:22248,2, cs:22249=0xAh, AX=0xFFFF"
+    port_status: unported
+    verified: null
+    notes: "25B; op_dispatch_table[14]; sibling of file_create. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x227EC
+    seg: 0x227E
+    ofs: 0xC
+    size: 44
+    far: false
+    class: ASM
+    hypothesis: "file_size"
+    sig: "op_dispatch opcode 15: 3x file_lseek -- (1) origin 1 current with CX:DX=0 -> save pos, (2) origin 2 end with CX:DX=0 -> DX:AX = length, (3) origin 0 restore"
+    port_status: unported
+    verified: null
+    notes: "44B; op_dispatch_table[15]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x22818
+    seg: 0x2281
+    ofs: 0x8
+    size: 7
+    far: false
+    class: LEAF
+    hypothesis: "dos_print_str"
+    sig: "op_dispatch opcode 13: DX=SI, AH=09h int 21h ($-terminated string)"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF; op_dispatch_table[13]. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x23235
+    seg: 0x2323
+    ofs: 0x5
+    size: 41
+    far: false
+    class: ASM
+    hypothesis: "view_proj_default"
+    sig: "fn_table_dispatch opcode 0: if cs:byte_2322A==0 -> copy 3 words DS:SI -> ES:DI=3884h (keep current) and return; else sub_244E8, es:3886=0xE1, es:3884=0, es:3888=0, sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "41B; the only conditional member of the 3884/3886/3888 writer group. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x2325E
+    seg: 0x2325
+    ofs: 0xE
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_1"
+    sig: "sub_244E8; es:3884=0x0555, es:3886=0x0199, es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "29B; view preset, X-shifted twin of preset_2 (which is -0x555 with the same 0x199). conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x2327B
+    seg: 0x2327
+    ofs: 0xB
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_2"
+    sig: "sub_244E8; es:3884=0xFAAB (-0x555 signed), es:3886=0x0199, es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "29B; mirror of view_proj_preset_1. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x23298
+    seg: 0x2329
+    ofs: 0x8
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_4"
+    sig: "sub_244E8; es:3884=0x1000, es:3886=0, es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "26B; +X unit basis vector, paired with preset_5. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x232B2
+    seg: 0x232B
+    ofs: 0x2
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_5"
+    sig: "sub_244E8; es:3884=0xF000 (-0x1000), es:3886=0, es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "26B; -X unit basis vector. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x232CC
+    seg: 0x232C
+    ofs: 0xC
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_3"
+    sig: "sub_244E8; es:3884=0xE000, es:3886=0, es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "26B; 3-vector writes at unit scale 0x1000 elsewhere (presets 4-7) -- 0xE000 = -0x2000 = 2 units. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x232E6
+    seg: 0x232E
+    ofs: 0x6
+    size: 48
+    far: false
+    class: ASM
+    hypothesis: "view_matrix_build"
+    sig: "es:3884=es:3896, es:3886=es:3898, es:3888=0; sub_24536(DI=3838h); DS=ES; sub_24536(SI=3884h,DI=3820h) builds a 3x3 basis from the triple; sub_236C8 derives the scale terms"
+    port_status: unported
+    verified: null
+    notes: "48B; the only target that turns the 3-vector into matrices. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x23316
+    seg: 0x2331
+    ofs: 0x6
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_6"
+    sig: "sub_244E8; es:3884=0, es:3886=0xF000 (-0x1000), es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "26B; -Y unit basis vector, paired with preset_7. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x23330
+    seg: 0x2333
+    ofs: 0x0
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_7"
+    sig: "sub_244E8; es:3884=0, es:3886=0x1000, es:3888=0; sub_236B8"
+    port_status: unported
+    verified: null
+    notes: "26B; +Y unit basis vector. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x2334A
+    seg: 0x2334
+    ofs: 0xA
+    size: 74
+    far: false
+    class: ASM
+    hypothesis: "view_proj_offset_accum"
+    sig: "es:3884=cs:22D22, es:3886=cs:22D24, es:3888=0; sub_233C0; fixed_matrix_mul(3884,3886); DS=cs:22DBC, SI=cs:22DBA; add the 3 DX:AX results into [SI+0/+4/+8] (32-bit accumulate)"
+    port_status: unported
+    verified: null
+    notes: "74B; applies view offsets additively into the caller struct. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x23394
+    seg: 0x2339
+    ofs: 0x4
+    size: 44
+    far: false
+    class: ASM
+    hypothesis: "view_proj_load_3896"
+    sig: "DS=7B0Eh; read 3 words at 7B0E:3896 -> algn_7E964, algn_7E964+2, off_7E968 (angle triple); then copy 6 words 7B0E:388A -> cs:22DBC:22DBA"
+    port_status: unported
+    verified: null
+    notes: "44B; loads stored view preset without adjustment. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x233FD
+    seg: 0x233F
+    ofs: 0xD
+    size: 269
+    far: false
+    class: ASM
+    hypothesis: "view_proj_ring_push"
+    sig: "copy 3 words -> es:3884; push that triple into a ring of 0x12-byte records spanning 0x120 bytes at 38B8h, advancing es:39D8 head (wraps at 0x120) and es:39DA tail; read back [SI+0C/0E/10] into ds:3884/3886/3888; later recomputes from cs:22D22/22D24"
+    port_status: unported
+    verified: null
+    notes: "269B, largest fn_table target; camera/view history buffer. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x2350A
+    seg: 0x2350
+    ofs: 0xA
+    size: 177
+    far: false
+    class: ASM
+    hypothesis: "view_angles_from_struct"
+    sig: "copy 6 words cs:22DC0:22DBE -> 7B0E:38AC; angle_xy_near(388A->38AC) + cs:22D22 -> sub_24980 -> algn_7E964; angle_aux_near + cs:22D24 -> sub_24988 -> algn_7E964+2; off_7E968=0; if cs:22D26>=0xF copy 6 words to 22DBC:22DBA else sub_233C0 + fixed_matrix_mul accumulate"
+    port_status: unported
+    verified: null
+    notes: "177B; derives view angles from a struct. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x235BB
+    seg: 0x235B
+    ofs: 0xB
+    size: 164
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_offset"
+    sig: "DS=ES=7B0Eh; read 7B0E:3896 3 words -> algn_7E964,+2,BX; optional cs:22D22/22D24 angle wrap via sub_24980/24988; off_7E968=BX; if cs:22D26==0 copy 6 words 388A->22DBC:22DBA else sub_233C0 + fixed_matrix_mul"
+    port_status: unported
+    verified: null
+    notes: "164B; loads stored preset with optional offset + matrix branch. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x2365F
+    seg: 0x2365
+    ofs: 0xF
+    size: 89
+    far: false
+    class: ASM
+    hypothesis: "view_proj_preset_direct"
+    sig: "DS=ES=7B0Eh; read 7B0E:3896 3 words -> algn_7E964,+2,BX; optional cs:22D22/22D24 wrap via sub_24980/24988; off_7E968=BX; always copy 6 words 7B0E:388A -> cs:22DBC:22DBA (no matrix branch -- view_proj_preset_offset minus that branch)"
+    port_status: unported
+    verified: null
+    notes: "89B; near-twin of view_proj_preset_offset. conf: med"
+    updated: "2026-10-16"
+
+
 counts:
-  tracked: 235
+  tracked: 265
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
   total_functions: 1238           # matches classification.json (findings 39-43)
   classification:            # tools/classify_routines.py → classification.json

@@ -1217,8 +1217,168 @@ symbols:
     kind: function
     sig: "SI = cs:2796E + CX*0x10, copy 8 words; bit-3 test on ds:43BA/43BC; cross-product form (ax=[si+2]*[bx+4] - [bx+2]*[si+4]) then idiv with saturating clamp to 0x8001/0x7FFF; [DI+2]=quot, [DI+4]=-2*quot; sub_279A4"
     notes: "405B, dyn=0, 2 callers (sub_29B82, self); two-point line/segment fit with overflow clamping. conf: low-med"
+  - ida: sub_225F4
+    name: dos_mem_alloc
+    kind: function
+    sig: "op_dispatch opcode 0 (BX=0): paras = ((AX&0xF)+0xF)>>4 + (AX>>4); AH=48h int 21h; CF -> OR cs:22248,1, cs:22249=0, AX=0xFFFF"
+    notes: "50B; op_dispatch_table[0]. DOS memory alloc. conf: high"
+  - ida: sub_22626
+    name: dos_mem_free
+    kind: function
+    sig: "op_dispatch opcode 1 (BX=2): ES=AX (segment), AH=49h int 21h free; ES restored"
+    notes: "9B LEAF; op_dispatch_table[1]. conf: high"
+  - ida: sub_226B6
+    name: file_open
+    kind: function
+    sig: "op_dispatch opcode 3 (BX=6): DS pushed, sub_2262F (path setup), AH=3Dh int 21h open; CF -> sub_22655 + retry once; still CF -> cs:22249=4, AX=0xFFFF"
+    notes: "41B; op_dispatch_table[3]. conf: high"
+  - ida: sub_226DF
+    name: file_close
+    kind: function
+    sig: "op_dispatch opcode 4 (BX=8): BX=AX (handle), AH=3Eh int 21h close; BX restored"
+    notes: "9B LEAF; op_dispatch_table[4]. conf: high"
+  - ida: sub_226E8
+    name: file_read
+    kind: function
+    sig: "op_dispatch opcode 5 (BX=10): cli; cs:2224B=1; sti; BX=AX (handle); AH=3Fh int 21h with caller CX=count and DS:DX=buffer; CF -> cs:22249=6, AX=0xFFFF; cs:2224B=0"
+    notes: "42B; op_dispatch_table[5]. Cross-check: slot2_copy_chunks passes BX=10 with CX=0x4000, DX=0. conf: high"
+  - ida: sub_22712
+    name: file_write
+    kind: function
+    sig: "op_dispatch opcode 6 (BX=12): same cs:2224B bracket as file_read; AH=40h int 21h write; CF -> cs:22249=8, AX=0xFFFF"
+    notes: "42B; op_dispatch_table[6]. Cross-check: caller at 0x27571 passes BX=12. conf: high"
+  - ida: sub_2273C
+    name: file_lseek
+    kind: function
+    sig: "op_dispatch opcode 7 (BX=14): BX=AX (handle); AH=42h, AL=CH (origin 0/1/2), CH=0 so CX:DX = offset; CF -> AX=DX=0xFFFF; cs:2224B bracket"
+    notes: "36B; op_dispatch_table[7]. Cross-check: slot2_alloc passes BX=14 with CH=2 (seek-to-end = file size). conf: high"
+  - ida: sub_22760
+    name: file_find_first
+    kind: function
+    sig: "op_dispatch opcode 8: sub_2262F, cs:2224B bracket, CX=AX, AH=4Eh int 21h find-first; retry via sub_22655; returns AX=1 found / 0 not found"
+    notes: "55B; op_dispatch_table[8]. conf: high"
+  - ida: sub_22797
+    name: file_find_next
+    kind: function
+    sig: "op_dispatch opcode 9: cs:2224B bracket; AH=4Fh int 21h find-next; AX=1 found / 0 not found"
+    notes: "29B; op_dispatch_table[9]. conf: high"
+  - ida: sub_227B4
+    name: file_get_dta
+    kind: function
+    sig: "op_dispatch opcode 10: AH=2Fh int 21h get DTA; DX:AX = ES:BX"
+    notes: "11B LEAF; op_dispatch_table[10]. conf: high"
+  - ida: sub_227BF
+    name: mem_copy_fwd
+    kind: function
+    sig: "op_dispatch opcode 11: SHR CX,1 / MOVSW / ADC CX,CX / MOVSB -- copy CX bytes DS:SI -> ES:DI with odd-tail fixup"
+    notes: "9B LEAF; op_dispatch_table[11]; not a DOS call, a string primitive. conf: high"
+  - ida: sub_227C8
+    name: mem_store_fwd
+    kind: function
+    sig: "op_dispatch opcode 12: AH=AL / SHR CX,1 / STOSW / ADC CX,CX / STOSB -- fill CX bytes at ES:DI with AL"
+    notes: "11B LEAF; op_dispatch_table[12]; string primitive. conf: high"
+  - ida: sub_22818
+    name: dos_print_str
+    kind: function
+    sig: "op_dispatch opcode 13: DX=SI, AH=09h int 21h ($-terminated string)"
+    notes: "7B LEAF; op_dispatch_table[13]. conf: high"
+  - ida: sub_227D3
+    name: file_delete
+    kind: function
+    sig: "op_dispatch opcode 14 (BX=28): sub_2262F, AH=41h int 21h delete; CF -> OR cs:22248,2, cs:22249=0xAh, AX=0xFFFF"
+    notes: "25B; op_dispatch_table[14]; sibling of file_create. conf: high"
+  - ida: sub_227EC
+    name: file_size
+    kind: function
+    sig: "op_dispatch opcode 15: 3x file_lseek -- (1) origin 1 current with CX:DX=0 -> save pos, (2) origin 2 end with CX:DX=0 -> DX:AX = length, (3) origin 0 restore"
+    notes: "44B; op_dispatch_table[15]. conf: high"
+  - ida: sub_23235
+    name: view_proj_default
+    kind: function
+    sig: "fn_table_dispatch opcode 0: if cs:byte_2322A==0 -> copy 3 words DS:SI -> ES:DI=3884h (keep current) and return; else sub_244E8, es:3886=0xE1, es:3884=0, es:3888=0, sub_236B8"
+    notes: "41B; the only conditional member of the 3884/3886/3888 writer group. conf: med"
+  - ida: sub_2325E
+    name: view_proj_preset_1
+    kind: function
+    sig: "sub_244E8; es:3884=0x0555, es:3886=0x0199, es:3888=0; sub_236B8"
+    notes: "29B; view preset, X-shifted twin of preset_2 (which is -0x555 with the same 0x199). conf: med-high"
+  - ida: sub_2327B
+    name: view_proj_preset_2
+    kind: function
+    sig: "sub_244E8; es:3884=0xFAAB (-0x555 signed), es:3886=0x0199, es:3888=0; sub_236B8"
+    notes: "29B; mirror of view_proj_preset_1. conf: med-high"
+  - ida: sub_232CC
+    name: view_proj_preset_3
+    kind: function
+    sig: "sub_244E8; es:3884=0xE000, es:3886=0, es:3888=0; sub_236B8"
+    notes: "26B; 3-vector writes at unit scale 0x1000 elsewhere (presets 4-7) -- 0xE000 = -0x2000 = 2 units. conf: med-high"
+  - ida: sub_23298
+    name: view_proj_preset_4
+    kind: function
+    sig: "sub_244E8; es:3884=0x1000, es:3886=0, es:3888=0; sub_236B8"
+    notes: "26B; +X unit basis vector, paired with preset_5. conf: med-high"
+  - ida: sub_232B2
+    name: view_proj_preset_5
+    kind: function
+    sig: "sub_244E8; es:3884=0xF000 (-0x1000), es:3886=0, es:3888=0; sub_236B8"
+    notes: "26B; -X unit basis vector. conf: med-high"
+  - ida: sub_23316
+    name: view_proj_preset_6
+    kind: function
+    sig: "sub_244E8; es:3884=0, es:3886=0xF000 (-0x1000), es:3888=0; sub_236B8"
+    notes: "26B; -Y unit basis vector, paired with preset_7. conf: med-high"
+  - ida: sub_23330
+    name: view_proj_preset_7
+    kind: function
+    sig: "sub_244E8; es:3884=0, es:3886=0x1000, es:3888=0; sub_236B8"
+    notes: "26B; +Y unit basis vector. conf: med-high"
+  - ida: sub_2334A
+    name: view_proj_offset_accum
+    kind: function
+    sig: "es:3884=cs:22D22, es:3886=cs:22D24, es:3888=0; sub_233C0; fixed_matrix_mul(3884,3886); DS=cs:22DBC, SI=cs:22DBA; add the 3 DX:AX results into [SI+0/+4/+8] (32-bit accumulate)"
+    notes: "74B; applies view offsets additively into the caller struct. conf: med"
+  - ida: sub_23394
+    name: view_proj_load_3896
+    kind: function
+    sig: "DS=7B0Eh; read 3 words at 7B0E:3896 -> algn_7E964, algn_7E964+2, off_7E968 (angle triple); then copy 6 words 7B0E:388A -> cs:22DBC:22DBA"
+    notes: "44B; loads stored view preset without adjustment. conf: med"
+  - ida: sub_233FD
+    name: view_proj_ring_push
+    kind: function
+    sig: "copy 3 words -> es:3884; push that triple into a ring of 0x12-byte records spanning 0x120 bytes at 38B8h, advancing es:39D8 head (wraps at 0x120) and es:39DA tail; read back [SI+0C/0E/10] into ds:3884/3886/3888; later recomputes from cs:22D22/22D24"
+    notes: "269B, largest fn_table target; camera/view history buffer. conf: med"
+  - ida: sub_2350A
+    name: view_angles_from_struct
+    kind: function
+    sig: "copy 6 words cs:22DC0:22DBE -> 7B0E:38AC; angle_xy_near(388A->38AC) + cs:22D22 -> sub_24980 -> algn_7E964; angle_aux_near + cs:22D24 -> sub_24988 -> algn_7E964+2; off_7E968=0; if cs:22D26>=0xF copy 6 words to 22DBC:22DBA else sub_233C0 + fixed_matrix_mul accumulate"
+    notes: "177B; derives view angles from a struct. conf: med"
+  - ida: sub_235BB
+    name: view_proj_preset_offset
+    kind: function
+    sig: "DS=ES=7B0Eh; read 7B0E:3896 3 words -> algn_7E964,+2,BX; optional cs:22D22/22D24 angle wrap via sub_24980/24988; off_7E968=BX; if cs:22D26==0 copy 6 words 388A->22DBC:22DBA else sub_233C0 + fixed_matrix_mul"
+    notes: "164B; loads stored preset with optional offset + matrix branch. conf: med"
+  - ida: sub_232E6
+    name: view_matrix_build
+    kind: function
+    sig: "es:3884=es:3896, es:3886=es:3898, es:3888=0; sub_24536(DI=3838h); DS=ES; sub_24536(SI=3884h,DI=3820h) builds a 3x3 basis from the triple; sub_236C8 derives the scale terms"
+    notes: "48B; the only target that turns the 3-vector into matrices. conf: med"
+  - ida: sub_2365F
+    name: view_proj_preset_direct
+    kind: function
+    sig: "DS=ES=7B0Eh; read 7B0E:3896 3 words -> algn_7E964,+2,BX; optional cs:22D22/22D24 wrap via sub_24980/24988; off_7E968=BX; always copy 6 words 7B0E:388A -> cs:22DBC:22DBA (no matrix branch -- view_proj_preset_offset minus that branch)"
+    notes: "89B; near-twin of view_proj_preset_offset. conf: med"
 
   # --- globals: add entries as hypotheses form, e.g.
+  - ida: off_22060
+    name: op_dispatch_table
+    kind: global
+    sig: "16 near pointers, 2 bytes each, index = BX/2 (8086 [bx] has no scale); targets seg020 = seg020_base(0x1F6C0) + word"
+    notes: "32B at 0x22060; DOS-service opcode table read by op_dispatch. conf: high"
+  - ida: off_22D2A
+    name: fn_table_dispatch_table
+    kind: global
+    sig: "15 near pointers, 2 bytes each, index = BX/2; read by fn_table_dispatch with BX = cs:word_22D28"
+    notes: "30B at 0x22D2A; view/projection opcode table. conf: high"
   # - ida: word_12345
   #   name: kbd_head_index
   #   kind: global

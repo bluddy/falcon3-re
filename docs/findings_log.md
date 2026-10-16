@@ -1724,4 +1724,96 @@ pending idea.
 
 ---
 
+## 2026-10-16 48 — Level 2: both dispatch tables fully resolved (31 targets); `op_dispatch` is a DOS service shim
+Status: CONFIRMED
+
+Resolved and named **every target of both indirect-dispatch hubs**:
+`op_dispatch` = **16/16**, `fn_table_dispatch` = **15/15**. Ledger
+**234 → 266** (264 functions + **2 globals — the `kind: global` ledger path
+exercised for the first time**), `routines.yaml` **235 → 265**, `check` green,
+`verify_rebuild` faithful (1,238/1,238), read-back **functions 264/264,
+globals 2/2, zero mismatches**.
+
+**`op_dispatch` is a DOS API shim** — a 16-entry near-pointer table
+(`off_22060`, 32 bytes) where each slot sets `AH` and issues `int 21h`:
+
+| k | AH | | k | AH |
+|---|---|---|---|---|
+|0|48h alloc| |8|4Eh find first|
+|1|49h free| |9|4Fh find next|
+|2|3Ch create| |10|2Fh get DTA|
+|3|3Dh open| |11|memcpy (MOVSW)|
+|4|3Eh close| |12|memset (STOSW)|
+|5|3Fh read| |13|9h print `$`|
+|6|40h write| |14|41h delete|
+|7|42h lseek| |15|file size (3x lseek)|
+
+**The BX scale was the one real puzzle, and three independent lines of
+evidence settle it: opcode = BX / 2 (BX is a byte offset).**
+1. **CPU semantics, dispositive:** 8086 16-bit addressing has **no scale
+   field** — `call cs:off_22060[bx]` adds BX as bytes, and `op_dispatch`
+   itself does no scaling between `and cs:byte_22248,80h` and the call.
+2. **Behavioural cross-checks:** `sub_165AE` passes `BX=14, CH=2` with
+   `CX:DX=0` → k=7 = lseek origin 2 = *seek-to-end = file size*; `sub_13F00`
+   passes `BX=10, CX=4, DX=0x212` → k=5 = *read* with count 4 into buffer
+   0x212. Under the alternative reading those become "get DTA" and "delete",
+   for which the CX/DX state is meaningless.
+3. **Every one of the 87 static call sites loads an *even* BX immediate**
+   ({0,2,6,8,10,12,14} ⇒ opcodes {0,1,3,4,5,6,7}); an odd BX would be
+   mid-entry. The resulting set — alloc, free, open, close, read, write,
+   lseek — is exactly the classic core.
+
+**This retroactively confirms batch 5, which had named them from structure
+alone:** `slot2_alloc` = `file_size` + `(len+0x3FFF)>>14` chunk arithmetic
+storing to `cs:11BA6+6/+8`; `slot2_copy_chunks` = looped opcode-5 **reads**
+over those same words. Finding 45's "callee context suggests, disassembly
+confirms" loop now closes on itself — a later finding validating an earlier
+one is exactly the point of keeping `sig:` contracts.
+
+**`fn_table_dispatch` is a view/projection dispatcher** — 15 targets all
+writing the 3-vector `es:3884/3886/3888` (unit scale `0x1000`) before
+`sub_236B8`: 8 constant writers (`view_proj_default` + `presets 1..7`, where
+4..7 are the ±X/±Y unit vectors and 1/2 are mirrored ±0x555 with shared
+0x199), plus 7 transform modes — `view_proj_offset_accum` (32-bit accumulate
+via `fixed_matrix_mul`), `view_proj_load_3896`, `view_proj_ring_push` (the
+269 B largest: a 0x12-byte ring over 0x120), `view_angles_from_struct`
+(`angle_xy_near`/`angle_aux_near` + `sub_24980/24988` wrapping),
+`view_proj_preset_offset`, `view_matrix_build` (the only one turning the
+triple into 3×3 matrices via `sub_24536`), `view_proj_preset_direct`.
+
+**New tool `tools/dump_dispatch_tables.py`** (replaces three throwaway
+scripts): finds the table operand inside a named dispatcher, walks the
+stride-2 near-pointer array to its zero terminator, and emits per-target
+disassembly + callers **plus a BX→opcode histogram**. Selectable via
+`DT_FNS`, so the next dispatcher costs one env var.
+
+**Two bugs caught while building it, both worth keeping:**
+- It originally matched the operand on the literal prefix `off_`. It broke
+  *on the very next run* — because that run was after the table had been
+  renamed to `op_dispatch_table`, so the operand printed
+  `cs:op_dispatch_table[bx]`. **A tool that identifies a structure by its
+  auto-generated IDA name breaks on the first rename**; it now matches the
+  *addressing form* (`[bx]` + segment override).
+- The BX back-scan kept walking after a `mov bx, ax` and could report a
+  stale `mov bx, imm` further up, corrupting the histogram. Fixed to stop at
+  the first instruction that *writes* BX (ignoring `cmp/test/push`), with
+  explicit `shl bx,1` handling. The histogram was unchanged after the fix —
+  but that is now *evidence*, not luck.
+
+**Open:** 9 of 16 opcodes ({2,8,9,10,11,12,13,14,15} = create, find
+first/next, get DTA, memcpy, memset, print, delete, file size) have **no
+static immediate-BX call site** — all 87 sites resolve to the other 7. Either
+they are driven by a computed index static analysis can't see, or they are
+reached through a second entry point. Also still unknown: who writes
+`cs:word_22D28`, the `fn_table_dispatch` opcode source.
+
+Impact: **both hubs are 100% resolved** (finding 44's "17 targets" for
+`op_dispatch` was really 16 — the table terminates cleanly at word[16]=0).
+The binary's OS-abstraction layer is now legible: every file and memory
+operation the game performs routes through one 32-byte table, and every
+view/projection change routes through a second 30-byte one. Naming these 31
+plus the 2 tables accounts for all of Level 2's previously-unresolved core.
+
+---
+
 (append new findings below)

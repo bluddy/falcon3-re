@@ -42,9 +42,12 @@
 - **`sub_22DFF` contains undecoded/data regions** (0x22E18–0x22E93) inside a
   code function — possibly self-modifying code; needs a careful look before
   trusting its `angle_adjusted_copy` name (conf: low).
-- **`op_dispatch` (`sub_2257B`) is the graph's highest-fan-in node (39
-  callers, 17 table targets)** — resolving its 17 targets is the single best
-  next move for Level-2 work.
+- **RESOLVED (finding 48):** `op_dispatch` (`sub_2257B`, 39 callers) — all
+  **16/16** table targets named; it is a **DOS service shim** (opcode = BX/2:
+  alloc/free/open/close/read/write/lseek + create, find-first/next, get-DTA,
+  memcpy, memset, print, delete, file-size). `fn_table_dispatch` likewise
+  **15/15** (view/projection modes). New tool `tools/dump_dispatch_tables.py`
+  resolves any dispatcher via `DT_FNS=<name>`.
 - **More boundary/classification errors from Level-1 batches 3–4** (findings
   45–46): multi-entry ranges `sub_254C0` (7 entries!), `sub_10D8C` (4 entries
   + 9B of data), `sub_27697` (2), `sub_257B1` (2), `sub_10E03` (2),
@@ -55,9 +58,13 @@
    **`sub_13755`** (DATA-class but called by `entity_seg_reset`) and
    **`sub_10BE2`** (DATA-class but is `stack_reset_dispatch` — resets SP,
    `pushf/call far/popf`, dispatches to 8+ subsystems). 5 DATA-but-code now.
-- **`op_dispatch` targets are only starting to resolve**: `sub_22699`
-  (`file_create`, AH=3Ch) and `sub_227D3` both list `op_dispatch` among their
-  static callers — i.e. they *are* dispatch targets. ~15 more unidentified.
+- **9 of 16 `op_dispatch` opcodes have no static call site** (finding 48):
+  {2,8,9,10,11,12,13,14,15} = create, find first/next, get-DTA, memcpy,
+  memset, print, delete, file-size. All 87 static sites load an immediate BX
+  mapping to the other 7. Find the computed-index caller(s), or confirm they
+  are runtime-only / dead.
+- **Who writes `cs:word_22D28`?** — the `fn_table_dispatch` opcode source.
+  Resolving it tells which view/projection mode each caller selects.
 - **Level-1 dynamic evidence is now EXHAUSTED** (finding 47): batch 5's tail
   reached `dyn=0`, so all 143 dyn>0 Level-1 nodes are named and the remaining
   **207 have zero dynamic-call weight**. Batching by dyn no longer ranks
