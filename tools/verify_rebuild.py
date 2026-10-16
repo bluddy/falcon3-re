@@ -40,9 +40,23 @@ def main():
     head = head_json()
     now = json.loads(FB.read_text())
 
+    def tile_count(ea, end):
+        """How many current functions exactly tile [ea, end)? 0 if not a clean tile."""
+        pos, n = ea, 0
+        while pos < end and n < 5000:
+            f = next((v for v in now.values() if v.get("ea") == pos), None)
+            if not f or not f.get("size"):
+                return 0
+            pos += f["size"]
+            n += 1
+        return n if pos == end else 0
+
+    def contiguous_chain(ea, end):
+        return tile_count(ea, end) > 1
+
     lost = sorted(set(head) - set(now))
     added = sorted(set(now) - set(head))
-    changed, renamed = [], []
+    changed, renamed, splits = [], [], []
     for k in set(head) & set(now):
         a, b = head[k], now[k]
         # same ea + same bytes = identity regardless of key spelling
@@ -54,7 +68,13 @@ def main():
             changed.append((k, "ea %s->%s" % (a.get("ea"), b.get("ea"))))
             continue
         if a.get("bytes") != b.get("bytes"):
-            # key same, ea same, bytes differ = real drift (fixup/patch)
+            # shrank + the old range is now tiled by new fns = intended split
+            if b.get("size", 0) < a.get("size", 0):
+                n = tile_count(a["ea"], a["ea"] + a["size"])
+                if n > 1:
+                    splits.append((k, "%d -> %dB, old range tiled by %d fns"
+                                   % (a["size"], b["size"], n)))
+                    continue
             if (a.get("size"), b.get("size")) and a.get("bytes") and b.get("bytes"):
                 changed.append((k, "bytes differ (len %d->%d)"
                                 % (len(a["bytes"]), len(b["bytes"]))))
@@ -66,7 +86,12 @@ def main():
     print("committed: %d   now: %d" % (len(head), len(now)))
     print("  LOST    : %d" % len(lost))
     print("  ADDED   : %d" % len(added))
+    print("  SPLIT   : %d  (intentional: old fn subdivided, full coverage)" % len(splits))
     print("  CHANGED : %d" % len(changed))
+    if splits:
+        print("\n-- SPLIT (expected after a deliberate subdivision; verify it is yours) --")
+        for k, why in splits[:20]:
+            print("   %-16s %s" % (k, why))
     if lost:
         print("\n-- LOST (function failed to re-register) --")
         for k in lost[:40]:

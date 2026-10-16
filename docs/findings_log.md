@@ -1292,6 +1292,74 @@ batch 1+2); the callback-trampoline family and its argument block are mapped;
 two registry bugs that made validation vacuous are fixed and a regression
 rule recorded.
 
+---
+
+## 2026-10-16 42 — Level-0 is done; the 51,676 B blob `sub_2E2D0` split
+Status: CONFIRMED
+
+**Q: have we found all Level-0 functions?** — *Identified*: yes, all **328**
+(`has incoming edge, no outgoing resolvable edge`) are enumerated in
+`callgraph_partial.json`. *Named*: 56. But **Level-0 is effectively
+exhausted**, and the numbers say stop:
+
+| remaining unnamed Level-0 (272) | count |
+|---|---|
+| ASM / LEAF / DATA / C | 216 / 40 / 13 / 3 |
+| **dyn > 0** (any runtime evidence) | **69** (total 6,532 calls) |
+| dyn == 0 (leaf only in the static graph) | 203 |
+
+The 69 "valuable" remainder average ~95 dynamic calls each — versus batch 1's
+318K/210K and batch 2's 10K→539. **Marginal value of further Level-0 batches
+is ~0; the value has moved to Level 1.** Also: 13 of them are DATA-class
+(dispatch labels registered as functions) and belong in graph cleanup, not
+naming.
+
+**Method soundness check:** scanned all 328 endpoints for register-indirect
+calls (`FF /2`/`/3` with mod=11 — these leave *no* xref target and would make
+false leaves). Result: **only 2 of 328** (`sub_2E2D0`, `sub_14040`). The
+leaf definition holds.
+
+**But that scan exposed `sub_2E2D0` — a 51,676 B "function"** (the next
+largest is 4,169 B; it is 33× larger, classified `confidence: low`):
+- range `0x2E2D0..0x3ACAC`, and it was **also a Level-0 node** → it
+  corrupted the very graph being traversed;
+- contains **5 far-call targets MID inside it**, two hot: `0x2E2E0`
+  (**8,312 calls**) and `0x2E2F0` (**8,696 calls**), plus `0x2E2D0` itself
+  (12,106);
+- raw-byte mapping showed the real structure: 16-byte slots each ending in
+  `retf` (`cb` at +0x0F, +0x1F), then real code from +0x20 with its `retf`
+  at +0x79 → `0x2E34A` (IDA's independent probe agreed exactly);
+- it is dense real code (`8b`×1589, `9a`=call far×1495, `2e`×1405), not data.
+
+→ Classic **multi-entry assembly routine** whose secondary entries IDA never
+registered (the same shape as the `0x1755E` case discussed in finding 38).
+
+**Split performed** (`tools/split_blob_2E2D0.py`, guarded):
+`[0x2E2D0,0x2E2E0)` 16B + `[0x2E2E0,0x2E2F0)` 16B + `[0x2E2F0,0x3ACAC)`
+51,644B = **exact 51,676 B coverage, all ending `retf`, no gap/overlap**.
+Before mutating, the `.i64` was copied to `FALCONCD.EXE.i64.bak_before_split`
+(IDB is not in git; idat may persist a dirty DB on exit even when the script
+refuses to save → **"I aborted" is not a rollback**).
+
+Results: functions **1,236 → 1,238**; boundary report **EXACT 466 → 468,
+MID 98 → 96**; `0x2E2D0`/`0x2E2E0`/`0x2E2F0` all **EXACT** now;
+`naming.py check` green; callgraph rebuilt (1,505 edges, 328 endpoints).
+
+**`verify_rebuild.py` taught to distinguish SPLIT from drift:** the gate
+correctly failed the change (`exit 1`) as `CHANGED sub_2E2D0: bytes differ
+103352->32`, but review showed it was an *intended* subdivision — a gate that
+trips on every improvement gets ignored. Added a `SPLIT` classification: a
+shrink counts as intentional only when the old range is **exactly tiled**
+by contiguous new functions. Now reports `SPLIT 1 (tiled by 3 fns)` and passes
+(`exit 0`) while real byte drift still fails. Runbook gained **rules 6**
+(backup `.i64` before high-consequence mutation) and **7** (how to read
+SPLIT vs CHANGED).
+
+Impact: two hot far-call entries (8.3K + 8.7K) recovered as real functions;
+the largest graph artifact removed; Level-0 declared complete with evidence
+(2/328 false-leaf rate, value cliff quantified); the rebuild gate now survives
+deliberate improvements instead of being ignorable.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X

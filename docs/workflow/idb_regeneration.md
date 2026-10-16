@@ -147,3 +147,12 @@ Regenerate the committed JSONs first, then re-run steps 1–V:
    trees live there, 70 MB).
 5. **The IDB is never the only copy** of a name/comment/hypothesis — canonical
    text belongs in `src/`, `registry/`, or `docs/`.
+6. **Back up the `.i64` before any high-consequence mutation** (deleting or
+   subdividing an existing function, bulk re-analysis): copy it to
+   `<IDB>.bak_<reason>` first. The IDB is not in git, and idat *may* persist a
+   dirty DB on exit even if your script refuses to save — so "I aborted" is not
+   a rollback. Pattern used for the `sub_2E2D0` split (finding 42).
+7. **`verify_rebuild.py` classifies a shrink as `SPLIT` (not `CHANGED`) when
+   the old range is exactly tiled by the new functions** — so deliberate
+   subdivisions pass the gate while accidental byte drift still fails it.
+   If you see `CHANGED`, it is drift; if you see `SPLIT`, confirm it is yours.
