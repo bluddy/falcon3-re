@@ -29,20 +29,21 @@ log = []
 try:
     cg = json.loads(open(CG).read())
     cls = json.loads(open(CLS).read())
-    lvl0 = [k for k in cg["levels"][LVL] if k in cls]
+    # semantic names from function_bytes.json (written by naming.py apply) --
+    # IDAPython has NO PyYAML, so reading naming.yaml here always failed and
+    # silently fell back to led={} (finding 45).
+    fb = json.loads(open(
+        r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\function_bytes.json"
+    ).read())
+    led = {k: v["name"] for k, v in fb.items() if v.get("name")}
+    log.append("ledger names loaded from function_bytes: %d" % len(led))
+    # exclude already-named nodes so L0_START/L0_END index the *unnamed*
+    # list (otherwise batch slices drift as the ledger grows)
+    lvl0 = [k for k in cg["levels"][LVL] if k in cls and k not in led]
     lvl0.sort(key=lambda k: -cg["dyn_target_calls"].get(k, 0))
     top = lvl0[L0_START:L0_END]
-    log.append("level %d batch [%d:%d] of %d nodes" % (LVL, L0_START, L0_END, len(lvl0)))
+    log.append("level %d batch [%d:%d] of %d UNNAMED nodes" % (LVL, L0_START, L0_END, len(lvl0)))
 
-    # named ledger for callee annotation
-    try:
-        import yaml as _y
-        led = {e["ida"]: e.get("name")
-               for e in _y.safe_load(open(
-                   r"C:\Users\yotam\projects\falcon3\registry\naming.yaml",
-                   encoding="utf-8"))["symbols"] if e.get("name")}
-    except Exception:
-        led = {}
     # callee list per node (outgoing static edges)
     import json as _j
     edges = _j.loads(open(

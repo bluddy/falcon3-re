@@ -1500,6 +1500,66 @@ makes Level 2 tractable; six more IDA boundary errors found and tracked rather
 than silently propagated; the "suggest then verify" rule keeps callee-derived
 hypotheses from becoming unexamined names.
 
+---
+
+## 2026-10-16 45 — Level-1 batch 3: 30 named; IDAPython has no PyYAML
+Status: CONFIRMED
+
+Level-1 batch 3 (next 30 dyn>0, 2,369 → 86 calls). Ledger **144 → 174**,
+`routines.yaml` **145 → 175**, pushed to IDB, `check` green, `verify_rebuild`
+faithful (1,238/1,238), all assertions pass (175 unique ea, all `int`).
+
+**Bug found: `import yaml` fails inside IDAPython.** `dump_level0.py` loaded
+the ledger with `try: import yaml ... except: led = {}` — so `led` was
+**always empty inside IDA**. Consequences that had been hiding in plain sight:
+the unnamed-node **filter never applied** (batch indices drifted onto already-
+named nodes) and every `callees(...)` annotation silently fell through to the
+`(size, class)` branch — no `sub_X<=semantic_name` was ever printed. Detected
+because the filter reported "351 UNNAMED" while listing `sub_1016C` (already
+named `mouse_buttons_get`). **Fix: read `function_bytes.json`'s `name`
+fields** — written by `naming.py apply`, always in sync, zero dependencies.
+Rule: *never assume an optional import inside IDAPython; the except-path
+must be visible, not silent.*
+
+**Identified (30), by group:**
+- **stubs/wrappers**: `stub_to_24a94`, `farwrap_24aef`, `farwrap_gated`,
+  `farwrap_103db`, `overlay_tail_bridge_b` (8B code + 198B resident-tail data
+  in range), `far_list_dispatch` (indexed `cs:off_274A2[BX]` + `retf 8`),
+  `dual_step_wrap`.
+- **flag/callback clusters**: `flag254a1_set` (**7 entries** in 57B — the
+  worst merge seen since `sub_2E2D0`), `flag_block_build`, `mouse_buttons_test`
+  (pairs the named `mouse_buttons_get` with an 11-byte flag-block scan),
+  `flag1084c_get`, `draw_from_struct`, `cb22124_dispatch`,
+  `farptr_table_invoke` (pushes a far-ptr pair from table `cs:7DF2/7DF4`).
+- **entity/list/state**: `list_record_register` (C, record = `SI*60+6D6h`),
+  `group_register_main` (**1,511 B — the largest unnamed C function**, calls
+  `group_all_free_check`), `index_scroll_step` (counter wrap 0x157..0x2AE,
+  called by `event_state_machine`), `irq_state_init`, `state_mode_check`
+  (returns 1 iff `es:77B44+2 ∈ {2,3,4}` — **10 callers**, same predicate
+  `irq_unmask_and_query` tests internally), `range_validate`,
+  `table_iterate_loop`, `indexed_byte_get`,
+  **`table_dword_set`** (exact setter twin of the already-named
+  `table_dword_get` — the pair now closes).
+- **input/mode**: `critical_section_wrap` (`pushf; cli; …; popf` —
+  unambiguous), `scaled_hw_write` (C), `key_event_process` (C; `key_mapper`
+  callee decisive), `dist_accumulate` (C; drives `long_accumulate`),
+  `math_saturate_store`, `rect_arg_store`, `farobj_copy_invoke`.
+
+**6 C-class functions named** (`list_record_register`, `group_register_main`,
+`scaled_hw_write`, `key_event_process`, `dist_accumulate`) — these are now
+concrete port candidates, and 4 of them sit under `event_state_machine`.
+
+**New cleanup evidence:** `sub_10E03` classified **DATA but is code** (2nd
+instance after `sub_228BF`), its callee `sub_224C2` likewise; new multi-entry
+ranges `sub_254C0` (7), `sub_27697` (2), `sub_257B1` (2), `sub_10E03` (2),
+plus `sub_2BFCD`'s 8B-of-code-in-210B-of-data.
+
+Impact: **174 ledger entries / 300+ dynamic-call-weight of Level-0+L1 named**;
+the silent `led={}` degradation is fixed so future batches filter and annotate
+correctly; 5 more C port candidates surfaced; the merge-error list keeps
+growing in a *systematic* way (multi-entry ranges are clearly a recurring
+class of IDA limitation here, worth one bulk cleanup pass later).
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
