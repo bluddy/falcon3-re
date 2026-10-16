@@ -31,3 +31,17 @@
   still contains MID targets `0x2E37B` (1 call), `0x2E380` (0), `0x2E6C6`
   (0) — off the 16-byte slot grid; low value, split only if a trace ever shows
   them hot. Probe tool: `tools/probe_blob_split.py`.
+- **Multi-entry / merged ranges found while naming Level 1** (finding 44) —
+  all are IDA boundary errors, same class as `sub_2E2D0`:
+  `sub_23036` (>=4 entries, 413B), `sub_128A1` (4), `sub_22996` (2),
+  `sub_127D4` (3 tail entries), `sub_25A06` (trampoline+wrapper merged, same
+  shape as `sub_25F64`), `sub_26FF4` (4 conditional entries),
+  `sub_1509E` (shares its prologue with `sub_128A1`+0x2C — possible
+  duplicated/mis-bound code), `sub_23D85` (4B stub whose 72B range includes
+  ~64B trailing data), `sub_26FE4` (possible 1B overrun).
+- **`sub_22DFF` contains undecoded/data regions** (0x22E18–0x22E93) inside a
+  code function — possibly self-modifying code; needs a careful look before
+  trusting its `angle_adjusted_copy` name (conf: low).
+- **`op_dispatch` (`sub_2257B`) is the graph's highest-fan-in node (39
+  callers, 17 table targets)** — resolving its 17 targets is the single best
+  next move for Level-2 work.

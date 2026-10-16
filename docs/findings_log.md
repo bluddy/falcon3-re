@@ -1431,6 +1431,75 @@ callers become readable. Two more classes of silent-corruption (identifier
 case, YAML folding) are now blocked by `check` + assertions rather than
 discovered by accident.
 
+---
+
+## 2026-10-16 44 — Level-1 batch 2: 29 named; found the graph's hub node
+Status: CONFIRMED
+
+Level-1 batch 2 (next 28 by dynamic count, all disassembled) + `sub_121C2`
+verified separately. Ledger **115 → 144**, `routines.yaml` **116 → 145**,
+all pushed to IDB, `check` green, `verify_rebuild` faithful (1,238/1,238),
+round-trip assertions pass (145 unique ea, all `int`, 144 hypothesis-resolvable).
+
+**Identified (29) by group:**
+- **Dispatch hubs** (the important finds):
+  - `op_dispatch` (`sub_2257B`, 29B, 6.5K dyn) — `call cs:off_22060[BX]`
+    indexed dispatcher with **39 callers and 17 table targets — the
+    highest-fan-in node in the whole graph**; masks a flag in `cs:22248`
+    around it. This is *the* parameterized-operation entry point
+    (`param_table_init` calls it with field ids 6/0xA/0xE/8).
+  - `fn_table_dispatch` (`sub_231F0`) — `call cs:off_22D2A[BX]`, 14+ targets,
+    saves/restores a context around it.
+  - `entity_setup_step` (`sub_121C2`, 415B, ≥8 stack args) — stores 5 args
+    (2 far ptrs + coords + count) into an entity record `ds:7753C+1A1..1B1`,
+    scales by `0x96` (×150), then runs **19 callees** (entity update, dispatch,
+    clamp, load, zero).
+- **entity/state**: `entity_state_load` (775B — the batch-1 `clip_flags_batch`
+  consumer), `entity_counters_update` (per-entity countdown over an array),
+  `entity_update_batch` (3 subsystem steps, DS=ES=71C1), `param_table_init`
+  (repeated `op_dispatch` with field ids).
+- **state plumbing**: `farptr_state_set` (3 far-ptr setters + an embedded 2D
+  rotate), `state_farptr_get`, `stream_record_read` (10-byte record-stream
+  cursor at `cs:11CF4:11CF6` + fixed-point coord unpack), `irq_unmask_with_ds`.
+- **input/control**: `mouse_buttons_get_2` (`INT 33h` + `AND 3`, 2-button
+  subset of the batch-1 `mouse_buttons_get`), `control_axis_value` (reads one
+  clamped accumulator; sibling of `control_axes_read`), `flag22220_clear`,
+  `pending_task_run` (`cli`/`sti` one-shot — deferred task drained in ISR
+  context; called from startup).
+- **object-table family** (siblings of `far_obj_field_call`): the same
+  `farptr_table_get` + `sub_2647E` type-code pattern split three ways by type —
+  `farobj_copy_cond` (types 1/2), `farobj_field_set` (type 3),
+  `farobj_copy_block` (18B unconditional copy).
+- **trampolines/wrappers**: `stub_to_239f2`, `stub_to_23dcd`,
+  `farwrap_25a1c`, `overlay_tail_bridge` (sole caller = `view_projection`;
+  `call sub_2AFBD; jmp r05_e19` = resident→overlay tail jump).
+- **geometry**: `vec_transform_scale` (normalize/transform chain),
+  `bbox_clamp` (clamped bounding rect from the `table_rec_load_scaled` record).
+- **hw/audio**: `channel_release` (clears a channel and writes hardware via
+  `hw_reg_write_pair`; 4 of 6 callers are C-class), `hw_seq_step`,
+  `state_dispatch_cb`, `angle_adjusted_copy` (low conf — undecoded regions).
+
+**Discipline applied (and one rename):** `sub_121C2` was first named
+`entity_step_main` *from callee context alone*. Before pushing I disassembled
+it (a 415B, ≥8-arg entry deserves it), found it stores args into an entity
+record and scales ×150 before stepping, and **renamed it to
+`entity_setup_step` with a verified sig**. Rule of thumb recorded: *callee
+context suggests; disassembly confirms.*
+
+**New boundary-error candidates (→ open items):** `sub_23036` (≥4 entries),
+`sub_128A1` (4), `sub_22996` (2), `sub_127D4` (3 tail), `sub_25A06`
+(trampoline+wrapper merged — same shape as `sub_25F64`), `sub_26FF4` (4),
+`sub_1509E` (shares a prologue with `sub_128A1`+0x2C → possible duplicate),
+`sub_23D85` (4B stub in a 72B range with ~64B trailing data), `sub_26FE4`
+(possible 1B overrun), `sub_22DFF` (undecoded regions 0x22E18–0x22E93 —
+possibly self-modifying; its name is conf:low until resolved).
+
+Impact: 85 Level-0+Level-1 nodes now named (144 ledger entries total); the
+graph's highest-fan-in node (`op_dispatch`, 39 callers) is identified, which
+makes Level 2 tractable; six more IDA boundary errors found and tracked rather
+than silently propagated; the "suggest then verify" rule keeps callee-derived
+hypotheses from becoming unexamined names.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X

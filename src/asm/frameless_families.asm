@@ -28,7 +28,7 @@ FAR-ENTRY THUNKS (classification: 'far stub: call next-near-func; retf')
     0237C9  e80100         call     0x237cd
     0237CC  cb             retf     
 
-; sub_239EE  ea=0239EE  size=4
+; stub_to_239f2  ea=0239EE  size=4
     0239EE  e80100         call     0x239f2
     0239F1  cb             retf     
 

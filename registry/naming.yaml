@@ -597,6 +597,167 @@ symbols:
 
 
 
+  # --- Level-1 batch 2 (finding 44): next 28 by dynamic count.
+
+  # --- state / far-ptr plumbing (L1)
+  - ida: sub_23036
+    name: farptr_state_set
+    kind: function
+    sig: "+0: BX=cs:36EE[BX] -> cs:22DB4/22DB6 (far ptr from table); +0x10: AX:DX -> same; +0x1A: SI:DS -> cs:22DBE/22DC0; +0x73: embedded 2D rotate (imul x2, sum, shl, saturate 0x7FFF/0x8001)"
+    notes: "413B, 17.8K calls. multi-entry (>=4) — split candidate. conf: med (entries certain, rotate co-located unclear)"
+  - ida: sub_128A1
+    name: state_farptr_get
+    kind: function
+    sig: "+0: returns AX:BX = cs:11C26:11C24 (saved far ptr); +0xA also returns DL=cs:11C86, CL=cs:11C87, SI/DI=cs:11C28/11C2A; +0x2C copies 6-word entity state into cs:11C9x/11CFx; +0x3F teardown (DS=ES=71C1, far call sub_2BEA1)"
+    notes: "154B, 15.8K calls. 4 entries — split candidate. conf: med"
+  - ida: sub_231F0
+    name: fn_table_dispatch
+    kind: function
+    sig: "saves DS/DI to cs:22DBC/22DBA; BX=cs:22D28; near call cs:off_22D2A[BX] (indexed table, 14+ targets sub_23235..sub_235BB); reloads BX/CX/DX from es:7E964/7E968"
+    notes: "58B, 13.4K calls; caller sub_121C2 only. conf: med-high"
+  - ida: sub_2257B
+    name: op_dispatch
+    kind: function
+    sig: "cs:22248 &= 0x80; near call cs:off_22060[BX] (op index -> 17 targets); if cs:2224A set -> call sub_224D3; returns flags from cs:22248 & 0x7F"
+    notes: "29B, 6.5K calls; **39 callers** (busiest in graph), 17 table targets — the central parameterized-operation dispatcher (sub_127D4 calls it with field ids 6/0xA/0xE/8). conf: high"
+  - ida: sub_249C8
+    name: farwrap_249d8
+    kind: function
+    sig: "far-callable wrapper: AX=[bp+arg_0], LDS BX=[bp+arg_2] (far ptr arg) -> near call sub_249D8 (table reader)"
+    notes: "16B, 6.3K calls; arg-taking twin of stub_to_249d8. conf: high"
+  - ida: sub_12117
+    name: stream_record_read
+    kind: function
+    sig: "DS=cs:11CF4, SI=cs:11CF6 (far stream cursor); reads 10B record [SI..SI+9] -> es:[di+1..+0Bh] incl. far-ptr lookup via table_dword_get; advances SI by 0x0A back to cs:11CF6; 2nd entry unpacks 2 coords via (v+0x333400)/0x3334-0x100"
+    notes: "171B, 3.1K calls; 10-byte record stream decoder + fixed-point coord unpack. conf: med"
+  - ida: sub_1809D
+    name: irq_unmask_with_ds
+    kind: function
+    sig: "DS = cs_word_get_10842(); then irq_unmask_and_query with that DS; restores"
+    notes: "17B, 9.1K calls; caller sub_10F60. conf: med-high (both callees already named)"
+
+  # --- input/control (L1, siblings of batch 1)
+  - ida: sub_10134
+    name: mouse_buttons_get_2
+    kind: function
+    sig: "gated on cs:10000 && cs:10001; AX=int 33h/3 result AND 3 (2 buttons only); fallback: input_status_pack -> NOT/and 0xF0h/shr x4; 0 if flag clear"
+    notes: "56B, 9.2K calls; 2-button subset of mouse_buttons_get (which returns AND 7). conf: high"
+  - ida: sub_222D3
+    name: control_axis_value
+    kind: function
+    sig: "alt path (flag): returns cs:22232 word if hw sub_1144B returns 2..3; else reads accumulator cs:2223A (or cs:2223C), halves when <=9, x0x800/cs:22230, clamps 0x800, negates for the first; tail entry at +0x69 clears both accumulators"
+    notes: "120B, 9.2K reads one axis (vs control_axes_read which computes+stores both). conf: med-high"
+  - ida: sub_22996
+    name: flag22220_clear
+    kind: function
+    sig: "void; cs:word_22220 = 0; 2nd entry at +8 wraps sub_229AB with a BP frame"
+    notes: "21B, 13.2K calls; 2 entries — split candidate. conf: high (entry 0)"
+  - ida: sub_258B2
+    name: pending_task_run
+    kind: function
+    sig: "cli; if cs:2548B set: clear 2548B, call sub_258CC, clear cs:2548C; sti"
+    notes: "26B, 8.6K calls; cli/sti + clear-once = deferred task drained in ISR context; callers sub_1005A/sub_100BB (startup). conf: med-high"
+
+  # --- entity / state (L1)
+  - ida: sub_1509E
+    name: entity_state_load
+    kind: function
+    sig: "DS=ES=71C1; copies 6 words -> es:0C57 (cs:11CAA/CAC), reads [bx],[bx+2], [si+8..]; then gates on cs:11C6A/11C88: runs sub_15903+sub_15AFD, calls cs_word_get_25499, builds a 0x40-entry batch, calls clip_flags_batch; alt path clamps coords and calls sub_1202A"
+    notes: "775B, 11.2K calls; callers sub_121C2 + self. shares prologue with sub_128A1+0x2C (possible duplicate) — split/dedup candidate. conf: med"
+  - ida: sub_127D4
+    name: param_table_init
+    kind: function
+    sig: "DS=7075h; repeatedly calls op_dispatch(handle=ax, op=BX) with BX in {6,0xA,0xE,8} passing CX/DX values; stores handle to cs:11BDA; also far_cb_8 + 5 small helpers; 3 tail entries clear/get/set cs:byte_11C88"
+    notes: "193B, 11.6K calls; field-id sequence = table initialisation. 3 tail entries — split candidate. conf: med"
+  - ida: sub_1655A
+    name: entity_update_batch
+    kind: function
+    sig: "void; call sub_11D40; DS=ES=71C1; call sub_12D2F; call sub_13406 (3 subsystem steps)"
+    notes: "21B, 11.1K calls; caller sub_121C2. conf: med"
+  - ida: sub_1CEA3
+    name: entity_counters_update
+    kind: function
+    sig: "ES=7894h/7772h; tests es:77A54+E4/E2 gates + es:77C30+66; loop over es:[bx+506h] decrementing counters (shr es:77C30+6A by CL), checking es:[bx+4EEh] flags; calls sub_17340/sub_17369/sub_17835(C)/sub_1D068"
+    notes: "453B, 11.3K calls; per-entity countdown/flag update over an entity array. conf: med"
+  - ida: sub_121C2
+    name: entity_setup_step
+    kind: function
+    sig: "BP frame; cs:11CF3=1; DS=ES=71C1; stores 5 stack args (2 far ptrs, coords, count) into entity ds:7753C+1A1..1B1; scales by 0x96 (x150) via mul chain; then 19 callees incl sub_1655A, sub_14EAE, fn_table_dispatch(sub_231F0), near_fnptr_invoke, pos_clamp_40, entity_state_load, es_word_zero, far_cb_3; SI/DI = 5ACDh/5AD9h record buffers"
+    notes: "415B, 972 calls, far-call entry with >=8 stack args; sets up an entity record then runs its update/dispatch steps. Disasm-verified (finding 44). conf: med-high"
+
+  # --- object-table family (L1): siblings of far_obj_field_call
+  - ida: sub_26FE4
+    name: farobj_copy_block
+    kind: function
+    sig: "push es, push cs; near call farptr_table_get -> ES:DI=object; 9x MOVSW (18B copy); retf"
+    notes: "16B, 8.6K calls; range may overrun ~1B (17B of insns) — verify. conf: high"
+  - ida: sub_26FF4
+    name: farobj_copy_cond
+    kind: function
+    sig: "4 entries, all via farptr_table_get: +0 copy 6 words; +0xD copy 3 words at DI+0xC; +0x1A if sub_2647E==1 copy 6 words at DI+2Ah; +0x35 if ==2 store BX at DI+2Ah"
+    notes: "75B, 10.2K calls; conditional object field copies by type code. conf: med"
+  - ida: sub_264AC
+    name: farobj_field_set
+    kind: function
+    sig: "farptr_table_get -> AX=es:[di+22h] -> sub_2647E; if result==3: store BX&7 at es:[di+2Ah]"
+    notes: "25B, 3.5K calls; type-3 field setter (siblings: type1/type2 in sub_26FF4 entries). conf: med"
+
+  # --- trampolines / wrappers (L1, batch 2)
+  - ida: sub_239EE
+    name: stub_to_239f2
+    kind: function
+    sig: "void; near call sub_239F2 then retf"
+    notes: "4B, 9.8K calls; caller sub_2514B. conf: high"
+  - ida: sub_23D85
+    name: stub_to_23dcd
+    kind: function
+    sig: "void; near call sub_23DCD (point transform) then retf; +4..+72 is ~64B of trailing data/undecoded inside the range"
+    notes: "72B but only the first 4B are code — range includes trailing bytes; **cleanup candidate**. conf: high on the stub"
+  - ida: sub_25A06
+    name: farwrap_25a1c
+    kind: function
+    sig: "+0: near call cs:dword_22108 then retf (trampoline); +6: LDS SI,[bp+6]; push cs; near call sub_25A1C (arg-taking wrapper)"
+    notes: "22B, 10.5K calls; same merged trampoline+wrapper shape as view_limits_wrap — split candidate. conf: med"
+  - ida: sub_2C09F
+    name: overlay_tail_bridge
+    kind: function
+    sig: "void; near call sub_2AFBD then JMP to overlay entry r05_e19 (tail jump out of resident)"
+    notes: "8B, 8.1K calls; sole caller = view_projection (crosses resident->overlay). conf: high"
+
+  # --- geometry (L1, batch 2)
+  - ida: sub_23AC4
+    name: vec_transform_scale
+    kind: function
+    sig: "ES=DS; call sub_23AB7 (normalize), si/di+=8, call sub_23A65, divide, call sub_23DCD (transform), MUL; returns scaled result"
+    notes: "63B, 8.1K calls; same normalize/transform chain as angle_* family. conf: med"
+  - ida: sub_260F4
+    name: bbox_clamp
+    kind: function
+    sig: "DS=ES=7B0E; reads transformed record at 7EF88+128h; 2x call sub_26250 (corner transform, sar x4); orders min/max (xchg), pads +2/-1, clamps to [0, size] per lodsw dims; writes 4 words to 7EF88+14A..150h"
+    notes: "348B, 2.8K calls; input record produced by table_rec_load_scaled. conf: med-high"
+
+  # --- hw / audio (L1, batch 2)
+  - ida: sub_1796C
+    name: channel_release
+    kind: function
+    sig: "SI=arg_0 (channel 0..0xA); validates range vs ds:0AF90; clears [SI-517Ah] and bit in [SI-519Eh]; hw_reg_write_pair(SI+0B0, val) -> hardware; alt path: masks ds:0AF92 and calls sub_17E00"
+    notes: "91B, 8.8K calls; hw_reg_write_pair = index/data port pair -> release a sound channel. 6 callers incl. 4 C-class. conf: med"
+  - ida: sub_17F50
+    name: hw_seq_step
+    kind: function
+    sig: "ES=7A32 (hw port table), DS=7772; computed goto jmp cs via es:0AE4E (shl/neg/+0x52); unrolled N x ADD (variable count); clamps 0..0x5FF; index/16 -> table [bx+2CAh], [bx+0EAh]; ends in hw_reg_write_pair"
+    notes: "235B, 2.8K calls; rate/step accumulator with table lookup feeding hardware write. conf: low (exact semantics unresolved)"
+  - ida: sub_22855
+    name: state_dispatch_cb
+    kind: function
+    sig: "loads cs:1F6CC..1F6D2 into BX/DI/CX (the cs_state_copy_es block), AL=cs:22247; pre-call far_cb_4 with SI=DI-1,AX=0,DX=0; then near call cs:dword_22088"
+    notes: "47B, 10.6K calls, 0 static callers (indirect target). conf: med"
+  - ida: sub_22DFF
+    name: angle_adjusted_copy
+    kind: function
+    sig: "loads far src (cs:22DC2..22DC5) and dst (..22DC6..22DC9) into DS:SI/ES:DI; helper calls angle_xy_far then subtracts cs:22D24 and calls sub_24988; stores dx->es:389Ah; calls sub_14EAE with si=388Ah; gates on ds:3894/3892"
+    notes: "163B, 2.6K calls; contains undecoded/data regions (0x22E18-0x22E93) — possibly self-modifying. conf: low"
+
   # --- globals: add entries as hypotheses form, e.g.
   # - ida: word_12345
   #   name: kbd_head_index
