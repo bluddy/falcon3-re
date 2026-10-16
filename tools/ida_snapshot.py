@@ -205,6 +205,15 @@ def main():
 
     print("snapshot done: %d functions, %d segments, %d overlays" % (
         len(funcs), len(segs), len(made)))
+
+    # EXPLICIT save (finding 40): this is the step that CREATES the .i64 when
+    # run against a bare FALCONCD.EXE, and it must not depend on idat's
+    # implicit exit-save. Works for both cases (fresh EXE / existing IDB).
+    import ida_loader
+    ok = ida_loader.save_database(ida_nalt.get_input_file_path() + ".i64"
+                                  if not ida_nalt.get_input_file_path().endswith(".i64")
+                                  else ida_nalt.get_input_file_path(), 0)
+    print("saved idb: %s" % ok)
     idc.qexit(0)
 
 

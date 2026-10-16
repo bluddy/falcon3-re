@@ -1,30 +1,99 @@
-import ida_segment
-import ida_bytes
-import idaapi
+#!/usr/bin/env python3
+"""Verify an IDB rebuild reproduced the committed ground truth.
 
-lines = []
-segs = []
-for i in range(ida_segment.get_segm_qty()):
-    s = ida_segment.getnseg(i)
-    if s.start_ea >= 0x2CF60:
-        n = 0
-        f = idaapi.get_func(s.start_ea)
-        while f is not None and f.start_ea < s.end_ea:
-            n += 1
-            f = idaapi.get_next_func(f)
-        segs.append((s.get_name(), s.start_ea, s.end_ea, n))
+The IDB is not committed, so the ONLY way to know a rebuild is faithful is to
+diff the freshly-extracted `function_bytes.json` against the committed copy in
+git HEAD (finding 40 audit: `extract_ida_bytes.py` overwrites it unconditionally
+with no check, so a rebuild can silently lose ~150 functions).
 
-total_f = sum(s[3] for s in segs)
-lines.append("overlay segments: %d, functions: %d" % (len(segs), total_f))
-for name, a, b, n in sorted(segs, key=lambda x: x[1]):
-    head = ida_bytes.get_bytes(a, 8)
-    lines.append("  %-12s %08X-%08X funcs=%d head=%s" % (
-        name, a, b, n, head.hex() if head else 'NONE'))
+Reports:
+  LOST     key in HEAD but not now  (a function failed to re-register)
+  ADDED    key now but not in HEAD  (expected only if new fns were added since)
+  CHANGED  same key, different ea/size/bytes  (boundary or fixup drift)
+  RENAMED  same ea/bytes, different key
 
-b = ida_bytes.get_bytes(0x669F0, 6)
-lines.append("idx30 head at 0x669F0: %s" % (b.hex() if b else 'NONE'))
+Exit 0 = faithful (no LOST/CHANGED); exit 1 = divergence (do NOT commit).
 
-open(r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\verify_rebuild.out", "w").write(
-    "\n".join(lines))
-idaapi.qexit(0)
+Usage:  venv\\Scripts\\python tools\\verify_rebuild.py
+        (run after: ida steps -> extract_ida_bytes.py)
+"""
+import json
+import subprocess
+import sys
+from pathlib import Path
 
+ROOT = Path(__file__).resolve().parent.parent
+FB = ROOT / "analysis" / "ida_falconcd" / "function_bytes.json"
+
+
+def head_json():
+    r = subprocess.run(["git", "show", "HEAD:analysis/ida_falconcd/function_bytes.json"],
+                       cwd=ROOT, capture_output=True, text=True)
+    if r.returncode != 0:
+        print("FATAL: cannot read committed function_bytes.json from git HEAD")
+        print(r.stderr[:400])
+        sys.exit(2)
+    return json.loads(r.stdout)
+
+
+def main():
+    head = head_json()
+    now = json.loads(FB.read_text())
+
+    lost = sorted(set(head) - set(now))
+    added = sorted(set(now) - set(head))
+    changed, renamed = [], []
+    for k in set(head) & set(now):
+        a, b = head[k], now[k]
+        # same ea + same bytes = identity regardless of key spelling
+        if a.get("ea") == b.get("ea") and a.get("bytes") == b.get("bytes"):
+            if a.get("size") != b.get("size"):
+                changed.append((k, "size %s->%s" % (a.get("size"), b.get("size"))))
+            continue
+        if a.get("ea") != b.get("ea"):
+            changed.append((k, "ea %s->%s" % (a.get("ea"), b.get("ea"))))
+            continue
+        if a.get("bytes") != b.get("bytes"):
+            # key same, ea same, bytes differ = real drift (fixup/patch)
+            if (a.get("size"), b.get("size")) and a.get("bytes") and b.get("bytes"):
+                changed.append((k, "bytes differ (len %d->%d)"
+                                % (len(a["bytes"]), len(b["bytes"]))))
+            else:
+                changed.append((k, "bytes missing/added"))
+        else:
+            renamed.append((k, b.get("ea")))
+
+    print("committed: %d   now: %d" % (len(head), len(now)))
+    print("  LOST    : %d" % len(lost))
+    print("  ADDED   : %d" % len(added))
+    print("  CHANGED : %d" % len(changed))
+    if lost:
+        print("\n-- LOST (function failed to re-register) --")
+        for k in lost[:40]:
+            print("   %-16s ea=0x%X size=%s" % (k, head[k]["ea"], head[k]["size"]))
+        if len(lost) > 40:
+            print("   ... +%d" % (len(lost) - 40))
+    if changed:
+        print("\n-- CHANGED (boundary/byte drift) --")
+        for k, why in changed[:40]:
+            print("   %-16s %s" % (k, why))
+        if len(changed) > 40:
+            print("   ... +%d" % (len(changed) - 40))
+    if added:
+        print("\n-- ADDED (new since HEAD; expected if you registered fns) --")
+        for k in added[:20]:
+            print("   %-16s ea=0x%X size=%s" % (k, now[k]["ea"], now[k]["size"]))
+        if len(added) > 20:
+            print("   ... +%d" % (len(added) - 20))
+
+    bad = len(lost) + len(changed)
+    if bad:
+        print("\nRESULT: DIVERGED (%d problems) — do NOT commit; fix the rebuild step"
+              % bad)
+        sys.exit(1)
+    print("\nRESULT: faithful — matches committed ground truth")
+    sys.exit(0)
+
+
+if __name__ == "__main__":
+    main()

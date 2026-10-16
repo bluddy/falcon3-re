@@ -66,34 +66,27 @@ committed JSON/C/YAML/markdown instead.
 
 ### IDB regeneration runbook (fresh clone / lost IDB)
 
-Prereqs: local `game/FALCONCD.EXE`, IDA Pro 9.1 at
-`C:\Program Files\IDA Professional 9.1\idat.exe`. Committed JSONs make the host-side
-steps unnecessary unless the EXE itself changed.
+**→ See [`workflow/idb_regeneration.md`](workflow/idb_regeneration.md) — the canonical,
+audit-complete sequence.** It supersedes the short copy that used to live here
+(it was missing `apply_trace_functions.py` (finding 33, +135 fns),
+`patch_thunks_ida.py` (finding 35), the finding 37–39 registrations, and any
+verification step — following it produced an IDB ~150 functions short with an
+unpatched thunk table. See finding 40).
 
-```
-:: 1. fresh analysis (creates survey.json etc.; legacy overlay layout - will be replaced)
-idat -A -S tools\ida_snapshot.py       analysis\ida_falconcd\FALCONCD.EXE.i64
-
-:: 2. IDA: rebuild overlays from committed placement + mark entries + fixups + extract
-idat -A -S tools\rebuild_overlay_segments.py    analysis\ida_falconcd\FALCONCD.EXE.i64
-idat -A -S tools\_add_missed_fn.py              analysis\ida_falconcd\FALCONCD.EXE.i64
-idat -A -S tools\mark_overlay_entries.py        analysis\ida_falconcd\FALCONCD.EXE.i64
-idat -A -S tools\apply_overlay_fixups.py        analysis\ida_falconcd\FALCONCD.EXE.i64
-idat -A -S tools\extract_ida_bytes.py           analysis\ida_falconcd\FALCONCD.EXE.i64
-
-:: 3. host: classification + sanity portcheck
-venv\Scripts\python tools\classify_routines.py
-venv\Scripts\python tools\portcheck_falcon.py sub_16FDD --source src\sub_16FDD.c --segment 0x16FD --offset 0xD
-```
-(Host-side regen of the committed JSONs, only if the EXE changed:
-`prep_overlay_placement.py` → `prep_overlay_entries.py` → `validate_fixup_semantics.py`,
-then steps 2–3.)
+Quick shape (details + order in the runbook):
+prereqs (md5-verified `FALCONCD.EXE`, IDA 9.1 headless) →
+`ida_snapshot.py` (creates the `.i64`) → structure/entries/fixups →
+trace repair → thunk patch → missed-fn registrations → `extract_ida_bytes.py`
+→ `classify_routines.py` → **`verify_rebuild.py` (must be green)** →
+`naming.py check` + `push-ida` → optional `export_callrefs.py` +
+`callgraph_bottomup.py`.
 
 **Rules**: any IDB-modifying step → re-run `extract_ida_bytes.py` + `classify_routines.py`
-and commit both; names/comments set only in the IDB are conveniences — canonical text
-belongs in `src/asm/`, `registry/`, or `docs/` (IDB is never the only copy).
-**The IDB is not committed** (binary, `*.i64` ignored): losing it costs one runbook
-pass (~6 headless IDA runs), not the knowledge.
+and commit both, gated by `verify_rebuild.py`; every IDB-mutating script must
+`save_database()` explicitly; names/comments set only in the IDB are conveniences —
+canonical text belongs in `src/asm/`, `registry/`, or `docs/` (IDB is never the only
+copy). **The IDB is not committed** (binary, `*.i64` ignored): losing it costs one
+runbook pass, not the knowledge.
 
 ### Can this rebuild the binary? (rebuild verdict)
 

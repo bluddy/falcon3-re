@@ -1146,6 +1146,87 @@ recorded register contracts, so Level-1+ callers become readable next;
 two toolchain footguns (del_items-in-diagnostics, unpruned text scans)
 documented and one fixed.
 
+---
+
+## 2026-10-16 40 — Reproducibility audit: was the IDB rebuildable from git alone?
+Status: AUDITED — 3 real gaps found and fixed
+
+Questions asked: *(a)* can we regenerate the IDB from scratch with everything
+tracked in git? *(b)* is the process documented well enough for another agent?
+*(c)* are we missing tracking anything important?
+
+### What was already sound (no change needed)
+- **All 13 IDB-mutating scripts are committed** (git has no untracked `tools/`).
+- **Every rebuild *input* is committed**: `overlay_placement.json`,
+  `overlay_entries.json`, `fixups_to_apply.json`, `thunk_states.json`,
+  `boundary_report.json`, `rtlink_loads.json`, `callgraph_refs.json`, 28
+  `memdump/*` traces.
+- `extract_ida_bytes.py` preserves **stable keys + `name` fields** across a
+  re-extract, so ledger names survive a rebuild.
+- `classify_routines.py` degrades gracefully if `survey.json` (ignored) is absent.
+- `naming.py push-ida` re-syncs all 68 ledger names — in the runbook.
+- `.gitignore` correctly covers IDA binaries/logs; IDA version + paths documented.
+
+### GAP 1 — the runbook was STALE (worst finding)
+**Two diverging runbooks existed** (`pipeline.md`: 6 IDA steps;
+`workflow/idb_regeneration.md`: 8 steps). **Both omitted:**
+- `apply_trace_functions.py` — finding 33, **+135 functions** (1,080→1,215),
+- `patch_thunks_ida.py` — finding 35, 299/303 thunk patch (unblocks Track C),
+- all finding 37–39 registrations (`add_boundary_functions`,
+  `add_trace_functions`, `fix_trace_functions`, `add_indirect_targets`,
+  `restore_level0`) — **+~26 fns**,
+- `export_callrefs.py` + `callgraph_bottomup.py` (the callgraph artifact),
+- **any verification step**, and **step 0** (EXE → `.i64` creation).
+
+Reproducible-from-scratch implication: following either runbook yields an IDB
+**~157 functions short (1,236 → ~1,079, ~13%) with an unpatched thunk table
+and a stale callgraph — silently**, because nothing checked.
+
+**Fixed:** `workflow/idb_regeneration.md` rewritten as the **single canonical**
+runbook (step 0 → 6 → V, full order, prereq table, 5 rules); `pipeline.md`
+now links to it instead of carrying its own copy.
+
+### GAP 2 — nothing verified a rebuild
+`extract_ida_bytes.py` **overwrites `function_bytes.json` unconditionally** —
+the committed byte ground truth could be silently shrunk. Only the 68 *named*
+functions would be caught (by `naming.py check`), not the other ~1,168.
+
+**Fixed:** `tools/verify_rebuild.py` — diffs the fresh extract against **git
+HEAD** and reports `LOST`/`ADDED`/`CHANGED` (ea/size/bytes drift); **exit 1 on
+divergence** so it can gate commits. Tested: `faithful — 1236/1236`, exit 0.
+
+### GAP 3 — provenance TODO + reliance on *implicit* IDB save
+- `registry/FALCONCD.EXE.yaml` had **`md5: "TODO"`** while `game/` is gitignored
+  — a fresh clone had no way to verify its input. **Fixed:** md5
+  `2BDD74F4B50729B8583224CCE471805A` + sha256 + provenance note (both copies
+  independently re-hashed and confirmed identical).
+- **3 scripts mutated the IDB but never called `save_database()`** —
+  `ida_snapshot.py`, `patch_thunks_ida.py`, `apply_fixups_ida.py` — relying on
+  idat's implicit dirty-DB exit-save. **That is the same implicit save that
+  silently persisted the finding-39 `del_items` destruction.** All three now
+  save explicitly. Three further mutators remain save-less but are
+  **unreferenced** by any doc (`analyze_overlays_ida.py`,
+  `ida_snapshot_fixed.py`, `_diag_entries.py` — legacy/ephemeral); left alone
+  deliberately, flagged here so nobody wires them into the runbook.
+
+### Gap 4 (documented, not "fixed") — the EXE itself is not in git
+`FALCONCD.EXE` (the rebuild's only binary input) is excluded by design
+(`*.exe`, `game/`). Documented as an explicit prerequisite with an md5 gate in
+step 0 of the runbook. This is the one thing git alone cannot supply.
+
+### Verified empirically (not assumed)
+- **Step 0 works from a bare `.EXE`**: `idat -A -S tools\ida_snapshot.py <EXE>`
+  created `FALCONCD.EXE.i64` (2,434,305 B) + `survey.json`/`functions.tsv`/
+  `overlays.json` in a clean temp dir (tested twice, once after the explicit-save
+  edit — identical sizes, no regression).
+- `verify_rebuild.py` returns exit 0 / "faithful" on the current tree.
+
+Impact: the answer to (a) is now **yes, gated by a verification step**; to (b)
+**yes, one canonical runbook covering the full 1,236-fn history**; to (c) the
+two things that were missing (binary provenance, rebuild verification) are now
+tracked. Remaining known non-reproducibility: the EXE (by design) and the
+intentionally-unreferenced legacy scripts.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X

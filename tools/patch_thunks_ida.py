@@ -125,6 +125,14 @@ def main():
 if __name__ == "__main__":
     try:
         main()
+        # EXPLICIT save: headless idat only persists a dirty DB via its
+        # implicit exit-save, which is unreliable and silently caused the
+        # finding-39 regression. Never rely on it (finding 40 audit).
+        import ida_loader
+        ida_loader.save_database(
+            r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\FALCONCD.EXE.i64",
+            0)
+        log("saved")
     except Exception as e:
         log(f"[ERROR] {e}")
         import traceback

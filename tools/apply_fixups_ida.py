@@ -81,4 +81,8 @@ def apply_fixups():
     print("Done!")
 
 apply_fixups()
+# EXPLICIT save (finding 40 audit): never rely on idat's implicit exit-save.
+import ida_loader
+print("saved idb: %s" % ida_loader.save_database(
+    r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\FALCONCD.EXE.i64", 0))
 idaapi.qexit(0)
