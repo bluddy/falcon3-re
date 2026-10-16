@@ -1001,6 +1001,84 @@ Impact: port queue confirmed sound; 19 previously-invisible functions
 (including the game's #2 hot path) now in the IDB; boundary EXACT coverage
 340→466.
 
+---
+
+## 2026-10-16 38 — Partial call graph built; external claims verified (2 right, 4 wrong)
+Status: CONFIRMED
+
+**Deliverable: partial call graph + bottom-up traversal** (agreed method —
+the dynamic trace is incomplete by nature, so we build a *partial* graph
+and attack it leaves→roots instead of chasing full coverage):
+- `tools/export_callrefs.py` — IDA explicit call/jump refs →
+  **1,494 static fn→fn edges** (2,138 call + 1,309 jmp refs; fall-through
+  refs excluded via `CodeRefsFrom(ea, flow=0)`).
+- `tools/callgraph_bottomup.py` — edges = static ∪ runtime `indirect_far`
+  (caller→target). Endpoints = called-but-calls-nothing; BFS upward.
+- `analysis/traces/callgraph_partial.json`:
+  **327 endpoints, 911/1,234 nodes, 6 levels.**
+  Level 0 = hot 5–37B ASM leaves; Level 2 = hubs (`sub_251C3` 543K,
+  `sub_14EAE` 397K); Levels 4–5 = C controllers (`sub_17AD4`, `sub_1B7CE`).
+
+**Runtime hook sanity check (concern raised externally):**
+`indirect_far` DOES log the dereferenced target — the hook reads
+`LoadMw(eaa)`/`LoadMw(eaa+2)` (the pointer's contents), not the pointer's
+own address. Confirmed empirically: **322,396/379,498 events resolve to a
+registered function**. The narrowness (13 unique caller→target pairs, 4
+callers, `sub_2142E` the dispatch hub) is real but *explained*: indirect
+far-dispatch is rare and concentrated in tight loops; nearly all far calls
+are direct (already in static xrefs).
+
+**A reporting bug of my own, corrected:** my earlier "28 unresolved
+targets" list **conflated caller-side and target-side addresses**. The
+hook passes the *post-instruction* IP as caller, so caller IPs sit a few
+bytes past the call — landing them in gaps. Filtering to genuine *call
+targets* only leaves **15 leads**, of which the real ones are:
+| ea | calls | status |
+|----|-------|--------|
+| `0x17263` | 22,178 | **registered** (27B retf) — VGA/port routine, caller `0883:0483` |
+| `0x286CE` | 2,106 | **registered** (166B retf) — caller `1161:1EDC` (main hub) |
+| `0x2E100`,`0x2E148` | 136 | already-known UNKNOWN |
+| `0x6E3FD`,`0x6E3C0`,`0x67C5A`… | 4–47 | **null-pointer dispatch** (`00 00…` = data, called through uninitialized table slots) |
+
+**External advice verified (advice3.md). Two claims right, four wrong:**
+
+RIGHT:
+1. **`FF 0E` is `DEC WORD PTR`, not an indirect far call** (`FF 1E` = `CALL FAR
+   [mem]`, `/3=0x1E`). I had misread `ff 0e` as a far call. IDA confirms
+   `dec word ptr` at `0x1755E`.
+2. **Method**: naming Level-0 leaves first to propagate types upward is sound.
+
+WRONG (each falsified against IDB/trace data):
+1. *"Only resident root is disassembled; 191 thunks are overlay-called"* —
+   overlays **are** disassembled: **199 functions ≥ 0x60000** (+ more at
+   0x1xxxx–0x5xxxx). Also the metric I reported was **outgoing**
+   (112/303); true **incoming is only 27/303** — a different and much
+   larger gap: most thunk *targets* aren't registered functions.
+2. *"`0x1755E` is 60B inside `sub_17522` (secondary entry); `get_func`
+   returns `sub_17522`"* — **`get_func(0x1755E)` = None (gap)**;
+   `sub_17522` = 0x17522..0x17537 (21B), `0x1755E` not inside it.
+   (It's also a *caller-side* address, not a target.)
+3. *"`0x103D2D` is above 1 MB / HMA wrap"* — it's an ordinary **IDA linear
+   address in the tail/asset region** (`file = 0x103D2D-0xD400 = 0xF692D`,
+   inside the 1.37 MB EXE). And it's caller-side, not a target.
+4. *"Level-0 leaves are `F_LXMUL@`/`F_LDIV@`/`SCOPY` runtime helpers"* —
+   disassembly says otherwise: `sub_2703F` = far-ptr table lookup
+   (`mov di,500Ch … les di,es:[di]`), `sub_22285`/`sub_2228F` = paired
+   store/load of a CS-resident 32-bit value, `sub_112A1` = bit-twiddle on
+   a CS flag with `mov ah,0F0h`. Hand-written ASM state helpers, not
+   Borland fixed-point math.
+
+**Toolchain gotcha (new, #5):** `ida_bytes.DELIT_ALL` does not exist —
+flags are `SIMPLE=0, EXPAND=1, DELNAMES=2, NOTRUNC=4, NOUNAME=8,
+NOCMT=16, KEEPFUNC=32`. A defined data item inside code (e.g.
+`word_28759`, a CS-relative var) blocks `create_insn`; clear it with
+`DELIT_EXPAND` + retry.
+
+Impact: partial call graph is a working artifact; method validated;
+2 more hot missed functions registered (1,231→1,232); external advice
+triaged so its good ideas (bottom-up naming, opcode literacy) are kept and
+its wrong diagnoses don't mislead the next session.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X
