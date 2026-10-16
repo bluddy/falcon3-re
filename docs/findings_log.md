@@ -1079,6 +1079,73 @@ Impact: partial call graph is a working artifact; method validated;
 triaged so its good ideas (bottom-up naming, opcode literacy) are kept and
 its wrong diagnoses don't mislead the next session.
 
+---
+
+## 2026-10-16 39 — Level-0 bottom-up naming pass (24 leaves identified)
+Status: CONFIRMED
+
+First pass of the agreed **Level-0-first naming** strategy: took the
+`callgraph_partial.json` endpoints ranked by dynamic call count and
+identified the top **24**, giving each a semantic name + a register-level
+`sig` contract (they're hand-written ASM, so there is no C prototype —
+`sig` records params/returns/clobbers instead).
+
+**Identified (24)** — grouped by role:
+- **input/hw**: `joystick_poll` (95K — `in al,201h` + `int 15h/84h`),
+  `input_status_pack` (318K, hottest leaf, conf:low), `hw_reg_write_pair`
+  (OPL/AdLib-style index/data port write w/ delay, conf:med)
+- **far-ptr table / trampolines**: `farptr_table_get` (210K — index→far ptr,
+  4B stride), `far_cb_0/1/2` (6B stubs → cs:220B8/220BC/220C4),
+  `far_cb_with_args` (ES/BP primed → cs:220E0), `near_fnptr_invoke`
+  (near-indirect, contrast with the far ones)
+- **CS state/flag**: `active_farptr_set` (203K) / `active_farptr_restore`
+  (206K) pair on cs:22210:22212, `flag_byte_get` (76K),
+  `cs_byte_test_zero` (ZF-returning predicate), `flag_clear`,
+  `flag_set_lowbit`, `cs_word_store`, `flag_bits_clear`
+- **geometry**: `view_limits_load` (→ cs:2547C..25482 X/Y min/max),
+  `segment_clip_test` (79K — rect clip vs those limits), `pos_clamp_40`
+  (clamp to [-40,40]), `pos_diff_norm` (563B — 32b delta / (1<<scale))
+- **init/irq**: `irq_unmask_and_query` (PIC port 21h &= ~3 → IRQ0+IRQ1),
+  `es_ptr_slots_init`, `es_word_zero`
+
+**Where they were written:** `registry/naming.yaml` (24 entries, new `sig`
+field + `notes` with confidence: high/med/low) → `naming.py apply`
+(24 `function_bytes` name fields + 6 text hits in `src/asm/frameless_families.asm`)
+→ **`naming.py push-ida` (all 24 confirmed in the IDB)** →
+`registry/routines.yaml` (+24 entries, `port_status: unported`,
+`hypothesis` = ledger name; stale `counts` refreshed to 1,236/ASM 871).
+`naming.py check` **green** (68 ledger entries, structs valid).
+
+**Regression found & fixed — diagnostic destroyed 4 hot functions:**
+`tools/_verify_claims.py` called `ida_bytes.del_items()` on *existing*
+functions just to disassemble them; the deletion **persisted** (idat -A
+saves a dirty DB), removing the 4 hottest Level-0 leaves — `sub_112A1`
+(318K), `sub_2703F` (210K), `sub_2228F` (206K), `sub_22285` (203K) —
+from the IDB. Detected as `KeyError` on `sub_112A1` when ranking Level 0.
+Restored with `tools/restore_level0.py` (known-good boundaries,
+autoanalysis disabled, save without `auto_wait`) → **1,232 → 1,236 fns**;
+re-extracted, re-classified, callgraph rebuilt. **Rule: diagnostics must
+never `del_items` existing functions** — read existing item heads instead
+(`tools/dump_level0.py` does this).
+
+**`naming.py check` was unusable (hung minutes → now 0.5 s):** `SRC_ROOTS`
+is `src/`, which holds *two* full DOSBox checkouts (`dosbox-staging`,
+`dosbox-x` — 4,747 `.c/.h/.asm` files, 70 MB). `check` scans every file ×
+68 patterns. Fixed by pruning `dosbox*`/`build`/`.git` in
+`_iter_text_files`. **Rule: never point text-scan tools at `src/` without
+pruning third-party trees.**
+
+Note: `push-ida` reported `MISSING` for 16 *previously verified* entries —
+**benign**: they were renamed in the IDB by earlier sessions, so the lookup
+by old `sub_*` ida name fails (idempotent). Verified by probing the IDB
+directly: `always_true`, `long_accumulate`, `key_mapper`,
+`farptr_field_reader`… all correct.
+
+Impact: the bottom layer of the call graph now has semantic names +
+recorded register contracts, so Level-1+ callers become readable next;
+two toolchain footguns (del_items-in-diagnostics, unpruned text scans)
+documented and one fixed.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X

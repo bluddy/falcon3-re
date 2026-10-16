@@ -95,7 +95,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     020ABC  2ea32600       mov      word ptr cs:[0x26], ax
     020AC0  cb             retf     
 
-; sub_215B7  ea=0215B7  size=5
+; flag_byte_get  ea=0215B7  size=5
     0215B7  2ea08300       mov      al, byte ptr cs:[0x83]
     0215BB  cb             retf     
 
@@ -103,7 +103,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0215BC  2ea28300       mov      byte ptr cs:[0x83], al
     0215C0  cb             retf     
 
-; sub_22285  ea=022285  size=10
+; active_farptr_set  ea=022285  size=10
     022285  2ea3502b       mov      word ptr cs:[0x2b50], ax
     022289  2e8916522b     mov      word ptr cs:[0x2b52], dx
     02228E  cb             retf     
@@ -116,7 +116,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0231EB  2ea36836       mov      word ptr cs:[0x3668], ax
     0231EF  cb             retf     
 
-; sub_24CF7  ea=024CF7  size=10
+; cs_word_store  ea=024CF7  size=10
     024CF7  2ea2fa54       mov      byte ptr cs:[0x54fa], al
     024CFB  2e8826fb54     mov      byte ptr cs:[0x54fb], ah
     024D00  cb             retf     
@@ -244,15 +244,15 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     025EB7  2eff1e302a     lcall    cs:[0x2a30]
     025EBC  cb             retf     
 
-; sub_25EBD  ea=025EBD  size=6
+; far_cb_0  ea=025EBD  size=6
     025EBD  2eff1ef829     lcall    cs:[0x29f8]
     025EC2  cb             retf     
 
-; sub_25EC9  ea=025EC9  size=6
+; far_cb_1  ea=025EC9  size=6
     025EC9  2eff1efc29     lcall    cs:[0x29fc]
     025ECE  cb             retf     
 
-; sub_260A9  ea=0260A9  size=6
+; far_cb_2  ea=0260A9  size=6
     0260A9  2eff1e042a     lcall    cs:[0x2a04]
     0260AE  cb             retf     
 

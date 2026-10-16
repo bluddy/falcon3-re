@@ -106,8 +106,16 @@ def apply_text(text, word_pairs, forward=True):
 
 
 def _iter_text_files(roots):
+    # PRUNE large/third-party trees: src/ holds full DOSBox checkouts
+    # (dosbox-staging, dosbox-x -> ~4.7k .c/.h/.asm files, 70 MB) which made
+    # `check` scan 70 MB x 68 patterns and appear to hang. Our own C/asm lives
+    # in src/ root, src/asm/, and the falcon3 port dirs only.
+    def skip(d):
+        return (d.startswith("dosbox") or d in
+                {"build", ".git", "__pycache__", "node_modules", "vcpkg"})
     for root in roots:
-        for dirpath, _dirs, files in os.walk(root):
+        for dirpath, dirs, files in os.walk(root):
+            dirs[:] = [d for d in dirs if not skip(d)]
             for fn in files:
                 if fn.endswith(TEXT_EXTS):
                     yield os.path.join(dirpath, fn)

@@ -617,16 +617,322 @@ routines:
     notes: "19B, 6 fixup bytes masked. TU end marker @0x1A4CA (finding 28)."
     updated: "2026-10-13"
 
+  - ea: '0x11223'
+    seg: '0x1122'
+    ofs: '0x3'
+    size: 7
+    far: true
+    class: LEAF
+    hypothesis: cs_byte_test_zero
+    sig: 'flags out: ZF == (cs:byte_11174 == 0); clobbers none'
+    port_status: unported
+    verified: null
+    notes: '7B, 13K calls; pure ZF-returning predicate. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x1122A'
+    seg: '0x1122'
+    ofs: '0xA'
+    size: 111
+    far: true
+    class: ASM
+    hypothesis: joystick_poll
+    sig: void; reads game port 201h (or INT 15h AH=84h); updates cs:11102 status + cs:11173
+      rate-limit
+    port_status: unported
+    verified: null
+    notes: '111B, 95K calls. `in al,201h` + `int 15h/84h` + bit-count threshold = joystick
+      read. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x112A1'
+    seg: '0x112A'
+    ofs: '0x1'
+    size: 37
+    far: true
+    class: ASM
+    hypothesis: input_status_pack
+    sig: AL=in nibble arg; AL=out merged status; clobbers CX; R-M-W on cs:11102
+    port_status: unported
+    verified: null
+    notes: "37B, 318K calls (hottest leaf). Shares cs:11102 with joystick_poll; nibble-shift+OR\
+      \ merge then R-M-W. conf: low \u2014 semantics of the merge not yet pinned down"
+    updated: '2026-10-16'
+  - ea: '0x14C77'
+    seg: '0x14C7'
+    ofs: '0x7'
+    size: 79
+    far: true
+    class: ASM
+    hypothesis: pos_clamp_40
+    sig: SI -> 3x32b coords; component2 integer part clamped to [-40,40] (ax zeroed on
+      clamp); written to DI; clobbers AX,DX
+    port_status: unported
+    verified: null
+    notes: '79B, 11K calls; 0xFFD8h=-40, 28h=+40. conf: med'
+    updated: '2026-10-16'
+  - ea: '0x16F10'
+    seg: '0x16F1'
+    ofs: '0x0'
+    size: 70
+    far: true
+    class: ASM
+    hypothesis: hw_reg_write_pair
+    sig: '[bp+..] 2 byte args -> out to hw port pair (index, then data at port+1) with
+      read-delay loops'
+    port_status: unported
+    verified: null
+    notes: '70B, 20K calls, 15 callers in 0x17xxx. Port from DS:7A32:AD50; OPL/AdLib-style
+      index/data write w/ delay. conf: med (OPL = hypothesis)'
+    updated: '2026-10-16'
+  - ea: '0x1BCFA'
+    seg: '0x1BCF'
+    ofs: '0xA'
+    size: 55
+    far: true
+    class: ASM
+    hypothesis: irq_unmask_and_query
+    sig: unmasks PIC IRQ0+IRQ1 (port 21h &= ~3), then reads ES=7772 state; returns SI
+      (0 unless state in 2..4); clobbers AX,CX,SI
+    port_status: unported
+    verified: null
+    notes: '55B, 48K calls. conf: med (unmask part high, query part uncertain)'
+    updated: '2026-10-16'
+  - ea: '0x1FCBD'
+    seg: '0x1FCB'
+    ofs: '0xD'
+    size: 12
+    far: true
+    class: LEAF
+    hypothesis: flag_set_lowbit
+    sig: AL out; cs:byte_1F734 = cs:byte_1F733 & 1
+    port_status: unported
+    verified: null
+    notes: '12B, 36K calls; copies bit0 of cs:1F733 into cs:1F734 (pairs with flag_clear).
+      conf: high'
+    updated: '2026-10-16'
+  - ea: '0x1FCC9'
+    seg: '0x1FCC'
+    ofs: '0x9'
+    size: 7
+    far: true
+    class: LEAF
+    hypothesis: flag_clear
+    sig: void; cs:byte_1F734 = 0
+    port_status: unported
+    verified: null
+    notes: '7B, 36K calls. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x20AAA'
+    seg: '0x20AA'
+    ofs: '0xA'
+    size: 18
+    far: true
+    class: ASM
+    hypothesis: es_word_zero
+    sig: ES=0x7B0E; [ES:0EBC]=0
+    port_status: unported
+    verified: null
+    notes: "18B, 12K calls. sets CX=14h but stosw shows no REP prefix \u2014 verify whether\
+      \ IDA dropped a `rep`. conf: low"
+    updated: '2026-10-16'
+  - ea: '0x21266'
+    seg: '0x2126'
+    ofs: '0x6'
+    size: 40
+    far: true
+    class: ASM
+    hypothesis: es_ptr_slots_init
+    sig: void; ES=0x7B0E; zeros 2 slots then writes 0F7Ah / 1FE8h; clobbers AX
+    port_status: unported
+    verified: null
+    notes: '40B, 54K calls; only caller sub_13CB0 (state-reset sequence). conf: med'
+    updated: '2026-10-16'
+  - ea: '0x215B7'
+    seg: '0x215B'
+    ofs: '0x7'
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: flag_byte_get
+    sig: AL = cs:byte_1F743; clobbers none
+    port_status: unported
+    verified: null
+    notes: '5B, 76K calls; read-only getter for cs:1F743. conf: high on shape, flag meaning
+      unknown'
+    updated: '2026-10-16'
+  - ea: '0x22285'
+    seg: '0x2228'
+    ofs: '0x5'
+    size: 10
+    far: true
+    class: ASM
+    hypothesis: active_farptr_set
+    sig: DX:AX=in far ptr -> stored to cs:22210:22212; clobbers none
+    port_status: unported
+    verified: null
+    notes: '10B, 203K calls. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x2228F'
+    seg: '0x2228'
+    ofs: '0xF'
+    size: 17
+    far: true
+    class: ASM
+    hypothesis: active_farptr_restore
+    sig: void; cs:22214:22216 -> cs:22210:22212 (restore saved ptr); clobbers AX
+    port_status: unported
+    verified: null
+    notes: '17B, 206K calls; pairs with active_farptr_set. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x2302B'
+    seg: '0x2302'
+    ofs: '0xB'
+    size: 11
+    far: true
+    class: LEAF
+    hypothesis: near_fnptr_invoke
+    sig: SI=cs:1F6E2; near call word ptr cs:[SI]; clobbers SI
+    port_status: unported
+    verified: null
+    notes: '11B, 12K calls; indirect NEAR dispatch (contrast far_cb_*). conf: high'
+    updated: '2026-10-16'
+  - ea: '0x24CF7'
+    seg: '0x24CF'
+    ofs: '0x7'
+    size: 10
+    far: true
+    class: ASM
+    hypothesis: cs_word_store
+    sig: AL->cs:24BBA, AH->cs:24BBB (stores AX as LE word); clobbers none
+    port_status: unported
+    verified: null
+    notes: '10B, 19K calls; 24BB8 (neighbour) is the BP arg passed by far_cb_with_args.
+      conf: high'
+    updated: '2026-10-16'
+  - ea: '0x24DB8'
+    seg: '0x24DB'
+    ofs: '0x8'
+    size: 18
+    far: true
+    class: ASM
+    hypothesis: far_cb_with_args
+    sig: void; ES=0x834A, BP=cs:24BB8, far call through ptr at cs:220E0; clobbers ES,BP
+    port_status: unported
+    verified: null
+    notes: '18B, 41K calls. Same callback table as far_cb_* but sets ES/BP first. conf:
+      high'
+    updated: '2026-10-16'
+  - ea: '0x24F5E'
+    seg: '0x24F5'
+    ofs: '0xE'
+    size: 34
+    far: true
+    class: ASM
+    hypothesis: flag_bits_clear
+    sig: AL=in bit spec (dec, bits0-2=mask idx, bits3+=field idx); clears bits in cs:5C63+bx
+      / cs:5C6E+bx via cs:5750 mask table; clobbers BX
+    port_status: unported
+    verified: null
+    notes: '34B, 14K calls; multi-field bit-clear utility. conf: med'
+    updated: '2026-10-16'
+  - ea: '0x25EBD'
+    seg: '0x25EB'
+    ofs: '0xD'
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: far_cb_0
+    sig: void; near call through far ptr at cs:220B8 then retf
+    port_status: unported
+    verified: null
+    notes: '6B trampoline, 28K calls. conf: high (pointer slot noted)'
+    updated: '2026-10-16'
+  - ea: '0x25EC9'
+    seg: '0x25EC'
+    ofs: '0x9'
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: far_cb_1
+    sig: void; near call through far ptr at cs:220BC then retf
+    port_status: unported
+    verified: null
+    notes: '6B trampoline, 28K calls. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x25F7A'
+    seg: '0x25F7'
+    ofs: '0xA'
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: view_limits_load
+    sig: DS:SI -> 4 words loaded into cs:2547C/2547E/25480/25482 (Xmin,Ymin,Xmax,Ymax)
+    port_status: unported
+    verified: null
+    notes: '21B, 18K calls; feeds segment_clip_test. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x25F93'
+    seg: '0x25F9'
+    ofs: '0x3'
+    size: 278
+    far: true
+    class: ASM
+    hypothesis: segment_clip_test
+    sig: SI -> {x1,y1,x2,y2}; tests each against cs:2547C/25480 (X) + cs:2547E/25482 (Y);
+      returns flags + midpoints
+    port_status: unported
+    verified: null
+    notes: '278B, 79K calls; rect/segment clipping vs view_limits_load bounds. conf: med'
+    updated: '2026-10-16'
+  - ea: '0x260A9'
+    seg: '0x260A'
+    ofs: '0x9'
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: far_cb_2
+    sig: void; near call through far ptr at cs:220C4 then retf
+    port_status: unported
+    verified: null
+    notes: '6B trampoline, 13K calls. conf: high'
+    updated: '2026-10-16'
+  - ea: '0x2703F'
+    seg: '0x2703'
+    ofs: '0xF'
+    size: 18
+    far: true
+    class: ASM
+    hypothesis: farptr_table_get
+    sig: AX=in index; returns ES:DI far ptr from table seg 0x500C base +0x34 (4B/entry);
+      clobbers AX,DI,ES
+    port_status: unported
+    verified: null
+    notes: '18B, 210K calls, 6 overlay callers. `shl ax,x2` -> *4 (far-ptr stride). conf:
+      high'
+    updated: '2026-10-16'
+  - ea: '0x28874'
+    seg: '0x2887'
+    ofs: '0x4'
+    size: 563
+    far: true
+    class: ASM
+    hypothesis: pos_diff_norm
+    sig: '[di]-es:[bx] 32b delta, / (1<<cs:1F6E6); stores to cs:1F6EC/1F6F2/1F745/1F747;
+      recursive (self-caller)'
+    port_status: unported
+    verified: null
+    notes: '563B, 18K calls; signed 32b divide with power-of-2 scale. conf: med'
+    updated: '2026-10-16'
+
 counts:
-  tracked: 45
+  tracked: 69
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
-  total_functions: 1021           # matches function_bytes.json; kb TU gap analysis registered 13 missed fns (finding 28)
+  total_functions: 1236           # matches classification.json (finding 39 refresh)
   classification:            # tools/classify_routines.py → classification.json
-    ASM: 695
-    C: 97                    # DGROUP operands relocated (+0x1000, finding 21)
-    DATA: 129
-    LEAF: 79
-    NEARTHUNK: 7
+    ASM: 871
+    C: 108                    # DGROUP operands relocated (+0x1000, finding 21)
+    DATA: 153
+    LEAF: 94
+    NEARTHUNK: 10
   overlay_fixups_applied: 25222   # word += 0x1000, byte-guarded (finding 21)
   leaf_families:             # finding 14
     ret_const: 2 verified C-portable

@@ -62,6 +62,8 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 ## Partial Call Graph (bottom-up method, session 17d)
 
 Artifact: `analysis/traces/callgraph_partial.json` — **327 endpoints, 911/1,232 nodes, 6 levels** (edges = 1,494 static IDA refs ∪ runtime `indirect_far`). Method: leaves → callers → repeat (partial by design; trace coverage is incomplete). Rebuild: run `tools\export_callrefs.py` (IDA) then `tools\callgraph_bottomup.py` after any IDA change. Work **Level-0 hot leaves first** so types propagate upward. See finding 38 for verified vs. refuted external advice (`docs/advice3.md`).
+
+**Level-0 naming progress (finding 39):** **24 of 328 endpoints named** — top hot leaves across 5 groups (input/hw, farptr/trampoline, CS state/flag, geometry, init/irq), each with a `sig:` register-contract + `notes:` confidence in `registry/naming.yaml`, synced to `registry/routines.yaml`, pushed into the IDB. `naming.py check` green. Continue with the next ~24 by dyn count, then move to Level 1 (callers of the named leaves). ⚠️ Two rules: diagnostics must **never `del_items` existing functions** (it persisted and destroyed 4 hot fns — fixed by `tools/restore_level0.py`); text-scan tools must **prune `dosbox*` under `src/`** (2 full DOSBox trees, 70 MB).
 ## Open Items
 
 See [Open Items](docs/open_items.md)

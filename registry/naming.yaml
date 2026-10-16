@@ -197,6 +197,143 @@ symbols:
     kind: function
     notes: "returns long @DGROUP:0x08/0x0a (dx:ax); unit-tail getter"
 
+  # --- Level-0 hot leaves (finding 39: bottom-up pass over callgraph_partial.json
+  #     endpoints ranked by dynamic call count). `sig` = observed register-level
+  #     contract (these are hand-written ASM; no C prototype exists yet).
+  #     conf: high = semantics clear from opcodes; med = shape clear, exact
+  #     operands uncertain; low = provisional.
+
+  # --- input / hardware leaves
+  - ida: sub_1122A
+    name: joystick_poll
+    kind: function
+    sig: "void; reads game port 201h (or INT 15h AH=84h); updates cs:11102 status + cs:11173 rate-limit"
+    notes: "111B, 95K calls. `in al,201h` + `int 15h/84h` + bit-count threshold = joystick read. conf: high"
+  - ida: sub_112A1
+    name: input_status_pack
+    kind: function
+    sig: "AL=in nibble arg; AL=out merged status; clobbers CX; R-M-W on cs:11102"
+    notes: "37B, 318K calls (hottest leaf). Shares cs:11102 with joystick_poll; nibble-shift+OR merge then R-M-W. conf: low — semantics of the merge not yet pinned down"
+  - ida: sub_16F10
+    name: hw_reg_write_pair
+    kind: function
+    sig: "[bp+..] 2 byte args -> out to hw port pair (index, then data at port+1) with read-delay loops"
+    notes: "70B, 20K calls, 15 callers in 0x17xxx. Port from DS:7A32:AD50; OPL/AdLib-style index/data write w/ delay. conf: med (OPL = hypothesis)"
+
+  # --- far-pointer table / trampoline leaves
+  - ida: sub_2703F
+    name: farptr_table_get
+    kind: function
+    sig: "AX=in index; returns ES:DI far ptr from table seg 0x500C base +0x34 (4B/entry); clobbers AX,DI,ES"
+    notes: "18B, 210K calls, 6 overlay callers. `shl ax,x2` -> *4 (far-ptr stride). conf: high"
+  - ida: sub_25EBD
+    name: far_cb_0
+    kind: function
+    sig: "void; near call through far ptr at cs:220B8 then retf"
+    notes: "6B trampoline, 28K calls. conf: high (pointer slot noted)"
+  - ida: sub_25EC9
+    name: far_cb_1
+    kind: function
+    sig: "void; near call through far ptr at cs:220BC then retf"
+    notes: "6B trampoline, 28K calls. conf: high"
+  - ida: sub_260A9
+    name: far_cb_2
+    kind: function
+    sig: "void; near call through far ptr at cs:220C4 then retf"
+    notes: "6B trampoline, 13K calls. conf: high"
+  - ida: sub_24DB8
+    name: far_cb_with_args
+    kind: function
+    sig: "void; ES=0x834A, BP=cs:24BB8, far call through ptr at cs:220E0; clobbers ES,BP"
+    notes: "18B, 41K calls. Same callback table as far_cb_* but sets ES/BP first. conf: high"
+  - ida: sub_2302B
+    name: near_fnptr_invoke
+    kind: function
+    sig: "SI=cs:1F6E2; near call word ptr cs:[SI]; clobbers SI"
+    notes: "11B, 12K calls; indirect NEAR dispatch (contrast far_cb_*). conf: high"
+
+  # --- CS state / flag leaves
+  - ida: sub_22285
+    name: active_farptr_set
+    kind: function
+    sig: "DX:AX=in far ptr -> stored to cs:22210:22212; clobbers none"
+    notes: "10B, 203K calls. conf: high"
+  - ida: sub_2228F
+    name: active_farptr_restore
+    kind: function
+    sig: "void; cs:22214:22216 -> cs:22210:22212 (restore saved ptr); clobbers AX"
+    notes: "17B, 206K calls; pairs with active_farptr_set. conf: high"
+  - ida: sub_215B7
+    name: flag_byte_get
+    kind: function
+    sig: "AL = cs:byte_1F743; clobbers none"
+    notes: "5B, 76K calls; read-only getter for cs:1F743. conf: high on shape, flag meaning unknown"
+  - ida: sub_11223
+    name: cs_byte_test_zero
+    kind: function
+    sig: "flags out: ZF == (cs:byte_11174 == 0); clobbers none"
+    notes: "7B, 13K calls; pure ZF-returning predicate. conf: high"
+  - ida: sub_1FCC9
+    name: flag_clear
+    kind: function
+    sig: "void; cs:byte_1F734 = 0"
+    notes: "7B, 36K calls. conf: high"
+  - ida: sub_1FCBD
+    name: flag_set_lowbit
+    kind: function
+    sig: "AL out; cs:byte_1F734 = cs:byte_1F733 & 1"
+    notes: "12B, 36K calls; copies bit0 of cs:1F733 into cs:1F734 (pairs with flag_clear). conf: high"
+  - ida: sub_24CF7
+    name: cs_word_store
+    kind: function
+    sig: "AL->cs:24BBA, AH->cs:24BBB (stores AX as LE word); clobbers none"
+    notes: "10B, 19K calls; 24BB8 (neighbour) is the BP arg passed by far_cb_with_args. conf: high"
+  - ida: sub_24F5E
+    name: flag_bits_clear
+    kind: function
+    sig: "AL=in bit spec (dec, bits0-2=mask idx, bits3+=field idx); clears bits in cs:5C63+bx / cs:5C6E+bx via cs:5750 mask table; clobbers BX"
+    notes: "34B, 14K calls; multi-field bit-clear utility. conf: med"
+
+  # --- geometry / coordinate leaves
+  - ida: sub_25F7A
+    name: view_limits_load
+    kind: function
+    sig: "DS:SI -> 4 words loaded into cs:2547C/2547E/25480/25482 (Xmin,Ymin,Xmax,Ymax)"
+    notes: "21B, 18K calls; feeds segment_clip_test. conf: high"
+  - ida: sub_25F93
+    name: segment_clip_test
+    kind: function
+    sig: "SI -> {x1,y1,x2,y2}; tests each against cs:2547C/25480 (X) + cs:2547E/25482 (Y); returns flags + midpoints"
+    notes: "278B, 79K calls; rect/segment clipping vs view_limits_load bounds. conf: med"
+  - ida: sub_14C77
+    name: pos_clamp_40
+    kind: function
+    sig: "SI -> 3x32b coords; component2 integer part clamped to [-40,40] (ax zeroed on clamp); written to DI; clobbers AX,DX"
+    notes: "79B, 11K calls; 0xFFD8h=-40, 28h=+40. conf: med"
+  - ida: sub_28874
+    name: pos_diff_norm
+    kind: function
+    sig: "[di]-es:[bx] 32b delta, / (1<<cs:1F6E6); stores to cs:1F6EC/1F6F2/1F745/1F747; recursive (self-caller)"
+    notes: "563B, 18K calls; signed 32b divide with power-of-2 scale. conf: med"
+
+  # --- init / interrupt leaves
+  - ida: sub_1BCFA
+    name: irq_unmask_and_query
+    kind: function
+    sig: "unmasks PIC IRQ0+IRQ1 (port 21h &= ~3), then reads ES=7772 state; returns SI (0 unless state in 2..4); clobbers AX,CX,SI"
+    notes: "55B, 48K calls. conf: med (unmask part high, query part uncertain)"
+  - ida: sub_21266
+    name: es_ptr_slots_init
+    kind: function
+    sig: "void; ES=0x7B0E; zeros 2 slots then writes 0F7Ah / 1FE8h; clobbers AX"
+    notes: "40B, 54K calls; only caller sub_13CB0 (state-reset sequence). conf: med"
+  - ida: sub_20AAA
+    name: es_word_zero
+    kind: function
+    sig: "ES=0x7B0E; [ES:0EBC]=0"
+    notes: "18B, 12K calls. sets CX=14h but stosw shows no REP prefix — verify whether IDA dropped a `rep`. conf: low"
+
+
   # --- globals: add entries as hypotheses form, e.g.
   # - ida: word_12345
   #   name: kbd_head_index
