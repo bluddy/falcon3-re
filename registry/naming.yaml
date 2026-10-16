@@ -461,6 +461,140 @@ symbols:
     sig: "void; cs:byte_2224A = 1"
     notes: "7B, 580 calls; pairs with flag2224a_clear. conf: high"
 
+  # --- Level-1 batch 1 (finding 43): callers of the named leaves, ranked by
+  #     dynamic count. The payoff of bottom-up: these became identifiable
+  #     partly *because* their callees were already named.
+
+  # --- input / control (Level 1)
+  - ida: sub_1016C
+    name: mouse_buttons_get
+    kind: function
+    sig: "if cs:10000!=0: AX=int 33h/3 result (BX&7 = buttons); else falls back to input_status_pack(0x0F) -> AL=(~v)&F0, AH=0"
+    notes: "35B, 320K calls (hottest L1). INT 33h AX=3 = 'get mouse pos+buttons'; 0x0F=nofallback sentinel. conf: high"
+  - ida: sub_2234B
+    name: control_axes_read
+    kind: function
+    sig: "in: AL=button/dir bits (bits0-1=X-,X+; 2-3=Y-,Y+); integrates rates via cs:2223E..22244 (halves when |v|<=9), scales 0x800/cs:2222C|2222E, clamps +/-0x800; stores X->cs:22236, Y->cs:22238. alt path (flag set) -> sub_11450 stores a 4-word point"
+    notes: "266B, 39K calls; +/-0x800 clamp + separate X/Y divisors = stick/axis deflection. conf: med"
+
+  # --- geometry / angle family (Level 1) -- four siblings, two dimensions x far/near
+  - ida: sub_23C9B
+    name: angle_xy_far
+    kind: function
+    sig: "es:[di] vs [si] records; deltas of fields +0/+2 and +4/+6; returns AX = 1/16384-turn code (0x1000/0x2000/0x3000/0, +/- on sign); toggles cs:22DB8 4->0 around helpers sub_23A73/sub_23AB7"
+    notes: "144B, 87K calls. 'far' = es:-relative records. conf: med (return units inferred from 0x4000=turn arithmetic)"
+  - ida: sub_23B8A
+    name: angle_xy_near
+    kind: function
+    sig: "same as angle_xy_far but records via default segment (no es:); returns same angle code"
+    notes: "142B, 30K calls; near-segment twin of sub_23C9B. conf: med"
+  - ida: sub_23C18
+    name: angle_aux_far
+    kind: function
+    sig: "es:[di] vs [si] field +8/+0Ah delta; normalize (sub_23A59) + divide; returns angle code; toggles cs:22DB8"
+    notes: "131B, 67K calls; same helper chain as angle_xy_far but on the +8 field pair. conf: med (what +8 encodes is unresolved)"
+  - ida: sub_23B03
+    name: angle_aux_near
+    kind: function
+    sig: "same as angle_aux_far but default-segment records"
+    notes: "135B, 38K calls; near twin of sub_23C18. conf: med"
+  - ida: sub_24992
+    name: angle_wrap
+    kind: function
+    sig: "in/out at [si]; wraps field [si+2] into +/-0x2000 band (neg-2000h / sub 2000h+neg), adds 0x2000 to [si] and [si+4] through sub_24980 (modular reduce); bails if value in [0x1000,0xF000)"
+    notes: "54B, 62K calls; modular angle normalisation, same 0x4000-per-turn units as angle_*_far. conf: med-high"
+  - ida: sub_23E57
+    name: point_xy_transform
+    kind: function
+    sig: "AX=[si], BX=[si+4]; sub_23DCD; then BX=[si+2]; sub_23DCD; i.e. transforms the (x,y) pair at SI via helper twice"
+    notes: "15B, 80K calls; caller sub_1406A only. conf: med"
+  - ida: sub_23D2B
+    name: fixed_matrix_mul
+    kind: function
+    sig: "DS=0x7B0E; loads table entries via sub_249D8 (0x3868h,0x386Ch); chained imul(di)+0x4000+shl/rcl on ds:7E940+8..+0Eh; returns DX (32-bit), clobbers AX,BX,CX,DX,DI"
+    notes: "90B, 109K calls, 5 callers in 0x23xxx (3D module); repeated (x*di+0x4000)*2 = 16.16 fixed-point matrix chain. conf: med"
+  - ida: sub_20BDB
+    name: view_projection
+    kind: function
+    sig: "saves ES:BX to cs:1F71C/1F71E; delta=([di]-es:[bx]) x16 (4x shl/rcl), /=[di+20h]; stores [di+16h]=x', cs:1F6F2; repeats for [di+4/+6] (y); dispatches to 7 callees incl. sub_2142E"
+    notes: "1076B, 283K calls (2nd-hottest L1); perspective-style (dx*16/z) with dispatch = view-space transform. conf: med"
+
+  # --- trampolines / wrappers (Level 1): thin far entries over one callee
+  - ida: sub_24984
+    name: stub_to_24988
+    kind: function
+    sig: "void; near call sub_24988 then retf (far->near forwarding)"
+    notes: "4B, 303K calls; NEARTHUNK `e8 0100 cb` family. conf: high"
+  - ida: sub_260AF
+    name: stub_to_249d8
+    kind: function
+    sig: "void; near call sub_249D8 then retf"
+    notes: "4B, 192K calls; target is NOT the following fn (distant 0x249D8, the 173B table reader used by fixed_matrix_mul). conf: high"
+  - ida: sub_2497C
+    name: stub_to_24980
+    kind: function
+    sig: "void; near call sub_24980 then retf"
+    notes: "4B, 147K calls. conf: high"
+  - ida: sub_248CD
+    name: stub_to_248d1
+    kind: function
+    sig: "void; near call sub_248D1 then retf"
+    notes: "4B, 40K calls. conf: high"
+  - ida: sub_25773
+    name: stub_to_25777
+    kind: function
+    sig: "void; near call sub_25777 then retf"
+    notes: "4B, 20K calls; caller sub_10012. conf: high"
+  - ida: sub_205BF
+    name: stub_to_205c3
+    kind: function
+    sig: "void; near call sub_205C3 then retf"
+    notes: "4B, 18K calls; caller sub_1189E. conf: high"
+  - ida: sub_256BE
+    name: arg_dispatch_wrap
+    kind: function
+    sig: "[bp+arg_0] -> BX -> near call sub_256CD; no-arg tail entry at +0x0C repeats the call"
+    notes: "15B, 228K calls, 0 static callers (reached via indirect dispatch). IDA merged a 4B `call;retf` tail at +0x0B -> split candidate (open item). conf: med"
+  - ida: sub_25F64
+    name: view_limits_wrap
+    kind: function
+    sig: "far-callable wrapper: LDS SI,[bp+6] then near call view_limits_load (prefixes a 6B call cs:220E4 trampoline at +0)"
+    notes: "22B, 38K calls. IDA merged trampoline+wrapper -> split candidate (open item). conf: med"
+  - ida: sub_26470
+    name: far_obj_field_call
+    kind: function
+    sig: "push es, push cs; near call farptr_table_get -> ES:DI=object; AX=ES:[DI+0x22]; near call sub_2647E(AX)"
+    notes: "14B, 73K calls, 0 static callers; table-dispatched method call with a member arg. conf: med"
+
+  # --- dispatch / state (Level 1)
+  - ida: sub_1AB34
+    name: event_state_machine
+    kind: function
+    sig: "switch on (es:7753C+24Dh - 5) via jmp cs:jpt_1AB65[bx]; per-case timers/counters (es:77C30+7Ah cmp 1000/300, es:786EC+68h/6Ah); 14 callees incl. 4 C-class"
+    notes: "2266B, 42K calls; jump-table event/state dispatcher with tick counters; 0 static callers (indirect target). conf: med-high"
+  - ida: sub_27EE6
+    name: record_queue_push
+    kind: function
+    sig: "AL->cs:1F72A, BX->cs:27972; CX=DS:SI word; sets cs:2796E=5D1Eh, 27970=603Eh; copies CX*2 words of [si+8/+Ah] (stride 0x10) into queue at ES:6360h; calls sub_21EB0 + sub_2061B; returns CF clear on success"
+    notes: "225B, 71K calls; flag-gated path via cs:2796A bits 0x1E/0x60 -> sub_29B82/sub_2A340. conf: med"
+  - ida: sub_24FB9
+    name: flag_bits_dispatch
+    kind: function
+    sig: "builds 11-byte flag block at cs:5762h via sub_25268; scans bits (msb-first, DL=80h) and per set bit calls sub_24EC4; CF=1 iff no bits set; second block at cs:576Dh does the same"
+    notes: "206B, 21K calls; same cluster as flag_bits_clear (sub_24F5E, callers sub_24EC4). conf: med"
+  - ida: sub_24F03
+    name: current_item_check
+    kind: function
+    sig: "AX=in id; ES=0x7B0E; if es:7E974+14Ch==0 -> call sub_24F34 (init); returns AX=1 iff id == stored current id else 0; 4B tail entry at +0x2D just calls sub_24F34"
+    notes: "49B, 31K calls, 0 static callers; merged tail -> split candidate (open item). conf: med"
+
+  # --- formatting (Level 1)
+  - ida: sub_228BF
+    name: int32_to_ascii
+    kind: function
+    sig: "in DX:AX 32-bit + BL=pad char (20h=space, 2Dh='-' when negative); decimal divide by 10 loop, digit+30h written backwards to [SI]; also 2 secondary entries (0x2292A/0x22943) that load cs:1F6CC..1F6D2 and call sub_205C3"
+    notes: "159B, 22K calls. **classification says DATA — wrong, it is code** (graph-cleanup open item). conf: high on core (div 10 / add al,30h / back-fill loop)"
+
 
 
   # --- globals: add entries as hypotheses form, e.g.

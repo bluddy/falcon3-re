@@ -1360,6 +1360,77 @@ the largest graph artifact removed; Level-0 declared complete with evidence
 (2/328 false-leaf rate, value cliff quantified); the rebuild gate now survives
 deliberate improvements instead of being ignorable.
 
+---
+
+## 2026-10-16 43 — Level-1 batch 1: 24 named; bottom-up payoff demonstrated
+Status: CONFIRMED
+
+Level-1 = the **callers of the named leaves** (351 nodes, 137 with dynamic
+evidence). Named **24** → ledger **91 → 115**, `routines.yaml` **92 → 116**,
+all pushed to the IDB, `check` green, `verify_rebuild` faithful (1,238/1,238).
+
+**Identified (24), by group:**
+- **input/control**: `mouse_buttons_get` (35B, **320K calls — hottest L1**:
+  `INT 33h AX=0003` = mouse position+buttons, `BX&7`, falls back to the named
+  `input_status_pack`), `control_axes_read` (button-dir bits → rate
+  integration → **±0x800 clamp** with separate X/Y divisors).
+- **geometry (a 4-member family + friends)**: `angle_xy_far` / `angle_xy_near`
+  / `angle_aux_far` / `angle_aux_near` — siblings differing only in record
+  segment (es: vs default) and field pair (+0/+2&+4/+6 vs +8/+0Ah), all
+  returning a 1/16384-turn code (±0x1000/0x2000/0x3000) via a shared
+  helper chain; `angle_wrap` (modular normalisation into ±0x2000);
+  `point_xy_transform`, `fixed_matrix_mul` (chained `imul`+0x4000+shift =
+  16.16 matrix chain), `view_projection` (1,076B, **283K calls**: delta×16/z
+  divide with dispatch — perspective transform).
+- **trampolines/wrappers**: `stub_to_24988` (**303K**), `stub_to_249d8`,
+  `stub_to_24980`, `stub_to_248d1`, `stub_to_25777`, `stub_to_205c3`
+  (the 4B far→near `NEARTHUNK` family), `arg_dispatch_wrap`,
+  `view_limits_wrap`, `far_obj_field_call` (table→object→member→call).
+- **dispatch/state**: `event_state_machine` (2,266B, jump table
+  `jpt_1AB65[bx]` + tick counters, **14 callees incl. 4 C-class**),
+  `record_queue_push`, `flag_bits_dispatch`, `current_item_check`.
+- **formatting**: `int32_to_ascii` (`div 10` + `add al,30h` + sign `2Dh`/
+  pad `20h` back-fill loop).
+
+**The bottom-up method paid off exactly as intended:** `mouse_buttons_get`
+became identifiable *because* its fallback callee was already named
+(`input_status_pack`); `view_limits_wrap` because of `view_limits_load`;
+`far_obj_field_call` because of `farptr_table_get`. Reading the callee first,
+then the caller, turned opaque 35B/14B shells into definite functions.
+
+**Four YAML/identifier bugs — three caught by `check`, one only by assertion:**
+1. **Uppercase hex in identifiers**: `stub_to_249D8`/`_248D1`/`_205C3`
+   violated the ledger's lowercase rule (`^[a-z_][a-z0-9_]*$`). Caught by
+   `check`; renamed to lowercase hex (`stub_to_249d8` etc.) — same convention
+   already used for `flag2224a_*`.
+2. **`yaml.dump` folded long `sig` strings at width 80 and emitted
+   *unindented* continuation lines → corrupted `registry/routines.yaml`**
+   (ScannerError at line 1242). Caught only because the script re-parses to
+   assert. Restored from git; emitter switched to **`json.dumps`** (single-line,
+   escaped → valid YAML double-quoted scalar).
+3. (from finding 41, avoided by construction here): ea compared as **int**
+   both sides; hex written **unquoted** so it round-trips as int.
+4. Added a hard **round-trip assertion block**: unique-ea, types=={int},
+   hypothesis-resolvable — so a silent key-join failure or a broken document
+   can never again present as success.
+
+**New tool:** `tools/add_routines_l1.py` (idempotent; picks up any newly
+`sig`-bearing ledger entry, splices before `counts:`, refreshes counts,
+asserts). Reusable for later batches.
+
+**Flagged, deferred (open items):**
+- `sub_228BF` (`int32_to_ascii`) is **classified DATA but is unquestionably
+  code** — concrete evidence for the graph-cleanup task.
+- 3 merged trampoline/wrapper ranges need splitting:
+  `sub_256BE` (4B `call;retf` tail at +0x0B), `sub_25F64` (6B
+  `call cs:220E4` trampoline prefix), `sub_24F03` (4B tail at +0x2D).
+
+Impact: the middle of the call graph now has names too, and — more
+importantly — the *interpretation* method is proven: name callees first, then
+callers become readable. Two more classes of silent-corruption (identifier
+case, YAML folding) are now blocked by `check` + assertions rather than
+discovered by accident.
+
 Impact: DGROUP correctly identified as 0x6C27 (HYPOTHESIS pending
 dump-side pointer check); 0x46A4 confirmed as Sim Far Data segment, not a
 second DGROUP. MCB owner for heap carving corrected to 0x1E5. VGA Mode X

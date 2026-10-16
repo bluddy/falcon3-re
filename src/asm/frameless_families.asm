@@ -16,7 +16,7 @@ FAR-ENTRY THUNKS (classification: 'far stub: call next-near-func; retf')
 ; Evidence: findings 14.  All 7 members share identical bytes.
 
 
-; sub_205BF  ea=0205BF  size=4
+; stub_to_205C3  ea=0205BF  size=4
     0205BF  e80100         call     0x205c3
     0205C2  cb             retf     
 
@@ -32,7 +32,7 @@ FAR-ENTRY THUNKS (classification: 'far stub: call next-near-func; retf')
     0239EE  e80100         call     0x239f2
     0239F1  cb             retf     
 
-; sub_24984  ea=024984  size=4
+; stub_to_24988  ea=024984  size=4
     024984  e80100         call     0x24988
     024987  cb             retf     
 
@@ -40,7 +40,7 @@ FAR-ENTRY THUNKS (classification: 'far stub: call next-near-func; retf')
     024A90  e80100         call     0x24a94
     024A93  cb             retf     
 
-; sub_25773  ea=025773  size=4
+; stub_to_25777  ea=025773  size=4
     025773  e80100         call     0x25777
     025776  cb             retf     
 

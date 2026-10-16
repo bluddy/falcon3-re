@@ -17,8 +17,10 @@ LOG = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\level0_disasm.log"
 CG = r"C:\Users\yotam\projects\falcon3\analysis\traces\callgraph_partial.json"
 CLS = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\classification.json"
 
-# batch range: L0_START..L0_END over the dyn-sorted Level-0 list (finding 39+)
+# batch range: L0_START..L0_END over the dyn-sorted Level-N list (finding 39+)
+# LVL selects the callgraph level (0 = endpoints, 1 = their callers, ...)
 import os
+LVL = int(os.environ.get("LVL", "0"))
 L0_START = int(os.environ.get("L0_START", "0"))
 L0_END = int(os.environ.get("L0_END", "24"))
 N = L0_END
@@ -27,10 +29,28 @@ log = []
 try:
     cg = json.loads(open(CG).read())
     cls = json.loads(open(CLS).read())
-    lvl0 = [k for k in cg["levels"][0] if k in cls]
+    lvl0 = [k for k in cg["levels"][LVL] if k in cls]
     lvl0.sort(key=lambda k: -cg["dyn_target_calls"].get(k, 0))
     top = lvl0[L0_START:L0_END]
-    log.append("batch [%d:%d] of %d endpoints" % (L0_START, L0_END, len(lvl0)))
+    log.append("level %d batch [%d:%d] of %d nodes" % (LVL, L0_START, L0_END, len(lvl0)))
+
+    # named ledger for callee annotation
+    try:
+        import yaml as _y
+        led = {e["ida"]: e.get("name")
+               for e in _y.safe_load(open(
+                   r"C:\Users\yotam\projects\falcon3\registry\naming.yaml",
+                   encoding="utf-8"))["symbols"] if e.get("name")}
+    except Exception:
+        led = {}
+    # callee list per node (outgoing static edges)
+    import json as _j
+    edges = _j.loads(open(
+        r"C:\Users\yotam\projects\falcon3\analysis\traces\callgraph_partial.json",
+        encoding="utf-8").read())["edges"]
+    callees = {}
+    for a, b in edges:
+        callees.setdefault(a, []).append(b)
 
     for name in top:
         ea = cls[name]["ea"]
@@ -65,6 +85,18 @@ try:
                     callers.append(idc.get_func_name(cf.start_ea) or hex(cf.start_ea))
         uniq = sorted(set(callers))
         log.append("  callers(%d uniq): %s" % (len(uniq), ", ".join(uniq[:12])))
+        # outgoing callees (this is what makes Level-1 interpretable)
+        outs = callees.get(name, [])
+        if outs:
+            parts = []
+            for c in sorted(set(outs)):
+                if c in led:
+                    parts.append("%s<=%s" % (c, led[c]))
+                elif c in cls:
+                    parts.append("%s(%dB,%s)" % (c, cls[c]["size"], cls[c]["class"]))
+                else:
+                    parts.append("%s(?)" % c)
+            log.append("  callees(%d): %s" % (len(set(outs)), ", ".join(parts[:14])))
         log.append("")
 
 except Exception:

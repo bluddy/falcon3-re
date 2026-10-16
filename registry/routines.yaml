@@ -1216,15 +1216,328 @@ routines:
       helper at 0x28E17. conf: med'
     updated: '2026-10-16'
 
+  - ea: 0x1016C
+    seg: 0x1016
+    ofs: 0xC
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "mouse_buttons_get"
+    sig: "if cs:10000!=0: AX=int 33h/3 result (BX&7 = buttons); else falls back to input_status_pack(0x0F) -> AL=(~v)&F0, AH=0"
+    port_status: unported
+    verified: null
+    notes: "35B, 320K calls (hottest L1). INT 33h AX=3 = 'get mouse pos+buttons'; 0x0F=nofallback sentinel. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x1AB34
+    seg: 0x1AB3
+    ofs: 0x4
+    size: 2266
+    far: true
+    class: ASM
+    hypothesis: "event_state_machine"
+    sig: "switch on (es:7753C+24Dh - 5) via jmp cs:jpt_1AB65[bx]; per-case timers/counters (es:77C30+7Ah cmp 1000/300, es:786EC+68h/6Ah); 14 callees incl. 4 C-class"
+    port_status: unported
+    verified: null
+    notes: "2266B, 42K calls; jump-table event/state dispatcher with tick counters; 0 static callers (indirect target). conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x205BF
+    seg: 0x205B
+    ofs: 0xF
+    size: 4
+    far: true
+    class: NEARTHUNK
+    hypothesis: "stub_to_205c3"
+    sig: "void; near call sub_205C3 then retf"
+    port_status: unported
+    verified: null
+    notes: "4B, 18K calls; caller sub_1189E. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x20BDB
+    seg: 0x20BD
+    ofs: 0xB
+    size: 1076
+    far: true
+    class: ASM
+    hypothesis: "view_projection"
+    sig: "saves ES:BX to cs:1F71C/1F71E; delta=([di]-es:[bx]) x16 (4x shl/rcl), /=[di+20h]; stores [di+16h]=x', cs:1F6F2; repeats for [di+4/+6] (y); dispatches to 7 callees incl. sub_2142E"
+    port_status: unported
+    verified: null
+    notes: "1076B, 283K calls (2nd-hottest L1); perspective-style (dx*16/z) with dispatch = view-space transform. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x2234B
+    seg: 0x2234
+    ofs: 0xB
+    size: 266
+    far: true
+    class: ASM
+    hypothesis: "control_axes_read"
+    sig: "in: AL=button/dir bits (bits0-1=X-,X+; 2-3=Y-,Y+); integrates rates via cs:2223E..22244 (halves when |v|<=9), scales 0x800/cs:2222C|2222E, clamps +/-0x800; stores X->cs:22236, Y->cs:22238. alt path (flag set) -> sub_11450 stores a 4-word point"
+    port_status: unported
+    verified: null
+    notes: "266B, 39K calls; +/-0x800 clamp + separate X/Y divisors = stick/axis deflection. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x228BF
+    seg: 0x228B
+    ofs: 0xF
+    size: 159
+    far: true
+    class: DATA
+    hypothesis: "int32_to_ascii"
+    sig: "in DX:AX 32-bit + BL=pad char (20h=space, 2Dh='-' when negative); decimal divide by 10 loop, digit+30h written backwards to [SI]; also 2 secondary entries (0x2292A/0x22943) that load cs:1F6CC..1F6D2 and call sub_205C3"
+    port_status: unported
+    verified: null
+    notes: "159B, 22K calls. **classification says DATA \u2014 wrong, it is code** (graph-cleanup open item). conf: high on core (div 10 / add al,30h / back-fill loop)"
+    updated: "2026-10-16"
+
+  - ea: 0x23B03
+    seg: 0x23B0
+    ofs: 0x3
+    size: 135
+    far: true
+    class: ASM
+    hypothesis: "angle_aux_near"
+    sig: "same as angle_aux_far but default-segment records"
+    port_status: unported
+    verified: null
+    notes: "135B, 38K calls; near twin of sub_23C18. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x23B8A
+    seg: 0x23B8
+    ofs: 0xA
+    size: 142
+    far: true
+    class: ASM
+    hypothesis: "angle_xy_near"
+    sig: "same as angle_xy_far but records via default segment (no es:); returns same angle code"
+    port_status: unported
+    verified: null
+    notes: "142B, 30K calls; near-segment twin of sub_23C9B. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x23C18
+    seg: 0x23C1
+    ofs: 0x8
+    size: 131
+    far: true
+    class: ASM
+    hypothesis: "angle_aux_far"
+    sig: "es:[di] vs [si] field +8/+0Ah delta; normalize (sub_23A59) + divide; returns angle code; toggles cs:22DB8"
+    port_status: unported
+    verified: null
+    notes: "131B, 67K calls; same helper chain as angle_xy_far but on the +8 field pair. conf: med (what +8 encodes is unresolved)"
+    updated: "2026-10-16"
+
+  - ea: 0x23C9B
+    seg: 0x23C9
+    ofs: 0xB
+    size: 144
+    far: true
+    class: ASM
+    hypothesis: "angle_xy_far"
+    sig: "es:[di] vs [si] records; deltas of fields +0/+2 and +4/+6; returns AX = 1/16384-turn code (0x1000/0x2000/0x3000/0, +/- on sign); toggles cs:22DB8 4->0 around helpers sub_23A73/sub_23AB7"
+    port_status: unported
+    verified: null
+    notes: "144B, 87K calls. 'far' = es:-relative records. conf: med (return units inferred from 0x4000=turn arithmetic)"
+    updated: "2026-10-16"
+
+  - ea: 0x23D2B
+    seg: 0x23D2
+    ofs: 0xB
+    size: 90
+    far: true
+    class: ASM
+    hypothesis: "fixed_matrix_mul"
+    sig: "DS=0x7B0E; loads table entries via sub_249D8 (0x3868h,0x386Ch); chained imul(di)+0x4000+shl/rcl on ds:7E940+8..+0Eh; returns DX (32-bit), clobbers AX,BX,CX,DX,DI"
+    port_status: unported
+    verified: null
+    notes: "90B, 109K calls, 5 callers in 0x23xxx (3D module); repeated (x*di+0x4000)*2 = 16.16 fixed-point matrix chain. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x23E57
+    seg: 0x23E5
+    ofs: 0x7
+    size: 15
+    far: true
+    class: LEAF
+    hypothesis: "point_xy_transform"
+    sig: "AX=[si], BX=[si+4]; sub_23DCD; then BX=[si+2]; sub_23DCD; i.e. transforms the (x,y) pair at SI via helper twice"
+    port_status: unported
+    verified: null
+    notes: "15B, 80K calls; caller sub_1406A only. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x248CD
+    seg: 0x248C
+    ofs: 0xD
+    size: 4
+    far: true
+    class: NEARTHUNK
+    hypothesis: "stub_to_248d1"
+    sig: "void; near call sub_248D1 then retf"
+    port_status: unported
+    verified: null
+    notes: "4B, 40K calls. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x2497C
+    seg: 0x2497
+    ofs: 0xC
+    size: 4
+    far: true
+    class: NEARTHUNK
+    hypothesis: "stub_to_24980"
+    sig: "void; near call sub_24980 then retf"
+    port_status: unported
+    verified: null
+    notes: "4B, 147K calls. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x24984
+    seg: 0x2498
+    ofs: 0x4
+    size: 4
+    far: true
+    class: NEARTHUNK
+    hypothesis: "stub_to_24988"
+    sig: "void; near call sub_24988 then retf (far->near forwarding)"
+    port_status: unported
+    verified: null
+    notes: "4B, 303K calls; NEARTHUNK `e8 0100 cb` family. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x24992
+    seg: 0x2499
+    ofs: 0x2
+    size: 54
+    far: true
+    class: ASM
+    hypothesis: "angle_wrap"
+    sig: "in/out at [si]; wraps field [si+2] into +/-0x2000 band (neg-2000h / sub 2000h+neg), adds 0x2000 to [si] and [si+4] through sub_24980 (modular reduce); bails if value in [0x1000,0xF000)"
+    port_status: unported
+    verified: null
+    notes: "54B, 62K calls; modular angle normalisation, same 0x4000-per-turn units as angle_*_far. conf: med-high"
+    updated: "2026-10-16"
+
+  - ea: 0x24F03
+    seg: 0x24F0
+    ofs: 0x3
+    size: 49
+    far: true
+    class: ASM
+    hypothesis: "current_item_check"
+    sig: "AX=in id; ES=0x7B0E; if es:7E974+14Ch==0 -> call sub_24F34 (init); returns AX=1 iff id == stored current id else 0; 4B tail entry at +0x2D just calls sub_24F34"
+    port_status: unported
+    verified: null
+    notes: "49B, 31K calls, 0 static callers; merged tail -> split candidate (open item). conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x24FB9
+    seg: 0x24FB
+    ofs: 0x9
+    size: 206
+    far: true
+    class: ASM
+    hypothesis: "flag_bits_dispatch"
+    sig: "builds 11-byte flag block at cs:5762h via sub_25268; scans bits (msb-first, DL=80h) and per set bit calls sub_24EC4; CF=1 iff no bits set; second block at cs:576Dh does the same"
+    port_status: unported
+    verified: null
+    notes: "206B, 21K calls; same cluster as flag_bits_clear (sub_24F5E, callers sub_24EC4). conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x256BE
+    seg: 0x256B
+    ofs: 0xE
+    size: 15
+    far: true
+    class: ASM
+    hypothesis: "arg_dispatch_wrap"
+    sig: "[bp+arg_0] -> BX -> near call sub_256CD; no-arg tail entry at +0x0C repeats the call"
+    port_status: unported
+    verified: null
+    notes: "15B, 228K calls, 0 static callers (reached via indirect dispatch). IDA merged a 4B `call;retf` tail at +0x0B -> split candidate (open item). conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x25773
+    seg: 0x2577
+    ofs: 0x3
+    size: 4
+    far: true
+    class: NEARTHUNK
+    hypothesis: "stub_to_25777"
+    sig: "void; near call sub_25777 then retf"
+    port_status: unported
+    verified: null
+    notes: "4B, 20K calls; caller sub_10012. conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x25F64
+    seg: 0x25F6
+    ofs: 0x4
+    size: 22
+    far: true
+    class: ASM
+    hypothesis: "view_limits_wrap"
+    sig: "far-callable wrapper: LDS SI,[bp+6] then near call view_limits_load (prefixes a 6B call cs:220E4 trampoline at +0)"
+    port_status: unported
+    verified: null
+    notes: "22B, 38K calls. IDA merged trampoline+wrapper -> split candidate (open item). conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x260AF
+    seg: 0x260A
+    ofs: 0xF
+    size: 4
+    far: true
+    class: LEAF
+    hypothesis: "stub_to_249d8"
+    sig: "void; near call sub_249D8 then retf"
+    port_status: unported
+    verified: null
+    notes: "4B, 192K calls; target is NOT the following fn (distant 0x249D8, the 173B table reader used by fixed_matrix_mul). conf: high"
+    updated: "2026-10-16"
+
+  - ea: 0x26470
+    seg: 0x2647
+    ofs: 0x0
+    size: 14
+    far: true
+    class: LEAF
+    hypothesis: "far_obj_field_call"
+    sig: "push es, push cs; near call farptr_table_get -> ES:DI=object; AX=ES:[DI+0x22]; near call sub_2647E(AX)"
+    port_status: unported
+    verified: null
+    notes: "14B, 73K calls, 0 static callers; table-dispatched method call with a member arg. conf: med"
+    updated: "2026-10-16"
+
+  - ea: 0x27EE6
+    seg: 0x27EE
+    ofs: 0x6
+    size: 225
+    far: true
+    class: ASM
+    hypothesis: "record_queue_push"
+    sig: "AL->cs:1F72A, BX->cs:27972; CX=DS:SI word; sets cs:2796E=5D1Eh, 27970=603Eh; copies CX*2 words of [si+8/+Ah] (stride 0x10) into queue at ES:6360h; calls sub_21EB0 + sub_2061B; returns CF clear on success"
+    port_status: unported
+    verified: null
+    notes: "225B, 71K calls; flag-gated path via cs:2796A bits 0x1E/0x60 -> sub_29B82/sub_2A340. conf: med"
+    updated: "2026-10-16"
+
+
 counts:
-  tracked: 92
+  tracked: 116
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
-  total_functions: 1236           # matches classification.json (finding 39/41 refresh)
+  total_functions: 1238           # matches classification.json (findings 39-43)
   classification:            # tools/classify_routines.py → classification.json
     ASM: 871
     C: 108                    # DGROUP operands relocated (+0x1000, finding 21)
     DATA: 153
-    LEAF: 94
+    LEAF: 96
     NEARTHUNK: 10
   overlay_fixups_applied: 25222   # word += 0x1000, byte-guarded (finding 21)
   leaf_families:             # finding 14
