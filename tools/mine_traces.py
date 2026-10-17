@@ -33,7 +33,7 @@ VGA_LO, VGA_HI = 0xA000, 0xBFFF
 def load_runs() -> dict[str, dict[str, list[dict]]]:
     runs: dict[str, dict[str, list[dict]]] = defaultdict(dict)
     for kind in ("fileio", "fartrans"):
-        for path in sorted(DUMP_DIR.glob(f"trace_*_{kind}.jsonl")):
+        for path in sorted(DUMP_DIR.glob(f"*_{kind}.jsonl")):   # finding 60 P1: include debug_test
             run = path.name[: -len(f"_{kind}.jsonl")]
             runs[run][kind] = [json.loads(line) for line in path.open()]
     return dict(runs)

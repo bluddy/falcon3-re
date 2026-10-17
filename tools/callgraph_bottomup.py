@@ -99,10 +99,31 @@ def load_dynamic(cls, starts, ivs):
             for seg in rec["segments"]:
                 seg_to_rec[seg].append(rec["record_idx"])
 
+    # finding 60 P1: content-validated runtime map (runtime CS = link seg +
+    # 0x1F5, addressed record-relative; two variant records can claim the same
+    # paragraphs and the loader-swap is decided by terminator evidence).
+    # Built by tools/map_runtime_segments.py -> analysis/traces/runtime_seg_map.json
+    rmap = {}
+    rt_map_p = TRACES / "runtime_seg_map.json"
+    if rt_map_p.exists() and placement:
+        for cs_s, info in json.loads(rt_map_p.read_text()).get("map", {}).items():
+            if info.get("chosen"):
+                idx, base = info["chosen"]
+                rec = placement.get(idx)
+                end = (rec["ida_ea"] + rec["ida_len"]) if rec else None
+                rmap[int(cs_s)] = (base, end)
+
     def to_ida(cs, ip):
         ea = rt_to_ida(cs, ip)
         if ea is not None:
             return ea
+        hit = rmap.get(cs)
+        if hit:
+            base, end = hit
+            ea = base + ip
+            if end is None or ea < end:
+                return ea
+            return None          # past the proved record -- never guess
         if cs in seg_to_rec:
             rec = placement.get(seg_to_rec[cs][0])
             if rec and rec.get("ida_ea") is not None:

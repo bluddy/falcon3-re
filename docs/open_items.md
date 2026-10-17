@@ -155,3 +155,50 @@
   **207 have zero dynamic-call weight**. Batching by dyn no longer ranks
   anything — switch to static fan-in ordering, or move to Level 2 / the bulk
   cleanup pass.
+
+- **Upper half `0x3ACAC..0x669F0` plan (after finding 59):** 179,524 B with
+  only **38 functions / 4,304 B (2.4%)** registered, so this is *registration*,
+  not a split: 251 unresolved destinations (445 `CALL` + 1 `JMP`; 211 frameless
+  code, 40 anomalies, 126 terminator-preceded, 0 already functions, 0 thunk
+  targets), 17 of the 24 anchors -> **18 blocks**, evidence heavily skewed
+  (`0x3B830..0x43AE0` 33,456 B with 89 dsts/163 refs and `0x43AE0..0x48DB0`
+  21,200 B with 50/93 carry the bulk; `0x500C0..0x54AF0` 18,992 B has **zero**
+  call evidence; `0x54AF0..0x669F0` 73,472 B holds `*** PAUSED ***` /
+  `SPEED = KNOTS` and only 1 strong entry). 8 RTLink `entry_ea`s land here, and
+  unlike `0x2F640` these anchors are **code-led**, so holes are few (string
+  runs in the UI block + `0x4FD80`). Ordered plan: **P0** per-anchor-block
+  inventory (bytes/strings/entries/coverage -> `upper_map.json`); **P1** widen
+  the dynamic CS->record map past the 16 covered segments (finding 51's gap)
+  so `indirect_far` events into R05 resolve -- the only plausible evidence for
+  the zero-dst blocks; **P2** chain-sweep entries (terminator before + a
+  forward chain from a verified entry must reach it, and never contradict the
+  existing decode; confidence A chain-verified / B ref-dst + terminator /
+  C ref-dst only) instead of seed-carving, because ref density here is ~8x
+  lower than the blob's; **P3** register block by block, highest-evidence
+  first, under a manifest with **parentless entries** -> a new `verify_rebuild`
+  `REGISTER` class (exact tiling of the stated range by `new_fns` + sha256
+  holes) so a wave of ADDED never becomes a free pass the way loose
+  registration did in finding 54; **P4** measure (`static_unresolved`
+  957 -> ~511, +251 functions that are by construction called) recorded incrementally
+  (P0+P1 = finding 60, P2-P4 next). Explicitly not doing: reusing the finding-59 mutator as-is (no
+  parent function exists to delete here), or registering the 40 class-(c)
+  anomalies without a chain.
+
+- **Upper-half P0+P1 DONE (finding 60):** `map_upper.py` ->
+  `upper_map.json` (18 blocks, 68 candidate holes / 6,278 B, 3 zero-evidence
+  blocks incl. 18,992 B, 8 RTLink entry_eas, anchors code-led). The dynamic
+  gap had two causes, both fixed: `mine_traces` globbed `trace_*` only (the
+  `debug_test` dump was never mined -> now 5 runs / **46 records** / unstable
+  offsets 0), and the mapping is **record-relative + content-decidable**
+  (`runtime CS = link seg + 0x1F5`; `IDA = ida_ea + ((cs-0x1F5)-w0)*16 + ip`;
+  the global `+0xE0B0` identity holds for only 9/68 placements). Found a
+  **variant swap**: R05/R27/R28/R29 all declare `w0=0x1E10`, so candidates
+  are decided by terminator content (0x3BEC 26,622 ev -> R29 2/2; 0x2159 ->
+  R05 17/19; loader read-evidence as tie-break) and re-mining independently
+  shows both R05 and R29 loaded at `0x2005` in different runs. Effects:
+  overlay events **432 -> 28,264**, unmapped **32,392 -> 4,560** (residue =
+  4,469 below-image `0188:0000` jumps + 91 heap-block calls),
+  `dynamic_unresolved` **122,263 -> 64,067**, union **4,016 -> 4,034**.
+  **Still open:** **0 dynamic events src-or-dst land in the upper half** --
+  no call evidence exists for it yet, so **P2 (chain sweep) is the
+  load-bearing step**, then P3 (manifest registration) and P4 (measure).
