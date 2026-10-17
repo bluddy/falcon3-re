@@ -34,13 +34,21 @@
    (key, ea, size) + before/after sha256** in
    `registry/subblock_fixups_expected.json` (a fixup at `0x3FD81`
    straddles into `sub_3FD82`, so attribution is by word overlap).
-   **Now:** (e) `static_unresolved` **702 -> 957** because 449 retargeted
-   destinations are honest *data* — 233 distinct addresses (hottest
-   `0x28CAB` x36) that used to be *interior* hits — plus 5 new sites;
-   register or classify those, or accept them as tables; (f) `sub_2E2F0`
-   now holds **1,053 interior refs across 13 of its sub-block anchors,
-   0 at a function start, 0 at `0x2F640`** — split it on anchor lines to
-   turn those into real edges; (g) 138 functions had zero indegree at
+   **(e) RESOLVED BY CLASSIFICATION (finding 58):** the 957 unresolved
+   refs = **515 distinct dsts = 401 frameless-code (registerable; only
+   12/401 pass a strict prologue test, 196 are preceded by a terminator)
+   + 30 jump-table case targets + 84 anomalies** (49 undecodable incl. the
+   `WRONG VERSION!` string at `0x6E1EA` x24 and a word table at `0x6DFF0`
+   x23, 28 long-code-no-terminator, 7 no-segment); 251 of the 515 sit in
+   `0x3ACAC..0x669F0`; (f) `sub_2E2F0` is **mapped, not guessed**: **6**
+   anchors inside (not f57's 4 KB-bucket "13"), 7 blocks of
+   1824/1488/1056/400/176/**46,416**/284 B, **371 entry seeds** (343
+   internal-CALL + 22 external + 10 thunk), data = **3 holes / 239 B**;
+   **971 internal refs are invisible today** because `sub_2E2F0 ->
+   sub_2E2F0` self-edges are dropped — and the carve is **blocked on the
+   gate first**: `verify_rebuild` must accept a manifest whose
+   `new_fns ∪ data_holes` tiles the old span exactly and whose holes keep
+   their recorded sha256 (else it is `CHANGED`);
    HEAD and now have an edge (134 resident, 4 overlay), while the 224
    remaining overlay orphans are still never called by anything static.
   ⚠ `0x2CF6A` is a **junk function registered on RTLink directory text**
