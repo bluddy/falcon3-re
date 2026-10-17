@@ -2436,4 +2436,153 @@ one still leaves the resident graph unable to reach the overlay graph.
 
 ---
 
+## 2026-10-17 56 — The bridge is built: 8 → 213 Resident→Overlay edges, and the `+0x1540` fixup anchor explained
+Status: CONFIRMED
+
+Four steps, all gates green throughout.
+
+### Step 1 — thunk-table base `0x1EBAF` → `0x1E99D`
+
+Four tools started **53 entries into** the 303-entry table (`0x1EBAF =
+0x1E99D + 53*10`, which is IDA `0x2BFAF` — `patch_thunks.log` itself calls that
+"Thunk #053"). Fixed in `prep_overlay_entries.py`, `parse_thunks.py`,
+`solve_thunk_assignment.py`, `validate_record_bases.py`.
+
+`overlay_entries.json` went **248 → 301 rows covering all 303 slots** (2 slots
+share a target). The 3 whose own row does not reach them now carry
+**`covered_seg`** — which record's *written* window contains the EA — instead of
+being silently dropped: `#095`/`#099` land in `R17_5E8F`/`R19_5F6C`, `#013`
+(`0x6FD06`) is covered by nobody. `register_overlay_entries.py` now gates on
+`covered_seg` rather than trusting the list to be pre-filtered.
+
+### Step 2 — make all 303 slots first-class functions
+
+`export_callrefs.py` walks heads *inside functions only*, so 254 slots emitted
+nothing at all. `register_thunk_slots.py`:
+
+| | |
+|---|---|
+| free slots registered | **254 @ 8B** (E8 + EA; rec-id word is data, matching the 26 already correct) |
+| `sub_2BFCD` / `overlay_tail_bridge_b` | 210B → **21 × 10B** |
+| `sub_2BE83` | 20B → **2 × 10B** |
+| slot #053 (`0x2BFAF`) | owned by a foreign chunk of `start` — `start` really does transfer control there, so `remove_func_tail` was used and the **xref was kept** |
+| **slot #302 (`0x2C969`)** | **impossible**: it straddles the loader-created boundary `seg021 0x2AA30..0x2C970` \| `seg022 0x2C970..0x2CF60`, and `add_func` refuses a cross-segment range (the same constraint finding 37 recorded). It has **zero refs in or out**, so it costs no edge. **302/303 accepted.** |
+
+The split pieces are **10B only** because `verify_rebuild`'s `SPLIT` class
+requires the old range to *tile exactly* — 8B pieces leave 2B holes and would
+have been reported as `CHANGED`. Result: `SPLIT 2 (21 fns / 210B, 2 fns / 20B),
+ADDED 274, CHANGED 0, LOST 0`.
+
+**A decode bug hid the whole point.** The registration loop advanced with
+`next_head(slot, slot+8)`; after the 3-byte `call` there is no head yet, so it
+jumped to the limit and never created the 5-byte `jmp far` at `slot+3`. That
+left `last_insns` recording `call`, and (what matters) `export_callrefs` seeing
+no `jmp` mnemonic — so the `slot → overlay` half would still not be exported.
+`decode_thunk_jmps.py` re-walks **by instruction size**: 276 instructions
+created, `last_mnem = jmp` went **58 → 334**, all 302 slots decode `call..jmp`.
+
+`export_epilogues.py` was reading `classification.json` (the *derived* file), so
+any function added after the last classify pass got no epilogue facts and fell
+through to the byte-only heuristic that labels tail-jumpers `DATA` (finding 49).
+It now iterates `function_bytes.json`.
+
+Ledger corrected: `overlay_tail_bridge_b` claimed *"8B of code in a 210B range —
+the rest is resident-tail data/directory"*. **The bytes say all 210B are 21
+consecutive 10B thunks** (21/21 `E8`+`EA`+rec-id); the old note was read off
+IDA's partial decode. `notes` rewritten, `class: DATA → ASM`, `updated:
+2026-10-17`.
+
+### Step 3 — register the exposed targets (guarded, exhaustive)
+
+`register_bridge_targets.py` — 624 candidates (514 unresolved destinations +
+130 thunk JMP targets + 125 overlay entries), **617 on written bytes, 7 in no
+segment at all** (`0x2D50D`, `0x2D650`, `0x2DFD6`, `0x2D63A`, `0x6FD06`,
+`0x2E048`, `0x2DC61`). Rejections on the final pass: **no 16-bit prologue 274
+(65%)**, no reachable terminator 106, already covered 27, decode failed 8, too
+small 7. **120 registered; the final run found 0 candidates left** — the guarded
+criteria are now exhausted, not merely interrupted.
+
+### Step 4 — the `+0x1540` sub-segment hypothesis: **CONFIRMED, and the reason found**
+
+Your arithmetic reproduces exactly: the fixup pair's `seg` field names a
+**paragraph anchor inside the record's arena**, so
+
+    absolute offset = (seg - w0) * 16 + off
+
+For `R05_1E10` the dominant anchor is `seg = 0x1F64 = w0 + 0x154` → **`+0x1540`
+bytes → IDA `0x2F640`** — precisely `0x2106 − 0x1FB2 = 0x0154 paras`. Measured:
+
+| anchor (seg) | entries | `base = off` word-ok | `base = anchor` word-ok |
+|---|---|---|---|
+| `0x1F64` (=w0+0x154) | 1442 | 819 | **1442 (100%)** |
+| `0x400C` (=w0+0x21FC) | 571 | 320 | **571 (100%)** |
+| `0x33AE` (=w0+0x159E) | 394 | 237 | **394 (100%)** |
+| `0x2B83` (=w0+0xD73) | 387 | 236 | **387 (100%)** |
+| all non-zero anchors | 12,118 | 2,042 | **3,488** |
+
+Far-call cross-check agrees: `(seg−w0)*16 + off` lands on a FAR segment word
+for **10,094** pairs vs **5,926** for plain `off` — and for `R05_1E10`,
+125 → **2,463 of 2,798 (88%)** where chance is ~43.
+
+**Header or split?** Both — but not as a fixup base offset:
+
+* **No IDA segment split**: `R05_1E10 0x2E100..0x669F0` is one segment; no
+  function boundary or comment at `0x2F640` (it sits mid-`sub_2E2F0`).
+* **A real record does begin exactly at the anchor**: file `0x276C0` =
+  IDA `0x2F640` holds a **name table** — `0600 1100 1b00` (three u16 offsets,
+  all pointing inside) followed by `global.amo\0local.amo\0harpoon.dat\0`.
+* **And it is a split, not a single header**: `R05_1E10` carries **24 distinct
+  paragraph anchors** (top 6 shown above) — the record is addressed as multiple
+  paragraph-anchored sub-blocks, the largest being `w0+0x154`.
+* The name table is *not* collided with: the dominant anchor's `off` values start
+  at **`0xA7`**, i.e. the first fixup lands **167 bytes past** the ~64B table, and
+  **0 of 1,442** fall inside it.
+
+**Not applied.** Correcting `validate_fixup_semantics.py`/`apply_overlay_fixups`
+to the anchor formula would add the **12,118** currently-filtered fixups →
+overlay bytes change → `verify_rebuild` reports mass `CHANGED` → needs an
+exact-match manifest in the finding-53 style plus its own backup/gate cycle.
+That is a separate, high-consequence mutation; the bytes are now verified, the
+edit is deliberately left for a dedicated pass.
+
+### Measured effect (rev `73c4e03` → now, same script both sides)
+
+| metric | before (f55) | after (f56) |
+|---|---|---|
+| functions | 1,284 | **1,678** |
+| static edges | 1,764 | **2,493** |
+| `static_unresolved` | 1,257 | **702** |
+| overlay functions | 255 | **359** |
+| **Resident→Overlay edges** | **8** | **213** |
+| **overlay fns reachable from resident** | **5** | **73** |
+| refs INTO the thunk table | 228 (204 unresolved) | 230 (**0 unresolved**) |
+| slots emitting their JMP FAR | 27/303 | **296/303** |
+| overlay zero-indegree orphans | 232 | 228 |
+
+**The honest headline:** the Resident → Thunk → Overlay path now exists
+(**8 → 213 edges, 5 → 73 overlay functions reachable**), and the thunk table is
+fully resolved (**0 of 230**). But **overlay orphans only fell 232 → 228**:
+the 104 newly registered overlay functions connect (they are ref
+*destinations*), while the pre-existing orphans are functions nothing calls —
+so registering *their* targets cannot rescue them. And **346 distinct
+destinations remain unregistered although none passes the prologue/terminator
+guards**, i.e. the residual `static_unresolved = 702` is no longer a
+registration problem but a *diagnosis* problem: those addresses are not function
+entries by any 16-bit test we trust.
+
+Gates: `naming.py check` OK (267) · `verify_rebuild` **ADDED 120 / SPLIT 2 /
+CHANGED 0 / LOST 0 → faithful** · `verify_idb` **INTACT (1,678, 0 span / 0 name
+mismatch)** · name read-back **265/265 + 2/2**. Backup:
+`FALCONCD.EXE.i64.bak_thunk303`, `.bak_targets`.
+
+Impact: **the bridge that finding 54/55 showed to be missing is now built and
+measured** — and the two causes were both mechanical, both invisible to a
+percentage: a table read 53 entries late, and a function-boundary walk that
+stopped one instruction short of the jump. The `+0x1540` mystery is resolved as
+a paragraph-anchor addressing scheme (24 sub-blocks in `R05_1E10`), not a
+relocation bug — and the fixup correction it implies is staged but deliberately
+not executed.
+
+---
+
 (append new findings below)

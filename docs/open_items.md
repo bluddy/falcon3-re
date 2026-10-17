@@ -16,23 +16,22 @@
   measured it:** after registering 45 viable `overlay_entries` (fns 1,239 →
   1,284, C 108 → 126), orphans only went 189/210 → 232/255 (+45 nodes, +2
   edges), and the `target_linear → entry_ea` remap proved **net-negative**
-   (11  8 of 15) so it was reverted. **Finding 55 triaged the 1,257**
-   (`tools/unresolved_dsts55.py`): **611 (49%) inside an R* segment with
-   no function, 442 (35%) resident bytes with no function, 204 (16%) in
-   the thunk table, 0 elsewhere** - 84% are ordinary missing
-   registrations; `+0x10000` (image load paragraph) is the only real
-   relocation delta (45 exact fn starts vs 0 in a random control).
-   **Two bridge defects must be fixed before another registration pass:**
-   (i) `prep_overlay_entries.py` / `parse_thunks.py` /
-   `solve_thunk_assignment.py` / `validate_record_bases.py` hard-code
-   `THUNK = 0x1EBAF` - **53 entries into** the 303-entry table at
-   `0x1E99D` (= IDA `0x2BD9D`), so `overlay_entries.json` is missing
-   slots `0..52` (+`95`, `99`) and 46 of those slots' JMP targets have
-   no function; (ii) `export_callrefs` only walks heads inside
-   functions -> **49/303 slots registered, 276 never traversed**, and
-   19 of the 27 visible ones jump to unregistered targets. After that,
-   re-triage the 408 fixable far-op rels absent from the fixup tables
-   (433 of them in `R05_1E10`; their +5440 alignment is unexplained).
+   **(i) and (ii) below are now FIXED -- finding 56 built the bridge:**
+   crossing Resident->Overlay edges **8 -> 213**, overlay fns reachable from
+   resident **5 -> 73**, refs into the thunk table **0 unresolved of 230**
+   (254 slots registered, `sub_2BFCD` 210B split 21x10B, `sub_2BE83` 20B
+   split 2x10B, slot #053 detached from `start` with its xref kept).
+   **Remaining:** (a) **346 distinct destinations stay unregistered and NONE
+   passes the prologue/terminator guards** (274 have no 16-bit prologue, 106
+   no reachable terminator) -- the residual `static_unresolved = 702` is now a
+   *diagnosis* problem, not a registration one; (b) overlay orphans only
+   232 -> 228, because the pre-existing orphans are functions nothing CALLS;
+   (c) slot #302 (`0x2C969`) is permanently un-registerable -- it straddles
+   the loader segment boundary `seg021 0x2AA30..0x2C970 | seg022 0x2C970`
+   and has 0 refs either side; (d) **staged, not run:** the `+0x1540` fixup
+   correction (`abs = (seg-w0)*16 + off`, verified 100% word-ok per anchor)
+   would add 12,118 fixups -> mass CHANGED -> needs a finding-53-style
+   exact-match manifest and its own backup/gate cycle.
   ⚠ `0x2CF6A` is a **junk function registered on RTLink directory text**
   (`"MP\0DISPLAY.DAT"`) — a candidate for the removal policy.
 - **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from
