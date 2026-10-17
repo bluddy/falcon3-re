@@ -15,13 +15,26 @@
 
 ### Deferred from the bottom-up naming pass (findings 39–42)
 
-- **Graph cleanup (side task):** `classification.json` carries **13 DATA-class +
-  10 NEARTHUNK "functions"** that are dispatch-table labels / 4-byte far stubs,
-  not callable routines. They pollute `callgraph_partial.json` endpoints
-  (e.g. they appear in Level 3/4 lists) and inflate the function count.
-  Reclassify or drop them, then re-run `export_callrefs.py` +
-  `callgraph_bottomup.py`. Needs a rule for `function_bytes` (they ARE
-  registered in the IDB) vs `classification` (should say label).
+- **Graph cleanup pass 1 DONE (finding 49):** `class` was *our* byte-string
+  heuristic, not IDA's — it only tested for a trailing `c3`/`cb`, so it had
+  mislabeled **128 real routines** (tail `jmp`, `ret imm16`, `iret`, tail
+  call) as DATA. Now classified from IDA's decoded last instruction
+  (`tools/export_epilogues.py` → committed `last_insns.json`):
+  **DATA 153 → 24, bad-class 163 → 34**, ASM 871 → 992, LEAF 96 → 104.
+  **Correction:** the 10 NEARTHUNK (`E8 01 00 CB`) are *callable* far entry
+  points, not junk — one is already named `stub_to_1119c`; exonerated.
+  **Pass 2 still open (needs IDB mutation; backup verified at
+  `FALCONCD.EXE.i64.bak-graphcleanup`):**
+  (a) fix 24 mid-stream/truncated ranges — graph nodes among them:
+      `sub_233C0` (4 callers, ends `pop`), `sub_1406A` (3 callers + interior
+      ref), `sub_228BF` (= `int32_to_ascii`), `r08_e46` (`ud0` = data);
+  (b) split 10 multi-entry ranges found by *interior external code refs* (the
+      definitive signal — prologue-guessing found 0): `sub_2142E` (2),
+      `sub_14EAE`, `sub_13640`, `sub_287A8`, `sub_23962`, `r30_e77`,
+      `sub_213E6`, `sub_1406A`, `sub_23AC4`, `sub_2A340`;
+  (c) decide whether any genuinely-junk function objects should be dropped —
+      **note reclassifying alone does NOT change the graph** (Step 8 consumes
+      ea/size intervals, not `class`), so only object removal does.
 - **Level-0 remainder (deliberately deferred):** **203 unnamed endpoints with
   `dyn == 0`** (never observed as far-call targets) + **69 with dyn>0 but
   ~95 calls avg** — harvested only if wanted "because we can"; low value vs

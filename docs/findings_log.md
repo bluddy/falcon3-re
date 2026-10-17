@@ -1816,4 +1816,92 @@ plus the 2 tables accounts for all of Level 2's previously-unresolved core.
 
 ---
 
+## 2026-10-16 49 — Graph cleanup pass 1: `class` was our own bug, not IDA's — DATA 153 → 24
+Status: CONFIRMED
+
+**Root cause of every "DATA-but-code" report so far.** `classification.json`'s
+`class` is **our heuristic**, not IDA's opinion, and `tools/classify_routines.py`
+decided DATA purely on the raw byte string: `has_ret = b.endswith("cb") or
+b.endswith("c3")`. That misses tail jumps (`jmp`), `iret`, `hlt`, `int 21h`,
+`ret imm16` (`c2`), `retf imm16` (`ca`), a trailing tail-call, and any range
+that runs a few bytes past its final `retn`. So findings 45/47's
+"`sub_10E03`/`sub_10BE2` classified DATA but is code" were never IDA
+misclassifying anything — **it was our byte test**. Correcting the record:
+the fix belongs in the classifier, not the IDB.
+
+**Fix (host + one read-only IDA pass, zero IDB mutation):**
+- `tools/export_epilogues.py` → `last_insns.json`: IDA's decoded **last
+  instruction**, external caller count, and interior code refs per function.
+- `classify_routines.py` consults it: `retn`/`retf`/`ret` set `has_ret`;
+  a last instruction in `{jmp, iret, hlt, int, ret, retn, retf, call}` is a
+  terminating tail → `ASM` (medium) instead of `DATA`. Byte-only fallback is
+  preserved if the export is missing, so classification still works cold.
+
+| | before | after |
+|---|---|---|
+| ASM | 871 | **992** |
+| LEAF | 96 | **104** |
+| C | 108 | 108 |
+| DATA | 153 | **24** |
+| NEARTHUNK | 10 | 10 |
+
+**Two mistakes made and caught inside this same pass:**
+1. **I clobbered an existing artifact.** I first wrote my output to
+   `analysis/ida_falconcd/epilogues.json` — which `extract_prologues.py`
+   already owns, holding a completely different schema (`{hex-pattern: count}`
+   for compiler fingerprinting). Caught by noticing `.gitignore:21` already
+   listed that path, which meant something else had claimed it. Renamed mine
+   to `last_insns.json`, re-ran `extract_prologues.py` to restore theirs, and
+   documented the ownership in the runbook. **Rule: before choosing an output
+   path, grep for existing writers *and* read `.gitignore` — an ignore entry
+   you didn't write is a message from your past self.**
+   The restored file independently corroborated the classification work: its
+   top pattern is `e80100cb` with count **10**, exactly the 10 NEARTHUNK
+   4-byte far stubs.
+2. **A silently-invisible bug in my first audit:** I tested single *characters*
+   against 2-char hex strings (`b[-3] in ('c2','ca','e9')`), so nothing could
+   ever match and the script reported "104 unresolved". Rewrote with proper
+   hex slicing — the mismatch between "IDA says 102 end in `jmp`" and "bytes
+   matched 29" was the tell.
+
+**Correction to an earlier claim:** Open Items said the 10 NEARTHUNK are
+"dispatch-table labels / 4-byte far stubs, **not callable routines**". They
+are `E8 01 00 CB` = `call next-near-func; retf` — genuinely callable far entry
+points (one is already named `stub_to_1119c`). They are not pollution; they
+belong in the graph.
+
+**What is genuinely wrong now (24 DATA, 12 of them graph nodes):** ranges that
+stop **mid-stream** — last instruction `pop`/`mov`/`push`/`sub`/`nop`/`ud0`.
+Notably `sub_233C0` (4 callers, ends `pop`), `sub_1406A` (3 callers *and* an
+interior ref), `sub_228BF` (= our named `int32_to_ascii`), `r08_e46` (`ud0` =
+data misdecoded). These are real boundary errors needing range fixes.
+
+**10 multi-entry ranges found by a definitive signal** (external code refs to
+interior addresses, unlike my earlier prologue-guessing which found 0):
+`sub_2142E` (2 interiors), `sub_14EAE`, `sub_13640`, `sub_287A8`,
+`sub_23962`, `r30_e77`, `sub_213E6`, `sub_1406A`, `sub_23AC4`, `sub_2A340`.
+
+**Scope finding — reclassifying does not move the graph.**
+`export_callrefs.py`/`callgraph_bottomup.py` consume `classification.json` for
+its **ea/size intervals only**; `class` is display metadata (and a filter in
+my own tooling). Re-deriving Step 8 confirms it: static edges 1494 → 1503,
+endpoints **328**, 6 levels, **913 nodes** — structurally unchanged. So the
+"graph pollution" framing in Open Items conflated two different problems, and
+actually **removing junk function objects is an IDB mutation that this pass
+deliberately did not attempt** (backup taken and MD5-verified at
+`FALCONCD.EXE.i64.bak-graphcleanup` first).
+
+Gates: `naming.py check` OK (266 entries), `verify_rebuild` faithful
+1,238/1,238 (LOST/ADDED/SPLIT/CHANGED all 0), `read-back` unchanged.
+
+Impact: **the classification layer is now trustworthy** — every downstream
+consumer (port-candidate queues, endpoint lists, `dump_level0` filters, my own
+`sig:` claims) was reading a bucket that was 84% mislabeled. Data-classes
+dropped from 163 to 34 bad-class functions, the remaining ones are actionable
+range errors rather than noise, and the 10 "NEARTHUNK polluters" are exonerated
+as real stubs. Pass 2 (IDB range/truncation fixes, then junk-object removal)
+is now scoped and backstopped by a verified backup.
+
+---
+
 (append new findings below)

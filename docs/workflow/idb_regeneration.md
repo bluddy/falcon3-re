@@ -97,11 +97,26 @@ idat -A -S tools\extract_ida_bytes.py         analysis\ida_falconcd\FALCONCD.EXE
 ```
 Preserves stable keys + `name` fields from the previous extract.
 
-## Step 7 — host: classify
+## Step 7 — IDA: export last instructions, then host: classify
 
 ```
+idat -A -S tools\export_epilogues.py           analysis\ida_falconcd\FALCONCD.EXE.i64
 venv\Scripts\python tools\classify_routines.py
 ```
+
+`export_epilogues.py` writes `analysis/ida_falconcd/last_insns.json`
+({name: last mnemonic, callers, interior refs}) and is **committed**, so a
+fresh clone classifies identically without an IDA run — `classify_routines.py`
+falls back to byte-only heuristics if it is missing.
+
+**Do not point it at `epilogues.json`** — that path belongs to
+`extract_prologues.py` and holds a `{hex-pattern: count}` map for compiler
+fingerprinting. A different schema, same word (finding 49).
+
+Why the IDA pass is needed: classifying from raw bytes only tests for a
+trailing `c3`/`cb`, which misses tail jumps, `ret imm16`, `iret` and any
+range running a few bytes past its last `retn` — that mislabelled **128 real
+routines as DATA** (finding 49).
 
 ## Step V — VERIFY (do this before committing anything)
 

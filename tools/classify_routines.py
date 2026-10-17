@@ -28,8 +28,31 @@ OUT_PATH = os.path.join(ROOT, "analysis", "ida_falconcd", "classification.json")
 
 INT_OPCODES = {"cd"}  # INT imm8
 
+# What IDA decoded as the LAST instruction. A routine that ends in one of
+# these is finished -- it is not data. (Finding 49: testing only for a
+# trailing `c3`/`cb` mislabelled ~130 tail-jump / `ret imm16` / `iret`
+# routines as DATA.) `call` is included because a trailing call with nothing
+# after it is a tail call (`sub_2CA64` ends that way).
+EPI_PATH = os.path.join(ROOT, "analysis", "ida_falconcd", "last_insns.json")
+TERMINATING = {"jmp", "iret", "hlt", "int", "ret", "retn", "retf",
+               "jmpfi", "call"}
 
-def classify(name, info, survey_flags):
+
+def load_epilogues():
+    """{name: facts} from tools/export_epilogues.py; {} if not yet exported.
+
+    Deliberately optional: classify must keep working from bytes alone when
+    the export hasn't been run.
+    """
+    if not os.path.exists(EPI_PATH):
+        return {}
+    try:
+        return json.load(open(EPI_PATH))
+    except Exception:
+        return {}
+
+
+def classify(name, info, survey_flags, epi=None):
     b = info.get("bytes")
     if not b:
         return "DATA", "low", "no bytes in IDB"
@@ -41,6 +64,14 @@ def classify(name, info, survey_flags):
     has_enter = b.startswith("c8")
     has_frame = b.startswith("558bec")
     has_leave = "c9cb" in b or "c9c3" in b or b[-4:-2] == "c9"
+
+    # IDA's view of the final instruction overrides the byte-string guess:
+    # the byte test misses `ret imm16`/`retf imm16` (c2/ca) and ranges that
+    # run a few bytes past their last `retn`.
+    epi = epi or {}
+    last = epi.get(name, {}).get("last_mnem", "")
+    if last in ("retn", "retf", "ret"):
+        has_ret = True
 
     if has_enter:
         return "C", "high", "ENTER prologue (MSC 5.1 C signature)"
@@ -65,6 +96,9 @@ def classify(name, info, survey_flags):
     if has_ret:
         return "ASM", "low", "frameless, ret present, size %d" % size
     # no return anywhere
+    if last in TERMINATING:
+        # ends in a tail jump / iret / hlt / int: finished, just not by `ret`
+        return "ASM", "medium", "frameless, ends with %s (IDA last insn)" % last
     if size <= 8:
         return "DATA", "low", "no ret, tiny - data/continuation?"
     return "DATA", "low", "no ret in %d bytes" % size
@@ -72,6 +106,9 @@ def classify(name, info, survey_flags):
 
 def main():
     fb = json.load(open(FB_PATH))
+    epi = load_epilogues()
+    print("epilogue facts: %d functions%s" % (
+        len(epi), "" if epi else "  (MISSING -- run tools/export_epilogues.py; falling back to bytes)"))
     # survey flags are stale for rebuilt overlay funcs -> prefer function_bytes
     try:
         survey = json.load(open(SURVEY_PATH))
@@ -88,7 +125,7 @@ def main():
     out = {}
     counts = Counter()
     for name, info in sorted(fb.items()):
-        cls, conf, reason = classify(name, info, flags.get(name, {}))
+        cls, conf, reason = classify(name, info, flags.get(name, {}), epi)
         out[name] = {
             "ea": info["ea"],
             "size": info["size"],
