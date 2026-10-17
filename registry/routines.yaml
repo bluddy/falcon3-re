@@ -2118,15 +2118,15 @@ routines:
   - ea: 0x23962
     seg: 0x2396
     ofs: 0x2
-    size: 140
-    far: true
-    class: ASM
-    hypothesis: "table_iterate_loop"
-    sig: "+0: near call loc_23966; retf (loop runner); loop body: DS=7B0Eh, CX=cs:22D48 (count), table read via sub_249D8 at 3868h, caches to cs:23997, `dec cs:22D48; jg`"
+    size: 4
+    far: false
+    class: NEARTHUNK
+    hypothesis: "stub_to_23966"
+    sig: "E8 01 00 CB -> near call 0x23966 (body); retf"
     port_status: unported
     verified: null
-    notes: "140B, 505 calls; 2 entries. conf: med-high"
-    updated: "2026-10-16"
+    notes: "4B; 11th instance of the E80100CB far->near stub pattern; split from the 140B range at finding 50 (exact coverage). conf: high"
+    updated: "2026-10-17"
 
   - ea: 0x24A90
     seg: 0x24A9
@@ -3471,16 +3471,30 @@ routines:
     updated: "2026-10-16"
 
 
+  - ea: 0x23966
+    seg: 0x2396
+    ofs: 0x6
+    size: 136
+    far: false
+    class: ASM
+    hypothesis: "table_iterate_loop"
+    sig: "DS=7B0Eh; CX=cs:22D48 (count); sub_249D8 at 3868h; cache cs:23997/239BB from ds:7E940+0Ah, cs:239A0/239C4 from ds:7E940+8; tail `dec cs:22D48; jg` loop; last byte C3"
+    port_status: unported
+    verified: null
+    notes: "136B, 505 calls; the loop body formerly inside sub_23962 (split at finding 50, exact 140B coverage). conf: med-high"
+    updated: "2026-10-16"
+
+
 counts:
-  tracked: 265
+  tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
-  total_functions: 1238           # matches classification.json (findings 39-43)
+  total_functions: 1239           # matches classification.json (findings 39-43)
   classification:            # tools/classify_routines.py → classification.json
-    ASM: 871
+    ASM: 992
     C: 108                    # DGROUP operands relocated (+0x1000, finding 21)
-    DATA: 153
-    LEAF: 96
-    NEARTHUNK: 10
+    DATA: 24
+    LEAF: 104
+    NEARTHUNK: 11
   overlay_fixups_applied: 25222   # word += 0x1000, byte-guarded (finding 21)
   leaf_families:             # finding 14
     ret_const: 2 verified C-portable

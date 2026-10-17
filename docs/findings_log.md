@@ -1904,4 +1904,88 @@ is now scoped and backstopped by a verified backup.
 
 ---
 
+## 2026-10-17 50 — Graph cleanup pass 2: 1 split performed; finding 49's "10 multi-entry" was an overclaim
+Status: CONFIRMED
+
+Pass 2 was supposed to split 10 multi-entry ranges, fix 24 truncated ranges
+and drop junk objects. It delivered **1 split** — and the headline is why the
+other nine were wrong.
+
+**Correction of finding 49.** The "definitive signal" (external code refs to
+interior addresses) found 11 interior-ref sites. That is a *signal*, not a
+*diagnosis*. Two further conditions are required, and each one eliminated
+most candidates:
+
+1. **The instruction immediately before the interior must be a terminator.**
+   My first test accepted a terminator *anywhere earlier in the function*,
+   which is meaningless in a 470 B body — `sub_14EAE` "passed" while its
+   interior sits right after a `mov`. Strictly applied: **4 pass / 7 reject.**
+2. **A passing case must still be a callable entry, not a shared block.**
+   Manual byte inspection disposed of the remaining three:
+   - `sub_213E6` — *no error at all*. Bytes `E9 8E 00 | 07 1F C3` = `jmp
+     loc_214B9` / `pop es / pop ds / retn` / next function. It is a **shared
+     epilogue** correctly owned by `sub_213E6`, which `sub_2142E` branches
+     back into.
+   - `sub_2A340` — the tail is `sub cx,cx; retn` (3 B), a **shared exit stub**
+     reached by four *branches* from `sub_2A30E`, not by calls.
+   - `r30_e77` — garbled data (`cmp eax [eax]`), DATA-class overlay region.
+
+**The one genuine split — `table_iterate_loop`.** Raw bytes at the range
+head: **`E8 01 00 CB`** = `call next; retf`, i.e. *the same pattern as the 10
+known NEARTHUNK stubs*, merged with its 136 B body. `sub_2394A` calls the body
+directly, bypassing the stub.
+
+- `0x23962..0x23966` (4 B) → `stub_to_23966`, last byte `CB`
+- `0x23966..0x239EE` (136 B) → `table_iterate_loop`, last byte `C3`
+- coverage **exact** (140 B), both ranges verified before `save_database()`
+
+**Independent corroboration:** NEARTHUNK went **10 → 11**, and
+`extract_prologues.py`'s fingerprint map (a separate tool, restored in finding
+49) lists `e80100cb` with count 10 — so the 11th instance was always there,
+hiding inside an over-long function. Three unrelated artifacts agreeing is
+about as good as it gets.
+
+**Ledger handling.** The semantic name belongs on the implementation, so
+`table_iterate_loop` moved to `sub_23966` and the 4 B stub took
+`stub_to_23966`, matching the **8 existing `stub_to_*` precedents** (finding
+43–45). Note the original `sig` already recorded "+0: near call loc_23966;
+retf … 2 entries" — **the analysis had found the split point in batch 3; this
+pass just made it structural.** Gate 3 then caught the stale copy: `routines.yaml
+ea=0x23962 hypothesis 'table_iterate_loop' != naming 'stub_to_23966'`, fixed
+(size 140→4, class ASM→NEARTHUNK).
+
+**Two new tooling facts.**
+- **`push-ida` cannot handle a split.** It resolves each entry with
+  `get_name_ea(ida_name_str)`; once a function is renamed, the old `sub_*` key
+  no longer resolves, so it reports `MISSING` and *silently skips the rename*.
+  Harmless for already-pushed entries (finding 46) but a **real failure** after
+  a split. Worked around with an EA-keyed rename. A split therefore needs an
+  EA-based push, not the name-based one.
+- **MD5 is unusable as an IDB integrity check.** The `.i64` hash changed after
+  a few purely-read-only `idat` runs, so (a) comparing against a backup
+  false-alarms immediately, and (b) the Phase-0 "MD5 verified identical"
+  test only ever proved the copy succeeded — a file always matches its own
+  fresh copy. Added **`tools/verify_idb.py`**: semantic check that every
+  recorded function still exists at its EA with its span and name.
+
+**Gates (all green):** integrity `INTACT` (1,239/1,239, 0 span, 0 name) ·
+`verify_rebuild` **SPLIT 1 + ADDED 1, LOST 0, CHANGED 0 → faithful** ·
+`naming.py check` OK (267) · read-back **265/265, zero mismatch**.
+Graph: functions 1,238→1,239, endpoints 328→329, nodes 913→914.
+
+**Still open in pass 2 (deliberately not attempted):** the 24 truncated
+ranges need a *true* end address, which is not derivable from the bytes —
+guessing would violate byte-identity; and dropping junk function objects
+would report `LOST`, which `verify_rebuild` rightly fails on, so that needs an
+explicit intentional-removal policy first.
+
+Impact: **function boundaries are now correct where they were provably wrong,
+and nobody else is.** The more valuable result is negative: a signal that
+sounds decisive (interior refs) still needs two more conditions before it
+justifies mutating the IDB, and finding 49 shipped it as a list of ten. Both
+the strict test and the precondition check are now *inside* `split_function.py`,
+so the next split cannot skip them.
+
+---
+
 (append new findings below)

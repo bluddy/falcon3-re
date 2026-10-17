@@ -866,10 +866,15 @@ symbols:
     sig: "BP frame; SI=[bp+arg_0]; if SI==0 -> return; if SI>0 -> checks vs es:7772 state; callees sub_1E3DC, sub_1F59E"
     notes: "97B, 112 calls. conf: med"
   - ida: sub_23962
+    name: stub_to_23966
+    kind: function
+    sig: "E8 01 00 CB -> near call 0x23966 (body); retf -- 4B far->near entry stub, last byte CB"
+    notes: "4B; NEARTHUNK pattern, the 11th instance (was merged with the body until the finding-50 split). conf: high"
+  - ida: sub_23966
     name: table_iterate_loop
     kind: function
-    sig: "+0: near call loc_23966; retf (loop runner); loop body: DS=7B0Eh, CX=cs:22D48 (count), table read via sub_249D8 at 3868h, caches to cs:23997, `dec cs:22D48; jg`"
-    notes: "140B, 505 calls; 2 entries. conf: med-high"
+    sig: "DS=7B0Eh; CX=cs:22D48 (count); sub_249D8 at 3868h; cache cs:23997/239BB from ds:7E940+0Ah, cs:239A0/239C4 from ds:7E940+8; tail `dec cs:22D48; jg` loop; last byte C3"
+    notes: "136B, 505 calls; the loop body formerly inside sub_23962 (split at finding 50, exact 140B coverage). conf: med-high"
   - ida: sub_142CC
     name: indexed_byte_get
     kind: function

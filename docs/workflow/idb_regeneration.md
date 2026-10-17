@@ -132,6 +132,25 @@ venv\Scripts\python tools\naming.py check       # ledger/routines/structs consis
 venv\Scripts\python tools\naming.py push-ida    # re-sync semantic names into the IDB
 ```
 
+After any IDB mutation, also run the **semantic integrity gate** (it reads the
+live database, so it needs idat):
+
+```
+cmd /c "tools\run_idat.bat tools\verify_idb.py"
+type analysis\ida_falconcd\integrity.log        # expect VERDICT: INTACT
+```
+
+Every recorded function must still exist at its recorded EA with its recorded
+span and name. **Do not use MD5 for this** (finding 50): idat rewrites the
+`.i64` on every invocation — including read-only runs — so a hash comparison
+against a backup false-alarms after the very next run, and comparing a file
+against its own fresh copy always "succeeds" while proving nothing.
+
+Note `push-ida` resolves entries by their old `sub_*` name, so after a
+**split or rename** it will report `MISSING` and skip them; use an EA-keyed
+rename for entries whose IDA name no longer matches the ledger `ida` key
+(finding 50).
+
 ## Step 8 — callgraph (optional, after any IDA change)
 
 ```

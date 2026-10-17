@@ -23,18 +23,28 @@
   **DATA 153 → 24, bad-class 163 → 34**, ASM 871 → 992, LEAF 96 → 104.
   **Correction:** the 10 NEARTHUNK (`E8 01 00 CB`) are *callable* far entry
   points, not junk — one is already named `stub_to_1119c`; exonerated.
-  **Pass 2 still open (needs IDB mutation; backup verified at
-  `FALCONCD.EXE.i64.bak-graphcleanup`):**
-  (a) fix 24 mid-stream/truncated ranges — graph nodes among them:
-      `sub_233C0` (4 callers, ends `pop`), `sub_1406A` (3 callers + interior
-      ref), `sub_228BF` (= `int32_to_ascii`), `r08_e46` (`ud0` = data);
-  (b) split 10 multi-entry ranges found by *interior external code refs* (the
-      definitive signal — prologue-guessing found 0): `sub_2142E` (2),
-      `sub_14EAE`, `sub_13640`, `sub_287A8`, `sub_23962`, `r30_e77`,
-      `sub_213E6`, `sub_1406A`, `sub_23AC4`, `sub_2A340`;
-  (c) decide whether any genuinely-junk function objects should be dropped —
-      **note reclassifying alone does NOT change the graph** (Step 8 consumes
-      ea/size intervals, not `class`), so only object removal does.
+  **Pass 2 DONE, finding 50 — it delivered 1 split, not 10.** The interior-ref
+  signal found 11 sites but is a *signal*, not a diagnosis; two more
+  conditions are required and both are now built into
+  `tools/split_function.py`: (i) the instruction **immediately** before the
+  interior must terminate flow (a terminator *anywhere earlier* is worthless in
+  a large body) → 4 pass / 7 reject, and (ii) it must be a callable entry →
+  byte inspection rejected `sub_213E6` (**no error at all** — a shared epilogue
+  correctly owned by `sub_213E6`), `sub_2A340` (shared `sub cx,cx; retn` stub
+  reached by branches), `r30_e77` (garbled data).
+  **Done:** `table_iterate_loop` split at `0x23966` — head bytes `E8 01 00 CB`
+  = the NEARTHUNK stub pattern merged with its 136 B body; exact 140 B
+  coverage; NEARTHUNK 10 → 11.
+  **Still open:**
+  (a) 24 mid-stream/truncated ranges — `sub_233C0` (4 callers, ends `pop`),
+      `sub_1406A`, `sub_228BF` (= `int32_to_ascii`), `r08_e46` (`ud0` = data).
+      **Blocked:** a true end address is not derivable from the bytes, and
+      guessing breaks byte-identity. Needs an independent witness (a trace, a
+      `next_head` gap, or a known epilogue);
+  (c) dropping genuinely-junk function objects → would report `LOST`, which
+      `verify_rebuild` rightly fails on. Needs an explicit intentional-removal
+      allowlist first. **Also note reclassifying alone does NOT change the
+      graph** (Step 8 consumes ea/size intervals, not `class`).
 - **Level-0 remainder (deliberately deferred):** **203 unnamed endpoints with
   `dyn == 0`** (never observed as far-call targets) + **69 with dyn>0 but
   ~95 calls avg** — harvested only if wanted "because we can"; low value vs
