@@ -2805,4 +2805,91 @@ rewrite was verified byte-identical in span/name terms and is now prevented by
 
 ---
 
+## 2026-10-18 59 — The carve: `sub_2E2F0` becomes 258 functions + 3
+sha256-pinned data holes, static edges 2,730 -> 4,013
+
+Finding 58's plan, executed with the gate written FIRST: nothing was mutated
+until `registry/subblock_split_expected.json` described exactly what the IDB
+must look like afterwards.
+
+### Step 1 -- the plan is a file, not a guess
+
+`tools/carve_seeds.py` (372 seeds = 343 internal CALL targets + 22 external +
+10 thunk + the blob start) -> `tools/seed_tests.py` (read-only backward sweep:
+which instructions decode to END EXACTLY on each seed, and what the first three
+instructions look like) -> `tools/plan_carve.py` writes the manifest: parent
+span + sha256, **3 data holes with their own sha256 and why** (93 B object
+table, 144 B RTLink name table `global.amo/local.amo/harpoon.dat/
+FALCONCOLORADO`, 2 B pad), and every planned child `(key, ea, size)`.
+**253 seeds accepted by the terminator-backwards rule + 7 forced** (blob start,
+3 hole ends, 3 anchors); coverage validates EXACT: 51,405 B code + 239 B data
+= 51,644 B.
+
+### Step 2 -- the gate before the mutation
+
+`verify_rebuild.py` gained a **CARVE** class: a shrunk/retired parent is
+intentional only when (a) the manifest's `(key, ea, size)` list matches the
+functions currently inside the old span *exactly* (missing or extra = fail),
+(b) no function overlaps a hole, (c) the parent really shrank, and (d) every
+hole's **live** sha256 -- read from `analysis/ida_falconcd/data_holes.json`,
+which `verify_idb.py` now computes from the database and refuses to accept if
+a hole is covered by a function or not flagged as data. Dry run before carving:
+`INTACT` + `faithful` (and one mis-detection fixed: `carved` was inferred from
+"any planned child exists", but child #1 shares the parent's EA, so it read the
+pre-carve parent as carved -- now inferred from "parent no longer spans the old
+range").
+
+### Step 3 -- the backward rule lied twice, and the plan caught it
+
+`tools/carve_probe.py` found **10 existing instructions crossing planned
+boundaries**: 8 are zero padding (the old sweep turned the `00 00...` before a
+module boundary into `add`) -> delete that item; **2 are real code**:
+`0x32553` sits inside a `9A` call-far at `0x32552`, `0x3A2D8` inside `3D` at
+`0x3A2D6`. Those two seeds are backward-decode artefacts -> **dropped (ranges
+merged), 260 -> 258 functions**. Rule learned: a terminator that "lands on" an
+address in a backward sweep is only a candidate; it must not contradict the
+existing decode.
+
+### Step 4 -- three aborts, one save
+
+The mutator refused to save three times, each time leaving the IDB restorable:
+(1) `idc.get_byte` does not exist in 9.1 (`ida_bytes.get_byte` does); (2) a
+`%d` format was handed the string "ABORTED"; (3) **`create_insn` returned 0 at
+`0x2EA6D`, `0x2F6D0`, `0x39AA9`** although a fresh `decode_insn` succeeded --
+another item sat *inside* the entry's first instruction, so IDA would not
+create it; fixed with a clear-blocking-item-then-retry loop (3 small items
+cleared). Every attempt restored `FALCONCD.EXE.i64.bak_carve` and re-verified
+**INTACT** before the next run. Final run: **258 functions registered, heads
+17,547 -> 17,545, code refs 5,209 -> 5,209 (the blob's edges survived
+byte-for-byte), holes byte-identical, SAVED.**
+
+### Measured effect
+
+| metric | before | after |
+|---|---|---|
+| functions | 1,678 | **1,935** (1,678 - 1 + 258) |
+| static edges | 2,730 | **4,013 (+1,283)** |
+| refs into the blob forming edges | 82 | **812** |
+| ... landing on an exact function start | 0 | **572** |
+| total code refs | 9,244 | 9,244 (nothing lost) |
+| `static_unresolved` | 957 | 957 (the holes hold no refs) |
+| new functions with >=1 incoming edge | - | **256 / 258** |
+| overlay zero-indegree orphans | 224 | 226 (the 2 uncalled pieces) |
+
+Gates: `naming.py check` OK (267) . `verify_rebuild` **faithful -- CARVE 1,
+ADDED 257 (all manifest-planned), LOST 0, CHANGED 0** . `verify_idb`
+**INTACT (1,935, 0 span / 0 name / 0 data-hole problems)** . read-back
+265/265 + 2/2. Backup `FALCONCD.EXE.i64.bak_carve`.
+
+Impact: finding 58 predicted the 971 internal refs were invisible because
+`sub_2E2F0 -> sub_2E2F0` self-edges are dropped -- **730 of the 812 edges now
+come from exactly that class**, and 572 refs land on a real entry instead of
+inside a 46 KB span. Remaining on this line of work: 112 rejected seeds stay
+interior by design, 2 pieces have zero indegree, `0x3ACAC..0x669F0` still
+holds 251 unregistered destinations (registration, not carving), and the
+runbook must document the `verify_idb` -> `verify_rebuild` ordering the hole
+export depends on.
+
+---
+
 (append new findings below)

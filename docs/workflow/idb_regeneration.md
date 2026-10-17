@@ -129,9 +129,15 @@ failing step; never commit a diverged ground truth.
 
 `SPLIT` (old fn subdivided, full coverage), `RECODE` (size changed but
 `(key, ea, old_size, new_size)` matches `registry/bitness_fix_expected.json`
-exactly) and `PATCH` (same `key`/`ea`/`size`, and **both** the pre- and
-post-change sha256 match `registry/subblock_fixups_expected.json`) are the
-only intentional-change classes and none counts against the gate. Both
+exactly), `PATCH` (same `key`/`ea`/`size`, and **both** the pre- and
+post-change sha256 match `registry/subblock_fixups_expected.json`) and
+`CARVE` (finding 59: the parent's planned children in
+`registry/subblock_split_expected.json` match the live functions *exactly*,
+no function touches a data hole, and each hole's sha256 matches the export
+`verify_idb.py` writes to `analysis/ida_falconcd/data_holes.json`) are the
+only intentional-change classes and none counts against the gate.
+**Order matters after a carve:** run `verify_idb.py` before `verify_rebuild.py`
+so the live hole export exists. Both
 manifests are **exact-match on purpose** — a bulk re-derivation like finding
 53's bitness fix or finding 57's sub-block fixups must list every function it
 touches (byte patches additionally pin the bytes on both sides, so a rebuild

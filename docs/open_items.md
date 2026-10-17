@@ -40,17 +40,20 @@
    + 30 jump-table case targets + 84 anomalies** (49 undecodable incl. the
    `WRONG VERSION!` string at `0x6E1EA` x24 and a word table at `0x6DFF0`
    x23, 28 long-code-no-terminator, 7 no-segment); 251 of the 515 sit in
-   `0x3ACAC..0x669F0`; (f) `sub_2E2F0` is **mapped, not guessed**: **6**
-   anchors inside (not f57's 4 KB-bucket "13"), 7 blocks of
-   1824/1488/1056/400/176/**46,416**/284 B, **371 entry seeds** (343
-   internal-CALL + 22 external + 10 thunk), data = **3 holes / 239 B**;
-   **971 internal refs are invisible today** because `sub_2E2F0 ->
-   sub_2E2F0` self-edges are dropped — and the carve is **blocked on the
-   gate first**: `verify_rebuild` must accept a manifest whose
-   `new_fns ∪ data_holes` tiles the old span exactly and whose holes keep
-   their recorded sha256 (else it is `CHANGED`);
-   HEAD and now have an edge (134 resident, 4 overlay), while the 224
-   remaining overlay orphans are still never called by anything static.
+   `0x3ACAC..0x669F0`; (f) **DONE (finding 59): `sub_2E2F0` is carved**
+   -- the map (6 anchors inside, not f57's 4 KB-bucket "13"; data = 3
+   holes / 239 B) drove a manifest-planned split into **258 functions +
+   3 sha256-pinned holes**, boundaries from the terminator-backwards rule
+   with 2 seeds dropped where a real `9A`/`3D` instruction crossed;
+   static edges **2,730 -> 4,013**, refs into the blob 82 -> **812
+   edges** (**572** at an exact function start), 256/258 new fns called;
+   the gate is `verify_rebuild`'s CARVE class + `verify_idb`'s live hole
+   export (`data_holes.json`) -- **still open here**: 112 rejected seeds
+   stay interior by design, 2 new pieces have zero indegree, and
+   `0x3ACAC..0x669F0` (251 unregistered dsts) is registration work;
+   (g) 138 functions had zero indegree at HEAD and now have an edge
+   (134 resident, 4 overlay), while the 226 remaining overlay orphans are
+   still never called by anything static.
   ⚠ `0x2CF6A` is a **junk function registered on RTLink directory text**
   (`"MP\0DISPLAY.DAT"`) — a candidate for the removal policy.
 - **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from

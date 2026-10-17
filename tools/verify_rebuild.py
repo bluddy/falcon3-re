@@ -58,6 +58,27 @@ def load_patches():
             for e in m.get("patches", [])}
 
 
+# Carve manifest (finding 59): a parent function is subdivided into PLANNED
+# functions plus data holes that must stay outside every function and keep
+# their recorded sha256.  The live hole bytes come from verify_idb's export
+# (data_holes.json), so this gate checks plan <-> live IDB <-> ground truth.
+SPLITMAN = ROOT / "registry" / "subblock_split_expected.json"
+HOLES_EXPORT = ROOT / "analysis" / "ida_falconcd" / "data_holes.json"
+
+
+def load_splits():
+    if not SPLITMAN.exists():
+        return {}
+    return {e["key"]: e
+            for e in json.loads(SPLITMAN.read_text()).get("splits", [])}
+
+
+def load_holes():
+    if not HOLES_EXPORT.exists():
+        return {}
+    return {h["ea"]: h for h in json.loads(HOLES_EXPORT.read_text()).get("holes", [])}
+
+
 def head_json():
     r = subprocess.run(["git", "show", "HEAD:analysis/ida_falconcd/function_bytes.json"],
                        cwd=ROOT, capture_output=True, text=True)
@@ -73,6 +94,50 @@ def main():
     now = json.loads(FB.read_text())
     expected = load_expected()
     patches = load_patches()
+    split_man = load_splits()
+    hole_live = load_holes()
+    split_plan_keys = {f["key"] for e in split_man.values() for f in e["new_fns"]}
+
+    def validate_split(k, a, b):
+        """Manifest plan vs current ground truth vs the live hole export.
+
+        `b` is None when the parent key itself disappeared (LOST path).
+        Returns (ok, why).
+        """
+        e = split_man[k]
+        want = {(f["key"], f["ea"], f["size"]) for f in e["new_fns"]}
+        lo, hi = a["ea"], a["ea"] + e["old_size"]
+        have = {(kk, v["ea"], v["size"]) for kk, v in now.items()
+                if lo <= (v.get("ea") if v.get("ea") is not None else -1) < hi}
+        if want != have:
+            return False, ("new_fns mismatch: missing %d %s / extra %d %s"
+                           % (len(want - have), sorted(want - have)[:3],
+                              len(have - want), sorted(have - want)[:3]))
+        carved = bool(have)
+        if carved and b is not None and b.get("size", 0) >= a.get("size", 0):
+            return False, "parent key did not shrink (%d -> %d)" % (
+                a.get("size"), b.get("size"))
+        for h in e["data_holes"]:
+            for kk, v in now.items():
+                s, sz = v.get("ea"), v.get("size")
+                if s is None or not sz:
+                    continue
+                if s < h["ea"] + h["size"] and h["ea"] < s + sz:
+                    return False, "function %s overlaps data hole 0x%X..0x%X" % (
+                        kk, h["ea"], h["ea"] + h["size"])
+            if carved:
+                live = hole_live.get(h["ea"])
+                if not live:
+                    return False, ("no live hole export for 0x%X -- run "
+                                   "tools/verify_idb.py first" % h["ea"])
+                if (live.get("size"), live.get("sha256")) != (h["size"], h["sha256"]):
+                    return False, "hole 0x%X bytes differ: live %s vs manifest %s" % (
+                        h["ea"], live.get("sha256"), h["sha256"])
+                if live.get("in_function") or not live.get("is_data"):
+                    return False, "hole 0x%X in_function=%s is_data=%s (must be free data)" % (
+                        h["ea"], live.get("in_function"), live.get("is_data"))
+        return True, ("%d planned fns + %d data holes tile 0x%X..0x%X (%d B)"
+                      % (len(want), len(e["data_holes"]), lo, hi, e["old_size"]))
 
     def is_expected_recode(k, a, b):
         """Allowlisted by the exact old->new size recorded in the manifest."""
@@ -104,7 +169,7 @@ def main():
 
     lost = sorted(set(head) - set(now))
     added = sorted(set(now) - set(head))
-    changed, renamed, splits, recodes, bytepatches = [], [], [], [], []
+    changed, renamed, splits, recodes, bytepatches, splitdata = [], [], [], [], [], []
     for k in set(head) & set(now):
         a, b = head[k], now[k]
         # allowlisted bulk re-derivation (finding 53) -- checked first, and
@@ -129,6 +194,16 @@ def main():
                 continue
             # shrank + the old range is now tiled by new fns = intended split
             if b.get("size", 0) < a.get("size", 0):
+                # finding 59: a manifest-planned carve, with data holes, is
+                # accepted ONLY on an exact (key, ea, size) match of every
+                # planned function plus verified live sha256 on every hole
+                if k in split_man:
+                    ok, why = validate_split(k, a, b)
+                    if ok:
+                        splitdata.append((k, why))
+                    else:
+                        changed.append((k, "carve manifest violated: " + why))
+                    continue
                 n = tile_count(a["ea"], a["ea"] + a["size"])
                 if n > 1:
                     splits.append((k, "%d -> %dB, old range tiled by %d fns"
@@ -142,10 +217,26 @@ def main():
         else:
             renamed.append((k, b.get("ea")))
 
+    # a manifest parent may legitimately retire outright (its key disappears
+    # because every byte moved into a planned child)
+    for k in list(lost):
+        if k not in split_man:
+            continue
+        ok, why = validate_split(k, head[k], None)
+        if ok:
+            lost.remove(k)
+            splitdata.append((k, why + "  [parent key retired]"))
+
+    added_split = [k for k in added if k in split_plan_keys]
+    added_free = [k for k in added if k not in split_plan_keys]
+
     print("committed: %d   now: %d" % (len(head), len(now)))
     print("  LOST    : %d" % len(lost))
-    print("  ADDED   : %d" % len(added))
+    print("  ADDED   : %d  (%d planned by the carve manifest, %d new otherwise)"
+          % (len(added), len(added_split), len(added_free)))
     print("  SPLIT   : %d  (intentional: old fn subdivided, full coverage)" % len(splits))
+    print("  CARVE   : %d  (intentional: manifest-planned fns + sha256-pinned data holes)"
+          % len(splitdata))
     print("  RECODE  : %d  (intentional: bitness fix, allowlisted in manifest)" % len(recodes))
     print("  PATCH   : %d  (intentional: sub-block fixup words, exact sha match)"
           % len(bytepatches))
@@ -162,6 +253,11 @@ def main():
             print("   %-16s %s" % (k, why))
         if len(recodes) > 10:
             print("   ... +%d" % (len(recodes) - 10))
+    if splitdata:
+        print("\n-- CARVE (manifest-planned subdivision; data holes checked "
+              "against the live IDB export) --")
+        for k, why in splitdata:
+            print("   %-16s %s" % (k, why))
     if splits:
         print("\n-- SPLIT (expected after a deliberate subdivision; verify it is yours) --")
         for k, why in splits[:20]:
