@@ -124,8 +124,16 @@ routines as DATA** (finding 49).
 venv\Scripts\python tools\verify_rebuild.py
 ```
 Diffs the fresh `function_bytes.json` against **git HEAD** and reports
-LOST / ADDED / CHANGED. Exit 1 = divergence → fix the failing step; never
-commit a diverged ground truth.
+LOST / ADDED / SPLIT / RECODE / CHANGED. Exit 1 = divergence → fix the failing
+step; never commit a diverged ground truth.
+
+`SPLIT` (old fn subdivided, full coverage) and `RECODE` (size changed but
+`(key, ea, old_size, new_size)` matches `registry/bitness_fix_expected.json`
+exactly) are the only intentional-change classes and neither counts against
+the gate. The manifest is **exact-match on purpose** — a bulk re-derivation
+like finding 53's bitness fix must list every function it touches, so it can
+never become precedent for silent drift. If you deliberately change more,
+regenerate the manifest and commit it in the same change.
 
 ```
 venv\Scripts\python tools\naming.py check       # ledger/routines/structs consistency

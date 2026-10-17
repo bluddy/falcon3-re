@@ -4,14 +4,20 @@
 - ~15 cluster-B rows' exact fixup positions; 14 fixup *types* exist — +L only proven
   for the dominant far-pointer type (findings 20/21); exotic before-words (0xC08E…).
 - 10 unresolvable overlay thunk entries (their target bytes aren't code where mapped).
-- **⛔ BLOCKER (finding 52): every `R*` overlay segment has `bitness = 1`
+- **✅ RESOLVED (findings 52 → 53): every `R*` overlay segment had `bitness = 1`
   (32-bit) in a real-mode 16-bit program.** Cause: `rebuild_overlay_segments.py:61`
-  calls `add_segm` and never sets bitness. Overlay disassembly, all ~210
-  `r*_e*` sizes/ends, the coverage numbers, finding 51's `ovl→ovl` edges and
-  finding 50's `r30_e77` reasoning are all downstream of it. **Fix first, then
-  do anything else with overlays:** set `bitness=0`, redefine items, re-derive
-  ranges, re-run steps 6/7/8 — expect a large `verify_rebuild` `CHANGED` set
-  needing an allowlist. Never register/split overlay functions before that.
+  called `add_segm` and never set bitness. Fixed across 68 segments
+  (1,053,376 B cleared, 210 ranges re-probed: 115 kept / 53 re-probed / 42
+  flagged), source patched, bodies re-decoded (77,315/77,654 B). Ground truth
+  shifted by **82 overlay spans, ea unchanged, 0 resident** — allowlisted by
+  exact match in `registry/bitness_fix_expected.json` (so `verify_rebuild`
+  still fails anything unlisted). Overlay coverage `R05` 13% → 100%.
+  **Remaining overlay work is the EDGE side, not bitness:** 189/210 overlay
+  functions still have zero indegree (was 204), so next is registering the
+  viable `overlay_entries` (133 lack a function; ~113 fail a
+  prologue/terminator test) plus the bridge-stub → `entry_ea` remap.
+  ⚠ `0x2CF6A` is a **junk function registered on RTLink directory text**
+  (`"MP\0DISPLAY.DAT"`) — a candidate for the removal policy.
 - **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from
   BOTH sources**, not "dynamic-only": all 28 static overlay→overlay edges are
   within one RTLink record, and dynamic reaches only 2/210 overlay functions

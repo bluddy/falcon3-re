@@ -59,6 +59,14 @@ def main():
             skipped += 1
             continue
         ok = ida_segment.add_segm(ea >> 4, ea, ea + ln, p["seg_name"], "CODE", 0)
+        # finding 52: add_segm does NOT inherit the loader's 16-bit bitness.
+        # New segments default to 32-bit, which decodes real-mode overlay code
+        # as `push eax`/`stosd`/`mov ebx,imm32` and corrupts every overlay
+        # disassembly (and the size/end of every r*_e* function). Always pin
+        # it to 0 (=16-bit) immediately after creating the segment.
+        _s = ida_segment.getseg(ea)
+        if _s is not None and _s.bitness != 0:
+            _s.bitness = 0
         data = exefile[p["data_file"]:p["data_file"] + ln]
         if len(data) < ln:
             log.append("  WARN idx%d short read (%d < %d)" % (p["idx"], len(data), ln))

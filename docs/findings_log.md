@@ -2127,4 +2127,85 @@ split — until bitness is fixed.
 
 ---
 
+## 2026-10-17 53 — Bitness fixed: 68 overlay segments → 16-bit; the gate needed a narrow allowlist, not a bypass
+Status: CONFIRMED
+
+Executed the finding-52 fix. All four gates green.
+
+**What ran (two guarded passes + source patch):**
+1. **`tools/rebuild_overlay_segments.py` patched** so any future rebuild pins
+   `bitness = 0` immediately after `add_segm` — the one-line root cause.
+2. **`tools/fix_overlay_bitness.py`** — recorded all 210 overlay functions
+   (start/end/name), set `bitness = 0` on **68 `R*` segments**, cleared
+   **1,053,376 bytes** of 32-bit items, re-decoded each start as 16-bit and
+   re-probed ends: **115 ends kept** (already valid under 16-bit — zero churn),
+   **53 re-probed** as 32-bit artifacts, **42 flagged** (no terminator; kept
+   old end). Guard passed → saved.
+3. **`tools/fix_overlay_bodies.py`** — pass 1 cleared whole segments but only
+   re-created each function's *first* instruction, so every body read `??`.
+   This walked all ranges: **77,315 of 77,654 bytes decoded**.
+
+**Gate lesson (rule 1, now observed directly):** pass 2's guard *failed* on
+464 positions (0.6%) and printed **`NOT SAVED`** — yet the very next IDA run
+found the decode present. **`idat` persisted a dirty DB despite an explicit
+refusal to save.** The "don't save" control is advisory, not preventive; only
+a host-side backup actually protects. Those 464 sit inside two functions: the
+`0x2CF6A` range (whose bytes are RTLink directory text — `"MP\0DISPLAY.DAT"`,
+i.e. **a junk function registered on data**) and the known 51 KB `sub_2E2F0`
+blob.
+
+**Effect on ground truth: 82 spans changed — and the audit is clean:**
+
+| | |
+|---|---|
+| overlay, `ea` unchanged (the intended recode) | **82** |
+| resident functions changed | **0** |
+| `ea` moved | **0** |
+| hit the 4000-byte probe cap | **0** |
+| grew / shrank | 76 / 6 (median size ×2.34; 11 grew >20× — review) |
+
+**The gate needed a narrow allowlist, not a bypass.** `verify_rebuild` correctly
+failed with `CHANGED 82 → do NOT commit`. Rather than relax it, added
+**`registry/bitness_fix_expected.json`**: each entry is keyed by
+`(key, ea, old_size, new_size)`. `verify_rebuild` now classifies an exact
+manifest match as `RECODE` (intentional) and still fails on any change that is
+*not* in the manifest — so this bulk re-derivation cannot become precedent for
+silent drift. Result: **`RECODE 82, CHANGED 0, LOST 0 → faithful`.**
+
+**Measured effect:**
+
+| metric | before | after |
+|---|---|---|
+| static edges | 1,503 | **1,762** (+259) |
+| graph nodes | 913 | **1,007** |
+| endpoints | 328 | 346 |
+| overlay coverage `R05_1E10` | 13% (40 heads) | **100% (17,655)** |
+| overlay coverage `R01_1CF6` | 36% | **92%** |
+| overlay coverage `R14_5E0B` | 5% | **100%** |
+| overlay zero-indegree | **204/210 (97%)** | **189/210 (90%)** |
+| `DATA` class | 24 | 45 |
+
+**The honest headline:** correctness improved a lot, *connectivity* barely did
+— orphans fell only 15 (97% → 90%). **Bitness was blocking correct
+analysis of overlay code, but it was not the main source of missing overlay
+edges.** The remaining 189 need the edge side: registering entry points (the
+133 `overlay_entries` with no function, minus the ~113 that fail a
+prologue/terminator test) and the bridge-stub → `entry_ea` remap from finding
+51. The `DATA 24 → 45` rise is the 42 flagged no-terminator functions landing
+where they belong rather than being silently labelled ASM.
+
+Gates: `verify_idb` **INTACT** (1,239, 0 span/name mismatches) ·
+`verify_rebuild` **faithful** (RECODE 82, CHANGED 0, LOST 0) ·
+`naming.py check` OK (267) · read-back **265/265**.
+
+Impact: **the overlay layer is now decoded correctly for the first time** —
+1,053,376 bytes of instruction data that had been misread as 32-bit since
+`rebuild_overlay_segments.py` first ran. Everything downstream that was
+garbled by it (sizes, coverage, last-instruction classification, finding 51's
+edge counts, finding 50's `r30_e77` reasoning) is now measured on real
+disassembly. And the fix did *not* buy us a weaker gate: the allowlist is
+exact-match, so the next divergent rebuild still fails.
+
+---
+
 (append new findings below)

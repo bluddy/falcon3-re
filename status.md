@@ -73,7 +73,7 @@ Artifact: `analysis/traces/callgraph_partial.json` — **327 endpoints, 911/1,23
 
 **Overlay provenance (finding 51)** — measured, not assumed: 1,239 fns = 1,029 resident + **210 overlay**, all mapping to an RTLink record. **Overlay *nodes* are dynamic-derived** (finding 33's trace-driven repair) but **overlay *edges* are mostly static** — static reaches **28/210** overlay functions as a call target vs dynamic's **2/210** (dynamic `to_ida()` only covers 16 segments, so 145,212 of 379,498 events fall out). **Cross-record overlay edges = 0 from both sources** — all 28 static overlay→overlay edges are within one record. Two gaps logged: register the 19 unresolved resident→overlay thunk targets, and widen the CS→record map past 16 segments.
 
-> ### ⚠ BLOCKER (finding 52): every overlay segment is decoded as 32-bit
+> ### ✅ RESOLVED (findings 52 → 53): overlay segments were decoded as 32-bit
 >
 > All `R*` segments have `bitness = 1` (32-bit) while the program is real-mode
 > 16-bit. Root cause: **`tools/rebuild_overlay_segments.py:61` calls
@@ -83,17 +83,30 @@ Artifact: `analysis/traces/callgraph_partial.json` — **327 endpoints, 911/1,23
 > pushf`, while overlay `0x103087` renders `mov ebx 579A000Ch` from bytes that
 > are actually `1E 06 BB 0C 00 9A` = `push ds / push es / mov bx,000Ch`.
 >
-> **Consequence: the entire overlay layer is untrustworthy** — all overlay
-> disassembly, every `r*_e*` function's size/end, the coverage figures (R05
-> 13%, R19/R69 0%), finding 51's `ovl→ovl` edges, the residual `DATA`
-> oddities, and finding 50's `r30_e77` "garbled data" reasoning. **Do not
-> register, split, or trust any overlay function until bitness is fixed.**
-> Fix = set `bitness=0` on `R*`, redefine items, re-derive ~210 overlay
-> ranges, re-run steps 6/7/8 — expect `verify_rebuild` `CHANGED` on overlay
-> functions, which needs an explicit allowlist (as `SPLIT` did in finding 42).
+> **Fixed (finding 53).** `tools/rebuild_overlay_segments.py` now pins
+> `bitness = 0` after `add_segm`; `tools/fix_overlay_bitness.py` set **68 `R*`
+> segments → 16-bit**, cleared **1,053,376 B** of 32-bit items, re-probed 210
+> overlay ranges (115 ends kept, 53 re-probed, 42 flagged); `fix_overlay_bodies.py`
+> re-decoded **77,315/77,654 B**. Audit: **82 spans changed — overlay only,
+> 0 resident, 0 moved, 0 probe-cap hits.**
+>
+> **Gate handling:** `verify_rebuild` correctly failed with `CHANGED 82`. Fixed
+> with an **exact-match allowlist** (`registry/bitness_fix_expected.json`,
+> keyed `key+ea+old_size+new_size` → counted as `RECODE`), so this bulk recode
+> cannot become precedent — anything unlisted still fails. Now `RECODE 82,
+> CHANGED 0, LOST 0 → faithful`.
+>
+> **Effect:** static edges 1,503 → **1,762**, nodes 913 → **1,007**, overlay
+> coverage `R05` 13% → **100%** (17,655 heads), `R01` 36% → 92%. **But overlay
+> orphans only fell 204/210 (97%) → 189/210 (90%)** — bitness blocked correct
+> *analysis*; the missing *edges* need entry registration and the bridge→`entry_ea`
+> remap instead. `DATA 24 → 45` = the 42 no-terminator functions landing where
+> they belong.
 > Also: `overlay_entries.target_linear` is **not** a copy of `entry_ea` (only
 > 7/232 byte-identical; low addresses hold RTLink directory text) — use
-> `entry_ea`. Also outstanding: `~17 multi-entry ranges from findings 43–47` (`sub_254C0` = 7 entries, `sub_10D8C` = 4 + data, `sub_23036` ≥4); `sub_22DFF` undecoded regions; 203 unnamed `dyn==0` Level-0 endpoints.
+> `entry_ea`.
+
+**Still outstanding:** `~17 multi-entry ranges from findings 43–47` (`sub_254C0` = 7 entries, `sub_10D8C` = 4 + data, `sub_23036` ≥4); `sub_22DFF` undecoded regions; 203 unnamed `dyn==0` Level-0 endpoints.
 
 **Rebuild = one canonical runbook** [`docs/workflow/idb_regeneration.md`](docs/workflow/idb_regeneration.md) (finding 40 audit). ⚠️ Rules: every IDB-mutating script must `save_database()` explicitly (never rely on idat's exit-save); gate commits with **`tools/verify_rebuild.py`** (diffs fresh `function_bytes.json` vs git HEAD, exit 1 on divergence); diagnostics must **never `del_items` existing functions**; text tools must **prune `dosbox*` under `src/`**. The EXE itself is *not* in git — verify md5 `2BDD74F4…` against `registry/FALCONCD.EXE.yaml` first.
 ## Open Items
