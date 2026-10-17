@@ -1988,4 +1988,67 @@ so the next split cannot skip them.
 
 ---
 
+## 2026-10-17 51 — Overlay edge provenance measured: nodes are dynamic, edges are static, cross-record edges don't exist
+Status: CONFIRMED
+
+Question asked: *"we only have cross-overlay code from the dynamic data, right?
+the rest is static."* Measured instead of assumed — **the premise was wrong in
+both directions.**
+
+**Corpus:** 1,239 functions = 1,029 resident + **210 overlay** (`ea >= 0x2CF60`).
+All 210 map to a resolvable RTLink record via `overlay_placement.json`.
+
+**Static refs (3,454 total, `export_callrefs.py` → IDA `CodeRefsFrom`):**
+
+| pair | resolved | unresolved |
+|---|---|---|
+| resident → resident | 3,283 | 110 |
+| resident → **overlay** | **8** | 19 |
+| overlay → overlay | **28** | 6 |
+
+**Dynamic `indirect_far` (379,498 events):** resident→resident **234,280**
+resolved, overlay→overlay **6**, **145,212 unresolved (38%)**.
+
+**Overlay functions reached as a call *target*: static 28 / 210, dynamic
+2 / 210.**
+
+**1. Strict cross-overlay — record → a *different* record — is 0 from both
+sources.** All 28 static overlay→overlay edges sit **within a single RTLink
+record**; distinct record pairs = **0**. So cross-overlay code is not
+"dynamic-only", it is *absent entirely*.
+
+**2. Static reaches ~14× more overlay functions than dynamic (28 vs 2).**
+Dynamic overlay resolution runs through `callgraph_bottomup.py` `to_ida()`,
+which needs `rtlink_loads.json` **and** `overlay_placement.json` — those hold
+only **45 records / 70 placements / 16 distinct overlay segments**. Any runtime
+`CS` outside those 16 falls through to `None`, which is where 145,212 events
+go.
+
+**3. What the dynamic data actually contributed is the *nodes*, not the
+edges.** The 210 overlay functions exist because of trace-driven repair
+(finding 33, +135 fns) and the overlay registration work. Once registered,
+IDA's `CodeRefsFrom` emits the edges, and the thunk-table patch (finding 35,
+299/303) is what lets resident→overlay far calls resolve statically at all.
+Dynamic's other real contribution stays `dyn_target_calls`, the frequency
+ranking that has ordered every batch since Level 0.
+
+**Accurate statement to carry forward:** *overlay nodes are dynamic-derived;
+overlay edges are mostly static; cross-record overlay edges do not exist in
+either channel.*
+
+**Two concrete gaps if cross-record edges are wanted:**
+- the **19 unresolved resident→overlay** refs — thunk targets landing inside
+  overlay territory but inside no registered function (register them);
+- the runtime **CS → record map covers only 16 segments**, so most dynamic
+  overlay events vanish in `to_ida()` (widen `rtlink_loads`/placement
+  coverage).
+
+Impact: provenance settled with numbers rather than a plausible story. The gap
+that matters (cross-record) turns out to be **zero, not partial**, so it belongs
+as an explicit work item rather than something anyone assumes is already
+covered — and "overlay edges" was self-consistent in earlier notes only because
+it never said *which* source supplied them.
+
+---
+
 (append new findings below)

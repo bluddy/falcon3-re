@@ -4,6 +4,16 @@
 - ~15 cluster-B rows' exact fixup positions; 14 fixup *types* exist — +L only proven
   for the dominant far-pointer type (findings 20/21); exotic before-words (0xC08E…).
 - 10 unresolvable overlay thunk entries (their target bytes aren't code where mapped).
+- **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from
+  BOTH sources**, not "dynamic-only": all 28 static overlay→overlay edges are
+  within one RTLink record, and dynamic reaches only 2/210 overlay functions
+  (vs static 28/210). Two gaps to close if cross-overlay structure is wanted:
+  (a) register the **19 unresolved resident→overlay** refs (thunk targets inside
+  overlay territory but inside no registered function);
+  (b) widen the runtime **CS → record map past the 16 segments** currently in
+  `rtlink_loads.json`/`overlay_placement.json` — everything else vanishes in
+  `callgraph_bottomup.to_ida()`, accounting for part of the 145,212 unresolved
+  `indirect_far` events (38% of 379,498).
 - Overlay byte content for 2 skipped rows (zero-span placeholders, finding 19).
 - EMS/XMS runtime memory views not representable in the static IDB.
 - Batch portcheck driver + per-routine asm transcripts (Track C) not built yet.
