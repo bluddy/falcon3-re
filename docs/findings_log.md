@@ -2301,6 +2301,13 @@ are simply overlay bytes with no function registered on them, and another 35%
 are resident bytes with no function on them.** The thunk table -- the bridge
 itself -- accounts for 16%.
 
+The fourth category asked for -- *dst at a low `target_linear` while the
+function is registered at the high `entry_ea` of the `R*_s` synthetic copy* --
+is measured at **4 refs total** (2 resolve after remapping `target_linear ->
+entry_ea`, 2 still do not), plus **1** dst outside every known range. That is
+0.4% of the 1,257, which independently corroborates finding 54: the
+`target_linear -> entry_ea` remap was never going to move the needle.
+
 ### The shift hypothesis, with a control
 
 For each of the 445 distinct dsts, test every candidate paragraph delta

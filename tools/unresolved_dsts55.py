@@ -78,6 +78,19 @@ for (r, c), n in sorted(cat.items(), key=lambda x: -x[1]):
     print("%-6s %-46s %d" % (r, c, n))
 print("bucketed: %d" % sum(cat.values()))
 
+# fourth category: dst is a low target_linear whose function lives at the high
+# entry_ea of the R*_s synthetic copy (finding 54's remap candidate)
+ent = json.load(open(IDA + "overlay_entries.json"))
+tl2ee = {}
+for e in ent:
+    if e["target_linear"] != e["entry_ea"]:
+        tl2ee.setdefault(e["target_linear"], e["entry_ea"])
+tl_refs = [(s, d) for s, d in unres if d in tl2ee]
+print("")
+print("dst is a target_linear with a distinct entry_ea: %d refs "
+      "(of which resolve after target_linear->entry_ea remap: %d)"
+      % (len(tl_refs), sum(1 for _, d in tl_refs if resolve(tl2ee[d]))))
+
 # ---- CONTROL: does "+0x10000 lands on a function start" beat a random base? ----
 dsts = sorted({d for _, d in unres})
 real = Counter()
