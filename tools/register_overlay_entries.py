@@ -62,6 +62,12 @@ try:
     cands = []
     for e in ent:
         ea = e["entry_ea"]
+        # finding 56: overlay_entries now carries every thunk target, including
+        # ones whose own row does not reach them. Gate on "is this EA inside a
+        # record's WRITTEN window" -- never probe an address with no bytes.
+        if not e.get("covered_seg"):
+            log.append("  0x%X skipped (no record window covers it)" % ea)
+            continue
         if ea in have:
             continue
         if ida_funcs.get_func(ea):

@@ -32,7 +32,8 @@ ROOT = Path('.')
 EXE = (ROOT / 'game/FALCONCD.EXE').read_bytes()
 TAIL_START = 0x1FB51
 DIR_FILE = 0x1E24F
-THUNK_FILE = 0x1EBAF
+# finding 55/56: table starts at 0x1E99D (303 entries); 0x1EBAF was entry #053
+THUNK_FILE = 0x1E99D
 
 rows = []
 for i in range(70):

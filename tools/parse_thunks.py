@@ -4,7 +4,9 @@ from collections import Counter
 
 d = Path('game/FALCONCD.EXE').read_bytes()
 HDR = 0x2C00
-THUNK_FILE = 0x1EBAF
+# finding 55/56: table starts at 0x1E99D (303 entries .. 0x1F573);
+# 0x1EBAF was entry #053, not the table start
+THUNK_FILE = 0x1E99D
 
 # parse up to 120 entries, stop when pattern breaks
 entries = []

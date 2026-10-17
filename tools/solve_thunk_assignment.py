@@ -14,7 +14,8 @@ from collections import defaultdict
 
 EXE = Path('game/FALCONCD.EXE').read_bytes()
 DIR = 0x1E24F
-THUNK = 0x1EBAF
+# finding 55/56: table starts at 0x1E99D (303 entries); 0x1EBAF was entry #053
+THUNK = 0x1E99D
 
 rows = []
 for i in range(70):

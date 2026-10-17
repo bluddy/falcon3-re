@@ -24,13 +24,18 @@ import idautils
 import idc
 
 OUT = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\last_insns.json"
-CLS = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\classification.json"
+# finding 56: iterate function_bytes (ground truth), NOT classification.json --
+# classification is derived from this file, so reading it here meant every
+# function added after the last classify pass (274 new .RTLink thunk slots)
+# got no epilogue facts and fell through to classify_routines' byte-only
+# heuristic, which labels a tail-jumping routine DATA (finding 49).
+FB = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\function_bytes.json"
 
-cls = json.loads(open(CLS).read())
+fb = json.loads(open(FB).read())
 out = {}
 log = []
 
-for nm, info in cls.items():
+for nm, info in fb.items():
     ea = info.get("ea")
     f = ida_funcs.get_func(ea)
     if not f or f.start_ea != ea:

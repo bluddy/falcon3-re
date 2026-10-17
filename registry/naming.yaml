@@ -785,7 +785,7 @@ symbols:
     name: overlay_tail_bridge_b
     kind: function
     sig: "void; near call sub_2AFBD then JMP FAR to sub_2CF6A (data-class addr, likely an overlay entry)"
-    notes: "8B of code in a 210B range — the rest is resident-tail data/directory -> cleanup candidate. Same 8B shape as overlay_tail_bridge. conf: med"
+    notes: "slot #056 of the .RTLink thunk table (10B). The 210B span it used to have was IDA merging 21 consecutive 10B thunks -- decode stops at the JMP FAR, so the inner slots never became jmp heads and export_callrefs could not see them. All 21 are E8 loader-call + EA jmp-far + rec-id stubs, so the old 'rest is resident-tail data/directory' reading was wrong (finding 56). Split into 21 per-slot functions, exact tile, so each slot exports its own JMP FAR. conf: high"
   - ida: sub_27697
     name: far_list_dispatch
     kind: function
