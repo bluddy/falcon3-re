@@ -106,6 +106,8 @@ Artifact: `analysis/traces/callgraph_partial.json` — **327 endpoints, 911/1,23
 > 7/232 byte-identical; low addresses hold RTLink directory text) — use
 > `entry_ea`.
 
+**Overlay edge connectivity (finding 54) — node side solved, edge side not:** registered **45 overlay entry points** (fns **1,239 → 1,284**, **C 108 → 126** from the `enter` prologues), all 45 verified, gates green (`verify_rebuild` **ADDED 45 / CHANGED 0 / LOST 0 → faithful**). But overlay orphans went 189/210 → **232/255** — +45 nodes, only **+2 edges**. The `target_linear → entry_ea` remap measured **net-negative** (11 → 8 of the only 15 affected refs) and was reverted. **The real backlog is `edge_counts.static_unresolved = 1,257`** — refs whose source resolves but whose destination is in no registered function (off the entry grid / mid-region / no entry record). Read "91% orphaned" as *"1,257 destination registrations missing"*, not as unregistered overlay entries — those now largely are registered.
+
 **Still outstanding:** `~17 multi-entry ranges from findings 43–47` (`sub_254C0` = 7 entries, `sub_10D8C` = 4 + data, `sub_23036` ≥4); `sub_22DFF` undecoded regions; 203 unnamed `dyn==0` Level-0 endpoints.
 
 **Rebuild = one canonical runbook** [`docs/workflow/idb_regeneration.md`](docs/workflow/idb_regeneration.md) (finding 40 audit). ⚠️ Rules: every IDB-mutating script must `save_database()` explicitly (never rely on idat's exit-save); gate commits with **`tools/verify_rebuild.py`** (diffs fresh `function_bytes.json` vs git HEAD, exit 1 on divergence); diagnostics must **never `del_items` existing functions**; text tools must **prune `dosbox*` under `src/`**. The EXE itself is *not* in git — verify md5 `2BDD74F4…` against `registry/FALCONCD.EXE.yaml` first.

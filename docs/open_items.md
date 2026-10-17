@@ -12,10 +12,15 @@
   shifted by **82 overlay spans, ea unchanged, 0 resident** — allowlisted by
   exact match in `registry/bitness_fix_expected.json` (so `verify_rebuild`
   still fails anything unlisted). Overlay coverage `R05` 13% → 100%.
-  **Remaining overlay work is the EDGE side, not bitness:** 189/210 overlay
-  functions still have zero indegree (was 204), so next is registering the
-  viable `overlay_entries` (133 lack a function; ~113 fail a
-  prologue/terminator test) plus the bridge-stub → `entry_ea` remap.
+  **Remaining overlay work is the EDGE side, not bitness — and finding 54
+  measured it:** after registering 45 viable `overlay_entries` (fns 1,239 →
+  1,284, C 108 → 126), orphans only went 189/210 → 232/255 (+45 nodes, +2
+  edges), and the `target_linear → entry_ea` remap proved **net-negative**
+  (11 → 8 of 15) so it was reverted. **The actual backlog is
+  `edge_counts.static_unresolved = 1,257` refs whose destination is in no
+  function** — not the orphan percentage. Next: triage those 1,257
+  destinations (how many are overlay vs resident, on-grid vs mid-region) to
+  size a registration pass.
   ⚠ `0x2CF6A` is a **junk function registered on RTLink directory text**
   (`"MP\0DISPLAY.DAT"`) — a candidate for the removal policy.
 - **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from

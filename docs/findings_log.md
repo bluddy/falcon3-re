@@ -1988,6 +1988,74 @@ so the next split cannot skip them.
 
 ---
 
+## 2026-10-17 54 — Overlay edge connectivity: 45 registered, but orphans barely moved — the gap is not where I assumed
+Status: CONFIRMED (negative result is the finding)
+
+Chased finding 53's remaining problem (189/210 overlay orphans) with the
+pipeline it had just fixed. **Registration worked; connectivity did not follow.**
+
+**What the 16-bit decode changed.** Re-running the entry-registration dry run
+*after* the bitness fix moved the candidate pool from **18 (probed through a
+32-bit decode, garbage ends) to 45** whose first bytes are textbook 16-bit
+prologues — `55 8B EC` (`push bp; mov bp,sp`) and `C8 xx 00 00` (`enter`).
+Finding 52's warning ("do not register until bitness is fixed") was not
+caution for its own sake: the earlier list would have baked in wrong ranges.
+
+**Registered 45 / 45 planned, guard passed.** Function count **1,239 → 1,284**;
+classification **C 108 → 126** (the `enter` functions), ASM 977 → 1,001,
+LEAF 98 → 101, DATA 45 unchanged.
+
+**The `target_linear → entry_ea` remap was net-negative and is reverted.**
+Measured honestly: only **15 refs** carry a `target_linear` destination, and
+unconditional remapping *reduced* resolution from **11 → 8 of 15**, because
+some `entry_ea`s have no function. Re-tried as a non-worsening *fallback*
+(remap only when direct resolve fails): static edges moved **1,766 → 1,764**
+i.e. the remap contributed nothing real. Reverted to the original resolve.
+
+**The orphan number barely moved — and went up in absolute terms:**
+
+| | orphan / total | % | with-edge |
+|---|---|---|---|
+| before bitness fix | 204 / 210 | 97% | 6 |
+| after bitness fix (finding 53) | 189 / 210 | 90% | 21 |
+| after registering 45 (this finding) | **232 / 255** | **91%** | **23** |
+
++45 nodes registered, only **+2 got an incoming edge**. Percentages are
+meaningless here; the honest read is that entry registration does not create
+edges, because **the refs that would create them do not exist in
+`callgraph_refs.json`.**
+
+**Where the gap actually is:** `edge_counts` shows **`static_unresolved` =
+1,257**. These are refs whose *source* resolves but whose *destination* is in
+no registered function — i.e. `export_callrefs` is faithfully reporting
+calls/jumps into regions nothing has registered. That 1,257, not the 189
+orphans, is the real backlog of missing overlay (and resident) edges, and it
+is a different problem from "overlay entries have no function": many of these
+destinations are *mid-region*, off the 16-byte entry grid, or in areas with
+no entry record at all.
+
+**Two methodological corrections again:**
+- I measured with a host-side script that mixed a **static** counter
+  (`load_static`'s unresolved) into a "dynamic" line and then crashed on an
+  unused `import ida` — so the first orphan printout was untrustworthy and had
+  to be re-measured. The stable figures above are the re-measure.
+- An unconditional remap looked principled from finding 51's analysis but
+  measured worse. **A remap that can only lose must be a fallback, and a
+  fallback that gains nothing must be removed.**
+
+Gates: `naming.py check` OK (267) · `verify_rebuild` **ADDED 45, CHANGED 0,
+LOST 0 → faithful** · `RECODE 0`.
+
+Impact: **the overlay-node problem is essentially solved (45 registered, all
+gates green) but the overlay-*edge* problem is not, and it was never the same
+problem.** The actionable next number is `static_unresolved = 1,257` refs
+pointing into unregistered destinations — not the orphan percentage. Anyone
+(including me) who next sees "91% orphaned" should read it as "the call graph
+is missing 1,257 destination registrations", not as evidence that overlay
+entries are unregistered (they now largely are).
+
+---
+
 ## 2026-10-17 51 — Overlay edge provenance measured: nodes are dynamic, edges are static, cross-record edges don't exist
 Status: CONFIRMED
 
