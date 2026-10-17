@@ -71,7 +71,29 @@ Artifact: `analysis/traces/callgraph_partial.json` — **327 endpoints, 911/1,23
 
 **Graph cleanup pass 1 DONE (finding 49)** — and it corrected a wrong premise: `class` was **our** byte-string heuristic (only tested a trailing `c3`/`cb`), never IDA's, so it had mislabeled **128 real routines** as DATA. Fixed host-side via `tools/export_epilogues.py` → committed `last_insns.json` (IDA's decoded last instruction) with a byte-only fallback: **DATA 153 → 24, bad-class 163 → 34**, ASM 871 → 992, LEAF 96 → 104. **Zero IDB mutation**; gates green (`check` 266, `verify_rebuild` faithful 1,238/1,238). Also corrected: the **10 NEARTHUNK are callable far entry points** (`E8 01 00 CB`, one already `stub_to_1119c`), not junk. **Pass 2 DONE (finding 50) — it delivered 1 split, not 10:** finding 49's interior-ref list needed two more conditions (terminator *immediately* before + callable entry), which are now hard preconditions inside the new **`tools/split_function.py`**; 9 candidates were false positives, including `sub_213E6` which turned out to have *no error at all*. Split `table_iterate_loop` (`E8 01 00 CB` = NEARTHUNK stub merged with its 136 B body) → 4 B `stub_to_23966` + 136 B `table_iterate_loop`, exact 140 B coverage, **NEARTHUNK 10 → 11**. Gates: **integrity `INTACT`**, `verify_rebuild` **SPLIT 1 + ADDED 1, LOST 0 → faithful**, `check` OK (267), read-back 265/265; fns 1,238 → 1,239, endpoints 328 → 329. **Two tooling facts:** `push-ida` cannot handle a split (resolves by the old `sub_*` key, so it silently skips the rename — used an EA-keyed rename instead), and **MD5 is unusable for IDB integrity** (idat rewrites the file on every run; matching a fresh copy proves nothing) → new **`tools/verify_idb.py`** semantic gate. **Blocked, not deferred:** the 24 truncated ranges need a true end address that isn't derivable from bytes, and junk-object removal would report `LOST` (needs an intentional-removal allowlist).
 
-**Overlay provenance (finding 51)** — measured, not assumed: 1,239 fns = 1,029 resident + **210 overlay**, all mapping to an RTLink record. **Overlay *nodes* are dynamic-derived** (finding 33's trace-driven repair) but **overlay *edges* are mostly static** — static reaches **28/210** overlay functions as a call target vs dynamic's **2/210** (dynamic `to_ida()` only covers 16 segments, so 145,212 of 379,498 events fall out). **Cross-record overlay edges = 0 from both sources** — all 28 static overlay→overlay edges are within one record. Two gaps logged: register the 19 unresolved resident→overlay thunk targets, and widen the CS→record map past 16 segments. Also outstanding: `~17 multi-entry ranges from findings 43–47` (`sub_254C0` = 7 entries, `sub_10D8C` = 4 + data, `sub_23036` ≥4); `sub_22DFF` undecoded regions; 203 unnamed `dyn==0` Level-0 endpoints.
+**Overlay provenance (finding 51)** — measured, not assumed: 1,239 fns = 1,029 resident + **210 overlay**, all mapping to an RTLink record. **Overlay *nodes* are dynamic-derived** (finding 33's trace-driven repair) but **overlay *edges* are mostly static** — static reaches **28/210** overlay functions as a call target vs dynamic's **2/210** (dynamic `to_ida()` only covers 16 segments, so 145,212 of 379,498 events fall out). **Cross-record overlay edges = 0 from both sources** — all 28 static overlay→overlay edges are within one record. Two gaps logged: register the 19 unresolved resident→overlay thunk targets, and widen the CS→record map past 16 segments.
+
+> ### ⚠ BLOCKER (finding 52): every overlay segment is decoded as 32-bit
+>
+> All `R*` segments have `bitness = 1` (32-bit) while the program is real-mode
+> 16-bit. Root cause: **`tools/rebuild_overlay_segments.py:61` calls
+> `ida_segment.add_segm(...)` and never sets `bitness`** (loader segments get
+> 16-bit from the MZ header; runtime-created ones default to 32-bit).
+> Verified empirically — resident `0x10BE2` renders `mov sp, cs:byte_10842+4 /
+> pushf`, while overlay `0x103087` renders `mov ebx 579A000Ch` from bytes that
+> are actually `1E 06 BB 0C 00 9A` = `push ds / push es / mov bx,000Ch`.
+>
+> **Consequence: the entire overlay layer is untrustworthy** — all overlay
+> disassembly, every `r*_e*` function's size/end, the coverage figures (R05
+> 13%, R19/R69 0%), finding 51's `ovl→ovl` edges, the residual `DATA`
+> oddities, and finding 50's `r30_e77` "garbled data" reasoning. **Do not
+> register, split, or trust any overlay function until bitness is fixed.**
+> Fix = set `bitness=0` on `R*`, redefine items, re-derive ~210 overlay
+> ranges, re-run steps 6/7/8 — expect `verify_rebuild` `CHANGED` on overlay
+> functions, which needs an explicit allowlist (as `SPLIT` did in finding 42).
+> Also: `overlay_entries.target_linear` is **not** a copy of `entry_ea` (only
+> 7/232 byte-identical; low addresses hold RTLink directory text) — use
+> `entry_ea`. Also outstanding: `~17 multi-entry ranges from findings 43–47` (`sub_254C0` = 7 entries, `sub_10D8C` = 4 + data, `sub_23036` ≥4); `sub_22DFF` undecoded regions; 203 unnamed `dyn==0` Level-0 endpoints.
 
 **Rebuild = one canonical runbook** [`docs/workflow/idb_regeneration.md`](docs/workflow/idb_regeneration.md) (finding 40 audit). ⚠️ Rules: every IDB-mutating script must `save_database()` explicitly (never rely on idat's exit-save); gate commits with **`tools/verify_rebuild.py`** (diffs fresh `function_bytes.json` vs git HEAD, exit 1 on divergence); diagnostics must **never `del_items` existing functions**; text tools must **prune `dosbox*` under `src/`**. The EXE itself is *not* in git — verify md5 `2BDD74F4…` against `registry/FALCONCD.EXE.yaml` first.
 ## Open Items

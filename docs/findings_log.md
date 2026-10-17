@@ -2051,4 +2051,80 @@ it never said *which* source supplied them.
 
 ---
 
+## 2026-10-17 52 — **All overlay segments are decoded as 32-bit** — the root cause behind every overlay oddity
+Status: CONFIRMED (blocker)
+
+Pursuing "fix overlay edge visibility" turned up something that invalidates
+most of what we think we know about the overlay layer.
+
+**Every `R*` segment has `bitness = 1` (32-bit); every loader-created resident
+segment has `bitness = 0` (16-bit).** Falcon 3 is a real-mode program whose
+overlays are far-called from 16-bit code — they cannot execute 32-bit.
+
+**Empirically (not inferred from a field):**
+
+| address | segment | bitness | IDA renders |
+|---|---|---|---|
+| `0x10BE2` | `seg002` | 0 | `mov sp, cs:byte_10842+4` / `pushf` / `call far ptr sub_2BE3D` ✅ |
+| `0x6D0C9` | `R06_5CD9` | 1 | `call far ptr 0C033h:2F64B4E9h`, `stosd`, `[esi]` ❌ |
+| `0x15AD22` | `R33_569Fs` | 1 | `push eax`, `push dword ptr` ❌ |
+| `0x103087` | `R07_5CD9s` | 1 | `mov ebx 579A000Ch` / `add eax 0DA8E1084h` ❌ |
+
+**The bytes are fine — only the bitness is wrong.** `0x103087` holds
+`1E 06 BB 0C 00 9A …`, which in 16-bit is
+`push ds / push es / mov bx,000Ch / call far …`; and a sampled `entry_ea`
+holds `55 8B EC 06 56 57 8B 46 06 8B 5E 08 8B 4E 0A C4 7E 0C` =
+`push bp / mov bp,sp / push es / push si / push di / mov ax,[bp+6] /
+mov bx,[bp+8] / mov cx,[bp+0Ah] / les di,[bp+0Ch]` — a textbook 16-bit C
+function. IDA is being fed correct code with the wrong word size.
+
+**Root cause:** `tools/rebuild_overlay_segments.py:61` creates every overlay
+segment with `ida_segment.add_segm(ea >> 4, ea, ea + ln, name, "CODE", 0)`
+and **never sets `bitness`**. Loader-created segments get 16-bit from the MZ
+header; runtime-created ones default to 32-bit. A one-line omission.
+
+**What this invalidates:**
+- All overlay disassembly, and therefore every `r*_e*` function's **size and
+  end address** (they were derived by terminator-probing a 32-bit decode).
+- The overlay coverage figures from this session (R05 13%, R14 5%, R19/R69
+  0%) — largely decode artifacts, not "undisassembled code".
+- The `ovl→ovl` edges in finding 51 (28 static / 6 dynamic) — computed from
+  32-bit-decoded jumps.
+- The residual 24 `DATA`-class functions that carry overlay oddities
+  (`fcmovne`, `ud0`, `jecxz` last-instructions).
+- **Finding 50's rejection of `r30_e77` as a "garbled data region"** — its
+  garble was 32-bit decoding. (Not splitting it may still be right, but the
+  stated *reason* was wrong.)
+- **The 18-candidate registration dry run I was about to execute** — it
+  probed terminators through a 32-bit decode, so every end address in that
+  list was garbage. Caught before mutation.
+
+**Also corrected:** `overlay_entries.json`'s `target_linear` is **not** a
+second copy of `entry_ea`. Sampling 232 pairs: only 7 bytes match, and the low
+`target_linear` addresses hold RTLink directory content (`MP DISP.DAT`,
+`FALCON3`) or `FF` padding — while the high `s` segments hold file-derived
+code written by `put_bytes`. So **`entry_ea` is the registration address** and
+`target_linear` is a runtime location the IDB does not map as code.
+
+**Fix path (not yet executed — high consequence):**
+1. set `bitness = 0` on all `R*` segments;
+2. redefine items in them (`del_items` + re-analysis) so instructions re-decode
+   as 16-bit;
+3. re-derive the ~210 overlay functions' ranges (current ends are 32-bit
+   artifacts);
+4. re-run Step 6/7/8;
+5. expect `verify_rebuild` to report a large `CHANGED` set for overlay
+   functions — that needs an explicit allowlist decision, exactly like `SPLIT`
+   did in finding 42. Without it the gate will (correctly) fail.
+
+Impact: **this is the single highest-leverage defect found in the whole
+cleanup.** It explains, with one cause, why the overlay layer scored 0–56%
+coverage, why 204/210 overlay functions look orphaned, why a dozen entries
+carried impossible last-instructions, and why a signal as good as
+`overlay_entries.json` still produced a candidate list of garbage. The
+overlay layer cannot be trusted — and no overlay function can be registered or
+split — until bitness is fixed.
+
+---
+
 (append new findings below)

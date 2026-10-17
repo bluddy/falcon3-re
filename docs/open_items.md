@@ -4,6 +4,14 @@
 - ~15 cluster-B rows' exact fixup positions; 14 fixup *types* exist — +L only proven
   for the dominant far-pointer type (findings 20/21); exotic before-words (0xC08E…).
 - 10 unresolvable overlay thunk entries (their target bytes aren't code where mapped).
+- **⛔ BLOCKER (finding 52): every `R*` overlay segment has `bitness = 1`
+  (32-bit) in a real-mode 16-bit program.** Cause: `rebuild_overlay_segments.py:61`
+  calls `add_segm` and never sets bitness. Overlay disassembly, all ~210
+  `r*_e*` sizes/ends, the coverage numbers, finding 51's `ovl→ovl` edges and
+  finding 50's `r30_e77` reasoning are all downstream of it. **Fix first, then
+  do anything else with overlays:** set `bitness=0`, redefine items, re-derive
+  ranges, re-run steps 6/7/8 — expect a large `verify_rebuild` `CHANGED` set
+  needing an allowlist. Never register/split overlay functions before that.
 - **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from
   BOTH sources**, not "dynamic-only": all 28 static overlay→overlay edges are
   within one RTLink record, and dynamic reaches only 2/210 overlay functions
