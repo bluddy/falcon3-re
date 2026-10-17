@@ -2276,4 +2276,157 @@ exact-match, so the next divergent rebuild still fails.
 
 ---
 
+## 2026-10-17 55 — Where the 1,257 unresolved refs actually go, and the two
+things that keep Resident from reaching Thunk from Overlay
+Status: CONFIRMED
+
+Finding 54 left `edge_counts.static_unresolved = 1257` as "the real backlog".
+This session classified it instead of guessing. New tool:
+`tools/unresolved_dsts55.py` (re-runnable, host side only).
+
+### The bucket: 1,257 refs, 445 distinct destinations
+
+Every one has a registered SOURCE and an unregistered DESTINATION. By src
+region (R* = overlay, Res = resident): **1,130 from R\*, 127 from Res**.
+
+| dst category | refs | % |
+|---|---|---|
+| inside an R* overlay segment, but no function registered there | **611** | 49% |
+| inside the resident image, but no function registered there | **442** | 35% |
+| inside the .RTLink thunk table (`0x2BD9D..0x2C973`) | **204** | 16% |
+| below the image (`<0x10000`) / other | 0 | 0% |
+
+**So the "missing overlay edges" are not mostly cross-segment mysteries: 49%
+are simply overlay bytes with no function registered on them, and another 35%
+are resident bytes with no function on them.** The thunk table -- the bridge
+itself -- accounts for 16%.
+
+### The shift hypothesis, with a control
+
+For each of the 445 distinct dsts, test every candidate paragraph delta
+(`+/-0x1000`, `+/-0x10000`, `+/-0xE0B0`, `+/-0xE5E0`, `+/-0xE0B`, `+/-0xE5E`)
+and record the first delta whose result lands EXACTLY on a registered function
+start. Then repeat with a random base (seeded, same spread) as the control:
+
+| delta | real | CONTROL |
+|---|---|---|
+| **+0x10000** | **45** | **0** |
+| all other deltas combined | 6 | 2 |
+
+**`+0x10000` (= +0x1000 paragraphs, the image load paragraph) is signal; every
+other delta is noise.** At ref level, 441 of the 1,257 resolve at `+0x10000`
+(234 of them exact-at-start).
+
+Cross-checked from IDA instead of from bytes: `tools/farops_export55.py`
+exports all **3,478** direct `9A`/`EA` far operands inside registered
+functions; `tools/_join55.py` classifies them:
+
+| | n |
+|---|---|
+| destination already resolves | 2,327 (67%) |
+| destination dead, and `+0x10000` does **not** fix it | 683 |
+| destination dead, `+0x10000` fixes it -- **but rel is not in the record's fixup table at all** | **408** |
+| destination dead, `+0x10000` fixes it -- rel listed but **dropped by the `seg != w0` filter** | **36** |
+| destination dead, `+0x10000` fixes it -- listed AND kept, still not applied | 2 |
+| inside a function but outside every overlay record | 22 |
+
+**446 of 1,151 dead far-destinations are recoverable by adding the load
+paragraph, and 408 of those are simply absent from the fixup tables we apply.**
+433 of the 446 live in one record, `R05_1E10`. Root cause of the absence is
+**not yet pinned** (see Flags).
+
+### The concrete thunk at `0x2BD9D` (the question asked)
+
+Bytes: `e8 1d f2 | ea 12 00 37 2d | 01 00`. Two instructions:
+
+```
+0x2BD9D  call near ptr sub_2AFBD      CodeRefsFrom -> 0x2AFBD   fn=sub_2AFBD  OK
+0x2BDA0  jmp  far ptr 2D37:0012       CodeRefsFrom -> 0x2D382   fn=None      <-- NO FUNCTION
+```
+
+So the JMP FAR is **`EA 12 00 37 2D` = seg:off `2D37:0012`**, IDA linear
+**`0x2D382`**, and **IDA does NOT resolve it to a registered `r*_e*` function**
+-- `0x2D382` is inside `R01_1CF6` but has no function on it.
+
+And the `entry_ea` we *do* have for row 1 -- `overlay_entries.json` row 1,
+`entry_ea = 0x2D31A = r01_e01` -- **belongs to a different thunk slot.**
+
+### Found while checking that: `prep_overlay_entries.py` starts 53 entries late
+
+```
+file 0x1E99D .. 0x1F573   303 E8/EA entries   <- IDA 0x2BD9D .. 0x2C973  (patch_thunks #000..#302)
+file 0x1EBAF              = 0x1E99D + 53*10   = IDA 0x2BFAF = patch_thunks "Thunk #053"
+```
+
+`prep_overlay_entries.py`, `parse_thunks.py`, `solve_thunk_assignment.py` and
+`validate_record_bases.py` all hard-code `THUNK = 0x1EBAF` -- i.e. **530 bytes
+= 53 thunk slots into a 303-entry table.** Verified independently:
+`patch_thunks.log` labels `0x2BFAF` as `#053`, and `0x2BFAF - 0x1EBAF = 0xD400`
+which is exactly `0x10000 - hdrparas*16` (`hdr = 0x2C00`, from `MZ[8:10] = 704`).
+
+Consequences, measured (`tools/_close55.py`):
+
+| | |
+|---|---|
+| table slots | **303** |
+| slots with an `overlay_entries.json` row | **248** |
+| slots **MISSING** | **55** -- indices `0..52` (the offset) plus `95`, `99` |
+| of those 53 offset slots, JMP target has NO registered function | **46** |
+| missing slots whose target sits inside a placed record (registerable) | 43 (35 with no fn) |
+
+**53 thunk slots were never offered as registration candidates in finding 54,
+and 46 of their targets have no function.** Slot `#000` is the concrete case
+above: correct address `0x2D382`, never registered, because its entry row was
+never computed.
+
+### The second break: `export_callrefs` never walks most of the table
+
+`tools/export_callrefs.py` iterates `idautils.Functions()` and then `Heads()`
+inside each. A thunk slot that is **not** a registered function therefore never
+yields a ref -- so the JMP FAR half of `Resident -> Thunk -> Overlay` is never
+emitted at all:
+
+| | |
+|---|---|
+| thunk slots registered as functions | **49 / 303** |
+| slots whose JMP FAR (`slot+3`) produced a ref | **27** |
+| ... of those, JMP target registered | 8 |
+| ... of those, JMP target **NOT** registered | **19** |
+| **slots never traversed at all** | **276** |
+| refs INTO the thunk table | 228 (24 resolve, **204 do not**) |
+
+**The bridge is severed twice over**: 276/303 slots are invisible to the ref
+exporter, and of the 27 that are visible, 19 jump to unregistered targets.
+
+### Flags (not conclusions)
+
+- **`R05_1E10` fixup offsets do not line up with its own payload at delta 0.**
+  398/412 of its fixable-but-unlisted operand rels become listed after a
+  constant **+5440-byte** shift (vs ~29 expected by chance; next-best delta
+  scores 59). But the declared table run (`w5 = 3529`, all segs in-arena) and
+  the payload base both check out independently -- `file[data_file+0x1F0]` is
+  `57 56 1e`, exactly `sub_2E2F0`'s head. So the discrepancy is **unexplained**;
+  do not "fix" the base off this number alone.
+- `validate_fixup_semantics.py` drops pairs with `seg != w0`: **12,118 of
+  37,661** across all records, **2,319** of which point at a link-time
+  paragraph. For far operands alone the cost is only 36, so this is a real but
+  secondary loss.
+- `-0x10000` also resolves 431 refs, but **0** land exactly on a function start
+  (control 0) -- treat as mid-function coincidence until proven otherwise.
+
+Tools kept: `unresolved_dsts55.py`, `bridge55.py`, `farops_export55.py`,
+`_join55.py`, `_close55.py`. Evidence: `bridge55.log`, `farops_export55.log`,
+`callgraph_refs` (all regenerable).
+
+Impact: **the 1,257 are now explained -- and 84% of them are ordinary
+"no function registered here", not addressing bugs.** The bridge has two
+independent, mechanical defects: (1) `overlay_entries.json` is computed from
+`0x1EBAF` instead of `0x1E99D`, silently skipping 53 thunk slots, and (2)
+`export_callrefs` only sees thunk slots that happen to be registered
+functions (49/303), so 276 JMP FARs are never exported. Both are cheap to fix
+and both are prerequisites before any further registration pass -- fixing only
+one still leaves the resident graph unable to reach the overlay graph.
+
+---
+
 (append new findings below)
