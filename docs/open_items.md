@@ -23,15 +23,26 @@
    split 2x10B, slot #053 detached from `start` with its xref kept).
    **Remaining:** (a) **346 distinct destinations stay unregistered and NONE
    passes the prologue/terminator guards** (274 have no 16-bit prologue, 106
-   no reachable terminator) -- the residual `static_unresolved = 702` is now a
+   no reachable terminator) -- the residual `static_unresolved` (702 after f56, **957 after f57**) is now a
    *diagnosis* problem, not a registration one; (b) overlay orphans only
    232 -> 228, because the pre-existing orphans are functions nothing CALLS;
    (c) slot #302 (`0x2C969`) is permanently un-registerable -- it straddles
    the loader segment boundary `seg021 0x2AA30..0x2C970 | seg022 0x2C970`
-   and has 0 refs either side; (d) **staged, not run:** the `+0x1540` fixup
-   correction (`abs = (seg-w0)*16 + off`, verified 100% word-ok per anchor)
-   would add 12,118 fixups -> mass CHANGED -> needs a finding-53-style
-   exact-match manifest and its own backup/gate cycle.
+   (d) **DONE — finding 57 applied the correction** with the exact-match
+   manifest it needed: 11,475 NEW words (25,222 already correct), 0
+   mismatch, 306 spans unchanged, **59 changed functions pinned by
+   (key, ea, size) + before/after sha256** in
+   `registry/subblock_fixups_expected.json` (a fixup at `0x3FD81`
+   straddles into `sub_3FD82`, so attribution is by word overlap).
+   **Now:** (e) `static_unresolved` **702 -> 957** because 449 retargeted
+   destinations are honest *data* — 233 distinct addresses (hottest
+   `0x28CAB` x36) that used to be *interior* hits — plus 5 new sites;
+   register or classify those, or accept them as tables; (f) `sub_2E2F0`
+   now holds **1,053 interior refs across 13 of its sub-block anchors,
+   0 at a function start, 0 at `0x2F640`** — split it on anchor lines to
+   turn those into real edges; (g) 138 functions had zero indegree at
+   HEAD and now have an edge (134 resident, 4 overlay), while the 224
+   remaining overlay orphans are still never called by anything static.
   ⚠ `0x2CF6A` is a **junk function registered on RTLink directory text**
   (`"MP\0DISPLAY.DAT"`) — a candidate for the removal policy.
 - **Cross-record overlay edges do not exist yet (finding 51) — measured 0 from

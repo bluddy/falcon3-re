@@ -17,6 +17,7 @@ Exit 0 = faithful (no LOST/CHANGED); exit 1 = divergence (do NOT commit).
 Usage:  venv\\Scripts\\python tools\\verify_rebuild.py
         (run after: ida steps -> extract_ida_bytes.py)
 """
+import hashlib
 import json
 import subprocess
 import sys
@@ -28,6 +29,16 @@ FB = ROOT / "analysis" / "ida_falconcd" / "function_bytes.json"
 # (key, ea, old_size, new_size) so a deliberate bulk re-derivation cannot
 # weaken the gate for anything not listed (finding 53).
 EXPECTED = ROOT / "registry" / "bitness_fix_expected.json"
+# Byte-patch manifest (finding 57): sub-block fixup rewrites change words but
+# must NOT change ea/size.  Allowlisted only when the before AND after sha256
+# both match, so a rebuild that patches the wrong word still fails here.
+SUBBLOCK = ROOT / "registry" / "subblock_fixups_expected.json"
+
+
+def _sha(hexstr):
+    if not hexstr:
+        return None
+    return hashlib.sha256(bytes.fromhex(hexstr)).hexdigest()
 
 
 def load_expected():
@@ -36,6 +47,15 @@ def load_expected():
     m = json.loads(EXPECTED.read_text())
     return {(e["key"], e["ea"], e["old_size"], e["new_size"])
             for e in m.get("overlay_recode", [])}
+
+
+def load_patches():
+    """{(key, ea, size): (old_sha256, new_sha256)} for the allowlisted byte patches."""
+    if not SUBBLOCK.exists():
+        return {}
+    m = json.loads(SUBBLOCK.read_text())
+    return {(e["key"], e["ea"], e["size"]): (e["old_sha256"], e["new_sha256"])
+            for e in m.get("patches", [])}
 
 
 def head_json():
@@ -52,11 +72,21 @@ def main():
     head = head_json()
     now = json.loads(FB.read_text())
     expected = load_expected()
+    patches = load_patches()
 
     def is_expected_recode(k, a, b):
         """Allowlisted by the exact old->new size recorded in the manifest."""
         return (a.get("ea") == b.get("ea")
                 and (k, a.get("ea"), a.get("size"), b.get("size")) in expected)
+
+    def is_expected_patch(k, a, b):
+        """Exact-match byte patch: same (key, ea, size), before+after sha256."""
+        if a.get("ea") != b.get("ea") or a.get("size") != b.get("size"):
+            return False
+        want = patches.get((k, a.get("ea"), a.get("size")))
+        if not want:
+            return False
+        return (_sha(a.get("bytes")), _sha(b.get("bytes"))) == want
 
     def tile_count(ea, end):
         """How many current functions exactly tile [ea, end)? 0 if not a clean tile."""
@@ -74,7 +104,7 @@ def main():
 
     lost = sorted(set(head) - set(now))
     added = sorted(set(now) - set(head))
-    changed, renamed, splits, recodes = [], [], [], []
+    changed, renamed, splits, recodes, bytepatches = [], [], [], [], []
     for k in set(head) & set(now):
         a, b = head[k], now[k]
         # allowlisted bulk re-derivation (finding 53) -- checked first, and
@@ -92,6 +122,11 @@ def main():
             changed.append((k, "ea %s->%s" % (a.get("ea"), b.get("ea"))))
             continue
         if a.get("bytes") != b.get("bytes"):
+            # exact-match word patch (finding 57): boundaries identical, both
+            # hashes exactly as recorded -- counts as intentional, not drift
+            if is_expected_patch(k, a, b):
+                bytepatches.append((k, "bytes patched in place (sub-block fixups)"))
+                continue
             # shrank + the old range is now tiled by new fns = intended split
             if b.get("size", 0) < a.get("size", 0):
                 n = tile_count(a["ea"], a["ea"] + a["size"])
@@ -112,7 +147,15 @@ def main():
     print("  ADDED   : %d" % len(added))
     print("  SPLIT   : %d  (intentional: old fn subdivided, full coverage)" % len(splits))
     print("  RECODE  : %d  (intentional: bitness fix, allowlisted in manifest)" % len(recodes))
+    print("  PATCH   : %d  (intentional: sub-block fixup words, exact sha match)"
+          % len(bytepatches))
     print("  CHANGED : %d" % len(changed))
+    if bytepatches:
+        print("\n-- PATCH (allowlisted byte patch; verify the manifest is committed) --")
+        for k, why in bytepatches[:10]:
+            print("   %-16s %s" % (k, why))
+        if len(bytepatches) > 10:
+            print("   ... +%d" % (len(bytepatches) - 10))
     if recodes:
         print("\n-- RECODE (allowlisted bitness fix; verify the manifest is committed) --")
         for k, why in recodes[:10]:
