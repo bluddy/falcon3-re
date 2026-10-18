@@ -1,0 +1,117 @@
+import sys, json, re, io
+sys.stdout.reconfigure(encoding='utf-8')
+# Batch 2: Slice A (15 dyn>0) + Slice B (15 dyn==0 in>=5)
+analysis = {
+ # ===== SLICE A (dyn>0, top 15) =====
+ "sub_25E72": ("dispatch_22088_invoke_4arg",
+   "void far; loads bx,di,cx,ax from [bp+arg0..6]; call dword ptr cs:22088; retf",
+   "26B, 1172 dyn (top of dyn>0). Far-call trampoline with 4 register args via cs:22088. 0 static callers (indirect). conf: med", "med"),
+ "sub_25E52": ("dispatch_22090_invoke_4arg",
+   "void far; loads di,bx,cx,ax from [bp+arg0..6]; call dword ptr cs:22090; retf",
+   "26B, 1157 dyn. Same shape as sub_25E72 but via cs:22090 (arg order di-first). conf: med", "med"),
+ "sub_255B2": ("dispatch_22094_stub",
+   "void far; call dword ptr cs:22094; retf",
+   "6B, 1144 dyn, 0 static callers. Far-call trampoline via cs:22094. conf: med", "med"),
+ "sub_24DCA": ("dispatch_22144_via_834a",
+   "void far; ES=834Ah; BP=cs:24BB8; call dword ptr cs:22144; retf (ES set to seg 834A + BP from state)",
+   "18B, 1105 dyn, 0 static. Sets ES=0x834A + BP=cs:24BB8 then far-dispatches via cs:22144. conf: med", "med"),
+ "sub_255B8": ("dispatch_2208c_stub",
+   "void far; call dword ptr cs:2208C; retf",
+   "6B, 1061 dyn, 0 static. Far-call trampoline via cs:2208C. conf: med", "med"),
+ "sub_24F9D": ("xlat_mask_or_setbit",
+   "void far; AL=index-1; mask bit (AL&7) + byte位 (AH>>3); XLAT from cs:5758 mask table; OR into [SI+AH]; preserves bx",
+   "28B, 860 dyn, 1 caller. Sets a bit in a bitfield at [SI] using a mask byte from table cs:5758 (OR-merge). conf: med", "med"),
+ "sub_25F60": ("state_byte_25488_get",
+   "AL = cs:25488; (span truncated, DATA class - body is mov al,[25488])",
+   "4B span (body 4B, DATA), 777 dyn, 4 callers. Getter for state byte cs:25488 (used by dispatch_25488 family). conf: high", "high"),
+ "sub_25608": ("dispatch_22134_stub",
+   "void far; call dword ptr cs:22134; retf",
+   "104B span (body 5B), 688 dyn, 3 callers. Far-call trampoline via cs:22134. conf: med", "med"),
+ "sub_25F43": ("dispatch_220e4_invoke_farptr",
+   "void far; lds si,[bp+4]; AL=cs:25488; call dword ptr cs:220E4; retf",
+   "29B, 636 dyn, 0 static. Loads far-ptr arg + state byte cs:25488, dispatch via cs:220E4. conf: med", "med"),
+ "sub_215BC": ("state_byte_1f743_set",
+   "void far; cs:1F743 = AL; retf",
+   "5B, 542 dyn, 2 callers. Setter for state byte cs:1F743. conf: high", "high"),
+ "sub_2556C": ("state_word_25499_set_clamp",
+   "void far; cs:25499=AX; if AX==0 -> cs:2549B=-1, AX=0x2FF; if AX>1 -> fallthrough; else retf. (mode setter with clamp)",
+   "70B, 541 dyn, 2 callers. Sets cs:25499 with a 0/1/>1 mode clamp (0 -> 2549B=0xFFFF, AL=0xFF). conf: med", "med"),
+ "sub_254A2": ("state_byte_2549e_set",
+   "void far; cs:2549E = AL; retf",
+   "5B, 540 dyn, 2 callers. Setter for state byte cs:2549E. conf: high", "high"),
+ "sub_25741": ("state_byte_25489_from_25488",
+   "void far; cs:25489 = cs:25488 (copy 25488->25489); retf",
+   "9B, 498 dyn, 3 callers. Copies state byte 25488 to 25489 (shadow/backup). conf: high", "high"),
+ "sub_25753": ("state_byte_25488_from_25489",
+   "void far; cs:25488 = cs:25489 (copy 25489->25488, restore); retf",
+   "9B, 498 dyn, 3 callers. Restores state byte 25488 from shadow 25489 (inverse of sub_25741). conf: high", "high"),
+ "sub_2463B": ("fixed_vec3_transform_7e900",
+   "void far; DS=7B0Eh; 3-component dot: for each row of unk_7E900/02/04 (x) + 06/08/0A (y) + 0C/0E/10 (z), imul+add+adc, shl1 with 0x8001/0x7FFF saturate; stores dx to es:[di..di+4]",
+   "172B, 498 dyn, 2 callers. Fixed-point 3x3 matrix transform of vector at [si] -> [di] with signed saturation. conf: high", "high"),
+ # ===== SLICE B (dyn==0, in>=5, top 15) =====
+ "r30_e66": ("r30_state_init_all",
+   "void far (C frame, enter 22h); resets ~12 state bytes/words across segs 7894h/602Eh/6DE8h to init values (0/1/0xFFFF/0x34), calls far unk_43270, stores DX:AX pairs; 39 callers (thunk/overlay entry)",
+   "205B, in=39 (highest fan-in), R30_569F overlay entry. The overlay's global state initializer. conf: med", "med"),
+ "sub_15E42": ("game_state_setup_multi",
+   "void far; large state-setup: sets cs:11C8C/16181/162E4/16184/162E7 far-ptr words + ds:5ACC byte, branches on dx (-3/-5/-1); many mov-immediates; 33 callers",
+   "542B, in=33. Multi-path state/pointer initialization (scene/config setup). Span has undecodable gaps (mid-data). conf: low", "low"),
+ "sub_30C33": ("farobj_table_snapshot",
+   "void far; NEAR fn (retn): DS=500Ch; 4 loops lds [bx] far-ptr table (bx=0x38/0x4E8/...), copy fields [+26,+27,+22,+0..] via stosb/stosw/movsw to ES:DI; bx+=4 loop",
+   "133B, in=33, retn (near). Snapshots 4 far-object table groups into a flat buffer (fields 26/27/22 + payload). conf: med", "med"),
+ "sub_41B32": ("r12_farptr_load_thunk",
+   "void far; DS=...; (span mostly undecodable - mid-instruction) push ds/...; 19 callers incl r12_e17",
+   "28B, in=19, DATA/undecodable span. Far-ptr load thunk for R12 overlay; body not cleanly decodable in span. conf: low", "low"),
+ "sub_17369": ("sbi_command_wait",
+   "void far; SBI (sound) port 331h command: wait-ready (in 331h, bit6), out cmd to 331h, wait (bit7), read 330h status, poll until 0xFE; 15 callers",
+   "59B, in=15. Sound-Blaster-interface command write with ready/ACK handshake on ports 330h/331h. conf: high", "high"),
+ "sub_4FD38": ("r08_farptr_load_thunk",
+   "void far; (span undecodable mid-instruction) push ds/... ; 14 callers incl r08_e08/r08_e30",
+   "16B span, in=14, DATA class (undecodable). Far-ptr load thunk for R08 overlay. conf: low", "low"),
+ "sub_28E17": ("fixed_scale_clamp_or40",
+   "NEAR fn; BX=cs:1F6DA; AX=CX*BX idiv BP; jle skip -> BX|=0x40; AX=BX; retn. (scale + flag-or-0x40)",
+   "57B, in=13, retn (near). Scales CX by cs:1F6DA / BP, ORs 0x40 on non-positive; returns AX. conf: med", "med"),
+ "sub_6F6C0": ("r69_farptr_dispatch_entry",
+   "void far (C frame enter 2): overlay entry, many far calls (9A) + mov es,seg setup; 13 callers (thunk slots sub_2C1xx/2C2xx)",
+   "583B, in=13, R69_606E overlay C entry; span has undecodable gaps (mid-data). conf: low", "low"),
+ "sub_17340": ("sbi_data_write",
+   "void far; SBI port 331h: wait-ready (in 331h bit6), out [bp+arg0] to 330h; 12 callers",
+   "24B, in=12. Sound-Blaster-interface data-byte write (port 330h after 331h ready). conf: high", "high"),
+ "sub_249D8": ("trig_table_lookup",
+   "NEAR fn; ES=8364h trig table; AX&=0x3FFF index, bit12/13 select quadrant; table lookup -> [bx]=si,[bx+2]=di (sin/cos pair); 12 callers (incl hot sub_23D2B 108K)",
+   "173B, in=12, retn. Trig table lookup: index -> sin/cos pair at [bx]. Quadrant-fold via bits 12/13. conf: high", "high"),
+ "sub_4DA46": ("r39_farptr_call_gate",
+   "void far; test cs:2E32A bit4 -> (span undecodable) ; 12 callers all r39_e1xx (R39 overlay)",
+   "65B, in=12, gated far-call; span undecodable. All callers are R39 overlay entries. conf: low", "low"),
+ "sub_2E20A": ("sprite_clip_bounds_check",
+   "void far; ES=DI; DI=BL; AX=9; if BH>=0xF or (BL==0 && BH<=4) early-ret; clip/bounds test; 10 callers",
+   "29B, in=10. Sprite/object bounds clip test (BH/BL = x/y?), early-return when in-bounds. conf: med", "med"),
+ "sub_248D1": ("fixed_vec3_transform_es",
+   "NEAR fn; lodsw x3 (vector from [SI]), imul es:[bx+0/6/C] (row0) + [bx+2/8/E] (row1) + [bx+4/A/10] (row2), saturate 0x8001/0x7FFF, store dx to es:[di..di+4]; 9 callers",
+   "146B, in=9, retn. Fixed-point 3x3 matrix transform (es:[bx] matrix, [si] vec -> [di]). Near twin of fixed_vec3_transform_7e900. conf: high", "high"),
+ "sub_3772D": ("sprite_project_screen_y",
+   "NEAR fn; reads [si+8/0xA] screen coords, scale/clamp to 0x1C0..0x1D8, [si+26/28] >>6, [si+46] imul cs:2E137, [si+2E] scale, /0x131; +[si+1E] offset; 9 callers",
+   "162B, in=9, retn. Projects an object's world/screen position to a clamped screen-Y (scale + offset). conf: med", "med"),
+ "r05_e18": ("r05_dgroup_save_reg",
+   "void far; DS=632Ah; [0]=old DS, [2]=SI, [4]=BX (save 3 regs to DGROUP seg 632A); retf; 9 callers",
+   "21B, in=9, R05_1E10 overlay entry. Saves DS/SI/BX into a DGROUP scratch (632A:0). conf: high", "high"),
+}
+# validate
+names=[v[0] for v in analysis.values()]
+assert len(analysis)==30, len(analysis)
+assert len(set(names))==30, "dups: %s"%[n for n in names if names.count(n)>1]
+bad=[n for n in names if not re.match(r'^[a-z_][a-z0-9_]*$',n)]
+assert not bad, bad
+txt=io.open('registry/naming.yaml',encoding='utf-8').read()
+existing=set(re.findall(r'name:\s*([a-z_][a-z0-9_]*)',txt))
+coll=[n for n in names if n in existing]
+print("collisions with existing ledger:", coll)
+# also check batch1 names
+b1=json.load(open('analysis/ida_falconcd/batch0_names.json',encoding='utf-8'))
+b1names={v[0] for v in b1.values()}
+coll2=[n for n in names if n in b1names]
+print("collisions with batch1:", coll2)
+print("total:", len(names), "unique:", len(set(names))==30)
+json.dump(analysis, open('analysis/ida_falconcd/batch2_names.json','w'), indent=1)
+print("wrote batch2_names.json")
+for k,(n,s,note,c) in sorted(analysis.items(), key=lambda x:x[1][0]):
+    print("  %-34s conf=%s" % (n,c))

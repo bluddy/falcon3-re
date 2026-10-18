@@ -298,3 +298,17 @@
 - **Follow-ups:** reclassify the 92 low-confidence DATA fns (epilogue
   window + `nullsub_19` truncation of `sub_22C91`); resolve the 24
   trap-only thunk far-targets (point at `word_*`/`unk_*` data).
+
+- **Level-0 value cliff mapped + Batch 2 done (finding 67):** 30 named,
+  `named` **295 -> 325**, Level-0 queue **688 -> 658**. Buckets: dyn>=10
+  = 99 fns/19,944 calls (cliff after), dyn0,in>=5 = 45, **orphans = 168
+  excluded** (effective nameable L0 = 520). All 4 gates green (check 327,
+  verify_rebuild faithful, verify_idb INTACT, read-back 325/325+2/2).
+- **Next (Batch 3):** the remaining **84 `dyn>=10` Level-0 leaves**
+  (8,227 calls) are the last high-value dynamic band; then the static
+  fan-in hubs (`dyn0,in>=5` now 30 left). The 168 orphans stay excluded
+  (0 callers/0 callees -- not reachable bottom-up).
+- **Follow-ups:** 4 low-conf R-overlay farptr thunks (r12/r08/r39/r69)
+  have undecodable mid-instruction spans (class-c) -- reclassify when the
+  epilogue window / span repair lands; 92 low-conf DATA fns still queued;
+  24 trap-only thunk far-targets point at word_*/unk_* data.

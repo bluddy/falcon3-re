@@ -1524,6 +1524,157 @@ symbols:
     sig: "IRET handler; gates on cs:2224B==1 (skip inc); incs cs:22220; incs cs:22222, every 4th tick sends EOI (out 20h,20h) else just iret"
     notes: "40B, 229K dyn. Ends in `iret` = interrupt service routine. Reads/writes tick counters cs:22220/22222, EOI to PIC port 20h. Indirect (vector/callback) target. conf: high"
 
+  - ida: sub_25E72
+    name: dispatch_22088_invoke_4arg
+    kind: function
+    sig: "void far; loads bx,di,cx,ax from [bp+arg0..6]; call dword ptr cs:22088; retf"
+    notes: "26B, 1172 dyn (top of dyn>0). Far-call trampoline with 4 register args via cs:22088. 0 static callers (indirect). conf: med"
+  - ida: sub_255B8
+    name: dispatch_2208c_stub
+    kind: function
+    sig: "void far; call dword ptr cs:2208C; retf"
+    notes: "6B, 1061 dyn, 0 static. Far-call trampoline via cs:2208C. conf: med"
+  - ida: sub_25E52
+    name: dispatch_22090_invoke_4arg
+    kind: function
+    sig: "void far; loads di,bx,cx,ax from [bp+arg0..6]; call dword ptr cs:22090; retf"
+    notes: "26B, 1157 dyn. Same shape as sub_25E72 but via cs:22090 (arg order di-first). conf: med"
+  - ida: sub_255B2
+    name: dispatch_22094_stub
+    kind: function
+    sig: "void far; call dword ptr cs:22094; retf"
+    notes: "6B, 1144 dyn, 0 static callers. Far-call trampoline via cs:22094. conf: med"
+  - ida: sub_25F43
+    name: dispatch_220e4_invoke_farptr
+    kind: function
+    sig: "void far; lds si,[bp+4]; AL=cs:25488; call dword ptr cs:220E4; retf"
+    notes: "29B, 636 dyn, 0 static. Loads far-ptr arg + state byte cs:25488, dispatch via cs:220E4. conf: med"
+  - ida: sub_25608
+    name: dispatch_22134_stub
+    kind: function
+    sig: "void far; call dword ptr cs:22134; retf"
+    notes: "104B span (body 5B), 688 dyn, 3 callers. Far-call trampoline via cs:22134. conf: med"
+  - ida: sub_24DCA
+    name: dispatch_22144_via_834a
+    kind: function
+    sig: "void far; ES=834Ah; BP=cs:24BB8; call dword ptr cs:22144; retf (ES set to seg 834A + BP from state)"
+    notes: "18B, 1105 dyn, 0 static. Sets ES=0x834A + BP=cs:24BB8 then far-dispatches via cs:22144. conf: med"
+  - ida: sub_30C33
+    name: farobj_table_snapshot
+    kind: function
+    sig: "void far; NEAR fn (retn): DS=500Ch; 4 loops lds [bx] far-ptr table (bx=0x38/0x4E8/...), copy fields [+26,+27,+22,+0..] via stosb/stosw/movsw to ES:DI; bx+=4 loop"
+    notes: "133B, in=33, retn (near). Snapshots 4 far-object table groups into a flat buffer (fields 26/27/22 + payload). conf: med"
+  - ida: sub_28E17
+    name: fixed_scale_clamp_or40
+    kind: function
+    sig: "NEAR fn; BX=cs:1F6DA; AX=CX*BX idiv BP; jle skip -> BX|=0x40; AX=BX; retn. (scale + flag-or-0x40)"
+    notes: "57B, in=13, retn (near). Scales CX by cs:1F6DA / BP, ORs 0x40 on non-positive; returns AX. conf: med"
+  - ida: sub_2463B
+    name: fixed_vec3_transform_7e900
+    kind: function
+    sig: "void far; DS=7B0Eh; 3-component dot: for each row of unk_7E900/02/04 (x) + 06/08/0A (y) + 0C/0E/10 (z), imul+add+adc, shl1 with 0x8001/0x7FFF saturate; stores dx to es:[di..di+4]"
+    notes: "172B, 498 dyn, 2 callers. Fixed-point 3x3 matrix transform of vector at [si] -> [di] with signed saturation. conf: high"
+  - ida: sub_248D1
+    name: fixed_vec3_transform_es
+    kind: function
+    sig: "NEAR fn; lodsw x3 (vector from [SI]), imul es:[bx+0/6/C] (row0) + [bx+2/8/E] (row1) + [bx+4/A/10] (row2), saturate 0x8001/0x7FFF, store dx to es:[di..di+4]; 9 callers"
+    notes: "146B, in=9, retn. Fixed-point 3x3 matrix transform (es:[bx] matrix, [si] vec -> [di]). Near twin of fixed_vec3_transform_7e900. conf: high"
+  - ida: sub_15E42
+    name: game_state_setup_multi
+    kind: function
+    sig: "void far; large state-setup: sets cs:11C8C/16181/162E4/16184/162E7 far-ptr words + ds:5ACC byte, branches on dx (-3/-5/-1); many mov-immediates; 33 callers"
+    notes: "542B, in=33. Multi-path state/pointer initialization (scene/config setup). Span has undecodable gaps (mid-data). conf: low"
+  - ida: r05_e18
+    name: r05_dgroup_save_reg
+    kind: function
+    sig: "void far; DS=632Ah; [0]=old DS, [2]=SI, [4]=BX (save 3 regs to DGROUP seg 632A); retf; 9 callers"
+    notes: "21B, in=9, R05_1E10 overlay entry. Saves DS/SI/BX into a DGROUP scratch (632A:0). conf: high"
+  - ida: sub_4FD38
+    name: r08_farptr_load_thunk
+    kind: function
+    sig: "void far; (span undecodable mid-instruction) push ds/... ; 14 callers incl r08_e08/r08_e30"
+    notes: "16B span, in=14, DATA class (undecodable). Far-ptr load thunk for R08 overlay. conf: low"
+  - ida: sub_41B32
+    name: r12_farptr_load_thunk
+    kind: function
+    sig: "void far; DS=...; (span mostly undecodable - mid-instruction) push ds/...; 19 callers incl r12_e17"
+    notes: "28B, in=19, DATA/undecodable span. Far-ptr load thunk for R12 overlay; body not cleanly decodable in span. conf: low"
+  - ida: r30_e66
+    name: r30_state_init_all
+    kind: function
+    sig: "void far (C frame, enter 22h); resets ~12 state bytes/words across segs 7894h/602Eh/6DE8h to init values (0/1/0xFFFF/0x34), calls far unk_43270, stores DX:AX pairs; 39 callers (thunk/overlay entry)"
+    notes: "205B, in=39 (highest fan-in), R30_569F overlay entry. The overlay's global state initializer. conf: med"
+  - ida: sub_4DA46
+    name: r39_farptr_call_gate
+    kind: function
+    sig: "void far; test cs:2E32A bit4 -> (span undecodable) ; 12 callers all r39_e1xx (R39 overlay)"
+    notes: "65B, in=12, gated far-call; span undecodable. All callers are R39 overlay entries. conf: low"
+  - ida: sub_6F6C0
+    name: r69_farptr_dispatch_entry
+    kind: function
+    sig: "void far (C frame enter 2): overlay entry, many far calls (9A) + mov es,seg setup; 13 callers (thunk slots sub_2C1xx/2C2xx)"
+    notes: "583B, in=13, R69_606E overlay C entry; span has undecodable gaps (mid-data). conf: low"
+  - ida: sub_17369
+    name: sbi_command_wait
+    kind: function
+    sig: "void far; SBI (sound) port 331h command: wait-ready (in 331h, bit6), out cmd to 331h, wait (bit7), read 330h status, poll until 0xFE; 15 callers"
+    notes: "59B, in=15. Sound-Blaster-interface command write with ready/ACK handshake on ports 330h/331h. conf: high"
+  - ida: sub_17340
+    name: sbi_data_write
+    kind: function
+    sig: "void far; SBI port 331h: wait-ready (in 331h bit6), out [bp+arg0] to 330h; 12 callers"
+    notes: "24B, in=12. Sound-Blaster-interface data-byte write (port 330h after 331h ready). conf: high"
+  - ida: sub_2E20A
+    name: sprite_clip_bounds_check
+    kind: function
+    sig: "void far; ES=DI; DI=BL; AX=9; if BH>=0xF or (BL==0 && BH<=4) early-ret; clip/bounds test; 10 callers"
+    notes: "29B, in=10. Sprite/object bounds clip test (BH/BL = x/y?), early-return when in-bounds. conf: med"
+  - ida: sub_3772D
+    name: sprite_project_screen_y
+    kind: function
+    sig: "NEAR fn; reads [si+8/0xA] screen coords, scale/clamp to 0x1C0..0x1D8, [si+26/28] >>6, [si+46] imul cs:2E137, [si+2E] scale, /0x131; +[si+1E] offset; 9 callers"
+    notes: "162B, in=9, retn. Projects an object's world/screen position to a clamped screen-Y (scale + offset). conf: med"
+  - ida: sub_215BC
+    name: state_byte_1f743_set
+    kind: function
+    sig: "void far; cs:1F743 = AL; retf"
+    notes: "5B, 542 dyn, 2 callers. Setter for state byte cs:1F743. conf: high"
+  - ida: sub_25F60
+    name: state_byte_25488_get
+    kind: function
+    sig: "AL = cs:25488; (span truncated, DATA class - body is mov al,[25488])"
+    notes: "4B span (body 4B, DATA), 777 dyn, 4 callers. Getter for state byte cs:25488 (used by dispatch_25488 family). conf: high"
+  - ida: sub_25753
+    name: state_byte_25488_shadow_restore
+    kind: function
+    sig: "void far; cs:25488 = cs:25489 (copy 25489->25488, restore); retf"
+    notes: "9B, 498 dyn, 3 callers. Restores state byte 25488 from shadow 25489 (inverse of sub_25741). conf: high"
+  - ida: sub_25741
+    name: state_byte_25489_shadow_save
+    kind: function
+    sig: "void far; cs:25489 = cs:25488 (copy 25488->25489); retf"
+    notes: "9B, 498 dyn, 3 callers. Copies state byte 25488 to 25489 (shadow/backup). conf: high"
+  - ida: sub_254A2
+    name: state_byte_2549e_set
+    kind: function
+    sig: "void far; cs:2549E = AL; retf"
+    notes: "5B, 540 dyn, 2 callers. Setter for state byte cs:2549E. conf: high"
+  - ida: sub_2556C
+    name: state_word_25499_set_clamp
+    kind: function
+    sig: "void far; cs:25499=AX; if AX==0 -> cs:2549B=-1, AX=0x2FF; if AX>1 -> fallthrough; else retf. (mode setter with clamp)"
+    notes: "70B, 541 dyn, 2 callers. Sets cs:25499 with a 0/1/>1 mode clamp (0 -> 2549B=0xFFFF, AL=0xFF). conf: med"
+  - ida: sub_249D8
+    name: trig_table_lookup
+    kind: function
+    sig: "NEAR fn; ES=8364h trig table; AX&=0x3FFF index, bit12/13 select quadrant; table lookup -> [bx]=si,[bx+2]=di (sin/cos pair); 12 callers (incl hot sub_23D2B 108K)"
+    notes: "173B, in=12, retn. Trig table lookup: index -> sin/cos pair at [bx]. Quadrant-fold via bits 12/13. conf: high"
+  - ida: sub_24F9D
+    name: xlat_mask_or_setbit
+    kind: function
+    sig: "void far; AL=index-1; mask bit (AL&7) + byte bit-index (AH>>3); XLAT from cs:5758 mask table; OR into [SI+AH]; preserves bx"
+    notes: "28B, 860 dyn, 1 caller. Sets a bit in a bitfield at [SI] using a mask byte from table cs:5758 (OR-merge). conf: med"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table

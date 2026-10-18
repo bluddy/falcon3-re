@@ -3618,4 +3618,100 @@ reach). Next slice (ranks 31-50) is the tail of the dyn>0 band: `sub_103C6`
 
 ---
 
+## 2026-10-18 67 — The Level-0 Value Cliff + Global Batch 2 (30 named
+across dyn & static fan-in), `named` 295 -> 325, queue 688 -> 658
+
+Finding 66 left a 688-entry Level-0 queue with a sharp inflection: Rank #30
+had 15,191 dynamic calls but Rank #31 drops to 162, while `r30_e66` sits at
+`dyn==0` with `in_degree=39`. This session first **bucketed the queue to locate
+the value cliff**, then ran **Batch 2 across both the dynamic and static
+high-value buckets**.
+
+### 1. The Value Cliff (688 Level-0 leaves bucketed)
+
+| bucket | count | metric |
+|---|---|---|
+| **dyn >= 10** | **99** | 19,944 calls |
+| 1 <= dyn < 10 | 31 | 176 calls |
+| **dyn==0, in>=5 (high static fan-in)** | **45** | 450 in_edges |
+| dyn==0, 2<=in<=4 | 142 | 365 in_edges |
+| dyn==0, in==1 (single caller) | 203 | 203 in_edges |
+| **dyn==0, in==0 (ORPHANS)** | **168** | 0 (excluded) |
+
+**The cliff:** the top **99** `dyn>=10` functions capture **19,944** of the
+~20,120 total dyn calls in Level-0 (top-15 alone = 11,717), whereas the entire
+`1<=dyn<10` band (31 fns) yields only **176**. So after the 99 `dyn>=10` leaves,
+dynamic value collapses ~100x. Cumulative: top-30 = 16,391; top-50 = 18,474;
+top-100 = 19,953 (the last 30 dyn>0 fns add <170).
+
+**168 orphans** (`dyn==0 AND in==0`) are **disconnected** — 0 callers and 0
+callees — and must be **excluded from bottom-up naming** (they are not
+reachable in the graph; class mix: ASM 106, C 26, LEAF 21, DATA 15). The
+**effective nameable Level-0 queue is 688 − 168 = 520**.
+
+**45 high static fan-in leaves** (`in>=5`) split **27 overlay + 18 resident** —
+these are the static hubs (R05_1E10 / carved overlay leaves) the trace never
+exercised.
+
+### 2. Batch 2 (30 = Slice A 15 dyn>0 + Slice B 15 dyn==0 in>=5)
+
+Rather than grinding through 130 low-dyn leaves first, Batch 2 took the two
+highest-value buckets. Disassembled via `dump_batch2.py` ->
+`batch2_disasm.txt`/`batch2_context.json`.
+
+**Slice A (top 15 remaining dyn>0)** — mostly the `dispatch_220xx` gateway
+family + hot state setters:
+`dispatch_22088_invoke_4arg` (1,172), `dispatch_22090_invoke_4arg` (1,157),
+`dispatch_22094_stub` (1,144), `dispatch_22144_via_834a` (1,105),
+`dispatch_2208c_stub` (1,061), `xlat_mask_or_setbit` (860 — XLAT mask-table
+bit-set), `state_byte_25488_get` (777), `dispatch_22134_stub` (688),
+`dispatch_220e4_invoke_farptr` (636), `state_byte_1f743_set` (542),
+`state_word_25499_set_clamp` (541), `state_byte_2549e_set` (540),
+`state_byte_25489_shadow_save` (498), `state_byte_25488_shadow_restore` (498),
+`fixed_vec3_transform_7e900` (498 — 3x3 fixed matrix transform with
+saturated `0x8001/0x7FFF` clamp).
+
+**Slice B (top 15 dyn==0, in>=5)** — the static hubs the trace missed:
+`r30_state_init_all` (**in=39**, R30 overlay global init), `game_state_setup_multi`
+(in=33), `farobj_table_snapshot` (in=33, near `retn`, snapshots 4 far-object
+table groups), `r12_farptr_load_thunk` (in=19), `sbi_command_wait` (in=15 —
+Sound-Blaster port 330h/331h handshake), `r08_farptr_load_thunk` (in=14),
+`fixed_scale_clamp_or40` (in=13), `r69_farptr_dispatch_entry` (in=13),
+`sbi_data_write` (in=12), `trig_table_lookup` (in=12 — ES=8364h trig table,
+quadrant-fold via bits 12/13 -> sin/cos pair; hot caller `sub_23D2B` 108K),
+`r39_farptr_call_gate` (in=12), `sprite_clip_bounds_check` (in=10),
+`fixed_vec3_transform_es` (in=9, near twin of `..._7e900`),
+`sprite_project_screen_y` (in=9), `r05_dgroup_save_reg` (in=9 — saves
+DS/SI/BX to DGROUP 632A:0).
+
+Four low-confidence overlay thunks (`r12`/`r08`/`r39`/`r69`) have undecodable
+mid-instruction spans (class-c, finding 65) — named provisionally by caller
+context, flagged `conf: low`.
+
+### 3. Ledger + gates
+
+`naming.yaml` **297 -> 327** (+30), `routines.yaml` **296 -> 326** ea (+30,
+CRLF normalized). `naming.py apply` (30 fb_fields + 1 source text file, 4
+hits) + `push-ida` (30 renamed in IDB).
+
+Gates (all green): `naming.py check` **327** . `verify_rebuild` **faithful
+(2,237==2,237, LOST 0, CHANGED 0)** . `verify_idb` **INTACT (0 span/name/
+hole problems)** . `name_readback` **325/325 function + 2/2 global**.
+
+### 4. Effect + re-bucketed queue
+
+| metric | f66 | f67 |
+|---|---|---|
+| named (fb join) | 295 | **325 (+30)** |
+| naming_queue | 1,646 | **1,616 (−30)** |
+| Level-0 queue | 688 | **658 (−30)** |
+
+`callgraph_bottomup` re-run: **all 30 removed** (0 remain). Re-bucketed Level-0
+(658): `dyn>=10` 84 (8,227 calls), `1<=dyn<10` 31 (176), `dyn0,in>=5` 30,
+`dyn0,2<=in<=4` 142, `dyn0,in1` 203, **orphans 168 (excluded)**. The
+`dyn>=10` band is the remaining high-value dynamic target (84 leaves); after
+that the queue is static fan-in + orphans.
+
+---
+
 (append new findings below)

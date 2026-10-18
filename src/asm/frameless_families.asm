@@ -99,7 +99,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0215B7  2ea08300       mov      al, byte ptr cs:[0x83]
     0215BB  cb             retf     
 
-; sub_215BC  ea=0215BC  size=5
+; state_byte_1f743_set  ea=0215BC  size=5
     0215BC  2ea28300       mov      byte ptr cs:[0x83], al
     0215C0  cb             retf     
 
@@ -121,7 +121,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     024CFB  2e8826fb54     mov      byte ptr cs:[0x54fb], ah
     024D00  cb             retf     
 
-; sub_254A2  ea=0254A2  size=5
+; state_byte_2549e_set  ea=0254A2  size=5
     0254A2  2ea2de5d       mov      byte ptr cs:[0x5dde], al
     0254A6  cb             retf     
 
@@ -141,7 +141,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     025567  2ea1d95d       mov      ax, word ptr cs:[0x5dd9]
     02556B  cb             retf     
 
-; sub_25741  ea=025741  size=9
+; state_byte_25489_shadow_save  ea=025741  size=9
     025741  2ea0c85d       mov      al, byte ptr cs:[0x5dc8]
     025745  2ea2c95d       mov      byte ptr cs:[0x5dc9], al
     025749  cb             retf     
@@ -151,7 +151,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     02574E  2ea2c95d       mov      byte ptr cs:[0x5dc9], al
     025752  c3             ret      
 
-; sub_25753  ea=025753  size=9
+; state_byte_25488_shadow_restore  ea=025753  size=9
     025753  2ea0c95d       mov      al, byte ptr cs:[0x5dc9]
     025757  2ea2c85d       mov      byte ptr cs:[0x5dc8], al
     02575B  cb             retf     
