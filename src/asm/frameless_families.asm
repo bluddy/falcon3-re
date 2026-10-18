@@ -169,7 +169,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0274E1  2ea3ba7d       mov      word ptr cs:[0x7dba], ax
     0274E5  cb             retf     
 
-; sub_27673  ea=027673  size=5
+; state_word_27476_set_ax  ea=027673  size=5
     027673  2ea3b67d       mov      word ptr cs:[0x7db6], ax
     027677  cb             retf     
 
@@ -260,7 +260,7 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     0263EA  2eff1e002a     lcall    cs:[0x2a00]
     0263EF  cb             retf     
 
-; sub_27848  ea=027848  size=6
+; dispatch_22174_stub  ea=027848  size=6
     027848  2eff1eb42a     lcall    cs:[0x2ab4]
     02784D  cb             retf     
 

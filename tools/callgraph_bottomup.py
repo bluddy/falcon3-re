@@ -366,8 +366,22 @@ def main():
     # they are 8B jmp-far trampolines, not nameable functions.  (Kept in the
     # graph + levels as pass-through bridges.)
     thunk_keys = {k for k in known if is_thunk(cls, k)}
-    # naming_queue = unnamed functions MINUS thunk slots
-    naming_queue = unnamed - thunk_keys
+
+    # finding 68: caller_dyn_sum(u) = sum(dyn_calls(c) for c in static callers
+    # of u).  fartrans.jsonl only hooks FAR calls, so every NEAR (retn) leaf
+    # has dyn==0 regardless of how hot its caller is.  caller_dyn_sum surfaces
+    # those hot NEAR leaves indirectly via their FAR callers' call counts.
+    caller_dyn_sum = defaultdict(int)
+    for a, b in st_edges:            # static edges only (callers are static)
+        caller_dyn_sum[b] += dyn_target_calls.get(a, 0)
+
+    # finding 68: exclude disconnected zero-indegree orphans (dyn==0 AND
+    # static_in_degree==0) -- 0 callers and 0 callees, not reachable bottom-up.
+    # Tracked separately as `orphans`; naming_queue = connected only.
+    orphans = {k for k in unnamed
+               if dyn_target_calls.get(k, 0) == 0 and static_in.get(k, 0) == 0}
+    # naming_queue = unnamed functions MINUS thunk slots MINUS orphans
+    naming_queue = unnamed - thunk_keys - orphans
 
     out = {
         "edge_counts": {
@@ -384,9 +398,11 @@ def main():
         "edges": [list(e) for e in sorted(all_edges)],
         "dyn_target_calls": dict(dyn_target_calls),
         "static_in_degree": dict(static_in),
+        "caller_dyn_sum": dict(caller_dyn_sum),
         "named": sorted(named),
         "unnamed": sorted(unnamed),
         "naming_queue": sorted(naming_queue),
+        "orphans": sorted(orphans),
         "thunk_keys": sorted(thunk_keys),
     }
     json.dump(out, OUT.open("w"), indent=1)
@@ -437,8 +453,14 @@ def main():
     print("\n=== AUDIT TOTALS ===")
     print("functions: %d   named (fb join): %d   unnamed: %d   thunk slots: %d"
           % (len(known), len(named), len(unnamed), len(thunk_keys)))
-    print("naming_queue (unnamed - thunks): %d   Level-0 queue: %d"
-          % (len(naming_queue), len(lvl0_queue)))
+    print("orphans (dyn0 AND in0, excluded): %d   naming_queue (unnamed - thunks - orphans): %d   Level-0 queue: %d"
+          % (len(orphans), len(naming_queue), len(lvl0_queue)))
+    # finding 68: caller_dyn_sum hotspots in the dyn==0 Level-0 band
+    lvl0_dyn0 = [k for k in lvl0_queue if dyn_target_calls.get(k, 0) == 0]
+    hot_cd = [k for k in lvl0_dyn0 if caller_dyn_sum.get(k, 0) >= 1000]
+    print("dyn==0 Level-0 in queue: %d   with caller_dyn_sum >= 1000: %d   >= 10000: %d"
+          % (len(lvl0_dyn0), len(hot_cd),
+             sum(1 for k in lvl0_dyn0 if caller_dyn_sum.get(k, 0) >= 10000)))
 
     print("\nwrote %s" % OUT)
 

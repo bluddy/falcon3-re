@@ -312,3 +312,18 @@
   have undecodable mid-instruction spans (class-c) -- reclassify when the
   epilogue window / span repair lands; 92 low-conf DATA fns still queued;
   24 trap-only thunk far-targets point at word_*/unk_* data.
+
+- **Orphans excluded + caller_dyn_sum added + Batch 3 done (finding 68):**
+  36 named, `named` **325 -> 361**, Level-0 queue **490 -> 454**. fartrans
+  confirmed FAR-only; orphans (dyn0 AND in0) excluded from naming_queue;
+  caller_dyn_sum surfaces hidden hot NEAR leaves (6 in in>=5 bucket, 16 in
+  1<=in<=4 with cd>=10k). All 4 gates green (check 363, verify_rebuild
+  faithful, verify_idb INTACT, read-back 361/361+2/2).
+- **Next (Batch 4):** remaining **66 `dyn>=10` Level-0 leaves** + the
+  **24 caller_dyn>=1000 hotspots** (17 >=10000, mostly in the 1<=in<=4
+  band) -- use caller_dyn_sum as the secondary rank so hot NEAR leaves are
+  not starved by the fartrans blind spot. `in>=5` bucket down to 12.
+- **Follow-ups:** 7 low-conf farobj/overlay routines (r14/r05/r37
+  farptr gates + farobj_field_*) have undecodable mid-instruction spans
+  (class-c) -- reclassify when span repair lands; 92 low-conf DATA fns;
+  24 trap-only thunk far-targets at word_*/unk_* data.

@@ -1,0 +1,1311 @@
+######################################################################
+## SLICE A (dyn>=10, top 18)
+######################################################################
+======================================================================
+SLICE #1 sub_20600  ea=0x20600  size=19  class=ASM  in=1  dyn=498  cd=498  fb=None
+  0x20600: push   bx
+  0x20601: push   es
+  0x20602: mov    bx, 7B0Eh
+  0x20605: mov    es, bx
+  0x20607: mov    al, byte ptr es:unk_7E54D  ->data ['0x7e54d']
+  0x2060B: mov    ah, byte ptr es:unk_7E54E  ->data ['0x7e54e']
+  0x20610: pop    es
+  0x20611: pop    bx
+  0x20612: retf   
+  [TERM RETF @ 0x20612]
+  --- callers (1): sub_142CC
+      sub_142CC ea=0x142CC cls=LEAF dyn=498
+
+======================================================================
+SLICE #2 sub_25602  ea=0x25602  size=6  class=ASM  in=1  dyn=498  cd=0  fb=None
+  0x25602: call   dword ptr cs:byte_2212C+4  ->data ['0x22130']
+  0x25607: retf   
+  [TERM RETF @ 0x25607]
+  --- callers (1): sub_34C31
+      sub_34C31 ea=0x34C31 cls=ASM dyn=0
+
+======================================================================
+SLICE #3 sub_211C9  ea=0x211C9  size=157  class=ASM  in=1  dyn=480  cd=0  fb=None
+  0x211C9: add    cx, cs:word_1F6E6  ->data ['0x1f6e6']
+  0x211CE: mov    ax, [si+4]
+  0x211D1: mov    dx, [si+6]
+  0x211D4: sub    ax, es:[bx+4]
+  0x211D8: sbb    dx, es:[bx+6]
+  0x211DC: jcxz   loc_21200  ->code ['0x21200']
+  0x211DE: push   cx
+  0x211DF: or     dx, dx
+  0x211E1: jns    loc_211F9  ->code ['0x211f9']
+  0x211E3: neg    dx
+  0x211E5: neg    ax
+  0x211E7: sbb    dx, 0
+  0x211EA: shr    dx, 1
+  0x211EC: rcr    ax, 1
+  0x211EE: loop   loc_211EA  ->code ['0x211ea']
+  0x211F0: neg    dx
+  0x211F2: neg    ax
+  0x211F4: sbb    dx, 0
+  0x211F7: jmp    loc_211FF  ->code ['0x211ff']
+  0x211F9: shr    dx, 1
+  0x211FB: rcr    ax, 1
+  0x211FD: loop   loc_211F9  ->code ['0x211f9']
+  0x211FF: pop    cx
+  0x21200: stosw  
+  0x21201: mov    ax, es:[bx+8]
+  0x21205: mov    dx, es:[bx+0Ah]
+  0x21209: sub    ax, [si+8]
+  0x2120C: sbb    dx, [si+0Ah]
+  0x2120F: jcxz   loc_21233  ->code ['0x21233']
+  0x21211: push   cx
+  0x21212: or     dx, dx
+  0x21214: jns    loc_2122C  ->code ['0x2122c']
+  0x21216: neg    dx
+  0x21218: neg    ax
+  0x2121A: sbb    dx, 0
+  0x2121D: shr    dx, 1
+  0x2121F: rcr    ax, 1
+  0x21221: loop   loc_2121D  ->code ['0x2121d']
+  0x21223: neg    dx
+  0x21225: neg    ax
+  0x21227: sbb    dx, 0
+  0x2122A: jmp    loc_21232  ->code ['0x21232']
+  0x2122C: shr    dx, 1
+  0x2122E: rcr    ax, 1
+  0x21230: loop   loc_2122C  ->code ['0x2122c']
+  0x21232: pop    cx
+  0x21233: stosw  
+  0x21234: mov    ax, [si]
+  0x21236: mov    dx, [si+2]
+  0x21239: sub    ax, es:[bx]
+  0x2123C: sbb    dx, es:[bx+2]
+  0x21240: jcxz   loc_21264  ->code ['0x21264']
+  0x21242: push   cx
+  0x21243: or     dx, dx
+  0x21245: jns    loc_2125D  ->code ['0x2125d']
+  0x21247: neg    dx
+  0x21249: neg    ax
+  0x2124B: sbb    dx, 0
+  0x2124E: shr    dx, 1
+  0x21250: rcr    ax, 1
+  0x21252: loop   loc_2124E  ->code ['0x2124e']
+  0x21254: neg    dx
+  0x21256: neg    ax
+  0x21258: sbb    dx, 0
+  0x2125B: jmp    loc_21263  ->code ['0x21263']
+  0x2125D: shr    dx, 1
+  0x2125F: rcr    ax, 1
+  0x21261: loop   loc_2125D  ->code ['0x2125d']
+  0x21263: pop    cx
+  0x21264: stosw  
+  0x21265: retf   
+  [TERM RETF @ 0x21265]
+  --- callers (1): sub_355E6
+      sub_355E6 ea=0x355E6 cls=ASM dyn=0
+
+======================================================================
+SLICE #4 sub_26CA7  ea=0x26CA7  size=8  class=LEAF  in=23  dyn=415  cd=11663  fb=None
+  0x26CA7: sub    ax, ax
+  0x26CA9: mov    dx, cs:word_26400  ->data ['0x26400']
+  0x26CAE: retf   
+  [TERM RETF @ 0x26CAE]
+  --- callers (23): r01_e04, r27_e62, sub_127D4, sub_12BEA, sub_12EA7, sub_12FC4, sub_133A8, sub_195C4, sub_2EBCD, sub_2ED9C
+      r01_e04 ea=0x2CF8B cls=ASM dyn=0
+      r27_e62 ea=0x10CC60 cls=ASM dyn=0
+      sub_127D4 ea=0x127D4 cls=ASM dyn=11565
+      sub_12BEA ea=0x12BEA cls=ASM dyn=0
+      sub_12EA7 ea=0x12EA7 cls=ASM dyn=0
+      sub_12FC4 ea=0x12FC4 cls=ASM dyn=74
+      sub_133A8 ea=0x133A8 cls=ASM dyn=8
+      sub_195C4 ea=0x195C4 cls=C dyn=16
+
+======================================================================
+SLICE #5 sub_2031D  ea=0x2031D  size=34  class=ASM  in=3  dyn=370  cd=0  fb=None
+  0x2031D: cmp    bx, cs:word_1F6CC  ->data ['0x1f6cc']
+  0x20322: jl     locret_2033E  ->code ['0x2033e']
+  0x20324: cmp    bx, cs:word_1F6D0  ->data ['0x1f6d0']
+  0x20329: jg     locret_2033E  ->code ['0x2033e']
+  0x2032B: cmp    di, cs:word_1F6CE  ->data ['0x1f6ce']
+  0x20330: jl     locret_2033E  ->code ['0x2033e']
+  0x20332: cmp    di, cs:word_1F6D2  ->data ['0x1f6d2']
+  0x20337: jg     locret_2033E  ->code ['0x2033e']
+  0x20339: call   cs:dword_2209C  ->data ['0x2209c']
+  0x2033E: retf   
+  [TERM RETF @ 0x2033E]
+  --- callers (3): sub_27E37, sub_27E53, sub_47A9B
+      sub_27E37 ea=0x27E37 cls=ASM dyn=0
+      sub_27E53 ea=0x27E53 cls=ASM dyn=0
+      sub_47A9B ea=0x47A9B cls=ASM dyn=0
+
+======================================================================
+SLICE #6 sub_229AB  ea=0x229AB  size=16  class=LEAF  in=1  dyn=351  cd=13240  fb=None
+  0x229AB: mov    ax, 123h
+  0x229AE: sub    dx, dx
+  0x229B0: div    bx
+  0x229B2: sti    
+  0x229B3: cmp    ax, cs:word_22220  ->data ['0x22220']
+  0x229B8: ja     loc_229B2  ->code ['0x229b2']
+  0x229BA: retf   
+  [TERM RETF @ 0x229BA]
+  --- callers (1): sub_22996
+      sub_22996 ea=0x22996 cls=ASM dyn=13240
+
+======================================================================
+SLICE #7 sub_25E0E  ea=0x25E0E  size=20  class=ASM  in=10  dyn=334  cd=0  fb=None
+  0x25E0E: push   bp
+  0x25E0F: mov    bp, sp
+  0x25E11: push   si
+  0x25E12: push   di
+  0x25E13: mov    di, [bp+arg_0]
+  0x25E16: mov    bx, [bp+arg_2]
+  0x25E19: call   cs:dword_220F4  ->data ['0x220f4']
+  0x25E1E: pop    di
+  0x25E1F: pop    si
+  0x25E20: pop    bp
+  0x25E21: retf   
+  [TERM RETF @ 0x25E21]
+  --- callers (10): r17_e07, r22_e57, r23_e61, r24_e60, r25_e59, r26_e58, r27_e05, sub_6E8F0, sub_6ED0A, sub_6F2F2
+      r17_e07 ea=0x6EF31 cls=ASM dyn=0
+      r22_e57 ea=0x10BAC0 cls=C dyn=0
+      r23_e61 ea=0x10BEB0 cls=C dyn=0
+      r24_e60 ea=0x10C130 cls=C dyn=0
+      r25_e59 ea=0x10C3B0 cls=C dyn=0
+      r26_e58 ea=0x10C760 cls=C dyn=0
+      r27_e05 ea=0x10DAC5 cls=ASM dyn=0
+      sub_6E8F0 ea=0x6E8F0 cls=C dyn=0
+
+======================================================================
+SLICE #8 sub_25A41  ea=0x25A41  size=21  class=ASM  in=8  dyn=286  cd=84  fb=None
+  0x25A41: lodsw  
+  0x25A42: mov    cs:word_25450, ax  ->data ['0x25450']
+  0x25A46: lodsw  
+  0x25A47: mov    cs:word_25452, ax  ->data ['0x25452']
+  0x25A4B: lodsw  
+  0x25A4C: mov    cs:word_25454, ax  ->data ['0x25454']
+  0x25A50: lodsw  
+  0x25A51: mov    cs:word_25456, ax  ->data ['0x25456']
+  0x25A55: retf   
+  [TERM RETF @ 0x25A55]
+  --- callers (8): sub_25A31, sub_3001E, sub_31138, sub_321DD, sub_322E5, sub_34B01, sub_359B2, sub_3A5D2
+      sub_25A31 ea=0x25A31 cls=ASM dyn=84
+      sub_3001E ea=0x3001E cls=ASM dyn=0
+      sub_31138 ea=0x31138 cls=ASM dyn=0
+      sub_321DD ea=0x321DD cls=ASM dyn=0
+      sub_322E5 ea=0x322E5 cls=ASM dyn=0
+      sub_34B01 ea=0x34B01 cls=ASM dyn=0
+      sub_359B2 ea=0x359B2 cls=ASM dyn=0
+      sub_3A5D2 ea=0x3A5D2 cls=ASM dyn=0
+
+======================================================================
+SLICE #9 sub_22277  ea=0x22277  size=14  class=LEAF  in=1  dyn=284  cd=0  fb=None
+  0x22277: add    ax, cs:word_22220  ->data ['0x22220']
+  0x2227C: sti    
+  0x2227D: cmp    ax, cs:word_22220  ->data ['0x22220']
+  0x22282: ja     loc_2227C  ->code ['0x2227c']
+  0x22284: retf   
+  [TERM RETF @ 0x22284]
+  --- callers (1): sub_33443
+      sub_33443 ea=0x33443 cls=ASM dyn=0
+
+======================================================================
+SLICE #10 sub_1BDB2  ea=0x1BDB2  size=14  class=ASM  in=4  dyn=229  cd=287  fb=None
+  0x1BDB2: push   bp
+  0x1BDB3: mov    bp, sp
+  0x1BDB5: mov    ax, 7772h
+  0x1BDB8: mov    es, ax
+  0x1BDBA: mov    ax, word ptr es:unk_77B34  ->data ['0x77b34']
+  0x1BDBE: pop    bp
+  0x1BDBF: retf   
+  [TERM RETF @ 0x1BDBF]
+  --- callers (4): sub_181A7, sub_18BC8, sub_1914E, sub_1BAD6
+      sub_181A7 ea=0x181A7 cls=C dyn=240
+      sub_18BC8 ea=0x18BC8 cls=C dyn=0
+      sub_1914E ea=0x1914E cls=C dyn=0
+      sub_1BAD6 ea=0x1BAD6 cls=C dyn=47
+
+======================================================================
+SLICE #11 sub_274CF  ea=0x274CF  size=18  class=ASM  in=0  dyn=199  cd=0  fb=None
+  0x274CF: mov    cs:word_27470, ds  ->data ['0x27470']
+  0x274D4: retf   
+  [TERM RETF @ 0x274D4]
+  --- callers (0): 
+  --- NO static caller (indirect far-call target)
+
+======================================================================
+SLICE #12 sub_24F80  ea=0x24F80  size=29  class=ASM  in=1  dyn=194  cd=0  fb=None
+  0x24F80: push   bx
+  0x24F81: dec    al
+  0x24F83: mov    ah, al
+  0x24F85: and    al, 7
+  0x24F87: shr    ah, 1
+  0x24F89: shr    ah, 1
+  0x24F8B: shr    ah, 1
+  0x24F8D: mov    bx, 5750h
+  0x24F90: xlat   byte ptr cs:[bx]
+  0x24F92: sub    bh, bh
+  0x24F94: mov    bl, ah
+  0x24F96: and    cs:[bx+5C63h], al
+  0x24F9B: pop    bx
+  0x24F9C: retf   
+  [TERM RETF @ 0x24F9C]
+  --- callers (1): sub_33443
+      sub_33443 ea=0x33443 cls=ASM dyn=0
+
+======================================================================
+SLICE #13 sub_259DE  ea=0x259DE  size=40  class=ASM  in=0  dyn=190  cd=0  fb=None
+  0x259DE: push   bp
+  0x259DF: mov    bp, sp
+  0x259E1: push   si
+  0x259E2: push   di
+  0x259E3: mov    ax, [bp+arg_C]
+  0x259E6: mov    dx, [bp+arg_E]
+  0x259E9: mov    ah, dl
+  0x259EB: mov    cx, [bp+arg_0]
+  0x259EE: mov    si, [bp+arg_2]
+  0x259F1: mov    dx, [bp+arg_4]
+  0x259F4: mov    di, [bp+arg_6]
+  0x259F7: mov    bx, [bp+arg_8]
+  0x259FA: mov    bp, [bp+arg_A]
+  0x259FD: call   cs:dword_22108  ->data ['0x22108']
+  0x25A02: pop    di
+  0x25A03: pop    si
+  0x25A04: pop    bp
+  0x25A05: retf   
+  [TERM RETF @ 0x25A05]
+  --- callers (0): 
+  --- NO static caller (indirect far-call target)
+
+======================================================================
+SLICE #14 sub_22C28  ea=0x22C28  size=43  class=ASM  in=2  dyn=175  cd=0  fb=None
+  0x22C28: in     al, 40h
+  0x22C2A: jmp    $+2  ->code ['0x22c2c']
+  0x22C2C: mov    ah, al
+  0x22C2E: in     al, 40h
+  0x22C30: jmp    $+2  ->code ['0x22c32']
+  0x22C32: mov    cs:word_22C71, ax  ->data ['0x22c71']
+  0x22C36: in     al, 40h
+  0x22C38: jmp    $+2  ->code ['0x22c3a']
+  0x22C3A: mov    ah, al
+  0x22C3C: in     al, 40h
+  0x22C3E: jmp    $+2  ->code ['0x22c40']
+  0x22C40: mov    cs:word_22C73, ax  ->data ['0x22c73']
+  0x22C44: in     al, 40h
+  0x22C46: jmp    $+2  ->code ['0x22c48']
+  0x22C48: mov    ah, al
+  0x22C4A: in     al, 40h
+  0x22C4C: jmp    $+2  ->code ['0x22c4e']
+  0x22C4E: mov    cs:word_22C75, ax  ->data ['0x22c75']
+  0x22C52: retf   
+  [TERM RETF @ 0x22C52]
+  --- callers (2): sub_2F6D0, sub_683C5
+      sub_2F6D0 ea=0x2F6D0 cls=ASM dyn=0
+      sub_683C5 ea=0x683C5 cls=DATA dyn=0
+
+======================================================================
+SLICE #15 sub_27848  ea=0x27848  size=6  class=ASM  in=7  dyn=171  cd=11585  fb=None
+  0x27848: call   cs:dword_22174  ->data ['0x22174']
+  0x2784D: retf   
+  [TERM RETF @ 0x2784D]
+  --- callers (7): r15_e16, sub_127D4, sub_27703, sub_316B6, sub_317AF, sub_318DD, sub_31A32
+      r15_e16 ea=0x10843D cls=ASM dyn=0
+      sub_127D4 ea=0x127D4 cls=ASM dyn=11565
+      sub_27703 ea=0x27703 cls=ASM dyn=20
+      sub_316B6 ea=0x316B6 cls=ASM dyn=0
+      sub_317AF ea=0x317AF cls=ASM dyn=0
+      sub_318DD ea=0x318DD cls=ASM dyn=0
+      sub_31A32 ea=0x31A32 cls=ASM dyn=0
+
+======================================================================
+SLICE #16 sub_103C6  ea=0x103C6  size=21  class=ASM  in=4  dyn=162  cd=7  fb=None
+  0x103C6: mov    dx, word ptr cs:unk_1022F  ->data ['0x1022f']
+  0x103CB: mov    ax, 0
+  0x103CE: mov    ah, 44h
+  0x103D0: int    67h
+  0x103D2: inc    bx
+  0x103D3: mov    ax, 1
+  0x103D6: mov    ah, 44h
+  0x103D8: int    67h
+  0x103DA: retf   
+  [TERM RETF @ 0x103DA]
+  --- callers (4): sub_13870, sub_13F00, sub_166CF, sub_167A1
+      sub_13870 ea=0x13870 cls=ASM dyn=0
+      sub_13F00 ea=0x13F00 cls=ASM dyn=0
+      sub_166CF ea=0x166CF cls=ASM dyn=7
+      sub_167A1 ea=0x167A1 cls=ASM dyn=0
+
+======================================================================
+SLICE #17 sub_25247  ea=0x25247  size=33  class=ASM  in=13  dyn=136  cd=38  fb=None
+  0x25247: push   ax
+  0x25248: push   cx
+  0x25249: push   di
+  0x2524A: push   es
+  0x2524B: mov    ax, cs
+  0x2524D: mov    es, ax
+  0x2524F: sub    ax, ax
+  0x25251: mov    di, 5762h
+  0x25254: mov    cx, 0Bh
+  0x25257: stosb  
+  0x25259: mov    di, 5C63h
+  0x2525C: cli    
+  0x2525D: mov    cx, 0Bh
+  0x25260: stosw  
+  0x25262: sti    
+  0x25263: pop    es
+  0x25264: pop    di
+  0x25265: pop    cx
+  0x25266: pop    ax
+  0x25267: retf   
+  [TERM RETF @ 0x25267]
+  --- callers (13): r32_e74, sub_10D8C, sub_224D3, sub_27703, sub_3001E, sub_31138, sub_33443, sub_4E520, sub_66E62, sub_67781
+      r32_e74 ea=0x1582CE cls=ASM dyn=0
+      sub_10D8C ea=0x10D8C cls=ASM dyn=18
+      sub_224D3 ea=0x224D3 cls=ASM dyn=0
+      sub_27703 ea=0x27703 cls=ASM dyn=20
+      sub_3001E ea=0x3001E cls=ASM dyn=0
+      sub_31138 ea=0x31138 cls=ASM dyn=0
+      sub_33443 ea=0x33443 cls=ASM dyn=0
+      sub_4E520 ea=0x4E520 cls=ASM dyn=0
+
+======================================================================
+SLICE #18 sub_27673  ea=0x27673  size=5  class=ASM  in=6  dyn=131  cd=11565  fb=None
+  0x27673: mov    cs:word_27476, ax  ->data ['0x27476']
+  0x27677: retf   
+  [TERM RETF @ 0x27677]
+  --- callers (6): r15_e16, sub_127D4, sub_316B6, sub_317AF, sub_318DD, sub_31A32
+      r15_e16 ea=0x10843D cls=ASM dyn=0
+      sub_127D4 ea=0x127D4 cls=ASM dyn=11565
+      sub_316B6 ea=0x316B6 cls=ASM dyn=0
+      sub_317AF ea=0x317AF cls=ASM dyn=0
+      sub_318DD ea=0x318DD cls=ASM dyn=0
+      sub_31A32 ea=0x31A32 cls=ASM dyn=0
+
+######################################################################
+## SLICE B (dyn==0, flag-ranked, top 18)
+######################################################################
+======================================================================
+SLICE #1 sub_6E3D0  ea=0x6E3D0  size=240  class=DATA  in=9  dyn=0  cd=32  fb=None
+  0x6E3D0: mov    cx, cs:word_6E2B6  ->data ['0x6e2b6']
+  0x6E3D5:        2Eh, 2Eh, 2Eh
+  0x6E3DA:        8Bh, 8Bh, 8Bh
+  0x6E3DC:        0E3h, 0E3h, 0E3h
+  0x6E3DE:        2Eh, 2Eh, 2Eh
+  0x6E3E3:        2Eh, 2Eh, 2Eh
+  0x6E3E9:        0C5h, 0C5h, 0C5h
+  0x6E3EC:        2Eh, 2Eh, 2Eh
+  0x6E3F0:        0BBh, 0BBh, 0BBh
+  0x6E3F3:        9Ah, 9Ah, 9Ah
+  0x6E3F8:        1Fh, 1Fh, 1Fh
+  0x6E3F9:        5Dh, 5Dh, 5Dh
+  0x6E3FA:        0CAh, 0CAh, 0CAh
+  0x6E3FD:        55h, 55h, 55h
+  0x6E3FE:        8Bh, 8Bh, 8Bh
+  0x6E400:        1Eh, 1Eh, 1Eh
+  0x6E401:        6, 6, 6
+  0x6E402:        0C5h, 0C5h, 0C5h
+  0x6E405:        8Bh, 8Bh, 8Bh
+  0x6E407:        0E3h, 0E3h, 0E3h
+  0x6E409:        2Eh, 2Eh, 2Eh
+  0x6E40E:        0C5h, 0C5h, 0C5h
+  0x6E411:        2Eh, 2Eh, 2Eh
+  0x6E416:        2Eh, 2Eh, 2Eh
+  0x6E41B:        0D1h, 0D1h, 0D1h
+  0x6E41D:        0F3h, 0F3h, 0F3h
+  0x6E41F:        13h, 13h, 13h
+  0x6E421:        0F3h, 0F3h, 0F3h
+  0x6E423:        2Eh, 2Eh, 2Eh
+  0x6E428:        0E8h, 0E8h, 0E8h
+  0x6E42B:        7, 7, 7
+  0x6E42C:        1Fh, 1Fh, 1Fh
+  0x6E42D:        5Dh, 5Dh, 5Dh
+  0x6E42E:        0CAh, 0CAh, 0CAh
+  0x6E431:        55h, 55h, 55h
+  0x6E432:        8Bh, 8Bh, 8Bh
+  0x6E434:        1Eh, 1Eh, 1Eh
+  0x6E435:        6, 6, 6
+  0x6E436:        0C5h, 0C5h, 0C5h
+  0x6E439:        8Bh, 8Bh, 8Bh
+  0x6E43B:        0E3h, 0E3h, 0E3h
+  0x6E43D:        2Eh, 2Eh, 2Eh
+  0x6E442:        0C5h, 0C5h, 0C5h
+  0x6E445:        2Eh, 2Eh, 2Eh
+  0x6E44A:        2Eh, 2Eh, 2Eh
+  0x6E44F:        2Eh, 2Eh, 2Eh
+  0x6E456:        7Eh, 7Eh, 7Eh
+  0x6E458:        2Eh, 2Eh, 2Eh
+  0x6E45E:        0A12Eh, 0A12Eh, 0A12Eh
+  0x6E462:        2Dh, 2Dh, 2Dh
+  0x6E466:        14A3h, 14A3h, 14A3h
+  0x6E46A:        0D1C8h, 0D1C8h, 0D1C8h
+  0x6E46E:        13A5h, 13A5h, 13A5h
+  0x6E470:        0F3C9h, 0F3C9h, 0F3C9h
+  0x6E472:        8BA4h, 8BA4h, 8BA4h
+  0x6E474:        9AC8h, 9AC8h, 9AC8h
+  0x6E478:        1F6Ch, 1F6Ch, 1F6Ch
+  0x6E47A:        0F88Bh, 0F88Bh, 0F88Bh
+  0x6E47C:        0C28Eh, 0C28Eh, 0C28Eh
+  0x6E47E:        2Eh, 2Eh, 2Eh
+  0x6E482:        892Eh, 892Eh, 892Eh
+  0x6E488:        0F3E9h, 0F3E9h, 0F3E9h
+  0x6E48C:        0F3C9h, 0F3C9h, 0F3C9h
+  0x6E48E:        2EA4h, 2EA4h, 2EA4h
+  0x6E490:        3E89h, 3E89h, 3E89h
+  0x6E494:        0DEE8h, 0DEE8h, 0DEE8h
+  0x6E498:        5D1Fh, 5D1Fh, 5D1Fh
+  0x6E49A:        0CAh, 0CAh, 0CAh
+  0x6E49D:        1Eh, 1Eh, 1Eh
+  0x6E49E:        6, 6, 6
+  0x6E49F:        9Ah, 9Ah, 9Ah
+  0x6E4A4:        8Eh, 8Eh, 8Eh
+  0x6E4A6:        10B8h, 10B8h, 10B8h
+  0x6E4AA:        0B850h, 0B850h, 0B850h
+  0x6E4AC:        34Dh, 34Dh, 34Dh
+  0x6E4AE:        500Eh, 500Eh, 500Eh
+  0x6E4B0:        459Ah, 459Ah, 459Ah
+  0x6E4B6:        9A50h, 9A50h, 9A50h
+  0x6E4B8:        1593h, 1593h, 1593h
+  0x6E4BA:        2AA3h, 2AA3h, 2AA3h
+  0x6E4BE:        1EC3h, 1EC3h, 1EC3h
+  --- callers (9): r22_e57, r26_e58, sub_2BEFB, sub_2BF2D, sub_2BF4B, sub_2BF5F, sub_2BF69, sub_2BF91, sub_6F4A9
+      r22_e57 ea=0x10BAC0 cls=C dyn=0
+      r26_e58 ea=0x10C760 cls=C dyn=0
+      sub_2BEFB ea=0x2BEFB cls=ASM dyn=5
+      sub_2BF2D ea=0x2BF2D cls=ASM dyn=10
+      sub_2BF4B ea=0x2BF4B cls=ASM dyn=7
+      sub_2BF5F ea=0x2BF5F cls=ASM dyn=3
+      sub_2BF69 ea=0x2BF69 cls=ASM dyn=4
+      sub_2BF91 ea=0x2BF91 cls=ASM dyn=3
+
+======================================================================
+SLICE #2 sub_3DA56  ea=0x3DA56  size=511  class=ASM  in=9  dyn=0  cd=0  fb=None
+  0x3DA56: push   si
+  0x3DA57:        9Ah, 9Ah, 9Ah
+  0x3DA5C:        5Eh, 5Eh, 5Eh
+  0x3DA5D:        3Dh, 3Dh, 3Dh
+  0x3DA60:        74h, 74h, 74h
+  0x3DA62:        3Bh, 3Bh, 3Bh
+  0x3DA65:        74h, 74h, 74h
+  0x3DA67:        0E9h, 0E9h, 0E9h
+  0x3DA6A:        50h, 50h, 50h
+  0x3DA6B:        8Bh, 8Bh, 8Bh
+  0x3DA6E:        0F6h, 0F6h, 0F6h
+  0x3DA72:        74h, 74h, 74h
+  0x3DA74:        2Eh, 2Eh, 2Eh
+  0x3DA7A:        90h, 90h, 90h
+  0x3DA7B:        75h, 75h, 75h
+  0x3DA7D:        0E8h, 0E8h, 0E8h
+  0x3DA80:        80h, 80h, 80h
+  0x3DA84:        58h, 58h, 58h
+  0x3DA85:        50h, 50h, 50h
+  0x3DA86:        2Bh, 2Bh, 2Bh
+  0x3DA8A:        2Eh, 2Eh, 2Eh
+  0x3DA8F:        75h, 75h, 75h
+  0x3DA91:        8Bh, 8Bh, 8Bh
+  0x3DA93:        2Bh, 2Bh, 2Bh
+  0x3DA97:        0B4h, 0B4h, 0B4h
+  0x3DA99:        56h, 56h, 56h
+  0x3DA9A:        9Ah, 9Ah, 9Ah
+  0x3DA9F:        5Eh, 5Eh, 5Eh
+  0x3DAA0:        5Bh, 5Bh, 5Bh
+  0x3DAA1:        2Eh, 2Eh, 2Eh
+  0x3DAA7:        90h, 90h, 90h
+  0x3DAA8:        75h, 75h, 75h
+  0x3DAAA:        80h, 80h, 80h
+  0x3DAAE:        75h, 75h, 75h
+  0x3DAB0:        2Eh, 2Eh, 2Eh
+  0x3DAB4:        8Ah, 8Ah, 8Ah
+  0x3DAB7:        0F6h, 0F6h, 0F6h
+  0x3DAB9:        80h, 80h, 80h
+  0x3DABC:        0F6h, 0F6h, 0F6h
+  0x3DABE:        0B1h, 0B1h, 0B1h
+  0x3DAC0:        0D3h, 0D3h, 0D3h
+  0x3DAC2:        0E8h, 0E8h, 0E8h
+  0x3DAC5:        0Ah, 0Ah, 0Ah
+  0x3DAC7:        75h, 75h, 75h
+  0x3DAC9:        8Bh, 8Bh, 8Bh
+  0x3DACB:        50h, 50h, 50h
+  0x3DACC:        0E8h, 0E8h, 0E8h
+  0x3DACF:        5Ah, 5Ah, 5Ah
+  0x3DAD0:        0F6h, 0F6h, 0F6h
+  0x3DAD4:        75h, 75h, 75h
+  0x3DAD6:        0E8h, 0E8h, 0E8h
+  0x3DAD9:        72h, 72h, 72h
+  0x3DADB:        2Eh, 2Eh, 2Eh
+  0x3DAE1:        74h, 74h, 74h
+  0x3DAE3:        80h, 80h, 80h
+  0x3DAE7:        0EBh, 0EBh, 0EBh
+  0x3DAE9:        80h, 80h, 80h
+  0x3DAED:        2Eh, 2Eh, 2Eh
+  0x3DAF2:        2Eh, 2Eh, 2Eh
+  0x3DAF7:        32h, 32h, 32h
+  0x3DAF9:        0E8h, 0E8h, 0E8h
+  0x3DAFC:        51h, 51h, 51h
+  0x3DAFD:        0E8h, 0E8h, 0E8h
+  0x3DB00:        59h, 59h, 59h
+  0x3DB01:        0B0h, 0B0h, 0B0h
+  0x3DB03:        0FEh, 0FEh, 0FEh
+  0x3DB05:        0F6h, 0F6h, 0F6h
+  0x3DB07:        2Eh, 2Eh, 2Eh
+  0x3DB0C:        0F6h, 0F6h, 0F6h
+  0x3DB0E:        0B1h, 0B1h, 0B1h
+  0x3DB10:        0D3h, 0D3h, 0D3h
+  0x3DB12:        3Dh, 3Dh, 3Dh
+  0x3DB15:        7Eh, 7Eh, 7Eh
+  0x3DB17:        0B0h, 0B0h, 0B0h
+  0x3DB19:        88h, 88h, 88h
+  0x3DB1C:        0E9h, 0E9h, 0E9h
+  0x3DB1F:        2Eh, 2Eh, 2Eh
+  0x3DB25:        0B1h, 0B1h, 0B1h
+  0x3DB27:        0D3h, 0D3h, 0D3h
+  0x3DB29:        0F7h, 0F7h, 0F7h
+  0x3DB2B:        5, 5, 5
+  0x3DB2E:        2Eh, 2Eh, 2Eh
+  0x3DB33:        7Fh, 7Fh, 7Fh
+  0x3DB35:        83h, 83h, 83h
+  0x3DB3A:        74h, 74h, 74h
+  0x3DB3C:        0F7h, 0F7h, 0F7h
+  0x3DB42:        75h, 75h, 75h
+  0x3DB44:        57h, 57h, 57h
+  0x3DB45:        8Bh, 8Bh, 8Bh
+  0x3DB48:        0E8h, 0E8h, 0E8h
+  0x3DB4B:        80h, 80h, 80h
+  0x3DB4F:        5Fh, 5Fh, 5Fh
+  0x3DB50:        2Eh, 2Eh, 2Eh
+  0x3DB56:        90h, 90h, 90h
+  0x3DB57:        74h, 74h, 74h
+  0x3DB59:        2Eh, 2Eh, 2Eh
+  0x3DB5F:        90h, 90h, 90h
+  0x3DB60:        75h, 75h, 75h
+  0x3DB62:        2Eh, 2Eh, 2Eh
+  0x3DB68:        75h, 75h, 75h
+  0x3DB6A:        0E8h, 0E8h, 0E8h
+  0x3DB6D:        73h, 73h, 73h
+  0x3DB6F:        0C6h, 0C6h, 0C6h
+  0x3DB74:        0F7h, 0F7h, 0F7h
+  0x3DB7A:        75h, 75h, 75h
+  0x3DB7C:        2Eh, 2Eh, 2Eh
+  0x3DB80:        0D1h, 0D1h, 0D1h
+  0x3DB82:        0D1h, 0D1h, 0D1h
+  0x3DB84:        0D1h, 0D1h, 0D1h
+  0x3DB86:        29h, 29h, 29h
+  0x3DB8A:        83h, 83h, 83h
+  0x3DB8F:        7Dh, 7Dh, 7Dh
+  0x3DB91:        0C7h, 0C7h, 0C7h
+  0x3DB97:        0EBh, 0EBh, 0EBh
+  0x3DB99:        90h, 90h, 90h
+  0x3DB9A:        2Eh, 2Eh, 2Eh
+  0x3DBA0:        90h, 90h, 90h
+  0x3DBA1:        75h, 75h, 75h
+  0x3DBA3:        0E8h, 0E8h, 0E8h
+  0x3DBA6:        73h, 73h, 73h
+  0x3DBA8:        2Eh, 2Eh, 2Eh
+  0x3DBAC:        0D1h, 0D1h, 0D1h
+  0x3DBAE:        0D1h, 0D1h, 0D1h
+  0x3DBB0:        0D1h, 0D1h, 0D1h
+  0x3DBB2:        29h, 29h, 29h
+  0x3DBB6:        8Bh, 8Bh, 8Bh
+  0x3DBB8:        8Bh, 8Bh, 8Bh
+  0x3DBBB:        8Bh, 8Bh, 8Bh
+  0x3DBBE:        56h, 56h, 56h
+  0x3DBBF:        9Ah, 9Ah, 9Ah
+  0x3DBC4:        5Eh, 5Eh, 5Eh
+  0x3DBC5:        0E8h, 0E8h, 0E8h
+  0x3DBC8:        0Ah, 0Ah, 0Ah
+  0x3DBCA:        74h, 74h, 74h
+  0x3DBCC:        0B1h, 0B1h, 0B1h
+  0x3DBCE:        90h, 90h, 90h
+  0x3DBCF:        90h, 90h, 90h
+  0x3DBD0:        0E8h, 0E8h, 0E8h
+  0x3DBD3:        0Bh, 0Bh, 0Bh
+  0x3DBD5:        74h, 74h, 74h
+  0x3DBD7:        0BBh, 0BBh, 0BBh
+  0x3DBDA:        0BAh, 0BAh, 0BAh
+  0x3DBDD:        0BDh, 0BDh, 0BDh
+  0x3DBE0:        0E8h, 0E8h, 0E8h
+  0x3DBE3:        2Eh, 2Eh, 2Eh
+  0x3DBE9:        90h, 90h, 90h
+  0x3DBEA:        74h, 74h, 74h
+  0x3DBEC:        2Eh, 2Eh, 2Eh
+  0x3DBF2:        90h, 90h, 90h
+  0x3DBF3:        75h, 75h, 75h
+  0x3DBF5:        2Eh, 2Eh, 2Eh
+  0x3DBF9:        2Eh, 2Eh, 2Eh
+  0x3DBFD:        8Bh, 8Bh, 8Bh
+  0x3DC00:        56h, 56h, 56h
+  0x3DC01:        9Ah, 9Ah, 9Ah
+  0x3DC06:        5Eh, 5Eh, 5Eh
+  0x3DC07:        2Eh, 2Eh, 2Eh
+  0x3DC0E:        76h, 76h, 76h
+  0x3DC10:        80h, 80h, 80h
+  0x3DC14:        7Eh, 7Eh, 7Eh
+  0x3DC16:        80h, 80h, 80h
+  0x3DC1A:        74h, 74h, 74h
+  0x3DC1C:        0E8h, 0E8h, 0E8h
+  0x3DC1F:        8Bh, 8Bh, 8Bh
+  0x3DC22:        3Bh, 3Bh, 3Bh
+  0x3DC25:        75h, 75h, 75h
+  0x3DC27:        83h, 83h, 83h
+  0x3DC2B:        75h, 75h, 75h
+  0x3DC2D:        0C7h, 0C7h, 0C7h
+  0x3DC32:        0B0h, 0B0h, 0B0h
+  0x3DC34:        0E8h, 0E8h, 0E8h
+  0x3DC37:        0Ah, 0Ah, 0Ah
+  0x3DC39:        74h, 74h, 74h
+  0x3DC3B:        0C7h, 0C7h, 0C7h
+  0x3DC40:        8Bh, 8Bh, 8Bh
+  0x3DC43:        3, 3, 3
+  0x3DC46:        9Ah, 9Ah, 9Ah
+  0x3DC4B:        89h, 89h, 89h
+  0x3DC4E:        0E8h, 0E8h, 0E8h
+  0x3DC51:        0E8h, 0E8h, 0E8h
+  0x3DC54:        0C3h, 0C3h, 0C3h
+  --- callers (9): sub_2BE97, sub_2FD42, sub_3099C, sub_30AA8, sub_3CE92, sub_66ABD, sub_6760A, sub_67781, sub_6AE59
+      sub_2BE97 ea=0x2BE97 cls=ASM dyn=0
+      sub_2FD42 ea=0x2FD42 cls=ASM dyn=0
+      sub_3099C ea=0x3099C cls=ASM dyn=0
+      sub_30AA8 ea=0x30AA8 cls=ASM dyn=0
+      sub_3CE92 ea=0x3CE92 cls=DATA dyn=0
+      sub_66ABD ea=0x66ABD cls=DATA dyn=0
+      sub_6760A ea=0x6760A cls=ASM dyn=0
+      sub_67781 ea=0x67781 cls=DATA dyn=0
+
+======================================================================
+SLICE #3 sub_24980  ea=0x24980  size=4  class=LEAF  in=8  dyn=0  cd=226642  fb=None
+  0x24980: and    ax, 3FFFh
+  0x24983: retn   
+  [TERM RETN @ 0x24983]
+  --- callers (8): sub_20641, sub_23036, sub_233FD, sub_2350A, sub_235BB, sub_2365F, sub_2497C, sub_24992
+      sub_20641 ea=0x20641 cls=ASM dyn=0
+      sub_23036 ea=0x23036 cls=ASM dyn=17803
+      sub_233FD ea=0x233FD cls=ASM dyn=0
+      sub_2350A ea=0x2350A cls=ASM dyn=0
+      sub_235BB ea=0x235BB cls=ASM dyn=0
+      sub_2365F ea=0x2365F cls=ASM dyn=0
+      sub_2497C ea=0x2497C cls=NEARTHUNK dyn=146779
+      sub_24992 ea=0x24992 cls=ASM dyn=62060
+
+======================================================================
+SLICE #4 sub_6E32A  ea=0x6E32A  size=76  class=ASM  in=8  dyn=0  cd=35  fb=None
+  0x6E32A: adc    word ptr ds:200h, 0
+  0x6E32F:        2Eh, 2Eh, 2Eh
+  0x6E334:        0D1h, 0D1h, 0D1h
+  0x6E336:        0D1h, 0D1h, 0D1h
+  0x6E338:        83h, 83h, 83h
+  0x6E33B:        9Ah, 9Ah, 9Ah
+  0x6E340:        0BEh, 0BEh, 0BEh
+  0x6E343:        8Bh, 8Bh, 8Bh
+  0x6E346:        2Eh, 2Eh, 2Eh
+  0x6E34B:        2Eh, 2Eh, 2Eh
+  0x6E351:        2Eh, 2Eh, 2Eh
+  0x6E356:        74h, 74h, 74h
+  0x6E358:        2Eh, 2Eh, 2Eh
+  0x6E35C:        40h, 40h, 40h
+  0x6E35D:        2Eh, 2Eh, 2Eh
+  0x6E362:        76h, 76h, 76h
+  0x6E364:        2Bh, 2Bh, 2Bh
+  0x6E366:        2Eh, 2Eh, 2Eh
+  0x6E36A:        0EBh, 0EBh, 0EBh
+  0x6E36C:        2Eh, 2Eh, 2Eh
+  0x6E371:        2Eh, 2Eh, 2Eh
+  0x6E375:        0C3h, 0C3h, 0C3h
+  --- callers (8): sub_2BF19, sub_2BF23, sub_2BF37, sub_2BF41, sub_2BF87, sub_2BF9B, sub_2BFA5, sub_6F4A9
+      sub_2BF19 ea=0x2BF19 cls=ASM dyn=5
+      sub_2BF23 ea=0x2BF23 cls=ASM dyn=5
+      sub_2BF37 ea=0x2BF37 cls=ASM dyn=5
+      sub_2BF41 ea=0x2BF41 cls=ASM dyn=5
+      sub_2BF87 ea=0x2BF87 cls=ASM dyn=5
+      sub_2BF9B ea=0x2BF9B cls=ASM dyn=5
+      sub_2BFA5 ea=0x2BFA5 cls=ASM dyn=5
+      sub_6F4A9 ea=0x6F4A9 cls=ASM dyn=0
+
+======================================================================
+SLICE #5 sub_11577  ea=0x11577  size=233  class=ASM  in=8  dyn=0  cd=0  fb=None
+  0x11577: mov    dx, ds:7Ch
+  0x1157B: add    dx, 2
+  0x1157E: in     al, dx
+  0x1157F: test   al, 1
+  0x11581: jz     loc_11584  ->code ['0x11584']
+  0x11583: retn   
+  [TERM RETN @ 0x11583]
+  --- callers (8): sub_10A05F, sub_2F6D0, sub_3081B, sub_3084D, sub_31138, sub_33443, sub_396D7, sub_399A2
+      sub_10A05F ea=0x10A05F cls=LEAF dyn=0
+      sub_2F6D0 ea=0x2F6D0 cls=ASM dyn=0
+      sub_3081B ea=0x3081B cls=ASM dyn=0
+      sub_3084D ea=0x3084D cls=ASM dyn=0
+      sub_31138 ea=0x31138 cls=ASM dyn=0
+      sub_33443 ea=0x33443 cls=ASM dyn=0
+      sub_396D7 ea=0x396D7 cls=ASM dyn=0
+      sub_399A2 ea=0x399A2 cls=ASM dyn=0
+
+======================================================================
+SLICE #6 sub_18FBD  ea=0x18FBD  size=109  class=ASM  in=8  dyn=0  cd=0  fb=None
+  0x18FBD: push   bp
+  0x18FBE: mov    bp, sp
+  0x18FC0: cli    
+  0x18FC1: mov    ax, 7772h
+  0x18FC4: mov    dx, [bp+arg_0]
+  0x18FC7: mov    es, ax
+  0x18FC9: mov    word ptr es:unk_77720, dx  ->data ['0x77720']
+  0x18FCE: mov    dx, [bp+arg_2]
+  0x18FD1: mov    es, ax
+  0x18FD3: mov    word ptr es:unk_77722, dx  ->data ['0x77722']
+  0x18FD8: mov    dx, [bp+arg_4]
+  0x18FDB: mov    es, ax
+  0x18FDD: mov    word ptr es:unk_77724, dx  ->data ['0x77724']
+  0x18FE2: mov    dx, [bp+arg_6]
+  0x18FE5: mov    es, ax
+  0x18FE7: mov    word ptr es:unk_77726, dx  ->data ['0x77726']
+  0x18FEC: mov    dx, [bp+arg_8]
+  0x18FEF: mov    es, ax
+  0x18FF1: mov    word ptr es:unk_77728, dx  ->data ['0x77728']
+  0x18FF6: mov    dx, [bp+arg_A]
+  0x18FF9: mov    es, ax
+  0x18FFB: mov    word ptr es:unk_7772A, dx  ->data ['0x7772a']
+  0x19000: mov    dx, [bp+arg_C]
+  0x19003: mov    es, ax
+  0x19005: mov    word ptr es:unk_7772C, dx  ->data ['0x7772c']
+  0x1900A: mov    dx, [bp+arg_E]
+  0x1900D: mov    es, ax
+  0x1900F: mov    word ptr es:unk_7772E, dx  ->data ['0x7772e']
+  0x19014: sti    
+  0x19015: mov    ax, 7772h
+  0x19018: mov    es, ax
+  0x1901A: cmp    word ptr es:unk_77720, 0  ->data ['0x77720']
+  0x19020: jnz    loc_19015  ->code ['0x19015']
+  0x19022: mov    es, ax
+  0x19024: mov    ax, word ptr es:unk_77722  ->data ['0x77722']
+  0x19028: pop    bp
+  0x19029: retf   
+  [TERM RETF @ 0x19029]
+  --- callers (8): sub_1816E, sub_18388, sub_1846A, sub_18487, sub_184D3, sub_18510, sub_1914E, sub_19402
+      sub_1816E ea=0x1816E cls=ASM dyn=0
+      sub_18388 ea=0x18388 cls=ASM dyn=0
+      sub_1846A ea=0x1846A cls=ASM dyn=0
+      sub_18487 ea=0x18487 cls=ASM dyn=0
+      sub_184D3 ea=0x184D3 cls=ASM dyn=0
+      sub_18510 ea=0x18510 cls=ASM dyn=0
+      sub_1914E ea=0x1914E cls=C dyn=0
+      sub_19402 ea=0x19402 cls=C dyn=0
+
+======================================================================
+SLICE #7 sub_3ACC5  ea=0x3ACC5  size=31  class=ASM  in=8  dyn=0  cd=0  fb=None
+  0x3ACC5: push   ds
+  0x3ACC6: mov    cx, 632Ah
+  0x3ACC9: mov    ax, ds
+  0x3ACCB: mov    ds, cx
+  0x3ACCD: mov    di, 6
+  0x3ACD0: mov    [di], ax
+  0x3ACD2: mov    [di+2], si
+  0x3ACD5: mov    [di+4], bx
+  0x3ACD8: mov    cs:word_2E231, dx  ->data ['0x2e231']
+  0x3ACDD: mov    cs:word_2E233, bp  ->data ['0x2e233']
+  0x3ACE2: pop    ds
+  0x3ACE3: retf   
+  [TERM RETF @ 0x3ACE3]
+  --- callers (8): r52_e167, r53_e88, sub_187E94, sub_188DF2, sub_3EEDB, sub_40F77, sub_41646, sub_4A3EE
+      r52_e167 ea=0x182021 cls=DATA dyn=0
+      r53_e88 ea=0x1873E4 cls=ASM dyn=0
+      sub_187E94 ea=0x187E94 cls=ASM dyn=0
+      sub_188DF2 ea=0x188DF2 cls=C dyn=0
+      sub_3EEDB ea=0x3EEDB cls=ASM dyn=0
+      sub_40F77 ea=0x40F77 cls=ASM dyn=0
+      sub_41646 ea=0x41646 cls=ASM dyn=0
+      sub_4A3EE ea=0x4A3EE cls=ASM dyn=0
+
+======================================================================
+SLICE #8 sub_4ACDC  ea=0x4ACDC  size=84  class=ASM  in=8  dyn=0  cd=0  fb=None
+  0x4ACDC: mov    di, [si+6]
+  0x4ACDF:        8Eh, 8Eh, 8Eh
+  0x4ACE1:        8Bh, 8Bh, 8Bh
+  0x4ACE4:        0BBh, 0BBh, 0BBh
+  0x4ACE7:        0F7h, 0F7h, 0F7h
+  0x4ACE9:        3, 3, 3
+  0x4ACEC:        83h, 83h, 83h
+  0x4ACEF:        26h, 26h, 26h
+  0x4ACF2:        26h, 26h, 26h
+  0x4ACF6:        8Bh, 8Bh, 8Bh
+  0x4ACF9:        0BBh, 0BBh, 0BBh
+  0x4ACFC:        0F7h, 0F7h, 0F7h
+  0x4ACFE:        3, 3, 3
+  0x4AD01:        83h, 83h, 83h
+  0x4AD04:        26h, 26h, 26h
+  0x4AD08:        26h, 26h, 26h
+  0x4AD0C:        26h, 26h, 26h
+  0x4AD10:        3, 3, 3
+  0x4AD13:        3, 3, 3
+  0x4AD16:        9Ah, 9Ah, 9Ah
+  0x4AD1B:        26h, 26h, 26h
+  0x4AD1F:        0F7h, 0F7h, 0F7h
+  0x4AD24:        75h, 75h, 75h
+  0x4AD26:        83h, 83h, 83h
+  0x4AD2A:        83h, 83h, 83h
+  0x4AD2E:        7, 7, 7
+  0x4AD2F:        0C3h, 0C3h, 0C3h
+  --- callers (8): r33_e105, r35_e100, r48_e191, r48_e97, r53_e82, sub_188DF2, sub_67BAF, sub_6A5BD
+      r33_e105 ea=0x15AD22 cls=ASM dyn=0
+      r35_e100 ea=0x164314 cls=C dyn=0
+      r48_e191 ea=0x176C25 cls=ASM dyn=0
+      r48_e97 ea=0x1771E3 cls=C dyn=0
+      r53_e82 ea=0x186062 cls=ASM dyn=0
+      sub_188DF2 ea=0x188DF2 cls=C dyn=0
+      sub_67BAF ea=0x67BAF cls=DATA dyn=0
+      sub_6A5BD ea=0x6A5BD cls=C dyn=0
+
+======================================================================
+SLICE #9 sub_24988  ea=0x24988  size=10  class=LEAF  in=7  dyn=0  cd=323575  fb=None
+  0x24988: and    ax, 3FFFh
+  0x2498B: add    ax, 0E000h
+  0x2498E: xor    ax, 0E000h
+  0x24991: retn   
+  [TERM RETN @ 0x24991]
+  --- callers (7): sub_22DFF, sub_23036, sub_233FD, sub_2350A, sub_235BB, sub_2365F, sub_24984
+      sub_22DFF ea=0x22DFF cls=ASM dyn=2608
+      sub_23036 ea=0x23036 cls=ASM dyn=17803
+      sub_233FD ea=0x233FD cls=ASM dyn=0
+      sub_2350A ea=0x2350A cls=ASM dyn=0
+      sub_235BB ea=0x235BB cls=ASM dyn=0
+      sub_2365F ea=0x2365F cls=ASM dyn=0
+      sub_24984 ea=0x24984 cls=NEARTHUNK dyn=303164
+
+======================================================================
+SLICE #10 sub_22FD7  ea=0x22FD7  size=84  class=ASM  in=7  dyn=0  cd=222221  fb=None
+  0x22FD7: cmp    ax, bx
+  0x22FD9: jg     loc_23000  ->code ['0x23000']
+  0x22FDB: mov    dx, ax
+  0x22FDD: sub    ax, ax
+  0x22FDF: shr    dx, 1
+  0x22FE1: rcr    ax, 1
+  0x22FE3: shr    dx, 1
+  0x22FE5: rcr    ax, 1
+  0x22FE7: div    bx
+  0x22FE9: push   ax
+  0x22FEA: mov    bx, 4000h
+  0x22FED: sub    bx, ax
+  0x22FEF: mul    bx
+  0x22FF1: mov    bx, 0B400h
+  0x22FF4: div    bx
+  0x22FF6: pop    bx
+  0x22FF7: add    ax, bx
+  0x22FF9: shr    ax, 1
+  0x22FFB: shr    ax, 1
+  0x22FFD: shr    ax, 1
+  0x22FFF: retn   
+  [TERM RETN @ 0x22FFF]
+  --- callers (7): sub_23797, sub_237CD, sub_23803, sub_23B03, sub_23B8A, sub_23C18, sub_23C9B
+      sub_23797 ea=0x23797 cls=ASM dyn=0
+      sub_237CD ea=0x237CD cls=ASM dyn=0
+      sub_23803 ea=0x23803 cls=ASM dyn=0
+      sub_23B03 ea=0x23B03 cls=ASM dyn=38009
+      sub_23B8A ea=0x23B8A cls=ASM dyn=29581
+      sub_23C18 ea=0x23C18 cls=ASM dyn=67407
+      sub_23C9B ea=0x23C9B cls=ASM dyn=87224
+
+======================================================================
+SLICE #11 sub_23DCD  ea=0x23DCD  size=88  class=ASM  in=7  dyn=0  cd=95867  fb=None
+  0x23DCD: push   ds
+  0x23DCE: mov    cx, 7B0Eh
+  0x23DD1: mov    ds, cx
+  0x23DD3: mov    cx, ax
+  0x23DD5: or     cx, bx
+  0x23DD7: jz     loc_23E23  ->code ['0x23e23']
+  0x23DD9: cwd    
+  0x23DDA: xor    ax, dx
+  0x23DDC: sub    ax, dx
+  0x23DDE: xchg   ax, bx
+  0x23DDF: cwd    
+  0x23DE0: xor    ax, dx
+  0x23DE2: sub    ax, dx
+  0x23DE4: cmp    ax, bx
+  0x23DE6: jbe    loc_23DE9  ->code ['0x23de9']
+  0x23DE8: xchg   ax, bx
+  0x23DE9: mov    bp, ax
+  0x23DEB: mov    cx, bx
+  0x23DED: sub    dx, dx
+  0x23DEF: shl    ax, 1
+  0x23DF1: rcl    dx, 1
+  0x23DF3: shl    ax, 1
+  0x23DF5: rcl    dx, 1
+  0x23DF7: shl    ax, 1
+  0x23DF9: rcl    dx, 1
+  0x23DFB: shl    ax, 1
+  0x23DFD: rcl    dx, 1
+  0x23DFF: div    bx
+  0x23E01: shl    ax, 1
+  0x23E03: shl    ax, 1
+  0x23E05: add    ax, 46C9h
+  0x23E08: mov    bx, ax
+  0x23E0A: mov    ax, cs:[bx]
+  0x23E0D: mul    bp
+  0x23E0F: mov    bp, ax
+  0x23E11: mov    ax, cs:[bx+2]
+  0x23E15: mov    bx, dx
+  0x23E17: mul    cx
+  0x23E19: add    ax, bp
+  0x23E1B: adc    dx, bx
+  0x23E1D: shl    ax, 1
+  0x23E1F: rcl    dx, 1
+  0x23E21: mov    ax, dx
+  0x23E23: pop    ds
+  0x23E24: retn   
+  [TERM RETN @ 0x23E24]
+  --- callers (7): sub_23797, sub_237CD, sub_23AB7, sub_23AC4, sub_23D85, sub_23E57, sub_23E66
+      sub_23797 ea=0x23797 cls=ASM dyn=0
+      sub_237CD ea=0x237CD cls=ASM dyn=0
+      sub_23AB7 ea=0x23AB7 cls=LEAF dyn=0
+      sub_23AC4 ea=0x23AC4 cls=ASM dyn=8069
+      sub_23D85 ea=0x23D85 cls=ASM dyn=7443
+      sub_23E57 ea=0x23E57 cls=LEAF dyn=80355
+      sub_23E66 ea=0x23E66 cls=ASM dyn=0
+
+======================================================================
+SLICE #12 sub_20559  ea=0x20559  size=10  class=LEAF  in=7  dyn=0  cd=449  fb=None
+  0x20559: mov    bx, [si+4]
+  0x2055C:        83h, 83h, 83h
+  0x2055F:        7Dh, 7Dh, 7Dh
+  0x20561: stc    
+  0x20562: retf   
+  [TERM RETF @ 0x20562]
+  --- callers (7): sub_1F769, sub_1FB3C, sub_202DB, sub_2673F, sub_268DD, sub_26A49, sub_26CD8
+      sub_1F769 ea=0x1F769 cls=ASM dyn=0
+      sub_1FB3C ea=0x1FB3C cls=ASM dyn=0
+      sub_202DB ea=0x202DB cls=ASM dyn=449
+      sub_2673F ea=0x2673F cls=ASM dyn=0
+      sub_268DD ea=0x268DD cls=ASM dyn=0
+      sub_26A49 ea=0x26A49 cls=ASM dyn=0
+      sub_26CD8 ea=0x26CD8 cls=ASM dyn=0
+
+======================================================================
+SLICE #13 sub_2F188  ea=0x2F188  size=93  class=ASM  in=7  dyn=0  cd=0  fb=None
+  0x2F188: test   byte ptr cs:funcs_4E5C0, 1  ->data ['0x2e100']
+  0x2F18E: jnz    loc_2F197  ->code ['0x2f197']
+  0x2F190: xor    al, al
+  0x2F192: xor    bx, bx
+  0x2F194: xor    cx, cx
+  0x2F196: retf   
+  [TERM RETF @ 0x2F196]
+  --- callers (7): sub_2FD42, sub_3C4F2, sub_4F181, sub_4F3EC, sub_4F4FE, sub_4F8BC, sub_4FA8A
+      sub_2FD42 ea=0x2FD42 cls=ASM dyn=0
+      sub_3C4F2 ea=0x3C4F2 cls=DATA dyn=0
+      sub_4F181 ea=0x4F181 cls=ASM dyn=0
+      sub_4F3EC ea=0x4F3EC cls=ASM dyn=0
+      sub_4F4FE ea=0x4F4FE cls=DATA dyn=0
+      sub_4F8BC ea=0x4F8BC cls=ASM dyn=0
+      sub_4FA8A ea=0x4FA8A cls=ASM dyn=0
+
+======================================================================
+SLICE #14 sub_3CCB1  ea=0x3CCB1  size=481  class=ASM  in=7  dyn=0  cd=0  fb=None
+  0x3CCB1: mov    word ptr [di+2Eh], 0
+  0x3CCB6:        0E9h, 0E9h, 0E9h
+  0x3CCB9:        2Bh, 2Bh, 2Bh
+  0x3CCBC:        0Bh, 0Bh, 0Bh
+  0x3CCBE:        74h, 74h, 74h
+  0x3CCC0:        0B1h, 0B1h, 0B1h
+  0x3CCC2:        0D3h, 0D3h, 0D3h
+  0x3CCC4:        0Bh, 0Bh, 0Bh
+  0x3CCC6:        75h, 75h, 75h
+  0x3CCC8:        40h, 40h, 40h
+  0x3CCC9:        8Bh, 8Bh, 8Bh
+  0x3CCCB:        2Bh, 2Bh, 2Bh
+  0x3CCCE:        83h, 83h, 83h
+  0x3CCD1:        75h, 75h, 75h
+  0x3CCD3:        0E9h, 0E9h, 0E9h
+  0x3CCD6:        50h, 50h, 50h
+  0x3CCD7:        8Ah, 8Ah, 8Ah
+  0x3CCDA:        25h, 25h, 25h
+  0x3CCDD:        2Eh, 2Eh, 2Eh
+  0x3CCE2:        0F7h, 0F7h, 0F7h
+  0x3CCE4:        8Ah, 8Ah, 8Ah
+  0x3CCE6:        8Ah, 8Ah, 8Ah
+  0x3CCE8:        43h, 43h, 43h
+  0x3CCE9:        58h, 58h, 58h
+  0x3CCEA:        83h, 83h, 83h
+  0x3CCED:        7Fh, 7Fh, 7Fh
+  0x3CCEF:        0E9h, 0E9h, 0E9h
+  0x3CCF2:        3Bh, 3Bh, 3Bh
+  0x3CCF4:        7Dh, 7Dh, 7Dh
+  0x3CCF6:        8Bh, 8Bh, 8Bh
+  0x3CCF8:        1, 1, 1
+  0x3CCFB:        0F7h, 0F7h, 0F7h
+  0x3CD01:        75h, 75h, 75h
+  0x3CD03:        2Eh, 2Eh, 2Eh
+  0x3CD09:        90h, 90h, 90h
+  0x3CD0A:        74h, 74h, 74h
+  0x3CD0C:        83h, 83h, 83h
+  0x3CD10:        75h, 75h, 75h
+  0x3CD12:        56h, 56h, 56h
+  0x3CD13:        9Ah, 9Ah, 9Ah
+  0x3CD18:        5Eh, 5Eh, 5Eh
+  0x3CD19:        0EBh, 0EBh, 0EBh
+  0x3CD1B:        0C7h, 0C7h, 0C7h
+  0x3CD20:        0BBh, 0BBh, 0BBh
+  0x3CD23:        0F6h, 0F6h, 0F6h
+  0x3CD27:        74h, 74h, 74h
+  0x3CD29:        0BBh, 0BBh, 0BBh
+  0x3CD2C:        39h, 39h, 39h
+  0x3CD2F:        7Fh, 7Fh, 7Fh
+  0x3CD31:        8Bh, 8Bh, 8Bh
+  0x3CD34:        39h, 39h, 39h
+  0x3CD37:        7Dh, 7Dh, 7Dh
+  0x3CD39:        89h, 89h, 89h
+  0x3CD3C:        0E9h, 0E9h, 0E9h
+  0x3CD3F:        89h, 89h, 89h
+  0x3CD42:        81h, 81h, 81h
+  0x3CD46:        74h, 74h, 74h
+  0x3CD48:        39h, 39h, 39h
+  0x3CD4B:        7Fh, 7Fh, 7Fh
+  0x3CD4D:        2Eh, 2Eh, 2Eh
+  0x3CD53:        90h, 90h, 90h
+  0x3CD54:        75h, 75h, 75h
+  0x3CD56:        83h, 83h, 83h
+  0x3CD5A:        74h, 74h, 74h
+  0x3CD5C:        0FFh, 0FFh, 0FFh
+  0x3CD5F:        8Bh, 8Bh, 8Bh
+  0x3CD62:        0D1h, 0D1h, 0D1h
+  0x3CD64:        8Bh, 8Bh, 8Bh
+  0x3CD68:        89h, 89h, 89h
+  0x3CD6B:        0E9h, 0E9h, 0E9h
+  0x3CD6E:        56h, 56h, 56h
+  0x3CD6F:        83h, 83h, 83h
+  0x3CD73:        74h, 74h, 74h
+  0x3CD75:        0F7h, 0F7h, 0F7h
+  0x3CD7B:        75h, 75h, 75h
+  0x3CD7D:        9Ah, 9Ah, 9Ah
+  0x3CD82:        0EBh, 0EBh, 0EBh
+  0x3CD84:        0F7h, 0F7h, 0F7h
+  0x3CD8A:        75h, 75h, 75h
+  0x3CD8C:        80h, 80h, 80h
+  0x3CD91:        75h, 75h, 75h
+  0x3CD93:        9Ah, 9Ah, 9Ah
+  0x3CD98:        0EBh, 0EBh, 0EBh
+  0x3CD9A:        90h, 90h, 90h
+  0x3CD9B:        9Ah, 9Ah, 9Ah
+  0x3CDA0:        5Eh, 5Eh, 5Eh
+  0x3CDA1:        0E9h, 0E9h, 0E9h
+  0x3CDA4:        2Eh, 2Eh, 2Eh
+  0x3CDAA:        90h, 90h, 90h
+  0x3CDAB:        75h, 75h, 75h
+  0x3CDAD:        83h, 83h, 83h
+  0x3CDB1:        74h, 74h, 74h
+  0x3CDB3:        0FFh, 0FFh, 0FFh
+  0x3CDB6:        8Bh, 8Bh, 8Bh
+  0x3CDB9:        0D1h, 0D1h, 0D1h
+  0x3CDBB:        8Bh, 8Bh, 8Bh
+  0x3CDBF:        89h, 89h, 89h
+  0x3CDC2:        0E9h, 0E9h, 0E9h
+  0x3CDC5:        0F7h, 0F7h, 0F7h
+  0x3CDCB:        75h, 75h, 75h
+  0x3CDCD:        80h, 80h, 80h
+  0x3CDD2:        74h, 74h, 74h
+  0x3CDD4:        83h, 83h, 83h
+  0x3CDD8:        75h, 75h, 75h
+  0x3CDDA:        2Eh, 2Eh, 2Eh
+  0x3CDE0:        90h, 90h, 90h
+  0x3CDE1:        74h, 74h, 74h
+  0x3CDE3:        81h, 81h, 81h
+  0x3CDE8:        7Eh, 7Eh, 7Eh
+  0x3CDEA:        0F7h, 0F7h, 0F7h
+  0x3CDF0:        75h, 75h, 75h
+  0x3CDF2:        83h, 83h, 83h
+  0x3CDF6:        75h, 75h, 75h
+  0x3CDF8:        56h, 56h, 56h
+  0x3CDF9:        9Ah, 9Ah, 9Ah
+  0x3CDFE:        5Eh, 5Eh, 5Eh
+  0x3CDFF:        0EBh, 0EBh, 0EBh
+  0x3CE01:        56h, 56h, 56h
+  0x3CE02:        9Ah, 9Ah, 9Ah
+  0x3CE07:        5Eh, 5Eh, 5Eh
+  0x3CE08:        0EBh, 0EBh, 0EBh
+  0x3CE0A:        0F7h, 0F7h, 0F7h
+  0x3CE0C:        3Bh, 3Bh, 3Bh
+  0x3CE0E:        7Eh, 7Eh, 7Eh
+  0x3CE10:        8Bh, 8Bh, 8Bh
+  0x3CE12:        1, 1, 1
+  0x3CE15:        8Bh, 8Bh, 8Bh
+  0x3CE18:        39h, 39h, 39h
+  0x3CE1B:        7Ch, 7Ch, 7Ch
+  0x3CE1D:        81h, 81h, 81h
+  0x3CE22:        7Eh, 7Eh, 7Eh
+  0x3CE24:        0C7h, 0C7h, 0C7h
+  0x3CE29:        0EBh, 0EBh, 0EBh
+  0x3CE2B:        89h, 89h, 89h
+  0x3CE2E:        0F7h, 0F7h, 0F7h
+  0x3CE34:        75h, 75h, 75h
+  0x3CE36:        2Eh, 2Eh, 2Eh
+  0x3CE3C:        90h, 90h, 90h
+  0x3CE3D:        75h, 75h, 75h
+  0x3CE3F:        0C7h, 0C7h, 0C7h
+  0x3CE44:        0EBh, 0EBh, 0EBh
+  0x3CE46:        83h, 83h, 83h
+  0x3CE4A:        74h, 74h, 74h
+  0x3CE4C:        56h, 56h, 56h
+  0x3CE4D:        9Ah, 9Ah, 9Ah
+  0x3CE52:        5Eh, 5Eh, 5Eh
+  0x3CE53:        2Eh, 2Eh, 2Eh
+  0x3CE59:        74h, 74h, 74h
+  0x3CE5B:        8Bh, 8Bh, 8Bh
+  0x3CE5E:        8Bh, 8Bh, 8Bh
+  0x3CE61:        39h, 39h, 39h
+  0x3CE64:        7Eh, 7Eh, 7Eh
+  0x3CE66:        89h, 89h, 89h
+  0x3CE69:        1Eh, 1Eh, 1Eh
+  0x3CE6A:        56h, 56h, 56h
+  0x3CE6B:        8Bh, 8Bh, 8Bh
+  0x3CE6E:        8Bh, 8Bh, 8Bh
+  0x3CE71:        8Eh, 8Eh, 8Eh
+  0x3CE73:        2Eh, 2Eh, 2Eh
+  0x3CE79:        74h, 74h, 74h
+  0x3CE7B:        81h, 81h, 81h
+  0x3CE80:        7Dh, 7Dh, 7Dh
+  0x3CE82:        0C7h, 0C7h, 0C7h
+  0x3CE87:        83h, 83h, 83h
+  0x3CE8A:        9Ah, 9Ah, 9Ah
+  0x3CE8F:        5Eh, 5Eh, 5Eh
+  0x3CE90:        1Fh, 1Fh, 1Fh
+  0x3CE91:        0C3h, 0C3h, 0C3h
+  --- callers (7): sub_2FEF2, sub_31319, sub_3C4F2, sub_4CCFB, sub_4CD1D, sub_67BAF, sub_683C5
+      sub_2FEF2 ea=0x2FEF2 cls=ASM dyn=0
+      sub_31319 ea=0x31319 cls=ASM dyn=0
+      sub_3C4F2 ea=0x3C4F2 cls=DATA dyn=0
+      sub_4CCFB ea=0x4CCFB cls=ASM dyn=0
+      sub_4CD1D ea=0x4CD1D cls=ASM dyn=0
+      sub_67BAF ea=0x67BAF cls=DATA dyn=0
+      sub_683C5 ea=0x683C5 cls=DATA dyn=0
+
+======================================================================
+SLICE #15 sub_3F4A8  ea=0x3F4A8  size=95  class=ASM  in=7  dyn=0  cd=0  fb=None
+  0x3F4A8: push   si
+  0x3F4A9:        8Bh, 8Bh, 8Bh
+  0x3F4AB:        0B3h, 0B3h, 0B3h
+  0x3F4AD:        0BFh, 0BFh, 0BFh
+  0x3F4B0:        0B9h, 0B9h, 0B9h
+  0x3F4B3:        9Ah, 9Ah, 9Ah
+  0x3F4B8:        5Eh, 5Eh, 5Eh
+  0x3F4B9:        0E8h, 0E8h, 0E8h
+  0x3F4BC:        8Ah, 8Ah, 8Ah
+  0x3F4BF:        80h, 80h, 80h
+  0x3F4C2:        0BFh, 0BFh, 0BFh
+  0x3F4C5:        0B9h, 0B9h, 0B9h
+  0x3F4C8:        80h, 80h, 80h
+  0x3F4CB:        74h, 74h, 74h
+  0x3F4CD:        38h, 38h, 38h
+  0x3F4CF:        75h, 75h, 75h
+  0x3F4D1:        51h, 51h, 51h
+  0x3F4D2:        2Eh, 2Eh, 2Eh
+  0x3F4D6:        8Ah, 8Ah, 8Ah
+  0x3F4D9:        0F6h, 0F6h, 0F6h
+  0x3F4DB:        80h, 80h, 80h
+  0x3F4DE:        0F6h, 0F6h, 0F6h
+  0x3F4E0:        0B1h, 0B1h, 0B1h
+  0x3F4E2:        0D3h, 0D3h, 0D3h
+  0x3F4E4:        0E8h, 0E8h, 0E8h
+  0x3F4E7:        0Ah, 0Ah, 0Ah
+  0x3F4E9:        59h, 59h, 59h
+  0x3F4EA:        75h, 75h, 75h
+  0x3F4EC:        8Ah, 8Ah, 8Ah
+  0x3F4EF:        88h, 88h, 88h
+  0x3F4F2:        8Ah, 8Ah, 8Ah
+  0x3F4F5:        88h, 88h, 88h
+  0x3F4F8:        8Ah, 8Ah, 8Ah
+  0x3F4FB:        88h, 88h, 88h
+  0x3F4FE:        0E9h, 0E9h, 0E9h
+  0x3F501:        83h, 83h, 83h
+  0x3F504:        0E2h, 0E2h, 0E2h
+  0x3F506:        0C3h, 0C3h, 0C3h
+  --- callers (7): sub_2F6D0, sub_2FD42, sub_3001E, sub_30307, sub_31138, sub_31319, sub_33443
+      sub_2F6D0 ea=0x2F6D0 cls=ASM dyn=0
+      sub_2FD42 ea=0x2FD42 cls=ASM dyn=0
+      sub_3001E ea=0x3001E cls=ASM dyn=0
+      sub_30307 ea=0x30307 cls=ASM dyn=0
+      sub_31138 ea=0x31138 cls=ASM dyn=0
+      sub_31319 ea=0x31319 cls=ASM dyn=0
+      sub_33443 ea=0x33443 cls=ASM dyn=0
+
+======================================================================
+SLICE #16 sub_2647E  ea=0x2647E  size=46  class=ASM  in=6  dyn=0  cd=86416  fb=None
+  0x2647E: push   bx
+  0x2647F: push   ds
+  0x26480: mov    bx, 7B0Eh
+  0x26483: mov    ds, bx
+  0x26485: shl    ax, 1
+  0x26487: shl    ax, 1
+  0x26489: mov    bx, ax
+  0x2648B: mov    ax, [bx+3052h]
+  0x2648F: mov    ds, word ptr [bx+3054h]
+  0x26493: mov    bx, ax
+  0x26495: mov    al, [bx]
+  0x26497: cmp    al, 1
+  0x26499: jbe    loc_264A7  ->code ['0x264a7']
+  0x2649B: mov    al, [bx+1]
+  0x2649E: sub    ah, ah
+  0x264A0: shl    ax, 1
+  0x264A2: shr    al, 1
+  0x264A4: pop    ds
+  0x264A5: pop    bx
+  0x264A6: retn   
+  [TERM RETN @ 0x264A6]
+  --- callers (6): sub_26470, sub_264AC, sub_264C5, sub_26C22, sub_26C4A, sub_26FF4
+      sub_26470 ea=0x26470 cls=LEAF dyn=72714
+      sub_264AC ea=0x264AC cls=ASM dyn=3507
+      sub_264C5 ea=0x264C5 cls=ASM dyn=0
+      sub_26C22 ea=0x26C22 cls=ASM dyn=37
+      sub_26C4A ea=0x26C4A cls=ASM dyn=0
+      sub_26FF4 ea=0x26FF4 cls=ASM dyn=10158
+
+======================================================================
+SLICE #17 sub_13E0A  ea=0x13E0A  size=27  class=ASM  in=6  dyn=0  cd=55  fb=None
+  0x13E0A: push   ds
+  0x13E0B: mov    ax, 7A32h
+  0x13E0E: mov    ds, ax
+  0x13E10: and    si, 0FFFh
+  0x13E14: mov    al, [si+22Eh]
+  0x13E18: mov    ah, al
+  0x13E1A: and    ah, 7Fh
+  0x13E1D: rol    al, 1
+  0x13E1F: and    al, 1
+  0x13E21: shl    al, 1
+  0x13E23: pop    ds
+  0x13E24: retf   
+  [TERM RETF @ 0x13E24]
+  --- callers (6): sub_1243B, sub_12534, sub_1273A, sub_13CB0, sub_48EC7, sub_4BDD0
+      sub_1243B ea=0x1243B cls=ASM dyn=0
+      sub_12534 ea=0x12534 cls=ASM dyn=55
+      sub_1273A ea=0x1273A cls=ASM dyn=0
+      sub_13CB0 ea=0x13CB0 cls=ASM dyn=0
+      sub_48EC7 ea=0x48EC7 cls=ASM dyn=0
+      sub_4BDD0 ea=0x4BDD0 cls=ASM dyn=0
+
+======================================================================
+SLICE #18 sub_4F4A8  ea=0x4F4A8  size=86  class=ASM  in=6  dyn=0  cd=8  fb=None
+  0x4F4A8: push   ds
+  0x4F4A9:        0BBh, 0BBh, 0BBh
+  0x4F4AC:        8Eh, 8Eh, 8Eh
+  0x4F4AE:        0A2h, 0A2h, 0A2h
+  0x4F4B1:        33h, 33h, 33h
+  0x4F4B3:        0A2h, 0A2h, 0A2h
+  0x4F4B6:        0A2h, 0A2h, 0A2h
+  0x4F4B9:        0C6h, 0C6h, 0C6h
+  0x4F4BE:        0A2h, 0A2h, 0A2h
+  0x4F4C1:        0A2h, 0A2h, 0A2h
+  0x4F4C4:        0A3h, 0A3h, 0A3h
+  0x4F4C7:        0A3h, 0A3h, 0A3h
+  0x4F4CA:        0A3h, 0A3h, 0A3h
+  0x4F4CD:        0F7h, 0F7h, 0F7h
+  0x4F4CF:        0A3h, 0A3h, 0A3h
+  0x4F4D2:        0A3h, 0A3h, 0A3h
+  0x4F4D5:        0A2h, 0A2h, 0A2h
+  0x4F4D8:        0A2h, 0A2h, 0A2h
+  0x4F4DB:        0A2h, 0A2h, 0A2h
+  0x4F4DE:        0A2h, 0A2h, 0A2h
+  0x4F4E1:        0A2h, 0A2h, 0A2h
+  0x4F4E4:        0A2h, 0A2h, 0A2h
+  0x4F4E7:        0A2h, 0A2h, 0A2h
+  0x4F4EA:        0C7h, 0C7h, 0C7h
+  0x4F4F0:        9Ah, 9Ah, 9Ah
+  0x4F4F5:        74h, 74h, 74h
+  0x4F4F7:        83h, 83h, 83h
+  0x4F4FC:        1Fh, 1Fh, 1Fh
+  0x4F4FD:        0CBh, 0CBh, 0CBh
+  --- callers (6): r37_e137, sub_2BEB5, sub_2F6D0, sub_3001E, sub_30307, sub_33443
+      r37_e137 ea=0x166ADE cls=ASM dyn=0
+      sub_2BEB5 ea=0x2BEB5 cls=ASM dyn=8
+      sub_2F6D0 ea=0x2F6D0 cls=ASM dyn=0
+      sub_3001E ea=0x3001E cls=ASM dyn=0
+      sub_30307 ea=0x30307 cls=ASM dyn=0
+      sub_33443 ea=0x33443 cls=ASM dyn=0
