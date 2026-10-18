@@ -3300,4 +3300,90 @@ variant; `0x43E0C` stays an honest unresolved dst.
 
 ---
 
+## 2026-10-18 64 — Sweep & Register the Top 6 `R*` Overlays:
+`static_unresolved` 564 -> 455, +80 functions, 6 segments covered
+
+Finding 63 left the **other `R*` overlays** as the largest remaining bucket
+(254 dsts / 424 refs). This session ran the guarded
+`sweep_upper -> plan_register -> register_upper` pass across the **top 6
+overlay segments** (`R30_569F`, `R06_5CD9`, `R53_569Fs`, `R14_5E0B`,
+`R17_5E8F`, `R35_569Fs` = **78,640 B / 150 dsts / 216 refs**) under a new
+`REGISTER` manifest (`registry/overlays_register_expected.json`), then
+re-measured.
+
+### Step 1 -- scope + holes for the 6 segments
+
+`build_overlay_scope.py` (IDA-side) found each segment's exact `[start,end)`
+from the segment table: **6 blocks / 78,640 B** (R30 25,504 + R06 4,704 +
+R53 32,352 + R14 2,112 + R17 3,536 + R35 10,432). `map_overlays.py` (host)
+computed candidate data holes the same way `map_upper.py` does for the R05
+upper half -- merged printable string runs (>=6, NUL/space-terminated) plus
+data-led heads, each **SHA-256-pinned from `FALCONCD.EXE`** -- giving **12
+holes / 1,412 B**. `sweep_upper.py` was parameterized by
+`FALCON_SCOPE_FILE`/`FALCON_MAP_FILE`/`FALCON_SWEEP_OUT`/`FALCON_SWEEP_LOG`
+so the same sweep runs on an arbitrary scope; `plan_register.py` by
+`FALCON_PLAN_OUT`/`FALCON_PLAN_SWEEP`.
+
+The sweep walked **15,177 instructions** over 6 blocks, emitting **56 ranges,
+82 new fns, 80 keep, 11 holes in range** (1 suspect hole `0x6e2d2` dropped).
+Stage-2 rejected 10 attempts for `no-terminator-behind`.
+
+### Step 2 -- two plan/mutator fixes
+
+1. **embedded-in-function holes.** Three string-table holes (`0x68AAC`,
+   `0x68AC5`, `0x68BC3`) sit *inside* the 4,167-byte function
+   `0x683C5..0x6940E` (data embedded in code). They must not be registered as
+   separate data items -- `plan_register` now **drops any hole that overlaps a
+   keep/new function span** from tiling (and from the standalone bucket /
+   orphan check), since the function's bytes already cover them.
+2. **body-integrity failures.** A decode-only scan of the 82 planned new_fns
+   found **5 with an undecodable byte mid-span** (`sub_6CD90`, `sub_1820C0`,
+   `sub_187E94`, `sub_188DF2`, `sub_6E29E`) -- they are not clean standalone
+   functions. `register_upper.py` now, on `add_func` failure, **rolls back the
+   partial function and converts the span to a data hole** (clearing all items
+   with `DELIT_EXPAND` first), records it in a module-level `converted` dict,
+   and **writes the manifest back** after save (moving those `new_fns` into
+   `data_holes`) so `verify_rebuild`'s REGISTER tiling matches the live DB.
+   Two of the five (`sub_6CD90`, `sub_6DF27`) failed and converted; the other
+   three registered cleanly this run.
+
+The heads guard was relaxed: heads may legitimately **decrease** when two
+adjacent code items merge into one instruction during registration (cleaner
+disassembly) or when a failed fn converts to a hole -- the hard invariant is
+that **code refs must not decrease** (no lost call/jmp edges).
+
+`verify_idb.py` and `verify_rebuild.py` were extended to load **all three**
+register manifests (upper + resident + overlays), so the 10 overlay holes are
+exported to `data_holes.json` and the 80 ADDED count as manifest-planned.
+
+### Step 3 -- guarded registration
+
+`.bak_overlays` backup, then `register_upper.py` (parameterized by
+`FALCON_MANIFEST`/`FALCON_REG_LOG`): **56 ranges, 80 functions registered,
+2 converted to holes, 10 holes / 1,348 B, 7,793 instructions created, guards
+PASSED, SAVED**. Manifest auto-updated (2 new_fns -> holes).
+
+### Measured effect
+
+| metric | f63 | f64 |
+|---|---|---|
+| functions | 2,157 | **2,237** (+80) |
+| static edges | 5,341 | **5,730 (+389)** |
+| `static_unresolved` | 564 | **455 (-109)** |
+| union | 5,362 | 5,751 |
+| new overlay fns with >=1 incoming edge | - | **64 / 80** |
+| R30_569F remaining dsts | 71 | **0** |
+| R06_5CD9 / R17 / R35 remaining | 25/12/12 | **2/1/1** |
+
+Gates: `naming.py check` OK (267) . `verify_rebuild` **faithful -- ADDED 80
+all manifest-planned, REGISTER 76 applied / 100 pending, LOST 0, CHANGED 0** .
+`verify_idb` **INTACT (2,237, 0 span / 0 name / 0 data-hole problems)** .
+read-back **265/265 + 2/2**.
+
+**R30_569F fully resolved** (0 dsts); R06/R17/R35 down to 1-2 dsts each.
+R53 (12 dsts) and R14 (10 dsts) retain the undecodable-byte functions that
+converted to holes plus class-c anomalies.
+
+---
+
 (append new findings below)

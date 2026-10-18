@@ -30,6 +30,8 @@ import idc
 FB = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\function_bytes.json"
 SPLITMAN = r"C:\Users\yotam\projects\falcon3\registry\subblock_split_expected.json"
 REGMAN = r"C:\Users\yotam\projects\falcon3\registry\upper_register_expected.json"
+REGMAN_RES = r"C:\Users\yotam\projects\falcon3\registry\resident_register_expected.json"
+REGMAN_OVL = r"C:\Users\yotam\projects\falcon3\registry\overlays_register_expected.json"
 HOLES_OUT = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\data_holes.json"
 LOG = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\integrity.log"
 
@@ -63,7 +65,13 @@ def load_json(path):
 
 
 splits = (load_json(SPLITMAN) or {}).get("splits", [])
-regdoc = load_json(REGMAN) or {}
+# finding 64: merge all three register manifests (upper + resident + overlays)
+regdoc = {"ranges": [], "standalone_holes": []}
+for _p in (REGMAN, REGMAN_RES, REGMAN_OVL):
+    _d = load_json(_p)
+    if _d:
+        regdoc["ranges"] += _d.get("ranges", [])
+        regdoc["standalone_holes"] += _d.get("standalone_holes", [])
 
 specs = []
 for e in splits:

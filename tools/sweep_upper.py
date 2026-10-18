@@ -38,8 +38,12 @@ import idc
 
 ROOT = r"C:\Users\yotam\projects\falcon3"
 IDA = ROOT + r"\analysis\ida_falconcd"
-OUT = IDA + r"\upper_sweep.json"
-LOG = IDA + r"\upper_sweep.log"
+# finding 64: allow an overlay scope file + custom outputs via env vars so the
+# same sweep runs on the 6 top R* overlay segments (registry overlay pass).
+import os
+SCOPE_FILE = os.environ.get("FALCON_SCOPE_FILE")
+OUT = os.environ.get("FALCON_SWEEP_OUT", IDA + r"\upper_sweep.json")
+LOG = os.environ.get("FALCON_SWEEP_LOG", IDA + r"\upper_sweep.log")
 
 SCOPE = [
     {"name": "i_3B830", "lo": 0x3B830, "hi": 0x43AE0},
@@ -47,17 +51,22 @@ SCOPE = [
     {"name": "iii_4E520", "lo": 0x4E520, "hi": 0x4FD20},
     {"name": "iv_54AF0_UI", "lo": 0x54AF0, "hi": 0x669F0},
 ]
-# finding 62: the remaining evidence-bearing blocks of R05_1E10 (from the
-# post-f61 recount).  Zero-evidence blocks enter only when a newly revealed
-# ref lands in them -- see analysis/ida_falconcd/register_scope.json
-try:
-    _sc = json.loads(open(IDA + r"\register_scope.json").read())["scope"]
-    SCOPE = SCOPE + [{"name": s["name"], "lo": s["lo"], "hi": s["hi"]}
-                     for s in _sc
-                     if not any(s["lo"] >= x["lo"] and s["hi"] <= x["hi"]
-                                for x in SCOPE)]
-except Exception:
-    pass
+if SCOPE_FILE:
+    # finding 64: explicit overlay scope -- replace the default SCOPE entirely
+    _sc = json.loads(open(SCOPE_FILE).read())["scope"]
+    SCOPE = [{"name": s["name"], "lo": s["lo"], "hi": s["hi"]} for s in _sc]
+else:
+    # finding 62: the remaining evidence-bearing blocks of R05_1E10 (from the
+    # post-f61 recount).  Zero-evidence blocks enter only when a newly revealed
+    # ref lands in them -- see analysis/ida_falconcd/register_scope.json
+    try:
+        _sc = json.loads(open(IDA + r"\register_scope.json").read())["scope"]
+        SCOPE = SCOPE + [{"name": s["name"], "lo": s["lo"], "hi": s["hi"]}
+                         for s in _sc
+                         if not any(s["lo"] >= x["lo"] and s["hi"] <= x["hi"]
+                                    for x in SCOPE)]
+    except Exception:
+        pass
 TERMS = {"retn", "retf", "ret", "iret", "jmp"}
 MIN_FN = 3
 MAX_GAP_INSNS = 40000
@@ -244,7 +253,9 @@ def sweep_gap(a, b, holes_lo_set):
 
 def main():
     dsts = json.load(open(IDA + r"\dst_list.json"))
-    up = json.load(open(IDA + r"\upper_map.json"))
+    # finding 64: overlay pass reads overlay_map.json, upper pass reads upper_map.json
+    _mapfile = os.environ.get("FALCON_MAP_FILE") or (IDA + r"\upper_map.json")
+    up = json.load(open(_mapfile))
     entries = json.load(open(IDA + r"\overlay_entries.json"))
     entry_eas = sorted(e["entry_ea"] for e in entries
                        if e.get("entry_ea") is not None)

@@ -71,6 +71,7 @@ HOLES_EXPORT = ROOT / "analysis" / "ida_falconcd" / "data_holes.json"
 # live sha256 checked against verify_idb's export.
 REGMAN = ROOT / "registry" / "upper_register_expected.json"
 REGMAN_RES = ROOT / "registry" / "resident_register_expected.json"
+REGMAN_OVL = ROOT / "registry" / "overlays_register_expected.json"
 
 
 def load_splits():
@@ -82,7 +83,7 @@ def load_splits():
 
 def load_registers():
     ranges = []
-    for p in (REGMAN, REGMAN_RES):
+    for p in (REGMAN, REGMAN_RES, REGMAN_OVL):
         if p.exists():
             ranges += json.loads(p.read_text()).get("ranges", [])
     return ranges

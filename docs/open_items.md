@@ -248,3 +248,19 @@
   sweep/REGISTER cycle (Finding 64); (c) in-scope R05 residue 63 dsts /
   109 refs inside documented stops; (d) untouched zero block
   `0x500C0..0x54AF0` (0 dsts) stays out.
+
+- **Top 6 R\* overlays registered (finding 64):** 80 new fns,
+  `static_unresolved` **564 -> 455**, **R30_569F fully resolved**
+  (0 dsts), R06/R17/R35 down to 1-2. **Still open:** (a) **R53_569Fs 12
+  dsts / 14 refs + R14_5E0B 10 dsts / 36 refs** remain (undecodable-byte
+  fns converted to holes + class-c anomalies); (b) small R\* overlays
+  (R12/R32/R40 4 dsts each, R33 3, R09/R34/R64/R69/R02/R10/R36/R54 1-2)
+  -- ~30 dsts total, low priority; (c) **R05_1E10 in-scope residue 72
+  dsts / 157 refs** inside documented stops (f62 block-iv tables); (d)
+  Resident residue 73 dsts / 140 refs (already-fn, gap-into-existing,
+  undecodable, rejected -- honest, no further registration); (e)
+  untouched zero block `0x500C0..0x54AF0` (0 dsts) stays out.
+- **Next (per plan):** recompute the **global bottom-up call graph** with
+  SCC-condensed topological depth, RTLink thunk pass-through, and
+  dual-tier (dyn_calls, static_in_degree) ranking, then resume naming
+  from Level 0.

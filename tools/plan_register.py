@@ -13,12 +13,16 @@ current ground truth, or if a hole lacks a live hash.
 Usage: venv\\Scripts\\python tools\\plan_register.py
 """
 import json
+import os
 import sys
 from pathlib import Path
 
 IDA = Path("analysis/ida_falconcd")
-OUT = Path("registry/upper_register_expected.json")
-SWEEP = IDA / "upper_sweep.json"
+# finding 64: overlay pass points these at overlay_sweep.json /
+# overlays_register_expected.json via env vars; defaults are the upper pass.
+OUT = Path(os.environ.get(
+    "FALCON_PLAN_OUT", "registry/upper_register_expected.json"))
+SWEEP = IDA / os.environ.get("FALCON_PLAN_SWEEP", "upper_sweep.json")
 FB = IDA / "function_bytes.json"
 
 sw = json.loads(SWEEP.read_text())
@@ -37,6 +41,14 @@ for r in sw["ranges"]:
     holes = []
     for h in r.get("holes_in_range", []):
         ea = h.get("lo", h.get("ea"))
+        he = ea + h["size"]
+        # finding 64: a hole inside a keep/new function span is embedded data
+        # (string table in code) -- not a gap hole; drop it so tiling stays
+        # exact.  The function's bytes already cover it.
+        in_fn = any(f["ea"] < he and ea < f["ea"] + f["size"]
+                    for f in keep + new)
+        if in_fn:
+            continue
         holes.append({"ea": ea, "size": h["size"],
                       "sha256": h.get("sha256"), "why": (h.get("why") or "")[:160]})
 
@@ -81,9 +93,25 @@ for r in sw["ranges"]:
 # legitimately covers them); enforcing them would make the mutator fail.
 all_holes = sw.get("all_holes", [])
 suspect = set(sw.get("suspect_holes", []))
+# finding 64: a hole inside ANY keep/new function span is embedded data (a
+# string table inside code) -- exclude it entirely (not in-range, not
+# standalone, not an orphan): the function's bytes already cover it and the
+# mutator would refuse it as standalone.
+fn_spans = [(f["ea"], f["ea"] + f["size"])
+            for r in ranges_out for f in r["keep_fns"] + r["new_fns"]]
+
+
+def in_any_fn(ea, size):
+    return any(s < ea + size and ea < e for s, e in fn_spans)
+
+
 standalone_all = [{"ea": h["ea"], "size": h["size"], "sha256": h["sha256"],
                    "why": h["why"], "block": h.get("block")}
-                  for h in all_holes if h["ea"] not in suspect]
+                  for h in all_holes
+                  if h["ea"] not in suspect
+                  and not in_any_fn(h["ea"], h["size"])]
+embedded = [h["ea"] for h in all_holes
+            if h["ea"] not in suspect and in_any_fn(h["ea"], h["size"])]
 in_ranges = {h["ea"] for r in ranges_out for h in r["data_holes"]}
 standalone = [h for h in standalone_all if h["ea"] not in in_ranges]
 suspect_out = [h for h in all_holes if h["ea"] in suspect]
@@ -94,10 +122,12 @@ for h in standalone:
 # every candidate hole must be either in a range or standalone (no orphans).
 # Suspect holes are exempt: the sweep overran into them, so they may be code
 # and a function may legitimately cover them (finding 62: 0x4ACA1).
+# Embedded-in-fn holes are exempt too (finding 64): the fn covers them.
 orphans = [h["ea"] for h in all_holes
            if h["ea"] not in in_ranges
            and h["ea"] not in {s["ea"] for s in standalone}
-           and h["ea"] not in suspect]
+           and h["ea"] not in suspect
+           and h["ea"] not in set(embedded)]
 if orphans:
     problems.append("holes in no bucket: %s" % [hex(x) for x in orphans[:8]])
 
@@ -121,15 +151,15 @@ if problems:
 
 OUT.write_text(json.dumps({
     "schema": 1,
-    "reason": ("finding 61 (P3): parentless registration of the R05 upper "
-               "half's evidence-rich blocks.  Plan comes from the P2 sweep "
-               "(tools/sweep_upper.py): existing IDA decodes win, `00` runs "
+    "reason": ("finding %s: parentless registration from sweep %s.  Plan "
+               "comes from sweep_upper.py: existing IDA decodes win, `00` runs "
                "are skipped only in front of entry-like code, mid-body "
                "islands may be bridged only when a chain re-closes on a "
                "terminator, and every function needs evidence (a referenced "
                "seed, an existing code item, or a chain closed on an "
                "authoritative boundary).  REGISTER validation: exact tiling "
-               "+ live sha256 per hole."),
+               "+ live sha256 per hole."
+               % ("64" if "overlay" in SWEEP.name else "61", SWEEP.name)),
     "ranges": ranges_out,
     "standalone_holes": standalone,
     "n_new_fns": n_fn,
