@@ -234,3 +234,17 @@
   by finding 60's runtime map, each needs its own sweep/REGISTER cycle;
   (c) in-scope residue 63 dsts / 109 refs inside documented stops;
   (d) untouched zero block `0x500C0..0x54AF0` (0 dsts) stays out.
+
+- **Resident destinations registered (finding 63):** 24 new fns,
+  `static_unresolved` **660 -> 564**, Resident refs **236 -> 140**.
+  `0x43E0C` variant check answered (not checkable -- mutually exclusive
+  variants, sparse s-snippets). **Still open:** (a) **73 Resident dsts /
+  140 refs** are honest residue (27 already-fn, 18 gap-into-existing, 3
+  undecodable, 13 rejected standalone, 1 jt-tail) -- no further
+  registration there; (b) **the other R\* overlays** remain the big
+  bucket: R05 79, **R30_569F 71**, **R06_5CD9 25**, R53 16, R14 14,
+  R17 12, R35 12, R12/R32/R40 4 each -- these are separate RTLink
+  records already mapped by finding 60's runtime map, each needs its own
+  sweep/REGISTER cycle (Finding 64); (c) in-scope R05 residue 63 dsts /
+  109 refs inside documented stops; (d) untouched zero block
+  `0x500C0..0x54AF0` (0 dsts) stays out.

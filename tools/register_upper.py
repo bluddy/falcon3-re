@@ -23,6 +23,7 @@ Usage: cmd /c "tools\\run_idat.bat tools\\register_upper.py"
 """
 import hashlib
 import json
+import os
 import traceback
 
 import ida_bytes
@@ -35,9 +36,13 @@ import idautils
 import idc
 
 ROOT = r"C:\Users\yotam\projects\falcon3"
-MANIFEST = ROOT + r"\registry\upper_register_expected.json"
+MANIFEST = os.environ.get(
+    "FALCON_MANIFEST",
+    ROOT + r"\registry\upper_register_expected.json")
 IDB = ROOT + r"\analysis\ida_falconcd\FALCONCD.EXE.i64"
-LOG = ROOT + r"\analysis\ida_falconcd\register_upper.log"
+LOG = os.environ.get(
+    "FALCON_REG_LOG",
+    ROOT + r"\analysis\ida_falconcd\register_upper.log")
 
 TERMS = {"retn", "retf", "ret", "iret", "jmp"}
 log = []
