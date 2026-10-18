@@ -1,0 +1,281 @@
+======================================================================
+sub_6D256  ea=0x6D256  size=535  L3  in=4
+  --- callees (5): int32_to_ascii_short(L0), farptr_state_set(L1), far_cb_with_args(L0), dispatch_220d4_stub(L0), r06_mode_gate_49a3(L2)
+  0x6D256: cmp    byte ptr ds:49A3h, 0
+  0x6D25B: jz     loc_6D25E  ->code ['sub_6D256']
+  0x6D25D: retn   
+  0x6D25E: mov    ax, ds:4A8Fh
+  0x6D261: cmp    ax, 0FFFFh
+  0x6D264: jz     locret_6D25D  ->code ['sub_6D256']
+  0x6D266: mov    cx, 5
+  0x6D269: mov    bp, 1
+  0x6D26C: mov    si, 4B58h
+  0x6D26F: mov    bx, 74h
+  0x6D272: mov    dx, 0B333h
+  0x6D275: mul    dx
+  0x6D277: neg    dx
+  0x6D279: add    dx, 98h
+  0x6D27D: mov    di, dx
+  0x6D27F: sub    di, 2
+  0x6D282: cmp    di, 72h
+  0x6D285: jge    loc_6D28A  ->code ['sub_6D256']
+  0x6D287: mov    di, 72h
+  0x6D28A: push   es
+  0x6D28B: push   si
+  0x6D28C: mov    si, 2F64h
+  0x6D28F: mov    es, si
+  0x6D291: mov    si, 0A462h
+  0x6D294: mov    es, word ptr es:[si]
+  0x6D297: pop    si
+  0x6D298: call   dispatch_220d4_stub  ->code ['dispatch_220d4_stub']
+  0x6D29D: pop    es
+  0x6D29E: retn   
+  0x6D29F: mov    bx, 6Dh
+  0x6D2A2: cmp    byte ptr ds:49A3h, 0
+  0x6D2A7: jz     loc_6D2AA  ->code ['sub_6D256']
+  0x6D2A9: retn   
+  0x6D2AA: mov    cx, 1
+  0x6D2AD: mov    bp, 1
+  0x6D2B0: mov    si, 4B57h
+  0x6D2B3: mov    dx, 0B333h
+  0x6D2B6: mul    dx
+  0x6D2B8: neg    dx
+  0x6D2BA: add    dx, 98h
+  0x6D2BE: mov    di, dx
+  0x6D2C0: push   es
+  0x6D2C1: push   si
+  0x6D2C2: mov    si, 2F64h
+  0x6D2C5: mov    es, si
+  0x6D2C7: mov    si, 0A462h
+  0x6D2CA: mov    es, word ptr es:[si]
+  0x6D2CD: pop    si
+  0x6D2CE: call   dispatch_220d4_stub  ->code ['dispatch_220d4_stub']
+  0x6D2D3: pop    es
+  0x6D2D4: retn   
+  0x6D2D5: cmp    byte ptr ds:4A83h, 1
+  0x6D2DA: jg     loc_6D2DD  ->code ['sub_6D256']
+  0x6D2DC: retn   
+  0x6D2DD: mov    ax, ds:4AA1h
+  0x6D2E0: call   off_230D8  ->code ['farptr_state_set']
+  0x6D2E5: sub    bh, bh
+  0x6D2E7: mov    bl, ds:4ABDh
+  0x6D2EB: shl    bx, 1
+  0x6D2ED: mov    dx, [bx+49F8h]
+  0x6D2F1: imul   dx
+  0x6D2F3: shl    ax, 1
+  0x6D2F5: rcl    dx, 1
+  0x6D2F7: mov    ax, dx
+  0x6D2F9: cwd    
+  0x6D2FA: shl    ax, 1
+  0x6D2FC: rcl    dx, 1
+  0x6D2FE: shl    ax, 1
+  0x6D300: rcl    dx, 1
+  0x6D302: shl    ax, 1
+  0x6D304: rcl    dx, 1
+  0x6D306: shl    ax, 1
+  0x6D308: rcl    dx, 1
+  0x6D30A: shl    ax, 1
+  0x6D30C: rcl    dx, 1
+  0x6D30E: mov    si, ds:48BAh
+  0x6D312: add    ax, [si+8]
+  0x6D315: adc    dx, [si+0Ah]
+  0x6D318: sar    dx, 1
+  0x6D31A: rcr    ax, 1
+  0x6D31C: sub    ch, ch
+  0x6D31E: mov    cl, ds:4ABDh
+  0x6D322: mov    bx, cx
+  0x6D324: add    cx, bx
+  0x6D326: add    cx, bx
+  0x6D328: shl    cx, 1
+  0x6D32A: sub    bh, bh
+  0x6D32C: mov    bl, ds:4ABFh
+  0x6D330: shl    bx, 1
+  0x6D332: add    bx, cx
+  0x6D334: mov    cx, [bx+49E0h]
+  0x6D338: mov    bx, ax
+  0x6D33A: mov    bp, dx
+  0x6D33C: add    ax, cx
+  0x6D33E: adc    dx, 0
+  0x6D341: jz     loc_6D349  ->code ['sub_6D256']
+  0x6D343: jg     loc_6D34E  ->code ['sub_6D256']
+  0x6D345: sub    ax, ax
+  0x6D347: jmp    loc_6D351  ->code ['sub_6D256']
+  0x6D349: cmp    ax, 0EA60h
+  0x6D34C: jbe    loc_6D351  ->code ['sub_6D256']
+  0x6D34E: mov    ax, 0EA60h
+  0x6D351: mov    ds:4AADh, ax
+  0x6D354: sub    bx, cx
+  0x6D356: sbb    bp, 0
+  0x6D359: jg     loc_6D367  ->code ['sub_6D256']
+  0x6D35B: jz     loc_6D361  ->code ['sub_6D256']
+  0x6D35D: sub    bx, bx
+  0x6D35F: jmp    loc_6D36A  ->code ['sub_6D256']
+  0x6D361: cmp    bx, 0EA60h
+  0x6D365: jbe    loc_6D36A  ->code ['sub_6D256']
+  0x6D367: mov    bx, 0EA60h
+  0x6D36A: mov    ds:4AAFh, bx
+  0x6D36E: mov    bx, 3E8h
+  0x6D371: mov    ax, ds:4AADh
+  0x6D374: sub    dx, dx
+  0x6D376: div    bx
+  0x6D378: mov    ds:49B0h, ax
+  0x6D37B: mov    ax, ds:4AAFh
+  0x6D37E: sub    dx, dx
+  0x6D380: div    bx
+  0x6D382: mov    ds:49B2h, ax
+  0x6D385: call   loc_6D29F  ->code ['sub_6D256']
+  0x6D388: mov    ax, ds:49B0h
+  0x6D38B: call   loc_6D29F  ->code ['sub_6D256']
+  0x6D38E: cmp    byte ptr ds:4AC2h, 0
+  0x6D393: jz     loc_6D396  ->code ['sub_6D256']
+  0x6D395: retn   
+  0x6D396: cmp    byte ptr ds:49A3h, 0
+  0x6D39B: jz     loc_6D39E  ->code ['sub_6D256']
+  0x6D39D: retn   
+  0x6D39E: mov    ax, ds:49B2h
+  0x6D3A1: mov    si, 41Dh
+  0x6D3A4: mov    cl, 0FEh
+  0x6D3A6: call   int32_to_ascii_short  ->code ['int32_to_ascii_short']
+  0x6D3AB: mov    si, 41Fh
+  0x6D3AE: mov    bx, 0C1h
+  0x6D3B1: mov    di, 73h
+  0x6D3B4: call   far_cb_with_args  ->code ['far_cb_with_args']
+  0x6D3B9: mov    ax, ds:49B0h
+  0x6D3BC: mov    si, 41Dh
+  0x6D3BF: mov    cl, 0FEh
+  0x6D3C1: call   int32_to_ascii_short  ->code ['int32_to_ascii_short']
+  0x6D3C6: mov    si, 41Fh
+  0x6D3C9: mov    bx, 0D2h
+  0x6D3CC: mov    di, 73h
+  0x6D3CF: call   far_cb_with_args  ->code ['far_cb_with_args']
+  0x6D3D4: retn   
+  0x6D3D5: cmp    byte ptr ds:49A3h, 0
+  0x6D3DA: jz     loc_6D3DD  ->code ['sub_6D256']
+  0x6D3DC: retn   
+  0x6D3DD: mov    si, 4B4Dh
+  0x6D3E0: mov    cx, 5
+  0x6D3E3: mov    bp, 1
+  0x6D3E6: push   es
+  0x6D3E7: push   si
+  0x6D3E8: mov    si, 2F64h
+  0x6D3EB: mov    es, si
+  0x6D3ED: mov    si, 0A462h
+  0x6D3F0: mov    es, word ptr es:[si]
+  0x6D3F3: pop    si
+  0x6D3F4: call   dispatch_220d4_stub  ->code ['dispatch_220d4_stub']
+  0x6D3F9: pop    es
+  0x6D3FA: retn   
+  0x6D3FB: cmp    byte ptr ds:49A3h, 0
+  0x6D400: jz     loc_6D403  ->code ['sub_6D256']
+  0x6D402: retn   
+  0x6D403: lea    bx, [si+0A8h]
+  0x6D407: mov    dl, es:[si+79h]
+  0x6D40B: mov    di, ds:48BAh
+  0x6D40F: mov    ax, [di+0Ch]
+  0x6D412: push   si
+  0x6D413: push   ax
+  0x6D414: mov    si, 2
+  0x6D417: test   dl, 8
+  0x6D41A: jz     loc_6D456  ->code ['sub_6D256']
+  0x6D41C: mov    ax, es:[bx+4]
+  0x6D420: mov    di, es:[bx+2]
+  0x6D424: or     di, di
+  0x6D426: js     loc_6D456  ->code ['sub_6D256']
+  0x6D428: mov    bp, sp
+  0x6D42A: sub    ax, [bp+0]
+  0x6D42D: push   dx
+  0x6D42E: mov    dx, 630h
+  0x6D431: imul   dx
+  0x6D433: add    dx, es:[bx]
+  0x6D436: cmp    dx, 60h
+  0x6D439: jl     loc_6D455  ->code ['sub_6D256']
+  0x6D43B: cmp    dx, 0E2h
+  0x6D43F: jg     loc_6D455  ->code ['sub_6D256']
+  0x6D441: push   si
+  0x6D442: push   bx
+  0x6D443: mov    bx, dx
+  0x6D445: mov    al, [si+4A7Fh]
+  0x6D449: push   es
+  0x6D44A: call   loc_263F6  ->code ['dispatch_220d4_stub']
+  0x6D44F: pop    es
+  0x6D450: call   loc_6D4FC  ->code ['r06_mode_gate_49a3']
+  0x6D453: pop    bx
+  0x6D454: pop    si
+  0x6D455: pop    dx
+  0x6D456: sub    bx, 6
+  0x6D459: shl    dl, 1
+  0x6D45B: dec    si
+  0x6D45C: jge    loc_6D417  ->code ['sub_6D256']
+  0x6D45E: mov    al, ds:4A7Eh
+  0x6D461: push   es
+  0x6D462: call   loc_263F6  ->code ['dispatch_220d4_stub']
+  0x6D467: pop    es
+  0x6D468: add    sp, 2
+  0x6D46B: pop    si
+  0x6D46C: retn   
+  --- callers: sub_2C1F3, sub_6CF90, sub_6D19F, sub_6D5DF
+
+======================================================================
+sub_3804B  ea=0x3804B  size=135  L3  in=1
+  --- callees (4): terrain_pos_delta_11cfc(L2), game_state_setup_multi(L0), farwrap_25a1c(L1), state_byte_25488_get(L0)
+  0x3804B: mov    si, ds:48BAh
+  0x3804F: cmp    byte ptr [si+0D4h], 0
+  0x38054: jnz    loc_3808D  ->code ['sub_3804B']
+  0x38056: cmp    byte ptr ds:1340h, 0
+  0x3805B: jnz    loc_38065  ->code ['sub_3804B']
+  0x3805D: cmp    byte ptr ds:1078h, 1
+  0x38062: jle    loc_3806F  ->code ['sub_3804B']
+  0x38064: retn   
+  0x38065: mov    byte ptr ds:1340h, 0
+  0x3806A: mov    byte ptr ds:1078h, 0
+  0x3806F: mov    si, 0Dh
+  0x38072: mov    di, 71h
+  0x38075: mov    cx, 128h
+  0x38078: mov    dx, cx
+  0x3807A: mov    bx, 1Ch
+  0x3807D: mov    bp, 18h
+  0x38080: mov    ax, 1
+  0x38083: call   farwrap_25a1c  ->code ['terrain_pos_delta_11cfc', 'farwrap_25a1c']
+  0x38088: inc    byte ptr ds:1078h
+  0x3808C: retn   
+  0x3808D: cmp    byte ptr ds:1340h, 0FFh
+  0x38092: jz     loc_3809E  ->code ['sub_3804B']
+  0x38094: mov    byte ptr ds:1340h, 0FFh
+  0x38099: mov    byte ptr ds:1078h, 0
+  0x3809E: cmp    byte ptr ds:451h, 0FFh
+  0x380A3: jnz    loc_380AC  ->code ['sub_3804B']
+  0x380A5: mov    byte ptr ds:1078h, 0
+  0x380AA: jmp    loc_380B3  ->code ['sub_3804B']
+  0x380AC: cmp    byte ptr ds:1078h, 1
+  0x380B1: jg     locret_380D1  ->code ['sub_3804B']
+  0x380B3: mov    bx, 126h
+  0x380B6: mov    di, 6Ch
+  0x380B9: push   ds
+  0x380BA: mov    ds, cs:word_2E12F
+  0x380BF: mov    si, cs:word_2E131
+  0x380C4: add    si, [si+4Ch]
+  0x380C7: call   far ptr state_byte_25488_get  ->code ['game_state_setup_multi', 'state_byte_25488_get']
+  0x380CC: pop    ds
+  0x380CD: inc    byte ptr ds:1078h
+  0x380D1: retn   
+  --- callers: sub_37A0A
+
+======================================================================
+sub_6D7FF  ea=0x6D7FF  size=48  L3  in=3
+  --- callees (2): r06_mode_dispatch_bx0(L2), r06_mode_dispatch_bx8(L1)
+  0x6D7FF: mov    al, ds:4AC1h
+  0x6D802: cmp    al, 0
+  0x6D804: jnz    sub_6D838  ->code ['sub_6D838']
+  0x6D806: mov    bx, ds:4AB1h
+  0x6D80A: mov    ax, [bx+4A30h]
+  0x6D80E: imul   word ptr ds:49A0h
+  0x6D812: mov    al, ah
+  0x6D814: mov    ah, dl
+  0x6D816: mov    ds:4AB3h, ax
+  0x6D819: mov    ax, [bx+4A26h]
+  0x6D81D: add    ax, ds:4AA1h
+  0x6D821: mov    ds:4A9Fh, ax
+  0x6D824: call   r06_mode_dispatch_bx0  ->code ['r06_mode_dispatch_bx0']
+  0x6D827: call   r06_mode_dispatch_bx8  ->code ['r06_mode_dispatch_bx8']
+  0x6D82A: cmp    word ptr ds:4AB1h, 0Ah
+  --- callers: sub_2C06D, sub_2C1E9, sub_6D747

@@ -4132,4 +4132,42 @@ problems)** . `name_readback` **1,057/1057 function + 2/2 global**.
 
 ---
 
+## 2026-10-18 74 — Global Level-3 COMPLETE: 2 batches named all 52
+Level-3 functions (`named` 1,057 -> **1,109**), L3 queue 52 -> 0
+
+Level-3 queue had 52 entries (full callee context: L0-L2 fully named, so
+every L3 dump shows its callees' semantic names). Two batches:
+**36 + 16 = 52**, both derived from the `dump_level1.py` disasm +
+`full_dump` completions.
+
+### New tool: tools/dump_full.py
+
+`dump_level1.py` breaks at the FIRST terminator (retn/retf/iret), which
+shows e.g. sub_14CC6's 12-byte early-exit but hides its other 384 bytes.
+`dump_full.py` walks the whole function (no break, 4000-insn cap) reading
+`full_dump_targets.json` (`{"A": [keys]}`) -> `full_dump_disasm.txt`.
+Used for sub_100BB/14CC6/1EA58/257E5/14956/27A20/37B1E/14E52/6D68D
+(batch 1) and sub_6D256/3804B/6D7FF (batch 2). Also learned (again):
+`FALCON_L1_TARGETS` must be a FILE PATH with `{"A": [...]}`, not inline
+JSON.
+
+### Batches
+
+| batch | named after | L3 queue after | highlights |
+|---|---|---|---|
+| l3a | 1,093 | 16 | **`sbi_note_state_machine`** (cd=42,313, 1548B 22-case OPL voice lifecycle), **`angle_quad_norm_scale`** (cd=165,686 -- hottest of batch, shared angle primitive of angle_xy/angle_aux), `farobj_rect_ratio_build` (in=28, 2 projection ratios), `channel_note_seq_write` + `channel_seq_word_store` (seq siblings), **`sbi_pit_period_enable`/`_disable`** (the critical-section bracket mode_slot_enter wraps around `sbi_mode_slot_store`), `view_extent_shadow_save`/`_restore` (pair), `tile_quad_sample` (in=19, fills the 11C5E..61 quad for avg_pair_dispatch), `view_proj_preset_apply` (callers = view_proj_default + presets 1..7 exactly), `mouse_driver_init`/`mouse_gate_far_entry`/`mouse_delta_scale_far_entry`/`mouse_buttons_test_far` (mouse entry family), `anim_line_object_draw` (sole caller of line_raster_diff_281), `farobj_slot_create`, `game_setup_staged_step`, `sbi_stream_stop_load` |
+| l3b | **1,109** | **0** | **`sbi_request_dispatch`** (731B, THE 20-op SBI mailbox processor -- pair of state_block_77720_store8: config triples / EMS pages / PIT period / driver callbacks, writes the 77722 result), **`overlay_file_open`** (open/cache front end delegating to overlay_loader_main), **`line_record_draw_loop`** (parent loop of line_flag_dispatch_28ed8 + line_table_scan_dispatch), **`farobj_entity_accum_sweep`** (slot-aging sweep pair of farobj_entity_accum_copy: clears mode bit4 when no slots remain), `farobj_slot_cycle` (timer-driven farptr repoint, sibling of farobj_slot_create), `terrain_attr_block_scan_inc`/`_axdec`/`_dec` (the 3 remaining direction twins -- with batch 1's terrain_attr_block_scan the 4 sign-combination family is complete), `game_setup_toggle_step` + `game_setup_entity_step` (staged-step siblings of game_setup_staged_step: counters 1078..107A alongside 107B..107E form ONE 7-phase sequence run by sub_37A0A), `r06_ui_dispatch_block` (5-entry R06 UI/HUD block incl. the ASCII position readout), `r06_mode_param_dispatch`, `view_limits_pair_apply`, `stream_record_point_find`, `farobj_step_terrain_clamp`, `bcd_hex_ch_store` |
+
+### Milestone + gates
+
+**Levels 0, 1, 2 AND 3 are all complete.** `named` = **1,109**; global
+`naming_queue` = **522** across Levels 4..21 (L19 = 206 -- the giant
+SCC); L3 residue = 4 orphans + 7 thunks, **0 other**.
+
+`naming.py check` **1,111** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,109/1,109
+function + 2/2 global**.
+
+---
+
 (append new findings below)

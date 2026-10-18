@@ -397,3 +397,20 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 3 COMPLETE (finding 74):** 2 batches named all 52 L3
+  fns, `named` **1057 -> 1109**, **L3 queue 52 -> 0** (4 orphans + 7
+  thunks, 0 other). New `tools/dump_full.py` (full bodies past the
+  first terminator). Highlights: sbi_request_dispatch (731B mailbox
+  processor), overlay_file_open, line_record_draw_loop,
+  farobj_entity_accum_sweep, 4-sign terrain_attr_block_scan family,
+  7-phase game_setup_*_step sequence. All 4 gates green (check 1111,
+  verify_rebuild faithful, verify_idb INTACT, read-back 1109/1109+2/2).
+- **Next: Global Level-4 naming** (queue 522 across Levels 4..21:
+  L4=54, L5=60, L6=60, L7=21, L8=13, L9=7, L10=11, L11=15, L12=11,
+  L13=15, L14=11, L15=5, L16=4, L17=1, L18=1, L19=206, L20=25, L21=2).
+  L4-L6 (174) are the next well-shaped batches; L19 (206-node giant
+  SCC) needs its own strategy.
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.
