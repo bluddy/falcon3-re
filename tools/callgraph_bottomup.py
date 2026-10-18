@@ -36,7 +36,6 @@ Output:
 from __future__ import annotations
 
 import json
-import re
 from bisect import bisect_right
 from collections import defaultdict, deque
 from pathlib import Path
@@ -48,6 +47,10 @@ DUMP = ROOT / "memdump"
 
 CLS = IDA / "classification.json"
 REFS = IDA / "callgraph_refs.json"
+# finding 64 audit: named detection joins function_bytes.json (integer ea ->
+# applied semantic name), NOT a sub_* string match.  function_bytes[key].name
+# is non-null exactly for the 265 ledger-named functions.
+FB = IDA / "function_bytes.json"
 OUT = TRACES / "callgraph_partial.json"
 
 # runtime cs:ip -> ida_ea (finding 32, same as verify_boundaries.py)
@@ -351,9 +354,20 @@ def main():
     # levels list for the report: level 0, 1, 2, ... (sorted keys)
     ordered_levels = [by_level[lvl] for lvl in sorted(by_level)]
 
-    # unnamed = auto-generated IDA names (sub_/nullsub_/loc_/unk_/byte_/...)
-    AUTO = re.compile(r"^(sub_|nullsub_|locret_|loc_|unk_|byte_|word_|dword_|off_|strseg_)")
-    unnamed = {k for k in known if AUTO.match(k)}
+    # finding 64 audit fix: named = function_bytes[key].name is non-null.
+    # This joins on the integer ea (fb entry carries ea) and equals exactly the
+    # 265 ledger-named functions.  The old `sub_*` regex miscounted RTLink
+    # r##_e## names as "named" and real-named fns like input_status_pack as
+    # "unnamed".
+    fb = json.loads(FB.read_text())
+    named = {k for k in known if fb.get(k, {}).get("name")}
+    unnamed = known - named
+    # finding 64 audit: exclude .RTLink thunk slots from the naming queue --
+    # they are 8B jmp-far trampolines, not nameable functions.  (Kept in the
+    # graph + levels as pass-through bridges.)
+    thunk_keys = {k for k in known if is_thunk(cls, k)}
+    # naming_queue = unnamed functions MINUS thunk slots
+    naming_queue = unnamed - thunk_keys
 
     out = {
         "edge_counts": {
@@ -370,7 +384,10 @@ def main():
         "edges": [list(e) for e in sorted(all_edges)],
         "dyn_target_calls": dict(dyn_target_calls),
         "static_in_degree": dict(static_in),
+        "named": sorted(named),
         "unnamed": sorted(unnamed),
+        "naming_queue": sorted(naming_queue),
+        "thunk_keys": sorted(thunk_keys),
     }
     json.dump(out, OUT.open("w"), indent=1)
 
@@ -390,27 +407,38 @@ def main():
     print("topological levels: 0..%d   nodes covered: %d"
           % (max_lvl, len(known)))
 
-    # level summary
+    # level summary  (named = fb join; to_name = unnamed minus thunk slots)
     print("\n=== LEVEL SUMMARY (true topological depth) ===")
-    print("%-8s %8s %10s %10s" % ("level", "total", "unnamed", "named"))
+    print("(named = function_bytes.name join; to_name = unnamed minus %d thunk slots)"
+          % len(thunk_keys))
+    print("%-8s %8s %8s %8s %8s" % ("level", "total", "named", "unnamed", "to_name"))
     for lvl in sorted(by_level):
         nodes = by_level[lvl]
-        n_un = sum(1 for k in nodes if k in unnamed)
-        print("%-8d %8d %10d %10d" % (lvl, len(nodes), n_un, len(nodes) - n_un))
+        n_nm = sum(1 for k in nodes if k in named)
+        n_un = len(nodes) - n_nm
+        n_tq = sum(1 for k in nodes if k in naming_queue)
+        print("%-8d %8d %8d %8d %8d" % (lvl, len(nodes), n_nm, n_un, n_tq))
 
-    # top 30 unnamed global Level-0 leaves
+    # top 30 unnamed global Level-0 leaves (thunk slots excluded from queue)
     lvl0 = by_level.get(0, [])
-    lvl0_unnamed = [k for k in lvl0 if k in unnamed]
-    print("\n=== TOP 30 UNNAMED GLOBAL LEVEL-0 LEAVES ===")
-    print("(ranked dyn_calls DESC, static_in_degree DESC)")
-    for i, k in enumerate(lvl0_unnamed[:30], 1):
+    lvl0_queue = [k for k in lvl0 if k in naming_queue]
+    print("\n=== TOP 30 UNNAMED GLOBAL LEVEL-0 LEAVES (naming queue) ===")
+    print("(ranked dyn_calls DESC, static_in_degree DESC; thunk slots excluded)")
+    for i, k in enumerate(lvl0_queue[:30], 1):
         info = cls[k]
         dc = dyn_target_calls.get(k, 0)
         si = static_in.get(k, 0)
         print("  %2d. %-13s %5dB %-6s in=%-3d dyn=%-8d ea=0x%X"
               % (i, k, info["size"], info["class"], si, dc, info["ea"]))
-    if len(lvl0_unnamed) > 30:
-        print("  ... +%d more unnamed Level-0" % (len(lvl0_unnamed) - 30))
+    if len(lvl0_queue) > 30:
+        print("  ... +%d more unnamed Level-0 in queue" % (len(lvl0_queue) - 30))
+
+    # audit totals
+    print("\n=== AUDIT TOTALS ===")
+    print("functions: %d   named (fb join): %d   unnamed: %d   thunk slots: %d"
+          % (len(known), len(named), len(unnamed), len(thunk_keys)))
+    print("naming_queue (unnamed - thunks): %d   Level-0 queue: %d"
+          % (len(naming_queue), len(lvl0_queue)))
 
     print("\nwrote %s" % OUT)
 

@@ -264,3 +264,22 @@
   SCC-condensed topological depth, RTLink thunk pass-through, and
   dual-tier (dyn_calls, static_in_degree) ranking, then resume naming
   from Level 0.
+
+- **Call-graph audit done (finding 65):** named detection fixed (fb ea-join
+  = 265), thunk slots excluded (302), SCC/levels verified sound (giant
+  216-node SCC at L19, no inverted edges, 0 invariant violations).
+  **Corrected queue: 1,676 to-name, 718 at Level 0.** Top-30 clean (the
+  5 Finding-39 names + 148 thunks removed).
+- **Ready for Global Level-0 Batch 1:** name from the 718-entry Level-0
+  queue (dyn/in_degree ranked). Watch-outs from the audit: (a) 3
+  `in_deg==0` dyn leaves (`sub_1018F`, `sub_22AFF`, `sub_24D46`) are
+  indirect far-call targets -- name by body, no caller evidence; (b) 3
+  DATA-class leaves in the top-30 (`sub_22C91` [truncated by `nullsub_19`
+  -- real span to `retf`@0x22CD4], `sub_22C62`, `sub_25CCB`) need
+  epilogue-window reclassification before trusting their class; (c) 92
+  DATA-class fns total (91 queued), mostly large RTLink dispatch fns in
+  the giant SCC.
+- **Follow-ups:** reclassify the 92 low-confidence DATA fns (epilogue
+  window + the `nullsub_19` truncation of `sub_22C91`); consider whether
+  the 24 trap-only thunk far-targets deserve resolution (they point at
+  `word_*`/`unk_*` data -- possibly real targets behind data tables).
