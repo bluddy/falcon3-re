@@ -1,0 +1,218 @@
+{
+ "sub_1BF9A": [
+  "event_mode_valid_234",
+  "void far; AX = ([bp+arg0] in {2,3,4} ? 1 : 0); retf (validates mode 2/3/4)",
+  "34B, 0 dyn, cd=65, 2 callers (sub_1BAD6 47). Returns AX=1 if mode arg in {2,3,4} else 0. conf: high",
+  "high"
+ ],
+ "sub_12696": [
+  "tile_record_search_bl",
+  "NEAR retn fn; CX=count from [SI]; for each record: base = cs:11BC6/11BC8*4 -> cs:11BCA/CC, offset byte -> cs:11BCE/D0; lodsw rec-ptr, walk 0x0A-stride entries matching BL at [SI+8] else stc; retn",
+  "109B retn, 0 dyn, cd=55, 3 callers (sub_12534 55). Searches a variable-stride tile/record table for BL; stc if not found. conf: med",
+  "med"
+ ],
+ "sub_13E5A": [
+  "hw_flag_bit3_22e_set_cmp",
+  "void far; DS=7A32h; SI&=0xFFF; AH=[SI+22E]&0x9F, AL=(AL ROR3)|AH; xchg into [SI+22E]; if changed: OR bit1 into it; retf",
+  "41B, 0 dyn, cd=55, 3 callers. Sets a hw-flag nibble at ds:7A32:SI+22E (ROR-merge) + marks dirty (bit1). conf: med",
+  "med"
+ ],
+ "sub_13E45": [
+  "hw_flag_bit3_extract",
+  "void far; DS=7A32h; SI&=0xFFF; AL = ([SI+22E] ROL3) & 3; retf (extracts a 2-bit field)",
+  "21B, 0 dyn, cd=55, 2 callers. Extracts a 2-bit field from the hw-flag byte at ds:7A32:SI+22E. conf: med",
+  "med"
+ ],
+ "sub_12703": [
+  "tile_record_count",
+  "NEAR retn fn; CX=count from [SI]; base=cs:11BC6/BC8*4; sum per-record [ptr] & 0x7F lengths into DX -> CX; retn",
+  "55B retn, 0 dyn, cd=55, 1 caller (sub_12534). Sums record lengths from the tile table -> CX (total count). conf: med",
+  "med"
+ ],
+ "sub_12771": [
+  "farptr_indirect_get_11bb",
+  "void far; SI=cs:11BBA, DS=cs:11BBE; SI=[SI+4] (loads a far-ptr field); retf",
+  "16B LEAF, 0 dyn, cd=55, 1 caller (sub_12534). Loads an indirect far-pointer field via cs:11BBA/BBE state. conf: med",
+  "med"
+ ],
+ "sub_1BE1B": [
+  "device_path_build_mus",
+  "void far; C frame: build an ASCII path at far ptr [bp+4]: 'MUS' + (DL+'A') + '.' + ('ADL' or 'MID') + NUL (device driver path)",
+  "168B, 0 dyn, cd=47, 1 caller (sub_1BAD6 47). Builds the device path string (MUSx.ADL / MUSx.MID) for sound-driver load. conf: med",
+  "med"
+ ],
+ "sub_1970F": [
+  "event_key_valid_100_jpt",
+  "void far; BX=[bp+arg0]-0x100; jump-table (cs:jpt_19723) over 5 cases -> AX=1/0; retf (key-code validity 0x100..)",
+  "33B, 0 dyn, cd=36, 2 callers (sub_18E1A 36). Jump-table validation of key codes >=0x100 -> AX 0/1. conf: med",
+  "med"
+ ],
+ "sub_1977D": [
+  "event_key_valid_108_jpt",
+  "void far; BX=[bp+arg0]-0x108; jump-table (cs:jpt_19791) over 0x0B cases -> AX=1/0; retf (key-code validity 0x108..)",
+  "33B, 0 dyn, cd=36, 2 callers (sub_18E1A 36). Jump-table validation of key codes >=0x108 -> AX 0/1. conf: med",
+  "med"
+ ],
+ "sub_172E1": [
+  "sbi_reset_verify",
+  "void far; SBI (MPU/ADLib) reset handshake on ports 330h/331h: drain, out 0xFF, poll for 0xFE ACK x4; AX=1 if verified else 0; retf",
+  "88B, 0 dyn, cd=31, 2 callers (sub_1740D 15, sub_195C4 16). SBI device reset + ACK verification (ports 330h/331h). conf: high",
+  "high"
+ ],
+ "sub_66DBD": [
+  "r30_table_copy_4fd5c",
+  "void far (DATA-class span, partially undecodable): copies words es:4FC2:4FD5C/5E into 4FD5A..4FD6C scatter; 2 callers (sub_2C513, sub_2C595)",
+  "164B span, in=2, cd=26, DATA/undecodable head. R30 overlay table-copy helper at seg 4FC2. conf: low",
+  "low"
+ ],
+ "sub_2CF6A": [
+  "r01_ascii_header_data",
+  "void far (DATA-class span, ASCII-looking): mixed ASCII bytes + undecodable 0x00; 2 callers (sub_2BEC9, sub_2BFCD 24)",
+  "33B span, in=2, cd=24, DATA/ASCII. R01 overlay ASCII data block (header/label bytes). conf: low",
+  "low"
+ ],
+ "sub_255C4": [
+  "dispatch_22140_stub",
+  "void far; call dword ptr cs:22140; retf",
+  "6B, 0 dyn, cd=20, 1 caller (sub_27703 20). Far-call trampoline via cs:22140. conf: med",
+  "med"
+ ],
+ "sub_1F50B": [
+  "volume_exponential_adjust4",
+  "void far; C frame: es:77DEC = es:78866 * [bp+arg0] / 0x64 + es:78866; clamp 0..0x7F; es:78776=0x2000; es:7778D=0x1F",
+  "147B, 0 dyn, cd=17, 2 callers (sub_1AA0B 17). Fourth exponential volume/level adjust (es:78866 base, clamp 0..0x7F). conf: med",
+  "med"
+ ],
+ "sub_19128": [
+  "event_key_valid_dec_jpt",
+  "void far; BX=[bp+arg0]-1; jump-table (cs:jpt_19139) over 4 cases -> AX=1/0; retf (key-code validity 1..)",
+  "30B, 0 dyn, cd=16, 1 caller (sub_195C4 16). Jump-table validation of key codes >=1 -> AX 0/1. conf: med",
+  "med"
+ ],
+ "sub_1727E": [
+  "sbi_port_discover_aa",
+  "void far; scan SBI base ports 0x21C..0x27C step 0x10: pulse (out 1/0), poll ACK bit7, verify 0xAA response; AX=1 base found else 0 (es:777F0=base); retf",
+  "92B, 0 dyn, cd=15, 1 caller (sub_1740D 15). Discovers the SBI base port by 0xAA handshake (stores to es:777F0). conf: high",
+  "high"
+ ],
+ "sub_4FD8E": [
+  "r08_farptr_copy_thunk",
+  "void far; (span undecodable mid-instruction); 1 caller (sub_2BEBF 15)",
+  "31B span, in=1, cd=15, undecodable. R08 overlay far-ptr copy thunk. conf: low",
+  "low"
+ ],
+ "sub_6E376": [
+  "r14_stream_read_retf8",
+  "void far; stream read: CX=[bp+6] clipped to cs:6E2B6 budget, deduct; accumulate into cs:6E2B2/B4 (32-bit); copy CX bytes from far ptr cs:6E2BC/BE to es:[bp+0Ah] (movsw/movsb); retf 8 (cleans 8B args)",
+  "90B, 0 dyn, cd=12, 3 callers (thunk slots sub_2BF05/2BF55). R14 overlay stream reader with byte budget + far args (retf 8). conf: med",
+  "med"
+ ],
+ "sub_1119C": [
+  "int15_joystick_read",
+  "NEAR retn fn; if cs:11176 (detect result) != 0: AH=0x84, DX=1 int 15h (read joystick), clc; retn",
+  "135B span (body to retn@0x111AD), 0 dyn, cd=11, 3 callers (sub_11198 NEARTHUNK 11). Reads joystick axes via INT 15h AH=84h AL=01 (gated on detect flag cs:11176). conf: high",
+  "high"
+ ],
+ "sub_2D0DA": [
+  "r01_farptr_call_a",
+  "void far; (span undecodable, far calls 9A); 1 caller (sub_2BEDD 10)",
+  "36B span, in=1, cd=10, undecodable. R01 overlay far-ptr call helper A. conf: low",
+  "low"
+ ],
+ "sub_2D0FE": [
+  "r01_farptr_call_b",
+  "void far; (span undecodable, far calls 9A); 1 caller (sub_2BED3 9)",
+  "28B span, in=1, cd=9, undecodable. R01 overlay far-ptr call helper B. conf: low",
+  "low"
+ ],
+ "sub_6740D": [
+  "r30_rect_overlap_check",
+  "void far (DATA-class span, partially undecodable): compare rect [es:6E042 ptr] vs es:7894:79E40/79E3E bounds (jl/jg branches); 1 caller (sub_2C95F 9)",
+  "97B span, in=1, cd=9, DATA/undecodable head. R30 overlay rectangle-overlap test vs viewport bounds. conf: low",
+  "low"
+ ],
+ "r01_e02": [
+  "cpu_flag_486_detect",
+  "NEAR retn fn; push 0xF000/popf/pushf/pop AX: if (AX & 0xF000) != 0 -> DX++ (486+ has bits 12-15); AX=DX; retn (CPU generation counter)",
+  "17B retn, 0 dyn, cd=8, 2 callers. CPU-generation detect via EFLAGS bits 12-15 (increments DX per 386/486/P5). conf: high",
+  "high"
+ ],
+ "sub_19103": [
+  "event_key_valid_0_jpt",
+  "void far; BX=[bp+arg0]; jump-table (cs:jpt_19113) over 4 cases -> AX=1/0; retf (key-code validity 0..)",
+  "29B, 0 dyn, cd=8, 1 caller (sub_1950C). Jump-table validation of key codes >=0 -> AX 0/1. conf: med",
+  "med"
+ ],
+ "sub_253FC": [
+  "kbd_scancode_xlat_shift",
+  "NEAR retn fn; if AH>0x3A: AL=0 retn; ES=0,DS=7B0E; shift-flag gated (es:417 bits0-1,bit6): BX=39E2 or 3A1D table base (with AH range checks 0x10-0x32); AL = [BX+AH] via XLAT; retn",
+  "83B retn, 0 dyn, cd=7, 1 caller (sub_251CF 7). Keyboard scancode translate with shift-state table selection (39E2/3A1D). conf: high",
+  "high"
+ ],
+ "sub_2D26A": [
+  "r01_farptr_call_c",
+  "void far; (span undecodable, many far calls 9A); 1 caller (sub_2BEF1 7)",
+  "173B span, in=1, cd=7, undecodable. R01 overlay far-ptr call helper C. conf: low",
+  "low"
+ ],
+ "sub_4185A": [
+  "farobj_copyloop_thunk",
+  "void far; (span undecodable mid-instruction, far call 9A); 1 caller (sub_2BEAB 6)",
+  "82B span, in=1, cd=6, undecodable. Far-object copy-loop thunk. conf: low",
+  "low"
+ ],
+ "sub_1A611": [
+  "state_pair_78944_zero_ax1",
+  "void far; ES=7894h; es:78946=0, es:78944=0; AX=1; retf (accumulator pair reset)",
+  "27B, 0 dyn, cd=5, 2 callers (sub_19B78 accumulate_wait). Zeros the es:78944/946 accumulator pair, returns AX=1. conf: high",
+  "high"
+ ],
+ "sub_1A64E": [
+  "state_word_78942_zero_ax1",
+  "void far; ES=7894h; es:78942=0; AX=1; retf",
+  "20B, 0 dyn, cd=5, 2 callers (sub_19B78). Zeros state word es:78942, returns AX=1. conf: high",
+  "high"
+ ],
+ "sub_22ADC": [
+  "pit_divisor_set_bx",
+  "NEAR retn LEAF; cli; AL=0x36 out 43h (PIT ch0 mode 3); out 40h BL, out 40h BH (program divisor BX); sti; retn",
+  "15B LEAF retn, 0 dyn, cd=5, 2 callers. Programs PIT ch0 mode-3 with 16-bit divisor BX (cli/sti guarded). conf: high",
+  "high"
+ ],
+ "sub_252B8": [
+  "flag_block_zero_5c63_mode0",
+  "void far; ES=CS, DI=5C63h; cli; cs:24E20=0 (mode); zero 0x0B words (stosw); sti; retf",
+  "29B, 0 dyn, cd=5, 2 callers (sub_22A44, sub_4E520). Zeros the 11-word flag block 5C63h + sets mode byte 24E20=0. conf: high",
+  "high"
+ ],
+ "sub_105E6": [
+  "ems_ems_detect_3d44",
+  "NEAR retn fn; AX=0x3D00 int 21h (open), AX=0x4400 (ioctl), check DX.7 (char dev), AX=0x4407 (get handle info), AL!=0, AH=3E (close); clc if all pass; retn",
+  "46B retn, 0 dyn, cd=5, 1 caller (sub_1053A ems_init). EMS driver detection via INT 21h open/ioctl/close sequence; CF=0 if EMS present. conf: high",
+  "high"
+ ],
+ "sub_1A5D7": [
+  "accumulate_add_sub_78944",
+  "void far; if [bp+arg4]==1: es:78944/946 += DX:BX else -= DX:BX (add/sub 64-bit accumulator); AX=1; retf",
+  "58B, 0 dyn, cd=5, 1 caller (sub_19B78). Adds or subtracts a 64-bit value into the es:78944 accumulator (gated by arg). conf: high",
+  "high"
+ ],
+ "sub_1A63A": [
+  "state_word_78942_one_ax1",
+  "void far; ES=7894h; es:78942=1; AX=1; retf",
+  "20B, 0 dyn, cd=5, 1 caller (sub_19B78). Sets state word es:78942=1, returns AX=1. conf: high",
+  "high"
+ ],
+ "sub_22A9F": [
+  "int8_vector_hook_343f",
+  "NEAR retn fn; AX=0x3508 int 21h (get INT8 vec) -> cs:2221C; DS=seg020, DX=0x343F, AX=0x2508 int 21h (set INT8 = 343F); retn",
+  "39B retn, 0 dyn, cd=5, 1 caller (sub_22A44). Hooks INT 8 (timer) vector: saves old at cs:2221C, installs seg020:343F. conf: high",
+  "high"
+ ],
+ "sub_252D5": [
+  "int9_vector_hook_5c7d",
+  "void far; ES=CS, DI=5C63h: zero 0x0B words; AX=0x3509 int 21h (get INT9) -> cs:24E38; DS=CS, DX=0x5C7D, AX=0x2509 int 21h (set INT9 = 5C7D); retf",
+  "56B, 0 dyn, cd=5, 1 caller (sub_22A44). Hooks INT 9 (keyboard): saves old at cs:24E38, installs CS:5C7D + resets flag block. conf: high",
+  "high"
+ ]
+}

@@ -1,0 +1,218 @@
+{
+ "sub_25540": [
+  "dispatch_22148_stub",
+  "void far; call dword ptr cs:22148; retf",
+  "6B, 0 dyn, cd=5, 1 caller (sub_25522 5). Far-call trampoline via cs:22148. conf: med",
+  "med"
+ ],
+ "sub_2AA0F": [
+  "farptr_list_copy_ffff",
+  "void far; DS=CS, SI=0x0B0C8; repeat: lodsw, if -1 stop else stosw+movsw (copies far-ptr pairs to ES:DI until terminator 0xFFFF); retf",
+  "24B, 0 dyn, cd=5, 1 caller (sub_229DD). Copies a 0xFFFF-terminated far-pointer list from cs:0B0C8 to ES:DI. conf: high",
+  "high"
+ ],
+ "sub_2CAF0": [
+  "dos_indirect_dispatch_2c9ba",
+  "void far; DS=CS; cs:2CB1B=word_2CB7F, cs:2CB1D=word_2CB81, cs:2CB1F=0; BX=0x1AB, AH=6, AL=1, CX=0; jmp cs:off_2C9BA (table dispatch)",
+  "43B, 0 dyn, cd=5, 1 caller (sub_2CA64). Loads a call frame then tail-dispatches through the near-pointer table at cs:2C9BA (DOS-ish service, AH=6). conf: med",
+  "med"
+ ],
+ "sub_2D1D0": [
+  "r01_farptr_call_d",
+  "void far; (span undecodable, many far calls 9A); 1 caller (sub_2BE3D 5)",
+  "148B span, in=1, cd=5, undecodable. R01 overlay far-ptr call helper D. conf: low",
+  "low"
+ ],
+ "sub_2D382": [
+  "farptr_slot0_handler",
+  "void far; push bp/si/di; call near; pop di/si/bp; retf (real target behind RTLink thunk slot #000)",
+  "10B LEAF, 0 dyn, cd=5, 1 caller (sub_2BD9D = thunk slot 0). The actual handler the loader-trap thunks reach after resolution. conf: med",
+  "med"
+ ],
+ "sub_2D4A2": [
+  "farptr_slot1_handler",
+  "void far; push bp/si/di; call near; pop di/si/bp; retf (real target behind RTLink thunk slot #001)",
+  "10B LEAF, 0 dyn, cd=5, 1 caller (sub_2BDA7 = thunk slot 1). conf: med",
+  "med"
+ ],
+ "sub_2D189": [
+  "r01_farptr_call_e",
+  "void far; (span undecodable, far calls 9A); 1 caller (sub_2BEE7 3)",
+  "71B span, in=1, cd=3, undecodable. R01 overlay far-ptr call helper E. conf: low",
+  "low"
+ ],
+ "r30_e111": [
+  "r30_hlt_stub",
+  "void far; hlt (halt stub -- RTS interrupt/idle marker in R30 overlay)",
+  "1B, 0 dyn, cd=2, 1 caller (sub_2C54F 2). HALT instruction stub (idle/RTS marker). conf: med",
+  "med"
+ ],
+ "sub_10DFE": [
+  "state_byte_1084c_set",
+  "void far; cs:1084C = AL; retf (high byte of the cs:1084B word)",
+  "5B, 0 dyn, cd=1, 2 callers. Setter for state byte cs:1084C (word pair with state_byte_1084b_get). conf: high",
+  "high"
+ ],
+ "sub_18FB5": [
+  "event_true_far",
+  "void far; AX = 1; retf (constant true result)",
+  "8B, 0 dyn, cd=1, 1 caller (sub_1852E). Returns constant AX=1 (far twin of always_true). conf: high",
+  "high"
+ ],
+ "r30_e142": [
+  "r30_state_push_6e14f",
+  "void far (span partially undecodable): ES=6DE8h; es:6E145=0; push es:6E151, push es:6E14F (saves a far-ptr pair); 1 caller (sub_2C6A3 1)",
+  "27B span, in=1, cd=1, DATA-class head. R30 overlay state push at seg 6DE8. conf: low",
+  "low"
+ ],
+ "sub_10422": [
+  "ems_remap_execute",
+  "void far; if cs:1023F: DX=cs:10229, AH=4402h int 67h (map); if cs:10240: DX=cs:1022B, AL=3, AH=44h int 67h; cs:10249=0; retf",
+  "52B, 0 dyn, cd=0, 4 callers (sub_2EAA7..sub_2EF12). Applies the pending EMS page maps (gated by alloc flags 1023F/10240), clears done-flag 10249. conf: med",
+  "med"
+ ],
+ "sub_112F6": [
+  "segment_change_debounce_cx",
+  "NEAR retn fn; DX&=0xFFE0; compare vs ds:5C/64/60/5E/62 (5 cached segs) with a 3-hit debounce counter cs:11372 -> CX = change bitmask 1/2/3/4; reset counter on match",
+  "124B retn, 0 dyn, cd=0, 4 callers. Detects which of 5 cached segment values DX changed (3-hit debounce) -> CX bit flags. conf: high",
+  "high"
+ ],
+ "sub_1A662": [
+  "event_table_find_name",
+  "void far (C frame): compare the NUL-terminated name at [bp+arg0] against 0x0C-char entries at es:7894:22 + i*0x0E (i < es:78960); return far ptr DX:AX to the match, else -1:-1",
+  "114B, 0 dyn, cd=0, 4 callers. Looks up a name in the 0x0E-stride event table at 7894:0022, returns its far pointer (or FFFF:FFFF). conf: high",
+  "high"
+ ],
+ "sub_21933": [
+  "param6_append_0f66",
+  "NEAR retn fn; if [bp+arg0]==0: copy 6 words from [bp+arg6] to es:0F66 (queue cursor es:0F66 advances); retn (else falls into the bigger body)",
+  "224B span, 0 dyn, cd=0, 4 callers. Appends a 12-byte parameter record to the es:0F66 queue when arg0==0. conf: med",
+  "med"
+ ],
+ "sub_2262F": [
+  "str_upper_copy_3676",
+  "NEAR retn fn; copy 0x18 bytes from [DX] to es:7B0E:3676 converting a-z to A-Z (sub 0x20); retn",
+  "38B retn, 0 dyn, cd=0, 4 callers. Copies a 24-byte string with lowercase->uppercase conversion to 7B0E:3676. conf: high",
+  "high"
+ ],
+ "sub_233C0": [
+  "farptr_table_get_22db4",
+  "void far (span DATA-class, no terminator in span): BX = cs:22D26*2 + cs:22DB4; ES = cs:22DB6; BX = es:[BX] (loads a far-ptr from the table)",
+  "22B span, 0 dyn, cd=0, 4 callers (sub_22EA2..sub_235BB). Loads a far pointer from the cs:22DB4/22DB6 table indexed by state cs:22D26 (near-twin of farptr_table_get). conf: med",
+  "med"
+ ],
+ "sub_2412E": [
+  "fixed_mat3_scale_a",
+  "NEAR retn fn; saturating 3x3 matrix scale: rows [bx+0..10] * scale [si] (es=seg), combined imul/add/sub with 0x8001/0x7FFF clamp, stored to [di+0..10]; first row copies [bx] -> [di] raw",
+  "246B retn, 0 dyn, cd=0, 4 callers (sub_24440..sub_24536). Fixed-point 3x3 matrix scale+clamp variant A (mixed add/sub row form). conf: high",
+  "high"
+ ],
+ "sub_24224": [
+  "fixed_mat3_scale_b",
+  "NEAR retn fn; saturating 3x3 matrix scale variant B (add-form rows, raw diagonal copies to [di]); 4 callers (same set)",
+  "245B retn, 0 dyn, cd=0, 4 callers. Fixed-point 3x3 matrix scale variant B (add-form). conf: high",
+  "high"
+ ],
+ "sub_24319": [
+  "fixed_mat3_scale_c",
+  "NEAR retn fn; saturating 3x3 matrix scale variant C (sub-form rows with raw interleave); 4 callers (same set)",
+  "245B retn, 0 dyn, cd=0, 4 callers. Fixed-point 3x3 matrix scale variant C (sub-form). conf: high",
+  "high"
+ ],
+ "sub_279A4": [
+  "slope_flag_test_bc",
+  "NEAR retn fn; AX=0; BX=BP>>1; if BX<CX -> AX|=4; elif -BX>CX -> AX|=2; retn (ZF=0 iff one flag set)",
+  "27B retn, 0 dyn, cd=0, 4 callers (sub_291B1..sub_2A0B5). Slope/aspect test: sets flag 4 or 2 comparing (BP/2) vs CX; returns flags in AX. conf: med",
+  "med"
+ ],
+ "sub_31C44": [
+  "dgroup_cycle_435_436",
+  "NEAR retn fn; change-detect ds:439 vs ds:43D -> advance ds:435 mod 8, index table ds:[441+bx] -> ds:431 (and mirror for 43A/436 -> 432); reset counters",
+  "93B retn, 0 dyn, cd=0, 4 callers. Cycles an 8-entry table at ds:441 with change-detect counters, publishing the current entry to ds:431/432. conf: high",
+  "high"
+ ],
+ "sub_33EC3": [
+  "rect_store_40e",
+  "NEAR retn fn; es:40E=BX, es:40C=CX, es:410=AX, es:412=DX (stores a 4-word rect); retn",
+  "20B retn, 0 dyn, cd=0, 4 callers. Stores the registers as a rectangle (CX,BX,AX,DX) at es:40C..412. conf: high",
+  "high"
+ ],
+ "sub_344D3": [
+  "state_word_44d3d_get",
+  "void far; DS=54AFh; AX = ds:[44D3D]; retf (reads a word via segment 54AF)",
+  "11B LEAF, 0 dyn, cd=0, 4 callers (incl sub_3BB8F/3FFEF). Reads a state word through segment 54AF (label word_44D3D). conf: med",
+  "med"
+ ],
+ "sub_39CE0": [
+  "state_gate_4ac2_4a83",
+  "void far; early-ret unless ds:4AC2 < 4 AND ds:4A83 <= 1 (dual state gate, else falls into body)",
+  "140B span (body to retf@0x39CEE), 0 dyn, cd=0, 4 callers. Gates on two DGROUP state bytes (4AC2<4, 4A83<=1) before the real work. conf: med",
+  "med"
+ ],
+ "sub_3B31F": [
+  "farobj_init_43ba",
+  "void far; SI=0x43BA then (span undecodable); 4 callers incl sub_4A7E5 DATA",
+  "25B span, 0 dyn, cd=0, 4 callers, undecodable head. Far-object init with SI=0x43BA table base. conf: low",
+  "low"
+ ],
+ "sub_42879": [
+  "r32_farptr_gate",
+  "void far (C frame, span undecodable after enter); 4 callers (r32_e74, r32_e83, sub_66E62, sub_67781)",
+  "37B span, 0 dyn, cd=0, 4 callers, undecodable. R32 overlay far-ptr gate. conf: low",
+  "low"
+ ],
+ "sub_5006A": [
+  "farobj_table_lookup_scaled",
+  "void far; DS=6BE0h, count=ds:6C8C6; scan SI=0x0AC8 entries: match AX and DL -> DX:AX = cbw*[SI+6/8] scaled by 0x3334 (x0.8), stosw pairs; SI=[SI+4] -> CX=(>>4)&0xF, SI&=0x7FF; clc; retf",
+  "86B, 0 dyn, cd=0, 4 callers (sub_44352..sub_484C1). Looks up an object in the 6BE0:AC8 table, returns scaled coordinates (x0.8) + index (CX nibble, SI). conf: med",
+  "med"
+ ],
+ "sub_106AF9": [
+  "r12_farptr_helper",
+  "void far (span undecodable): push si/di/ax/bx/cx; call near; pops; retf; 4 callers (r12_e22/e31/e32/e33)",
+  "14B span, 0 dyn, cd=0, 4 callers, undecodable. R12 overlay far-ptr helper. conf: low",
+  "low"
+ ],
+ "sub_12F27": [
+  "terrain_attr_lookup_3840",
+  "NEAR retn fn; bounds check (cs:11C0E-2-AX, cs:11C12-0x40-SI) -> cs:11C7D flag bits; DS=cs:11BE8 table, BX=[(SI+AX)*2 + 0x3840]; BH>>=1 -> BL=BH, BH=flag; retn",
+  "157B retn, 0 dyn, cd=0, 3 callers (sub_14356, sub_1657E). Terrain attribute lookup: bounds-gated table read at es:3840, returns attr + flag byte (near-twin of terrain_height_lookup_11cc8). conf: high",
+  "high"
+ ],
+ "sub_13A57": [
+  "sorted_key_search_bl",
+  "NEAR retn fn; CX=count from [SI]; per 2-byte record: al=[SI]-BL; ==0 -> found path; >0 -> fail (stc); <0 -> SI+=2 loop; stc if exhausted; retn",
+  "26B retn, 0 dyn, cd=0, 3 callers (sub_1260C, sub_13276, sub_13301). Searches a sorted byte-key 2-byte-record table for BL; CF=1 if not found. conf: med",
+  "med"
+ ],
+ "sub_13C0E": [
+  "coord_delta_11c56",
+  "NEAR retn fn; DH:DL=cs:11C57:11C56, AH:AL=cs:11C59:11C58; AX-=DX (delta of the two 2-byte coord pairs); BP=[SI]; retn",
+  "24B retn, 0 dyn, cd=0, 3 callers. Computes the coordinate delta between two cached pairs at cs:11C56..59, BP=[SI]. conf: med",
+  "med"
+ ],
+ "sub_14B12": [
+  "avg2_ax_dx",
+  "NEAR retn LEAF; AX = (AX + DX) >> 1 (avg with carry-in); retn",
+  "5B LEAF retn, 0 dyn, cd=0, 3 callers. Two-operand average (AX+DX)/2 with rcr carry. conf: high",
+  "high"
+ ],
+ "sub_256B8": [
+  "dispatch_220a4_near",
+  "NEAR retn fn; call dword ptr cs:220A4; retn (near twin of dispatch_220a4_stub)",
+  "6B retn, 0 dyn, cd=0, 3 callers (sub_1FB3C, sub_2650C, sub_28E50). NEAR far-call trampoline via cs:220A4. conf: med",
+  "med"
+ ],
+ "sub_27051": [
+  "farobj_field_mask_24_26",
+  "void far; DS=seg; for CX entries from es:[BX] (BX=0x34, +4): LDS SI; if SI!=-1: [SI+24] &= 0x7FFF, [SI+26] &= 0x3F (clears high bits of two fields); retf",
+  "40B, 0 dyn, cd=0, 3 callers (sub_34923, sub_34954, sub_34C31). Iterates the far-ptr object table, masking field +24 (word, 0x7FFF) and +26 (0x3F) on each object. conf: med",
+  "med"
+ ],
+ "sub_28CA1": [
+  "farobj_di_441e_init",
+  "void far; mov DI, 0x441E (then span truncated -- DATA class, no terminator in 3B); 3 callers (sub_26B2E, sub_27A20, sub_28774)",
+  "3B span, 0 dyn, cd=0, 3 callers, DATA/truncated. Sets DI=0x441E (buffer offset) at function entry; body continues past span. conf: low",
+  "low"
+ ]
+}

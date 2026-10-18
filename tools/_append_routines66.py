@@ -26,8 +26,8 @@ for key in sorted(analysis, key=lambda k: analysis[k][0]):
     ofs = ea & 0xF
     far = "true" if v.get("is_far") else "false"
     cls = "ASM"  # class from classification is coarse; use ASM for code leaves
-    sig_e = sig.replace('"', '\\"')
-    notes_e = notes.replace('"', '\\"')
+    sig_e = sig.replace(chr(92), chr(92)*2).replace('"', chr(92)*2 + '"')
+    notes_e = notes.replace(chr(92), chr(92)*2).replace('"', chr(92)*2 + '"')
     blocks.append(
         "  - ea: 0x%X\n"
         "    seg: 0x%X\n"

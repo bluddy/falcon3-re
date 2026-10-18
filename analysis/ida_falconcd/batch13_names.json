@@ -1,0 +1,218 @@
+{
+ "sub_1D664": [
+  "state_word_77a4a_test",
+  "void far; ES=7772h; AX = (es:77A4A == 0 ? 1 : 0); retf (tests the event word)",
+  "25B, 0 dyn, cd=0, 1 caller (sub_19843). Returns AX=1 when es:77A4A is clear (gate test). conf: high",
+  "high"
+ ],
+ "sub_1F8E1": [
+  "rect_init_4word",
+  "NEAR retn fn; if BP==0: [SI]=1, [SI+2]=AX, [SI+4]=AX+CX-1, [SI+6]=BX (initializes a 4-word rect record); retn",
+  "30B retn, 0 dyn, cd=0, 1 caller (sub_1F7D8). Initializes a 4-word rectangle record at [SI] from AX/BX/CX. conf: med",
+  "med"
+ ],
+ "sub_1F956": [
+  "rect_min_track_1f722",
+  "NEAR retn fn; CX=[SI+1A]; if cs:1F740.1 gate: retn; else min([SI+8],[SI+18]) tracked into cs:1F722 (running minimum); continues body",
+  "67B retn, 0 dyn, cd=0, 1 caller (sub_1F7D8). Tracks a running minimum of two record fields into cs:1F722 (gated by flag cs:1F740.1). conf: med",
+  "med"
+ ],
+ "sub_1FEAC": [
+  "quat_orient_flags_911",
+  "NEAR retn fn; BP=0: per-axis compare of [BX+..] against half-ranges -> BP |= 1/2/4... (911B orientation classifier, quadrant flag accumulation); 1 caller (sub_1FE76)",
+  "911B retn, 0 dyn, cd=0, 1 caller. Large orientation/quadrant classifier: builds flag bits in BP by comparing vector components against half-range thresholds. conf: med",
+  "med"
+ ],
+ "sub_2023B": [
+  "sign_classify_bp",
+  "NEAR retn fn; BP=0; DX=[BX+4], CX=[BX+0A]; if both <=0: BP=1; retn (sign-class of two fields)",
+  "132B span (body to retn@0x2024C), 0 dyn, cd=0, 1 caller (sub_1FE76). Classifies the sign pair ([BX+4],[BX+0A]) -> BP=1 when both non-positive. conf: med",
+  "med"
+ ],
+ "sub_202BF": [
+  "view_scroll_clamp_1f702",
+  "NEAR retn fn; AX -= cs:1F6D6; clamp AX to [-0x1C2..0x1C2] (0xFE3E..0x1C2); cs:1F702 = AX; retn",
+  "28B retn, 0 dyn, cd=0, 1 caller (sub_1F769). Clamps a scroll delta (relative to cs:1F6D6) to the range -0x1C2..0x1C2 and stores to cs:1F702. conf: high",
+  "high"
+ ],
+ "sub_2063B": [
+  "dispatch_220b0_near",
+  "NEAR retn fn; call dword ptr cs:220B0; retn",
+  "6B retn, 0 dyn, cd=0, 1 caller (sub_2061B). NEAR far-call trampoline via cs:220B0. conf: med",
+  "med"
+ ],
+ "sub_21F3A": [
+  "rect_span_min_track",
+  "NEAR retn fn; CX=[SI+6]-[SI+2] (span sign branches); gate cs:1F740.1; else min([SI],[SI+4]) tracked into cs:1F722; continues (281B)",
+  "281B retn, 0 dyn, cd=0, 1 caller (sub_21EB0). Span-sign branch + running-min track of record fields into cs:1F722 (twin of rect_min_track_1f722). conf: med",
+  "med"
+ ],
+ "sub_22AC6": [
+  "int8_vector_restore_2221c",
+  "NEAR retn fn; DX:DS = cs:2221C (saved INT8 vec); AX=0x2508 int 21h (restore INT8); retn",
+  "22B retn, 0 dyn, cd=0, 1 caller (sub_22A79). Restores the saved INT 8 vector from cs:2221C via INT 21h AH=25h (undo of int8_vector_hook_343f; distinct from int8_vector_unhook which resets via sub_17460). conf: high",
+  "high"
+ ],
+ "sub_23E77": [
+  "vec3_norm_es_di",
+  "NEAR retn fn; abs each 64-bit component of es:[DI] (neg/sbb if DX<0), accumulate magnitude (231B); 1 caller (sub_23F62)",
+  "231B retn, 0 dyn, cd=0, 1 caller. Normalizes/abs-accumulates the 3-component vector at es:[DI] into a magnitude (CX:BP accumulator). conf: med",
+  "med"
+ ],
+ "sub_2440E": [
+  "mat3_scale_identity_diag",
+  "NEAR retn fn; saturating DX = AX * 0x7FFF (shl1, 0x8001/0x7FFF clamp) -> [DI], [DI+8], [DI+10] (diagonal set); AX=0... (identity-ish scale); 1 caller (sub_2448E)",
+  "50B retn, 0 dyn, cd=0, 1 caller. Sets a scaled diagonal ([DI]/[DI+8]/[DI+10]) from a saturating AX*0x7FFF (near-twin of the fixed_mat3_scale family). conf: med",
+  "med"
+ ],
+ "sub_24789": [
+  "fixed_vec3_dot_3820_si",
+  "NEAR retn fn; dot of [SI] vector with DGROUP 3820/3826/382C constants (3 imul+add/adc, saturating shl1); 1 caller (sub_27180)",
+  "148B retn, 0 dyn, cd=0, 1 caller. Fixed-point vector-matrix dot at [SI] against DGROUP constants (near-twin of fixed_vec3_dot_3820 at 246E7). conf: high",
+  "high"
+ ],
+ "sub_24E99": [
+  "bda_417_or_al",
+  "void far; ES=0, BX=0x417; es:[417] |= AL (set bits via OR); retf",
+  "15B LEAF, 0 dyn, cd=0, 1 caller (sub_24E8C). Sets bits in BDA 0040:0417 via OR AL (the set-half of the bda_417_mask_clear/store trio). conf: high",
+  "high"
+ ],
+ "sub_24EF7": [
+  "flag_24e20_gate_stc",
+  "NEAR retn LEAF; if cs:24E20 != 0: stc, retn (CF=1 when mode byte set, else CF=0 fallthrough)",
+  "12B LEAF retn, 0 dyn, cd=0, 1 caller (sub_24EF3 NEARTHUNK). Returns CF=1 when flag byte cs:24E20 is non-zero (mode gate). conf: high",
+  "high"
+ ],
+ "sub_2520B": [
+  "flag_block_scan_nonzero",
+  "void far; DS=CS; scan the 0x0B-byte flag block at cs:5762 for the first non-zero byte (lodsb loop); continues body",
+  "21B DATA-span, 0 dyn, cd=0, 1 caller (sub_4E520). Scans the 11-byte flag block at 5762h for a set byte. conf: med",
+  "med"
+ ],
+ "sub_2530D": [
+  "int9_vector_unhook",
+  "void far; DX:DS = cs:24E38 (saved INT9 vec); AX=0x2509 int 21h (restore INT9); retf",
+  "22B, 0 dyn, cd=0, 1 caller (sub_22A79). Restores the saved INT 9 keyboard vector from cs:24E38 (undo of int9_vector_hook_5c7d). conf: high",
+  "high"
+ ],
+ "sub_25681": [
+  "dispatch_2216c_stub",
+  "void far; call dword ptr cs:2216C; retf",
+  "6B, 0 dyn, cd=0, 1 caller (sub_4F8BC). Far-call trampoline via cs:2216C. conf: med",
+  "med"
+ ],
+ "sub_256FD": [
+  "farptr_slot_store_7f24a_al",
+  "NEAR retn fn; ES=7B0Eh; cs:2548A=AL (mode); ds:7F24A=SI, ds:7F24C=DS (stores a far-ptr SI:DS); retn",
+  "22B retn, 0 dyn, cd=0, 1 caller (sub_256E7). Stores a far pointer (SI:DS) into the 7F24A slot + sets mode byte 2548A (near-twin of farptr_slot_store_7f24a). conf: high",
+  "high"
+ ],
+ "sub_2574A": [
+  "state_byte_25488_to_89_near",
+  "NEAR retn fn; cs:25489 = cs:25488 (shadow save, near-twin of state_byte_25489_shadow_save); retn",
+  "9B retn, 0 dyn, cd=0, 1 caller (sub_257E5). Copies state byte 25488 -> 25489 (near form of the shadow save). conf: high",
+  "high"
+ ],
+ "sub_2575C": [
+  "state_byte_25489_to_88_near",
+  "NEAR retn fn; cs:25488 = cs:25489 (shadow restore, near-twin of state_byte_25488_shadow_restore); retn",
+  "9B retn, 0 dyn, cd=0, 1 caller (sub_257E5). Copies state byte 25489 -> 25488 (near form of the shadow restore). conf: high",
+  "high"
+ ],
+ "sub_2598A": [
+  "mouse_bounds_clamp_25474",
+  "NEAR retn fn; clamp CX to [cs:25474 .. cs:25478-0x17], SI to [cs:25476 .. ..] (4-way bound clamp of a coord pair); continues body",
+  "47B retn, 0 dyn, cd=0, 1 caller (sub_2590C). Clamps a coordinate pair (CX,SI) into the 4-word bound quad at cs:25474..78. conf: high",
+  "high"
+ ],
+ "sub_259B9": [
+  "dispatch_2210c_invoke_5arg",
+  "void far; loads CX,SI,BX + LDS DI=[bp+8] + BP=[bp+4]; call dword ptr cs:2210C; retf",
+  "37B, 0 dyn, cd=0, 1 caller (r01_e04). Far-call trampoline with 5 args (incl a far-ptr via LDS) via cs:2210C. conf: med",
+  "med"
+ ],
+ "sub_25A8B": [
+  "vec2_offset_add_si",
+  "void far; BX += [SI]*4, DI += [SI+2]/2 (applies a 2-word offset scaled into BX/DI); continues body",
+  "15B DATA-span, 0 dyn, cd=0, 1 caller (sub_263BD). Adds a scaled 2-word offset from [SI] into the BX/DI position pair. conf: med",
+  "med"
+ ],
+ "sub_25CFF": [
+  "clip_rect_compute_shr1",
+  "NEAR retn fn; cs:25458=0; clamp/clip a rect from [SI] (size [SI]>>1 form) against cs:25450..56 bounds -> clip area; 1 caller (sub_25CD8)",
+  "217B retn, 0 dyn, cd=0, 1 caller. Clipped-rect area compute with the size taken as [SI]>>1 (third variant of the clip_rect_compute family). conf: med",
+  "med"
+ ],
+ "sub_26EFF": [
+  "sprite_stride_lookup_26408",
+  "NEAR retn fn; gate cs:2646E.1: save SI->cs:2646C, SI=[SI+0x10]; CX=cs:26408; AL=es:[bp+1] * cs:2640A (stride index math); continues (200B)",
+  "200B retn, 0 dyn, cd=0, 1 caller (sub_26CD8). Sprite/table stride lookup: computes a record index (AL*cs:2640A) into the cs:26408-stride table, gated by flag 2646E.1. conf: med",
+  "med"
+ ],
+ "sub_26FC7": [
+  "ramp_stosw_loop",
+  "NEAR retn fn; DX=BP=CX; per-loop: AL=1/0 alternate stosw ramp fill while DX-=BX>0 (Bresenham-ish fill); 1 caller (sub_26CD8)",
+  "29B retn, 0 dyn, cd=0, 1 caller. Alternating-word (ramp) stosw fill with a Bresenham-style DX-=BX stepper. conf: med",
+  "med"
+ ],
+ "sub_2726E": [
+  "vec3_sar1_store",
+  "NEAR retn fn; [DI]=[BX]>>1, [DI+2]=[BX+2]>>1, [DI+4]=[BX+4]>>1 (arithmetic >>1 of a 3-word vector); retn",
+  "23B retn, 0 dyn, cd=0, 1 caller (sub_27180). Arithmetic right-shift-by-1 copy of a 3-word vector [BX] -> [DI]. conf: high",
+  "high"
+ ],
+ "sub_27285": [
+  "vec3_neg_sar1_store",
+  "NEAR retn fn; [DI]= -[BX]>>1, [DI+2]= -[BX+2]>>1, [DI+4]= -[BX+4]>>1 (negate + >>1 of a 3-word vector); retn",
+  "29B retn, 0 dyn, cd=0, 1 caller (sub_27180). Negated arithmetic >>1 copy of a 3-word vector (inverse of vec3_sar1_store). conf: high",
+  "high"
+ ],
+ "sub_27433": [
+  "matrix_copy_42c8_7b0e",
+  "void far; DS=old ES; ES=7B0Eh; copy 3x4 words from [ES:..] to 7B0E:42C8 (movsw x4 loop); 1 caller (sub_27180)",
+  "46B, 0 dyn, cd=0, 1 caller. Copies a 3x4-word matrix block into DGROUP 7B0E:42C8. conf: med",
+  "med"
+ ],
+ "sub_27BDA": [
+  "line_raster_diff_281",
+  "NEAR retn fn; BP=CX-1; per-row: abs([BX]-[SI]) diff with neg/sbb sign fix, accumulate (281B raster line diff); 1 caller (sub_27A20)",
+  "281B retn, 0 dyn, cd=0, 1 caller. Per-row absolute-difference raster walk over two lines ([BX]/[SI]) with sign-fixed accumulation. conf: med",
+  "med"
+ ],
+ "sub_27CF3": [
+  "line_overlap_classify",
+  "NEAR retn fn; BP=[BX+4]+[SI+4]; if BP<=1 or midpoint tests: emit AL=1/flags via stosb (overlap classifier); continues (108B); 1 caller (sub_27A20)",
+  "108B retn, 0 dyn, cd=0, 1 caller. Classifies line overlap by midpoint tests (BP=sum of extents), emitting a flag byte via stosb. conf: med",
+  "med"
+ ],
+ "sub_27D5F": [
+  "anim_frame_state_27988",
+  "NEAR retn fn; cs:27988=0, cs:2798A=0; SI=cs:27986, DS=cs:1F712; gate cs:2797A bits 2/3: step frame counters vs cs:27983 (anim state machine); continues (99B)",
+  "99B retn, 0 dyn, cd=0, 1 caller (sub_27A20). Animation frame-state step: resets 27988/2798A, advances a frame counter against the cs:27983 bound under cs:2797A flags. conf: med",
+  "med"
+ ],
+ "sub_27DC2": [
+  "anim_frame_tick_27989",
+  "NEAR retn fn; AL = cs:27982<<3; inc cs:27989; if AL >= cs:27989: cs:27989=0 (wrap); retn",
+  "28B retn, 0 dyn, cd=0, 1 caller (sub_27E53). Advances a frame-tick counter (cs:27989) against the period (cs:27982<<3), wrapping at the bound. conf: high",
+  "high"
+ ],
+ "sub_27DDF": [
+  "anim_slot_cycle_2798a",
+  "NEAR retn fn; cs:27989 = cs:27988; AL = cs:2798A+1; if AL < cs:27983 keep else AL=0; cs:2798A = AL; retn",
+  "28B retn, 0 dyn, cd=0, 1 caller (sub_27A20). Cycles the slot counter cs:2798A modulo the cs:27983 bound + mirrors 27988 -> 27989. conf: high",
+  "high"
+ ],
+ "sub_27DFB": [
+  "anim_frame_addr_27984",
+  "void far; DS=cs:1F712; SI = cs:27984 + (cs:2798A * cs:27982); CX=cs:27989>>3... (computes the current frame address); continues (60B)",
+  "60B, 0 dyn, cd=0, 1 caller (sub_27E53). Computes the current animation frame address (base cs:27984 + slot*stride) with the sub-frame offset. conf: med",
+  "med"
+ ],
+ "sub_2835D": [
+  "slope_flag_test_bx",
+  "NEAR retn fn; DX=-BX; if BX<CX: AX|=4 else ... (slope flag test, near-twin of slope_flag_test_bc); 1 caller (sub_196E63)",
+  "13B retn, 0 dyn, cd=0, 1 caller. Slope/aspect flag test comparing BX vs CX into AX bit 4 (near-twin of slope_flag_test_bc at 279A4). conf: med",
+  "med"
+ ]
+}

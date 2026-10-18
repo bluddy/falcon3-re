@@ -1,0 +1,218 @@
+{
+ "sub_458B5": [
+  "entity_state_capture_2e10e",
+  "NEAR retn fn; cs:2E112=AX; SI=ds:48BA; cs:2E10E=[SI+7A]; BX=ds:44AA; gate [SI+0CA].1 + BX in {3,4} branches; ds:4876=BH... (63B)",
+  "63B retn, 0 dyn, cd=0, 1 caller (sub_2FEF2). Captures entity state: saves AX->cs:2E112, [SI+7A]->cs:2E10E, branches on [SI+0CA].1 + mode BX 3/4. conf: med",
+  "med"
+ ],
+ "sub_47A45": [
+  "r05_mode_check_58f9a",
+  "void far; DS=54AFh; AX=ds:58F9A; if AX not in (6..10) or ds:58F4E==-1 or ds:58E14.3 set: skip (72B gate chain); 1 caller (sub_34C31)",
+  "72B, 0 dyn, cd=0, 1 caller. R05 overlay mode gate: accepts only 58F9A in 7..9 with 58F4E valid and 58E14.3 clear. conf: med",
+  "med"
+ ],
+ "sub_47BC6": [
+  "entity_table_zero_1940",
+  "void far; ES=63FDh; zero 0x40 bytes at 63FD:1940 (stosb loop); retf",
+  "24B, 0 dyn, cd=0, 1 caller (sub_3001E). Clears 0x40 bytes of the entity scratch at 63FD:1940. conf: high",
+  "high"
+ ],
+ "sub_48D71": [
+  "r05_state_save_476e",
+  "void far; DS=54AFh; copy 4 words from 54AF:476E + ds:593A6 + ds:593A0 + ds:5948E to ES:DI (save bundle); continues (25B)",
+  "25B span, 0 dyn, cd=0, 1 caller (sub_3099C). Saves an R05 overlay state bundle (476E words + 593A6/593A0/5948E) to ES:DI. conf: med",
+  "med"
+ ],
+ "sub_48D8A": [
+  "r05_state_restore_476e",
+  "void far; ES=54AFh; copy 4 words from DS:SI + lodsw/lodsb into 54AF:476E, 593A6, 593A0, 5948E (restore bundle); 1 caller (sub_30AA8)",
+  "28B, 0 dyn, cd=0, 1 caller. Restores the R05 overlay state bundle from DS:SI into 54AF:476E/593A6/593A0/5948E (inverse of sub_48D71). conf: med",
+  "med"
+ ],
+ "sub_49512": [
+  "sprite_slot_index_12d",
+  "void far; if AX in [0x12D..0x155): DS=65A7h, SI=0x0C + (AX-0x12D)*0x18 (slot address); continues (52B); 1 caller (sub_46D42)",
+  "52B span, 0 dyn, cd=0, 1 caller. Computes a sprite/table slot address (0x0C + (AX-0x12D)*0x18 in seg 65A7) for codes 0x12D..0x155. conf: med",
+  "med"
+ ],
+ "sub_49A6C": [
+  "table_copy_from_65a7",
+  "void far; DS=65A7h; [ES:DI++]=ds:65E3C (header byte); then copy 0x28 blocks of 0x18 bytes from 65A7:000C (save direction); 1 caller (sub_3099C)",
+  "30B, 0 dyn, cd=0, 1 caller. Copies the 65A7h table (header byte + 0x28 x 0x18B blocks) to ES:DI (save). conf: med",
+  "med"
+ ],
+ "sub_49A8A": [
+  "table_copy_to_65a7",
+  "void far; ES=65A7h; ds:65E3C=[SI++] (header byte); then copy 0x28 blocks of 0x18 bytes from DS:SI into 65A7:000C (restore); 1 caller (sub_30AA8)",
+  "30B, 0 dyn, cd=0, 1 caller. Restores the 65A7h table from DS:SI (inverse of sub_49A6C). conf: med",
+  "med"
+ ],
+ "sub_4A7C4": [
+  "entity_field11_set_65e4",
+  "void far; DS=65E4h; DI=0x68 + (DX - ds:65EA2)*0x3A; [DI+11]=0x50 (writes a field at a 0x3A-stride record); continues (33B); 1 caller (sub_3E552)",
+  "33B span, 0 dyn, cd=0, 1 caller. Writes byte 0x50 into field +0x11 of a 0x3A-stride record (index = DX - ds:65EA2) in seg 65E4. conf: med",
+  "med"
+ ],
+ "sub_4B630": [
+  "flag_gate_2e100_get_ax",
+  "void far; AX = cs:2E100 (the enable flag word); retf",
+  "5B, 0 dyn, cd=0, 1 caller (r12_e10). Returns the enable flag cs:2E100 in AX (reader for flag_gate_zero_abc). conf: high",
+  "high"
+ ],
+ "sub_4B635": [
+  "entity_rec_ptr_65e4_di",
+  "void far; DS=ES=65E4h; DI = 0x68 + (AX - ds:65EA2)*0x3A (record pointer into ES:DI); continues (27B); 1 caller (sub_4E520)",
+  "27B span, 0 dyn, cd=0, 1 caller. Computes the 0x3A-stride record pointer at 65E4:068+(AX-ds:65EA2) into DI. conf: med",
+  "med"
+ ],
+ "sub_4B650": [
+  "entity_field0f_set_bl",
+  "void far; DS=65E4h; SI = 0x68 + (AX - ds:65EA2)*0x3A; [SI+0F]=BL; retf (field setter, 0x3A stride)",
+  "32B, 0 dyn, cd=0, 1 caller (sub_4EF1C). Sets byte field +0x0F of the 0x3A-stride record (index = AX - ds:65EA2) in seg 65E4. conf: high",
+  "high"
+ ],
+ "sub_4D7C2": [
+  "table_copy_from_69ff",
+  "void far; DS=69FFh; copy 0x28 x 0x1B-byte blocks from 69FF:0004 then 0x5C-byte run from 69FF:043C (save); continues (38B); 1 caller (sub_3099C)",
+  "38B span, 0 dyn, cd=0, 1 caller. Saves the 69FFh table (0x28 x 0x1B blocks + 0x5C-byte tail) to ES:DI. conf: med",
+  "med"
+ ],
+ "sub_4D7E8": [
+  "table_copy_to_69ff",
+  "void far; ES=69FFh; restore 0x28 x 0x1B-byte blocks to 69FF:0004 + 0x5C-byte tail to 69FF:043C from DS:SI; continues (38B); 1 caller (sub_30AA8)",
+  "38B span, 0 dyn, cd=0, 1 caller. Restores the 69FFh table from DS:SI (inverse of sub_4D7C2). conf: med",
+  "med"
+ ],
+ "sub_4D810": [
+  "entity_state_pair_6b58_store",
+  "void far; DS=6B58h; ds:6B586=AX, ds:6B588=BX (stores a 2-word state pair); retf",
+  "15B LEAF, 0 dyn, cd=0, 1 caller (sub_3001E). Stores the state pair AX:BX into 6B58:586/588. conf: high",
+  "high"
+ ],
+ "sub_4DA87": [
+  "table_copy_from_6b58",
+  "void far; DS=6B58h; [ES:DI++]=ds:6B58A (header byte); then copy 0x0A x 6-byte blocks from 6B58:0033 (save); 1 caller (sub_3099C)",
+  "30B, 0 dyn, cd=0, 1 caller. Saves the 6B58h entity table (header + 0x0A x 6B records) to ES:DI. conf: med",
+  "med"
+ ],
+ "sub_4DAA5": [
+  "table_copy_to_6b58",
+  "void far; ES=6B58h; ds:6B58A=[SI++] (header byte); then copy 0x0A x 6-byte blocks from DS:SI into 6B58:0033 (restore); 1 caller (sub_30AA8)",
+  "30B, 0 dyn, cd=0, 1 caller. Restores the 6B58h entity table from DS:SI (inverse of sub_4DA87). conf: med",
+  "med"
+ ],
+ "sub_4E2FD": [
+  "flag_2e125_gate_stc",
+  "void far; if cs:2E125 == 1: (fallthrough body) else stc, retf (CF=1 when mode != 1); 1 caller (sub_307A5)",
+  "12B LEAF, 0 dyn, cd=0, 1 caller. Gate: returns CF=1 when state byte cs:2E125 != 1 (pair of flag_24e20_gate_stc pattern). conf: high",
+  "high"
+ ],
+ "sub_4E8FB": [
+  "state_add_70a03_70a5d",
+  "void far; DS=709Fh; ds:70A03 += BX; ds:70A5D = AX (accumulator + value store); retf",
+  "19B, 0 dyn, cd=0, 1 caller (sub_2F6D0). Adds BX into ds:709F:70A03 and stores AX to ds:709F:70A5D. conf: high",
+  "high"
+ ],
+ "sub_4F696": [
+  "r34_farobj_proc",
+  "void far; push si ... (149B, undecodable head); 1 caller (r34_e126)",
+  "149B span, 0 dyn, cd=0, 1 caller, undecodable head, called by r34_e126. R34 overlay far-object processor. conf: low",
+  "low"
+ ],
+ "sub_4F72B": [
+  "sprite_blend_0ad2d",
+  "void far; per-byte blend: [DI]= [SI] + ([SI]-[BX]) * ds:0AD2D (imul, >>8 form) between tables at SI/A8F8+ and BX, DI/A8F8 out; continues (141B); 1 caller (sub_2C2F7)",
+  "141B span, 0 dyn, cd=0, 1 caller. Per-byte sprite blend: out = in + (in - ref) * scale ds:0AD2D (fixed-point lerp). conf: med",
+  "med"
+ ],
+ "sub_4F893": [
+  "hw_flag_8505f_set_gated",
+  "void far; DS=7A32h; if ds:85060 == 1: ds:8505F = 1; retf (gated one-shot flag set)",
+  "41B, 0 dyn, cd=0, 1 caller (sub_33443). Sets ds:8505F=1 only when ds:85060==1 (one-shot gate). conf: high",
+  "high"
+ ],
+ "sub_4FCE4": [
+  "hw_flag_85052_set_ff",
+  "void far; DS=7A32h; ds:85052 = 0xFF; retf",
+  "60B DATA-span (body to retf@0x4FCF2), 0 dyn, cd=0, 1 caller (sub_322E5). Sets hw state byte ds:85052 to 0xFF. conf: high",
+  "high"
+ ],
+ "sub_4FD80": [
+  "pop_ds_retf",
+  "void far; pop ds; retf (2-byte tail-entry)",
+  "2B LEAF, 0 dyn, cd=0, 1 caller (sub_2F400). Tail-entry: restores DS then far-returns (pair of shared_tail_pop_es family). conf: med",
+  "med"
+ ],
+ "sub_4FE2E": [
+  "sprite_code_clamp_6cd26",
+  "void far; DS=6BE0h; AH = AL + ds:6CD26, if in [0..4] ds:6CD26=AH (clamped code advance); continues (41B); 1 caller (sub_3A99D)",
+  "41B span, 0 dyn, cd=0, 1 caller. Clamped advance of a sprite code byte (ds:6CD26 += AL, kept in 0..4) then index math. conf: med",
+  "med"
+ ],
+ "sub_4FE57": [
+  "sprite_state_step_6be0",
+  "void far; DS=6BE0h; AH state transform (cwd/xor 5 form) if AH!=0; BL=ds:6CD26 index... (state step, continues 94B); 1 caller (sub_33443)",
+  "94B span, 0 dyn, cd=0, 1 caller. Sprite state-machine step over the ds:6BE0 table with a transformed AH and ds:6CD26 index. conf: med",
+  "med"
+ ],
+ "r30_e123": [
+  "r30_entry_partial_a",
+  "void far (DATA-class partial span, mid-instruction start): decodes into real code at es:6DE8:1C2 far-ptr add; 1 caller (sub_2C5DB)",
+  "16B span, 0 dyn, cd=0, 1 caller, DATA/partial (RTLink entry landed mid-instruction -- class-c signature, cf. finding 65). R30 entry glue A. conf: low",
+  "low"
+ ],
+ "r30_e168": [
+  "r30_entry_partial_b",
+  "void far (DATA-class partial span, mid-instruction start): decodes to es:7894:79F34*0x17 record walk via dword_79E6C; 1 caller (sub_2C7F7)",
+  "30B span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction). R30 entry glue B (record index 79F34*0x17). conf: low",
+  "low"
+ ],
+ "r30_e134": [
+  "r30_entry_record_walk",
+  "void far (DATA-class partial span): decodes to the es:7894:79F34*0x17 -> dword_79E6C record walk (same body as r30_e168 with a different entry); 1 caller (sub_2C653)",
+  "27B span, 0 dyn, cd=0, 1 caller, DATA/partial. R30 record-walk entry (twin body of r30_e168). conf: low",
+  "low"
+ ],
+ "r30_e113": [
+  "r30_entry_field_clear",
+  "void far (DATA-class partial span): es:[BX+0x0D]=0 clear then the 79F34*0x17 record walk; 1 caller (sub_2C563)",
+  "34B span, 0 dyn, cd=0, 1 caller, DATA/partial. R30 entry that clears a record field +0x0D then walks 79E6C. conf: low",
+  "low"
+ ],
+ "r30_e140": [
+  "r30_entry_partial_c",
+  "void far (DATA-class partial span, mid-instruction start): pop ss / far jmp decode artifacts; 1 caller (sub_2C68F)",
+  "11B LEAF span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction, class-c). R30 entry glue C. conf: low",
+  "low"
+ ],
+ "r30_e132": [
+  "r30_entry_partial_d",
+  "void far (DATA-class partial span, mid-instruction start: xchg ax,sp artifact); 1 caller (sub_2C63F)",
+  "40B span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction, class-c). R30 entry glue D. conf: low",
+  "low"
+ ],
+ "r30_e161": [
+  "r30_entry_retn_1564",
+  "void far; retn 0x1564 (far/near return with 0x1564 operand -- partial 3B entry)",
+  "3B LEAF, 0 dyn, cd=0, 1 caller (sub_2C775). R30 entry that returns with immediate 0x1564 (RTLink thunk epilogue). conf: med",
+  "med"
+ ],
+ "sub_6A389": [
+  "r30_mode_set_637fc_b",
+  "void far; ES=602Eh: es:637FC=0x138, es:637FE=0x7F; then ES=6DE8h far-ptr walk via dword_6E048 (mode preset B, twin of r30_mode_set_637fc); 1 caller (sub_683C5)",
+  "55B, 0 dyn, cd=0, 1 caller. R30 mode preset B (637FC=0x138 variant) + 6DE8:6E048 far-ptr walk. conf: med",
+  "med"
+ ],
+ "sub_6A54D": [
+  "r30_farobj_proc_f",
+  "void far; push bp ... (112B, undecodable head); 1 caller (sub_683C5 DATA)",
+  "112B span, 0 dyn, cd=0, 1 caller, undecodable head. R30 far-object processor twin F. conf: low",
+  "low"
+ ],
+ "sub_6CD29": [
+  "r06_init_call_43270",
+  "void far (C frame enter 4): call far unk_43270 -> DX:AX saved; ES=6DE8h: es:6E040=6DE8, es:6E03E=0x325 (R06 init state); retn 0xA326-ish",
+  "103B C-class, 0 dyn, cd=0, 1 caller (sub_66E62). R06 overlay initializer: far-calls unk_43270 then seeds 6DE8:6E03E/6E040 state (twin of r30_offset_accum_6e03e setup). conf: med",
+  "med"
+ ]
+}

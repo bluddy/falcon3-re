@@ -21,8 +21,8 @@ for key in sorted(analysis, key=lambda k: analysis[k][0]):  # alpha by name
     if key in existing_keys:
         continue
     # escape double quotes in sig/notes (none expected, but be safe)
-    sig_e = sig.replace('"', '\\"')
-    notes_e = notes.replace('"', '\\"')
+    sig_e = sig.replace(chr(92), chr(92)*2).replace('"', chr(92)*2 + '"')
+    notes_e = notes.replace(chr(92), chr(92)*2).replace('"', chr(92)*2 + '"')
     blocks.append(
         "  - ida: %s\n"
         "    name: %s\n"

@@ -1,0 +1,1095 @@
+######################################################################
+## L0-SLICE (top 36)
+######################################################################
+======================================================================
+L0-SLICE #1 sub_1BF9A  ea=0x1BF9A  size=34  class=ASM  in=2  dyn=0  cd=65  fb=None
+  0x1BF9A: push   bp
+  0x1BF9B: mov    bp, sp
+  0x1BF9D: push   si
+  0x1BF9E: xor    si, si
+  0x1BFA0: mov    ax, [bp+arg_0]
+  0x1BFA3: cmp    ax, 2
+  0x1BFA6: jz     loc_1BFB4  ->code ['0x1bfb4']
+  0x1BFA8: cmp    ax, 3
+  0x1BFAB: jz     loc_1BFB4  ->code ['0x1bfb4']
+  0x1BFAD: cmp    ax, 4
+  0x1BFB0: jz     loc_1BFB4  ->code ['0x1bfb4']
+  0x1BFB2: jmp    loc_1BFB7  ->code ['0x1bfb7']
+  0x1BFB4: mov    si, 1
+  0x1BFB7: mov    ax, si
+  0x1BFB9: pop    si
+  0x1BFBA: pop    bp
+  0x1BFBB: retf   
+  [TERM RETF @ 0x1BFBB]
+  --- callers (2): sub_1BAD6, sub_1BEC3
+      sub_1BAD6 ea=0x1BAD6 cls=C dyn=47
+      sub_1BEC3 ea=0x1BEC3 cls=ASM dyn=18
+
+======================================================================
+L0-SLICE #2 sub_12696  ea=0x12696  size=109  class=ASM  in=3  dyn=0  cd=55  fb=None
+  0x12696: sub    ah, ah
+  0x12698: lodsb  
+  0x12699: mov    cx, ax
+  0x1269B: jcxz   loc_126F7  ->code ['0x126f7']
+  0x1269D: mov    ax, cs:word_11BC8  ->data ['0x11bc8']
+  0x126A1: mov    dx, cs:word_11BC6  ->data ['0x11bc6']
+  0x126A6: shl    ax, 1
+  0x126A8: shl    ax, 1
+  0x126AA: shl    dx, 1
+  0x126AC: shl    dx, 1
+  0x126AE: mov    cs:word_11BCC, ax  ->data ['0x11bcc']
+  0x126B2: mov    cs:word_11BCA, dx  ->data ['0x11bca']
+  0x126B7: lodsb  
+  0x126B8: sub    ah, ah
+  0x126BA: mov    dx, ax
+  0x126BC: shr    ax, 1
+  0x126BE: shr    ax, 1
+  0x126C0: and    dx, 3
+  0x126C3: add    ax, cs:word_11BCC  ->data ['0x11bcc']
+  0x126C8: add    dx, cs:word_11BCA  ->data ['0x11bca']
+  0x126CD: mov    cs:word_11BD0, ax  ->data ['0x11bd0']
+  0x126D1: mov    cs:word_11BCE, dx  ->data ['0x11bce']
+  0x126D6: lodsw  
+  0x126D7: push   si
+  0x126D8: mov    si, ax
+  0x126DA: lodsb  
+  0x126DB: mov    dl, al
+  0x126DD: and    dx, 7Fh
+  0x126E0: jz     loc_126F4  ->code ['0x126f4']
+  0x126E2: test   al, 80h
+  0x126E4: jnz    loc_126E9  ->code ['0x126e9']
+  0x126E6: add    si, 2
+  0x126E9: cmp    bl, [si+8]
+  0x126EC: jz     loc_126F9  ->code ['0x126f9']
+  0x126EE: add    si, 0Ah
+  0x126F1: dec    dx
+  0x126F2: jg     loc_126E9  ->code ['0x126e9']
+  0x126F4: pop    si
+  0x126F5: loop   loc_126B7  ->code ['0x126b7']
+  0x126F7: stc    
+  0x126F8: retn   
+  [TERM RETN @ 0x126F8]
+  --- callers (3): sub_123E9, sub_12534, sub_12781
+      sub_123E9 ea=0x123E9 cls=ASM dyn=0
+      sub_12534 ea=0x12534 cls=ASM dyn=55
+      sub_12781 ea=0x12781 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #3 sub_13E5A  ea=0x13E5A  size=41  class=ASM  in=3  dyn=0  cd=55  fb=None
+  0x13E5A: push   ds
+  0x13E5B: push   ax
+  0x13E5C: mov    ax, 7A32h
+  0x13E5F: mov    ds, ax
+  0x13E61: pop    ax
+  0x13E62: and    si, 0FFFh
+  0x13E66: mov    ah, [si+22Eh]
+  0x13E6A: and    ah, 9Fh
+  0x13E6D: ror    al, 3
+  0x13E70: or     al, ah
+  0x13E72: mov    ah, al
+  0x13E74: xchg   al, [si+22Eh]
+  0x13E78: cmp    al, ah
+  0x13E7A: jz     loc_13E81  ->code ['0x13e81']
+  0x13E7C: or     byte ptr [si+22Eh], 2
+  0x13E81: pop    ds
+  0x13E82: retf   
+  [TERM RETF @ 0x13E82]
+  --- callers (3): sub_12534, sub_45057, sub_484C1
+      sub_12534 ea=0x12534 cls=ASM dyn=55
+      sub_45057 ea=0x45057 cls=ASM dyn=0
+      sub_484C1 ea=0x484C1 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #4 sub_13E45  ea=0x13E45  size=21  class=ASM  in=2  dyn=0  cd=55  fb=None
+  0x13E45: push   ds
+  0x13E46: mov    ax, 7A32h
+  0x13E49: mov    ds, ax
+  0x13E4B: and    si, 0FFFh
+  0x13E4F: mov    al, [si+22Eh]
+  0x13E53: rol    al, 3
+  0x13E56: and    al, 3
+  0x13E58: pop    ds
+  0x13E59: retf   
+  [TERM RETF @ 0x13E59]
+  --- callers (2): sub_12534, sub_45057
+      sub_12534 ea=0x12534 cls=ASM dyn=55
+      sub_45057 ea=0x45057 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #5 sub_12703  ea=0x12703  size=55  class=ASM  in=1  dyn=0  cd=55  fb=None
+  0x12703: sub    ah, ah
+  0x12705: lodsb  
+  0x12706: mov    cx, ax
+  0x12708: jcxz   loc_12737  ->code ['0x12737']
+  0x1270A: mov    ax, cs:word_11BC8  ->data ['0x11bc8']
+  0x1270E: mov    dx, cs:word_11BC6  ->data ['0x11bc6']
+  0x12713: shl    ax, 1
+  0x12715: shl    ax, 1
+  0x12717: shl    dx, 1
+  0x12719: shl    dx, 1
+  0x1271B: mov    cs:word_11BCC, ax  ->data ['0x11bcc']
+  0x1271F: mov    cs:word_11BCA, dx  ->data ['0x11bca']
+  0x12724: sub    dx, dx
+  0x12726: lodsb  
+  0x12727: lodsw  
+  0x12728: push   si
+  0x12729: mov    si, ax
+  0x1272B: lodsb  
+  0x1272C: and    ax, 7Fh
+  0x1272F: add    dx, ax
+  0x12731: pop    si
+  0x12732: loop   loc_12726  ->code ['0x12726']
+  0x12734: mov    cx, dx
+  0x12736: retn   
+  [TERM RETN @ 0x12736]
+  --- callers (1): sub_12534
+      sub_12534 ea=0x12534 cls=ASM dyn=55
+
+======================================================================
+L0-SLICE #6 sub_12771  ea=0x12771  size=16  class=LEAF  in=1  dyn=0  cd=55  fb=None
+  0x12771: push   ds
+  0x12772: mov    si, cs:word_11BBA  ->data ['0x11bba']
+  0x12777: mov    ds, cs:word_11BBE  ->data ['0x11bbe']
+  0x1277C: mov    si, [si+4]
+  0x1277F: pop    ds
+  0x12780: retf   
+  [TERM RETF @ 0x12780]
+  --- callers (1): sub_12534
+      sub_12534 ea=0x12534 cls=ASM dyn=55
+
+======================================================================
+L0-SLICE #7 sub_1BE1B  ea=0x1BE1B  size=168  class=ASM  in=1  dyn=0  cd=47  fb=None
+  0x1BE1B: push   bp
+  0x1BE1C: mov    bp, sp
+  0x1BE1E: mov    dx, [bp+arg_2]
+  0x1BE21: les    bx, [bp+arg_4]
+  0x1BE24: mov    byte ptr es:[bx], 4Dh
+  0x1BE28: inc    word ptr [bp+arg_4]
+  0x1BE2B: les    bx, [bp+arg_4]
+  0x1BE2E: mov    byte ptr es:[bx], 55h
+  0x1BE32: inc    word ptr [bp+arg_4]
+  0x1BE35: les    bx, [bp+arg_4]
+  0x1BE38: mov    byte ptr es:[bx], 53h
+  0x1BE3C: inc    word ptr [bp+arg_4]
+  0x1BE3F: les    bx, [bp+arg_4]
+  0x1BE42: mov    byte ptr es:[bx], 49h
+  0x1BE46: inc    word ptr [bp+arg_4]
+  0x1BE49: les    bx, [bp+arg_4]
+  0x1BE4C: mov    byte ptr es:[bx], 43h
+  0x1BE50: inc    word ptr [bp+arg_4]
+  0x1BE53: les    bx, [bp+arg_4]
+  0x1BE56: mov    byte ptr es:[bx], 5Ch
+  0x1BE5A: inc    word ptr [bp+arg_4]
+  0x1BE5D: mov    al, dl
+  0x1BE5F: add    al, 41h
+  0x1BE61: les    bx, [bp+arg_4]
+  0x1BE64: mov    es:[bx], al
+  0x1BE67: inc    word ptr [bp+arg_4]
+  0x1BE6A: les    bx, [bp+arg_4]
+  0x1BE6D: mov    byte ptr es:[bx], 2Eh
+  0x1BE71: inc    word ptr [bp+arg_4]
+  0x1BE74: cmp    [bp+arg_0], 0
+  0x1BE78: jnz    loc_1BE9C  ->code ['0x1be9c']
+  0x1BE7A: cmp    dx, 18h
+  0x1BE7D: jz     loc_1BE9C  ->code ['0x1be9c']
+  0x1BE7F: les    bx, [bp+arg_4]
+  0x1BE82: mov    byte ptr es:[bx], 41h
+  0x1BE86: inc    word ptr [bp+arg_4]
+  0x1BE89: les    bx, [bp+arg_4]
+  0x1BE8C: mov    byte ptr es:[bx], 44h
+  0x1BE90: inc    word ptr [bp+arg_4]
+  0x1BE93: les    bx, [bp+arg_4]
+  0x1BE96: mov    byte ptr es:[bx], 4Ch
+  0x1BE9A: jmp    loc_1BEB7  ->code ['0x1beb7']
+  0x1BE9C: les    bx, [bp+arg_4]
+  0x1BE9F: mov    byte ptr es:[bx], 4Dh
+  0x1BEA3: inc    word ptr [bp+arg_4]
+  0x1BEA6: les    bx, [bp+arg_4]
+  0x1BEA9: mov    byte ptr es:[bx], 49h
+  0x1BEAD: inc    word ptr [bp+arg_4]
+  0x1BEB0: les    bx, [bp+arg_4]
+  0x1BEB3: mov    byte ptr es:[bx], 44h
+  0x1BEB7: inc    word ptr [bp+arg_4]
+  0x1BEBA: les    bx, [bp+arg_4]
+  0x1BEBD: mov    byte ptr es:[bx], 0
+  0x1BEC1: pop    bp
+  0x1BEC2: retf   
+  [TERM RETF @ 0x1BEC2]
+  --- callers (1): sub_1BAD6
+      sub_1BAD6 ea=0x1BAD6 cls=C dyn=47
+
+======================================================================
+L0-SLICE #8 sub_1970F  ea=0x1970F  size=33  class=ASM  in=2  dyn=0  cd=36  fb=None
+  0x1970F: push   bp
+  0x19710: mov    bp, sp
+  0x19712: push   si
+  0x19713: xor    si, si
+  0x19715: mov    bx, [bp+arg_0]
+  0x19718: sub    bx, 100h
+  0x1971C: cmp    bx, 4
+  0x1971F: ja     def_19723  ->code ['0x1972b']
+  0x19721: shl    bx, 1
+  0x19723: jmp    cs:jpt_19723[bx]  ->code ['0x19728']  ->data ['0x19730']
+  0x19728: mov    si, 1
+  0x1972B: mov    ax, si
+  0x1972D: pop    si
+  0x1972E: pop    bp
+  0x1972F: retf   
+  [TERM RETF @ 0x1972F]
+  --- callers (2): sub_18BC8, sub_18E1A
+      sub_18BC8 ea=0x18BC8 cls=C dyn=0
+      sub_18E1A ea=0x18E1A cls=ASM dyn=36
+
+======================================================================
+L0-SLICE #9 sub_1977D  ea=0x1977D  size=33  class=ASM  in=2  dyn=0  cd=36  fb=None
+  0x1977D: push   bp
+  0x1977E: mov    bp, sp
+  0x19780: push   si
+  0x19781: xor    si, si
+  0x19783: mov    bx, [bp+arg_0]
+  0x19786: sub    bx, 108h
+  0x1978A: cmp    bx, 0Bh
+  0x1978D: ja     def_19791  ->code ['0x19799']
+  0x1978F: shl    bx, 1
+  0x19791: jmp    cs:jpt_19791[bx]  ->code ['0x19796', '0x19799']  ->data ['0x1979e']
+  0x19796: mov    si, 1
+  0x19799: mov    ax, si
+  0x1979B: pop    si
+  0x1979C: pop    bp
+  0x1979D: retf   
+  [TERM RETF @ 0x1979D]
+  --- callers (2): sub_18BC8, sub_18E1A
+      sub_18BC8 ea=0x18BC8 cls=C dyn=0
+      sub_18E1A ea=0x18E1A cls=ASM dyn=36
+
+======================================================================
+L0-SLICE #10 sub_172E1  ea=0x172E1  size=88  class=ASM  in=2  dyn=0  cd=31  fb=None
+  0x172E1: push   bx
+  0x172E2: push   cx
+  0x172E3: push   dx
+  0x172E4: mov    bx, 1Eh
+  0x172E7: mov    dx, 331h
+  0x172EA: in     al, dx
+  0x172EB: and    al, 80h
+  0x172ED: jnz    loc_172F6  ->code ['0x172f6']
+  0x172EF: mov    dx, 330h
+  0x172F2: in     al, dx
+  0x172F3: mov    dx, 331h
+  0x172F6: in     al, dx
+  0x172F7: dec    bx
+  0x172F8: jnz    loc_172F6  ->code ['0x172f6']
+  0x172FA: mov    bx, 1389h
+  0x172FD: dec    bx
+  0x172FE: jz     loc_17333  ->code ['0x17333']
+  0x17300: in     al, dx
+  0x17301: and    al, 40h
+  0x17303: jnz    loc_172FD  ->code ['0x172fd']
+  0x17305: mov    al, 0FFh
+  0x17307: mov    dx, 331h
+  0x1730A: out    dx, al
+  0x1730B: mov    cx, 4
+  0x1730E: dec    cx
+  0x1730F: jz     loc_17333  ->code ['0x17333']
+  0x17311: mov    dx, 331h
+  0x17314: mov    bx, 1Eh
+  0x17317: in     al, dx
+  0x17318: dec    bx
+  0x17319: jnz    loc_17317  ->code ['0x17317']
+  0x1731B: mov    bx, 1389h
+  0x1731E: dec    bx
+  0x1731F: jz     loc_1730E  ->code ['0x1730e']
+  0x17321: in     al, dx
+  0x17322: and    al, 80h
+  0x17324: jnz    loc_1731E  ->code ['0x1731e']
+  0x17326: mov    dx, 330h
+  0x17329: in     al, dx
+  0x1732A: cmp    al, 0FEh
+  0x1732C: jnz    loc_1730E  ->code ['0x1730e']
+  0x1732E: mov    ax, 1
+  0x17331: jmp    loc_17335  ->code ['0x17335']
+  0x17333: xor    ax, ax
+  0x17335: pop    dx
+  0x17336: pop    cx
+  0x17337: pop    bx
+  0x17338: retf   
+  [TERM RETF @ 0x17338]
+  --- callers (2): sub_1740D, sub_195C4
+      sub_1740D ea=0x1740D cls=ASM dyn=15
+      sub_195C4 ea=0x195C4 cls=C dyn=16
+
+======================================================================
+L0-SLICE #11 sub_66DBD  ea=0x66DBD  size=164  class=DATA  in=2  dyn=0  cd=26  fb=None
+  0x66DBD: mov    es, dx
+  0x66DBF: mov    es:138h, ax
+  0x66DC3: mov    ax, 4FC2h
+  0x66DC6: mov    es, ax
+  0x66DC8: mov    ax, es:word_4FD5C  ->data ['0x4fd5c']
+  0x66DCC: mov    dx, 4FC2h
+  0x66DCF: mov    es, dx
+  0x66DD1: mov    es:word_4FD5A, ax  ->data ['0x4fd5a']
+  0x66DD5: mov    ax, 4FC2h
+  0x66DD8: mov    es, ax
+  0x66DDA: mov    ax, es:word_4FD5E  ->data ['0x4fd5e']
+  0x66DDE: mov    dx, 4FC2h
+  0x66DE1: mov    es, dx
+  0x66DE3: mov    es:word_4FD60, ax  ->data ['0x4fd60']
+  0x66DE7: mov    ax, 4FC2h
+  0x66DEA: mov    es, ax
+  0x66DEC: mov    ax, es:word_4FD5E  ->data ['0x4fd5e']
+  0x66DF0: mov    dx, 4FC2h
+  0x66DF3: mov    es, dx
+  0x66DF5: mov    es:word_4FD62, ax  ->data ['0x4fd62']
+  0x66DF9: mov    ax, 4FC2h
+  0x66DFC: mov    es, ax
+  0x66DFE: mov    ax, es:word_4FD5E  ->data ['0x4fd5e']
+  0x66E02: mov    dx, 4FC2h
+  0x66E05: mov    es, dx
+  0x66E07: mov    es:word_4FD64, ax  ->data ['0x4fd64']
+  0x66E0B: mov    ax, 4FC2h
+  0x66E0E: mov    es, ax
+  0x66E10: mov    ax, es:word_4FD5E  ->data ['0x4fd5e']
+  0x66E14: mov    dx, 4FC2h
+  0x66E17: mov    es, dx
+  0x66E19: mov    es:word_4FD66, ax  ->data ['0x4fd66']
+  0x66E1D: mov    ax, 4FC2h
+  0x66E20: mov    es, ax
+  0x66E22: mov    ax, es:word_4FD5C  ->data ['0x4fd5c']
+  0x66E26: mov    dx, 4FC2h
+  0x66E29: mov    es, dx
+  0x66E2B: mov    es:word_4FD68, ax  ->data ['0x4fd68']
+  0x66E2F: mov    ax, 4FC2h
+  0x66E32: mov    es, ax
+  0x66E34: mov    ax, es:word_4FD5C  ->data ['0x4fd5c']
+  0x66E38: mov    dx, 4FC2h
+  0x66E3B: mov    es, dx
+  0x66E3D: mov    es:word_4FD6A, ax  ->data ['0x4fd6a']
+  0x66E41: mov    ax, 4FC2h
+  0x66E44: mov    es, ax
+  0x66E46: mov    ax, es:word_4FD5C  ->data ['0x4fd5c']
+  0x66E4A: mov    dx, 4FC2h
+  0x66E4D: mov    es, dx
+  0x66E4F: mov    es:word_4FD6C, ax  ->data ['0x4fd6c']
+  0x66E53: mov    ax, 4FC2h
+  0x66E56: mov    es, ax
+  0x66E58: mov    ax, es:word_4FD5E  ->data ['0x4fd5e']
+  0x66E5C: mov    dx, 4FC2h
+  0x66E5F: mov    es, dx
+  --- callers (2): sub_2C513, sub_2C595
+      sub_2C513 ea=0x2C513 cls=ASM dyn=8
+      sub_2C595 ea=0x2C595 cls=ASM dyn=18
+
+======================================================================
+L0-SLICE #12 sub_2CF6A  ea=0x2CF6A  size=33  class=DATA  in=2  dyn=0  cd=24  fb=None
+  0x2CF6A: dec    bp
+  0x2CF6B: push   ax
+  0x2CF6C: add    [si+49h], al
+  0x2CF6F: push   bx
+  0x2CF70: push   ax
+  0x2CF71: dec    sp
+  0x2CF72: inc    cx
+  0x2CF73: pop    cx
+  0x2CF74: inc    sp
+  0x2CF76: inc    cx
+  0x2CF77: push   sp
+  0x2CF78: add    [bp+41h], al
+  0x2CF7B: dec    sp
+  0x2CF7C: inc    bx
+  0x2CF7D: dec    di
+  0x2CF7E: dec    si
+  0x2CF7F: xor    bp, ds:0
+  0x2CF83: <undecodable 0x00>
+  --- callers (2): sub_2BEC9, sub_2BFCD
+      sub_2BEC9 ea=0x2BEC9 cls=ASM dyn=0
+      sub_2BFCD ea=0x2BFCD cls=ASM dyn=24
+
+======================================================================
+L0-SLICE #13 sub_255C4  ea=0x255C4  size=6  class=ASM  in=1  dyn=0  cd=20  fb=None
+  0x255C4: call   cs:dword_22140  ->data ['0x22140']
+  0x255C9: retf   
+  [TERM RETF @ 0x255C9]
+  --- callers (1): sub_27703
+      sub_27703 ea=0x27703 cls=ASM dyn=20
+
+======================================================================
+L0-SLICE #14 sub_1F50B  ea=0x1F50B  size=147  class=ASM  in=2  dyn=0  cd=17  fb=None
+  0x1F50B: push   bp
+  0x1F50C: mov    bp, sp
+  0x1F50E: mov    ax, 7772h
+  0x1F511: mov    es, ax
+  0x1F513: mov    ax, word ptr es:unk_78866  ->data ['0x78866']
+  0x1F517: mov    dx, 7772h
+  0x1F51A: mov    es, dx
+  0x1F51C: mov    word ptr es:unk_77DEC, ax  ->data ['0x77dec']
+  0x1F520: mov    ax, 7772h
+  0x1F523: mov    es, ax
+  0x1F525: mov    ax, word ptr es:unk_77DEC  ->data ['0x77dec']
+  0x1F529: imul   [bp+arg_0]
+  0x1F52C: mov    word ptr es:unk_77DEC, ax  ->data ['0x77dec']
+  0x1F530: mov    ax, 7772h
+  0x1F533: mov    es, ax
+  0x1F535: mov    ax, word ptr es:unk_77DEC  ->data ['0x77dec']
+  0x1F539: mov    bx, 64h
+  0x1F53C: cwd    
+  0x1F53D: idiv   bx
+  0x1F53F: mov    dx, 7772h
+  0x1F542: mov    es, dx
+  0x1F544: mov    word ptr es:unk_77DEC, ax  ->data ['0x77dec']
+  0x1F548: mov    ax, 7772h
+  0x1F54B: mov    es, ax
+  0x1F54D: mov    ax, word ptr es:unk_78866  ->data ['0x78866']
+  0x1F551: mov    es, dx
+  0x1F553: add    word ptr es:unk_77DEC, ax  ->data ['0x77dec']
+  0x1F558: mov    ax, 7772h
+  0x1F55B: mov    es, ax
+  0x1F55D: cmp    word ptr es:unk_77DEC, 7Fh  ->data ['0x77dec']
+  0x1F563: jle    loc_1F56E  ->code ['0x1f56e']
+  0x1F565: mov    es, ax
+  0x1F567: mov    word ptr es:unk_77DEC, 7Fh  ->data ['0x77dec']
+  0x1F56E: mov    ax, 7772h
+  0x1F571: mov    es, ax
+  0x1F573: cmp    word ptr es:unk_77DEC, 0  ->data ['0x77dec']
+  0x1F579: jge    loc_1F584  ->code ['0x1f584']
+  0x1F57B: mov    es, ax
+  0x1F57D: mov    word ptr es:unk_77DEC, 0  ->data ['0x77dec']
+  0x1F584: mov    ax, 7772h
+  0x1F587: mov    es, ax
+  0x1F589: mov    word ptr es:unk_78776, 2000h  ->data ['0x78776']
+  0x1F590: mov    ax, 7772h
+  0x1F593: mov    es, ax
+  0x1F595: mov    word ptr es:unk_7778D, 1Fh  ->data ['0x7778d']
+  0x1F59C: pop    bp
+  0x1F59D: retf   
+  [TERM RETF @ 0x1F59D]
+  --- callers (2): sub_1AA0B, sub_2FD42
+      sub_1AA0B ea=0x1AA0B cls=ASM dyn=17
+      sub_2FD42 ea=0x2FD42 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #15 sub_19128  ea=0x19128  size=30  class=ASM  in=1  dyn=0  cd=16  fb=None
+  0x19128: push   bp
+  0x19129: mov    bp, sp
+  0x1912B: push   si
+  0x1912C: xor    si, si
+  0x1912E: mov    bx, [bp+arg_0]
+  0x19131: dec    bx
+  0x19132: cmp    bx, 3
+  0x19135: ja     def_19139  ->code ['0x19141']
+  0x19137: shl    bx, 1
+  0x19139: jmp    cs:jpt_19139[bx]  ->code ['0x1913e']  ->data ['0x19146']
+  0x1913E: mov    si, 1
+  0x19141: mov    ax, si
+  0x19143: pop    si
+  0x19144: pop    bp
+  0x19145: retf   
+  [TERM RETF @ 0x19145]
+  --- callers (1): sub_195C4
+      sub_195C4 ea=0x195C4 cls=C dyn=16
+
+======================================================================
+L0-SLICE #16 sub_1727E  ea=0x1727E  size=92  class=ASM  in=1  dyn=0  cd=15  fb=None
+  0x1727E: push   es
+  0x1727F: push   dx
+  0x17280: mov    ax, 7772h
+  0x17283: mov    es, ax
+  0x17285: mov    word ptr es:unk_777F0, 21Ch  ->data ['0x777f0']
+  0x1728C: mov    dx, word ptr es:unk_777F0  ->data ['0x777f0']
+  0x17291: sub    dx, 6
+  0x17294: mov    al, 1
+  0x17296: out    dx, al
+  0x17297: mov    cx, 80h
+  0x1729A: dec    cx
+  0x1729B: jnz    loc_1729A  ->code ['0x1729a']
+  0x1729D: xor    al, al
+  0x1729F: out    dx, al
+  0x172A0: add    dx, 4
+  0x172A3: mov    cx, 0FFh
+  0x172A6: push   cx
+  0x172A7: push   dx
+  0x172A8: add    dx, 4
+  0x172AB: mov    cx, 0FFh
+  0x172AE: in     al, dx
+  0x172AF: test   al, 80h
+  0x172B1: loope  loc_172AE  ->code ['0x172ae']
+  0x172B3: pop    dx
+  0x172B4: pop    cx
+  0x172B5: in     al, dx
+  0x172B6: cmp    al, 0AAh
+  0x172B8: jz     loc_172D4  ->code ['0x172d4']
+  0x172BA: dec    cx
+  0x172BB: jnz    loc_172A6  ->code ['0x172a6']
+  0x172BD: add    word ptr es:unk_777F0, 10h  ->data ['0x777f0']
+  0x172C3: cmp    word ptr es:unk_777F0, 27Ch  ->data ['0x777f0']
+  0x172CA: jl     loc_1728C  ->code ['0x1728c']
+  0x172CC: xor    ax, ax
+  0x172CE: mov    word ptr es:unk_777F0, ax  ->data ['0x777f0']
+  0x172D2: jmp    loc_172D7  ->code ['0x172d7']
+  0x172D4: mov    ax, 1
+  0x172D7: pop    dx
+  0x172D8: pop    es
+  0x172D9: retf   
+  [TERM RETF @ 0x172D9]
+  --- callers (1): sub_1740D
+      sub_1740D ea=0x1740D cls=ASM dyn=15
+
+======================================================================
+L0-SLICE #17 sub_4FD8E  ea=0x4FD8E  size=31  class=ASM  in=1  dyn=0  cd=15  fb=None
+  0x4FD8E: push   ds
+  0x4FD8F:        50h, 50h, 50h
+  0x4FD90:        0B8h, 0B8h, 0B8h
+  0x4FD93:        8Eh, 8Eh, 8Eh
+  0x4FD95:        58h, 58h, 58h
+  0x4FD96:        0B4h, 0B4h, 0B4h
+  0x4FD98:        3Ah, 3Ah, 3Ah
+  0x4FD9A:        74h, 74h, 74h
+  0x4FD9C:        38h, 38h, 38h
+  0x4FDA0:        74h, 74h, 74h
+  0x4FDA2:        0C0h, 0C0h, 0C0h
+  0x4FDA7:        8, 8, 8
+  0x4FDAB:        1Fh, 1Fh, 1Fh
+  0x4FDAC:        0CBh, 0CBh, 0CBh
+  --- callers (1): sub_2BEBF
+      sub_2BEBF ea=0x2BEBF cls=ASM dyn=15
+
+======================================================================
+L0-SLICE #18 sub_6E376  ea=0x6E376  size=90  class=ASM  in=3  dyn=0  cd=12  fb=None
+  0x6E376: push   bp
+  0x6E377: mov    bp, sp
+  0x6E379: push   ds
+  0x6E37A: push   es
+  0x6E37B: lds    bx, [bp+6]
+  0x6E37E: mov    cx, [bx]
+  0x6E380: cmp    cx, cs:word_6E2B6  ->data ['0x6e2b6']
+  0x6E385: jbe    loc_6E38C  ->code ['0x6e38c']
+  0x6E387: mov    cx, cs:word_6E2B6  ->data ['0x6e2b6']
+  0x6E38C: sub    cs:word_6E2B6, cx  ->data ['0x6e2b6']
+  0x6E391: mov    ax, cx
+  0x6E393: jcxz   loc_6E3BA  ->code ['0x6e3ba']
+  0x6E395: add    cs:word_6E2B2, cx  ->data ['0x6e2b2']
+  0x6E39A: adc    cs:word_6E2B4, 0  ->data ['0x6e2b4']
+  0x6E3A0: les    di, [bp+0Ah]
+  0x6E3A3: mov    si, cs:word_6E2BC  ->data ['0x6e2bc']
+  0x6E3A8: mov    ds, cs:word_6E2BE  ->data ['0x6e2be']
+  0x6E3AD: shr    cx, 1
+  0x6E3AF: movsw  
+  0x6E3B1: adc    cx, cx
+  0x6E3B3: movsb  
+  0x6E3B5: mov    cs:word_6E2BC, si  ->data ['0x6e2bc']
+  0x6E3BA: pop    es
+  0x6E3BB: pop    ds
+  0x6E3BC: pop    bp
+  0x6E3BD: retf   8
+  [TERM RETF @ 0x6E3BD]
+  --- callers (3): sub_2BF05, sub_2BF55, sub_6F4A9
+      sub_2BF05 ea=0x2BF05 cls=ASM dyn=5
+      sub_2BF55 ea=0x2BF55 cls=ASM dyn=7
+      sub_6F4A9 ea=0x6F4A9 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #19 sub_1119C  ea=0x1119C  size=135  class=ASM  in=3  dyn=0  cd=11  fb=None
+  0x1119C: mov    bx, cs:word_11176  ->data ['0x11176']
+  0x111A1: or     bx, bx
+  0x111A3: jz     loc_111AE  ->code ['0x111ae']
+  0x111A5: mov    ah, 84h
+  0x111A7: mov    dx, 1
+  0x111AA: int    15h
+  0x111AC: clc    
+  0x111AD: retn   
+  [TERM RETN @ 0x111AD]
+  --- callers (3): sub_11198, sub_11373, sub_355E6
+      sub_11198 ea=0x11198 cls=NEARTHUNK dyn=11
+      sub_11373 ea=0x11373 cls=ASM dyn=0
+      sub_355E6 ea=0x355E6 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #20 sub_2D0DA  ea=0x2D0DA  size=36  class=ASM  in=1  dyn=0  cd=10  fb=None
+  0x2D0DA: push   ds
+  0x2D0DB:        6, 6, 6
+  0x2D0DC:        52h, 52h, 52h
+  0x2D0DD:        51h, 51h, 51h
+  0x2D0DE:        53h, 53h, 53h
+  0x2D0DF:        56h, 56h, 56h
+  0x2D0E0:        57h, 57h, 57h
+  0x2D0E1:        0BBh, 0BBh, 0BBh
+  0x2D0E4:        53h, 53h, 53h
+  0x2D0E5:        0E8h, 0E8h, 0E8h
+  0x2D0E8:        5Eh, 5Eh, 5Eh
+  0x2D0E9:        9Ah, 9Ah, 9Ah
+  0x2D0EE:        0B8h, 0B8h, 0B8h
+  0x2D0F1:        9Ah, 9Ah, 9Ah
+  0x2D0F6:        5Fh, 5Fh, 5Fh
+  0x2D0F7:        5Eh, 5Eh, 5Eh
+  0x2D0F8:        5Bh, 5Bh, 5Bh
+  0x2D0F9:        59h, 59h, 59h
+  0x2D0FA:        5Ah, 5Ah, 5Ah
+  0x2D0FB:        7, 7, 7
+  0x2D0FC:        1Fh, 1Fh, 1Fh
+  0x2D0FD:        0CBh, 0CBh, 0CBh
+  --- callers (1): sub_2BEDD
+      sub_2BEDD ea=0x2BEDD cls=ASM dyn=10
+
+======================================================================
+L0-SLICE #21 sub_2D0FE  ea=0x2D0FE  size=28  class=ASM  in=1  dyn=0  cd=9  fb=None
+  0x2D0FE: push   ds
+  0x2D0FF:        6, 6, 6
+  0x2D100:        52h, 52h, 52h
+  0x2D101:        51h, 51h, 51h
+  0x2D102:        53h, 53h, 53h
+  0x2D103:        56h, 56h, 56h
+  0x2D104:        57h, 57h, 57h
+  0x2D105:        0BBh, 0BBh, 0BBh
+  0x2D108:        53h, 53h, 53h
+  0x2D109:        0E8h, 0E8h, 0E8h
+  0x2D10C:        5Eh, 5Eh, 5Eh
+  0x2D10D:        9Ah, 9Ah, 9Ah
+  0x2D112:        5Fh, 5Fh, 5Fh
+  0x2D113:        5Eh, 5Eh, 5Eh
+  0x2D114:        5Bh, 5Bh, 5Bh
+  0x2D115:        59h, 59h, 59h
+  0x2D116:        5Ah, 5Ah, 5Ah
+  0x2D117:        7, 7, 7
+  0x2D118:        1Fh, 1Fh, 1Fh
+  0x2D119:        0CBh, 0CBh, 0CBh
+  --- callers (1): sub_2BED3
+      sub_2BED3 ea=0x2BED3 cls=ASM dyn=9
+
+======================================================================
+L0-SLICE #22 sub_6740D  ea=0x6740D  size=97  class=DATA  in=1  dyn=0  cd=9  fb=None
+  0x6740D: mov    es, ax
+  0x6740F: mov    ax, es:word_79E40  ->data ['0x79e40']
+  0x67413: mov    dx, 6DE8h
+  0x67416: mov    es, dx
+  0x67418: les    bx, es:dword_6E042  ->data ['0x6e042']
+  0x6741D: cmp    ax, es:[bx]
+  0x67420: jl     loc_67494  ->code ['0x67494']
+  0x67422: mov    ax, 6DE8h
+  0x67425: mov    es, ax
+  0x67427: les    bx, es:dword_6E042  ->data ['0x6e042']
+  0x6742C: push   es
+  0x6742D: mov    es, ax
+  0x6742F: push   bx
+  0x67430: les    bx, es:dword_6E042  ->data ['0x6e042']
+  0x67435: mov    ax, es:[bx]
+  0x67438: pop    bx
+  0x67439: pop    es
+  0x6743A: add    ax, es:[bx+4]
+  0x6743E: mov    dx, 7894h
+  0x67441: mov    es, dx
+  0x67443: cmp    ax, es:word_79E40  ->data ['0x79e40']
+  0x67448: jl     loc_67494  ->code ['0x67494']
+  0x6744A: mov    ax, 6DE8h
+  0x6744D: mov    es, ax
+  0x6744F: les    bx, es:dword_6E042  ->data ['0x6e042']
+  0x67454: mov    ax, es:[bx+2]
+  0x67458: mov    dx, 7894h
+  0x6745B: mov    es, dx
+  0x6745D: cmp    ax, es:word_79E3E  ->data ['0x79e3e']
+  0x67462: jg     loc_67494  ->code ['0x67494']
+  0x67464: mov    ax, 6DE8h
+  0x67467: mov    es, ax
+  0x67469: les    bx, es:dword_6E042  ->data ['0x6e042']
+  --- callers (1): sub_2C95F
+      sub_2C95F ea=0x2C95F cls=ASM dyn=9
+
+======================================================================
+L0-SLICE #23 r01_e02  ea=0x2D41F  size=17  class=ASM  in=2  dyn=0  cd=8  fb=None
+  0x2D41F: push   0F000h
+  0x2D422: popf   
+  0x2D423: pushf  
+  0x2D424: pop    ax
+  0x2D425: popf   
+  0x2D426: and    ax, 0F000h
+  0x2D429: jz     loc_2D42C  ->code ['0x2d42c']
+  0x2D42B: inc    dx
+  0x2D42C: mov    ax, dx
+  0x2D42E: pop    dx
+  0x2D42F: retn   
+  [TERM RETN @ 0x2D42F]
+  --- callers (2): sub_2BDB1, sub_2BFB9
+      sub_2BDB1 ea=0x2BDB1 cls=ASM dyn=8
+      sub_2BFB9 ea=0x2BFB9 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #24 sub_19103  ea=0x19103  size=29  class=ASM  in=1  dyn=0  cd=8  fb=None
+  0x19103: push   bp
+  0x19104: mov    bp, sp
+  0x19106: push   si
+  0x19107: xor    si, si
+  0x19109: mov    bx, [bp+arg_0]
+  0x1910C: cmp    bx, 3
+  0x1910F: ja     def_19113  ->code ['0x1911b']
+  0x19111: shl    bx, 1
+  0x19113: jmp    cs:jpt_19113[bx]  ->code ['0x19118']  ->data ['0x19120']
+  0x19118: mov    si, 1
+  0x1911B: mov    ax, si
+  0x1911D: pop    si
+  0x1911E: pop    bp
+  0x1911F: retf   
+  [TERM RETF @ 0x1911F]
+  --- callers (1): sub_1950C
+      sub_1950C ea=0x1950C cls=ASM dyn=8
+
+======================================================================
+L0-SLICE #25 sub_253FC  ea=0x253FC  size=83  class=ASM  in=1  dyn=0  cd=7  fb=None
+  0x253FC: xor    al, al
+  0x253FE: cmp    ah, 3Ah
+  0x25401: ja     locret_2544E  ->code ['0x2544e']
+  0x25403: push   bx
+  0x25404: push   ds
+  0x25405: push   es
+  0x25406: xor    bx, bx
+  0x25408: mov    es, bx
+  0x2540A: mov    bx, 7B0Eh
+  0x2540D: mov    ds, bx
+  0x2540F: mov    bx, 39E2h
+  0x25412: test   byte ptr es:417h, 3  ->data ['0x417']
+  0x25418: jnz    loc_25448  ->code ['0x25448']
+  0x2541A: test   byte ptr es:417h, 40h  ->data ['0x417']
+  0x25420: jnz    loc_25427  ->code ['0x25427']
+  0x25422: mov    bx, 3A1Dh
+  0x25425: jmp    loc_25448  ->code ['0x25448']
+  0x25427: cmp    ah, 10h
+  0x2542A: jl     loc_25445  ->code ['0x25445']
+  0x2542C: cmp    ah, 32h
+  0x2542F: jg     loc_25445  ->code ['0x25445']
+  0x25431: cmp    ah, 2Ch
+  0x25434: jge    loc_25448  ->code ['0x25448']
+  0x25436: cmp    ah, 19h
+  0x25439: jle    loc_25448  ->code ['0x25448']
+  0x2543B: cmp    ah, 1Eh
+  0x2543E: jl     loc_25445  ->code ['0x25445']
+  0x25440: cmp    ah, 26h
+  0x25443: jle    loc_25448  ->code ['0x25448']
+  0x25445: mov    bx, 3A1Dh
+  0x25448: mov    al, ah
+  0x2544A: xlat   
+  0x2544B: pop    es
+  0x2544C: pop    ds
+  0x2544D: pop    bx
+  0x2544E: retn   
+  [TERM RETN @ 0x2544E]
+  --- callers (1): sub_251CF
+      sub_251CF ea=0x251CF cls=ASM dyn=7
+
+======================================================================
+L0-SLICE #26 sub_2D26A  ea=0x2D26A  size=173  class=ASM  in=1  dyn=0  cd=7  fb=None
+  0x2D26A: push   ds
+  0x2D26B:        0Eh, 0Eh, 0Eh
+  0x2D26C:        1Fh, 1Fh, 1Fh
+  0x2D26D:        0BBh, 0BBh, 0BBh
+  0x2D270:        0B8h, 0B8h, 0B8h
+  0x2D273:        0BAh, 0BAh, 0BAh
+  0x2D276:        9Ah, 9Ah, 9Ah
+  0x2D27B:        0BBh, 0BBh, 0BBh
+  0x2D27E:        8Eh, 8Eh, 8Eh
+  0x2D280:        0BAh, 0BAh, 0BAh
+  0x2D283:        50h, 50h, 50h
+  0x2D284:        0BBh, 0BBh, 0BBh
+  0x2D287:        0B9h, 0B9h, 0B9h
+  0x2D28A:        9Ah, 9Ah, 9Ah
+  0x2D28F:        0BEh, 0BEh, 0BEh
+  0x2D292:        0ADh, 0ADh, 0ADh
+  0x2D293:        50h, 50h, 50h
+  0x2D294:        0ADh, 0ADh, 0ADh
+  0x2D295:        50h, 50h, 50h
+  0x2D296:        9Ah, 9Ah, 9Ah
+  0x2D29B:        58h, 58h, 58h
+  0x2D29C:        0ADh, 0ADh, 0ADh
+  0x2D29D:        50h, 50h, 50h
+  0x2D29E:        9Ah, 9Ah, 9Ah
+  0x2D2A3:        58h, 58h, 58h
+  0x2D2A4:        0ADh, 0ADh, 0ADh
+  0x2D2A5:        9Ah, 9Ah, 9Ah
+  0x2D2AA:        0ADh, 0ADh, 0ADh
+  0x2D2AB:        0Ah, 0Ah, 0Ah
+  0x2D2AD:        74h, 74h, 74h
+  0x2D2AF:        9Ah, 9Ah, 9Ah
+  0x2D2B4:        0EBh, 0EBh, 0EBh
+  0x2D2B6:        9Ah, 9Ah, 9Ah
+  0x2D2BB:        58h, 58h, 58h
+  0x2D2BC:        0Bh, 0Bh, 0Bh
+  0x2D2BE:        75h, 75h, 75h
+  0x2D2C0:        0ADh, 0ADh, 0ADh
+  0x2D2C1:        50h, 50h, 50h
+  0x2D2C2:        9Ah, 9Ah, 9Ah
+  0x2D2C7:        58h, 58h, 58h
+  0x2D2C8:        0ADh, 0ADh, 0ADh
+  0x2D2C9:        50h, 50h, 50h
+  0x2D2CA:        9Ah, 9Ah, 9Ah
+  0x2D2CF:        58h, 58h, 58h
+  0x2D2D0:        0ADh, 0ADh, 0ADh
+  0x2D2D1:        50h, 50h, 50h
+  0x2D2D2:        9Ah, 9Ah, 9Ah
+  0x2D2D7:        58h, 58h, 58h
+  0x2D2D8:        9Ah, 9Ah, 9Ah
+  0x2D2DD:        25h, 25h, 25h
+  0x2D2E0:        8Bh, 8Bh, 8Bh
+  0x2D2E2:        0ADh, 0ADh, 0ADh
+  0x2D2E3:        3Bh, 3Bh, 3Bh
+  0x2D2E5:        74h, 74h, 74h
+  0x2D2E7:        9Ah, 9Ah, 9Ah
+  0x2D2EC:        0ADh, 0ADh, 0ADh
+  0x2D2ED:        50h, 50h, 50h
+  0x2D2EE:        9Ah, 9Ah, 9Ah
+  0x2D2F3:        58h, 58h, 58h
+  0x2D2F4:        0ADh, 0ADh, 0ADh
+  0x2D2F5:        50h, 50h, 50h
+  0x2D2F6:        9Ah, 9Ah, 9Ah
+  0x2D2FB:        58h, 58h, 58h
+  0x2D2FC:        0Ah, 0Ah, 0Ah
+  0x2D2FE:        74h, 74h, 74h
+  0x2D300:        9Ah, 9Ah, 9Ah
+  0x2D305:        0EBh, 0EBh, 0EBh
+  0x2D307:        9Ah, 9Ah, 9Ah
+  0x2D30C:        58h, 58h, 58h
+  0x2D30D:        0BBh, 0BBh, 0BBh
+  0x2D310:        9Ah, 9Ah, 9Ah
+  0x2D315:        1Fh, 1Fh, 1Fh
+  0x2D316:        0CBh, 0CBh, 0CBh
+  --- callers (1): sub_2BEF1
+      sub_2BEF1 ea=0x2BEF1 cls=ASM dyn=7
+
+======================================================================
+L0-SLICE #27 sub_4185A  ea=0x4185A  size=82  class=ASM  in=1  dyn=0  cd=6  fb=None
+  0x4185A: push   ds
+  0x4185B:        6, 6, 6
+  0x4185C:        0B8h, 0B8h, 0B8h
+  0x4185F:        8Eh, 8Eh, 8Eh
+  0x41861:        0BEh, 0BEh, 0BEh
+  0x41864:        0B9h, 0B9h, 0B9h
+  0x41867:        51h, 51h, 51h
+  0x41868:        0F6h, 0F6h, 0F6h
+  0x4186C:        74h, 74h, 74h
+  0x4186E:        8Bh, 8Bh, 8Bh
+  0x41871:        8Bh, 8Bh, 8Bh
+  0x41874:        8Eh, 8Eh, 8Eh
+  0x41876:        57h, 57h, 57h
+  0x41877:        56h, 56h, 56h
+  0x41878:        8Bh, 8Bh, 8Bh
+  0x4187B:        56h, 56h, 56h
+  0x4187C:        9Ah, 9Ah, 9Ah
+  0x41881:        5Eh, 5Eh, 5Eh
+  0x41882:        8Bh, 8Bh, 8Bh
+  0x41885:        5Eh, 5Eh, 5Eh
+  0x41886:        5Fh, 5Fh, 5Fh
+  0x41887:        81h, 81h, 81h
+  0x4188B:        7Fh, 7Fh, 7Fh
+  0x4188D:        33h, 33h, 33h
+  0x4188F:        26h, 26h, 26h
+  0x41893:        26h, 26h, 26h
+  0x41897:        8Bh, 8Bh, 8Bh
+  0x41899:        99h, 99h, 99h
+  0x4189A:        26h, 26h, 26h
+  0x4189E:        26h, 26h, 26h
+  0x418A2:        59h, 59h, 59h
+  0x418A3:        83h, 83h, 83h
+  0x418A6:        90h, 90h, 90h
+  0x418A7:        0E2h, 0E2h, 0E2h
+  0x418A9:        7, 7, 7
+  0x418AA:        1Fh, 1Fh, 1Fh
+  0x418AB:        0CBh, 0CBh, 0CBh
+  --- callers (1): sub_2BEAB
+      sub_2BEAB ea=0x2BEAB cls=ASM dyn=6
+
+======================================================================
+L0-SLICE #28 sub_1A611  ea=0x1A611  size=27  class=ASM  in=2  dyn=0  cd=5  fb=None
+  0x1A611: push   bp
+  0x1A612: mov    bp, sp
+  0x1A614: mov    ax, 7894h
+  0x1A617: mov    es, ax
+  0x1A619: mov    word ptr es:unk_78946, 0  ->data ['0x78946']
+  0x1A620: mov    word ptr es:unk_78944, 0  ->data ['0x78944']
+  0x1A627: mov    ax, 1
+  0x1A62A: pop    bp
+  0x1A62B: retf   
+  [TERM RETF @ 0x1A62B]
+  --- callers (2): sub_19B78, sub_19BE8
+      sub_19B78 ea=0x19B78 cls=ASM dyn=5
+      sub_19BE8 ea=0x19BE8 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #29 sub_1A64E  ea=0x1A64E  size=20  class=ASM  in=2  dyn=0  cd=5  fb=None
+  0x1A64E: push   bp
+  0x1A64F: mov    bp, sp
+  0x1A651: mov    ax, 7894h
+  0x1A654: mov    es, ax
+  0x1A656: mov    word ptr es:unk_78942, 0  ->data ['0x78942']
+  0x1A65D: mov    ax, 1
+  0x1A660: pop    bp
+  0x1A661: retf   
+  [TERM RETF @ 0x1A661]
+  --- callers (2): sub_19B78, sub_19BE8
+      sub_19B78 ea=0x19B78 cls=ASM dyn=5
+      sub_19BE8 ea=0x19BE8 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #30 sub_22ADC  ea=0x22ADC  size=15  class=LEAF  in=2  dyn=0  cd=5  fb=None
+  0x22ADC: cli    
+  0x22ADD: mov    al, 36h
+  0x22ADF: out    43h, al
+  0x22AE1: mov    al, bl
+  0x22AE3: out    40h, al
+  0x22AE5: mov    al, bh
+  0x22AE7: out    40h, al
+  0x22AE9: sti    
+  0x22AEA: retn   
+  [TERM RETN @ 0x22AEA]
+  --- callers (2): sub_22A44, sub_22A79
+      sub_22A44 ea=0x22A44 cls=ASM dyn=5
+      sub_22A79 ea=0x22A79 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #31 sub_252B8  ea=0x252B8  size=29  class=ASM  in=2  dyn=0  cd=5  fb=None
+  0x252B8: push   ax
+  0x252B9: push   cx
+  0x252BA: push   di
+  0x252BB: push   es
+  0x252BC: mov    di, 5C63h
+  0x252BF: mov    ax, cs
+  0x252C1: mov    es, ax
+  0x252C3: xor    ax, ax
+  0x252C5: cli    
+  0x252C6: mov    cs:byte_24E20, al  ->data ['0x24e20']
+  0x252CA: mov    cx, 0Bh
+  0x252CD: stosw  
+  0x252CF: sti    
+  0x252D0: pop    es
+  0x252D1: pop    di
+  0x252D2: pop    cx
+  0x252D3: pop    ax
+  0x252D4: retf   
+  [TERM RETF @ 0x252D4]
+  --- callers (2): sub_22A44, sub_4E520
+      sub_22A44 ea=0x22A44 cls=ASM dyn=5
+      sub_4E520 ea=0x4E520 cls=ASM dyn=0
+
+======================================================================
+L0-SLICE #32 sub_105E6  ea=0x105E6  size=46  class=ASM  in=1  dyn=0  cd=5  fb=None
+  0x105E6: mov    dx, 0
+  0x105E9: mov    ax, 3D00h
+  0x105EC: int    21h
+  0x105EE: jb     loc_10612  ->code ['0x10612']
+  0x105F0: mov    bx, ax
+  0x105F2: mov    ax, 4400h
+  0x105F5: int    21h
+  0x105F7: jb     loc_10612  ->code ['0x10612']
+  0x105F9: and    dx, 80h
+  0x105FD: jz     loc_10612  ->code ['0x10612']
+  0x105FF: mov    ax, 4407h
+  0x10602: int    21h
+  0x10604: jb     loc_10612  ->code ['0x10612']
+  0x10606: or     al, al
+  0x10608: jz     loc_10612  ->code ['0x10612']
+  0x1060A: mov    ah, 3Eh
+  0x1060C: int    21h
+  0x1060E: jb     loc_10612  ->code ['0x10612']
+  0x10610: clc    
+  0x10611: retn   
+  [TERM RETN @ 0x10611]
+  --- callers (1): sub_1053A
+      sub_1053A ea=0x1053A cls=ASM dyn=5
+
+======================================================================
+L0-SLICE #33 sub_1A5D7  ea=0x1A5D7  size=58  class=ASM  in=1  dyn=0  cd=5  fb=None
+  0x1A5D7: push   bp
+  0x1A5D8: mov    bp, sp
+  0x1A5DA: cmp    [bp+arg_4], 1
+  0x1A5DE: jnz    loc_1A5F7  ->code ['0x1a5f7']
+  0x1A5E0: mov    ax, 7894h
+  0x1A5E3: mov    dx, [bp+arg_2]
+  0x1A5E6: mov    bx, [bp+arg_0]
+  0x1A5E9: mov    es, ax
+  0x1A5EB: add    word ptr es:unk_78944, bx  ->data ['0x78944']
+  0x1A5F0: adc    word ptr es:unk_78946, dx  ->data ['0x78946']
+  0x1A5F5: jmp    loc_1A60C  ->code ['0x1a60c']
+  0x1A5F7: mov    ax, 7894h
+  0x1A5FA: mov    dx, [bp+arg_2]
+  0x1A5FD: mov    bx, [bp+arg_0]
+  0x1A600: mov    es, ax
+  0x1A602: sub    word ptr es:unk_78944, bx  ->data ['0x78944']
+  0x1A607: sbb    word ptr es:unk_78946, dx  ->data ['0x78946']
+  0x1A60C: mov    ax, 1
+  0x1A60F: pop    bp
+  0x1A610: retf   
+  [TERM RETF @ 0x1A610]
+  --- callers (1): sub_19B78
+      sub_19B78 ea=0x19B78 cls=ASM dyn=5
+
+======================================================================
+L0-SLICE #34 sub_1A63A  ea=0x1A63A  size=20  class=ASM  in=1  dyn=0  cd=5  fb=None
+  0x1A63A: push   bp
+  0x1A63B: mov    bp, sp
+  0x1A63D: mov    ax, 7894h
+  0x1A640: mov    es, ax
+  0x1A642: mov    word ptr es:unk_78942, 1  ->data ['0x78942']
+  0x1A649: mov    ax, 1
+  0x1A64C: pop    bp
+  0x1A64D: retf   
+  [TERM RETF @ 0x1A64D]
+  --- callers (1): sub_19B78
+      sub_19B78 ea=0x19B78 cls=ASM dyn=5
+
+======================================================================
+L0-SLICE #35 sub_22A9F  ea=0x22A9F  size=39  class=ASM  in=1  dyn=0  cd=5  fb=None
+  0x22A9F: push   ax
+  0x22AA0: push   bx
+  0x22AA1: push   dx
+  0x22AA2: push   ds
+  0x22AA3: push   es
+  0x22AA4: mov    ax, 3508h
+  0x22AA7: int    21h
+  0x22AA9: mov    word ptr cs:dword_2221C, bx  ->data ['0x2221c']
+  0x22AAE: mov    word ptr cs:dword_2221C+2, es  ->data ['0x2221e']
+  0x22AB3: mov    dx, 343Fh
+  0x22AB6: mov    ax, seg seg020
+  0x22AB9: mov    ds, ax
+  0x22ABB: mov    ax, 2508h
+  0x22ABE: int    21h
+  0x22AC0: pop    es
+  0x22AC1: pop    ds
+  0x22AC2: pop    dx
+  0x22AC3: pop    bx
+  0x22AC4: pop    ax
+  0x22AC5: retn   
+  [TERM RETN @ 0x22AC5]
+  --- callers (1): sub_22A44
+      sub_22A44 ea=0x22A44 cls=ASM dyn=5
+
+======================================================================
+L0-SLICE #36 sub_252D5  ea=0x252D5  size=56  class=ASM  in=1  dyn=0  cd=5  fb=None
+  0x252D5: push   ax
+  0x252D6: push   bx
+  0x252D7: push   cx
+  0x252D8: push   dx
+  0x252D9: push   di
+  0x252DA: push   ds
+  0x252DB: push   es
+  0x252DC: mov    di, 5C63h
+  0x252DF: mov    ax, cs
+  0x252E1: mov    es, ax
+  0x252E3: xor    ax, ax
+  0x252E5: mov    cx, 0Bh
+  0x252E8: stosw  
+  0x252EA: mov    ax, 3509h
+  0x252ED: int    21h
+  0x252EF: mov    cs:word_24E38, bx  ->data ['0x24e38']
+  0x252F4: mov    cs:word_24E3A, es  ->data ['0x24e3a']
+  0x252F9: mov    ax, cs
+  0x252FB: mov    ds, ax
+  0x252FD: mov    dx, 5C7Dh
+  0x25300: mov    ax, 2509h
+  0x25303: int    21h
+  0x25305: pop    es
+  0x25306: pop    ds
+  0x25307: pop    di
+  0x25308: pop    dx
+  0x25309: pop    cx
+  0x2530A: pop    bx
+  0x2530B: pop    ax
+  0x2530C: retf   
+  [TERM RETF @ 0x2530C]
+  --- callers (1): sub_22A44
+      sub_22A44 ea=0x22A44 cls=ASM dyn=5
+
+######################################################################
+## 
+######################################################################

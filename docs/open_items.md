@@ -353,3 +353,20 @@
   batch (r06/r17 x2/farobj_magic) join the class-c repair list; 92
   low-conf DATA fns; 24 trap-only thunks; consider advancing to Level 1
   once Level 0 nears exhaustion.
+
+- **GLOBAL LEVEL 0 COMPLETE (finding 71):** batches 6-16 named 382 fns,
+  `named` **433 -> 815**, **L0 naming_queue 382 -> 0** (residue: 204
+  orphans + 148 thunks, 0 other). Two tooling traps fixed: YAML
+  backslash escaping in append templates; the IDA `seg_` dummy-prefix
+  trap (set_name True-but-reverts; renamed 2 entries to `segment_*`).
+  All 4 gates green (check 817, verify_rebuild faithful, verify_idb
+  INTACT, read-back 815/815+2/2).
+- **Next: Global Level-1 naming.** The SCC-condensed call graph says
+  Level-1 callees are all at Level 0 (now 100% named), so Level 1 can
+  be named with full callee context. Global `naming_queue` = 854
+  (Levels 1..22 + in=1/in=2-4 static bands).
+- **Follow-ups carried:** class-c / undecodable overlay spans (r06/r14/
+  r17/r30 entry partials now named `conf:low` pending span repair); 92
+  low-conf DATA fns; 24 trap-only thunk far-targets; 688 -> 0 verified
+  but 168-Level0-orphan + global 397 orphans stay excluded from
+  bottom-up naming.

@@ -2218,6 +2218,1927 @@ symbols:
     sig: "NEAR retn fn; ES=83A5h trig table; AX&=0x3FFF, BX=AX>>4, quadrant bits 12/13 select, table lookup es:[bx*2] -> AX; retn"
     notes: "72B retn, in=2, caller_dyn=2,369 (caller sub_24A90 NEARTHUNK 2.4K). Trig table lookup at ES=83A5h (near-twin of trig_table_lookup at 8364h). conf: high"
 
+  - ida: sub_25DD8
+    name: dispatch_220fc_invoke_1arg
+    kind: function
+    sig: "void far; BX=[bp+arg0]; call dword ptr cs:220FC; retf"
+    notes: "13B, 19 dyn, 0 static. Far-call trampoline with 1 arg via cs:220FC. conf: med"
+  - ida: sub_25736
+    name: dispatch_22118_ax0
+    kind: function
+    sig: "void far; AX=0, push di; call dword ptr cs:22118; pop di; retf"
+    notes: "11B LEAF, 30 dyn, 2 callers. Far-dispatch via cs:22118 with AX=0. conf: med"
+  - ida: sub_25670
+    name: dispatch_22128_invoke_1arg
+    kind: function
+    sig: "void far; AX=[bp+arg0]; call dword ptr cs:22128; retf"
+    notes: "17B, 9 dyn, 2 callers. Far-call trampoline with 1 arg via cs:22128. conf: med"
+  - ida: sub_255BE
+    name: dispatch_22138_stub
+    kind: function
+    sig: "void far; call dword ptr cs:22138; retf"
+    notes: "6B, 28 dyn, 1 caller (sub_27703 20). Far-call trampoline via cs:22138. conf: med"
+  - ida: sub_25516
+    name: dispatch_22158_stub
+    kind: function
+    sig: "void far; call dword ptr cs:22158; retf"
+    notes: "6B, 16 dyn, 2 callers. Far-call trampoline via cs:22158. conf: med"
+  - ida: sub_25EC3
+    name: dispatch_221ac_stub
+    kind: function
+    sig: "void far; call dword ptr cs:221AC; retf"
+    notes: "6B, 10 dyn, 0 static. Far-call trampoline via cs:221AC. conf: med"
+  - ida: sub_10746
+    name: ems_alloc_execute_43h
+    kind: function
+    sig: "void far; for each set alloc flag (10243/1023F/10241/10242): AH=43h int 67h (alloc pages) -> seg into cs:10231/10233/10229/1022D/1022F"
+    notes: "99B, 12 dyn, 1 caller. Executes the 4 EMS allocations (INT 67h AH=43h) planned by sub_10685, stores resulting segs. conf: med"
+  - ida: sub_107A9
+    name: ems_gate_10218_run
+    kind: function
+    sig: "void far; if cs:10218 == 0 retf else fallthrough body; 2 callers"
+    notes: "138B span (body to first retf@0x107B1), 10 dyn, 2 callers. Gate on state byte cs:10218 to run EMS setup. conf: med"
+  - ida: sub_1035B
+    name: ems_map_seg_10231
+    kind: function
+    sig: "void far; DX=cs:10231, cs:1021F=BX, AX:AH=0/1 int 67h (EMS map 2 pages); preserves dx/ax"
+    notes: "30B, 8 dyn, cd=12, 5 callers. EMS page-map (INT 67h AH=44h) using seg at cs:10231. conf: med"
+  - ida: sub_10395
+    name: ems_map_seg_10233
+    kind: function
+    sig: "void far; BX=2, DX=cs:10233, AX:AH=0/1 int 67h (EMS map 2 pages at BX=2); preserves dx/ax"
+    notes: "28B, 8 dyn, 3 callers. EMS page-map (INT 67h AH=44h) using seg at cs:10233, base BX=2. conf: med"
+  - ida: sub_10685
+    name: ems_page_size_alloc_plan
+    kind: function
+    sig: "void far; plan 4 EMS page allocs: gate flags cs:10244/10246/10247 -> deduct 0x2C/10239/1023B from cs:1021D, set alloc flags 1023F/10241/10242; final: cs:1021D-=0x10 -> cs:1023D=(+0x0C)&~3"
+    notes: "139B, 12 dyn, 1 caller (sub_30EBE). Plans EMS page allocations (deducts sizes from cs:1021D, sets 4 alloc flags, computes cs:1023D). conf: med"
+  - ida: sub_10C47
+    name: farptr_7075_cond_82_a9
+    kind: function
+    sig: "void far; DX=0x7075h, AX=0x82; if cs:1084D bit0 set: AX=0xA9; retf (conditional far-ptr const)"
+    notes: "18B, 8 dyn, 1 caller (sub_2EFC3). Returns 7075:0082 or 7075:00A9 gated on cs:1084D.1. conf: high"
+  - ida: sub_26505
+    name: farptr_7b0e_43ba_const
+    kind: function
+    sig: "void far; DX=0x7B0Eh, AX=0x43BA; retf (returns constant far-ptr 7B0E:43BA)"
+    notes: "7B LEAF, 23 dyn, cd=166, 4 callers (hot sub_276C1 139). Returns the constant far pointer 7B0E:43BA. conf: high"
+  - ida: sub_10463
+    name: farptr_field2f_or_test
+    kind: function
+    sig: "void far; AH=0; AL=cs:[BX+2F]; or ax,ax; retf (ZF=field state)"
+    notes: "10B LEAF, 26 dyn, cd=38, 6 callers. Reads indexed state byte cs:BX+0x2F, sets ZF. conf: med"
+  - ida: sub_1117C
+    name: int15_joystick_detect
+    kind: function
+    sig: "void far; AX=0x8404, DX=0xF0 int 15h (joystick detect); if AX=='SG' keep BX else BX=0; cs:11176=BX; retf"
+    notes: "28B, 18 dyn, 2 callers. INT 15h AH=84h AL=04h joystick detect; stores result to cs:11176. conf: high"
+  - ida: sub_105C7
+    name: state_byte_10218_get_zf
+    kind: function
+    sig: "void far; AL=cs:10218 (cbw); or ax,ax; retf (ZF=0 if nonzero)"
+    notes: "8B, 26 dyn, 3 callers. Reads state byte cs:10218 sign-extended, sets ZF. conf: high"
+  - ida: sub_1FCB3
+    name: state_byte_1f733_set
+    kind: function
+    sig: "void far; cs:1F733 = AL; retf"
+    notes: "10B, 8 dyn, 2 callers. Setter for state byte cs:1F733 (the flag_1f733_gate input). conf: high"
+  - ida: sub_22826
+    name: state_byte_22246_zero
+    kind: function
+    sig: "void far; cs:22246 = 0; retf"
+    notes: "7B LEAF, 10 dyn, 2 callers. Zeros state byte cs:22246. conf: high"
+  - ida: sub_25E9E
+    name: state_byte_25487_set
+    kind: function
+    sig: "void far; cs:25487 = AL; retf"
+    notes: "5B, 17 dyn, 2 callers. Setter for state byte cs:25487 (getter = state_byte_25487_get, batch1). conf: high"
+  - ida: sub_205F2
+    name: state_byte_7e54d_set
+    kind: function
+    sig: "void far; ES=7B0Eh; es:7E54D = AL; retf"
+    notes: "14B LEAF, 25 dyn, 1 caller. Setter for state byte es:7E54D. conf: high"
+  - ida: sub_205E4
+    name: state_byte_7e54e_set
+    kind: function
+    sig: "void far; ES=7B0Eh; es:7E54E = AL; retf"
+    notes: "14B LEAF, 30 dyn, 1 caller. Setter for state byte es:7E54E (getter = state_word_7e54d_get pair). conf: high"
+  - ida: sub_10348
+    name: state_byte_bx34_set
+    kind: function
+    sig: "void far; cs:[BX+34] = AL; retf (indexed state byte setter)"
+    notes: "6B, 29 dyn, 2 callers (hot sub_10BE2 stack_reset_dispatch). Sets an indexed state byte at cs:BX+0x34. conf: med"
+  - ida: sub_1F68A
+    name: state_pair_77730_set
+    kind: function
+    sig: "void far; DS=7772h; ds:77730=[bp+arg0], ds:77732=[bp+arg2]; retf"
+    notes: "26B, 12 dyn, 3 callers. Stores a 2-word state pair at es:77730/32. conf: high"
+  - ida: sub_1F6A4
+    name: state_pair_77734_set
+    kind: function
+    sig: "void far; DS=7772h; ds:77734=[bp+arg0], ds:77736=[bp+arg2]; retf"
+    notes: "26B, 12 dyn, 3 callers. Stores a 2-word state pair at es:77734/36. conf: high"
+  - ida: sub_1F670
+    name: state_pair_777e6_set
+    kind: function
+    sig: "void far; DS=7772h; ds:777E6=[bp+arg0], ds:777E8=[bp+arg2]; retf (2-word state pair)"
+    notes: "26B, 12 dyn, 3 callers. Stores a 2-word state pair at es:777E6/E8. conf: high"
+  - ida: sub_11A0C
+    name: state_quad_11873_set
+    kind: function
+    sig: "void far; cs:11873=AX, cs:11875=BL, cs:11876=CL, cs:11877=DL; retf (4-part state quad)"
+    notes: "82B, 10 dyn, 0 static. Stores a 4-part state (word + 3 bytes) at cs:11873..77. conf: high"
+  - ida: sub_20A7A
+    name: state_set_1f6e2_gated_2222a
+    kind: function
+    sig: "void far; if cs:2222A == 0: cs:1F6E2=AX, cs:1F6E4=0xFFFF; retf (gated state set)"
+    notes: "35B, 22 dyn, 1 caller. Conditional state set: writes cs:1F6E2/E4 only when cs:2222A==0. conf: high"
+  - ida: sub_105CF
+    name: state_word_10219_get_dx
+    kind: function
+    sig: "void far; DX=cs:10219, AX=0; retf (returns DX:AX = state word, 0)"
+    notes: "8B LEAF, 13 dyn, 1 caller. Returns cs:10219 in DX with AX=0 (cf. state_word_10219_get). conf: high"
+  - ida: sub_105E1
+    name: state_word_1023d_get
+    kind: function
+    sig: "void far; AX = cs:1023D; retf"
+    notes: "5B, 8 dyn, 1 caller. Getter for state word cs:1023D (the EMS alloc plan result). conf: high"
+  - ida: sub_20ABC
+    name: state_word_1f6e6_set_ax
+    kind: function
+    sig: "void far; cs:1F6E6 = AX; retf"
+    notes: "5B, 28 dyn, cd=972 (hot caller sub_121C2 972). Setter for state word cs:1F6E6 (the vec_delta shift count). conf: high"
+  - ida: sub_16ED9
+    name: state_word_77743_zero
+    kind: function
+    sig: "void far; DS=7772h; ds:77743 = 0; retf"
+    notes: "14B LEAF, 14 dyn, 1 caller (sub_1914E). Zeros state word es:77743. conf: high"
+  - ida: sub_1D685
+    name: state_word_77a4a_zero
+    kind: function
+    sig: "void far; ES=7772h; es:77A4A = 0; retf"
+    notes: "17B, 14 dyn, 1 caller (sub_1914E). Zeros state word es:77A4A. conf: high"
+  - ida: sub_10340
+    name: state_word_bx25_set
+    kind: function
+    sig: "void far; BX<<=1; cs:[BX+25] = AX; retf (indexed word setter)"
+    notes: "8B LEAF, 13 dyn, 2 callers (hot sub_165AE/165EE 7 each). Sets an indexed state word at cs:BX*2+0x25. conf: med"
+  - ida: sub_10D69
+    name: string_copy_7075_nul
+    kind: function
+    sig: "void far; ES=7075h, DI=0; LDS SI=[bp+arg0]; copy up to 0x0C bytes until NUL to es:0; retf (NUL-terminated copy to 7075:0)"
+    notes: "35B, 24 dyn, 0 static. Copies a NUL-terminated string (max 12B) from far ptr arg to 7075:0000. conf: high"
+  - ida: sub_2100F
+    name: vec_delta_norm_1f6ee
+    kind: function
+    sig: "void far; 3-axis delta [si]-es:[bx] scaled by cx=cs:1F6E6 (sign-preserving >>), store to es:[di..+4] + cs:1F6EE/F0/F2; abs-max + quadrant-bit classify -> CX"
+    notes: "280B, 18 dyn, 1 caller (sub_355E6). Scaled delta vector + magnitude classify (returns CX = quadrant flag 0/1/2). conf: high"
+  - ida: sub_1E239
+    name: volume_exponential_adjust2
+    kind: function
+    sig: "void far; C frame: sign of SI -> es:77DEE=+1/-1; es:77DEC = es:77DE6 * SI / 0x64 + es:77DE6; exponent loop (neg: double until >=0x157; pos: halve until <=0x2AE); clamp vs es:77D04/77CBE; es:7778D=0x1F"
+    notes: "419B, 17 dyn, cd=17, 4 callers. Second exponential volume/level adjust (near-twin of volume_exponential_adjust, es:77DE6 base, mode 0x1F). conf: med"
+
+  - ida: sub_24E7B
+    name: bda_417_mask_clear
+    kind: function
+    sig: "void far; ES=0, BX=0x417; es:[417] &= ~AL (clear bits via NOT AL); retf"
+    notes: "17B, 7 dyn, 3 callers. Clears bits in BDA 0040:0417 (shift flags) via mask ~AL. conf: high"
+  - ida: sub_24EB5
+    name: bda_417_store_al
+    kind: function
+    sig: "void far; ES=0, BX=0x417; es:[417] = AL; retf"
+    notes: "15B LEAF, 3 dyn, 1 caller. Directly stores AL into BDA 0040:0417 (shift flags). conf: high"
+  - ida: sub_25872
+    name: clip_bounds_restore_25450
+    kind: function
+    sig: "NEAR retn fn; cs:25450..25456 = cs:2546C..25472 (restores the saved clip bounds); retn"
+    notes: "33B retn, 0 dyn, cd=184 (caller sub_2586E NEARTHUNK 184). Restores the clip-bounds quad (inverse of sub_2584D). conf: high"
+  - ida: sub_2584D
+    name: clip_bounds_save_2546c
+    kind: function
+    sig: "NEAR retn fn; cs:2546C..25472 = cs:25450..25456 (saves the 4 clip bounds); retn"
+    notes: "33B retn, 0 dyn, cd=184 (caller sub_25849 NEARTHUNK 184). Saves the clip-bounds quad 25450..56 -> 2546C..72. conf: high"
+  - ida: sub_25ACB
+    name: clip_rect_compute_abs
+    kind: function
+    sig: "NEAR retn fn; same clip logic as sub_25BC6 but uses absolute coords at cs:25468/2546A (not [SI]); retn"
+    notes: "251B retn, 0 dyn, cd=307 (caller sub_25A56 307). Absolute-coordinate twin of clip_rect_compute_si (bounds from cs:25468). conf: med"
+  - ida: sub_25BC6
+    name: clip_rect_compute_si
+    kind: function
+    sig: "NEAR retn fn; clamp/clip a rect from [SI] (size [SI]/[SI+2]) against cs:25450..25456 bounds; accumulate clip area to cs:25458; CF=0 if clipped else jmp out; retn"
+    notes: "237B retn, 0 dyn, cd=449 (caller sub_25A9A 449). Computes clipped-rect area for a sprite at [SI] against bounds cs:25450..56. conf: med"
+  - ida: sub_263CE
+    name: dispatch_220c0_invoke_farptr
+    kind: function
+    sig: "void far; loads bx,di,ax + LDS SI=[bp+6]; call dword ptr cs:220C0; retf"
+    notes: "28B, 4 dyn, 0 static. Far-call trampoline with far-ptr arg via cs:220C0. conf: med"
+  - ida: sub_2555C
+    name: dispatch_2214c_stub
+    kind: function
+    sig: "void far; call dword ptr cs:2214C; retf"
+    notes: "6B, 0 dyn, cd=67 (caller sub_25546 67). Far-call trampoline via cs:2214C. conf: med"
+  - ida: sub_278DF
+    name: dispatch_22184_then_27474_c
+    kind: function
+    sig: "void far; call dword ptr cs:22184; cs:27474 = 0x0C; retf"
+    notes: "35B, 5 dyn, 0 static. Far-dispatch via cs:22184 then set state word cs:27474=0x0C. conf: med"
+  - ida: sub_2CD8D
+    name: dos_version_ge3_check
+    kind: function
+    sig: "void far; DI=AX; AX=0x3000 int 21h (get DOS version); if AL<3: stc+retf (fail) else fallthrough"
+    notes: "105B, 5 dyn, 2 callers. DOS version check (INT 21h AH=30h); CF=1 if version < 3. conf: high"
+  - ida: sub_1047C
+    name: ems_gate_10218_run2
+    kind: function
+    sig: "void far; if cs:10218 != 0 fallthrough body else retf; 1 caller (sub_2224C 3)"
+    notes: "190B span (body to retf@0x10484), 6 dyn, cd=3. Second EMS gate on state byte cs:10218. conf: med"
+  - ida: sub_2A767
+    name: ems_seg_free_21_49
+    kind: function
+    sig: "void far; if cs:2A662 seg != -1: ES=seg, AH=49h int 21h (free); cs:2A662=-1; retf"
+    notes: "25B, 7 dyn, 5 callers. Frees an EMS/DOS segment handle at cs:2A662 (INT 21h AH=49h), marks -1. conf: med"
+  - ida: sub_1A734
+    name: event_slot_alloc_6ac
+    kind: function
+    sig: "void far; scan SI=1..8 for first es:[SI*2+6AC]==-1 (free slot); if found: es:[SI*2+6AC]=DI, es:[DI*2+664]=SI, AX=1 else AX=0; retf (ES=7772h)"
+    notes: "80B, 0 dyn, cd=667 (hot caller sub_1A8FD 667). Allocates an event slot: finds a free entry at es:7772:6AC, cross-links 664. conf: high"
+  - ida: sub_1AA6C
+    name: event_slot_init_3aa
+    kind: function
+    sig: "void far; C frame: for SI=0..0x22: es:[SI*2+3AA] = (SI==arg0 ? 1 : 0) (ES=7772h); 35-slot init"
+    notes: "56B, 6 dyn, cd=552 (caller sub_1DA38 552). Initializes a 35-entry slot table at es:7772:3AA, marking index arg0. conf: high"
+  - ida: sub_2043B
+    name: farobj_batch_dispatch_loop
+    kind: function
+    sig: "NEAR retn fn; AL=1 call cs:220F8, AL=AH call cs:220C4; loop CX times {call cs:220CC, SI+=4}; AL=0 call cs:220F8, call cs:220DC; retn"
+    notes: "43B retn, 0 dyn, cd=132 (caller sub_20423 132). Batch far-dispatch loop (CX iterations over 4B records) with mode gate 220F8. conf: med"
+  - ida: sub_25299
+    name: flag_block_zero_5c63_mode1
+    kind: function
+    sig: "void far; ES=CS, DI=5C63h; zero 0x0B words (stosw); cs:24E20=1 (mode); retf (cli/sti)"
+    notes: "31B, 5 dyn, 1 caller (sub_4E520). Zeros the 11-word flag block at 5C63h + sets mode byte 24E20=1. conf: high"
+  - ida: sub_13E83
+    name: hw_config_copy_22e_3e8
+    kind: function
+    sig: "void far; DS=7A32h; SI=0x22E, CX=0x3E8; movsw (copies 0x3E8 words = config block); retf"
+    notes: "16B LEAF, 3 dyn, 2 callers. Copies a 0x7D0-byte config block from ds:7A32:22E (CX=0x3E8 words). conf: med"
+  - ida: sub_10CBB
+    name: jmp_loc_10b1c
+    kind: function
+    sig: "void far; jmp loc_10B1C (tail-jump into a shared block)"
+    notes: "3B, 1 dyn, cd=0, 5 callers. Tail-jump stub into shared code at 0x10B1C. conf: med"
+  - ida: sub_2CA3F
+    name: mcb_save_2c9be
+    kind: function
+    sig: "void far; cs:2C9C2=ES; if cs:2C9BE|2C9C0 == 0: cli, save es:0A/0C (MCB owner) into cs:2C9BE/C0, sti; retf"
+    notes: "37B, 5 dyn, 1 caller (sub_2B1E5). Saves an MCB (DOS memory block) owner word es:0A/0C into cs:2C9BE once. conf: med"
+  - ida: sub_25A1C
+    name: mouse_bounds_load_25474
+    kind: function
+    sig: "void far; 4x lodsw -> cs:25474/25476/25478/2547A (loads the mouse-coord bound quad); retf"
+    notes: "21B, 2 dyn, cd=10,458 (caller sub_25A06 10K). Loads the 4-word mouse/screen bound quad (input to mouse_coord_clamp_25474). conf: high"
+  - ida: sub_100A2
+    name: mouse_reset_if_10000
+    kind: function
+    sig: "void far; if cs:10000 != 0: AX=0 int 33h (mouse reset); retf"
+    notes: "13B LEAF, 3 dyn, 1 caller. Mouse reset (INT 33h AX=0) gated on the enable flag cs:10000. conf: high"
+  - ida: sub_17607
+    name: pcspk_gate_61_and_fd
+    kind: function
+    sig: "void far; DS=7772h; AL = ds:77A4C & 0xFD; out 61h,AL (clears PC-speaker gate bit1); retf"
+    notes: "16B LEAF, 5 dyn, 1 caller. Clears bit1 of the PC-speaker control port 61h (via ds:77A4C state). conf: high"
+  - ida: sub_17460
+    name: pit_mode3_set_43h
+    kind: function
+    sig: "NEAR retn fn; AL=0x36 out 43h (PIT cmd: ch0, mode 3, lo/hi); then out 40h AL, swap, out 40h AL (program divisor AX); retn"
+    notes: "15B LEAF retn, 0 dyn, cd=210 (hot callers sub_1747F 132). Programs PIT channel 0 mode 3 (square wave) with 16-bit divisor AX. conf: high"
+  - ida: r30_e170
+    name: r30_offset_accum_6e03e
+    kind: function
+    sig: "void far (DATA-class span, partially undecodable): accumulates (AX*0xC) into es:6DE8:6E03E + mirrors to 6E042/6E044; 3 callers (r33_e105, sub_2C80B 112)"
+    notes: "86B span, in=3, cd=112, DATA/undecodable head. R30 overlay offset accumulator at seg 6DE8. conf: low"
+  - ida: sub_10DDB
+    name: state_byte_1084b_get
+    kind: function
+    sig: "void far; AL=cs:1084B (AH=0); retf"
+    notes: "7B, 8 dyn, 1 caller. Getter for state byte cs:1084B. conf: high"
+  - ida: sub_2281F
+    name: state_byte_22246_set_ff
+    kind: function
+    sig: "void far; cs:22246 = 0xFF; retf"
+    notes: "7B LEAF, 7 dyn, 4 callers. Sets state byte cs:22246 to 0xFF (pair of state_byte_22246_zero). conf: high"
+  - ida: sub_26A2F
+    name: state_pair_26412_clamp_store
+    kind: function
+    sig: "void far; AX=min(AX,0x6E), DX=min(DX,0x58); cs:26412=AX, cs:26414=DX; retf (clamped pair store)"
+    notes: "26B, 8 dyn, 1 caller. Clamps AX/DX (0x6E/0x58) then stores the pair to cs:26412/14. conf: high"
+  - ida: sub_1A5C4
+    name: state_pair_78944_get
+    kind: function
+    sig: "void far; ES=7894h; DX=es:78946, AX=es:78944; retf (returns a 2-word state pair)"
+    notes: "19B, 5 dyn, 1 caller (sub_188CC). Returns the es:78944/946 state pair in DX:AX. conf: high"
+  - ida: sub_1A5A9
+    name: state_pair_78948_zero_ax1
+    kind: function
+    sig: "void far; ES=7894h; es:7894A=0, es:78948=0; AX=1; retf"
+    notes: "27B, 5 dyn, 3 callers (sub_1B4E8 12). Zeros the es:78948/94A pair, returns AX=1. conf: high"
+  - ida: sub_10DC6
+    name: state_word_10844_classify
+    kind: function
+    sig: "void far; AX=0; if cs:10844==2 retf else AX=1, if ==1 retf else AX=2; retf (classifies mode 0/1/2)"
+    notes: "21B, 7 dyn, 1 caller. Classifies a mode word cs:10844 -> AX=0/1/2. conf: high"
+  - ida: sub_11299
+    name: state_word_11102_reset_f0f0
+    kind: function
+    sig: "void far; cs:11102 = 0xF0F0; retf (reset input status word)"
+    notes: "8B LEAF, 8 dyn, 1 caller. Resets the input-status word cs:11102 to 0xF0F0. conf: high"
+  - ida: sub_16ECE
+    name: state_word_77743_get
+    kind: function
+    sig: "void far; DS=7772h; AX = ds:77743; retf"
+    notes: "11B LEAF, 2 dyn, 1 caller (sub_1914E). Getter for state word es:77743 (setter = state_word_77743_zero). conf: high"
+  - ida: sub_1A62C
+    name: state_word_78942_get
+    kind: function
+    sig: "void far; ES=7894h; AX = es:78942; retf"
+    notes: "14B, 5 dyn, 2 callers (sub_19B78 accumulate_wait). Reads state word es:78942. conf: high"
+  - ida: sub_2C973
+    name: stc_retf_const
+    kind: function
+    sig: "void far; stc; retf (returns with CF set -- sentinel)"
+    notes: "2B LEAF, 5 dyn, 3 callers (sub_2ABE2/2AC4C/2B1E5). Sets carry flag and returns (error/sentinel). conf: high"
+  - ida: sub_24AEF
+    name: trig_value_bsearch_83a5
+    kind: function
+    sig: "NEAR retn fn; ES=83A5h; binary-search AX in the sorted table (DI=0, SI=0x100..0x200 loop) -> index DX; AX=DX<<4; retn"
+    notes: "77B retn, 0 dyn, cd=149 (caller sub_24ADC 149). Binary search of a trig/sorted table at ES=83A5h -> table index *16. conf: high"
+  - ida: sub_1F59E
+    name: volume_exponential_adjust3
+    kind: function
+    sig: "void far; C frame: es:77DEC = es:77DE2 * [bp+arg0] / 0x64 + es:77DE2; clamp vs es:78862+0x0C / -0x0C; es:7778D=0x1E"
+    notes: "195B, 0 dyn, cd=112, 3 callers (hot sub_1A9AA 112). Third exponential volume/level adjust (es:77DE2 base, clamp vs es:78862, mode 0x1E). conf: med"
+
+  - ida: sub_1A5D7
+    name: accumulate_add_sub_78944
+    kind: function
+    sig: "void far; if [bp+arg4]==1: es:78944/946 += DX:BX else -= DX:BX (add/sub 64-bit accumulator); AX=1; retf"
+    notes: "58B, 0 dyn, cd=5, 1 caller (sub_19B78). Adds or subtracts a 64-bit value into the es:78944 accumulator (gated by arg). conf: high"
+  - ida: r01_e02
+    name: cpu_flag_486_detect
+    kind: function
+    sig: "NEAR retn fn; push 0xF000/popf/pushf/pop AX: if (AX & 0xF000) != 0 -> DX++ (486+ has bits 12-15); AX=DX; retn (CPU generation counter)"
+    notes: "17B retn, 0 dyn, cd=8, 2 callers. CPU-generation detect via EFLAGS bits 12-15 (increments DX per 386/486/P5). conf: high"
+  - ida: sub_1BE1B
+    name: device_path_build_mus
+    kind: function
+    sig: "void far; C frame: build an ASCII path at far ptr [bp+4]: 'MUS' + (DL+'A') + '.' + ('ADL' or 'MID') + NUL (device driver path)"
+    notes: "168B, 0 dyn, cd=47, 1 caller (sub_1BAD6 47). Builds the device path string (MUSx.ADL / MUSx.MID) for sound-driver load. conf: med"
+  - ida: sub_255C4
+    name: dispatch_22140_stub
+    kind: function
+    sig: "void far; call dword ptr cs:22140; retf"
+    notes: "6B, 0 dyn, cd=20, 1 caller (sub_27703 20). Far-call trampoline via cs:22140. conf: med"
+  - ida: sub_105E6
+    name: ems_ems_detect_3d44
+    kind: function
+    sig: "NEAR retn fn; AX=0x3D00 int 21h (open), AX=0x4400 (ioctl), check DX.7 (char dev), AX=0x4407 (get handle info), AL!=0, AH=3E (close); clc if all pass; retn"
+    notes: "46B retn, 0 dyn, cd=5, 1 caller (sub_1053A ems_init). EMS driver detection via INT 21h open/ioctl/close sequence; CF=0 if EMS present. conf: high"
+  - ida: sub_19103
+    name: event_key_valid_0_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]; jump-table (cs:jpt_19113) over 4 cases -> AX=1/0; retf (key-code validity 0..)"
+    notes: "29B, 0 dyn, cd=8, 1 caller (sub_1950C). Jump-table validation of key codes >=0 -> AX 0/1. conf: med"
+  - ida: sub_1970F
+    name: event_key_valid_100_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-0x100; jump-table (cs:jpt_19723) over 5 cases -> AX=1/0; retf (key-code validity 0x100..)"
+    notes: "33B, 0 dyn, cd=36, 2 callers (sub_18E1A 36). Jump-table validation of key codes >=0x100 -> AX 0/1. conf: med"
+  - ida: sub_1977D
+    name: event_key_valid_108_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-0x108; jump-table (cs:jpt_19791) over 0x0B cases -> AX=1/0; retf (key-code validity 0x108..)"
+    notes: "33B, 0 dyn, cd=36, 2 callers (sub_18E1A 36). Jump-table validation of key codes >=0x108 -> AX 0/1. conf: med"
+  - ida: sub_19128
+    name: event_key_valid_dec_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-1; jump-table (cs:jpt_19139) over 4 cases -> AX=1/0; retf (key-code validity 1..)"
+    notes: "30B, 0 dyn, cd=16, 1 caller (sub_195C4 16). Jump-table validation of key codes >=1 -> AX 0/1. conf: med"
+  - ida: sub_1BF9A
+    name: event_mode_valid_234
+    kind: function
+    sig: "void far; AX = ([bp+arg0] in {2,3,4} ? 1 : 0); retf (validates mode 2/3/4)"
+    notes: "34B, 0 dyn, cd=65, 2 callers (sub_1BAD6 47). Returns AX=1 if mode arg in {2,3,4} else 0. conf: high"
+  - ida: sub_4185A
+    name: farobj_copyloop_thunk
+    kind: function
+    sig: "void far; (span undecodable mid-instruction, far call 9A); 1 caller (sub_2BEAB 6)"
+    notes: "82B span, in=1, cd=6, undecodable. Far-object copy-loop thunk. conf: low"
+  - ida: sub_12771
+    name: farptr_indirect_get_11bb
+    kind: function
+    sig: "void far; SI=cs:11BBA, DS=cs:11BBE; SI=[SI+4] (loads a far-ptr field); retf"
+    notes: "16B LEAF, 0 dyn, cd=55, 1 caller (sub_12534). Loads an indirect far-pointer field via cs:11BBA/BBE state. conf: med"
+  - ida: sub_252B8
+    name: flag_block_zero_5c63_mode0
+    kind: function
+    sig: "void far; ES=CS, DI=5C63h; cli; cs:24E20=0 (mode); zero 0x0B words (stosw); sti; retf"
+    notes: "29B, 0 dyn, cd=5, 2 callers (sub_22A44, sub_4E520). Zeros the 11-word flag block 5C63h + sets mode byte 24E20=0. conf: high"
+  - ida: sub_13E5A
+    name: hw_flag_bit3_22e_set_cmp
+    kind: function
+    sig: "void far; DS=7A32h; SI&=0xFFF; AH=[SI+22E]&0x9F, AL=(AL ROR3)|AH; xchg into [SI+22E]; if changed: OR bit1 into it; retf"
+    notes: "41B, 0 dyn, cd=55, 3 callers. Sets a hw-flag nibble at ds:7A32:SI+22E (ROR-merge) + marks dirty (bit1). conf: med"
+  - ida: sub_13E45
+    name: hw_flag_bit3_extract
+    kind: function
+    sig: "void far; DS=7A32h; SI&=0xFFF; AL = ([SI+22E] ROL3) & 3; retf (extracts a 2-bit field)"
+    notes: "21B, 0 dyn, cd=55, 2 callers. Extracts a 2-bit field from the hw-flag byte at ds:7A32:SI+22E. conf: med"
+  - ida: sub_1119C
+    name: int15_joystick_read
+    kind: function
+    sig: "NEAR retn fn; if cs:11176 (detect result) != 0: AH=0x84, DX=1 int 15h (read joystick), clc; retn"
+    notes: "135B span (body to retn@0x111AD), 0 dyn, cd=11, 3 callers (sub_11198 NEARTHUNK 11). Reads joystick axes via INT 15h AH=84h AL=01 (gated on detect flag cs:11176). conf: high"
+  - ida: sub_22A9F
+    name: int8_vector_hook_343f
+    kind: function
+    sig: "NEAR retn fn; AX=0x3508 int 21h (get INT8 vec) -> cs:2221C; DS=seg020, DX=0x343F, AX=0x2508 int 21h (set INT8 = 343F); retn"
+    notes: "39B retn, 0 dyn, cd=5, 1 caller (sub_22A44). Hooks INT 8 (timer) vector: saves old at cs:2221C, installs seg020:343F. conf: high"
+  - ida: sub_252D5
+    name: int9_vector_hook_5c7d
+    kind: function
+    sig: "void far; ES=CS, DI=5C63h: zero 0x0B words; AX=0x3509 int 21h (get INT9) -> cs:24E38; DS=CS, DX=0x5C7D, AX=0x2509 int 21h (set INT9 = 5C7D); retf"
+    notes: "56B, 0 dyn, cd=5, 1 caller (sub_22A44). Hooks INT 9 (keyboard): saves old at cs:24E38, installs CS:5C7D + resets flag block. conf: high"
+  - ida: sub_253FC
+    name: kbd_scancode_xlat_shift
+    kind: function
+    sig: "NEAR retn fn; if AH>0x3A: AL=0 retn; ES=0,DS=7B0E; shift-flag gated (es:417 bits0-1,bit6): BX=39E2 or 3A1D table base (with AH range checks 0x10-0x32); AL = [BX+AH] via XLAT; retn"
+    notes: "83B retn, 0 dyn, cd=7, 1 caller (sub_251CF 7). Keyboard scancode translate with shift-state table selection (39E2/3A1D). conf: high"
+  - ida: sub_22ADC
+    name: pit_divisor_set_bx
+    kind: function
+    sig: "NEAR retn LEAF; cli; AL=0x36 out 43h (PIT ch0 mode 3); out 40h BL, out 40h BH (program divisor BX); sti; retn"
+    notes: "15B LEAF retn, 0 dyn, cd=5, 2 callers. Programs PIT ch0 mode-3 with 16-bit divisor BX (cli/sti guarded). conf: high"
+  - ida: sub_2CF6A
+    name: r01_ascii_header_data
+    kind: function
+    sig: "void far (DATA-class span, ASCII-looking): mixed ASCII bytes + undecodable 0x00; 2 callers (sub_2BEC9, sub_2BFCD 24)"
+    notes: "33B span, in=2, cd=24, DATA/ASCII. R01 overlay ASCII data block (header/label bytes). conf: low"
+  - ida: sub_2D0DA
+    name: r01_farptr_call_a
+    kind: function
+    sig: "void far; (span undecodable, far calls 9A); 1 caller (sub_2BEDD 10)"
+    notes: "36B span, in=1, cd=10, undecodable. R01 overlay far-ptr call helper A. conf: low"
+  - ida: sub_2D0FE
+    name: r01_farptr_call_b
+    kind: function
+    sig: "void far; (span undecodable, far calls 9A); 1 caller (sub_2BED3 9)"
+    notes: "28B span, in=1, cd=9, undecodable. R01 overlay far-ptr call helper B. conf: low"
+  - ida: sub_2D26A
+    name: r01_farptr_call_c
+    kind: function
+    sig: "void far; (span undecodable, many far calls 9A); 1 caller (sub_2BEF1 7)"
+    notes: "173B span, in=1, cd=7, undecodable. R01 overlay far-ptr call helper C. conf: low"
+  - ida: sub_4FD8E
+    name: r08_farptr_copy_thunk
+    kind: function
+    sig: "void far; (span undecodable mid-instruction); 1 caller (sub_2BEBF 15)"
+    notes: "31B span, in=1, cd=15, undecodable. R08 overlay far-ptr copy thunk. conf: low"
+  - ida: sub_6E376
+    name: r14_stream_read_retf8
+    kind: function
+    sig: "void far; stream read: CX=[bp+6] clipped to cs:6E2B6 budget, deduct; accumulate into cs:6E2B2/B4 (32-bit); copy CX bytes from far ptr cs:6E2BC/BE to es:[bp+0Ah] (movsw/movsb); retf 8 (cleans 8B args)"
+    notes: "90B, 0 dyn, cd=12, 3 callers (thunk slots sub_2BF05/2BF55). R14 overlay stream reader with byte budget + far args (retf 8). conf: med"
+  - ida: sub_6740D
+    name: r30_rect_overlap_check
+    kind: function
+    sig: "void far (DATA-class span, partially undecodable): compare rect [es:6E042 ptr] vs es:7894:79E40/79E3E bounds (jl/jg branches); 1 caller (sub_2C95F 9)"
+    notes: "97B span, in=1, cd=9, DATA/undecodable head. R30 overlay rectangle-overlap test vs viewport bounds. conf: low"
+  - ida: sub_66DBD
+    name: r30_table_copy_4fd5c
+    kind: function
+    sig: "void far (DATA-class span, partially undecodable): copies words es:4FC2:4FD5C/5E into 4FD5A..4FD6C scatter; 2 callers (sub_2C513, sub_2C595)"
+    notes: "164B span, in=2, cd=26, DATA/undecodable head. R30 overlay table-copy helper at seg 4FC2. conf: low"
+  - ida: sub_1727E
+    name: sbi_port_discover_aa
+    kind: function
+    sig: "void far; scan SBI base ports 0x21C..0x27C step 0x10: pulse (out 1/0), poll ACK bit7, verify 0xAA response; AX=1 base found else 0 (es:777F0=base); retf"
+    notes: "92B, 0 dyn, cd=15, 1 caller (sub_1740D 15). Discovers the SBI base port by 0xAA handshake (stores to es:777F0). conf: high"
+  - ida: sub_172E1
+    name: sbi_reset_verify
+    kind: function
+    sig: "void far; SBI (MPU/ADLib) reset handshake on ports 330h/331h: drain, out 0xFF, poll for 0xFE ACK x4; AX=1 if verified else 0; retf"
+    notes: "88B, 0 dyn, cd=31, 2 callers (sub_1740D 15, sub_195C4 16). SBI device reset + ACK verification (ports 330h/331h). conf: high"
+  - ida: sub_1A611
+    name: state_pair_78944_zero_ax1
+    kind: function
+    sig: "void far; ES=7894h; es:78946=0, es:78944=0; AX=1; retf (accumulator pair reset)"
+    notes: "27B, 0 dyn, cd=5, 2 callers (sub_19B78 accumulate_wait). Zeros the es:78944/946 accumulator pair, returns AX=1. conf: high"
+  - ida: sub_1A63A
+    name: state_word_78942_one_ax1
+    kind: function
+    sig: "void far; ES=7894h; es:78942=1; AX=1; retf"
+    notes: "20B, 0 dyn, cd=5, 1 caller (sub_19B78). Sets state word es:78942=1, returns AX=1. conf: high"
+  - ida: sub_1A64E
+    name: state_word_78942_zero_ax1
+    kind: function
+    sig: "void far; ES=7894h; es:78942=0; AX=1; retf"
+    notes: "20B, 0 dyn, cd=5, 2 callers (sub_19B78). Zeros state word es:78942, returns AX=1. conf: high"
+  - ida: sub_12703
+    name: tile_record_count
+    kind: function
+    sig: "NEAR retn fn; CX=count from [SI]; base=cs:11BC6/BC8*4; sum per-record [ptr] & 0x7F lengths into DX -> CX; retn"
+    notes: "55B retn, 0 dyn, cd=55, 1 caller (sub_12534). Sums record lengths from the tile table -> CX (total count). conf: med"
+  - ida: sub_12696
+    name: tile_record_search_bl
+    kind: function
+    sig: "NEAR retn fn; CX=count from [SI]; for each record: base = cs:11BC6/11BC8*4 -> cs:11BCA/CC, offset byte -> cs:11BCE/D0; lodsw rec-ptr, walk 0x0A-stride entries matching BL at [SI+8] else stc; retn"
+    notes: "109B retn, 0 dyn, cd=55, 3 callers (sub_12534 55). Searches a variable-stride tile/record table for BL; stc if not found. conf: med"
+  - ida: sub_1F50B
+    name: volume_exponential_adjust4
+    kind: function
+    sig: "void far; C frame: es:77DEC = es:78866 * [bp+arg0] / 0x64 + es:78866; clamp 0..0x7F; es:78776=0x2000; es:7778D=0x1F"
+    notes: "147B, 0 dyn, cd=17, 2 callers (sub_1AA0B 17). Fourth exponential volume/level adjust (es:78866 base, clamp 0..0x7F). conf: med"
+
+  - ida: sub_14B12
+    name: avg2_ax_dx
+    kind: function
+    sig: "NEAR retn LEAF; AX = (AX + DX) >> 1 (avg with carry-in); retn"
+    notes: "5B LEAF retn, 0 dyn, cd=0, 3 callers. Two-operand average (AX+DX)/2 with rcr carry. conf: high"
+  - ida: sub_13C0E
+    name: coord_delta_11c56
+    kind: function
+    sig: "NEAR retn fn; DH:DL=cs:11C57:11C56, AH:AL=cs:11C59:11C58; AX-=DX (delta of the two 2-byte coord pairs); BP=[SI]; retn"
+    notes: "24B retn, 0 dyn, cd=0, 3 callers. Computes the coordinate delta between two cached pairs at cs:11C56..59, BP=[SI]. conf: med"
+  - ida: sub_31C44
+    name: dgroup_cycle_435_436
+    kind: function
+    sig: "NEAR retn fn; change-detect ds:439 vs ds:43D -> advance ds:435 mod 8, index table ds:[441+bx] -> ds:431 (and mirror for 43A/436 -> 432); reset counters"
+    notes: "93B retn, 0 dyn, cd=0, 4 callers. Cycles an 8-entry table at ds:441 with change-detect counters, publishing the current entry to ds:431/432. conf: high"
+  - ida: sub_256B8
+    name: dispatch_220a4_near
+    kind: function
+    sig: "NEAR retn fn; call dword ptr cs:220A4; retn (near twin of dispatch_220a4_stub)"
+    notes: "6B retn, 0 dyn, cd=0, 3 callers (sub_1FB3C, sub_2650C, sub_28E50). NEAR far-call trampoline via cs:220A4. conf: med"
+  - ida: sub_25540
+    name: dispatch_22148_stub
+    kind: function
+    sig: "void far; call dword ptr cs:22148; retf"
+    notes: "6B, 0 dyn, cd=5, 1 caller (sub_25522 5). Far-call trampoline via cs:22148. conf: med"
+  - ida: sub_2CAF0
+    name: dos_indirect_dispatch_2c9ba
+    kind: function
+    sig: "void far; DS=CS; cs:2CB1B=word_2CB7F, cs:2CB1D=word_2CB81, cs:2CB1F=0; BX=0x1AB, AH=6, AL=1, CX=0; jmp cs:off_2C9BA (table dispatch)"
+    notes: "43B, 0 dyn, cd=5, 1 caller (sub_2CA64). Loads a call frame then tail-dispatches through the near-pointer table at cs:2C9BA (DOS-ish service, AH=6). conf: med"
+  - ida: sub_10422
+    name: ems_remap_execute
+    kind: function
+    sig: "void far; if cs:1023F: DX=cs:10229, AH=4402h int 67h (map); if cs:10240: DX=cs:1022B, AL=3, AH=44h int 67h; cs:10249=0; retf"
+    notes: "52B, 0 dyn, cd=0, 4 callers (sub_2EAA7..sub_2EF12). Applies the pending EMS page maps (gated by alloc flags 1023F/10240), clears done-flag 10249. conf: med"
+  - ida: sub_1A662
+    name: event_table_find_name
+    kind: function
+    sig: "void far (C frame): compare the NUL-terminated name at [bp+arg0] against 0x0C-char entries at es:7894:22 + i*0x0E (i < es:78960); return far ptr DX:AX to the match, else -1:-1"
+    notes: "114B, 0 dyn, cd=0, 4 callers. Looks up a name in the 0x0E-stride event table at 7894:0022, returns its far pointer (or FFFF:FFFF). conf: high"
+  - ida: sub_18FB5
+    name: event_true_far
+    kind: function
+    sig: "void far; AX = 1; retf (constant true result)"
+    notes: "8B, 0 dyn, cd=1, 1 caller (sub_1852E). Returns constant AX=1 (far twin of always_true). conf: high"
+  - ida: sub_28CA1
+    name: farobj_di_441e_init
+    kind: function
+    sig: "void far; mov DI, 0x441E (then span truncated -- DATA class, no terminator in 3B); 3 callers (sub_26B2E, sub_27A20, sub_28774)"
+    notes: "3B span, 0 dyn, cd=0, 3 callers, DATA/truncated. Sets DI=0x441E (buffer offset) at function entry; body continues past span. conf: low"
+  - ida: sub_27051
+    name: farobj_field_mask_24_26
+    kind: function
+    sig: "void far; DS=seg; for CX entries from es:[BX] (BX=0x34, +4): LDS SI; if SI!=-1: [SI+24] &= 0x7FFF, [SI+26] &= 0x3F (clears high bits of two fields); retf"
+    notes: "40B, 0 dyn, cd=0, 3 callers (sub_34923, sub_34954, sub_34C31). Iterates the far-ptr object table, masking field +24 (word, 0x7FFF) and +26 (0x3F) on each object. conf: med"
+  - ida: sub_3B31F
+    name: farobj_init_43ba
+    kind: function
+    sig: "void far; SI=0x43BA then (span undecodable); 4 callers incl sub_4A7E5 DATA"
+    notes: "25B span, 0 dyn, cd=0, 4 callers, undecodable head. Far-object init with SI=0x43BA table base. conf: low"
+  - ida: sub_5006A
+    name: farobj_table_lookup_scaled
+    kind: function
+    sig: "void far; DS=6BE0h, count=ds:6C8C6; scan SI=0x0AC8 entries: match AX and DL -> DX:AX = cbw*[SI+6/8] scaled by 0x3334 (x0.8), stosw pairs; SI=[SI+4] -> CX=(>>4)&0xF, SI&=0x7FF; clc; retf"
+    notes: "86B, 0 dyn, cd=0, 4 callers (sub_44352..sub_484C1). Looks up an object in the 6BE0:AC8 table, returns scaled coordinates (x0.8) + index (CX nibble, SI). conf: med"
+  - ida: sub_2AA0F
+    name: farptr_list_copy_ffff
+    kind: function
+    sig: "void far; DS=CS, SI=0x0B0C8; repeat: lodsw, if -1 stop else stosw+movsw (copies far-ptr pairs to ES:DI until terminator 0xFFFF); retf"
+    notes: "24B, 0 dyn, cd=5, 1 caller (sub_229DD). Copies a 0xFFFF-terminated far-pointer list from cs:0B0C8 to ES:DI. conf: high"
+  - ida: sub_2D382
+    name: farptr_slot0_handler
+    kind: function
+    sig: "void far; push bp/si/di; call near; pop di/si/bp; retf (real target behind RTLink thunk slot #000)"
+    notes: "10B LEAF, 0 dyn, cd=5, 1 caller (sub_2BD9D = thunk slot 0). The actual handler the loader-trap thunks reach after resolution. conf: med"
+  - ida: sub_2D4A2
+    name: farptr_slot1_handler
+    kind: function
+    sig: "void far; push bp/si/di; call near; pop di/si/bp; retf (real target behind RTLink thunk slot #001)"
+    notes: "10B LEAF, 0 dyn, cd=5, 1 caller (sub_2BDA7 = thunk slot 1). conf: med"
+  - ida: sub_233C0
+    name: farptr_table_get_22db4
+    kind: function
+    sig: "void far (span DATA-class, no terminator in span): BX = cs:22D26*2 + cs:22DB4; ES = cs:22DB6; BX = es:[BX] (loads a far-ptr from the table)"
+    notes: "22B span, 0 dyn, cd=0, 4 callers (sub_22EA2..sub_235BB). Loads a far pointer from the cs:22DB4/22DB6 table indexed by state cs:22D26 (near-twin of farptr_table_get). conf: med"
+  - ida: sub_2412E
+    name: fixed_mat3_scale_a
+    kind: function
+    sig: "NEAR retn fn; saturating 3x3 matrix scale: rows [bx+0..10] * scale [si] (es=seg), combined imul/add/sub with 0x8001/0x7FFF clamp, stored to [di+0..10]; first row copies [bx] -> [di] raw"
+    notes: "246B retn, 0 dyn, cd=0, 4 callers (sub_24440..sub_24536). Fixed-point 3x3 matrix scale+clamp variant A (mixed add/sub row form). conf: high"
+  - ida: sub_24224
+    name: fixed_mat3_scale_b
+    kind: function
+    sig: "NEAR retn fn; saturating 3x3 matrix scale variant B (add-form rows, raw diagonal copies to [di]); 4 callers (same set)"
+    notes: "245B retn, 0 dyn, cd=0, 4 callers. Fixed-point 3x3 matrix scale variant B (add-form). conf: high"
+  - ida: sub_24319
+    name: fixed_mat3_scale_c
+    kind: function
+    sig: "NEAR retn fn; saturating 3x3 matrix scale variant C (sub-form rows with raw interleave); 4 callers (same set)"
+    notes: "245B retn, 0 dyn, cd=0, 4 callers. Fixed-point 3x3 matrix scale variant C (sub-form). conf: high"
+  - ida: sub_21933
+    name: param6_append_0f66
+    kind: function
+    sig: "NEAR retn fn; if [bp+arg0]==0: copy 6 words from [bp+arg6] to es:0F66 (queue cursor es:0F66 advances); retn (else falls into the bigger body)"
+    notes: "224B span, 0 dyn, cd=0, 4 callers. Appends a 12-byte parameter record to the es:0F66 queue when arg0==0. conf: med"
+  - ida: sub_2D1D0
+    name: r01_farptr_call_d
+    kind: function
+    sig: "void far; (span undecodable, many far calls 9A); 1 caller (sub_2BE3D 5)"
+    notes: "148B span, in=1, cd=5, undecodable. R01 overlay far-ptr call helper D. conf: low"
+  - ida: sub_2D189
+    name: r01_farptr_call_e
+    kind: function
+    sig: "void far; (span undecodable, far calls 9A); 1 caller (sub_2BEE7 3)"
+    notes: "71B span, in=1, cd=3, undecodable. R01 overlay far-ptr call helper E. conf: low"
+  - ida: sub_106AF9
+    name: r12_farptr_helper
+    kind: function
+    sig: "void far (span undecodable): push si/di/ax/bx/cx; call near; pops; retf; 4 callers (r12_e22/e31/e32/e33)"
+    notes: "14B span, 0 dyn, cd=0, 4 callers, undecodable. R12 overlay far-ptr helper. conf: low"
+  - ida: r30_e111
+    name: r30_hlt_stub
+    kind: function
+    sig: "void far; hlt (halt stub -- RTS interrupt/idle marker in R30 overlay)"
+    notes: "1B, 0 dyn, cd=2, 1 caller (sub_2C54F 2). HALT instruction stub (idle/RTS marker). conf: med"
+  - ida: r30_e142
+    name: r30_state_push_6e14f
+    kind: function
+    sig: "void far (span partially undecodable): ES=6DE8h; es:6E145=0; push es:6E151, push es:6E14F (saves a far-ptr pair); 1 caller (sub_2C6A3 1)"
+    notes: "27B span, in=1, cd=1, DATA-class head. R30 overlay state push at seg 6DE8. conf: low"
+  - ida: sub_42879
+    name: r32_farptr_gate
+    kind: function
+    sig: "void far (C frame, span undecodable after enter); 4 callers (r32_e74, r32_e83, sub_66E62, sub_67781)"
+    notes: "37B span, 0 dyn, cd=0, 4 callers, undecodable. R32 overlay far-ptr gate. conf: low"
+  - ida: sub_33EC3
+    name: rect_store_40e
+    kind: function
+    sig: "NEAR retn fn; es:40E=BX, es:40C=CX, es:410=AX, es:412=DX (stores a 4-word rect); retn"
+    notes: "20B retn, 0 dyn, cd=0, 4 callers. Stores the registers as a rectangle (CX,BX,AX,DX) at es:40C..412. conf: high"
+  - ida: sub_112F6
+    name: segment_change_debounce_cx
+    kind: function
+    sig: "NEAR retn fn; DX&=0xFFE0; compare vs ds:5C/64/60/5E/62 (5 cached segs) with a 3-hit debounce counter cs:11372 -> CX = change bitmask 1/2/3/4; reset counter on match"
+    notes: "124B retn, 0 dyn, cd=0, 4 callers. Detects which of 5 cached segment values DX changed (3-hit debounce) -> CX bit flags. conf: high"
+  - ida: sub_279A4
+    name: slope_flag_test_bc
+    kind: function
+    sig: "NEAR retn fn; AX=0; BX=BP>>1; if BX<CX -> AX|=4; elif -BX>CX -> AX|=2; retn (ZF=0 iff one flag set)"
+    notes: "27B retn, 0 dyn, cd=0, 4 callers (sub_291B1..sub_2A0B5). Slope/aspect test: sets flag 4 or 2 comparing (BP/2) vs CX; returns flags in AX. conf: med"
+  - ida: sub_13A57
+    name: sorted_key_search_bl
+    kind: function
+    sig: "NEAR retn fn; CX=count from [SI]; per 2-byte record: al=[SI]-BL; ==0 -> found path; >0 -> fail (stc); <0 -> SI+=2 loop; stc if exhausted; retn"
+    notes: "26B retn, 0 dyn, cd=0, 3 callers (sub_1260C, sub_13276, sub_13301). Searches a sorted byte-key 2-byte-record table for BL; CF=1 if not found. conf: med"
+  - ida: sub_10DFE
+    name: state_byte_1084c_set
+    kind: function
+    sig: "void far; cs:1084C = AL; retf (high byte of the cs:1084B word)"
+    notes: "5B, 0 dyn, cd=1, 2 callers. Setter for state byte cs:1084C (word pair with state_byte_1084b_get). conf: high"
+  - ida: sub_39CE0
+    name: state_gate_4ac2_4a83
+    kind: function
+    sig: "void far; early-ret unless ds:4AC2 < 4 AND ds:4A83 <= 1 (dual state gate, else falls into body)"
+    notes: "140B span (body to retf@0x39CEE), 0 dyn, cd=0, 4 callers. Gates on two DGROUP state bytes (4AC2<4, 4A83<=1) before the real work. conf: med"
+  - ida: sub_344D3
+    name: state_word_44d3d_get
+    kind: function
+    sig: "void far; DS=54AFh; AX = ds:[44D3D]; retf (reads a word via segment 54AF)"
+    notes: "11B LEAF, 0 dyn, cd=0, 4 callers (incl sub_3BB8F/3FFEF). Reads a state word through segment 54AF (label word_44D3D). conf: med"
+  - ida: sub_2262F
+    name: str_upper_copy_3676
+    kind: function
+    sig: "NEAR retn fn; copy 0x18 bytes from [DX] to es:7B0E:3676 converting a-z to A-Z (sub 0x20); retn"
+    notes: "38B retn, 0 dyn, cd=0, 4 callers. Copies a 24-byte string with lowercase->uppercase conversion to 7B0E:3676. conf: high"
+  - ida: sub_12F27
+    name: terrain_attr_lookup_3840
+    kind: function
+    sig: "NEAR retn fn; bounds check (cs:11C0E-2-AX, cs:11C12-0x40-SI) -> cs:11C7D flag bits; DS=cs:11BE8 table, BX=[(SI+AX)*2 + 0x3840]; BH>>=1 -> BL=BH, BH=flag; retn"
+    notes: "157B retn, 0 dyn, cd=0, 3 callers (sub_14356, sub_1657E). Terrain attribute lookup: bounds-gated table read at es:3840, returns attr + flag byte (near-twin of terrain_height_lookup_11cc8). conf: high"
+
+  - ida: sub_1FB17
+    name: active_farptr_match_b2
+    kind: function
+    sig: "NEAR retn fn; if cs:22212==cs:22216 AND cs:22210==cs:22214 (active == saved farptr): ES:DI = active, es:[DI+0xB2]=0xB2 (marker); retn"
+    notes: "37B retn, 0 dyn, cd=0, 2 callers (sub_1FADA, sub_2142E). Validates the active farptr matches the saved copy, then writes marker byte 0xB2 at [di+0xB2]. conf: high"
+  - ida: sub_2F613
+    name: bitmap_clear_6310
+    kind: function
+    sig: "void far; ES=6310h; clear 16 mask words (stride 0x10) at 6310:0; es:53200 = 0; retf"
+    notes: "45B, 0 dyn, cd=0, 3 callers. Clears a 16-slot bitmap at segment 6310 (stride 0x10) + resets the count word es:53200. conf: med"
+  - ida: sub_13177
+    name: ds_swap_fail_ret
+    kind: function
+    sig: "NEAR retn LEAF; push ds; ... ; pop ds; stc; retn (segment swap attempt, always returns CF=1)"
+    notes: "12B LEAF retn, 0 dyn, cd=0, 2 callers. Performs a segment swap then returns failure (CF=1 sentinel). conf: low"
+  - ida: sub_16BF89
+    name: ems_install_impl
+    kind: function
+    sig: "void far (C frame, enter 8): EMS/himem install implementation; 3 callers (sub_30882, sub_30EBE, sub_4DF94 -- EMS setup family)"
+    notes: "583B C-class, 0 dyn, cd=0, 3 callers from the EMS setup family. C implementation behind the EMS installation path. conf: low"
+  - ida: sub_4871D
+    name: entity_search_63fd
+    kind: function
+    sig: "void far; DS=63FDh; cs:32D39=0xFF, cs:32D3B=0xFFFF; scan 0x20 records at SI=0x113E: flags [SI+13].4 set, [SI+0C]!=-1, [SI+12].7 clear, [SI+0C]==AX -> match publish"
+    notes: "149B, 0 dyn, cd=0, 3 callers. Searches the 63FDh entity table (0x20 entries) for AX match with flag filters, publishes to cs:32D39/32D3B. conf: med"
+  - ida: sub_197B6
+    name: event_key_valid_3_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_197C9) over 0x0A cases -> AX=1/0; retf"
+    notes: "32B, 0 dyn, cd=0, 2 callers (sub_1914E C). Jump-table validation of key codes >=3 -> AX 0/1. conf: med"
+  - ida: sub_1AAF9
+    name: far_slot_scan_zero
+    kind: function
+    sig: "NEAR retn fn; SI=1..0xF: scan es:[arg0 + SI*2] for first 0 word (free slot); SI=index (0x10 = none); retn"
+    notes: "59B retn, 0 dyn, cd=0, 2 callers (sub_1EA58, sub_1F35B). Finds the first free (0) slot in a 16-entry far table, returns its index in SI. conf: med"
+  - ida: sub_4B33E
+    name: farobj_arg_thunk
+    kind: function
+    sig: "void far; push cx ... (41B arg thunk); 3 callers (sub_683C5 DATA, sub_69C5D, sub_6A5BD C)"
+    notes: "41B span, 0 dyn, cd=0, 3 callers. Far-object argument-passing thunk. conf: low"
+  - ida: sub_3B96D
+    name: farobj_process_386f
+    kind: function
+    sig: "void far; SI=0x386F then (span 546B largely undecodable, far calls 9A); 3 callers incl sub_3B83A DATA"
+    notes: "546B span, 0 dyn, cd=0, 3 callers, undecodable head. Far-object processor with table base SI=0x386F. conf: low"
+  - ida: sub_3FB22
+    name: farobj_record_proc_si
+    kind: function
+    sig: "void far; AX=[SI+2]... (170B record processor); 3 callers (r29_e06, r67_e196, sub_2F35B)"
+    notes: "170B span, 0 dyn, cd=0, 3 callers, called by R29/R67 overlay entries. Far-object record processor keyed off [SI+2]. conf: low"
+  - ida: sub_3F7B8
+    name: farobj_store_32075
+    kind: function
+    sig: "void far; cs:32075 = AL then (body continues 169B); 3 callers (sub_186ADC C, sub_188DF2 C, sub_38C91)"
+    notes: "169B span, 0 dyn, cd=0, 3 callers. Stores AL to cs:32075 then continues (farobj state write). conf: low"
+  - ida: sub_4C0E4
+    name: farobj_table_init_69ff
+    kind: function
+    sig: "void far; DS=54AFh, BX=ds:55E4E; DS=69FFh, ds:6B584=BX; for SI=4, CX=0x28: [SI+2]=1, SI+=0x1B; then SI=0x43C... (table init, span DATA-class)"
+    notes: "131B span, 0 dyn, cd=0, 3 callers, DATA-class. Initializes a 0x28-entry 0x1B-stride table at seg 69FF + copies a word from 54AF:55E4E. conf: med"
+  - ida: sub_246E7
+    name: fixed_vec3_dot_3820
+    kind: function
+    sig: "NEAR retn fn; dot of es:[SI] vector with DGROUP matrix constants ds:3820/3826/382C: 3 imul+add/adc, saturating shl1; 2 callers (sub_27180, sub_396D7)"
+    notes: "162B retn, 0 dyn, cd=0, 2 callers. Fixed-point vector dot against the DGROUP 3820 matrix constants + saturation. conf: high"
+  - ida: sub_24588
+    name: fixed_vec3_dot_es
+    kind: function
+    sig: "NEAR retn fn; dot of es:[SI] vector with es:[BX] matrix row: 3 imul+add/adc, saturating shl1 (0x8001/0x7FFF); 2 callers (r59_e177, sub_27180)"
+    notes: "179B retn, 0 dyn, cd=0, 2 callers. Fixed-point vector-matrix dot with es-relative operands + saturation (twin of vec3_dot). conf: high"
+  - ida: sub_39CD3
+    name: floor_store_4abb
+    kind: function
+    sig: "NEAR retn LEAF; if AX < ds:4ABB: AX = ds:4ABB (floor); ds:4AA1 = AX; retn"
+    notes: "13B LEAF retn, 0 dyn, cd=0, 3 callers (r53_e88, sub_186ADC C). Clamps AX up to the floor at ds:4ABB then stores to ds:4AA1. conf: high"
+  - ida: sub_11B6A
+    name: font_glyph_lookup
+    kind: function
+    sig: "NEAR retn fn; scan bytes from [SI]: al=[SI], 0=NUL end; advance by es:[bx+2], glyph stride es:[bx+4], glyph = es:[bx + value*stride + 7]; retn"
+    notes: "38B retn, 0 dyn, cd=0, 2 callers (sub_11AE7, sub_11B54). Variable-width font glyph lookup: advances a scan (es:[bx+2]), indexes the glyph table (stride es:[bx+4]) at +7. conf: med"
+  - ida: sub_17755
+    name: hw_seq_index_clamp
+    kind: function
+    sig: "void far; SI = clamp([bp+arg0], 1, 0x0C); ds:0AE4E = SI; retf (hardware sequencer index 1..12)"
+    notes: "30B, 0 dyn, cd=0, 2 callers (sub_17643, sub_1CBB3). Clamps a sequencer index to 1..12 and stores it to ds:0AE4E. conf: high"
+  - ida: sub_11011
+    name: kbd_ctrl_wait_64
+    kind: function
+    sig: "NEAR retn LEAF; CX=0; poll: in AL,64h; test AL,2; loopne (waits on keyboard-controller status port 64h bit1); retn"
+    notes: "9B LEAF retn, 0 dyn, cd=0, 2 callers. Polls the 8042 keyboard controller status port (64h) until bit1 clear. conf: high"
+  - ida: sub_14188
+    name: param4_compare_flags
+    kind: function
+    sig: "NEAR retn fn; load 4 indexed params AL,AH,DL,DH via cs:[bp+0..3] offsets into [bx+SI]; compare pairs (al vs dl, ah vs dh) -> flag bits in BX=0x502; retn"
+    notes: "120B retn, 0 dyn, cd=0, 2 callers (sub_14200, sub_1426A). Loads 4 table-indexed parameters and compares them pairwise into a 2-bit flag result. conf: med"
+  - ida: sub_16EBE
+    name: pit_divisor_set_pushf
+    kind: function
+    sig: "NEAR retn LEAF; pushf/cli; AL=0x36 out 43h, out 40h BL, out 40h BH (PIT ch0 mode 3); popf; retn"
+    notes: "16B LEAF retn, 0 dyn, cd=0, 2 callers (sub_16D68, sub_16D88). pushf-guarded PIT ch0 mode-3 divisor program (twin of pit_divisor_set_bx). conf: high"
+  - ida: sub_6F3C3
+    name: r17_farptr_helper
+    kind: function
+    sig: "void far; push bp ... (30B); 3 callers (r17_e07, sub_6EC2C, sub_6ED0A C)"
+    notes: "30B span, 0 dyn, cd=0, 3 callers, called by r17_e07. R17 overlay far-ptr helper. conf: low"
+  - ida: sub_4184E
+    name: r22_farptr_helper
+    kind: function
+    sig: "void far; push bp... (12B helper); 3 callers (r22_e57, r23_e61, r25_e59 C)"
+    notes: "12B span, 0 dyn, cd=0, 3 callers, called by r22/r23/r25 overlay entries. Overlay far-ptr helper. conf: low"
+  - ida: sub_6A1B8
+    name: r30_farobj_proc
+    kind: function
+    sig: "void far; push bp ... (175B); 3 callers (r30_e150, sub_2C649, sub_683C5 DATA)"
+    notes: "175B span, 0 dyn, cd=0, 3 callers, called by r30_e150. R30 overlay far-object processor. conf: low"
+  - ida: sub_6A4AA
+    name: r30_mode_set_637fc
+    kind: function
+    sig: "void far; SI=[bp+6]; ES=602Eh: es:637FC=0x111, es:637FE=0x7F; AX=SI*4; ES=6DE8h (indexes overlay state by SI)"
+    notes: "109B, 0 dyn, cd=0, 3 callers (sub_2C617, sub_683C5, sub_69C5D). Sets R30 overlay mode words (637FC/637FE) and indexes seg 6DE8 state by SI*4. conf: med"
+  - ida: sub_41803
+    name: r32_farptr_load_ds
+    kind: function
+    sig: "void far; DS=AX then (body 75B); 3 callers (r32_e83, sub_66E62, sub_6A5BD C)"
+    notes: "75B span, 0 dyn, cd=0, 3 callers. R32 overlay far-ptr loader (DS=AX segment switch). conf: low"
+  - ida: sub_1FD15
+    name: rect_edge_skip_dispatch
+    kind: function
+    sig: "NEAR retn fn; if BX in {cs:1F6CC,cs:1F6D0} or DI in {cs:1F6CE,cs:1F6D2} (view edges): retn; else AL=cs:1F735, call cs:2209C; retn"
+    notes: "38B retn, 0 dyn, cd=0, 2 callers (sub_1FCD0, sub_1FCF0). Skips dispatch when BX/DI lie on a view edge; otherwise far-dispatches cs:2209C with state cs:1F735. conf: high"
+  - ida: sub_14152
+    name: segment_bitfield_decode
+    kind: function
+    sig: "void far; ES=cs:11BEA; decode AX>>2 bits (AL&3) and BX (aligned <<3) into a table address in the es:11BEA segment map"
+    notes: "54B, 0 dyn, cd=0, 2 callers (sub_14200, sub_1426A). Decodes packed AX/BX bitfields into an address within the segment table at cs:11BEA. conf: med"
+  - ida: sub_3D8A7
+    name: shared_tail_pop_es
+    kind: function
+    sig: "void far; starts pop es (shared tail-entry, body continues 133B); 3 callers (sub_2FEF2, sub_31319, sub_4D8A7 DATA)"
+    notes: "133B span, 0 dyn, cd=0, 3 callers, tail-entry (pop es first). Shared continuation tail; not independently decodable from entry. conf: low"
+  - ida: sub_2FB49
+    name: state_byte_2e179_set
+    kind: function
+    sig: "void far; cs:2E179 = AL; retf"
+    notes: "5B, 0 dyn, cd=0, 3 callers (sub_33443, sub_3EEDB, sub_41646). Setter for state byte cs:2E179. conf: high"
+  - ida: sub_34899
+    name: state_byte_4fe_set
+    kind: function
+    sig: "NEAR retn LEAF; ds:4FE = AL; retn"
+    notes: "4B LEAF retn, 0 dyn, cd=0, 3 callers. Setter for DGROUP byte 0x4FE. conf: high"
+  - ida: sub_1FD3B
+    name: state_flag_unpack_1f735
+    kind: function
+    sig: "NEAR retn fn; cs:1F736 = AX&4; BL = cs:[((AX>>3)&3) + 0xA5]; cs:1F735 = BL; retn (4-entry unpack table at cs:0xA5)"
+    notes: "32B retn, 0 dyn, cd=0, 2 callers (sub_26B2E, sub_287A8). Unpacks AX into flag byte cs:1F736 (bit2) + indexed lookup cs:1F735 via the cs:0xA5 table. conf: high"
+  - ida: sub_39C50
+    name: state_gate_4ac2_4a83_near
+    kind: function
+    sig: "NEAR retn fn; early-ret unless ds:4AC2 < 4 AND ds:4A83 <= 1 (near twin of state_gate_4ac2_4a83)"
+    notes: "90B span (body to retn@0x39C5E), 0 dyn, cd=0, 3 callers. NEAR twin of the ds:4AC2/4A83 dual gate. conf: high"
+  - ida: sub_3E109
+    name: state_init_bx100
+    kind: function
+    sig: "void far; BX=0x100 then (body continues 98B); 3 callers (sub_32C62, sub_33443, sub_674A0)"
+    notes: "98B span, 0 dyn, cd=0, 3 callers. State/mode initialization starting from BX=0x100. conf: low"
+  - ida: sub_39AA9
+    name: state_word_2e12b_set
+    kind: function
+    sig: "void far; cs:2E12B = BX; retf"
+    notes: "31B span (body 5B), 0 dyn, cd=0, 3 callers. Setter for state word cs:2E12B. conf: high"
+  - ida: sub_22655
+    name: str_upper_copy_3795
+    kind: function
+    sig: "NEAR retn fn; DS=ES=7B0E; copy from ds:3795 to 3676 converting a-z to A-Z (twin of str_upper_copy_3676 with fixed source)"
+    notes: "68B retn, 0 dyn, cd=0, 2 callers (sub_226B6, sub_22760). Copies the 7B0E:3795 string with case conversion to 7B0E:3676. conf: high"
+  - ida: sub_2E857
+    name: vec3_bound_maxdiff
+    kind: function
+    sig: "NEAR retn fn; CX=3 loop over 4B pairs es:[di]-[si]: abs via not/add-1 if neg; reject if DX!=0 or AX>BP (bound); track max in BX; AX=1 if all 3 within bound; retn"
+    notes: "63B retn, 0 dyn, cd=0, 3 callers (sub_2E82D, sub_3C1BD, sub_4E520). Tests whether 3 component diffs are all <= BP (bound), returns AX=1, max-diff in BX. conf: med"
+
+  - ida: sub_2B040
+    name: arena_off_ax18
+    kind: function
+    sig: "NEAR retn LEAF; BX = AX*0x12 + 0x0C1F; retn (preserves ax/dx)"
+    notes: "16B LEAF retn, 0 dyn, cd=0, 2 callers. Computes the arena/MCB record offset AX*18 + 0xC1F. conf: high"
+  - ida: sub_3AA6C
+    name: bound_table_check_49b8
+    kind: function
+    sig: "NEAR retn fn; BL=ds:4ABD (idx)*2; if AX <= ds:[49B8+BX] -> (in bound) else clc, retn; 2 callers"
+    notes: "18B retn, 0 dyn, cd=0, 2 callers. Bound check: CF=0 when AX <= table word at ds:49B8[ds:4ABD]. conf: high"
+  - ida: sub_34C1D
+    name: dgroup_state5_zero
+    kind: function
+    sig: "NEAR retn fn; zero ds:662, ds:5CA (words) + ds:664, ds:665, ds:5A1 (bytes); retn (preserves ax)"
+    notes: "20B retn, 0 dyn, cd=0, 2 callers (sub_32C62, sub_33443). Zeroes five DGROUP state fields (662/5CA/664/665/5A1). conf: high"
+  - ida: sub_2CD4F
+    name: drive_path_build
+    kind: function
+    sig: "NEAR retn fn; if AL==0: AH=0x19 int 21h (get current drive), inc AL; DL=AL, AL+='A', stosb; store ':' + '\\' (0x3A5C)... builds a 'X:\\' path prefix; 2 callers"
+    notes: "62B retn, 0 dyn, cd=0, 2 callers (sub_2CC47, sub_2CE47). Builds a drive path prefix ('X:\\'), defaulting to the current drive via INT 21h AH=19h. conf: high"
+  - ida: sub_49CB0
+    name: entity_f38_set_8fc
+    kind: function
+    sig: "void far; [SI+38] = 0x8FC; (body 22B); 2 callers (r36_e102, sub_683C5 DATA)"
+    notes: "22B span, 0 dyn, cd=0, 2 callers. Sets entity field [SI+38] = 0x8FC. conf: med"
+  - ida: sub_3AB29
+    name: entity_flags_reset_1734
+    kind: function
+    sig: "void far; patch word cs:395FE = ds:48B8*4; SI=0; scan 0x10 entries at [SI+0x1734] (far-ptr table) until SI==0x4444 sentinel: if es:[bx+74].1: clear es:[bx+79]...; 2 callers (r06_e56, sub_39B67)"
+    notes: "48B, 0 dyn, cd=0, 2 callers. Patches a code word from ds:48B8 then iterates the 0x10-entry far-ptr table at 1734 clearing flag fields (gate [bx+74].1). conf: med"
+  - ida: sub_4D86E
+    name: entity_slot_clear_6
+    kind: function
+    sig: "void far; DS=6B58h; DI=0x33 + AX*6; if [DI+1]==BX: [DI]=0 (clears the matching 6-stride slot); retf"
+    notes: "57B, 0 dyn, cd=0, 2 callers (sub_4111F, sub_45057). Clears a 6-byte-stride entity slot at 6B58:33+AX*6 when its key [DI+1] matches BX. conf: high"
+  - ida: sub_3487D
+    name: entity_timer_dec_2e
+    kind: function
+    sig: "NEAR retn fn; AX=0; if [SI+0D1]!=0: [SI+0D1]=0, ds:1073=0; [SI+1E]=0; [SI+2E]-=0xA floor 0; retn"
+    notes: "28B retn, 0 dyn, cd=0, 2 callers (sub_2FC79, sub_2FEF2). Decrements an entity timer field [SI+2E] by 0xA (floored) and resets [SI+1E]/[SI+0D1]. conf: med"
+  - ida: sub_4AEA9
+    name: farobj_arg_thunk_c
+    kind: function
+    sig: "void far; push di ... (27B arg thunk); 2 callers (sub_683C5 DATA, sub_69C5D)"
+    notes: "27B span, 0 dyn, cd=0, 2 callers. Far-object argument thunk (third twin). conf: low"
+  - ida: sub_4D847
+    name: farobj_record_build_6b58_ch
+    kind: function
+    sig: "void far; DS=6B58h; ds:6B58A|=1; call unk_3D9C3; CL|=0x80; [DI]=CL, [DI+1]=DX, [DI+3]=CH, [DI+4]=BX (5B record, CH variant); 2 callers"
+    notes: "39B, 0 dyn, cd=0, 2 callers (sub_45057, sub_484C1). Builds a far-object record at [DI] with flag byte + CH in [DI+3] (twin of farobj_record_build_6b58 which stores 0xFF). conf: med"
+  - ida: sub_3FE57
+    name: farobj_store_32633_body
+    kind: function
+    sig: "void far; cs:32633 = BX then (body continues 408B); 2 callers (sub_33443, sub_3A99D)"
+    notes: "408B span, 0 dyn, cd=0, 2 callers. Stores BX to cs:32633 then continues (large farobj body). conf: low"
+  - ida: sub_2859E
+    name: fixed_expand_0f3e
+    kind: function
+    sig: "NEAR retn fn; SI=0xF3E; loop: lodsw -> stosw, cwd-sign-extend pair stosw (expands a 16-bit table into sign-extended pairs); 2 callers"
+    notes: "247B span, 0 dyn, cd=0, 2 callers. Expands the fixed-point table at SI=0xF3E into sign-extended 32-bit pairs via stosw. conf: med"
+  - ida: sub_3AB1B
+    name: floor_copy_4aa3
+    kind: function
+    sig: "NEAR retn LEAF; if ds:4AC5==1: retn; else ds:4AA3 = ds:4A99; retn"
+    notes: "14B LEAF retn, 0 dyn, cd=0, 2 callers. Copies floor/limit ds:4A99 -> ds:4AA3 unless mode byte ds:4AC5==1. conf: high"
+  - ida: sub_2CE0A
+    name: fname_ext_lower_copy
+    kind: function
+    sig: "NEAR retn fn; ES/DS from frame args, copy NUL-terminated name from [bp+8] to ES:DI; cs:2CE46=0; OR 0x20 into the extension word es:[di-5] (lowercase); 2 callers"
+    notes: "60B retn, 0 dyn, cd=0, 2 callers. Copies a filename string to ES:DI and lowercases its extension via OR 0x20. conf: med"
+  - ida: sub_4FBC2
+    name: hw_cfg_copy_a76f
+    kind: function
+    sig: "void far; DS=7A32h; flag gates ds:8505C.3/.2; DI=0xA76F, CX=0x1E; mask AL=0x3F if ds:8504E==3... (0x1E-byte config copy with mask); 2 callers (r29_e06, sub_2F35B)"
+    notes: "252B, 0 dyn, cd=0, 2 callers. Copies a 0x1E-byte hardware config to 7A32:A76F with a mask byte selected by ds:8504E, gated by state flags. conf: med"
+  - ida: sub_4FB33
+    name: hw_cfg_copy_ac13
+    kind: function
+    sig: "void far; DS=7A32h; if ds:8505C.3: jmp state_byte_2e179_set (tail); elif CL != ds:8505D: store CL, copy 0x1B bytes from 7A32:AC13 to A754; 2 callers (r29_e06, sub_2F35B)"
+    notes: "143B, 0 dyn, cd=0, 2 callers. Copies a 0x1B-byte hardware config block (7A32:AC13 -> A754) when CL changes, gated by flag 8505C.3. conf: med"
+  - ida: sub_4FA3B
+    name: hw_flag8505_set
+    kind: function
+    sig: "void far; DS=ES=7A32h; flag ops on ds:8505B (bit7 gate, OR 4), ds:8505C (OR 8, AND ~0x20), ds:8505A=0xFF (state-flag set sequence); 2 callers (r36_e99, sub_2F043)"
+    notes: "79B, 0 dyn, cd=0, 2 callers. Manipulates the ds:8505A/B/C hardware state-flag trio (gated by bit7/bit5 tests). conf: med"
+  - ida: sub_4FD4A
+    name: hw_state_partial_4fd
+    kind: function
+    sig: "void far (DATA-class span, partial): jp ...; at 0x4FD76: ds:85067 = AX (state word store amid partial span); 2 callers (sub_30882, sub_3B83A DATA)"
+    notes: "54B span, 0 dyn, cd=0, 2 callers, DATA/partial. Stores AX to ds:85067 within a partially-decoded span. conf: low"
+  - ida: sub_2B050
+    name: mem_block_move_ax
+    kind: function
+    sig: "NEAR retn fn; if AX==DX retn; else ES=AX, CX=DX-AX paragraphs, copy in 0x1000-byte chunks (movsw loop); 2 callers"
+    notes: "56B retn, 0 dyn, cd=0, 2 callers (sub_2AC4C, sub_2B256). Moves a memory block from segment AX to DX (paragraph count DX-AX, chunked). conf: med"
+  - ida: sub_377CF
+    name: mode_toggle_105f
+    kind: function
+    sig: "NEAR retn fn; XOR ds:105F, 1; on toggle: ds:1020=0x44, retn (else continues body); 2 callers"
+    notes: "73B span, 0 dyn, cd=0, 2 callers (sub_3001E, sub_33443). Toggles mode bit ds:105F; on set writes ds:1020=0x44. conf: med"
+  - ida: sub_2B105
+    name: patch_scan_e8_58d
+    kind: function
+    sig: "NEAR retn fn; scan stream: byte E8 (call rel) whose rel target == 0x58D, then EA (jmp far) +4, lodsw... (relocation-pattern scanner); 2 callers"
+    notes: "40B retn, 0 dyn, cd=0, 2 callers (sub_2B088, sub_2B0BF). Scans for the CALL-to-0x58D + JMP-FAR relocation pattern in a byte stream. conf: med"
+  - ida: sub_283A2
+    name: proj_scale_setup_22d20
+    kind: function
+    sig: "NEAR retn fn; SI=[DI+20]; if [DI+24].7: SI=0x10; elif SI<0: AX=0x7FFF>>[DI+18], cs:22D20=AX, cs:1F73C=0; retn (else continues body)"
+    notes: "244B span, 0 dyn, cd=0, 2 callers (sub_28496, sub_28503). Sets projection scale cs:22D20 = 0x7FFF >> [DI+18] on the negative-SI path, clears cs:1F73C. conf: med"
+  - ida: sub_6A267
+    name: r30_farobj_proc_b
+    kind: function
+    sig: "void far; push bp ... (145B); 2 callers (sub_2C455, sub_683C5 DATA)"
+    notes: "145B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin B. conf: low"
+  - ida: sub_6A2F8
+    name: r30_farobj_proc_c
+    kind: function
+    sig: "void far; push bp ... (145B); 2 callers (sub_2C437, sub_683C5 DATA)"
+    notes: "145B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin C. conf: low"
+  - ida: sub_6B822
+    name: r30_farobj_proc_d
+    kind: function
+    sig: "void far; push bp ... (88B); 2 callers (r30_e125, sub_67781 DATA)"
+    notes: "88B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin D. conf: low"
+  - ida: sub_69462
+    name: r30_push_args_call
+    kind: function
+    sig: "void far (C frame enter 6): build far-ptr arg at [bp-6], push es:637D0, es:637CE, 0, 2, 6 (R30 state words + call args) then dispatches; 2 callers (r30_e125, sub_6760A)"
+    notes: "86B span, 0 dyn, cd=0, 2 callers. C-style caller that pushes R30 overlay state (637CE/637D0) + args 0/2/6 then far-dispatches. conf: med"
+  - ida: sub_4C168
+    name: r30_shared_tail_es
+    kind: function
+    sig: "void far; starts pop es (shared tail, body 54B); 2 callers (r30_e77, sub_68121 -- both DATA-class)"
+    notes: "54B span, 0 dyn, cd=0, 2 callers, tail-entry. R30-region shared continuation tail. conf: low"
+  - ida: sub_6A41A
+    name: r33_farobj_proc
+    kind: function
+    sig: "void far; push bp ... (144B); 2 callers (r33_e148, sub_683C5 DATA)"
+    notes: "144B span, 0 dyn, cd=0, 2 callers, undecodable head. R33 overlay far-object processor. conf: low"
+  - ida: sub_6A3C3
+    name: r33_farptr_gate_c
+    kind: function
+    sig: "void far (C frame, enter undecodable huge frame); 2 callers (r33_e79, sub_2C423)"
+    notes: "87B span, 0 dyn, cd=0, 2 callers, undecodable enter. R33 overlay far-ptr gate C. conf: low"
+  - ida: sub_37022
+    name: rect_bounds_test_6e
+    kind: function
+    sig: "NEAR retn fn; CX=0; if AX in [0x6E..0xD2] and BX in [0x14..0x5A]: CX=0, retn; else set path flags (body continues)"
+    notes: "47B retn, 0 dyn, cd=0, 2 callers (sub_35D59, sub_36FE9). Tests AX/BX against the 0x6E..D2 x 0x14..5A rectangle, returns CX flags. conf: med"
+  - ida: sub_3B68D
+    name: shared_tail_pop_es_b
+    kind: function
+    sig: "void far; starts pop es (shared tail-entry, body 46B); 2 callers (sub_2FEF2, sub_31319 -- same family as shared_tail_pop_es)"
+    notes: "46B span, 0 dyn, cd=0, 2 callers, tail-entry (pop es first). Second shared continuation tail. conf: low"
+  - ida: sub_2E5DF
+    name: slot_find_free_0c
+    kind: function
+    sig: "NEAR retn fn; scan 0x0C-stride table (up to 0x64 entries) for first [di]==0 (free slot, BX=index); then fill pass; 2 callers (sub_2E2F0 blob, sub_3E552)"
+    notes: "61B retn, 0 dyn, cd=0, 2 callers. Finds the first free (zero) slot in a 0x0C-stride 100-entry table, returns index in BX. conf: med"
+  - ida: sub_2F1E5
+    name: state_byte_2e100_zero
+    kind: function
+    sig: "void far; cs:2E100 = 0; retf (clears the flag that flag_gate_zero_abc tests)"
+    notes: "7B LEAF, 0 dyn, cd=0, 2 callers (sub_2BFE1, sub_3001E). Clears state byte cs:2E100 (the gate-bit consumed by flag_gate_zero_abc). conf: high"
+  - ida: sub_3449E
+    name: state_counter_2e151_step
+    kind: function
+    sig: "NEAR retn fn; cs:2E151 += 0x100; if >= 0x280 -> (body) else clc, retn (0x100-step counter bounded at 0x280)"
+    notes: "53B span (body to retn@0x344B7), 0 dyn, cd=0, 2 callers (sub_2FEF2, sub_33443). Advances a 0x100-step counter at cs:2E151 toward the 0x280 bound, CF=0 while below. conf: med"
+  - ida: sub_24B4B
+    name: trig_value_bsearch_8364
+    kind: function
+    sig: "NEAR retn fn; ES=8364h; binary search AX in the sorted trig table (DI=0, SI=0x200, BX=0x400 bounds loop) -> index; 2 callers (sub_216B8, sub_24B3C)"
+    notes: "73B retn, 0 dyn, cd=0, 2 callers. Binary search of the trig table at ES=8364 (near-twin of trig_value_bsearch_83a5). conf: med"
+  - ida: sub_36E22
+    name: vel_pair_scale_di
+    kind: function
+    sig: "NEAR retn fn; [DI] = (ds:6C8 * BX) << 1 (high word), [DI+2] = (ds:6CA * BX) << 1; retn"
+    notes: "24B retn, 0 dyn, cd=0, 2 callers (sub_36DA7, sub_46D42). Scales the velocity pair at ds:6C8/6CA by BX into [DI]/[DI+2]. conf: high"
+
+  - ida: sub_16FF0
+    name: adlib_reg_write_delay
+    kind: function
+    sig: "void far; out DX, AH (reg index); delay (in loop 0x14); inc DX; out DX, AL (data); dec DX; delay (in loop 0x50); OPL-style register write with read-delay"
+    notes: "21B, 0 dyn, cd=0, 1 caller (sub_17005). AdLib/OPL index+data port write at DX with the classic read-delay loops (0x14/0x50). conf: high"
+  - ida: sub_12E21
+    name: clamp_al4_ge
+    kind: function
+    sig: "NEAR retn LEAF; AL += AH; if SF clear (jge): retn else AL=4; retn (clamps negative sum to 4)"
+    notes: "14B LEAF retn, 0 dyn, cd=0, 1 caller (sub_12D2F). Sum AL+AH with a floor of 4 on negative results. conf: med"
+  - ida: sub_13BF5
+    name: coord_delta_pair_11c59_a
+    kind: function
+    sig: "NEAR retn fn; DH:DL=cs:11C5B:11C5A, AH:AL=cs:11C59:11C58; AX-=DX; BP=[SI+4]; retn (third coord-delta variant)"
+    notes: "25B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C58/59 and cs:11C5A/5B pairs (BP=[SI+4]). conf: med"
+  - ida: sub_13C26
+    name: coord_delta_pair_11c5a
+    kind: function
+    sig: "NEAR retn fn; AH:AL=cs:11C57:11C56, DH:DL=cs:11C5B:11C5A; AX-=DX; BP=[SI+4]; retn (fourth coord-delta variant)"
+    notes: "25B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C5A/5B and cs:11C56/57 pairs (BP=[SI+4]). conf: med"
+  - ida: sub_13BC4
+    name: coord_delta_pair_11c5c_a
+    kind: function
+    sig: "NEAR retn fn; DH:DL=cs:11C5D:11C5C, AH:AL=cs:11C57:11C56; AX-=DX; BP=[SI+4]; retn (first coord-delta variant)"
+    notes: "25B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C56/57 and cs:11C5C/5D pairs (BP=[SI+4]). conf: med"
+  - ida: sub_13BDD
+    name: coord_delta_pair_11c5c_b
+    kind: function
+    sig: "NEAR retn fn; DH:DL=cs:11C5D:11C5C, AH:AL=cs:11C5B:11C5A; AX-=DX; BP=[SI]; retn (second coord-delta variant)"
+    notes: "24B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C5A/5B and cs:11C5C/5D pairs (BP=[SI]). conf: med"
+  - ida: sub_102DB
+    name: dgroup_word_21_get_dx
+    kind: function
+    sig: "void far; DX = ds:21h then (body 38B); 1 caller (sub_34C31)"
+    notes: "38B span, 0 dyn, cd=0, 1 caller. Reads DGROUP word 0x21 into DX then continues. conf: med"
+  - ida: sub_10379
+    name: ems_map_seg_10233_bx0
+    kind: function
+    sig: "void far; BX=0, DX=cs:10233, AX:AH=0/1 int 67h (EMS map at BX=0); preserves dx/ax"
+    notes: "28B, 0 dyn, cd=0, 1 caller (sub_4E053). EMS page-map variant (INT 67h AH=44h) using seg cs:10233, base BX=0. conf: med"
+  - ida: sub_1D648
+    name: event_arg_range_check
+    kind: function
+    sig: "NEAR retn fn; SI=[bp+arg0]; DI=0; if 0 < SI < 0x0C: DI=1; AX=DI; retn (range flag for a 1..11 argument)"
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_1D369). Range check: returns 1 when the argument is in 1..11, else 0. conf: med"
+  - ida: sub_198D3
+    name: event_key_valid_103_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-0x103; jump-table (cs:jpt_198E8) over 0x12 cases -> SI=table value, AX=SI; retf"
+    notes: "74B, 0 dyn, cd=0, 1 caller (sub_19843). Jump-table validation of key codes >=0x103 (0x12 cases, returns SI lookups). conf: med"
+  - ida: sub_196DB
+    name: event_key_valid_3_jpt_b
+    kind: function
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_196EE) over 0x0A cases -> AX=1/0; retf (twin of event_key_valid_3_jpt)"
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_1914E C). Jump-table key validation >=3 (near-twin of event_key_valid_3_jpt at 197B6). conf: med"
+  - ida: sub_1B4A2
+    name: event_key_valid_9_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-9; jump-table (cs:jpt_1B4B5) over 0x13 cases -> AX=1/0; retf"
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_1D914). Jump-table validation of key codes >=9. conf: med"
+  - ida: sub_1D55A
+    name: event_offset_table_3_jpt
+    kind: function
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_1D56B) over 0x13 cases -> SI=offset (0x2A4, 0x548, ...); AX=SI; retf (offset-table selector)"
+    notes: "78B, 0 dyn, cd=0, 1 caller (sub_1D369). Jump-table that selects a table offset (0x2A4/0x548/...) from a base-3 event code. conf: med"
+  - ida: sub_1D5CE
+    name: event_offset_table_3_jpt_b
+    kind: function
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_1D5DF) over 0x13 cases -> SI=1,2,... (ordinal selector); AX=SI; retf (twin ordinal form)"
+    notes: "84B, 0 dyn, cd=0, 1 caller (sub_1D369). Jump-table ordinal selector from a base-3 event code (returns 1..N). conf: med"
+  - ida: nullsub_1
+    name: far_ret_noop
+    kind: function
+    sig: "void far; retf (1-byte far-return no-op -- IDA nullsub_1)"
+    notes: "1B LEAF, 0 dyn, cd=0, 1 caller (sub_168E0). Trivial far-return; already keyed nullsub_1 in IDA, semantic name records it as a deliberate no-op. conf: high"
+  - ida: sub_140E1
+    name: farobj_flag_extract_5869
+    kind: function
+    sig: "NEAR retn fn; CX=count; BX = ds:5ACB + ds:5869 -> [bx] + ds:586B -> DI=[bx]&1, AX=[bx+2]&1 (extracts a 2-bit flag through a 3-level DGROUP pointer chain); 1 caller (sub_140AC)"
+    notes: "113B retn, 0 dyn, cd=0, 1 caller. Extracts two flag bits through the ds:5869/586B pointer chain indexed by ds:5ACB. conf: med"
+  - ida: sub_16F60
+    name: farptr_const_store_7773a
+    kind: function
+    sig: "void far; DS=7772h; ds:7773A=0xE9, ds:7773C=0x11, ds:7773E=0x35 (stores a far-ptr triple E9:1135-ish); 1 caller (sub_168E0)"
+    notes: "27B DATA-span, 0 dyn, cd=0, 1 caller. Stores a 3-word far-pointer constant (0xE9,0x11,0x35) into es:7772:7773A/3C/3E. conf: med"
+  - ida: sub_1C0BE
+    name: farstr_word_read_1c0
+    kind: function
+    sig: "NEAR retn fn; far-ptr arg at [bp+arg0]: AL=[es:ptr], SI=AL, ptr++, AX=AL<<8 | next byte (reads a big-endian word from a far string cursor); 1 caller (sub_1C21B)"
+    notes: "38B retn, 0 dyn, cd=0, 1 caller. Reads a 16-bit big-endian value from a far-pointer string cursor (advances the cursor 2). conf: med"
+  - ida: sub_12052
+    name: fixed_vec2_dot_7e900
+    kind: function
+    sig: "void far; ES=7B0Eh; SI:DI = es:7E900*BX + es:7E906*BP + es:7E90C*CX (saturating row dot); 1 caller (sub_11F8A)"
+    notes: "152B, 0 dyn, cd=0, 1 caller. Fixed-point 2/3-term dot of matrix row es:7E900/06/0C against BX/BP/CX into SI:DI. conf: high"
+  - ida: sub_19B73
+    name: frame_preserve_nop
+    kind: function
+    sig: "void far; push bp, mov bp,sp, pop bp, retf (frame enter/leave no-op -- compiler stub)"
+    notes: "5B, 0 dyn, cd=0, 1 caller (sub_18503). Empty frame-preserving stub (push/pop bp only). conf: high"
+  - ida: r06_e13
+    name: mode_4ac2_advance_1_2
+    kind: function
+    sig: "void far (DATA-class span): if ds:4AC2==1 -> ds:4AC2=2, ds:4AC3=0 else jmp sub_6CE4B; 2 callers (sub_2C059, sub_2C239)"
+    notes: "17B span, 0 dyn, cd=0, 2 callers (r06_e13 is a named RTLink key). One-shot mode advance ds:4AC2 1->2 clearing ds:4AC3. conf: med"
+  - ida: sub_6D46D
+    name: mode_gate_4a83_4ac2_r
+    kind: function
+    sig: "void far; early-ret unless ds:4A83 > 1 AND ds:4AC2 > 1 (R06-region twin of state_gate_4ac2_4a83); retf at 0x6D47B"
+    notes: "76B span, 0 dyn, cd=0, 2 callers (sub_39BD3, sub_6D13D). Dual state gate (ds:4A83, ds:4AC2 both >1) before the R06 body. conf: med"
+  - ida: sub_10DEF
+    name: overlay_seg_word_write
+    kind: function
+    sig: "void far; ES=seg R69_606E; es:[BX] = AX (word write into overlay segment); preserves es"
+    notes: "15B LEAF, 0 dyn, cd=0, 1 caller (sub_10C26). Writes a word into overlay segment R69_606E at [BX] (pair of overlay_seg_word_read). conf: med"
+  - ida: sub_175E0
+    name: pcspk_tone_on_b6
+    kind: function
+    sig: "void far; DS=7772h; pushf/cli; AL=in 61h -> ds:77A4C; OR AL,3, out 61h (gate on); AL=0xB6 out 43h (PIT cmd ch2 mode 3)... (speaker tone setup); 1 caller (sub_1D3B1)"
+    notes: "39B, 0 dyn, cd=0, 1 caller. PC-speaker tone start: saves/sets port 61h gate bits + programs PIT ch2 command 0xB6. conf: high"
+  - ida: sub_1761A
+    name: port_read_dx_ax
+    kind: function
+    sig: "void far; DX=[bp+arg0]; AL=in DX (AH=0); retf (generic port byte read)"
+    notes: "11B, 0 dyn, cd=0, 1 caller (sub_17EAE C). Reads a byte from the port in DX (arg), zero-extends to AX. conf: high"
+  - ida: sub_6D62F
+    name: r06_farobj_proc_e
+    kind: function
+    sig: "void far; push es ... (94B); 2 callers (sub_6D5DF, sub_6D747 DATA)"
+    notes: "94B span, 0 dyn, cd=0, 2 callers, undecodable head. R06 far-object processor. conf: low"
+  - ida: sub_6C3CD
+    name: r06_state_proc_6de8
+    kind: function
+    sig: "void far; ES/AX=6DE8h then (body 42B); 2 callers (sub_2C419, sub_6B87A C)"
+    notes: "42B span, 0 dyn, cd=0, 2 callers. R06-region state processor at seg 6DE8. conf: low"
+  - ida: sub_6C839
+    name: r06_table_zero_30b
+    kind: function
+    sig: "void far; ds:30Bh = 0 then (body 93B); 2 callers (sub_2C473, sub_6C3F7 C)"
+    notes: "93B span, 0 dyn, cd=0, 2 callers. R06-region table zeroing starting at ds:30B. conf: low"
+  - ida: sub_106548
+    name: r12_farptr_helper_b
+    kind: function
+    sig: "void far; push es ... (31B); 2 callers (r12_e42, r12_e43)"
+    notes: "31B span, 0 dyn, cd=0, 2 callers, called by r12_e42/e43. R12 overlay far-ptr helper twin. conf: low"
+  - ida: sub_6F399
+    name: r17_state_zero_6e451
+    kind: function
+    sig: "void far; ES=6E45h: es:6E8DA=0, es:6E8D7=0; es:6E451=[bp+6]; retf"
+    notes: "42B, 0 dyn, cd=0, 2 callers (sub_2C13F, sub_6EA4A). R17-region state reset: clears two words at 6E45:6E8D7/DA + stores arg to 6E451. conf: med"
+  - ida: sub_1184E
+    name: retf_noop
+    kind: function
+    sig: "void far; retf (1-byte null return)"
+    notes: "1B LEAF, 0 dyn, cd=0, 1 caller (sub_4EAF8). Trivial far-return no-op (pair of nullsub family). conf: high"
+  - ida: sub_171B0
+    name: sbi_seq_config_7773a
+    kind: function
+    sig: "void far; DS=7772h; ds:7773A=0x80, ds:7773C=0x200, ds:7773E=0x35; ds:777F0=0x21C (SBI base reset + config triple); 1 caller (sub_168E0)"
+    notes: "124B, 0 dyn, cd=0, 1 caller. SBI sequencer config: stores the config triple at es:7772:7773A/C/E + resets SBI base es:777F0=0x21C. conf: med"
+  - ida: sub_114DE
+    name: state3_copy_3c6_3ce
+    kind: function
+    sig: "void far; CX=4, SI=0x3C6, DI=0x3CE; copy/merge 4 records from frame args to the 3C6/3CE tables; 1 caller (sub_11450)"
+    notes: "125B, 0 dyn, cd=0, 1 caller. Copies 4 argument records into the paired state tables at 0x3C6/0x3CE (bp-framed). conf: med"
+  - ida: sub_149F2
+    name: state_byte_11c61_get_ah
+    kind: function
+    sig: "NEAR retn LEAF; AH = cs:11C61, AL = 0; retn (returns state byte in AH)"
+    notes: "8B LEAF retn, 0 dyn, cd=0, 1 caller (sub_149C8). Returns cs:11C61 in AH with AL=0. conf: high"
+  - ida: sub_1046D
+    name: state_byte_bx2f_set
+    kind: function
+    sig: "void far; cs:[BX+2F] = AL; retf (indexed setter, pair of farptr_field2f_or_test)"
+    notes: "6B, 0 dyn, cd=0, 1 caller (sub_32C62). Sets indexed state byte cs:BX+0x2F (reader = farptr_field2f_or_test). conf: high"
+  - ida: sub_14040
+    name: terrain_attr_lookup_3840_b
+    kind: function
+    sig: "void far; AX&=0xFFF0, AX<<=1, BX>>=4, BX+=AX, BX<<=1; ES=cs:11BE8; BX=es:[BX+0x3840] & 0x1FF; cmp bx,6... (second terrain table form); 1 caller (sub_13162)"
+    notes: "42B, 0 dyn, cd=0, 1 caller. Terrain attribute lookup with packed AX/BX index into es:3840, result masked 0x1FF (twin of terrain_attr_lookup_3840). conf: med"
+
+  - ida: sub_27DFB
+    name: anim_frame_addr_27984
+    kind: function
+    sig: "void far; DS=cs:1F712; SI = cs:27984 + (cs:2798A * cs:27982); CX=cs:27989>>3... (computes the current frame address); continues (60B)"
+    notes: "60B, 0 dyn, cd=0, 1 caller (sub_27E53). Computes the current animation frame address (base cs:27984 + slot*stride) with the sub-frame offset. conf: med"
+  - ida: sub_27D5F
+    name: anim_frame_state_27988
+    kind: function
+    sig: "NEAR retn fn; cs:27988=0, cs:2798A=0; SI=cs:27986, DS=cs:1F712; gate cs:2797A bits 2/3: step frame counters vs cs:27983 (anim state machine); continues (99B)"
+    notes: "99B retn, 0 dyn, cd=0, 1 caller (sub_27A20). Animation frame-state step: resets 27988/2798A, advances a frame counter against the cs:27983 bound under cs:2797A flags. conf: med"
+  - ida: sub_27DC2
+    name: anim_frame_tick_27989
+    kind: function
+    sig: "NEAR retn fn; AL = cs:27982<<3; inc cs:27989; if AL >= cs:27989: cs:27989=0 (wrap); retn"
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_27E53). Advances a frame-tick counter (cs:27989) against the period (cs:27982<<3), wrapping at the bound. conf: high"
+  - ida: sub_27DDF
+    name: anim_slot_cycle_2798a
+    kind: function
+    sig: "NEAR retn fn; cs:27989 = cs:27988; AL = cs:2798A+1; if AL < cs:27983 keep else AL=0; cs:2798A = AL; retn"
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_27A20). Cycles the slot counter cs:2798A modulo the cs:27983 bound + mirrors 27988 -> 27989. conf: high"
+  - ida: sub_24E99
+    name: bda_417_or_al
+    kind: function
+    sig: "void far; ES=0, BX=0x417; es:[417] |= AL (set bits via OR); retf"
+    notes: "15B LEAF, 0 dyn, cd=0, 1 caller (sub_24E8C). Sets bits in BDA 0040:0417 via OR AL (the set-half of the bda_417_mask_clear/store trio). conf: high"
+  - ida: sub_25CFF
+    name: clip_rect_compute_shr1
+    kind: function
+    sig: "NEAR retn fn; cs:25458=0; clamp/clip a rect from [SI] (size [SI]>>1 form) against cs:25450..56 bounds -> clip area; 1 caller (sub_25CD8)"
+    notes: "217B retn, 0 dyn, cd=0, 1 caller. Clipped-rect area compute with the size taken as [SI]>>1 (third variant of the clip_rect_compute family). conf: med"
+  - ida: sub_2063B
+    name: dispatch_220b0_near
+    kind: function
+    sig: "NEAR retn fn; call dword ptr cs:220B0; retn"
+    notes: "6B retn, 0 dyn, cd=0, 1 caller (sub_2061B). NEAR far-call trampoline via cs:220B0. conf: med"
+  - ida: sub_259B9
+    name: dispatch_2210c_invoke_5arg
+    kind: function
+    sig: "void far; loads CX,SI,BX + LDS DI=[bp+8] + BP=[bp+4]; call dword ptr cs:2210C; retf"
+    notes: "37B, 0 dyn, cd=0, 1 caller (r01_e04). Far-call trampoline with 5 args (incl a far-ptr via LDS) via cs:2210C. conf: med"
+  - ida: sub_25681
+    name: dispatch_2216c_stub
+    kind: function
+    sig: "void far; call dword ptr cs:2216C; retf"
+    notes: "6B, 0 dyn, cd=0, 1 caller (sub_4F8BC). Far-call trampoline via cs:2216C. conf: med"
+  - ida: sub_256FD
+    name: farptr_slot_store_7f24a_al
+    kind: function
+    sig: "NEAR retn fn; ES=7B0Eh; cs:2548A=AL (mode); ds:7F24A=SI, ds:7F24C=DS (stores a far-ptr SI:DS); retn"
+    notes: "22B retn, 0 dyn, cd=0, 1 caller (sub_256E7). Stores a far pointer (SI:DS) into the 7F24A slot + sets mode byte 2548A (near-twin of farptr_slot_store_7f24a). conf: high"
+  - ida: sub_24789
+    name: fixed_vec3_dot_3820_si
+    kind: function
+    sig: "NEAR retn fn; dot of [SI] vector with DGROUP 3820/3826/382C constants (3 imul+add/adc, saturating shl1); 1 caller (sub_27180)"
+    notes: "148B retn, 0 dyn, cd=0, 1 caller. Fixed-point vector-matrix dot at [SI] against DGROUP constants (near-twin of fixed_vec3_dot_3820 at 246E7). conf: high"
+  - ida: sub_24EF7
+    name: flag_24e20_gate_stc
+    kind: function
+    sig: "NEAR retn LEAF; if cs:24E20 != 0: stc, retn (CF=1 when mode byte set, else CF=0 fallthrough)"
+    notes: "12B LEAF retn, 0 dyn, cd=0, 1 caller (sub_24EF3 NEARTHUNK). Returns CF=1 when flag byte cs:24E20 is non-zero (mode gate). conf: high"
+  - ida: sub_2520B
+    name: flag_block_scan_nonzero
+    kind: function
+    sig: "void far; DS=CS; scan the 0x0B-byte flag block at cs:5762 for the first non-zero byte (lodsb loop); continues body"
+    notes: "21B DATA-span, 0 dyn, cd=0, 1 caller (sub_4E520). Scans the 11-byte flag block at 5762h for a set byte. conf: med"
+  - ida: sub_22AC6
+    name: int8_vector_restore_2221c
+    kind: function
+    sig: "NEAR retn fn; DX:DS = cs:2221C (saved INT8 vec); AX=0x2508 int 21h (restore INT8); retn"
+    notes: "22B retn, 0 dyn, cd=0, 1 caller (sub_22A79). Restores the saved INT 8 vector from cs:2221C via INT 21h AH=25h (undo of int8_vector_hook_343f; distinct from int8_vector_unhook which resets via sub_17460). conf: high"
+  - ida: sub_2530D
+    name: int9_vector_unhook
+    kind: function
+    sig: "void far; DX:DS = cs:24E38 (saved INT9 vec); AX=0x2509 int 21h (restore INT9); retf"
+    notes: "22B, 0 dyn, cd=0, 1 caller (sub_22A79). Restores the saved INT 9 keyboard vector from cs:24E38 (undo of int9_vector_hook_5c7d). conf: high"
+  - ida: sub_27CF3
+    name: line_overlap_classify
+    kind: function
+    sig: "NEAR retn fn; BP=[BX+4]+[SI+4]; if BP<=1 or midpoint tests: emit AL=1/flags via stosb (overlap classifier); continues (108B); 1 caller (sub_27A20)"
+    notes: "108B retn, 0 dyn, cd=0, 1 caller. Classifies line overlap by midpoint tests (BP=sum of extents), emitting a flag byte via stosb. conf: med"
+  - ida: sub_27BDA
+    name: line_raster_diff_281
+    kind: function
+    sig: "NEAR retn fn; BP=CX-1; per-row: abs([BX]-[SI]) diff with neg/sbb sign fix, accumulate (281B raster line diff); 1 caller (sub_27A20)"
+    notes: "281B retn, 0 dyn, cd=0, 1 caller. Per-row absolute-difference raster walk over two lines ([BX]/[SI]) with sign-fixed accumulation. conf: med"
+  - ida: sub_2440E
+    name: mat3_scale_identity_diag
+    kind: function
+    sig: "NEAR retn fn; saturating DX = AX * 0x7FFF (shl1, 0x8001/0x7FFF clamp) -> [DI], [DI+8], [DI+10] (diagonal set); AX=0... (identity-ish scale); 1 caller (sub_2448E)"
+    notes: "50B retn, 0 dyn, cd=0, 1 caller. Sets a scaled diagonal ([DI]/[DI+8]/[DI+10]) from a saturating AX*0x7FFF (near-twin of the fixed_mat3_scale family). conf: med"
+  - ida: sub_27433
+    name: matrix_copy_42c8_7b0e
+    kind: function
+    sig: "void far; DS=old ES; ES=7B0Eh; copy 3x4 words from [ES:..] to 7B0E:42C8 (movsw x4 loop); 1 caller (sub_27180)"
+    notes: "46B, 0 dyn, cd=0, 1 caller. Copies a 3x4-word matrix block into DGROUP 7B0E:42C8. conf: med"
+  - ida: sub_2598A
+    name: mouse_bounds_clamp_25474
+    kind: function
+    sig: "NEAR retn fn; clamp CX to [cs:25474 .. cs:25478-0x17], SI to [cs:25476 .. ..] (4-way bound clamp of a coord pair); continues body"
+    notes: "47B retn, 0 dyn, cd=0, 1 caller (sub_2590C). Clamps a coordinate pair (CX,SI) into the 4-word bound quad at cs:25474..78. conf: high"
+  - ida: sub_1FEAC
+    name: quat_orient_flags_911
+    kind: function
+    sig: "NEAR retn fn; BP=0: per-axis compare of [BX+..] against half-ranges -> BP |= 1/2/4... (911B orientation classifier, quadrant flag accumulation); 1 caller (sub_1FE76)"
+    notes: "911B retn, 0 dyn, cd=0, 1 caller. Large orientation/quadrant classifier: builds flag bits in BP by comparing vector components against half-range thresholds. conf: med"
+  - ida: sub_26FC7
+    name: ramp_stosw_loop
+    kind: function
+    sig: "NEAR retn fn; DX=BP=CX; per-loop: AL=1/0 alternate stosw ramp fill while DX-=BX>0 (Bresenham-ish fill); 1 caller (sub_26CD8)"
+    notes: "29B retn, 0 dyn, cd=0, 1 caller. Alternating-word (ramp) stosw fill with a Bresenham-style DX-=BX stepper. conf: med"
+  - ida: sub_1F8E1
+    name: rect_init_4word
+    kind: function
+    sig: "NEAR retn fn; if BP==0: [SI]=1, [SI+2]=AX, [SI+4]=AX+CX-1, [SI+6]=BX (initializes a 4-word rect record); retn"
+    notes: "30B retn, 0 dyn, cd=0, 1 caller (sub_1F7D8). Initializes a 4-word rectangle record at [SI] from AX/BX/CX. conf: med"
+  - ida: sub_1F956
+    name: rect_min_track_1f722
+    kind: function
+    sig: "NEAR retn fn; CX=[SI+1A]; if cs:1F740.1 gate: retn; else min([SI+8],[SI+18]) tracked into cs:1F722 (running minimum); continues body"
+    notes: "67B retn, 0 dyn, cd=0, 1 caller (sub_1F7D8). Tracks a running minimum of two record fields into cs:1F722 (gated by flag cs:1F740.1). conf: med"
+  - ida: sub_21F3A
+    name: rect_span_min_track
+    kind: function
+    sig: "NEAR retn fn; CX=[SI+6]-[SI+2] (span sign branches); gate cs:1F740.1; else min([SI],[SI+4]) tracked into cs:1F722; continues (281B)"
+    notes: "281B retn, 0 dyn, cd=0, 1 caller (sub_21EB0). Span-sign branch + running-min track of record fields into cs:1F722 (twin of rect_min_track_1f722). conf: med"
+  - ida: sub_2023B
+    name: sign_classify_bp
+    kind: function
+    sig: "NEAR retn fn; BP=0; DX=[BX+4], CX=[BX+0A]; if both <=0: BP=1; retn (sign-class of two fields)"
+    notes: "132B span (body to retn@0x2024C), 0 dyn, cd=0, 1 caller (sub_1FE76). Classifies the sign pair ([BX+4],[BX+0A]) -> BP=1 when both non-positive. conf: med"
+  - ida: sub_2835D
+    name: slope_flag_test_bx
+    kind: function
+    sig: "NEAR retn fn; DX=-BX; if BX<CX: AX|=4 else ... (slope flag test, near-twin of slope_flag_test_bc); 1 caller (sub_196E63)"
+    notes: "13B retn, 0 dyn, cd=0, 1 caller. Slope/aspect flag test comparing BX vs CX into AX bit 4 (near-twin of slope_flag_test_bc at 279A4). conf: med"
+  - ida: sub_26EFF
+    name: sprite_stride_lookup_26408
+    kind: function
+    sig: "NEAR retn fn; gate cs:2646E.1: save SI->cs:2646C, SI=[SI+0x10]; CX=cs:26408; AL=es:[bp+1] * cs:2640A (stride index math); continues (200B)"
+    notes: "200B retn, 0 dyn, cd=0, 1 caller (sub_26CD8). Sprite/table stride lookup: computes a record index (AL*cs:2640A) into the cs:26408-stride table, gated by flag 2646E.1. conf: med"
+  - ida: sub_2574A
+    name: state_byte_25488_to_89_near
+    kind: function
+    sig: "NEAR retn fn; cs:25489 = cs:25488 (shadow save, near-twin of state_byte_25489_shadow_save); retn"
+    notes: "9B retn, 0 dyn, cd=0, 1 caller (sub_257E5). Copies state byte 25488 -> 25489 (near form of the shadow save). conf: high"
+  - ida: sub_2575C
+    name: state_byte_25489_to_88_near
+    kind: function
+    sig: "NEAR retn fn; cs:25488 = cs:25489 (shadow restore, near-twin of state_byte_25488_shadow_restore); retn"
+    notes: "9B retn, 0 dyn, cd=0, 1 caller (sub_257E5). Copies state byte 25489 -> 25488 (near form of the shadow restore). conf: high"
+  - ida: sub_1D664
+    name: state_word_77a4a_test
+    kind: function
+    sig: "void far; ES=7772h; AX = (es:77A4A == 0 ? 1 : 0); retf (tests the event word)"
+    notes: "25B, 0 dyn, cd=0, 1 caller (sub_19843). Returns AX=1 when es:77A4A is clear (gate test). conf: high"
+  - ida: sub_25A8B
+    name: vec2_offset_add_si
+    kind: function
+    sig: "void far; BX += [SI]*4, DI += [SI+2]/2 (applies a 2-word offset scaled into BX/DI); continues body"
+    notes: "15B DATA-span, 0 dyn, cd=0, 1 caller (sub_263BD). Adds a scaled 2-word offset from [SI] into the BX/DI position pair. conf: med"
+  - ida: sub_27285
+    name: vec3_neg_sar1_store
+    kind: function
+    sig: "NEAR retn fn; [DI]= -[BX]>>1, [DI+2]= -[BX+2]>>1, [DI+4]= -[BX+4]>>1 (negate + >>1 of a 3-word vector); retn"
+    notes: "29B retn, 0 dyn, cd=0, 1 caller (sub_27180). Negated arithmetic >>1 copy of a 3-word vector (inverse of vec3_sar1_store). conf: high"
+  - ida: sub_23E77
+    name: vec3_norm_es_di
+    kind: function
+    sig: "NEAR retn fn; abs each 64-bit component of es:[DI] (neg/sbb if DX<0), accumulate magnitude (231B); 1 caller (sub_23F62)"
+    notes: "231B retn, 0 dyn, cd=0, 1 caller. Normalizes/abs-accumulates the 3-component vector at es:[DI] into a magnitude (CX:BP accumulator). conf: med"
+  - ida: sub_2726E
+    name: vec3_sar1_store
+    kind: function
+    sig: "NEAR retn fn; [DI]=[BX]>>1, [DI+2]=[BX+2]>>1, [DI+4]=[BX+4]>>1 (arithmetic >>1 of a 3-word vector); retn"
+    notes: "23B retn, 0 dyn, cd=0, 1 caller (sub_27180). Arithmetic right-shift-by-1 copy of a 3-word vector [BX] -> [DI]. conf: high"
+  - ida: sub_202BF
+    name: view_scroll_clamp_1f702
+    kind: function
+    sig: "NEAR retn fn; AX -= cs:1F6D6; clamp AX to [-0x1C2..0x1C2] (0xFE3E..0x1C2); cs:1F702 = AX; retn"
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_1F769). Clamps a scroll delta (relative to cs:1F6D6) to the range -0x1C2..0x1C2 and stores to cs:1F702. conf: high"
+
+  - ida: sub_2C99B
+    name: bcd_hex_stosb
+    kind: function
+    sig: "NEAR retn LEAF; AL = BCD->hex ASCII via and/0x90/daa/adc/0x40/daa trick, stosb (writes one hex digit); retn"
+    notes: "10B LEAF retn, 0 dyn, cd=0, 1 caller (sub_2C98E DATA). Converts a BCD nibble to its ASCII hex digit (classic 90h/daa trick) and stores it. conf: high"
+  - ida: sub_38645
+    name: bit_scan_dx_e
+    kind: function
+    sig: "NEAR retn fn; BX=0; loop up to 0x0E: shr DX,1; if carry: BX++ (counts set bits, max 14); retn"
+    notes: "23B retn, 0 dyn, cd=0, 1 caller (sub_385AD). Counts set bits in DX (population count capped at 14) -> BX. conf: med"
+  - ida: sub_35DA0
+    name: bounce_clamp_7ae
+    kind: function
+    sig: "NEAR retn fn; AX = (0x0C ^ ds:7B2) + ds:7AE; clamp AX to [0x6E..0xD2] (flip direction word ds:7B2 at bounds); ds:7AE=AX; continues (81B); 1 caller (sub_35E21)"
+    notes: "81B retn, 0 dyn, cd=0, 1 caller. Bounce-clamp of a position word (ds:7AE) against 0x6E..D2 with direction-flip via ds:7B2. conf: med"
+  - ida: sub_39AC8
+    name: dgroup_copy_from_4a82
+    kind: function
+    sig: "NEAR retn LEAF; SI=0x4A82, CX=0x49, movsb (copies 0x49 bytes from ds:4A82 to ES:DI); retn"
+    notes: "9B LEAF retn, 0 dyn, cd=0, 1 caller (sub_3099C). Copies 0x49 bytes of state from DGROUP 4A82h to ES:DI (save direction). conf: high"
+  - ida: sub_39AD1
+    name: dgroup_copy_to_4a82
+    kind: function
+    sig: "NEAR retn LEAF; DI=0x4A82, CX=0x49, movsb (copies 0x49 bytes from DS:SI to ds:4A82); retn"
+    notes: "9B LEAF retn, 0 dyn, cd=0, 1 caller (sub_30AA8). Copies 0x49 bytes of state from DS:SI into DGROUP 4A82h (restore direction, inverse of sub_39AC8). conf: high"
+  - ida: sub_31C2F
+    name: dgroup_cycle_reset_43d
+    kind: function
+    sig: "NEAR retn fn; ds:43D=0xFF, ds:43E=0xFF, ds:435=0, ds:436=0 (resets the dgroup_cycle_435_436 counters); retn"
+    notes: "21B retn, 0 dyn, cd=0, 1 caller (sub_31BCD). Resets the cycle-detect counters (43D/43E=0xFF, 435/436=0) used by dgroup_cycle_435_436. conf: high"
+  - ida: sub_3E4D0
+    name: ems_setup_thunk_b
+    kind: function
+    sig: "void far; push bx ... (130B, EMS setup family); 1 caller (sub_30EBE)"
+    notes: "130B span, 0 dyn, cd=0, 1 caller (sub_30EBE, EMS family). Second EMS-setup thunk/continuation. conf: low"
+  - ida: sub_4464A
+    name: entity_next_63fd
+    kind: function
+    sig: "void far; DS=63FDh; BL=ds:65985+1 (wrap), ds:65986=BL; BX=[BX*2+0x1834]; test [BX+13].2... (next-entity step); continues (36B); 1 caller (sub_3327A)"
+    notes: "36B, 0 dyn, cd=0, 1 caller. Steps the entity cursor (ds:65985/65986) in the 63FDh table via the 1834h index, flag test [BX+13].2. conf: med"
+  - ida: sub_37BFA
+    name: entity_timer2e_dec_14
+    kind: function
+    sig: "NEAR retn fn; SI=ds:48BA; if [SI+0CA].9 clear retn; if [SI+2E]==0 retn; [SI+0D1]=0; [SI+2E]-=0x14, if <=0 jmp expiry; retn"
+    notes: "121B retn, 0 dyn, cd=0, 1 caller (sub_2FEF2). Gated entity-timer step: decrements [SI+2E] by 0x14 under the [SI+0CA].9 flag, branches on expiry. conf: med"
+  - ida: sub_3C0E4
+    name: farobj_adc_di28
+    kind: function
+    sig: "void far; adc [DI+28], 0 then (body 118B); 1 caller (sub_3001E)"
+    notes: "118B span, 0 dyn, cd=0, 1 caller. Carry-propagating increment of a record field [DI+28] then continues (partial decode head). conf: low"
+  - ida: sub_3E90E
+    name: farobj_bl_15_init
+    kind: function
+    sig: "void far; BL=0x15 then (body 80B); 1 caller (sub_345A0)"
+    notes: "80B span, 0 dyn, cd=0, 1 caller. Far-object init with BL=0x15 selector then body. conf: low"
+  - ida: sub_3AA1C
+    name: farobj_dist_bounds_4ac0
+    kind: function
+    sig: "NEAR retn fn; AX=|es:[SI+8A]-ds:4A97|, BX=|es:[SI+8C]-ds:4A99|; if ds:4AC0==1: test AX<=0x38E, BX<=0x1C7... (distance-bounds check); continues (80B); 1 caller (sub_3A9B7)"
+    notes: "80B retn, 0 dyn, cd=0, 1 caller. Absolute-distance bounds check of an entity (es:[SI+8A/8C]) against ds:4A97/4A99 references under the ds:4AC0 mode. conf: med"
+  - ida: sub_4431B
+    name: farobj_dx_28_loop
+    kind: function
+    sig: "void far; DX=0x28 then (body 55B loop); 1 caller (sub_683C5 DATA)"
+    notes: "55B span, 0 dyn, cd=0, 1 caller. Far-object loop initialized with DX=0x28 count. conf: low"
+  - ida: sub_3FCE4
+    name: farobj_field60_get
+    kind: function
+    sig: "void far; AX = [DI+60h] (13B, continues); 1 caller (sub_322E5)"
+    notes: "13B LEAF span, 0 dyn, cd=0, 1 caller. Reads record field [DI+0x60] into AX. conf: med"
+  - ida: sub_2EA6D
+    name: farptr_pair_stosw
+    kind: function
+    sig: "void far; stosw cs:2E108, stosw cs:2E10A (writes the saved far-ptr pair to ES:DI); retf"
+    notes: "11B, 0 dyn, cd=0, 1 caller (sub_3099C). Stores the saved far-pointer pair (cs:2E108/2E10A) to ES:DI as two words. conf: high"
+  - ida: sub_2F1EC
+    name: flag_gate_2e100_skip
+    kind: function
+    sig: "void far; test cs:2E100.0; if set: retf (skips when the enable flag is on; else falls into body); 1 caller (sub_2BFEB)"
+    notes: "30B span (body to retf@0x2F1F4), 0 dyn, cd=0, 1 caller. Gate: returns early when cs:2E100.0 is set (the flag_gate_zero_abc flag). conf: med"
+  - ida: sub_3FD82
+    name: index_inc_bx
+    kind: function
+    sig: "void far; inc bx (7B, continues); 1 caller (sub_2F400)"
+    notes: "7B LEAF span, 0 dyn, cd=0, 1 caller. Increments the index register BX then continues. conf: med"
+  - ida: sub_29468
+    name: line_table_scan_20
+    kind: function
+    sig: "NEAR retn fn; SI/DI=cs:2796E..+0x20; cs:27968=-1, cs:2796A=0; walk 0x10-stride pairs: ds:43BA/43BC=[bx+6] flags, test bit 0x20... (line-table scan); continues (185B)"
+    notes: "185B retn, 0 dyn, cd=0, 1 caller (sub_29435). Scans the cs:2796E line table (0x10 stride) testing bit 0x20, publishing flag words to ds:43BA/43BC. conf: med"
+  - ida: sub_29521
+    name: line_table_scan_40
+    kind: function
+    sig: "NEAR retn fn; same table walk as sub_29468 but tests bit 0x40 (twin scan); continues (185B); 1 caller (sub_29435)"
+    notes: "185B retn, 0 dyn, cd=0, 1 caller. Line-table scan testing bit 0x40 (near-twin of line_table_scan_20 at 29468). conf: med"
+  - ida: sub_2A66E
+    name: module_slot0_call_2a662
+    kind: function
+    sig: "void far; if cs:2A662 != -1: DS=cs:2A662 (module seg), BX=[2], cs:2A660=BX, call dword cs:2A660 (slot-0 far call); 1 caller (sub_31BB9)"
+    notes: "35B, 0 dyn, cd=0, 1 caller. Calls through module slot 0 (far ptr at seg cs:2A662 offset 2), gated on the handle != -1. conf: med"
+  - ida: sub_2A691
+    name: module_slot2_call_2a662
+    kind: function
+    sig: "void far; same module-call pattern but slot offset 4 (far ptr [4]); 1 caller (sub_3099C)"
+    notes: "35B, 0 dyn, cd=0, 1 caller. Calls through module slot 2 (far ptr at offset 4 of seg cs:2A662), gated on handle != -1. conf: med"
+  - ida: sub_2A6B4
+    name: module_slot4_call_2a662
+    kind: function
+    sig: "void far; same module-call pattern, slot offset 6; 1 caller (sub_30AA8)"
+    notes: "35B, 0 dyn, cd=0, 1 caller. Calls through module slot 4 (far ptr at offset 6 of seg cs:2A662), gated on handle != -1. conf: med"
+  - ida: sub_2A6D7
+    name: module_slot6_call_2a662
+    kind: function
+    sig: "void far; same module-call pattern, slot offset 0 (with extra ax push); 1 caller (sub_386F2)"
+    notes: "37B, 0 dyn, cd=0, 1 caller. Calls through module slot 6 (far ptr at offset 0 of seg cs:2A662), gated on handle != -1. conf: med"
+  - ida: sub_2ABE0
+    name: nop_retf
+    kind: function
+    sig: "void far; nop; retf (2-byte padding return)"
+    notes: "2B LEAF, 0 dyn, cd=0, 1 caller (sub_2AC4C). NOP + far-return padding stub. conf: high"
+  - ida: sub_2CBEB
+    name: overlay_verify_copy
+    kind: function
+    sig: "void far; full frame: ES=AX (seg), CX=es:[0x4C03C] (copy count), if CX: copy CX words from es:0 to dest (overlay verify/memmove); 1 caller (sub_2CC47)"
+    notes: "92B, 0 dyn, cd=0, 1 caller. Copies an overlay block (count at es:4C03C) for verification/move; bp-framed with full reg save. conf: med"
+  - ida: r05_e20
+    name: r05_flag_xor_45e4e
+    kind: function
+    sig: "void far; DS=54AFh; ds:45E4E ^= 0x200 (toggles a flag word in the R05 overlay segment); retf"
+    notes: "14B LEAF, 0 dyn, cd=0, 1 caller (sub_2C0A9). Toggles bit 0x200 of the R05 overlay flag word at 54AF:45E4E. conf: high"
+  - ida: sub_417FE
+    name: r05_seg_setup_head
+    kind: function
+    sig: "void far (DATA-class partial span): push ds/es, AX=54AFh then (body continues); 1 caller (sub_3706C)"
+    notes: "5B span, 0 dyn, cd=0, 1 caller, partial decode. R05 overlay segment-setup prologue (DS=54AF head). conf: low"
+  - ida: sub_2E61C
+    name: slot_find_free_4b1_6
+    kind: function
+    sig: "NEAR retn fn; scan 0x06-stride table at ds:4B1 for first [di]==0 (up to 9 slots) -> AX=BX (index); retn"
+    notes: "27B retn, 0 dyn, cd=0, 1 caller (sub_2E2F0 blob). Finds the first free slot in a 6-stride 9-entry table at 4B1h, returns the index in AX. conf: med"
+  - ida: r01_e01
+    name: stack_switch_7a32
+    kind: function
+    sig: "void far (DATA-class span): SS:SP switch to seg 7A32 (cli/sti guarded, delta=(SS-7A32)<<4), DS=AX=7A32, then DX:AX = linear addr math; 1 caller (sub_2BFAF)"
+    notes: "57B span, 0 dyn, cd=0, 1 caller (r01_e01 is the RTLink key). Stack switch into segment 7A32 with SS:SP rebase (r01 entry glue). conf: med"
+  - ida: sub_2F20A
+    name: state_word_2e176_apply
+    kind: function
+    sig: "NEAR retn fn; [SI+6] -= cs:2E176 (signed delta with +0x8000 bias, 64-bit neg check); continues (77B); 1 caller (sub_2F043)"
+    notes: "77B retn, 0 dyn, cd=0, 1 caller. Applies the signed delta cs:2E176 to a record field [SI+6] with 0x8000 bias + overflow guard. conf: med"
+  - ida: sub_36464
+    name: state_word_704_set_5a
+    kind: function
+    sig: "NEAR retn LEAF; ds:704h = 0x5A; retn"
+    notes: "7B LEAF retn, 0 dyn, cd=0, 1 caller (sub_35934). Sets DGROUP word 0x704 = 0x5A (90 decimal). conf: high"
+  - ida: sub_2A3D6
+    name: uibounds_set_bottom_100
+    kind: function
+    sig: "void far; cs:2A568/592/616=0x100, cs:2A5B9=cs:1F6D0, cs:2A5A8=0x7E; jmp loc_2A518 (UI bound preset, bottom edge)"
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_2A30E DATA). Sets the bottom-edge UI bound preset (0x100 + bound cs:1F6D0 + char 0x7E). conf: med"
+  - ida: sub_2A376
+    name: uibounds_set_left_20
+    kind: function
+    sig: "void far; cs:2A446/470/4D5=0x20, cs:2A497=cs:1F6CE, cs:2A486=0x7D; jmp loc_2A3F6 (UI bound preset, left edge)"
+    notes: "31B, 0 dyn, cd=0, 1 caller (sub_2A340). Sets the left-edge UI bound preset (0x20 + bound cs:1F6CE + char 0x7D), then continues. conf: med"
+  - ida: sub_2A396
+    name: uibounds_set_right_40
+    kind: function
+    sig: "void far; cs:2A446/470/4D5=0x40, cs:2A497=cs:1F6D2, cs:2A486=0x7E; jmp loc_2A3F6 (UI bound preset, right edge)"
+    notes: "31B, 0 dyn, cd=0, 1 caller (sub_2A340). Sets the right-edge UI bound preset (0x40 + bound cs:1F6D2 + char 0x7E). conf: med"
+  - ida: sub_2A3B6
+    name: uibounds_set_top_80
+    kind: function
+    sig: "void far; cs:2A568/592/616=0x80, cs:2A5B9=cs:1F6CC, cs:2A5A8=0x7D; jmp loc_2A518 (UI bound preset, top edge)"
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_2A30E DATA). Sets the top-edge UI bound preset (0x80 + bound cs:1F6CC + char 0x7D). conf: med"
+  - ida: sub_28AA7
+    name: view_bounds_shadow_28e26
+    kind: function
+    sig: "NEAR retn fn; cs:28E26=cs:1F6D4, cs:28E33=cs:1F6D6, cs:28E3C=cs:1F6CE, cs:28E46=cs:1F6D2 (shadows the 4 view bounds); retn"
+    notes: "33B retn, 0 dyn, cd=0, 1 caller (sub_20AC1). Copies the 4 view-bound words (1F6D4/D6/CE/D2) into the cs:28E26 shadow quad. conf: high"
+
+  - ida: sub_4B650
+    name: entity_field0f_set_bl
+    kind: function
+    sig: "void far; DS=65E4h; SI = 0x68 + (AX - ds:65EA2)*0x3A; [SI+0F]=BL; retf (field setter, 0x3A stride)"
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_4EF1C). Sets byte field +0x0F of the 0x3A-stride record (index = AX - ds:65EA2) in seg 65E4. conf: high"
+  - ida: sub_4A7C4
+    name: entity_field11_set_65e4
+    kind: function
+    sig: "void far; DS=65E4h; DI=0x68 + (DX - ds:65EA2)*0x3A; [DI+11]=0x50 (writes a field at a 0x3A-stride record); continues (33B); 1 caller (sub_3E552)"
+    notes: "33B span, 0 dyn, cd=0, 1 caller. Writes byte 0x50 into field +0x11 of a 0x3A-stride record (index = DX - ds:65EA2) in seg 65E4. conf: med"
+  - ida: sub_4B635
+    name: entity_rec_ptr_65e4_di
+    kind: function
+    sig: "void far; DS=ES=65E4h; DI = 0x68 + (AX - ds:65EA2)*0x3A (record pointer into ES:DI); continues (27B); 1 caller (sub_4E520)"
+    notes: "27B span, 0 dyn, cd=0, 1 caller. Computes the 0x3A-stride record pointer at 65E4:068+(AX-ds:65EA2) into DI. conf: med"
+  - ida: sub_458B5
+    name: entity_state_capture_2e10e
+    kind: function
+    sig: "NEAR retn fn; cs:2E112=AX; SI=ds:48BA; cs:2E10E=[SI+7A]; BX=ds:44AA; gate [SI+0CA].1 + BX in {3,4} branches; ds:4876=BH... (63B)"
+    notes: "63B retn, 0 dyn, cd=0, 1 caller (sub_2FEF2). Captures entity state: saves AX->cs:2E112, [SI+7A]->cs:2E10E, branches on [SI+0CA].1 + mode BX 3/4. conf: med"
+  - ida: sub_4D810
+    name: entity_state_pair_6b58_store
+    kind: function
+    sig: "void far; DS=6B58h; ds:6B586=AX, ds:6B588=BX (stores a 2-word state pair); retf"
+    notes: "15B LEAF, 0 dyn, cd=0, 1 caller (sub_3001E). Stores the state pair AX:BX into 6B58:586/588. conf: high"
+  - ida: sub_47BC6
+    name: entity_table_zero_1940
+    kind: function
+    sig: "void far; ES=63FDh; zero 0x40 bytes at 63FD:1940 (stosb loop); retf"
+    notes: "24B, 0 dyn, cd=0, 1 caller (sub_3001E). Clears 0x40 bytes of the entity scratch at 63FD:1940. conf: high"
+  - ida: sub_4E2FD
+    name: flag_2e125_gate_stc
+    kind: function
+    sig: "void far; if cs:2E125 == 1: (fallthrough body) else stc, retf (CF=1 when mode != 1); 1 caller (sub_307A5)"
+    notes: "12B LEAF, 0 dyn, cd=0, 1 caller. Gate: returns CF=1 when state byte cs:2E125 != 1 (pair of flag_24e20_gate_stc pattern). conf: high"
+  - ida: sub_4B630
+    name: flag_gate_2e100_get_ax
+    kind: function
+    sig: "void far; AX = cs:2E100 (the enable flag word); retf"
+    notes: "5B, 0 dyn, cd=0, 1 caller (r12_e10). Returns the enable flag cs:2E100 in AX (reader for flag_gate_zero_abc). conf: high"
+  - ida: sub_4FCE4
+    name: hw_flag_85052_set_ff
+    kind: function
+    sig: "void far; DS=7A32h; ds:85052 = 0xFF; retf"
+    notes: "60B DATA-span (body to retf@0x4FCF2), 0 dyn, cd=0, 1 caller (sub_322E5). Sets hw state byte ds:85052 to 0xFF. conf: high"
+  - ida: sub_4F893
+    name: hw_flag_8505f_set_gated
+    kind: function
+    sig: "void far; DS=7A32h; if ds:85060 == 1: ds:8505F = 1; retf (gated one-shot flag set)"
+    notes: "41B, 0 dyn, cd=0, 1 caller (sub_33443). Sets ds:8505F=1 only when ds:85060==1 (one-shot gate). conf: high"
+  - ida: sub_4FD80
+    name: pop_ds_retf
+    kind: function
+    sig: "void far; pop ds; retf (2-byte tail-entry)"
+    notes: "2B LEAF, 0 dyn, cd=0, 1 caller (sub_2F400). Tail-entry: restores DS then far-returns (pair of shared_tail_pop_es family). conf: med"
+  - ida: sub_47A45
+    name: r05_mode_check_58f9a
+    kind: function
+    sig: "void far; DS=54AFh; AX=ds:58F9A; if AX not in (6..10) or ds:58F4E==-1 or ds:58E14.3 set: skip (72B gate chain); 1 caller (sub_34C31)"
+    notes: "72B, 0 dyn, cd=0, 1 caller. R05 overlay mode gate: accepts only 58F9A in 7..9 with 58F4E valid and 58E14.3 clear. conf: med"
+  - ida: sub_48D8A
+    name: r05_state_restore_476e
+    kind: function
+    sig: "void far; ES=54AFh; copy 4 words from DS:SI + lodsw/lodsb into 54AF:476E, 593A6, 593A0, 5948E (restore bundle); 1 caller (sub_30AA8)"
+    notes: "28B, 0 dyn, cd=0, 1 caller. Restores the R05 overlay state bundle from DS:SI into 54AF:476E/593A6/593A0/5948E (inverse of sub_48D71). conf: med"
+  - ida: sub_48D71
+    name: r05_state_save_476e
+    kind: function
+    sig: "void far; DS=54AFh; copy 4 words from 54AF:476E + ds:593A6 + ds:593A0 + ds:5948E to ES:DI (save bundle); continues (25B)"
+    notes: "25B span, 0 dyn, cd=0, 1 caller (sub_3099C). Saves an R05 overlay state bundle (476E words + 593A6/593A0/5948E) to ES:DI. conf: med"
+  - ida: sub_6CD29
+    name: r06_init_call_43270
+    kind: function
+    sig: "void far (C frame enter 4): call far unk_43270 -> DX:AX saved; ES=6DE8h: es:6E040=6DE8, es:6E03E=0x325 (R06 init state); retn 0xA326-ish"
+    notes: "103B C-class, 0 dyn, cd=0, 1 caller (sub_66E62). R06 overlay initializer: far-calls unk_43270 then seeds 6DE8:6E03E/6E040 state (twin of r30_offset_accum_6e03e setup). conf: med"
+  - ida: r30_e113
+    name: r30_entry_field_clear
+    kind: function
+    sig: "void far (DATA-class partial span): es:[BX+0x0D]=0 clear then the 79F34*0x17 record walk; 1 caller (sub_2C563)"
+    notes: "34B span, 0 dyn, cd=0, 1 caller, DATA/partial. R30 entry that clears a record field +0x0D then walks 79E6C. conf: low"
+  - ida: r30_e123
+    name: r30_entry_partial_a
+    kind: function
+    sig: "void far (DATA-class partial span, mid-instruction start): decodes into real code at es:6DE8:1C2 far-ptr add; 1 caller (sub_2C5DB)"
+    notes: "16B span, 0 dyn, cd=0, 1 caller, DATA/partial (RTLink entry landed mid-instruction -- class-c signature, cf. finding 65). R30 entry glue A. conf: low"
+  - ida: r30_e168
+    name: r30_entry_partial_b
+    kind: function
+    sig: "void far (DATA-class partial span, mid-instruction start): decodes to es:7894:79F34*0x17 record walk via dword_79E6C; 1 caller (sub_2C7F7)"
+    notes: "30B span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction). R30 entry glue B (record index 79F34*0x17). conf: low"
+  - ida: r30_e140
+    name: r30_entry_partial_c
+    kind: function
+    sig: "void far (DATA-class partial span, mid-instruction start): pop ss / far jmp decode artifacts; 1 caller (sub_2C68F)"
+    notes: "11B LEAF span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction, class-c). R30 entry glue C. conf: low"
+  - ida: r30_e132
+    name: r30_entry_partial_d
+    kind: function
+    sig: "void far (DATA-class partial span, mid-instruction start: xchg ax,sp artifact); 1 caller (sub_2C63F)"
+    notes: "40B span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction, class-c). R30 entry glue D. conf: low"
+  - ida: r30_e134
+    name: r30_entry_record_walk
+    kind: function
+    sig: "void far (DATA-class partial span): decodes to the es:7894:79F34*0x17 -> dword_79E6C record walk (same body as r30_e168 with a different entry); 1 caller (sub_2C653)"
+    notes: "27B span, 0 dyn, cd=0, 1 caller, DATA/partial. R30 record-walk entry (twin body of r30_e168). conf: low"
+  - ida: r30_e161
+    name: r30_entry_retn_1564
+    kind: function
+    sig: "void far; retn 0x1564 (far/near return with 0x1564 operand -- partial 3B entry)"
+    notes: "3B LEAF, 0 dyn, cd=0, 1 caller (sub_2C775). R30 entry that returns with immediate 0x1564 (RTLink thunk epilogue). conf: med"
+  - ida: sub_6A54D
+    name: r30_farobj_proc_f
+    kind: function
+    sig: "void far; push bp ... (112B, undecodable head); 1 caller (sub_683C5 DATA)"
+    notes: "112B span, 0 dyn, cd=0, 1 caller, undecodable head. R30 far-object processor twin F. conf: low"
+  - ida: sub_6A389
+    name: r30_mode_set_637fc_b
+    kind: function
+    sig: "void far; ES=602Eh: es:637FC=0x138, es:637FE=0x7F; then ES=6DE8h far-ptr walk via dword_6E048 (mode preset B, twin of r30_mode_set_637fc); 1 caller (sub_683C5)"
+    notes: "55B, 0 dyn, cd=0, 1 caller. R30 mode preset B (637FC=0x138 variant) + 6DE8:6E048 far-ptr walk. conf: med"
+  - ida: sub_4F696
+    name: r34_farobj_proc
+    kind: function
+    sig: "void far; push si ... (149B, undecodable head); 1 caller (r34_e126)"
+    notes: "149B span, 0 dyn, cd=0, 1 caller, undecodable head, called by r34_e126. R34 overlay far-object processor. conf: low"
+  - ida: sub_4F72B
+    name: sprite_blend_0ad2d
+    kind: function
+    sig: "void far; per-byte blend: [DI]= [SI] + ([SI]-[BX]) * ds:0AD2D (imul, >>8 form) between tables at SI/A8F8+ and BX, DI/A8F8 out; continues (141B); 1 caller (sub_2C2F7)"
+    notes: "141B span, 0 dyn, cd=0, 1 caller. Per-byte sprite blend: out = in + (in - ref) * scale ds:0AD2D (fixed-point lerp). conf: med"
+  - ida: sub_4FE2E
+    name: sprite_code_clamp_6cd26
+    kind: function
+    sig: "void far; DS=6BE0h; AH = AL + ds:6CD26, if in [0..4] ds:6CD26=AH (clamped code advance); continues (41B); 1 caller (sub_3A99D)"
+    notes: "41B span, 0 dyn, cd=0, 1 caller. Clamped advance of a sprite code byte (ds:6CD26 += AL, kept in 0..4) then index math. conf: med"
+  - ida: sub_49512
+    name: sprite_slot_index_12d
+    kind: function
+    sig: "void far; if AX in [0x12D..0x155): DS=65A7h, SI=0x0C + (AX-0x12D)*0x18 (slot address); continues (52B); 1 caller (sub_46D42)"
+    notes: "52B span, 0 dyn, cd=0, 1 caller. Computes a sprite/table slot address (0x0C + (AX-0x12D)*0x18 in seg 65A7) for codes 0x12D..0x155. conf: med"
+  - ida: sub_4FE57
+    name: sprite_state_step_6be0
+    kind: function
+    sig: "void far; DS=6BE0h; AH state transform (cwd/xor 5 form) if AH!=0; BL=ds:6CD26 index... (state step, continues 94B); 1 caller (sub_33443)"
+    notes: "94B span, 0 dyn, cd=0, 1 caller. Sprite state-machine step over the ds:6BE0 table with a transformed AH and ds:6CD26 index. conf: med"
+  - ida: sub_4E8FB
+    name: state_add_70a03_70a5d
+    kind: function
+    sig: "void far; DS=709Fh; ds:70A03 += BX; ds:70A5D = AX (accumulator + value store); retf"
+    notes: "19B, 0 dyn, cd=0, 1 caller (sub_2F6D0). Adds BX into ds:709F:70A03 and stores AX to ds:709F:70A5D. conf: high"
+  - ida: sub_49A6C
+    name: table_copy_from_65a7
+    kind: function
+    sig: "void far; DS=65A7h; [ES:DI++]=ds:65E3C (header byte); then copy 0x28 blocks of 0x18 bytes from 65A7:000C (save direction); 1 caller (sub_3099C)"
+    notes: "30B, 0 dyn, cd=0, 1 caller. Copies the 65A7h table (header byte + 0x28 x 0x18B blocks) to ES:DI (save). conf: med"
+  - ida: sub_4D7C2
+    name: table_copy_from_69ff
+    kind: function
+    sig: "void far; DS=69FFh; copy 0x28 x 0x1B-byte blocks from 69FF:0004 then 0x5C-byte run from 69FF:043C (save); continues (38B); 1 caller (sub_3099C)"
+    notes: "38B span, 0 dyn, cd=0, 1 caller. Saves the 69FFh table (0x28 x 0x1B blocks + 0x5C-byte tail) to ES:DI. conf: med"
+  - ida: sub_4DA87
+    name: table_copy_from_6b58
+    kind: function
+    sig: "void far; DS=6B58h; [ES:DI++]=ds:6B58A (header byte); then copy 0x0A x 6-byte blocks from 6B58:0033 (save); 1 caller (sub_3099C)"
+    notes: "30B, 0 dyn, cd=0, 1 caller. Saves the 6B58h entity table (header + 0x0A x 6B records) to ES:DI. conf: med"
+  - ida: sub_49A8A
+    name: table_copy_to_65a7
+    kind: function
+    sig: "void far; ES=65A7h; ds:65E3C=[SI++] (header byte); then copy 0x28 blocks of 0x18 bytes from DS:SI into 65A7:000C (restore); 1 caller (sub_30AA8)"
+    notes: "30B, 0 dyn, cd=0, 1 caller. Restores the 65A7h table from DS:SI (inverse of sub_49A6C). conf: med"
+  - ida: sub_4D7E8
+    name: table_copy_to_69ff
+    kind: function
+    sig: "void far; ES=69FFh; restore 0x28 x 0x1B-byte blocks to 69FF:0004 + 0x5C-byte tail to 69FF:043C from DS:SI; continues (38B); 1 caller (sub_30AA8)"
+    notes: "38B span, 0 dyn, cd=0, 1 caller. Restores the 69FFh table from DS:SI (inverse of sub_4D7C2). conf: med"
+  - ida: sub_4DAA5
+    name: table_copy_to_6b58
+    kind: function
+    sig: "void far; ES=6B58h; ds:6B58A=[SI++] (header byte); then copy 0x0A x 6-byte blocks from DS:SI into 6B58:0033 (restore); 1 caller (sub_30AA8)"
+    notes: "30B, 0 dyn, cd=0, 1 caller. Restores the 6B58h entity table from DS:SI (inverse of sub_4DA87). conf: med"
+
+  - ida: sub_6DC75
+    name: entity_table_walk_49a3
+    kind: function
+    sig: "void far; if ds:49A3!=0: jmp 6DCD8; CX=ds:48B8<<2 -> self-mod word cs:6DC93 (immediate patch); SI=0, CX=0x10 walk loop over entity records; 1 caller (sub_3A3D6)"
+    notes: "38B span, 0 dyn, cd=0, 1 caller, DATA-class head. Entity-table walk with a self-modifying immediate at cs:6DC93 (patched from ds:48B8). conf: med"
+  - ida: sub_6E02A
+    name: farptr_proc_6e02a
+    kind: function
+    sig: "void far; push ds ... (span undecodable to 0x6E074 byte 0x00, far calls 9A); 1 caller (sub_2C045)"
+    notes: "92B span, 0 dyn, cd=0, 1 caller, undecodable. Far-ptr procedure in the 0x6E02A region (R06 tail / pre-R14 gap). conf: low"
+  - ida: sub_6DC09
+    name: mode_gate_4ac2_4ac4
+    kind: function
+    sig: "void far; early-ret if ds:4AC2==4 or ds:4AC4==0 (else falls into body); retf at 0x6DC17"
+    notes: "108B span (body to retf@0x6DC17), 0 dyn, cd=0, 1 caller (sub_3A3D6). Dual mode gate: requires ds:4AC2!=4 AND ds:4AC4!=0 before the R06 body. conf: med"
+  - ida: sub_6DC9C
+    name: r06_proc_ah34
+    kind: function
+    sig: "void far; mov AH,0x34 then (span largely undecodable, far calls); 1 caller (sub_66E62)"
+    notes: "118B span, 0 dyn, cd=0, 1 caller, undecodable body. R06 procedure entered with AH=0x34 selector. conf: low"
+  - ida: r06_e52
+    name: r06_scale_clamp_c3
+    kind: function
+    sig: "void far (partial entry): scale AX around base 0xC3 by CL (shl/sar by sign), clamp result to [0x72..0xBE], then continues; 1 caller (sub_2C257)"
+    notes: "58B span, 0 dyn, cd=0, 1 caller. R06 entry: signed scale about 0xC3 with CL shift + clamp 0x72..0xBE (head `in ax,dx` is a mid-instruction artifact). conf: low"
+  - ida: sub_102DD6
+    name: r07_farptr_helper
+    kind: function
+    sig: "void far; push ds ... (34B partial); 1 caller (r07_e45)"
+    notes: "34B span, 0 dyn, cd=0, 1 caller, partial, called by r07_e45. R07 overlay far-ptr helper. conf: low"
+  - ida: sub_106E10
+    name: r12_farptr_helper_c
+    kind: function
+    sig: "void far; push ds ... (86B partial); 1 caller (r12_e40)"
+    notes: "86B span, 0 dyn, cd=0, 1 caller, partial, called by r12_e40. R12 overlay far-ptr helper C. conf: low"
+  - ida: sub_107316
+    name: r12_farptr_helper_d
+    kind: function
+    sig: "void far; push ds ... (59B partial); 1 caller (r12_e42)"
+    notes: "59B span, 0 dyn, cd=0, 1 caller, partial, called by r12_e42. R12 overlay far-ptr helper D. conf: low"
+  - ida: sub_6E4CE
+    name: r14_entry_partial
+    kind: function
+    sig: "void far (partial entry, mid-instruction head): decodes through a far call to retf; 1 caller (sub_2BE51)"
+    notes: "33B span, 0 dyn, cd=0, 1 caller, partial (head `add [bp+di]` artifact). R14-region entry glue. conf: low"
+  - ida: sub_108BAC
+    name: r15_flag_107762_body
+    kind: function
+    sig: "void far; cmp cs:107762, 0; jz/jmp into a large far-call body (288B, pad-heavy); 1 caller (r15_e38)"
+    notes: "288B span, 0 dyn, cd=0, 1 caller, pad-heavy. R15 dispatch gated on flag byte cs:107762. conf: low"
+  - ida: sub_108570
+    name: r15_flag_10788b_test
+    kind: function
+    sig: "void far; cmp cs:10788B, 0; jz ... retf (flag-byte test, partial span); 1 caller (r15_e14)"
+    notes: "9B LEAF span, 0 dyn, cd=0, 1 caller, partial, called by r15_e14. Tests R15 flag byte cs:10788B != 0. conf: med"
+  - ida: sub_107F2E
+    name: r15_state_107650_set
+    kind: function
+    sig: "void far; cs:107650 = 0x8DE (state word store, body continues with far calls); 1 caller (r15_e11)"
+    notes: "42B span, 0 dyn, cd=0, 1 caller, called by r15_e11. Stores 0x8DE into R15 overlay state word cs:107650. conf: med"
+  - ida: sub_6EF1C
+    name: r17_entry_partial
+    kind: function
+    sig: "void far (DATA-class partial 3B span, mid-instruction head); 1 caller (sub_2C0EF)"
+    notes: "3B span, 0 dyn, cd=0, 1 caller, DATA/partial. R17-region entry stub (mid-instruction start, class-c signature). conf: low"
+  - ida: sub_6F54A
+    name: r17_farobj_proc_g
+    kind: function
+    sig: "void far; push bp ... (147B, undecodable head); 1 caller (sub_6E8F0 C)"
+    notes: "147B span, 0 dyn, cd=0, 1 caller, undecodable head. R17 far-object processor. conf: low"
+  - ida: sub_6F3E1
+    name: r17_push_args_c8
+    kind: function
+    sig: "void far; push bp, mov bp,sp; push 0x0C8, push 0 (call-frame setup with args 200/0, span 8B); 1 caller (sub_6E8F0 C)"
+    notes: "8B span, 0 dyn, cd=0, 1 caller. R17-region call-frame setup pushing arguments 0xC8 and 0. conf: med"
+  - ida: sub_11C1D2
+    name: r28_farptr_helper
+    kind: function
+    sig: "void far; push ax ... (53B partial, far calls); 1 caller (r28_e65)"
+    notes: "53B span, 0 dyn, cd=0, 1 caller, partial, called by r28_e65. R28 overlay far-ptr helper. conf: low"
+  - ida: r33_e87
+    name: r33_record_scan_4e
+    kind: function
+    sig: "void far; DI=[bp+6]; SI=0; loop: record = es:7894 dword_79B6E + DI*0x4E; skip if es:[bx+si+44]==0xFF (record scan, 0x4E stride); 1 caller (r33_e86)"
+    notes: "98B, 0 dyn, cd=0, 1 caller. R33 record scan over the 0x4E-stride table at 7894:79B6E keyed by DI, skipping 0xFF-empty slots. conf: med"
+  - ida: r33_e89
+    name: r33_record_walk_4e
+    kind: function
+    sig: "void far; CL=[bp+6]; loop: index = es:7894:79BDA * 0x4E into dword_79B6E far-ptr table (record walk, 258B); 1 caller (r33_e85)"
+    notes: "258B, 0 dyn, cd=0, 1 caller. R33 record walk: 79BDA*0x4E index through the 79B6E far-ptr table. conf: med"
+  - ida: sub_1661DA
+    name: r36_farptr_helper
+    kind: function
+    sig: "void far; push bp ... (51B partial); 1 caller (r36_e116)"
+    notes: "51B span, 0 dyn, cd=0, 1 caller, partial, called by r36_e116. R36 overlay far-ptr helper. conf: low"
+  - ida: sub_18537E
+    name: r53_farptr_proc
+    kind: function
+    sig: "void far; push ds ... (96B partial, far calls); 1 caller (r53_e88)"
+    notes: "96B span, 0 dyn, cd=0, 1 caller, partial, called by r53_e88. R53 overlay far-ptr procedure. conf: low"
+  - ida: sub_1896D7
+    name: r53_record_walk_82
+    kind: function
+    sig: "void far (DATA-class partial): AX=SI*0x82 index into es:6894 dword_69BEC far-ptr table (record walk, 0x82 stride); 1 caller (r53_e12)"
+    notes: "19B span, 0 dyn, cd=0, 1 caller, DATA/partial head. R53 record walk: SI*0x82 index through the 6894:69BEC far-ptr table. conf: low"
+  - ida: r06_e53
+    name: state_word_4ab1_zero
+    kind: function
+    sig: "void far; ds:4AB1 = 0; retn (clears a DGROUP word)"
+    notes: "8B LEAF, 0 dyn, cd=0, 1 caller (sub_2C261). Clears DGROUP word 0x4AB1. conf: high"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table

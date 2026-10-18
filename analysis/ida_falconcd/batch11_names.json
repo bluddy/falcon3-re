@@ -1,0 +1,218 @@
+{
+ "sub_24B4B": [
+  "trig_value_bsearch_8364",
+  "NEAR retn fn; ES=8364h; binary search AX in the sorted trig table (DI=0, SI=0x200, BX=0x400 bounds loop) -> index; 2 callers (sub_216B8, sub_24B3C)",
+  "73B retn, 0 dyn, cd=0, 2 callers. Binary search of the trig table at ES=8364 (near-twin of trig_value_bsearch_83a5). conf: med",
+  "med"
+ ],
+ "sub_283A2": [
+  "proj_scale_setup_22d20",
+  "NEAR retn fn; SI=[DI+20]; if [DI+24].7: SI=0x10; elif SI<0: AX=0x7FFF>>[DI+18], cs:22D20=AX, cs:1F73C=0; retn (else continues body)",
+  "244B span, 0 dyn, cd=0, 2 callers (sub_28496, sub_28503). Sets projection scale cs:22D20 = 0x7FFF >> [DI+18] on the negative-SI path, clears cs:1F73C. conf: med",
+  "med"
+ ],
+ "sub_2859E": [
+  "fixed_expand_0f3e",
+  "NEAR retn fn; SI=0xF3E; loop: lodsw -> stosw, cwd-sign-extend pair stosw (expands a 16-bit table into sign-extended pairs); 2 callers",
+  "247B span, 0 dyn, cd=0, 2 callers. Expands the fixed-point table at SI=0xF3E into sign-extended 32-bit pairs via stosw. conf: med",
+  "med"
+ ],
+ "sub_2B040": [
+  "arena_off_ax18",
+  "NEAR retn LEAF; BX = AX*0x12 + 0x0C1F; retn (preserves ax/dx)",
+  "16B LEAF retn, 0 dyn, cd=0, 2 callers. Computes the arena/MCB record offset AX*18 + 0xC1F. conf: high",
+  "high"
+ ],
+ "sub_2B050": [
+  "mem_block_move_ax",
+  "NEAR retn fn; if AX==DX retn; else ES=AX, CX=DX-AX paragraphs, copy in 0x1000-byte chunks (movsw loop); 2 callers",
+  "56B retn, 0 dyn, cd=0, 2 callers (sub_2AC4C, sub_2B256). Moves a memory block from segment AX to DX (paragraph count DX-AX, chunked). conf: med",
+  "med"
+ ],
+ "sub_2B105": [
+  "patch_scan_e8_58d",
+  "NEAR retn fn; scan stream: byte E8 (call rel) whose rel target == 0x58D, then EA (jmp far) +4, lodsw... (relocation-pattern scanner); 2 callers",
+  "40B retn, 0 dyn, cd=0, 2 callers (sub_2B088, sub_2B0BF). Scans for the CALL-to-0x58D + JMP-FAR relocation pattern in a byte stream. conf: med",
+  "med"
+ ],
+ "sub_2CD4F": [
+  "drive_path_build",
+  "NEAR retn fn; if AL==0: AH=0x19 int 21h (get current drive), inc AL; DL=AL, AL+='A', stosb; store ':' + '\\' (0x3A5C)... builds a 'X:\\' path prefix; 2 callers",
+  "62B retn, 0 dyn, cd=0, 2 callers (sub_2CC47, sub_2CE47). Builds a drive path prefix ('X:\\'), defaulting to the current drive via INT 21h AH=19h. conf: high",
+  "high"
+ ],
+ "sub_2CE0A": [
+  "fname_ext_lower_copy",
+  "NEAR retn fn; ES/DS from frame args, copy NUL-terminated name from [bp+8] to ES:DI; cs:2CE46=0; OR 0x20 into the extension word es:[di-5] (lowercase); 2 callers",
+  "60B retn, 0 dyn, cd=0, 2 callers. Copies a filename string to ES:DI and lowercases its extension via OR 0x20. conf: med",
+  "med"
+ ],
+ "sub_2E5DF": [
+  "slot_find_free_0c",
+  "NEAR retn fn; scan 0x0C-stride table (up to 0x64 entries) for first [di]==0 (free slot, BX=index); then fill pass; 2 callers (sub_2E2F0 blob, sub_3E552)",
+  "61B retn, 0 dyn, cd=0, 2 callers. Finds the first free (zero) slot in a 0x0C-stride 100-entry table, returns index in BX. conf: med",
+  "med"
+ ],
+ "sub_2F1E5": [
+  "state_byte_2e100_zero",
+  "void far; cs:2E100 = 0; retf (clears the flag that flag_gate_zero_abc tests)",
+  "7B LEAF, 0 dyn, cd=0, 2 callers (sub_2BFE1, sub_3001E). Clears state byte cs:2E100 (the gate-bit consumed by flag_gate_zero_abc). conf: high",
+  "high"
+ ],
+ "sub_3449E": [
+  "state_counter_2e151_step",
+  "NEAR retn fn; cs:2E151 += 0x100; if >= 0x280 -> (body) else clc, retn (0x100-step counter bounded at 0x280)",
+  "53B span (body to retn@0x344B7), 0 dyn, cd=0, 2 callers (sub_2FEF2, sub_33443). Advances a 0x100-step counter at cs:2E151 toward the 0x280 bound, CF=0 while below. conf: med",
+  "med"
+ ],
+ "sub_3487D": [
+  "entity_timer_dec_2e",
+  "NEAR retn fn; AX=0; if [SI+0D1]!=0: [SI+0D1]=0, ds:1073=0; [SI+1E]=0; [SI+2E]-=0xA floor 0; retn",
+  "28B retn, 0 dyn, cd=0, 2 callers (sub_2FC79, sub_2FEF2). Decrements an entity timer field [SI+2E] by 0xA (floored) and resets [SI+1E]/[SI+0D1]. conf: med",
+  "med"
+ ],
+ "sub_34C1D": [
+  "dgroup_state5_zero",
+  "NEAR retn fn; zero ds:662, ds:5CA (words) + ds:664, ds:665, ds:5A1 (bytes); retn (preserves ax)",
+  "20B retn, 0 dyn, cd=0, 2 callers (sub_32C62, sub_33443). Zeroes five DGROUP state fields (662/5CA/664/665/5A1). conf: high",
+  "high"
+ ],
+ "sub_36E22": [
+  "vel_pair_scale_di",
+  "NEAR retn fn; [DI] = (ds:6C8 * BX) << 1 (high word), [DI+2] = (ds:6CA * BX) << 1; retn",
+  "24B retn, 0 dyn, cd=0, 2 callers (sub_36DA7, sub_46D42). Scales the velocity pair at ds:6C8/6CA by BX into [DI]/[DI+2]. conf: high",
+  "high"
+ ],
+ "sub_37022": [
+  "rect_bounds_test_6e",
+  "NEAR retn fn; CX=0; if AX in [0x6E..0xD2] and BX in [0x14..0x5A]: CX=0, retn; else set path flags (body continues)",
+  "47B retn, 0 dyn, cd=0, 2 callers (sub_35D59, sub_36FE9). Tests AX/BX against the 0x6E..D2 x 0x14..5A rectangle, returns CX flags. conf: med",
+  "med"
+ ],
+ "sub_377CF": [
+  "mode_toggle_105f",
+  "NEAR retn fn; XOR ds:105F, 1; on toggle: ds:1020=0x44, retn (else continues body); 2 callers",
+  "73B span, 0 dyn, cd=0, 2 callers (sub_3001E, sub_33443). Toggles mode bit ds:105F; on set writes ds:1020=0x44. conf: med",
+  "med"
+ ],
+ "sub_3AA6C": [
+  "bound_table_check_49b8",
+  "NEAR retn fn; BL=ds:4ABD (idx)*2; if AX <= ds:[49B8+BX] -> (in bound) else clc, retn; 2 callers",
+  "18B retn, 0 dyn, cd=0, 2 callers. Bound check: CF=0 when AX <= table word at ds:49B8[ds:4ABD]. conf: high",
+  "high"
+ ],
+ "sub_3AB1B": [
+  "floor_copy_4aa3",
+  "NEAR retn LEAF; if ds:4AC5==1: retn; else ds:4AA3 = ds:4A99; retn",
+  "14B LEAF retn, 0 dyn, cd=0, 2 callers. Copies floor/limit ds:4A99 -> ds:4AA3 unless mode byte ds:4AC5==1. conf: high",
+  "high"
+ ],
+ "sub_3AB29": [
+  "entity_flags_reset_1734",
+  "void far; patch word cs:395FE = ds:48B8*4; SI=0; scan 0x10 entries at [SI+0x1734] (far-ptr table) until SI==0x4444 sentinel: if es:[bx+74].1: clear es:[bx+79]...; 2 callers (r06_e56, sub_39B67)",
+  "48B, 0 dyn, cd=0, 2 callers. Patches a code word from ds:48B8 then iterates the 0x10-entry far-ptr table at 1734 clearing flag fields (gate [bx+74].1). conf: med",
+  "med"
+ ],
+ "sub_3B68D": [
+  "shared_tail_pop_es_b",
+  "void far; starts pop es (shared tail-entry, body 46B); 2 callers (sub_2FEF2, sub_31319 -- same family as shared_tail_pop_es)",
+  "46B span, 0 dyn, cd=0, 2 callers, tail-entry (pop es first). Second shared continuation tail. conf: low",
+  "low"
+ ],
+ "sub_3FE57": [
+  "farobj_store_32633_body",
+  "void far; cs:32633 = BX then (body continues 408B); 2 callers (sub_33443, sub_3A99D)",
+  "408B span, 0 dyn, cd=0, 2 callers. Stores BX to cs:32633 then continues (large farobj body). conf: low",
+  "low"
+ ],
+ "sub_49CB0": [
+  "entity_f38_set_8fc",
+  "void far; [SI+38] = 0x8FC; (body 22B); 2 callers (r36_e102, sub_683C5 DATA)",
+  "22B span, 0 dyn, cd=0, 2 callers. Sets entity field [SI+38] = 0x8FC. conf: med",
+  "med"
+ ],
+ "sub_4AEA9": [
+  "farobj_arg_thunk_c",
+  "void far; push di ... (27B arg thunk); 2 callers (sub_683C5 DATA, sub_69C5D)",
+  "27B span, 0 dyn, cd=0, 2 callers. Far-object argument thunk (third twin). conf: low",
+  "low"
+ ],
+ "sub_4C168": [
+  "r30_shared_tail_es",
+  "void far; starts pop es (shared tail, body 54B); 2 callers (r30_e77, sub_68121 -- both DATA-class)",
+  "54B span, 0 dyn, cd=0, 2 callers, tail-entry. R30-region shared continuation tail. conf: low",
+  "low"
+ ],
+ "sub_4D847": [
+  "farobj_record_build_6b58_ch",
+  "void far; DS=6B58h; ds:6B58A|=1; call unk_3D9C3; CL|=0x80; [DI]=CL, [DI+1]=DX, [DI+3]=CH, [DI+4]=BX (5B record, CH variant); 2 callers",
+  "39B, 0 dyn, cd=0, 2 callers (sub_45057, sub_484C1). Builds a far-object record at [DI] with flag byte + CH in [DI+3] (twin of farobj_record_build_6b58 which stores 0xFF). conf: med",
+  "med"
+ ],
+ "sub_4D86E": [
+  "entity_slot_clear_6",
+  "void far; DS=6B58h; DI=0x33 + AX*6; if [DI+1]==BX: [DI]=0 (clears the matching 6-stride slot); retf",
+  "57B, 0 dyn, cd=0, 2 callers (sub_4111F, sub_45057). Clears a 6-byte-stride entity slot at 6B58:33+AX*6 when its key [DI+1] matches BX. conf: high",
+  "high"
+ ],
+ "sub_4FA3B": [
+  "hw_flag8505_set",
+  "void far; DS=ES=7A32h; flag ops on ds:8505B (bit7 gate, OR 4), ds:8505C (OR 8, AND ~0x20), ds:8505A=0xFF (state-flag set sequence); 2 callers (r36_e99, sub_2F043)",
+  "79B, 0 dyn, cd=0, 2 callers. Manipulates the ds:8505A/B/C hardware state-flag trio (gated by bit7/bit5 tests). conf: med",
+  "med"
+ ],
+ "sub_4FB33": [
+  "hw_cfg_copy_ac13",
+  "void far; DS=7A32h; if ds:8505C.3: jmp state_byte_2e179_set (tail); elif CL != ds:8505D: store CL, copy 0x1B bytes from 7A32:AC13 to A754; 2 callers (r29_e06, sub_2F35B)",
+  "143B, 0 dyn, cd=0, 2 callers. Copies a 0x1B-byte hardware config block (7A32:AC13 -> A754) when CL changes, gated by flag 8505C.3. conf: med",
+  "med"
+ ],
+ "sub_4FBC2": [
+  "hw_cfg_copy_a76f",
+  "void far; DS=7A32h; flag gates ds:8505C.3/.2; DI=0xA76F, CX=0x1E; mask AL=0x3F if ds:8504E==3... (0x1E-byte config copy with mask); 2 callers (r29_e06, sub_2F35B)",
+  "252B, 0 dyn, cd=0, 2 callers. Copies a 0x1E-byte hardware config to 7A32:A76F with a mask byte selected by ds:8504E, gated by state flags. conf: med",
+  "med"
+ ],
+ "sub_4FD4A": [
+  "hw_state_partial_4fd",
+  "void far (DATA-class span, partial): jp ...; at 0x4FD76: ds:85067 = AX (state word store amid partial span); 2 callers (sub_30882, sub_3B83A DATA)",
+  "54B span, 0 dyn, cd=0, 2 callers, DATA/partial. Stores AX to ds:85067 within a partially-decoded span. conf: low",
+  "low"
+ ],
+ "sub_69462": [
+  "r30_push_args_call",
+  "void far (C frame enter 6): build far-ptr arg at [bp-6], push es:637D0, es:637CE, 0, 2, 6 (R30 state words + call args) then dispatches; 2 callers (r30_e125, sub_6760A)",
+  "86B span, 0 dyn, cd=0, 2 callers. C-style caller that pushes R30 overlay state (637CE/637D0) + args 0/2/6 then far-dispatches. conf: med",
+  "med"
+ ],
+ "sub_6A267": [
+  "r30_farobj_proc_b",
+  "void far; push bp ... (145B); 2 callers (sub_2C455, sub_683C5 DATA)",
+  "145B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin B. conf: low",
+  "low"
+ ],
+ "sub_6A2F8": [
+  "r30_farobj_proc_c",
+  "void far; push bp ... (145B); 2 callers (sub_2C437, sub_683C5 DATA)",
+  "145B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin C. conf: low",
+  "low"
+ ],
+ "sub_6A3C3": [
+  "r33_farptr_gate_c",
+  "void far (C frame, enter undecodable huge frame); 2 callers (r33_e79, sub_2C423)",
+  "87B span, 0 dyn, cd=0, 2 callers, undecodable enter. R33 overlay far-ptr gate C. conf: low",
+  "low"
+ ],
+ "sub_6A41A": [
+  "r33_farobj_proc",
+  "void far; push bp ... (144B); 2 callers (r33_e148, sub_683C5 DATA)",
+  "144B span, 0 dyn, cd=0, 2 callers, undecodable head. R33 overlay far-object processor. conf: low",
+  "low"
+ ],
+ "sub_6B822": [
+  "r30_farobj_proc_d",
+  "void far; push bp ... (88B); 2 callers (r30_e125, sub_67781 DATA)",
+  "88B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin D. conf: low",
+  "low"
+ ]
+}

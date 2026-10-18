@@ -5506,6 +5506,4589 @@ routines:
     notes: "72B retn, in=2, caller_dyn=2,369 (caller sub_24A90 NEARTHUNK 2.4K). Trig table lookup at ES=83A5h (near-twin of trig_table_lookup at 8364h). conf: high"
     updated: "2026-10-18"
 
+  - ea: 0x25DD8
+    seg: 0x25DD
+    ofs: 0x8
+    size: 13
+    far: true
+    class: ASM
+    hypothesis: "dispatch_220fc_invoke_1arg"
+    sig: "void far; BX=[bp+arg0]; call dword ptr cs:220FC; retf"
+    port_status: unported
+    verified: null
+    notes: "13B, 19 dyn, 0 static. Far-call trampoline with 1 arg via cs:220FC. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25736
+    seg: 0x2573
+    ofs: 0x6
+    size: 11
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22118_ax0"
+    sig: "void far; AX=0, push di; call dword ptr cs:22118; pop di; retf"
+    port_status: unported
+    verified: null
+    notes: "11B LEAF, 30 dyn, 2 callers. Far-dispatch via cs:22118 with AX=0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25670
+    seg: 0x2567
+    ofs: 0x0
+    size: 17
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22128_invoke_1arg"
+    sig: "void far; AX=[bp+arg0]; call dword ptr cs:22128; retf"
+    port_status: unported
+    verified: null
+    notes: "17B, 9 dyn, 2 callers. Far-call trampoline with 1 arg via cs:22128. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x255BE
+    seg: 0x255B
+    ofs: 0xE
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22138_stub"
+    sig: "void far; call dword ptr cs:22138; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 28 dyn, 1 caller (sub_27703 20). Far-call trampoline via cs:22138. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25516
+    seg: 0x2551
+    ofs: 0x6
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22158_stub"
+    sig: "void far; call dword ptr cs:22158; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 16 dyn, 2 callers. Far-call trampoline via cs:22158. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25EC3
+    seg: 0x25EC
+    ofs: 0x3
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_221ac_stub"
+    sig: "void far; call dword ptr cs:221AC; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 10 dyn, 0 static. Far-call trampoline via cs:221AC. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10746
+    seg: 0x1074
+    ofs: 0x6
+    size: 99
+    far: true
+    class: ASM
+    hypothesis: "ems_alloc_execute_43h"
+    sig: "void far; for each set alloc flag (10243/1023F/10241/10242): AH=43h int 67h (alloc pages) -> seg into cs:10231/10233/10229/1022D/1022F"
+    port_status: unported
+    verified: null
+    notes: "99B, 12 dyn, 1 caller. Executes the 4 EMS allocations (INT 67h AH=43h) planned by sub_10685, stores resulting segs. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x107A9
+    seg: 0x107A
+    ofs: 0x9
+    size: 138
+    far: true
+    class: ASM
+    hypothesis: "ems_gate_10218_run"
+    sig: "void far; if cs:10218 == 0 retf else fallthrough body; 2 callers"
+    port_status: unported
+    verified: null
+    notes: "138B span (body to first retf@0x107B1), 10 dyn, 2 callers. Gate on state byte cs:10218 to run EMS setup. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1035B
+    seg: 0x1035
+    ofs: 0xB
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "ems_map_seg_10231"
+    sig: "void far; DX=cs:10231, cs:1021F=BX, AX:AH=0/1 int 67h (EMS map 2 pages); preserves dx/ax"
+    port_status: unported
+    verified: null
+    notes: "30B, 8 dyn, cd=12, 5 callers. EMS page-map (INT 67h AH=44h) using seg at cs:10231. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10395
+    seg: 0x1039
+    ofs: 0x5
+    size: 28
+    far: true
+    class: ASM
+    hypothesis: "ems_map_seg_10233"
+    sig: "void far; BX=2, DX=cs:10233, AX:AH=0/1 int 67h (EMS map 2 pages at BX=2); preserves dx/ax"
+    port_status: unported
+    verified: null
+    notes: "28B, 8 dyn, 3 callers. EMS page-map (INT 67h AH=44h) using seg at cs:10233, base BX=2. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10685
+    seg: 0x1068
+    ofs: 0x5
+    size: 139
+    far: true
+    class: ASM
+    hypothesis: "ems_page_size_alloc_plan"
+    sig: "void far; plan 4 EMS page allocs: gate flags cs:10244/10246/10247 -> deduct 0x2C/10239/1023B from cs:1021D, set alloc flags 1023F/10241/10242; final: cs:1021D-=0x10 -> cs:1023D=(+0x0C)&~3"
+    port_status: unported
+    verified: null
+    notes: "139B, 12 dyn, 1 caller (sub_30EBE). Plans EMS page allocations (deducts sizes from cs:1021D, sets 4 alloc flags, computes cs:1023D). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10C47
+    seg: 0x10C4
+    ofs: 0x7
+    size: 18
+    far: true
+    class: ASM
+    hypothesis: "farptr_7075_cond_82_a9"
+    sig: "void far; DX=0x7075h, AX=0x82; if cs:1084D bit0 set: AX=0xA9; retf (conditional far-ptr const)"
+    port_status: unported
+    verified: null
+    notes: "18B, 8 dyn, 1 caller (sub_2EFC3). Returns 7075:0082 or 7075:00A9 gated on cs:1084D.1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x26505
+    seg: 0x2650
+    ofs: 0x5
+    size: 7
+    far: true
+    class: ASM
+    hypothesis: "farptr_7b0e_43ba_const"
+    sig: "void far; DX=0x7B0Eh, AX=0x43BA; retf (returns constant far-ptr 7B0E:43BA)"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF, 23 dyn, cd=166, 4 callers (hot sub_276C1 139). Returns the constant far pointer 7B0E:43BA. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x10463
+    seg: 0x1046
+    ofs: 0x3
+    size: 10
+    far: true
+    class: ASM
+    hypothesis: "farptr_field2f_or_test"
+    sig: "void far; AH=0; AL=cs:[BX+2F]; or ax,ax; retf (ZF=field state)"
+    port_status: unported
+    verified: null
+    notes: "10B LEAF, 26 dyn, cd=38, 6 callers. Reads indexed state byte cs:BX+0x2F, sets ZF. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1117C
+    seg: 0x1117
+    ofs: 0xC
+    size: 28
+    far: true
+    class: ASM
+    hypothesis: "int15_joystick_detect"
+    sig: "void far; AX=0x8404, DX=0xF0 int 15h (joystick detect); if AX=='SG' keep BX else BX=0; cs:11176=BX; retf"
+    port_status: unported
+    verified: null
+    notes: "28B, 18 dyn, 2 callers. INT 15h AH=84h AL=04h joystick detect; stores result to cs:11176. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x105C7
+    seg: 0x105C
+    ofs: 0x7
+    size: 8
+    far: true
+    class: ASM
+    hypothesis: "state_byte_10218_get_zf"
+    sig: "void far; AL=cs:10218 (cbw); or ax,ax; retf (ZF=0 if nonzero)"
+    port_status: unported
+    verified: null
+    notes: "8B, 26 dyn, 3 callers. Reads state byte cs:10218 sign-extended, sets ZF. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1FCB3
+    seg: 0x1FCB
+    ofs: 0x3
+    size: 10
+    far: true
+    class: ASM
+    hypothesis: "state_byte_1f733_set"
+    sig: "void far; cs:1F733 = AL; retf"
+    port_status: unported
+    verified: null
+    notes: "10B, 8 dyn, 2 callers. Setter for state byte cs:1F733 (the flag_1f733_gate input). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x22826
+    seg: 0x2282
+    ofs: 0x6
+    size: 7
+    far: true
+    class: ASM
+    hypothesis: "state_byte_22246_zero"
+    sig: "void far; cs:22246 = 0; retf"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF, 10 dyn, 2 callers. Zeros state byte cs:22246. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25E9E
+    seg: 0x25E9
+    ofs: 0xE
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "state_byte_25487_set"
+    sig: "void far; cs:25487 = AL; retf"
+    port_status: unported
+    verified: null
+    notes: "5B, 17 dyn, 2 callers. Setter for state byte cs:25487 (getter = state_byte_25487_get, batch1). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x205F2
+    seg: 0x205F
+    ofs: 0x2
+    size: 14
+    far: true
+    class: ASM
+    hypothesis: "state_byte_7e54d_set"
+    sig: "void far; ES=7B0Eh; es:7E54D = AL; retf"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF, 25 dyn, 1 caller. Setter for state byte es:7E54D. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x205E4
+    seg: 0x205E
+    ofs: 0x4
+    size: 14
+    far: true
+    class: ASM
+    hypothesis: "state_byte_7e54e_set"
+    sig: "void far; ES=7B0Eh; es:7E54E = AL; retf"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF, 30 dyn, 1 caller. Setter for state byte es:7E54E (getter = state_word_7e54d_get pair). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x10348
+    seg: 0x1034
+    ofs: 0x8
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "state_byte_bx34_set"
+    sig: "void far; cs:[BX+34] = AL; retf (indexed state byte setter)"
+    port_status: unported
+    verified: null
+    notes: "6B, 29 dyn, 2 callers (hot sub_10BE2 stack_reset_dispatch). Sets an indexed state byte at cs:BX+0x34. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F68A
+    seg: 0x1F68
+    ofs: 0xA
+    size: 26
+    far: true
+    class: ASM
+    hypothesis: "state_pair_77730_set"
+    sig: "void far; DS=7772h; ds:77730=[bp+arg0], ds:77732=[bp+arg2]; retf"
+    port_status: unported
+    verified: null
+    notes: "26B, 12 dyn, 3 callers. Stores a 2-word state pair at es:77730/32. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1F6A4
+    seg: 0x1F6A
+    ofs: 0x4
+    size: 26
+    far: true
+    class: ASM
+    hypothesis: "state_pair_77734_set"
+    sig: "void far; DS=7772h; ds:77734=[bp+arg0], ds:77736=[bp+arg2]; retf"
+    port_status: unported
+    verified: null
+    notes: "26B, 12 dyn, 3 callers. Stores a 2-word state pair at es:77734/36. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1F670
+    seg: 0x1F67
+    ofs: 0x0
+    size: 26
+    far: true
+    class: ASM
+    hypothesis: "state_pair_777e6_set"
+    sig: "void far; DS=7772h; ds:777E6=[bp+arg0], ds:777E8=[bp+arg2]; retf (2-word state pair)"
+    port_status: unported
+    verified: null
+    notes: "26B, 12 dyn, 3 callers. Stores a 2-word state pair at es:777E6/E8. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x11A0C
+    seg: 0x11A0
+    ofs: 0xC
+    size: 82
+    far: true
+    class: ASM
+    hypothesis: "state_quad_11873_set"
+    sig: "void far; cs:11873=AX, cs:11875=BL, cs:11876=CL, cs:11877=DL; retf (4-part state quad)"
+    port_status: unported
+    verified: null
+    notes: "82B, 10 dyn, 0 static. Stores a 4-part state (word + 3 bytes) at cs:11873..77. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x20A7A
+    seg: 0x20A7
+    ofs: 0xA
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "state_set_1f6e2_gated_2222a"
+    sig: "void far; if cs:2222A == 0: cs:1F6E2=AX, cs:1F6E4=0xFFFF; retf (gated state set)"
+    port_status: unported
+    verified: null
+    notes: "35B, 22 dyn, 1 caller. Conditional state set: writes cs:1F6E2/E4 only when cs:2222A==0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x105CF
+    seg: 0x105C
+    ofs: 0xF
+    size: 8
+    far: true
+    class: ASM
+    hypothesis: "state_word_10219_get_dx"
+    sig: "void far; DX=cs:10219, AX=0; retf (returns DX:AX = state word, 0)"
+    port_status: unported
+    verified: null
+    notes: "8B LEAF, 13 dyn, 1 caller. Returns cs:10219 in DX with AX=0 (cf. state_word_10219_get). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x105E1
+    seg: 0x105E
+    ofs: 0x1
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "state_word_1023d_get"
+    sig: "void far; AX = cs:1023D; retf"
+    port_status: unported
+    verified: null
+    notes: "5B, 8 dyn, 1 caller. Getter for state word cs:1023D (the EMS alloc plan result). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x20ABC
+    seg: 0x20AB
+    ofs: 0xC
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "state_word_1f6e6_set_ax"
+    sig: "void far; cs:1F6E6 = AX; retf"
+    port_status: unported
+    verified: null
+    notes: "5B, 28 dyn, cd=972 (hot caller sub_121C2 972). Setter for state word cs:1F6E6 (the vec_delta shift count). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x16ED9
+    seg: 0x16ED
+    ofs: 0x9
+    size: 14
+    far: true
+    class: ASM
+    hypothesis: "state_word_77743_zero"
+    sig: "void far; DS=7772h; ds:77743 = 0; retf"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF, 14 dyn, 1 caller (sub_1914E). Zeros state word es:77743. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1D685
+    seg: 0x1D68
+    ofs: 0x5
+    size: 17
+    far: true
+    class: ASM
+    hypothesis: "state_word_77a4a_zero"
+    sig: "void far; ES=7772h; es:77A4A = 0; retf"
+    port_status: unported
+    verified: null
+    notes: "17B, 14 dyn, 1 caller (sub_1914E). Zeros state word es:77A4A. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x10D69
+    seg: 0x10D6
+    ofs: 0x9
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "string_copy_7075_nul"
+    sig: "void far; ES=7075h, DI=0; LDS SI=[bp+arg0]; copy up to 0x0C bytes until NUL to es:0; retf (NUL-terminated copy to 7075:0)"
+    port_status: unported
+    verified: null
+    notes: "35B, 24 dyn, 0 static. Copies a NUL-terminated string (max 12B) from far ptr arg to 7075:0000. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2100F
+    seg: 0x2100
+    ofs: 0xF
+    size: 280
+    far: true
+    class: ASM
+    hypothesis: "vec_delta_norm_1f6ee"
+    sig: "void far; 3-axis delta [si]-es:[bx] scaled by cx=cs:1F6E6 (sign-preserving >>), store to es:[di..+4] + cs:1F6EE/F0/F2; abs-max + quadrant-bit classify -> CX"
+    port_status: unported
+    verified: null
+    notes: "280B, 18 dyn, 1 caller (sub_355E6). Scaled delta vector + magnitude classify (returns CX = quadrant flag 0/1/2). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1E239
+    seg: 0x1E23
+    ofs: 0x9
+    size: 419
+    far: true
+    class: ASM
+    hypothesis: "volume_exponential_adjust2"
+    sig: "void far; C frame: sign of SI -> es:77DEE=+1/-1; es:77DEC = es:77DE6 * SI / 0x64 + es:77DE6; exponent loop (neg: double until >=0x157; pos: halve until <=0x2AE); clamp vs es:77D04/77CBE; es:7778D=0x1F"
+    port_status: unported
+    verified: null
+    notes: "419B, 17 dyn, cd=17, 4 callers. Second exponential volume/level adjust (near-twin of volume_exponential_adjust, es:77DE6 base, mode 0x1F). conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x24E7B
+    seg: 0x24E7
+    ofs: 0xB
+    size: 17
+    far: true
+    class: ASM
+    hypothesis: "bda_417_mask_clear"
+    sig: "void far; ES=0, BX=0x417; es:[417] &= ~AL (clear bits via NOT AL); retf"
+    port_status: unported
+    verified: null
+    notes: "17B, 7 dyn, 3 callers. Clears bits in BDA 0040:0417 (shift flags) via mask ~AL. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24EB5
+    seg: 0x24EB
+    ofs: 0x5
+    size: 15
+    far: true
+    class: ASM
+    hypothesis: "bda_417_store_al"
+    sig: "void far; ES=0, BX=0x417; es:[417] = AL; retf"
+    port_status: unported
+    verified: null
+    notes: "15B LEAF, 3 dyn, 1 caller. Directly stores AL into BDA 0040:0417 (shift flags). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25872
+    seg: 0x2587
+    ofs: 0x2
+    size: 33
+    far: false
+    class: ASM
+    hypothesis: "clip_bounds_restore_25450"
+    sig: "NEAR retn fn; cs:25450..25456 = cs:2546C..25472 (restores the saved clip bounds); retn"
+    port_status: unported
+    verified: null
+    notes: "33B retn, 0 dyn, cd=184 (caller sub_2586E NEARTHUNK 184). Restores the clip-bounds quad (inverse of sub_2584D). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2584D
+    seg: 0x2584
+    ofs: 0xD
+    size: 33
+    far: false
+    class: ASM
+    hypothesis: "clip_bounds_save_2546c"
+    sig: "NEAR retn fn; cs:2546C..25472 = cs:25450..25456 (saves the 4 clip bounds); retn"
+    port_status: unported
+    verified: null
+    notes: "33B retn, 0 dyn, cd=184 (caller sub_25849 NEARTHUNK 184). Saves the clip-bounds quad 25450..56 -> 2546C..72. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25ACB
+    seg: 0x25AC
+    ofs: 0xB
+    size: 251
+    far: false
+    class: ASM
+    hypothesis: "clip_rect_compute_abs"
+    sig: "NEAR retn fn; same clip logic as sub_25BC6 but uses absolute coords at cs:25468/2546A (not [SI]); retn"
+    port_status: unported
+    verified: null
+    notes: "251B retn, 0 dyn, cd=307 (caller sub_25A56 307). Absolute-coordinate twin of clip_rect_compute_si (bounds from cs:25468). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25BC6
+    seg: 0x25BC
+    ofs: 0x6
+    size: 237
+    far: false
+    class: ASM
+    hypothesis: "clip_rect_compute_si"
+    sig: "NEAR retn fn; clamp/clip a rect from [SI] (size [SI]/[SI+2]) against cs:25450..25456 bounds; accumulate clip area to cs:25458; CF=0 if clipped else jmp out; retn"
+    port_status: unported
+    verified: null
+    notes: "237B retn, 0 dyn, cd=449 (caller sub_25A9A 449). Computes clipped-rect area for a sprite at [SI] against bounds cs:25450..56. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x263CE
+    seg: 0x263C
+    ofs: 0xE
+    size: 28
+    far: true
+    class: ASM
+    hypothesis: "dispatch_220c0_invoke_farptr"
+    sig: "void far; loads bx,di,ax + LDS SI=[bp+6]; call dword ptr cs:220C0; retf"
+    port_status: unported
+    verified: null
+    notes: "28B, 4 dyn, 0 static. Far-call trampoline with far-ptr arg via cs:220C0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2555C
+    seg: 0x2555
+    ofs: 0xC
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_2214c_stub"
+    sig: "void far; call dword ptr cs:2214C; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 0 dyn, cd=67 (caller sub_25546 67). Far-call trampoline via cs:2214C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x278DF
+    seg: 0x278D
+    ofs: 0xF
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22184_then_27474_c"
+    sig: "void far; call dword ptr cs:22184; cs:27474 = 0x0C; retf"
+    port_status: unported
+    verified: null
+    notes: "35B, 5 dyn, 0 static. Far-dispatch via cs:22184 then set state word cs:27474=0x0C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2CD8D
+    seg: 0x2CD8
+    ofs: 0xD
+    size: 105
+    far: true
+    class: ASM
+    hypothesis: "dos_version_ge3_check"
+    sig: "void far; DI=AX; AX=0x3000 int 21h (get DOS version); if AL<3: stc+retf (fail) else fallthrough"
+    port_status: unported
+    verified: null
+    notes: "105B, 5 dyn, 2 callers. DOS version check (INT 21h AH=30h); CF=1 if version < 3. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1047C
+    seg: 0x1047
+    ofs: 0xC
+    size: 190
+    far: true
+    class: ASM
+    hypothesis: "ems_gate_10218_run2"
+    sig: "void far; if cs:10218 != 0 fallthrough body else retf; 1 caller (sub_2224C 3)"
+    port_status: unported
+    verified: null
+    notes: "190B span (body to retf@0x10484), 6 dyn, cd=3. Second EMS gate on state byte cs:10218. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A767
+    seg: 0x2A76
+    ofs: 0x7
+    size: 25
+    far: true
+    class: ASM
+    hypothesis: "ems_seg_free_21_49"
+    sig: "void far; if cs:2A662 seg != -1: ES=seg, AH=49h int 21h (free); cs:2A662=-1; retf"
+    port_status: unported
+    verified: null
+    notes: "25B, 7 dyn, 5 callers. Frees an EMS/DOS segment handle at cs:2A662 (INT 21h AH=49h), marks -1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1A734
+    seg: 0x1A73
+    ofs: 0x4
+    size: 80
+    far: true
+    class: ASM
+    hypothesis: "event_slot_alloc_6ac"
+    sig: "void far; scan SI=1..8 for first es:[SI*2+6AC]==-1 (free slot); if found: es:[SI*2+6AC]=DI, es:[DI*2+664]=SI, AX=1 else AX=0; retf (ES=7772h)"
+    port_status: unported
+    verified: null
+    notes: "80B, 0 dyn, cd=667 (hot caller sub_1A8FD 667). Allocates an event slot: finds a free entry at es:7772:6AC, cross-links 664. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1AA6C
+    seg: 0x1AA6
+    ofs: 0xC
+    size: 56
+    far: true
+    class: ASM
+    hypothesis: "event_slot_init_3aa"
+    sig: "void far; C frame: for SI=0..0x22: es:[SI*2+3AA] = (SI==arg0 ? 1 : 0) (ES=7772h); 35-slot init"
+    port_status: unported
+    verified: null
+    notes: "56B, 6 dyn, cd=552 (caller sub_1DA38 552). Initializes a 35-entry slot table at es:7772:3AA, marking index arg0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2043B
+    seg: 0x2043
+    ofs: 0xB
+    size: 43
+    far: false
+    class: ASM
+    hypothesis: "farobj_batch_dispatch_loop"
+    sig: "NEAR retn fn; AL=1 call cs:220F8, AL=AH call cs:220C4; loop CX times {call cs:220CC, SI+=4}; AL=0 call cs:220F8, call cs:220DC; retn"
+    port_status: unported
+    verified: null
+    notes: "43B retn, 0 dyn, cd=132 (caller sub_20423 132). Batch far-dispatch loop (CX iterations over 4B records) with mode gate 220F8. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25299
+    seg: 0x2529
+    ofs: 0x9
+    size: 31
+    far: true
+    class: ASM
+    hypothesis: "flag_block_zero_5c63_mode1"
+    sig: "void far; ES=CS, DI=5C63h; zero 0x0B words (stosw); cs:24E20=1 (mode); retf (cli/sti)"
+    port_status: unported
+    verified: null
+    notes: "31B, 5 dyn, 1 caller (sub_4E520). Zeros the 11-word flag block at 5C63h + sets mode byte 24E20=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x13E83
+    seg: 0x13E8
+    ofs: 0x3
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "hw_config_copy_22e_3e8"
+    sig: "void far; DS=7A32h; SI=0x22E, CX=0x3E8; movsw (copies 0x3E8 words = config block); retf"
+    port_status: unported
+    verified: null
+    notes: "16B LEAF, 3 dyn, 2 callers. Copies a 0x7D0-byte config block from ds:7A32:22E (CX=0x3E8 words). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10CBB
+    seg: 0x10CB
+    ofs: 0xB
+    size: 3
+    far: false
+    class: ASM
+    hypothesis: "jmp_loc_10b1c"
+    sig: "void far; jmp loc_10B1C (tail-jump into a shared block)"
+    port_status: unported
+    verified: null
+    notes: "3B, 1 dyn, cd=0, 5 callers. Tail-jump stub into shared code at 0x10B1C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2CA3F
+    seg: 0x2CA3
+    ofs: 0xF
+    size: 37
+    far: true
+    class: ASM
+    hypothesis: "mcb_save_2c9be"
+    sig: "void far; cs:2C9C2=ES; if cs:2C9BE|2C9C0 == 0: cli, save es:0A/0C (MCB owner) into cs:2C9BE/C0, sti; retf"
+    port_status: unported
+    verified: null
+    notes: "37B, 5 dyn, 1 caller (sub_2B1E5). Saves an MCB (DOS memory block) owner word es:0A/0C into cs:2C9BE once. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25A1C
+    seg: 0x25A1
+    ofs: 0xC
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "mouse_bounds_load_25474"
+    sig: "void far; 4x lodsw -> cs:25474/25476/25478/2547A (loads the mouse-coord bound quad); retf"
+    port_status: unported
+    verified: null
+    notes: "21B, 2 dyn, cd=10,458 (caller sub_25A06 10K). Loads the 4-word mouse/screen bound quad (input to mouse_coord_clamp_25474). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x100A2
+    seg: 0x100A
+    ofs: 0x2
+    size: 13
+    far: true
+    class: ASM
+    hypothesis: "mouse_reset_if_10000"
+    sig: "void far; if cs:10000 != 0: AX=0 int 33h (mouse reset); retf"
+    port_status: unported
+    verified: null
+    notes: "13B LEAF, 3 dyn, 1 caller. Mouse reset (INT 33h AX=0) gated on the enable flag cs:10000. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x17607
+    seg: 0x1760
+    ofs: 0x7
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "pcspk_gate_61_and_fd"
+    sig: "void far; DS=7772h; AL = ds:77A4C & 0xFD; out 61h,AL (clears PC-speaker gate bit1); retf"
+    port_status: unported
+    verified: null
+    notes: "16B LEAF, 5 dyn, 1 caller. Clears bit1 of the PC-speaker control port 61h (via ds:77A4C state). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x17460
+    seg: 0x1746
+    ofs: 0x0
+    size: 15
+    far: false
+    class: ASM
+    hypothesis: "pit_mode3_set_43h"
+    sig: "NEAR retn fn; AL=0x36 out 43h (PIT cmd: ch0, mode 3, lo/hi); then out 40h AL, swap, out 40h AL (program divisor AX); retn"
+    port_status: unported
+    verified: null
+    notes: "15B LEAF retn, 0 dyn, cd=210 (hot callers sub_1747F 132). Programs PIT channel 0 mode 3 (square wave) with 16-bit divisor AX. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x673B7
+    seg: 0x673B
+    ofs: 0x7
+    size: 86
+    far: false
+    class: ASM
+    hypothesis: "r30_offset_accum_6e03e"
+    sig: "void far (DATA-class span, partially undecodable): accumulates (AX*0xC) into es:6DE8:6E03E + mirrors to 6E042/6E044; 3 callers (r33_e105, sub_2C80B 112)"
+    port_status: unported
+    verified: null
+    notes: "86B span, in=3, cd=112, DATA/undecodable head. R30 overlay offset accumulator at seg 6DE8. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x10DDB
+    seg: 0x10DD
+    ofs: 0xB
+    size: 7
+    far: true
+    class: ASM
+    hypothesis: "state_byte_1084b_get"
+    sig: "void far; AL=cs:1084B (AH=0); retf"
+    port_status: unported
+    verified: null
+    notes: "7B, 8 dyn, 1 caller. Getter for state byte cs:1084B. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2281F
+    seg: 0x2281
+    ofs: 0xF
+    size: 7
+    far: true
+    class: ASM
+    hypothesis: "state_byte_22246_set_ff"
+    sig: "void far; cs:22246 = 0xFF; retf"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF, 7 dyn, 4 callers. Sets state byte cs:22246 to 0xFF (pair of state_byte_22246_zero). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x26A2F
+    seg: 0x26A2
+    ofs: 0xF
+    size: 26
+    far: true
+    class: ASM
+    hypothesis: "state_pair_26412_clamp_store"
+    sig: "void far; AX=min(AX,0x6E), DX=min(DX,0x58); cs:26412=AX, cs:26414=DX; retf (clamped pair store)"
+    port_status: unported
+    verified: null
+    notes: "26B, 8 dyn, 1 caller. Clamps AX/DX (0x6E/0x58) then stores the pair to cs:26412/14. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1A5C4
+    seg: 0x1A5C
+    ofs: 0x4
+    size: 19
+    far: true
+    class: ASM
+    hypothesis: "state_pair_78944_get"
+    sig: "void far; ES=7894h; DX=es:78946, AX=es:78944; retf (returns a 2-word state pair)"
+    port_status: unported
+    verified: null
+    notes: "19B, 5 dyn, 1 caller (sub_188CC). Returns the es:78944/946 state pair in DX:AX. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1A5A9
+    seg: 0x1A5A
+    ofs: 0x9
+    size: 27
+    far: true
+    class: ASM
+    hypothesis: "state_pair_78948_zero_ax1"
+    sig: "void far; ES=7894h; es:7894A=0, es:78948=0; AX=1; retf"
+    port_status: unported
+    verified: null
+    notes: "27B, 5 dyn, 3 callers (sub_1B4E8 12). Zeros the es:78948/94A pair, returns AX=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x10DC6
+    seg: 0x10DC
+    ofs: 0x6
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "state_word_10844_classify"
+    sig: "void far; AX=0; if cs:10844==2 retf else AX=1, if ==1 retf else AX=2; retf (classifies mode 0/1/2)"
+    port_status: unported
+    verified: null
+    notes: "21B, 7 dyn, 1 caller. Classifies a mode word cs:10844 -> AX=0/1/2. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x11299
+    seg: 0x1129
+    ofs: 0x9
+    size: 8
+    far: true
+    class: ASM
+    hypothesis: "state_word_11102_reset_f0f0"
+    sig: "void far; cs:11102 = 0xF0F0; retf (reset input status word)"
+    port_status: unported
+    verified: null
+    notes: "8B LEAF, 8 dyn, 1 caller. Resets the input-status word cs:11102 to 0xF0F0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x16ECE
+    seg: 0x16EC
+    ofs: 0xE
+    size: 11
+    far: true
+    class: ASM
+    hypothesis: "state_word_77743_get"
+    sig: "void far; DS=7772h; AX = ds:77743; retf"
+    port_status: unported
+    verified: null
+    notes: "11B LEAF, 2 dyn, 1 caller (sub_1914E). Getter for state word es:77743 (setter = state_word_77743_zero). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1A62C
+    seg: 0x1A62
+    ofs: 0xC
+    size: 14
+    far: true
+    class: ASM
+    hypothesis: "state_word_78942_get"
+    sig: "void far; ES=7894h; AX = es:78942; retf"
+    port_status: unported
+    verified: null
+    notes: "14B, 5 dyn, 2 callers (sub_19B78 accumulate_wait). Reads state word es:78942. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2C973
+    seg: 0x2C97
+    ofs: 0x3
+    size: 2
+    far: true
+    class: ASM
+    hypothesis: "stc_retf_const"
+    sig: "void far; stc; retf (returns with CF set -- sentinel)"
+    port_status: unported
+    verified: null
+    notes: "2B LEAF, 5 dyn, 3 callers (sub_2ABE2/2AC4C/2B1E5). Sets carry flag and returns (error/sentinel). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24AEF
+    seg: 0x24AE
+    ofs: 0xF
+    size: 77
+    far: false
+    class: ASM
+    hypothesis: "trig_value_bsearch_83a5"
+    sig: "NEAR retn fn; ES=83A5h; binary-search AX in the sorted table (DI=0, SI=0x100..0x200 loop) -> index DX; AX=DX<<4; retn"
+    port_status: unported
+    verified: null
+    notes: "77B retn, 0 dyn, cd=149 (caller sub_24ADC 149). Binary search of a trig/sorted table at ES=83A5h -> table index *16. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1F59E
+    seg: 0x1F59
+    ofs: 0xE
+    size: 195
+    far: true
+    class: ASM
+    hypothesis: "volume_exponential_adjust3"
+    sig: "void far; C frame: es:77DEC = es:77DE2 * [bp+arg0] / 0x64 + es:77DE2; clamp vs es:78862+0x0C / -0x0C; es:7778D=0x1E"
+    port_status: unported
+    verified: null
+    notes: "195B, 0 dyn, cd=112, 3 callers (hot sub_1A9AA 112). Third exponential volume/level adjust (es:77DE2 base, clamp vs es:78862, mode 0x1E). conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x1A5D7
+    seg: 0x1A5D
+    ofs: 0x7
+    size: 58
+    far: true
+    class: ASM
+    hypothesis: "accumulate_add_sub_78944"
+    sig: "void far; if [bp+arg4]==1: es:78944/946 += DX:BX else -= DX:BX (add/sub 64-bit accumulator); AX=1; retf"
+    port_status: unported
+    verified: null
+    notes: "58B, 0 dyn, cd=5, 1 caller (sub_19B78). Adds or subtracts a 64-bit value into the es:78944 accumulator (gated by arg). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2D41F
+    seg: 0x2D41
+    ofs: 0xF
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "cpu_flag_486_detect"
+    sig: "NEAR retn fn; push 0xF000/popf/pushf/pop AX: if (AX & 0xF000) != 0 -> DX++ (486+ has bits 12-15); AX=DX; retn (CPU generation counter)"
+    port_status: unported
+    verified: null
+    notes: "17B retn, 0 dyn, cd=8, 2 callers. CPU-generation detect via EFLAGS bits 12-15 (increments DX per 386/486/P5). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1BE1B
+    seg: 0x1BE1
+    ofs: 0xB
+    size: 168
+    far: true
+    class: ASM
+    hypothesis: "device_path_build_mus"
+    sig: "void far; C frame: build an ASCII path at far ptr [bp+4]: 'MUS' + (DL+'A') + '.' + ('ADL' or 'MID') + NUL (device driver path)"
+    port_status: unported
+    verified: null
+    notes: "168B, 0 dyn, cd=47, 1 caller (sub_1BAD6 47). Builds the device path string (MUSx.ADL / MUSx.MID) for sound-driver load. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x255C4
+    seg: 0x255C
+    ofs: 0x4
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22140_stub"
+    sig: "void far; call dword ptr cs:22140; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 0 dyn, cd=20, 1 caller (sub_27703 20). Far-call trampoline via cs:22140. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x105E6
+    seg: 0x105E
+    ofs: 0x6
+    size: 46
+    far: false
+    class: ASM
+    hypothesis: "ems_ems_detect_3d44"
+    sig: "NEAR retn fn; AX=0x3D00 int 21h (open), AX=0x4400 (ioctl), check DX.7 (char dev), AX=0x4407 (get handle info), AL!=0, AH=3E (close); clc if all pass; retn"
+    port_status: unported
+    verified: null
+    notes: "46B retn, 0 dyn, cd=5, 1 caller (sub_1053A ems_init). EMS driver detection via INT 21h open/ioctl/close sequence; CF=0 if EMS present. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x19103
+    seg: 0x1910
+    ofs: 0x3
+    size: 29
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_0_jpt"
+    sig: "void far; BX=[bp+arg0]; jump-table (cs:jpt_19113) over 4 cases -> AX=1/0; retf (key-code validity 0..)"
+    port_status: unported
+    verified: null
+    notes: "29B, 0 dyn, cd=8, 1 caller (sub_1950C). Jump-table validation of key codes >=0 -> AX 0/1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1970F
+    seg: 0x1970
+    ofs: 0xF
+    size: 33
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_100_jpt"
+    sig: "void far; BX=[bp+arg0]-0x100; jump-table (cs:jpt_19723) over 5 cases -> AX=1/0; retf (key-code validity 0x100..)"
+    port_status: unported
+    verified: null
+    notes: "33B, 0 dyn, cd=36, 2 callers (sub_18E1A 36). Jump-table validation of key codes >=0x100 -> AX 0/1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1977D
+    seg: 0x1977
+    ofs: 0xD
+    size: 33
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_108_jpt"
+    sig: "void far; BX=[bp+arg0]-0x108; jump-table (cs:jpt_19791) over 0x0B cases -> AX=1/0; retf (key-code validity 0x108..)"
+    port_status: unported
+    verified: null
+    notes: "33B, 0 dyn, cd=36, 2 callers (sub_18E1A 36). Jump-table validation of key codes >=0x108 -> AX 0/1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x19128
+    seg: 0x1912
+    ofs: 0x8
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_dec_jpt"
+    sig: "void far; BX=[bp+arg0]-1; jump-table (cs:jpt_19139) over 4 cases -> AX=1/0; retf (key-code validity 1..)"
+    port_status: unported
+    verified: null
+    notes: "30B, 0 dyn, cd=16, 1 caller (sub_195C4 16). Jump-table validation of key codes >=1 -> AX 0/1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1BF9A
+    seg: 0x1BF9
+    ofs: 0xA
+    size: 34
+    far: true
+    class: ASM
+    hypothesis: "event_mode_valid_234"
+    sig: "void far; AX = ([bp+arg0] in {2,3,4} ? 1 : 0); retf (validates mode 2/3/4)"
+    port_status: unported
+    verified: null
+    notes: "34B, 0 dyn, cd=65, 2 callers (sub_1BAD6 47). Returns AX=1 if mode arg in {2,3,4} else 0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4185A
+    seg: 0x4185
+    ofs: 0xA
+    size: 82
+    far: false
+    class: ASM
+    hypothesis: "farobj_copyloop_thunk"
+    sig: "void far; (span undecodable mid-instruction, far call 9A); 1 caller (sub_2BEAB 6)"
+    port_status: unported
+    verified: null
+    notes: "82B span, in=1, cd=6, undecodable. Far-object copy-loop thunk. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x12771
+    seg: 0x1277
+    ofs: 0x1
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "farptr_indirect_get_11bb"
+    sig: "void far; SI=cs:11BBA, DS=cs:11BBE; SI=[SI+4] (loads a far-ptr field); retf"
+    port_status: unported
+    verified: null
+    notes: "16B LEAF, 0 dyn, cd=55, 1 caller (sub_12534). Loads an indirect far-pointer field via cs:11BBA/BBE state. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x252B8
+    seg: 0x252B
+    ofs: 0x8
+    size: 29
+    far: true
+    class: ASM
+    hypothesis: "flag_block_zero_5c63_mode0"
+    sig: "void far; ES=CS, DI=5C63h; cli; cs:24E20=0 (mode); zero 0x0B words (stosw); sti; retf"
+    port_status: unported
+    verified: null
+    notes: "29B, 0 dyn, cd=5, 2 callers (sub_22A44, sub_4E520). Zeros the 11-word flag block 5C63h + sets mode byte 24E20=0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x13E5A
+    seg: 0x13E5
+    ofs: 0xA
+    size: 41
+    far: true
+    class: ASM
+    hypothesis: "hw_flag_bit3_22e_set_cmp"
+    sig: "void far; DS=7A32h; SI&=0xFFF; AH=[SI+22E]&0x9F, AL=(AL ROR3)|AH; xchg into [SI+22E]; if changed: OR bit1 into it; retf"
+    port_status: unported
+    verified: null
+    notes: "41B, 0 dyn, cd=55, 3 callers. Sets a hw-flag nibble at ds:7A32:SI+22E (ROR-merge) + marks dirty (bit1). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13E45
+    seg: 0x13E4
+    ofs: 0x5
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "hw_flag_bit3_extract"
+    sig: "void far; DS=7A32h; SI&=0xFFF; AL = ([SI+22E] ROL3) & 3; retf (extracts a 2-bit field)"
+    port_status: unported
+    verified: null
+    notes: "21B, 0 dyn, cd=55, 2 callers. Extracts a 2-bit field from the hw-flag byte at ds:7A32:SI+22E. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1119C
+    seg: 0x1119
+    ofs: 0xC
+    size: 135
+    far: false
+    class: ASM
+    hypothesis: "int15_joystick_read"
+    sig: "NEAR retn fn; if cs:11176 (detect result) != 0: AH=0x84, DX=1 int 15h (read joystick), clc; retn"
+    port_status: unported
+    verified: null
+    notes: "135B span (body to retn@0x111AD), 0 dyn, cd=11, 3 callers (sub_11198 NEARTHUNK 11). Reads joystick axes via INT 15h AH=84h AL=01 (gated on detect flag cs:11176). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x22A9F
+    seg: 0x22A9
+    ofs: 0xF
+    size: 39
+    far: false
+    class: ASM
+    hypothesis: "int8_vector_hook_343f"
+    sig: "NEAR retn fn; AX=0x3508 int 21h (get INT8 vec) -> cs:2221C; DS=seg020, DX=0x343F, AX=0x2508 int 21h (set INT8 = 343F); retn"
+    port_status: unported
+    verified: null
+    notes: "39B retn, 0 dyn, cd=5, 1 caller (sub_22A44). Hooks INT 8 (timer) vector: saves old at cs:2221C, installs seg020:343F. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x252D5
+    seg: 0x252D
+    ofs: 0x5
+    size: 56
+    far: true
+    class: ASM
+    hypothesis: "int9_vector_hook_5c7d"
+    sig: "void far; ES=CS, DI=5C63h: zero 0x0B words; AX=0x3509 int 21h (get INT9) -> cs:24E38; DS=CS, DX=0x5C7D, AX=0x2509 int 21h (set INT9 = 5C7D); retf"
+    port_status: unported
+    verified: null
+    notes: "56B, 0 dyn, cd=5, 1 caller (sub_22A44). Hooks INT 9 (keyboard): saves old at cs:24E38, installs CS:5C7D + resets flag block. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x253FC
+    seg: 0x253F
+    ofs: 0xC
+    size: 83
+    far: false
+    class: ASM
+    hypothesis: "kbd_scancode_xlat_shift"
+    sig: "NEAR retn fn; if AH>0x3A: AL=0 retn; ES=0,DS=7B0E; shift-flag gated (es:417 bits0-1,bit6): BX=39E2 or 3A1D table base (with AH range checks 0x10-0x32); AL = [BX+AH] via XLAT; retn"
+    port_status: unported
+    verified: null
+    notes: "83B retn, 0 dyn, cd=7, 1 caller (sub_251CF 7). Keyboard scancode translate with shift-state table selection (39E2/3A1D). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x22ADC
+    seg: 0x22AD
+    ofs: 0xC
+    size: 15
+    far: false
+    class: ASM
+    hypothesis: "pit_divisor_set_bx"
+    sig: "NEAR retn LEAF; cli; AL=0x36 out 43h (PIT ch0 mode 3); out 40h BL, out 40h BH (program divisor BX); sti; retn"
+    port_status: unported
+    verified: null
+    notes: "15B LEAF retn, 0 dyn, cd=5, 2 callers. Programs PIT ch0 mode-3 with 16-bit divisor BX (cli/sti guarded). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CF6A
+    seg: 0x2CF6
+    ofs: 0xA
+    size: 33
+    far: false
+    class: ASM
+    hypothesis: "r01_ascii_header_data"
+    sig: "void far (DATA-class span, ASCII-looking): mixed ASCII bytes + undecodable 0x00; 2 callers (sub_2BEC9, sub_2BFCD 24)"
+    port_status: unported
+    verified: null
+    notes: "33B span, in=2, cd=24, DATA/ASCII. R01 overlay ASCII data block (header/label bytes). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2D0DA
+    seg: 0x2D0D
+    ofs: 0xA
+    size: 36
+    far: false
+    class: ASM
+    hypothesis: "r01_farptr_call_a"
+    sig: "void far; (span undecodable, far calls 9A); 1 caller (sub_2BEDD 10)"
+    port_status: unported
+    verified: null
+    notes: "36B span, in=1, cd=10, undecodable. R01 overlay far-ptr call helper A. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2D0FE
+    seg: 0x2D0F
+    ofs: 0xE
+    size: 28
+    far: false
+    class: ASM
+    hypothesis: "r01_farptr_call_b"
+    sig: "void far; (span undecodable, far calls 9A); 1 caller (sub_2BED3 9)"
+    port_status: unported
+    verified: null
+    notes: "28B span, in=1, cd=9, undecodable. R01 overlay far-ptr call helper B. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2D26A
+    seg: 0x2D26
+    ofs: 0xA
+    size: 173
+    far: false
+    class: ASM
+    hypothesis: "r01_farptr_call_c"
+    sig: "void far; (span undecodable, many far calls 9A); 1 caller (sub_2BEF1 7)"
+    port_status: unported
+    verified: null
+    notes: "173B span, in=1, cd=7, undecodable. R01 overlay far-ptr call helper C. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4FD8E
+    seg: 0x4FD8
+    ofs: 0xE
+    size: 31
+    far: false
+    class: ASM
+    hypothesis: "r08_farptr_copy_thunk"
+    sig: "void far; (span undecodable mid-instruction); 1 caller (sub_2BEBF 15)"
+    port_status: unported
+    verified: null
+    notes: "31B span, in=1, cd=15, undecodable. R08 overlay far-ptr copy thunk. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6E376
+    seg: 0x6E37
+    ofs: 0x6
+    size: 90
+    far: true
+    class: ASM
+    hypothesis: "r14_stream_read_retf8"
+    sig: "void far; stream read: CX=[bp+6] clipped to cs:6E2B6 budget, deduct; accumulate into cs:6E2B2/B4 (32-bit); copy CX bytes from far ptr cs:6E2BC/BE to es:[bp+0Ah] (movsw/movsb); retf 8 (cleans 8B args)"
+    port_status: unported
+    verified: null
+    notes: "90B, 0 dyn, cd=12, 3 callers (thunk slots sub_2BF05/2BF55). R14 overlay stream reader with byte budget + far args (retf 8). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6740D
+    seg: 0x6740
+    ofs: 0xD
+    size: 97
+    far: false
+    class: ASM
+    hypothesis: "r30_rect_overlap_check"
+    sig: "void far (DATA-class span, partially undecodable): compare rect [es:6E042 ptr] vs es:7894:79E40/79E3E bounds (jl/jg branches); 1 caller (sub_2C95F 9)"
+    port_status: unported
+    verified: null
+    notes: "97B span, in=1, cd=9, DATA/undecodable head. R30 overlay rectangle-overlap test vs viewport bounds. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x66DBD
+    seg: 0x66DB
+    ofs: 0xD
+    size: 164
+    far: false
+    class: ASM
+    hypothesis: "r30_table_copy_4fd5c"
+    sig: "void far (DATA-class span, partially undecodable): copies words es:4FC2:4FD5C/5E into 4FD5A..4FD6C scatter; 2 callers (sub_2C513, sub_2C595)"
+    port_status: unported
+    verified: null
+    notes: "164B span, in=2, cd=26, DATA/undecodable head. R30 overlay table-copy helper at seg 4FC2. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x1727E
+    seg: 0x1727
+    ofs: 0xE
+    size: 92
+    far: true
+    class: ASM
+    hypothesis: "sbi_port_discover_aa"
+    sig: "void far; scan SBI base ports 0x21C..0x27C step 0x10: pulse (out 1/0), poll ACK bit7, verify 0xAA response; AX=1 base found else 0 (es:777F0=base); retf"
+    port_status: unported
+    verified: null
+    notes: "92B, 0 dyn, cd=15, 1 caller (sub_1740D 15). Discovers the SBI base port by 0xAA handshake (stores to es:777F0). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x172E1
+    seg: 0x172E
+    ofs: 0x1
+    size: 88
+    far: true
+    class: ASM
+    hypothesis: "sbi_reset_verify"
+    sig: "void far; SBI (MPU/ADLib) reset handshake on ports 330h/331h: drain, out 0xFF, poll for 0xFE ACK x4; AX=1 if verified else 0; retf"
+    port_status: unported
+    verified: null
+    notes: "88B, 0 dyn, cd=31, 2 callers (sub_1740D 15, sub_195C4 16). SBI device reset + ACK verification (ports 330h/331h). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1A611
+    seg: 0x1A61
+    ofs: 0x1
+    size: 27
+    far: true
+    class: ASM
+    hypothesis: "state_pair_78944_zero_ax1"
+    sig: "void far; ES=7894h; es:78946=0, es:78944=0; AX=1; retf (accumulator pair reset)"
+    port_status: unported
+    verified: null
+    notes: "27B, 0 dyn, cd=5, 2 callers (sub_19B78 accumulate_wait). Zeros the es:78944/946 accumulator pair, returns AX=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1A63A
+    seg: 0x1A63
+    ofs: 0xA
+    size: 20
+    far: true
+    class: ASM
+    hypothesis: "state_word_78942_one_ax1"
+    sig: "void far; ES=7894h; es:78942=1; AX=1; retf"
+    port_status: unported
+    verified: null
+    notes: "20B, 0 dyn, cd=5, 1 caller (sub_19B78). Sets state word es:78942=1, returns AX=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1A64E
+    seg: 0x1A64
+    ofs: 0xE
+    size: 20
+    far: true
+    class: ASM
+    hypothesis: "state_word_78942_zero_ax1"
+    sig: "void far; ES=7894h; es:78942=0; AX=1; retf"
+    port_status: unported
+    verified: null
+    notes: "20B, 0 dyn, cd=5, 2 callers (sub_19B78). Zeros state word es:78942, returns AX=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x12703
+    seg: 0x1270
+    ofs: 0x3
+    size: 55
+    far: false
+    class: ASM
+    hypothesis: "tile_record_count"
+    sig: "NEAR retn fn; CX=count from [SI]; base=cs:11BC6/BC8*4; sum per-record [ptr] & 0x7F lengths into DX -> CX; retn"
+    port_status: unported
+    verified: null
+    notes: "55B retn, 0 dyn, cd=55, 1 caller (sub_12534). Sums record lengths from the tile table -> CX (total count). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x12696
+    seg: 0x1269
+    ofs: 0x6
+    size: 109
+    far: false
+    class: ASM
+    hypothesis: "tile_record_search_bl"
+    sig: "NEAR retn fn; CX=count from [SI]; for each record: base = cs:11BC6/11BC8*4 -> cs:11BCA/CC, offset byte -> cs:11BCE/D0; lodsw rec-ptr, walk 0x0A-stride entries matching BL at [SI+8] else stc; retn"
+    port_status: unported
+    verified: null
+    notes: "109B retn, 0 dyn, cd=55, 3 callers (sub_12534 55). Searches a variable-stride tile/record table for BL; stc if not found. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F50B
+    seg: 0x1F50
+    ofs: 0xB
+    size: 147
+    far: true
+    class: ASM
+    hypothesis: "volume_exponential_adjust4"
+    sig: "void far; C frame: es:77DEC = es:78866 * [bp+arg0] / 0x64 + es:78866; clamp 0..0x7F; es:78776=0x2000; es:7778D=0x1F"
+    port_status: unported
+    verified: null
+    notes: "147B, 0 dyn, cd=17, 2 callers (sub_1AA0B 17). Fourth exponential volume/level adjust (es:78866 base, clamp 0..0x7F). conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x14B12
+    seg: 0x14B1
+    ofs: 0x2
+    size: 5
+    far: false
+    class: ASM
+    hypothesis: "avg2_ax_dx"
+    sig: "NEAR retn LEAF; AX = (AX + DX) >> 1 (avg with carry-in); retn"
+    port_status: unported
+    verified: null
+    notes: "5B LEAF retn, 0 dyn, cd=0, 3 callers. Two-operand average (AX+DX)/2 with rcr carry. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x13C0E
+    seg: 0x13C0
+    ofs: 0xE
+    size: 24
+    far: false
+    class: ASM
+    hypothesis: "coord_delta_11c56"
+    sig: "NEAR retn fn; DH:DL=cs:11C57:11C56, AH:AL=cs:11C59:11C58; AX-=DX (delta of the two 2-byte coord pairs); BP=[SI]; retn"
+    port_status: unported
+    verified: null
+    notes: "24B retn, 0 dyn, cd=0, 3 callers. Computes the coordinate delta between two cached pairs at cs:11C56..59, BP=[SI]. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x31C44
+    seg: 0x31C4
+    ofs: 0x4
+    size: 93
+    far: false
+    class: ASM
+    hypothesis: "dgroup_cycle_435_436"
+    sig: "NEAR retn fn; change-detect ds:439 vs ds:43D -> advance ds:435 mod 8, index table ds:[441+bx] -> ds:431 (and mirror for 43A/436 -> 432); reset counters"
+    port_status: unported
+    verified: null
+    notes: "93B retn, 0 dyn, cd=0, 4 callers. Cycles an 8-entry table at ds:441 with change-detect counters, publishing the current entry to ds:431/432. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x256B8
+    seg: 0x256B
+    ofs: 0x8
+    size: 6
+    far: false
+    class: ASM
+    hypothesis: "dispatch_220a4_near"
+    sig: "NEAR retn fn; call dword ptr cs:220A4; retn (near twin of dispatch_220a4_stub)"
+    port_status: unported
+    verified: null
+    notes: "6B retn, 0 dyn, cd=0, 3 callers (sub_1FB3C, sub_2650C, sub_28E50). NEAR far-call trampoline via cs:220A4. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25540
+    seg: 0x2554
+    ofs: 0x0
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22148_stub"
+    sig: "void far; call dword ptr cs:22148; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 0 dyn, cd=5, 1 caller (sub_25522 5). Far-call trampoline via cs:22148. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2CAF0
+    seg: 0x2CAF
+    ofs: 0x0
+    size: 43
+    far: false
+    class: ASM
+    hypothesis: "dos_indirect_dispatch_2c9ba"
+    sig: "void far; DS=CS; cs:2CB1B=word_2CB7F, cs:2CB1D=word_2CB81, cs:2CB1F=0; BX=0x1AB, AH=6, AL=1, CX=0; jmp cs:off_2C9BA (table dispatch)"
+    port_status: unported
+    verified: null
+    notes: "43B, 0 dyn, cd=5, 1 caller (sub_2CA64). Loads a call frame then tail-dispatches through the near-pointer table at cs:2C9BA (DOS-ish service, AH=6). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10422
+    seg: 0x1042
+    ofs: 0x2
+    size: 52
+    far: true
+    class: ASM
+    hypothesis: "ems_remap_execute"
+    sig: "void far; if cs:1023F: DX=cs:10229, AH=4402h int 67h (map); if cs:10240: DX=cs:1022B, AL=3, AH=44h int 67h; cs:10249=0; retf"
+    port_status: unported
+    verified: null
+    notes: "52B, 0 dyn, cd=0, 4 callers (sub_2EAA7..sub_2EF12). Applies the pending EMS page maps (gated by alloc flags 1023F/10240), clears done-flag 10249. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1A662
+    seg: 0x1A66
+    ofs: 0x2
+    size: 114
+    far: true
+    class: ASM
+    hypothesis: "event_table_find_name"
+    sig: "void far (C frame): compare the NUL-terminated name at [bp+arg0] against 0x0C-char entries at es:7894:22 + i*0x0E (i < es:78960); return far ptr DX:AX to the match, else -1:-1"
+    port_status: unported
+    verified: null
+    notes: "114B, 0 dyn, cd=0, 4 callers. Looks up a name in the 0x0E-stride event table at 7894:0022, returns its far pointer (or FFFF:FFFF). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x18FB5
+    seg: 0x18FB
+    ofs: 0x5
+    size: 8
+    far: true
+    class: ASM
+    hypothesis: "event_true_far"
+    sig: "void far; AX = 1; retf (constant true result)"
+    port_status: unported
+    verified: null
+    notes: "8B, 0 dyn, cd=1, 1 caller (sub_1852E). Returns constant AX=1 (far twin of always_true). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x28CA1
+    seg: 0x28CA
+    ofs: 0x1
+    size: 3
+    far: false
+    class: ASM
+    hypothesis: "farobj_di_441e_init"
+    sig: "void far; mov DI, 0x441E (then span truncated -- DATA class, no terminator in 3B); 3 callers (sub_26B2E, sub_27A20, sub_28774)"
+    port_status: unported
+    verified: null
+    notes: "3B span, 0 dyn, cd=0, 3 callers, DATA/truncated. Sets DI=0x441E (buffer offset) at function entry; body continues past span. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x27051
+    seg: 0x2705
+    ofs: 0x1
+    size: 40
+    far: true
+    class: ASM
+    hypothesis: "farobj_field_mask_24_26"
+    sig: "void far; DS=seg; for CX entries from es:[BX] (BX=0x34, +4): LDS SI; if SI!=-1: [SI+24] &= 0x7FFF, [SI+26] &= 0x3F (clears high bits of two fields); retf"
+    port_status: unported
+    verified: null
+    notes: "40B, 0 dyn, cd=0, 3 callers (sub_34923, sub_34954, sub_34C31). Iterates the far-ptr object table, masking field +24 (word, 0x7FFF) and +26 (0x3F) on each object. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3B31F
+    seg: 0x3B31
+    ofs: 0xF
+    size: 25
+    far: false
+    class: ASM
+    hypothesis: "farobj_init_43ba"
+    sig: "void far; SI=0x43BA then (span undecodable); 4 callers incl sub_4A7E5 DATA"
+    port_status: unported
+    verified: null
+    notes: "25B span, 0 dyn, cd=0, 4 callers, undecodable head. Far-object init with SI=0x43BA table base. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x5006A
+    seg: 0x5006
+    ofs: 0xA
+    size: 86
+    far: true
+    class: ASM
+    hypothesis: "farobj_table_lookup_scaled"
+    sig: "void far; DS=6BE0h, count=ds:6C8C6; scan SI=0x0AC8 entries: match AX and DL -> DX:AX = cbw*[SI+6/8] scaled by 0x3334 (x0.8), stosw pairs; SI=[SI+4] -> CX=(>>4)&0xF, SI&=0x7FF; clc; retf"
+    port_status: unported
+    verified: null
+    notes: "86B, 0 dyn, cd=0, 4 callers (sub_44352..sub_484C1). Looks up an object in the 6BE0:AC8 table, returns scaled coordinates (x0.8) + index (CX nibble, SI). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2AA0F
+    seg: 0x2AA0
+    ofs: 0xF
+    size: 24
+    far: true
+    class: ASM
+    hypothesis: "farptr_list_copy_ffff"
+    sig: "void far; DS=CS, SI=0x0B0C8; repeat: lodsw, if -1 stop else stosw+movsw (copies far-ptr pairs to ES:DI until terminator 0xFFFF); retf"
+    port_status: unported
+    verified: null
+    notes: "24B, 0 dyn, cd=5, 1 caller (sub_229DD). Copies a 0xFFFF-terminated far-pointer list from cs:0B0C8 to ES:DI. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2D382
+    seg: 0x2D38
+    ofs: 0x2
+    size: 10
+    far: false
+    class: ASM
+    hypothesis: "farptr_slot0_handler"
+    sig: "void far; push bp/si/di; call near; pop di/si/bp; retf (real target behind RTLink thunk slot #000)"
+    port_status: unported
+    verified: null
+    notes: "10B LEAF, 0 dyn, cd=5, 1 caller (sub_2BD9D = thunk slot 0). The actual handler the loader-trap thunks reach after resolution. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2D4A2
+    seg: 0x2D4A
+    ofs: 0x2
+    size: 10
+    far: false
+    class: ASM
+    hypothesis: "farptr_slot1_handler"
+    sig: "void far; push bp/si/di; call near; pop di/si/bp; retf (real target behind RTLink thunk slot #001)"
+    port_status: unported
+    verified: null
+    notes: "10B LEAF, 0 dyn, cd=5, 1 caller (sub_2BDA7 = thunk slot 1). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x233C0
+    seg: 0x233C
+    ofs: 0x0
+    size: 22
+    far: false
+    class: ASM
+    hypothesis: "farptr_table_get_22db4"
+    sig: "void far (span DATA-class, no terminator in span): BX = cs:22D26*2 + cs:22DB4; ES = cs:22DB6; BX = es:[BX] (loads a far-ptr from the table)"
+    port_status: unported
+    verified: null
+    notes: "22B span, 0 dyn, cd=0, 4 callers (sub_22EA2..sub_235BB). Loads a far pointer from the cs:22DB4/22DB6 table indexed by state cs:22D26 (near-twin of farptr_table_get). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2412E
+    seg: 0x2412
+    ofs: 0xE
+    size: 246
+    far: false
+    class: ASM
+    hypothesis: "fixed_mat3_scale_a"
+    sig: "NEAR retn fn; saturating 3x3 matrix scale: rows [bx+0..10] * scale [si] (es=seg), combined imul/add/sub with 0x8001/0x7FFF clamp, stored to [di+0..10]; first row copies [bx] -> [di] raw"
+    port_status: unported
+    verified: null
+    notes: "246B retn, 0 dyn, cd=0, 4 callers (sub_24440..sub_24536). Fixed-point 3x3 matrix scale+clamp variant A (mixed add/sub row form). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24224
+    seg: 0x2422
+    ofs: 0x4
+    size: 245
+    far: false
+    class: ASM
+    hypothesis: "fixed_mat3_scale_b"
+    sig: "NEAR retn fn; saturating 3x3 matrix scale variant B (add-form rows, raw diagonal copies to [di]); 4 callers (same set)"
+    port_status: unported
+    verified: null
+    notes: "245B retn, 0 dyn, cd=0, 4 callers. Fixed-point 3x3 matrix scale variant B (add-form). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24319
+    seg: 0x2431
+    ofs: 0x9
+    size: 245
+    far: false
+    class: ASM
+    hypothesis: "fixed_mat3_scale_c"
+    sig: "NEAR retn fn; saturating 3x3 matrix scale variant C (sub-form rows with raw interleave); 4 callers (same set)"
+    port_status: unported
+    verified: null
+    notes: "245B retn, 0 dyn, cd=0, 4 callers. Fixed-point 3x3 matrix scale variant C (sub-form). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x21933
+    seg: 0x2193
+    ofs: 0x3
+    size: 224
+    far: false
+    class: ASM
+    hypothesis: "param6_append_0f66"
+    sig: "NEAR retn fn; if [bp+arg0]==0: copy 6 words from [bp+arg6] to es:0F66 (queue cursor es:0F66 advances); retn (else falls into the bigger body)"
+    port_status: unported
+    verified: null
+    notes: "224B span, 0 dyn, cd=0, 4 callers. Appends a 12-byte parameter record to the es:0F66 queue when arg0==0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2D1D0
+    seg: 0x2D1D
+    ofs: 0x0
+    size: 148
+    far: false
+    class: ASM
+    hypothesis: "r01_farptr_call_d"
+    sig: "void far; (span undecodable, many far calls 9A); 1 caller (sub_2BE3D 5)"
+    port_status: unported
+    verified: null
+    notes: "148B span, in=1, cd=5, undecodable. R01 overlay far-ptr call helper D. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2D189
+    seg: 0x2D18
+    ofs: 0x9
+    size: 71
+    far: false
+    class: ASM
+    hypothesis: "r01_farptr_call_e"
+    sig: "void far; (span undecodable, far calls 9A); 1 caller (sub_2BEE7 3)"
+    port_status: unported
+    verified: null
+    notes: "71B span, in=1, cd=3, undecodable. R01 overlay far-ptr call helper E. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x106AF9
+    seg: 0x106AF
+    ofs: 0x9
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "r12_farptr_helper"
+    sig: "void far (span undecodable): push si/di/ax/bx/cx; call near; pops; retf; 4 callers (r12_e22/e31/e32/e33)"
+    port_status: unported
+    verified: null
+    notes: "14B span, 0 dyn, cd=0, 4 callers, undecodable. R12 overlay far-ptr helper. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x68290
+    seg: 0x6829
+    ofs: 0x0
+    size: 1
+    far: false
+    class: ASM
+    hypothesis: "r30_hlt_stub"
+    sig: "void far; hlt (halt stub -- RTS interrupt/idle marker in R30 overlay)"
+    port_status: unported
+    verified: null
+    notes: "1B, 0 dyn, cd=2, 1 caller (sub_2C54F 2). HALT instruction stub (idle/RTS marker). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x69705
+    seg: 0x6970
+    ofs: 0x5
+    size: 27
+    far: false
+    class: ASM
+    hypothesis: "r30_state_push_6e14f"
+    sig: "void far (span partially undecodable): ES=6DE8h; es:6E145=0; push es:6E151, push es:6E14F (saves a far-ptr pair); 1 caller (sub_2C6A3 1)"
+    port_status: unported
+    verified: null
+    notes: "27B span, in=1, cd=1, DATA-class head. R30 overlay state push at seg 6DE8. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x42879
+    seg: 0x4287
+    ofs: 0x9
+    size: 37
+    far: false
+    class: ASM
+    hypothesis: "r32_farptr_gate"
+    sig: "void far (C frame, span undecodable after enter); 4 callers (r32_e74, r32_e83, sub_66E62, sub_67781)"
+    port_status: unported
+    verified: null
+    notes: "37B span, 0 dyn, cd=0, 4 callers, undecodable. R32 overlay far-ptr gate. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x33EC3
+    seg: 0x33EC
+    ofs: 0x3
+    size: 20
+    far: false
+    class: ASM
+    hypothesis: "rect_store_40e"
+    sig: "NEAR retn fn; es:40E=BX, es:40C=CX, es:410=AX, es:412=DX (stores a 4-word rect); retn"
+    port_status: unported
+    verified: null
+    notes: "20B retn, 0 dyn, cd=0, 4 callers. Stores the registers as a rectangle (CX,BX,AX,DX) at es:40C..412. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x112F6
+    seg: 0x112F
+    ofs: 0x6
+    size: 124
+    far: false
+    class: ASM
+    hypothesis: "segment_change_debounce_cx"
+    sig: "NEAR retn fn; DX&=0xFFE0; compare vs ds:5C/64/60/5E/62 (5 cached segs) with a 3-hit debounce counter cs:11372 -> CX = change bitmask 1/2/3/4; reset counter on match"
+    port_status: unported
+    verified: null
+    notes: "124B retn, 0 dyn, cd=0, 4 callers. Detects which of 5 cached segment values DX changed (3-hit debounce) -> CX bit flags. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x279A4
+    seg: 0x279A
+    ofs: 0x4
+    size: 27
+    far: false
+    class: ASM
+    hypothesis: "slope_flag_test_bc"
+    sig: "NEAR retn fn; AX=0; BX=BP>>1; if BX<CX -> AX|=4; elif -BX>CX -> AX|=2; retn (ZF=0 iff one flag set)"
+    port_status: unported
+    verified: null
+    notes: "27B retn, 0 dyn, cd=0, 4 callers (sub_291B1..sub_2A0B5). Slope/aspect test: sets flag 4 or 2 comparing (BP/2) vs CX; returns flags in AX. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13A57
+    seg: 0x13A5
+    ofs: 0x7
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "sorted_key_search_bl"
+    sig: "NEAR retn fn; CX=count from [SI]; per 2-byte record: al=[SI]-BL; ==0 -> found path; >0 -> fail (stc); <0 -> SI+=2 loop; stc if exhausted; retn"
+    port_status: unported
+    verified: null
+    notes: "26B retn, 0 dyn, cd=0, 3 callers (sub_1260C, sub_13276, sub_13301). Searches a sorted byte-key 2-byte-record table for BL; CF=1 if not found. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10DFE
+    seg: 0x10DF
+    ofs: 0xE
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "state_byte_1084c_set"
+    sig: "void far; cs:1084C = AL; retf (high byte of the cs:1084B word)"
+    port_status: unported
+    verified: null
+    notes: "5B, 0 dyn, cd=1, 2 callers. Setter for state byte cs:1084C (word pair with state_byte_1084b_get). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x39CE0
+    seg: 0x39CE
+    ofs: 0x0
+    size: 140
+    far: true
+    class: ASM
+    hypothesis: "state_gate_4ac2_4a83"
+    sig: "void far; early-ret unless ds:4AC2 < 4 AND ds:4A83 <= 1 (dual state gate, else falls into body)"
+    port_status: unported
+    verified: null
+    notes: "140B span (body to retf@0x39CEE), 0 dyn, cd=0, 4 callers. Gates on two DGROUP state bytes (4AC2<4, 4A83<=1) before the real work. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x344D3
+    seg: 0x344D
+    ofs: 0x3
+    size: 11
+    far: true
+    class: ASM
+    hypothesis: "state_word_44d3d_get"
+    sig: "void far; DS=54AFh; AX = ds:[44D3D]; retf (reads a word via segment 54AF)"
+    port_status: unported
+    verified: null
+    notes: "11B LEAF, 0 dyn, cd=0, 4 callers (incl sub_3BB8F/3FFEF). Reads a state word through segment 54AF (label word_44D3D). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2262F
+    seg: 0x2262
+    ofs: 0xF
+    size: 38
+    far: false
+    class: ASM
+    hypothesis: "str_upper_copy_3676"
+    sig: "NEAR retn fn; copy 0x18 bytes from [DX] to es:7B0E:3676 converting a-z to A-Z (sub 0x20); retn"
+    port_status: unported
+    verified: null
+    notes: "38B retn, 0 dyn, cd=0, 4 callers. Copies a 24-byte string with lowercase->uppercase conversion to 7B0E:3676. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x12F27
+    seg: 0x12F2
+    ofs: 0x7
+    size: 157
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_lookup_3840"
+    sig: "NEAR retn fn; bounds check (cs:11C0E-2-AX, cs:11C12-0x40-SI) -> cs:11C7D flag bits; DS=cs:11BE8 table, BX=[(SI+AX)*2 + 0x3840]; BH>>=1 -> BL=BH, BH=flag; retn"
+    port_status: unported
+    verified: null
+    notes: "157B retn, 0 dyn, cd=0, 3 callers (sub_14356, sub_1657E). Terrain attribute lookup: bounds-gated table read at es:3840, returns attr + flag byte (near-twin of terrain_height_lookup_11cc8). conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x1FB17
+    seg: 0x1FB1
+    ofs: 0x7
+    size: 37
+    far: false
+    class: ASM
+    hypothesis: "active_farptr_match_b2"
+    sig: "NEAR retn fn; if cs:22212==cs:22216 AND cs:22210==cs:22214 (active == saved farptr): ES:DI = active, es:[DI+0xB2]=0xB2 (marker); retn"
+    port_status: unported
+    verified: null
+    notes: "37B retn, 0 dyn, cd=0, 2 callers (sub_1FADA, sub_2142E). Validates the active farptr matches the saved copy, then writes marker byte 0xB2 at [di+0xB2]. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2F613
+    seg: 0x2F61
+    ofs: 0x3
+    size: 45
+    far: true
+    class: ASM
+    hypothesis: "bitmap_clear_6310"
+    sig: "void far; ES=6310h; clear 16 mask words (stride 0x10) at 6310:0; es:53200 = 0; retf"
+    port_status: unported
+    verified: null
+    notes: "45B, 0 dyn, cd=0, 3 callers. Clears a 16-slot bitmap at segment 6310 (stride 0x10) + resets the count word es:53200. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13177
+    seg: 0x1317
+    ofs: 0x7
+    size: 12
+    far: false
+    class: ASM
+    hypothesis: "ds_swap_fail_ret"
+    sig: "NEAR retn LEAF; push ds; ... ; pop ds; stc; retn (segment swap attempt, always returns CF=1)"
+    port_status: unported
+    verified: null
+    notes: "12B LEAF retn, 0 dyn, cd=0, 2 callers. Performs a segment swap then returns failure (CF=1 sentinel). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x16BF89
+    seg: 0x16BF8
+    ofs: 0x9
+    size: 583
+    far: false
+    class: ASM
+    hypothesis: "ems_install_impl"
+    sig: "void far (C frame, enter 8): EMS/himem install implementation; 3 callers (sub_30882, sub_30EBE, sub_4DF94 -- EMS setup family)"
+    port_status: unported
+    verified: null
+    notes: "583B C-class, 0 dyn, cd=0, 3 callers from the EMS setup family. C implementation behind the EMS installation path. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4871D
+    seg: 0x4871
+    ofs: 0xD
+    size: 149
+    far: true
+    class: ASM
+    hypothesis: "entity_search_63fd"
+    sig: "void far; DS=63FDh; cs:32D39=0xFF, cs:32D3B=0xFFFF; scan 0x20 records at SI=0x113E: flags [SI+13].4 set, [SI+0C]!=-1, [SI+12].7 clear, [SI+0C]==AX -> match publish"
+    port_status: unported
+    verified: null
+    notes: "149B, 0 dyn, cd=0, 3 callers. Searches the 63FDh entity table (0x20 entries) for AX match with flag filters, publishes to cs:32D39/32D3B. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x197B6
+    seg: 0x197B
+    ofs: 0x6
+    size: 32
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_3_jpt"
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_197C9) over 0x0A cases -> AX=1/0; retf"
+    port_status: unported
+    verified: null
+    notes: "32B, 0 dyn, cd=0, 2 callers (sub_1914E C). Jump-table validation of key codes >=3 -> AX 0/1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1AAF9
+    seg: 0x1AAF
+    ofs: 0x9
+    size: 59
+    far: true
+    class: ASM
+    hypothesis: "far_slot_scan_zero"
+    sig: "NEAR retn fn; SI=1..0xF: scan es:[arg0 + SI*2] for first 0 word (free slot); SI=index (0x10 = none); retn"
+    port_status: unported
+    verified: null
+    notes: "59B retn, 0 dyn, cd=0, 2 callers (sub_1EA58, sub_1F35B). Finds the first free (0) slot in a 16-entry far table, returns its index in SI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4B33E
+    seg: 0x4B33
+    ofs: 0xE
+    size: 41
+    far: false
+    class: ASM
+    hypothesis: "farobj_arg_thunk"
+    sig: "void far; push cx ... (41B arg thunk); 3 callers (sub_683C5 DATA, sub_69C5D, sub_6A5BD C)"
+    port_status: unported
+    verified: null
+    notes: "41B span, 0 dyn, cd=0, 3 callers. Far-object argument-passing thunk. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x3B96D
+    seg: 0x3B96
+    ofs: 0xD
+    size: 546
+    far: false
+    class: ASM
+    hypothesis: "farobj_process_386f"
+    sig: "void far; SI=0x386F then (span 546B largely undecodable, far calls 9A); 3 callers incl sub_3B83A DATA"
+    port_status: unported
+    verified: null
+    notes: "546B span, 0 dyn, cd=0, 3 callers, undecodable head. Far-object processor with table base SI=0x386F. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x3FB22
+    seg: 0x3FB2
+    ofs: 0x2
+    size: 170
+    far: false
+    class: ASM
+    hypothesis: "farobj_record_proc_si"
+    sig: "void far; AX=[SI+2]... (170B record processor); 3 callers (r29_e06, r67_e196, sub_2F35B)"
+    port_status: unported
+    verified: null
+    notes: "170B span, 0 dyn, cd=0, 3 callers, called by R29/R67 overlay entries. Far-object record processor keyed off [SI+2]. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x3F7B8
+    seg: 0x3F7B
+    ofs: 0x8
+    size: 169
+    far: false
+    class: ASM
+    hypothesis: "farobj_store_32075"
+    sig: "void far; cs:32075 = AL then (body continues 169B); 3 callers (sub_186ADC C, sub_188DF2 C, sub_38C91)"
+    port_status: unported
+    verified: null
+    notes: "169B span, 0 dyn, cd=0, 3 callers. Stores AL to cs:32075 then continues (farobj state write). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4C0E4
+    seg: 0x4C0E
+    ofs: 0x4
+    size: 131
+    far: true
+    class: ASM
+    hypothesis: "farobj_table_init_69ff"
+    sig: "void far; DS=54AFh, BX=ds:55E4E; DS=69FFh, ds:6B584=BX; for SI=4, CX=0x28: [SI+2]=1, SI+=0x1B; then SI=0x43C... (table init, span DATA-class)"
+    port_status: unported
+    verified: null
+    notes: "131B span, 0 dyn, cd=0, 3 callers, DATA-class. Initializes a 0x28-entry 0x1B-stride table at seg 69FF + copies a word from 54AF:55E4E. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x246E7
+    seg: 0x246E
+    ofs: 0x7
+    size: 162
+    far: false
+    class: ASM
+    hypothesis: "fixed_vec3_dot_3820"
+    sig: "NEAR retn fn; dot of es:[SI] vector with DGROUP matrix constants ds:3820/3826/382C: 3 imul+add/adc, saturating shl1; 2 callers (sub_27180, sub_396D7)"
+    port_status: unported
+    verified: null
+    notes: "162B retn, 0 dyn, cd=0, 2 callers. Fixed-point vector dot against the DGROUP 3820 matrix constants + saturation. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24588
+    seg: 0x2458
+    ofs: 0x8
+    size: 179
+    far: false
+    class: ASM
+    hypothesis: "fixed_vec3_dot_es"
+    sig: "NEAR retn fn; dot of es:[SI] vector with es:[BX] matrix row: 3 imul+add/adc, saturating shl1 (0x8001/0x7FFF); 2 callers (r59_e177, sub_27180)"
+    port_status: unported
+    verified: null
+    notes: "179B retn, 0 dyn, cd=0, 2 callers. Fixed-point vector-matrix dot with es-relative operands + saturation (twin of vec3_dot). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x39CD3
+    seg: 0x39CD
+    ofs: 0x3
+    size: 13
+    far: false
+    class: ASM
+    hypothesis: "floor_store_4abb"
+    sig: "NEAR retn LEAF; if AX < ds:4ABB: AX = ds:4ABB (floor); ds:4AA1 = AX; retn"
+    port_status: unported
+    verified: null
+    notes: "13B LEAF retn, 0 dyn, cd=0, 3 callers (r53_e88, sub_186ADC C). Clamps AX up to the floor at ds:4ABB then stores to ds:4AA1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x11B6A
+    seg: 0x11B6
+    ofs: 0xA
+    size: 38
+    far: false
+    class: ASM
+    hypothesis: "font_glyph_lookup"
+    sig: "NEAR retn fn; scan bytes from [SI]: al=[SI], 0=NUL end; advance by es:[bx+2], glyph stride es:[bx+4], glyph = es:[bx + value*stride + 7]; retn"
+    port_status: unported
+    verified: null
+    notes: "38B retn, 0 dyn, cd=0, 2 callers (sub_11AE7, sub_11B54). Variable-width font glyph lookup: advances a scan (es:[bx+2]), indexes the glyph table (stride es:[bx+4]) at +7. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17755
+    seg: 0x1775
+    ofs: 0x5
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "hw_seq_index_clamp"
+    sig: "void far; SI = clamp([bp+arg0], 1, 0x0C); ds:0AE4E = SI; retf (hardware sequencer index 1..12)"
+    port_status: unported
+    verified: null
+    notes: "30B, 0 dyn, cd=0, 2 callers (sub_17643, sub_1CBB3). Clamps a sequencer index to 1..12 and stores it to ds:0AE4E. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x11011
+    seg: 0x1101
+    ofs: 0x1
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "kbd_ctrl_wait_64"
+    sig: "NEAR retn LEAF; CX=0; poll: in AL,64h; test AL,2; loopne (waits on keyboard-controller status port 64h bit1); retn"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF retn, 0 dyn, cd=0, 2 callers. Polls the 8042 keyboard controller status port (64h) until bit1 clear. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x14188
+    seg: 0x1418
+    ofs: 0x8
+    size: 120
+    far: false
+    class: ASM
+    hypothesis: "param4_compare_flags"
+    sig: "NEAR retn fn; load 4 indexed params AL,AH,DL,DH via cs:[bp+0..3] offsets into [bx+SI]; compare pairs (al vs dl, ah vs dh) -> flag bits in BX=0x502; retn"
+    port_status: unported
+    verified: null
+    notes: "120B retn, 0 dyn, cd=0, 2 callers (sub_14200, sub_1426A). Loads 4 table-indexed parameters and compares them pairwise into a 2-bit flag result. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x16EBE
+    seg: 0x16EB
+    ofs: 0xE
+    size: 16
+    far: false
+    class: ASM
+    hypothesis: "pit_divisor_set_pushf"
+    sig: "NEAR retn LEAF; pushf/cli; AL=0x36 out 43h, out 40h BL, out 40h BH (PIT ch0 mode 3); popf; retn"
+    port_status: unported
+    verified: null
+    notes: "16B LEAF retn, 0 dyn, cd=0, 2 callers (sub_16D68, sub_16D88). pushf-guarded PIT ch0 mode-3 divisor program (twin of pit_divisor_set_bx). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x6F3C3
+    seg: 0x6F3C
+    ofs: 0x3
+    size: 30
+    far: false
+    class: ASM
+    hypothesis: "r17_farptr_helper"
+    sig: "void far; push bp ... (30B); 3 callers (r17_e07, sub_6EC2C, sub_6ED0A C)"
+    port_status: unported
+    verified: null
+    notes: "30B span, 0 dyn, cd=0, 3 callers, called by r17_e07. R17 overlay far-ptr helper. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4184E
+    seg: 0x4184
+    ofs: 0xE
+    size: 12
+    far: false
+    class: ASM
+    hypothesis: "r22_farptr_helper"
+    sig: "void far; push bp... (12B helper); 3 callers (r22_e57, r23_e61, r25_e59 C)"
+    port_status: unported
+    verified: null
+    notes: "12B span, 0 dyn, cd=0, 3 callers, called by r22/r23/r25 overlay entries. Overlay far-ptr helper. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6A1B8
+    seg: 0x6A1B
+    ofs: 0x8
+    size: 175
+    far: false
+    class: ASM
+    hypothesis: "r30_farobj_proc"
+    sig: "void far; push bp ... (175B); 3 callers (r30_e150, sub_2C649, sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "175B span, 0 dyn, cd=0, 3 callers, called by r30_e150. R30 overlay far-object processor. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6A4AA
+    seg: 0x6A4A
+    ofs: 0xA
+    size: 109
+    far: false
+    class: ASM
+    hypothesis: "r30_mode_set_637fc"
+    sig: "void far; SI=[bp+6]; ES=602Eh: es:637FC=0x111, es:637FE=0x7F; AX=SI*4; ES=6DE8h (indexes overlay state by SI)"
+    port_status: unported
+    verified: null
+    notes: "109B, 0 dyn, cd=0, 3 callers (sub_2C617, sub_683C5, sub_69C5D). Sets R30 overlay mode words (637FC/637FE) and indexes seg 6DE8 state by SI*4. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x41803
+    seg: 0x4180
+    ofs: 0x3
+    size: 75
+    far: false
+    class: ASM
+    hypothesis: "r32_farptr_load_ds"
+    sig: "void far; DS=AX then (body 75B); 3 callers (r32_e83, sub_66E62, sub_6A5BD C)"
+    port_status: unported
+    verified: null
+    notes: "75B span, 0 dyn, cd=0, 3 callers. R32 overlay far-ptr loader (DS=AX segment switch). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x1FD15
+    seg: 0x1FD1
+    ofs: 0x5
+    size: 38
+    far: false
+    class: ASM
+    hypothesis: "rect_edge_skip_dispatch"
+    sig: "NEAR retn fn; if BX in {cs:1F6CC,cs:1F6D0} or DI in {cs:1F6CE,cs:1F6D2} (view edges): retn; else AL=cs:1F735, call cs:2209C; retn"
+    port_status: unported
+    verified: null
+    notes: "38B retn, 0 dyn, cd=0, 2 callers (sub_1FCD0, sub_1FCF0). Skips dispatch when BX/DI lie on a view edge; otherwise far-dispatches cs:2209C with state cs:1F735. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x14152
+    seg: 0x1415
+    ofs: 0x2
+    size: 54
+    far: false
+    class: ASM
+    hypothesis: "segment_bitfield_decode"
+    sig: "void far; ES=cs:11BEA; decode AX>>2 bits (AL&3) and BX (aligned <<3) into a table address in the es:11BEA segment map"
+    port_status: unported
+    verified: null
+    notes: "54B, 0 dyn, cd=0, 2 callers (sub_14200, sub_1426A). Decodes packed AX/BX bitfields into an address within the segment table at cs:11BEA. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3D8A7
+    seg: 0x3D8A
+    ofs: 0x7
+    size: 133
+    far: false
+    class: ASM
+    hypothesis: "shared_tail_pop_es"
+    sig: "void far; starts pop es (shared tail-entry, body continues 133B); 3 callers (sub_2FEF2, sub_31319, sub_4D8A7 DATA)"
+    port_status: unported
+    verified: null
+    notes: "133B span, 0 dyn, cd=0, 3 callers, tail-entry (pop es first). Shared continuation tail; not independently decodable from entry. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2FB49
+    seg: 0x2FB4
+    ofs: 0x9
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "state_byte_2e179_set"
+    sig: "void far; cs:2E179 = AL; retf"
+    port_status: unported
+    verified: null
+    notes: "5B, 0 dyn, cd=0, 3 callers (sub_33443, sub_3EEDB, sub_41646). Setter for state byte cs:2E179. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x34899
+    seg: 0x3489
+    ofs: 0x9
+    size: 4
+    far: false
+    class: ASM
+    hypothesis: "state_byte_4fe_set"
+    sig: "NEAR retn LEAF; ds:4FE = AL; retn"
+    port_status: unported
+    verified: null
+    notes: "4B LEAF retn, 0 dyn, cd=0, 3 callers. Setter for DGROUP byte 0x4FE. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1FD3B
+    seg: 0x1FD3
+    ofs: 0xB
+    size: 32
+    far: false
+    class: ASM
+    hypothesis: "state_flag_unpack_1f735"
+    sig: "NEAR retn fn; cs:1F736 = AX&4; BL = cs:[((AX>>3)&3) + 0xA5]; cs:1F735 = BL; retn (4-entry unpack table at cs:0xA5)"
+    port_status: unported
+    verified: null
+    notes: "32B retn, 0 dyn, cd=0, 2 callers (sub_26B2E, sub_287A8). Unpacks AX into flag byte cs:1F736 (bit2) + indexed lookup cs:1F735 via the cs:0xA5 table. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x39C50
+    seg: 0x39C5
+    ofs: 0x0
+    size: 90
+    far: false
+    class: ASM
+    hypothesis: "state_gate_4ac2_4a83_near"
+    sig: "NEAR retn fn; early-ret unless ds:4AC2 < 4 AND ds:4A83 <= 1 (near twin of state_gate_4ac2_4a83)"
+    port_status: unported
+    verified: null
+    notes: "90B span (body to retn@0x39C5E), 0 dyn, cd=0, 3 callers. NEAR twin of the ds:4AC2/4A83 dual gate. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x3E109
+    seg: 0x3E10
+    ofs: 0x9
+    size: 98
+    far: false
+    class: ASM
+    hypothesis: "state_init_bx100"
+    sig: "void far; BX=0x100 then (body continues 98B); 3 callers (sub_32C62, sub_33443, sub_674A0)"
+    port_status: unported
+    verified: null
+    notes: "98B span, 0 dyn, cd=0, 3 callers. State/mode initialization starting from BX=0x100. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x39AA9
+    seg: 0x39AA
+    ofs: 0x9
+    size: 31
+    far: true
+    class: ASM
+    hypothesis: "state_word_2e12b_set"
+    sig: "void far; cs:2E12B = BX; retf"
+    port_status: unported
+    verified: null
+    notes: "31B span (body 5B), 0 dyn, cd=0, 3 callers. Setter for state word cs:2E12B. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x22655
+    seg: 0x2265
+    ofs: 0x5
+    size: 68
+    far: false
+    class: ASM
+    hypothesis: "str_upper_copy_3795"
+    sig: "NEAR retn fn; DS=ES=7B0E; copy from ds:3795 to 3676 converting a-z to A-Z (twin of str_upper_copy_3676 with fixed source)"
+    port_status: unported
+    verified: null
+    notes: "68B retn, 0 dyn, cd=0, 2 callers (sub_226B6, sub_22760). Copies the 7B0E:3795 string with case conversion to 7B0E:3676. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2E857
+    seg: 0x2E85
+    ofs: 0x7
+    size: 63
+    far: false
+    class: ASM
+    hypothesis: "vec3_bound_maxdiff"
+    sig: "NEAR retn fn; CX=3 loop over 4B pairs es:[di]-[si]: abs via not/add-1 if neg; reject if DX!=0 or AX>BP (bound); track max in BX; AX=1 if all 3 within bound; retn"
+    port_status: unported
+    verified: null
+    notes: "63B retn, 0 dyn, cd=0, 3 callers (sub_2E82D, sub_3C1BD, sub_4E520). Tests whether 3 component diffs are all <= BP (bound), returns AX=1, max-diff in BX. conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x2B040
+    seg: 0x2B04
+    ofs: 0x0
+    size: 16
+    far: false
+    class: ASM
+    hypothesis: "arena_off_ax18"
+    sig: "NEAR retn LEAF; BX = AX*0x12 + 0x0C1F; retn (preserves ax/dx)"
+    port_status: unported
+    verified: null
+    notes: "16B LEAF retn, 0 dyn, cd=0, 2 callers. Computes the arena/MCB record offset AX*18 + 0xC1F. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x3AA6C
+    seg: 0x3AA6
+    ofs: 0xC
+    size: 18
+    far: false
+    class: ASM
+    hypothesis: "bound_table_check_49b8"
+    sig: "NEAR retn fn; BL=ds:4ABD (idx)*2; if AX <= ds:[49B8+BX] -> (in bound) else clc, retn; 2 callers"
+    port_status: unported
+    verified: null
+    notes: "18B retn, 0 dyn, cd=0, 2 callers. Bound check: CF=0 when AX <= table word at ds:49B8[ds:4ABD]. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x34C1D
+    seg: 0x34C1
+    ofs: 0xD
+    size: 20
+    far: false
+    class: ASM
+    hypothesis: "dgroup_state5_zero"
+    sig: "NEAR retn fn; zero ds:662, ds:5CA (words) + ds:664, ds:665, ds:5A1 (bytes); retn (preserves ax)"
+    port_status: unported
+    verified: null
+    notes: "20B retn, 0 dyn, cd=0, 2 callers (sub_32C62, sub_33443). Zeroes five DGROUP state fields (662/5CA/664/665/5A1). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CD4F
+    seg: 0x2CD4
+    ofs: 0xF
+    size: 62
+    far: false
+    class: ASM
+    hypothesis: "drive_path_build"
+    sig: "NEAR retn fn; if AL==0: AH=0x19 int 21h (get current drive), inc AL; DL=AL, AL+='A', stosb; store ':' + '\\' (0x3A5C)... builds a 'X:\\' path prefix; 2 callers"
+    port_status: unported
+    verified: null
+    notes: "62B retn, 0 dyn, cd=0, 2 callers (sub_2CC47, sub_2CE47). Builds a drive path prefix ('X:\\'), defaulting to the current drive via INT 21h AH=19h. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x49CB0
+    seg: 0x49CB
+    ofs: 0x0
+    size: 22
+    far: false
+    class: ASM
+    hypothesis: "entity_f38_set_8fc"
+    sig: "void far; [SI+38] = 0x8FC; (body 22B); 2 callers (r36_e102, sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "22B span, 0 dyn, cd=0, 2 callers. Sets entity field [SI+38] = 0x8FC. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3AB29
+    seg: 0x3AB2
+    ofs: 0x9
+    size: 48
+    far: true
+    class: ASM
+    hypothesis: "entity_flags_reset_1734"
+    sig: "void far; patch word cs:395FE = ds:48B8*4; SI=0; scan 0x10 entries at [SI+0x1734] (far-ptr table) until SI==0x4444 sentinel: if es:[bx+74].1: clear es:[bx+79]...; 2 callers (r06_e56, sub_39B67)"
+    port_status: unported
+    verified: null
+    notes: "48B, 0 dyn, cd=0, 2 callers. Patches a code word from ds:48B8 then iterates the 0x10-entry far-ptr table at 1734 clearing flag fields (gate [bx+74].1). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4D86E
+    seg: 0x4D86
+    ofs: 0xE
+    size: 57
+    far: true
+    class: ASM
+    hypothesis: "entity_slot_clear_6"
+    sig: "void far; DS=6B58h; DI=0x33 + AX*6; if [DI+1]==BX: [DI]=0 (clears the matching 6-stride slot); retf"
+    port_status: unported
+    verified: null
+    notes: "57B, 0 dyn, cd=0, 2 callers (sub_4111F, sub_45057). Clears a 6-byte-stride entity slot at 6B58:33+AX*6 when its key [DI+1] matches BX. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x3487D
+    seg: 0x3487
+    ofs: 0xD
+    size: 28
+    far: false
+    class: ASM
+    hypothesis: "entity_timer_dec_2e"
+    sig: "NEAR retn fn; AX=0; if [SI+0D1]!=0: [SI+0D1]=0, ds:1073=0; [SI+1E]=0; [SI+2E]-=0xA floor 0; retn"
+    port_status: unported
+    verified: null
+    notes: "28B retn, 0 dyn, cd=0, 2 callers (sub_2FC79, sub_2FEF2). Decrements an entity timer field [SI+2E] by 0xA (floored) and resets [SI+1E]/[SI+0D1]. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4AEA9
+    seg: 0x4AEA
+    ofs: 0x9
+    size: 27
+    far: false
+    class: ASM
+    hypothesis: "farobj_arg_thunk_c"
+    sig: "void far; push di ... (27B arg thunk); 2 callers (sub_683C5 DATA, sub_69C5D)"
+    port_status: unported
+    verified: null
+    notes: "27B span, 0 dyn, cd=0, 2 callers. Far-object argument thunk (third twin). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4D847
+    seg: 0x4D84
+    ofs: 0x7
+    size: 39
+    far: true
+    class: ASM
+    hypothesis: "farobj_record_build_6b58_ch"
+    sig: "void far; DS=6B58h; ds:6B58A|=1; call unk_3D9C3; CL|=0x80; [DI]=CL, [DI+1]=DX, [DI+3]=CH, [DI+4]=BX (5B record, CH variant); 2 callers"
+    port_status: unported
+    verified: null
+    notes: "39B, 0 dyn, cd=0, 2 callers (sub_45057, sub_484C1). Builds a far-object record at [DI] with flag byte + CH in [DI+3] (twin of farobj_record_build_6b58 which stores 0xFF). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3FE57
+    seg: 0x3FE5
+    ofs: 0x7
+    size: 408
+    far: false
+    class: ASM
+    hypothesis: "farobj_store_32633_body"
+    sig: "void far; cs:32633 = BX then (body continues 408B); 2 callers (sub_33443, sub_3A99D)"
+    port_status: unported
+    verified: null
+    notes: "408B span, 0 dyn, cd=0, 2 callers. Stores BX to cs:32633 then continues (large farobj body). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2859E
+    seg: 0x2859
+    ofs: 0xE
+    size: 247
+    far: false
+    class: ASM
+    hypothesis: "fixed_expand_0f3e"
+    sig: "NEAR retn fn; SI=0xF3E; loop: lodsw -> stosw, cwd-sign-extend pair stosw (expands a 16-bit table into sign-extended pairs); 2 callers"
+    port_status: unported
+    verified: null
+    notes: "247B span, 0 dyn, cd=0, 2 callers. Expands the fixed-point table at SI=0xF3E into sign-extended 32-bit pairs via stosw. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3AB1B
+    seg: 0x3AB1
+    ofs: 0xB
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "floor_copy_4aa3"
+    sig: "NEAR retn LEAF; if ds:4AC5==1: retn; else ds:4AA3 = ds:4A99; retn"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF retn, 0 dyn, cd=0, 2 callers. Copies floor/limit ds:4A99 -> ds:4AA3 unless mode byte ds:4AC5==1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CE0A
+    seg: 0x2CE0
+    ofs: 0xA
+    size: 60
+    far: false
+    class: ASM
+    hypothesis: "fname_ext_lower_copy"
+    sig: "NEAR retn fn; ES/DS from frame args, copy NUL-terminated name from [bp+8] to ES:DI; cs:2CE46=0; OR 0x20 into the extension word es:[di-5] (lowercase); 2 callers"
+    port_status: unported
+    verified: null
+    notes: "60B retn, 0 dyn, cd=0, 2 callers. Copies a filename string to ES:DI and lowercases its extension via OR 0x20. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4FBC2
+    seg: 0x4FBC
+    ofs: 0x2
+    size: 252
+    far: true
+    class: ASM
+    hypothesis: "hw_cfg_copy_a76f"
+    sig: "void far; DS=7A32h; flag gates ds:8505C.3/.2; DI=0xA76F, CX=0x1E; mask AL=0x3F if ds:8504E==3... (0x1E-byte config copy with mask); 2 callers (r29_e06, sub_2F35B)"
+    port_status: unported
+    verified: null
+    notes: "252B, 0 dyn, cd=0, 2 callers. Copies a 0x1E-byte hardware config to 7A32:A76F with a mask byte selected by ds:8504E, gated by state flags. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4FB33
+    seg: 0x4FB3
+    ofs: 0x3
+    size: 143
+    far: true
+    class: ASM
+    hypothesis: "hw_cfg_copy_ac13"
+    sig: "void far; DS=7A32h; if ds:8505C.3: jmp state_byte_2e179_set (tail); elif CL != ds:8505D: store CL, copy 0x1B bytes from 7A32:AC13 to A754; 2 callers (r29_e06, sub_2F35B)"
+    port_status: unported
+    verified: null
+    notes: "143B, 0 dyn, cd=0, 2 callers. Copies a 0x1B-byte hardware config block (7A32:AC13 -> A754) when CL changes, gated by flag 8505C.3. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4FA3B
+    seg: 0x4FA3
+    ofs: 0xB
+    size: 79
+    far: true
+    class: ASM
+    hypothesis: "hw_flag8505_set"
+    sig: "void far; DS=ES=7A32h; flag ops on ds:8505B (bit7 gate, OR 4), ds:8505C (OR 8, AND ~0x20), ds:8505A=0xFF (state-flag set sequence); 2 callers (r36_e99, sub_2F043)"
+    port_status: unported
+    verified: null
+    notes: "79B, 0 dyn, cd=0, 2 callers. Manipulates the ds:8505A/B/C hardware state-flag trio (gated by bit7/bit5 tests). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4FD4A
+    seg: 0x4FD4
+    ofs: 0xA
+    size: 54
+    far: false
+    class: ASM
+    hypothesis: "hw_state_partial_4fd"
+    sig: "void far (DATA-class span, partial): jp ...; at 0x4FD76: ds:85067 = AX (state word store amid partial span); 2 callers (sub_30882, sub_3B83A DATA)"
+    port_status: unported
+    verified: null
+    notes: "54B span, 0 dyn, cd=0, 2 callers, DATA/partial. Stores AX to ds:85067 within a partially-decoded span. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2B050
+    seg: 0x2B05
+    ofs: 0x0
+    size: 56
+    far: false
+    class: ASM
+    hypothesis: "mem_block_move_ax"
+    sig: "NEAR retn fn; if AX==DX retn; else ES=AX, CX=DX-AX paragraphs, copy in 0x1000-byte chunks (movsw loop); 2 callers"
+    port_status: unported
+    verified: null
+    notes: "56B retn, 0 dyn, cd=0, 2 callers (sub_2AC4C, sub_2B256). Moves a memory block from segment AX to DX (paragraph count DX-AX, chunked). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x377CF
+    seg: 0x377C
+    ofs: 0xF
+    size: 73
+    far: false
+    class: ASM
+    hypothesis: "mode_toggle_105f"
+    sig: "NEAR retn fn; XOR ds:105F, 1; on toggle: ds:1020=0x44, retn (else continues body); 2 callers"
+    port_status: unported
+    verified: null
+    notes: "73B span, 0 dyn, cd=0, 2 callers (sub_3001E, sub_33443). Toggles mode bit ds:105F; on set writes ds:1020=0x44. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2B105
+    seg: 0x2B10
+    ofs: 0x5
+    size: 40
+    far: false
+    class: ASM
+    hypothesis: "patch_scan_e8_58d"
+    sig: "NEAR retn fn; scan stream: byte E8 (call rel) whose rel target == 0x58D, then EA (jmp far) +4, lodsw... (relocation-pattern scanner); 2 callers"
+    port_status: unported
+    verified: null
+    notes: "40B retn, 0 dyn, cd=0, 2 callers (sub_2B088, sub_2B0BF). Scans for the CALL-to-0x58D + JMP-FAR relocation pattern in a byte stream. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x283A2
+    seg: 0x283A
+    ofs: 0x2
+    size: 244
+    far: false
+    class: ASM
+    hypothesis: "proj_scale_setup_22d20"
+    sig: "NEAR retn fn; SI=[DI+20]; if [DI+24].7: SI=0x10; elif SI<0: AX=0x7FFF>>[DI+18], cs:22D20=AX, cs:1F73C=0; retn (else continues body)"
+    port_status: unported
+    verified: null
+    notes: "244B span, 0 dyn, cd=0, 2 callers (sub_28496, sub_28503). Sets projection scale cs:22D20 = 0x7FFF >> [DI+18] on the negative-SI path, clears cs:1F73C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6A267
+    seg: 0x6A26
+    ofs: 0x7
+    size: 145
+    far: false
+    class: ASM
+    hypothesis: "r30_farobj_proc_b"
+    sig: "void far; push bp ... (145B); 2 callers (sub_2C455, sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "145B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin B. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6A2F8
+    seg: 0x6A2F
+    ofs: 0x8
+    size: 145
+    far: false
+    class: ASM
+    hypothesis: "r30_farobj_proc_c"
+    sig: "void far; push bp ... (145B); 2 callers (sub_2C437, sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "145B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin C. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6B822
+    seg: 0x6B82
+    ofs: 0x2
+    size: 88
+    far: false
+    class: ASM
+    hypothesis: "r30_farobj_proc_d"
+    sig: "void far; push bp ... (88B); 2 callers (r30_e125, sub_67781 DATA)"
+    port_status: unported
+    verified: null
+    notes: "88B span, 0 dyn, cd=0, 2 callers, undecodable head. R30 far-object processor twin D. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x69462
+    seg: 0x6946
+    ofs: 0x2
+    size: 35
+    far: false
+    class: ASM
+    hypothesis: "r30_push_args_call"
+    sig: "void far (C frame enter 6): build far-ptr arg at [bp-6], push es:637D0, es:637CE, 0, 2, 6 (R30 state words + call args) then dispatches; 2 callers (r30_e125, sub_6760A)"
+    port_status: unported
+    verified: null
+    notes: "86B span, 0 dyn, cd=0, 2 callers. C-style caller that pushes R30 overlay state (637CE/637D0) + args 0/2/6 then far-dispatches. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4C168
+    seg: 0x4C16
+    ofs: 0x8
+    size: 54
+    far: false
+    class: ASM
+    hypothesis: "r30_shared_tail_es"
+    sig: "void far; starts pop es (shared tail, body 54B); 2 callers (r30_e77, sub_68121 -- both DATA-class)"
+    port_status: unported
+    verified: null
+    notes: "54B span, 0 dyn, cd=0, 2 callers, tail-entry. R30-region shared continuation tail. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6A41A
+    seg: 0x6A41
+    ofs: 0xA
+    size: 144
+    far: false
+    class: ASM
+    hypothesis: "r33_farobj_proc"
+    sig: "void far; push bp ... (144B); 2 callers (r33_e148, sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "144B span, 0 dyn, cd=0, 2 callers, undecodable head. R33 overlay far-object processor. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6A3C3
+    seg: 0x6A3C
+    ofs: 0x3
+    size: 87
+    far: false
+    class: ASM
+    hypothesis: "r33_farptr_gate_c"
+    sig: "void far (C frame, enter undecodable huge frame); 2 callers (r33_e79, sub_2C423)"
+    port_status: unported
+    verified: null
+    notes: "87B span, 0 dyn, cd=0, 2 callers, undecodable enter. R33 overlay far-ptr gate C. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x37022
+    seg: 0x3702
+    ofs: 0x2
+    size: 47
+    far: false
+    class: ASM
+    hypothesis: "rect_bounds_test_6e"
+    sig: "NEAR retn fn; CX=0; if AX in [0x6E..0xD2] and BX in [0x14..0x5A]: CX=0, retn; else set path flags (body continues)"
+    port_status: unported
+    verified: null
+    notes: "47B retn, 0 dyn, cd=0, 2 callers (sub_35D59, sub_36FE9). Tests AX/BX against the 0x6E..D2 x 0x14..5A rectangle, returns CX flags. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3B68D
+    seg: 0x3B68
+    ofs: 0xD
+    size: 46
+    far: false
+    class: ASM
+    hypothesis: "shared_tail_pop_es_b"
+    sig: "void far; starts pop es (shared tail-entry, body 46B); 2 callers (sub_2FEF2, sub_31319 -- same family as shared_tail_pop_es)"
+    port_status: unported
+    verified: null
+    notes: "46B span, 0 dyn, cd=0, 2 callers, tail-entry (pop es first). Second shared continuation tail. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2E5DF
+    seg: 0x2E5D
+    ofs: 0xF
+    size: 61
+    far: false
+    class: ASM
+    hypothesis: "slot_find_free_0c"
+    sig: "NEAR retn fn; scan 0x0C-stride table (up to 0x64 entries) for first [di]==0 (free slot, BX=index); then fill pass; 2 callers (sub_2E2F0 blob, sub_3E552)"
+    port_status: unported
+    verified: null
+    notes: "61B retn, 0 dyn, cd=0, 2 callers. Finds the first free (zero) slot in a 0x0C-stride 100-entry table, returns index in BX. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2F1E5
+    seg: 0x2F1E
+    ofs: 0x5
+    size: 7
+    far: true
+    class: ASM
+    hypothesis: "state_byte_2e100_zero"
+    sig: "void far; cs:2E100 = 0; retf (clears the flag that flag_gate_zero_abc tests)"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF, 0 dyn, cd=0, 2 callers (sub_2BFE1, sub_3001E). Clears state byte cs:2E100 (the gate-bit consumed by flag_gate_zero_abc). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x3449E
+    seg: 0x3449
+    ofs: 0xE
+    size: 53
+    far: false
+    class: ASM
+    hypothesis: "state_counter_2e151_step"
+    sig: "NEAR retn fn; cs:2E151 += 0x100; if >= 0x280 -> (body) else clc, retn (0x100-step counter bounded at 0x280)"
+    port_status: unported
+    verified: null
+    notes: "53B span (body to retn@0x344B7), 0 dyn, cd=0, 2 callers (sub_2FEF2, sub_33443). Advances a 0x100-step counter at cs:2E151 toward the 0x280 bound, CF=0 while below. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x24B4B
+    seg: 0x24B4
+    ofs: 0xB
+    size: 73
+    far: false
+    class: ASM
+    hypothesis: "trig_value_bsearch_8364"
+    sig: "NEAR retn fn; ES=8364h; binary search AX in the sorted trig table (DI=0, SI=0x200, BX=0x400 bounds loop) -> index; 2 callers (sub_216B8, sub_24B3C)"
+    port_status: unported
+    verified: null
+    notes: "73B retn, 0 dyn, cd=0, 2 callers. Binary search of the trig table at ES=8364 (near-twin of trig_value_bsearch_83a5). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x36E22
+    seg: 0x36E2
+    ofs: 0x2
+    size: 24
+    far: false
+    class: ASM
+    hypothesis: "vel_pair_scale_di"
+    sig: "NEAR retn fn; [DI] = (ds:6C8 * BX) << 1 (high word), [DI+2] = (ds:6CA * BX) << 1; retn"
+    port_status: unported
+    verified: null
+    notes: "24B retn, 0 dyn, cd=0, 2 callers (sub_36DA7, sub_46D42). Scales the velocity pair at ds:6C8/6CA by BX into [DI]/[DI+2]. conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x16FF0
+    seg: 0x16FF
+    ofs: 0x0
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "adlib_reg_write_delay"
+    sig: "void far; out DX, AH (reg index); delay (in loop 0x14); inc DX; out DX, AL (data); dec DX; delay (in loop 0x50); OPL-style register write with read-delay"
+    port_status: unported
+    verified: null
+    notes: "21B, 0 dyn, cd=0, 1 caller (sub_17005). AdLib/OPL index+data port write at DX with the classic read-delay loops (0x14/0x50). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x12E21
+    seg: 0x12E2
+    ofs: 0x1
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "clamp_al4_ge"
+    sig: "NEAR retn LEAF; AL += AH; if SF clear (jge): retn else AL=4; retn (clamps negative sum to 4)"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF retn, 0 dyn, cd=0, 1 caller (sub_12D2F). Sum AL+AH with a floor of 4 on negative results. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13BF5
+    seg: 0x13BF
+    ofs: 0x5
+    size: 25
+    far: false
+    class: ASM
+    hypothesis: "coord_delta_pair_11c59_a"
+    sig: "NEAR retn fn; DH:DL=cs:11C5B:11C5A, AH:AL=cs:11C59:11C58; AX-=DX; BP=[SI+4]; retn (third coord-delta variant)"
+    port_status: unported
+    verified: null
+    notes: "25B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C58/59 and cs:11C5A/5B pairs (BP=[SI+4]). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13C26
+    seg: 0x13C2
+    ofs: 0x6
+    size: 25
+    far: false
+    class: ASM
+    hypothesis: "coord_delta_pair_11c5a"
+    sig: "NEAR retn fn; AH:AL=cs:11C57:11C56, DH:DL=cs:11C5B:11C5A; AX-=DX; BP=[SI+4]; retn (fourth coord-delta variant)"
+    port_status: unported
+    verified: null
+    notes: "25B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C5A/5B and cs:11C56/57 pairs (BP=[SI+4]). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13BC4
+    seg: 0x13BC
+    ofs: 0x4
+    size: 25
+    far: false
+    class: ASM
+    hypothesis: "coord_delta_pair_11c5c_a"
+    sig: "NEAR retn fn; DH:DL=cs:11C5D:11C5C, AH:AL=cs:11C57:11C56; AX-=DX; BP=[SI+4]; retn (first coord-delta variant)"
+    port_status: unported
+    verified: null
+    notes: "25B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C56/57 and cs:11C5C/5D pairs (BP=[SI+4]). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13BDD
+    seg: 0x13BD
+    ofs: 0xD
+    size: 24
+    far: false
+    class: ASM
+    hypothesis: "coord_delta_pair_11c5c_b"
+    sig: "NEAR retn fn; DH:DL=cs:11C5D:11C5C, AH:AL=cs:11C5B:11C5A; AX-=DX; BP=[SI]; retn (second coord-delta variant)"
+    port_status: unported
+    verified: null
+    notes: "24B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C5A/5B and cs:11C5C/5D pairs (BP=[SI]). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x102DB
+    seg: 0x102D
+    ofs: 0xB
+    size: 38
+    far: false
+    class: ASM
+    hypothesis: "dgroup_word_21_get_dx"
+    sig: "void far; DX = ds:21h then (body 38B); 1 caller (sub_34C31)"
+    port_status: unported
+    verified: null
+    notes: "38B span, 0 dyn, cd=0, 1 caller. Reads DGROUP word 0x21 into DX then continues. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10379
+    seg: 0x1037
+    ofs: 0x9
+    size: 28
+    far: true
+    class: ASM
+    hypothesis: "ems_map_seg_10233_bx0"
+    sig: "void far; BX=0, DX=cs:10233, AX:AH=0/1 int 67h (EMS map at BX=0); preserves dx/ax"
+    port_status: unported
+    verified: null
+    notes: "28B, 0 dyn, cd=0, 1 caller (sub_4E053). EMS page-map variant (INT 67h AH=44h) using seg cs:10233, base BX=0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1D648
+    seg: 0x1D64
+    ofs: 0x8
+    size: 28
+    far: true
+    class: ASM
+    hypothesis: "event_arg_range_check"
+    sig: "NEAR retn fn; SI=[bp+arg0]; DI=0; if 0 < SI < 0x0C: DI=1; AX=DI; retn (range flag for a 1..11 argument)"
+    port_status: unported
+    verified: null
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_1D369). Range check: returns 1 when the argument is in 1..11, else 0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x198D3
+    seg: 0x198D
+    ofs: 0x3
+    size: 74
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_103_jpt"
+    sig: "void far; BX=[bp+arg0]-0x103; jump-table (cs:jpt_198E8) over 0x12 cases -> SI=table value, AX=SI; retf"
+    port_status: unported
+    verified: null
+    notes: "74B, 0 dyn, cd=0, 1 caller (sub_19843). Jump-table validation of key codes >=0x103 (0x12 cases, returns SI lookups). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x196DB
+    seg: 0x196D
+    ofs: 0xB
+    size: 32
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_3_jpt_b"
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_196EE) over 0x0A cases -> AX=1/0; retf (twin of event_key_valid_3_jpt)"
+    port_status: unported
+    verified: null
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_1914E C). Jump-table key validation >=3 (near-twin of event_key_valid_3_jpt at 197B6). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1B4A2
+    seg: 0x1B4A
+    ofs: 0x2
+    size: 32
+    far: true
+    class: ASM
+    hypothesis: "event_key_valid_9_jpt"
+    sig: "void far; BX=[bp+arg0]-9; jump-table (cs:jpt_1B4B5) over 0x13 cases -> AX=1/0; retf"
+    port_status: unported
+    verified: null
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_1D914). Jump-table validation of key codes >=9. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1D55A
+    seg: 0x1D55
+    ofs: 0xA
+    size: 78
+    far: true
+    class: ASM
+    hypothesis: "event_offset_table_3_jpt"
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_1D56B) over 0x13 cases -> SI=offset (0x2A4, 0x548, ...); AX=SI; retf (offset-table selector)"
+    port_status: unported
+    verified: null
+    notes: "78B, 0 dyn, cd=0, 1 caller (sub_1D369). Jump-table that selects a table offset (0x2A4/0x548/...) from a base-3 event code. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1D5CE
+    seg: 0x1D5C
+    ofs: 0xE
+    size: 84
+    far: true
+    class: ASM
+    hypothesis: "event_offset_table_3_jpt_b"
+    sig: "void far; BX=[bp+arg0]-3; jump-table (cs:jpt_1D5DF) over 0x13 cases -> SI=1,2,... (ordinal selector); AX=SI; retf (twin ordinal form)"
+    port_status: unported
+    verified: null
+    notes: "84B, 0 dyn, cd=0, 1 caller (sub_1D369). Jump-table ordinal selector from a base-3 event code (returns 1..N). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x172E0
+    seg: 0x172E
+    ofs: 0x0
+    size: 1
+    far: true
+    class: ASM
+    hypothesis: "far_ret_noop"
+    sig: "void far; retf (1-byte far-return no-op -- IDA nullsub_1)"
+    port_status: unported
+    verified: null
+    notes: "1B LEAF, 0 dyn, cd=0, 1 caller (sub_168E0). Trivial far-return; already keyed nullsub_1 in IDA, semantic name records it as a deliberate no-op. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x140E1
+    seg: 0x140E
+    ofs: 0x1
+    size: 113
+    far: false
+    class: ASM
+    hypothesis: "farobj_flag_extract_5869"
+    sig: "NEAR retn fn; CX=count; BX = ds:5ACB + ds:5869 -> [bx] + ds:586B -> DI=[bx]&1, AX=[bx+2]&1 (extracts a 2-bit flag through a 3-level DGROUP pointer chain); 1 caller (sub_140AC)"
+    port_status: unported
+    verified: null
+    notes: "113B retn, 0 dyn, cd=0, 1 caller. Extracts two flag bits through the ds:5869/586B pointer chain indexed by ds:5ACB. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x16F60
+    seg: 0x16F6
+    ofs: 0x0
+    size: 27
+    far: false
+    class: ASM
+    hypothesis: "farptr_const_store_7773a"
+    sig: "void far; DS=7772h; ds:7773A=0xE9, ds:7773C=0x11, ds:7773E=0x35 (stores a far-ptr triple E9:1135-ish); 1 caller (sub_168E0)"
+    port_status: unported
+    verified: null
+    notes: "27B DATA-span, 0 dyn, cd=0, 1 caller. Stores a 3-word far-pointer constant (0xE9,0x11,0x35) into es:7772:7773A/3C/3E. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1C0BE
+    seg: 0x1C0B
+    ofs: 0xE
+    size: 38
+    far: true
+    class: ASM
+    hypothesis: "farstr_word_read_1c0"
+    sig: "NEAR retn fn; far-ptr arg at [bp+arg0]: AL=[es:ptr], SI=AL, ptr++, AX=AL<<8 | next byte (reads a big-endian word from a far string cursor); 1 caller (sub_1C21B)"
+    port_status: unported
+    verified: null
+    notes: "38B retn, 0 dyn, cd=0, 1 caller. Reads a 16-bit big-endian value from a far-pointer string cursor (advances the cursor 2). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x12052
+    seg: 0x1205
+    ofs: 0x2
+    size: 152
+    far: false
+    class: ASM
+    hypothesis: "fixed_vec2_dot_7e900"
+    sig: "void far; ES=7B0Eh; SI:DI = es:7E900*BX + es:7E906*BP + es:7E90C*CX (saturating row dot); 1 caller (sub_11F8A)"
+    port_status: unported
+    verified: null
+    notes: "152B, 0 dyn, cd=0, 1 caller. Fixed-point 2/3-term dot of matrix row es:7E900/06/0C against BX/BP/CX into SI:DI. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x19B73
+    seg: 0x19B7
+    ofs: 0x3
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "frame_preserve_nop"
+    sig: "void far; push bp, mov bp,sp, pop bp, retf (frame enter/leave no-op -- compiler stub)"
+    port_status: unported
+    verified: null
+    notes: "5B, 0 dyn, cd=0, 1 caller (sub_18503). Empty frame-preserving stub (push/pop bp only). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x6CE3A
+    seg: 0x6CE3
+    ofs: 0xA
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "mode_4ac2_advance_1_2"
+    sig: "void far (DATA-class span): if ds:4AC2==1 -> ds:4AC2=2, ds:4AC3=0 else jmp sub_6CE4B; 2 callers (sub_2C059, sub_2C239)"
+    port_status: unported
+    verified: null
+    notes: "17B span, 0 dyn, cd=0, 2 callers (r06_e13 is a named RTLink key). One-shot mode advance ds:4AC2 1->2 clearing ds:4AC3. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6D46D
+    seg: 0x6D46
+    ofs: 0xD
+    size: 76
+    far: true
+    class: ASM
+    hypothesis: "mode_gate_4a83_4ac2_r"
+    sig: "void far; early-ret unless ds:4A83 > 1 AND ds:4AC2 > 1 (R06-region twin of state_gate_4ac2_4a83); retf at 0x6D47B"
+    port_status: unported
+    verified: null
+    notes: "76B span, 0 dyn, cd=0, 2 callers (sub_39BD3, sub_6D13D). Dual state gate (ds:4A83, ds:4AC2 both >1) before the R06 body. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10DEF
+    seg: 0x10DE
+    ofs: 0xF
+    size: 15
+    far: true
+    class: ASM
+    hypothesis: "overlay_seg_word_write"
+    sig: "void far; ES=seg R69_606E; es:[BX] = AX (word write into overlay segment); preserves es"
+    port_status: unported
+    verified: null
+    notes: "15B LEAF, 0 dyn, cd=0, 1 caller (sub_10C26). Writes a word into overlay segment R69_606E at [BX] (pair of overlay_seg_word_read). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x175E0
+    seg: 0x175E
+    ofs: 0x0
+    size: 39
+    far: true
+    class: ASM
+    hypothesis: "pcspk_tone_on_b6"
+    sig: "void far; DS=7772h; pushf/cli; AL=in 61h -> ds:77A4C; OR AL,3, out 61h (gate on); AL=0xB6 out 43h (PIT cmd ch2 mode 3)... (speaker tone setup); 1 caller (sub_1D3B1)"
+    port_status: unported
+    verified: null
+    notes: "39B, 0 dyn, cd=0, 1 caller. PC-speaker tone start: saves/sets port 61h gate bits + programs PIT ch2 command 0xB6. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1761A
+    seg: 0x1761
+    ofs: 0xA
+    size: 11
+    far: true
+    class: ASM
+    hypothesis: "port_read_dx_ax"
+    sig: "void far; DX=[bp+arg0]; AL=in DX (AH=0); retf (generic port byte read)"
+    port_status: unported
+    verified: null
+    notes: "11B, 0 dyn, cd=0, 1 caller (sub_17EAE C). Reads a byte from the port in DX (arg), zero-extends to AX. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x6D62F
+    seg: 0x6D62
+    ofs: 0xF
+    size: 94
+    far: false
+    class: ASM
+    hypothesis: "r06_farobj_proc_e"
+    sig: "void far; push es ... (94B); 2 callers (sub_6D5DF, sub_6D747 DATA)"
+    port_status: unported
+    verified: null
+    notes: "94B span, 0 dyn, cd=0, 2 callers, undecodable head. R06 far-object processor. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6C3CD
+    seg: 0x6C3C
+    ofs: 0xD
+    size: 42
+    far: false
+    class: ASM
+    hypothesis: "r06_state_proc_6de8"
+    sig: "void far; ES/AX=6DE8h then (body 42B); 2 callers (sub_2C419, sub_6B87A C)"
+    port_status: unported
+    verified: null
+    notes: "42B span, 0 dyn, cd=0, 2 callers. R06-region state processor at seg 6DE8. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6C839
+    seg: 0x6C83
+    ofs: 0x9
+    size: 93
+    far: false
+    class: ASM
+    hypothesis: "r06_table_zero_30b"
+    sig: "void far; ds:30Bh = 0 then (body 93B); 2 callers (sub_2C473, sub_6C3F7 C)"
+    port_status: unported
+    verified: null
+    notes: "93B span, 0 dyn, cd=0, 2 callers. R06-region table zeroing starting at ds:30B. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x106548
+    seg: 0x10654
+    ofs: 0x8
+    size: 31
+    far: false
+    class: ASM
+    hypothesis: "r12_farptr_helper_b"
+    sig: "void far; push es ... (31B); 2 callers (r12_e42, r12_e43)"
+    port_status: unported
+    verified: null
+    notes: "31B span, 0 dyn, cd=0, 2 callers, called by r12_e42/e43. R12 overlay far-ptr helper twin. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6F399
+    seg: 0x6F39
+    ofs: 0x9
+    size: 42
+    far: true
+    class: ASM
+    hypothesis: "r17_state_zero_6e451"
+    sig: "void far; ES=6E45h: es:6E8DA=0, es:6E8D7=0; es:6E451=[bp+6]; retf"
+    port_status: unported
+    verified: null
+    notes: "42B, 0 dyn, cd=0, 2 callers (sub_2C13F, sub_6EA4A). R17-region state reset: clears two words at 6E45:6E8D7/DA + stores arg to 6E451. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1184E
+    seg: 0x1184
+    ofs: 0xE
+    size: 1
+    far: true
+    class: ASM
+    hypothesis: "retf_noop"
+    sig: "void far; retf (1-byte null return)"
+    port_status: unported
+    verified: null
+    notes: "1B LEAF, 0 dyn, cd=0, 1 caller (sub_4EAF8). Trivial far-return no-op (pair of nullsub family). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x171B0
+    seg: 0x171B
+    ofs: 0x0
+    size: 124
+    far: true
+    class: ASM
+    hypothesis: "sbi_seq_config_7773a"
+    sig: "void far; DS=7772h; ds:7773A=0x80, ds:7773C=0x200, ds:7773E=0x35; ds:777F0=0x21C (SBI base reset + config triple); 1 caller (sub_168E0)"
+    port_status: unported
+    verified: null
+    notes: "124B, 0 dyn, cd=0, 1 caller. SBI sequencer config: stores the config triple at es:7772:7773A/C/E + resets SBI base es:777F0=0x21C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x114DE
+    seg: 0x114D
+    ofs: 0xE
+    size: 125
+    far: false
+    class: ASM
+    hypothesis: "state3_copy_3c6_3ce"
+    sig: "void far; CX=4, SI=0x3C6, DI=0x3CE; copy/merge 4 records from frame args to the 3C6/3CE tables; 1 caller (sub_11450)"
+    port_status: unported
+    verified: null
+    notes: "125B, 0 dyn, cd=0, 1 caller. Copies 4 argument records into the paired state tables at 0x3C6/0x3CE (bp-framed). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x149F2
+    seg: 0x149F
+    ofs: 0x2
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "state_byte_11c61_get_ah"
+    sig: "NEAR retn LEAF; AH = cs:11C61, AL = 0; retn (returns state byte in AH)"
+    port_status: unported
+    verified: null
+    notes: "8B LEAF retn, 0 dyn, cd=0, 1 caller (sub_149C8). Returns cs:11C61 in AH with AL=0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1046D
+    seg: 0x1046
+    ofs: 0xD
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "state_byte_bx2f_set"
+    sig: "void far; cs:[BX+2F] = AL; retf (indexed setter, pair of farptr_field2f_or_test)"
+    port_status: unported
+    verified: null
+    notes: "6B, 0 dyn, cd=0, 1 caller (sub_32C62). Sets indexed state byte cs:BX+0x2F (reader = farptr_field2f_or_test). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x14040
+    seg: 0x1404
+    ofs: 0x0
+    size: 42
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_lookup_3840_b"
+    sig: "void far; AX&=0xFFF0, AX<<=1, BX>>=4, BX+=AX, BX<<=1; ES=cs:11BE8; BX=es:[BX+0x3840] & 0x1FF; cmp bx,6... (second terrain table form); 1 caller (sub_13162)"
+    port_status: unported
+    verified: null
+    notes: "42B, 0 dyn, cd=0, 1 caller. Terrain attribute lookup with packed AX/BX index into es:3840, result masked 0x1FF (twin of terrain_attr_lookup_3840). conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x27DFB
+    seg: 0x27DF
+    ofs: 0xB
+    size: 60
+    far: false
+    class: ASM
+    hypothesis: "anim_frame_addr_27984"
+    sig: "void far; DS=cs:1F712; SI = cs:27984 + (cs:2798A * cs:27982); CX=cs:27989>>3... (computes the current frame address); continues (60B)"
+    port_status: unported
+    verified: null
+    notes: "60B, 0 dyn, cd=0, 1 caller (sub_27E53). Computes the current animation frame address (base cs:27984 + slot*stride) with the sub-frame offset. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27D5F
+    seg: 0x27D5
+    ofs: 0xF
+    size: 99
+    far: false
+    class: ASM
+    hypothesis: "anim_frame_state_27988"
+    sig: "NEAR retn fn; cs:27988=0, cs:2798A=0; SI=cs:27986, DS=cs:1F712; gate cs:2797A bits 2/3: step frame counters vs cs:27983 (anim state machine); continues (99B)"
+    port_status: unported
+    verified: null
+    notes: "99B retn, 0 dyn, cd=0, 1 caller (sub_27A20). Animation frame-state step: resets 27988/2798A, advances a frame counter against the cs:27983 bound under cs:2797A flags. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27DC2
+    seg: 0x27DC
+    ofs: 0x2
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "anim_frame_tick_27989"
+    sig: "NEAR retn fn; AL = cs:27982<<3; inc cs:27989; if AL >= cs:27989: cs:27989=0 (wrap); retn"
+    port_status: unported
+    verified: null
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_27E53). Advances a frame-tick counter (cs:27989) against the period (cs:27982<<3), wrapping at the bound. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x27DDF
+    seg: 0x27DD
+    ofs: 0xF
+    size: 28
+    far: false
+    class: ASM
+    hypothesis: "anim_slot_cycle_2798a"
+    sig: "NEAR retn fn; cs:27989 = cs:27988; AL = cs:2798A+1; if AL < cs:27983 keep else AL=0; cs:2798A = AL; retn"
+    port_status: unported
+    verified: null
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_27A20). Cycles the slot counter cs:2798A modulo the cs:27983 bound + mirrors 27988 -> 27989. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24E99
+    seg: 0x24E9
+    ofs: 0x9
+    size: 15
+    far: true
+    class: ASM
+    hypothesis: "bda_417_or_al"
+    sig: "void far; ES=0, BX=0x417; es:[417] |= AL (set bits via OR); retf"
+    port_status: unported
+    verified: null
+    notes: "15B LEAF, 0 dyn, cd=0, 1 caller (sub_24E8C). Sets bits in BDA 0040:0417 via OR AL (the set-half of the bda_417_mask_clear/store trio). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25CFF
+    seg: 0x25CF
+    ofs: 0xF
+    size: 217
+    far: false
+    class: ASM
+    hypothesis: "clip_rect_compute_shr1"
+    sig: "NEAR retn fn; cs:25458=0; clamp/clip a rect from [SI] (size [SI]>>1 form) against cs:25450..56 bounds -> clip area; 1 caller (sub_25CD8)"
+    port_status: unported
+    verified: null
+    notes: "217B retn, 0 dyn, cd=0, 1 caller. Clipped-rect area compute with the size taken as [SI]>>1 (third variant of the clip_rect_compute family). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2063B
+    seg: 0x2063
+    ofs: 0xB
+    size: 6
+    far: false
+    class: ASM
+    hypothesis: "dispatch_220b0_near"
+    sig: "NEAR retn fn; call dword ptr cs:220B0; retn"
+    port_status: unported
+    verified: null
+    notes: "6B retn, 0 dyn, cd=0, 1 caller (sub_2061B). NEAR far-call trampoline via cs:220B0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x259B9
+    seg: 0x259B
+    ofs: 0x9
+    size: 37
+    far: true
+    class: ASM
+    hypothesis: "dispatch_2210c_invoke_5arg"
+    sig: "void far; loads CX,SI,BX + LDS DI=[bp+8] + BP=[bp+4]; call dword ptr cs:2210C; retf"
+    port_status: unported
+    verified: null
+    notes: "37B, 0 dyn, cd=0, 1 caller (r01_e04). Far-call trampoline with 5 args (incl a far-ptr via LDS) via cs:2210C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25681
+    seg: 0x2568
+    ofs: 0x1
+    size: 6
+    far: true
+    class: ASM
+    hypothesis: "dispatch_2216c_stub"
+    sig: "void far; call dword ptr cs:2216C; retf"
+    port_status: unported
+    verified: null
+    notes: "6B, 0 dyn, cd=0, 1 caller (sub_4F8BC). Far-call trampoline via cs:2216C. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x256FD
+    seg: 0x256F
+    ofs: 0xD
+    size: 22
+    far: false
+    class: ASM
+    hypothesis: "farptr_slot_store_7f24a_al"
+    sig: "NEAR retn fn; ES=7B0Eh; cs:2548A=AL (mode); ds:7F24A=SI, ds:7F24C=DS (stores a far-ptr SI:DS); retn"
+    port_status: unported
+    verified: null
+    notes: "22B retn, 0 dyn, cd=0, 1 caller (sub_256E7). Stores a far pointer (SI:DS) into the 7F24A slot + sets mode byte 2548A (near-twin of farptr_slot_store_7f24a). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24789
+    seg: 0x2478
+    ofs: 0x9
+    size: 148
+    far: false
+    class: ASM
+    hypothesis: "fixed_vec3_dot_3820_si"
+    sig: "NEAR retn fn; dot of [SI] vector with DGROUP 3820/3826/382C constants (3 imul+add/adc, saturating shl1); 1 caller (sub_27180)"
+    port_status: unported
+    verified: null
+    notes: "148B retn, 0 dyn, cd=0, 1 caller. Fixed-point vector-matrix dot at [SI] against DGROUP constants (near-twin of fixed_vec3_dot_3820 at 246E7). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24EF7
+    seg: 0x24EF
+    ofs: 0x7
+    size: 12
+    far: false
+    class: ASM
+    hypothesis: "flag_24e20_gate_stc"
+    sig: "NEAR retn LEAF; if cs:24E20 != 0: stc, retn (CF=1 when mode byte set, else CF=0 fallthrough)"
+    port_status: unported
+    verified: null
+    notes: "12B LEAF retn, 0 dyn, cd=0, 1 caller (sub_24EF3 NEARTHUNK). Returns CF=1 when flag byte cs:24E20 is non-zero (mode gate). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2520B
+    seg: 0x2520
+    ofs: 0xB
+    size: 21
+    far: false
+    class: ASM
+    hypothesis: "flag_block_scan_nonzero"
+    sig: "void far; DS=CS; scan the 0x0B-byte flag block at cs:5762 for the first non-zero byte (lodsb loop); continues body"
+    port_status: unported
+    verified: null
+    notes: "21B DATA-span, 0 dyn, cd=0, 1 caller (sub_4E520). Scans the 11-byte flag block at 5762h for a set byte. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x22AC6
+    seg: 0x22AC
+    ofs: 0x6
+    size: 22
+    far: false
+    class: ASM
+    hypothesis: "int8_vector_restore_2221c"
+    sig: "NEAR retn fn; DX:DS = cs:2221C (saved INT8 vec); AX=0x2508 int 21h (restore INT8); retn"
+    port_status: unported
+    verified: null
+    notes: "22B retn, 0 dyn, cd=0, 1 caller (sub_22A79). Restores the saved INT 8 vector from cs:2221C via INT 21h AH=25h (undo of int8_vector_hook_343f; distinct from int8_vector_unhook which resets via sub_17460). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2530D
+    seg: 0x2530
+    ofs: 0xD
+    size: 22
+    far: true
+    class: ASM
+    hypothesis: "int9_vector_unhook"
+    sig: "void far; DX:DS = cs:24E38 (saved INT9 vec); AX=0x2509 int 21h (restore INT9); retf"
+    port_status: unported
+    verified: null
+    notes: "22B, 0 dyn, cd=0, 1 caller (sub_22A79). Restores the saved INT 9 keyboard vector from cs:24E38 (undo of int9_vector_hook_5c7d). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x27CF3
+    seg: 0x27CF
+    ofs: 0x3
+    size: 108
+    far: false
+    class: ASM
+    hypothesis: "line_overlap_classify"
+    sig: "NEAR retn fn; BP=[BX+4]+[SI+4]; if BP<=1 or midpoint tests: emit AL=1/flags via stosb (overlap classifier); continues (108B); 1 caller (sub_27A20)"
+    port_status: unported
+    verified: null
+    notes: "108B retn, 0 dyn, cd=0, 1 caller. Classifies line overlap by midpoint tests (BP=sum of extents), emitting a flag byte via stosb. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27BDA
+    seg: 0x27BD
+    ofs: 0xA
+    size: 281
+    far: false
+    class: ASM
+    hypothesis: "line_raster_diff_281"
+    sig: "NEAR retn fn; BP=CX-1; per-row: abs([BX]-[SI]) diff with neg/sbb sign fix, accumulate (281B raster line diff); 1 caller (sub_27A20)"
+    port_status: unported
+    verified: null
+    notes: "281B retn, 0 dyn, cd=0, 1 caller. Per-row absolute-difference raster walk over two lines ([BX]/[SI]) with sign-fixed accumulation. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2440E
+    seg: 0x2440
+    ofs: 0xE
+    size: 50
+    far: false
+    class: ASM
+    hypothesis: "mat3_scale_identity_diag"
+    sig: "NEAR retn fn; saturating DX = AX * 0x7FFF (shl1, 0x8001/0x7FFF clamp) -> [DI], [DI+8], [DI+10] (diagonal set); AX=0... (identity-ish scale); 1 caller (sub_2448E)"
+    port_status: unported
+    verified: null
+    notes: "50B retn, 0 dyn, cd=0, 1 caller. Sets a scaled diagonal ([DI]/[DI+8]/[DI+10]) from a saturating AX*0x7FFF (near-twin of the fixed_mat3_scale family). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27433
+    seg: 0x2743
+    ofs: 0x3
+    size: 46
+    far: false
+    class: ASM
+    hypothesis: "matrix_copy_42c8_7b0e"
+    sig: "void far; DS=old ES; ES=7B0Eh; copy 3x4 words from [ES:..] to 7B0E:42C8 (movsw x4 loop); 1 caller (sub_27180)"
+    port_status: unported
+    verified: null
+    notes: "46B, 0 dyn, cd=0, 1 caller. Copies a 3x4-word matrix block into DGROUP 7B0E:42C8. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2598A
+    seg: 0x2598
+    ofs: 0xA
+    size: 47
+    far: false
+    class: ASM
+    hypothesis: "mouse_bounds_clamp_25474"
+    sig: "NEAR retn fn; clamp CX to [cs:25474 .. cs:25478-0x17], SI to [cs:25476 .. ..] (4-way bound clamp of a coord pair); continues body"
+    port_status: unported
+    verified: null
+    notes: "47B retn, 0 dyn, cd=0, 1 caller (sub_2590C). Clamps a coordinate pair (CX,SI) into the 4-word bound quad at cs:25474..78. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1FEAC
+    seg: 0x1FEA
+    ofs: 0xC
+    size: 911
+    far: false
+    class: ASM
+    hypothesis: "quat_orient_flags_911"
+    sig: "NEAR retn fn; BP=0: per-axis compare of [BX+..] against half-ranges -> BP |= 1/2/4... (911B orientation classifier, quadrant flag accumulation); 1 caller (sub_1FE76)"
+    port_status: unported
+    verified: null
+    notes: "911B retn, 0 dyn, cd=0, 1 caller. Large orientation/quadrant classifier: builds flag bits in BP by comparing vector components against half-range thresholds. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x26FC7
+    seg: 0x26FC
+    ofs: 0x7
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "ramp_stosw_loop"
+    sig: "NEAR retn fn; DX=BP=CX; per-loop: AL=1/0 alternate stosw ramp fill while DX-=BX>0 (Bresenham-ish fill); 1 caller (sub_26CD8)"
+    port_status: unported
+    verified: null
+    notes: "29B retn, 0 dyn, cd=0, 1 caller. Alternating-word (ramp) stosw fill with a Bresenham-style DX-=BX stepper. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F8E1
+    seg: 0x1F8E
+    ofs: 0x1
+    size: 30
+    far: false
+    class: ASM
+    hypothesis: "rect_init_4word"
+    sig: "NEAR retn fn; if BP==0: [SI]=1, [SI+2]=AX, [SI+4]=AX+CX-1, [SI+6]=BX (initializes a 4-word rect record); retn"
+    port_status: unported
+    verified: null
+    notes: "30B retn, 0 dyn, cd=0, 1 caller (sub_1F7D8). Initializes a 4-word rectangle record at [SI] from AX/BX/CX. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F956
+    seg: 0x1F95
+    ofs: 0x6
+    size: 67
+    far: false
+    class: ASM
+    hypothesis: "rect_min_track_1f722"
+    sig: "NEAR retn fn; CX=[SI+1A]; if cs:1F740.1 gate: retn; else min([SI+8],[SI+18]) tracked into cs:1F722 (running minimum); continues body"
+    port_status: unported
+    verified: null
+    notes: "67B retn, 0 dyn, cd=0, 1 caller (sub_1F7D8). Tracks a running minimum of two record fields into cs:1F722 (gated by flag cs:1F740.1). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x21F3A
+    seg: 0x21F3
+    ofs: 0xA
+    size: 281
+    far: false
+    class: ASM
+    hypothesis: "rect_span_min_track"
+    sig: "NEAR retn fn; CX=[SI+6]-[SI+2] (span sign branches); gate cs:1F740.1; else min([SI],[SI+4]) tracked into cs:1F722; continues (281B)"
+    port_status: unported
+    verified: null
+    notes: "281B retn, 0 dyn, cd=0, 1 caller (sub_21EB0). Span-sign branch + running-min track of record fields into cs:1F722 (twin of rect_min_track_1f722). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2023B
+    seg: 0x2023
+    ofs: 0xB
+    size: 132
+    far: false
+    class: ASM
+    hypothesis: "sign_classify_bp"
+    sig: "NEAR retn fn; BP=0; DX=[BX+4], CX=[BX+0A]; if both <=0: BP=1; retn (sign-class of two fields)"
+    port_status: unported
+    verified: null
+    notes: "132B span (body to retn@0x2024C), 0 dyn, cd=0, 1 caller (sub_1FE76). Classifies the sign pair ([BX+4],[BX+0A]) -> BP=1 when both non-positive. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2835D
+    seg: 0x2835
+    ofs: 0xD
+    size: 13
+    far: false
+    class: ASM
+    hypothesis: "slope_flag_test_bx"
+    sig: "NEAR retn fn; DX=-BX; if BX<CX: AX|=4 else ... (slope flag test, near-twin of slope_flag_test_bc); 1 caller (sub_196E63)"
+    port_status: unported
+    verified: null
+    notes: "13B retn, 0 dyn, cd=0, 1 caller. Slope/aspect flag test comparing BX vs CX into AX bit 4 (near-twin of slope_flag_test_bc at 279A4). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x26EFF
+    seg: 0x26EF
+    ofs: 0xF
+    size: 200
+    far: false
+    class: ASM
+    hypothesis: "sprite_stride_lookup_26408"
+    sig: "NEAR retn fn; gate cs:2646E.1: save SI->cs:2646C, SI=[SI+0x10]; CX=cs:26408; AL=es:[bp+1] * cs:2640A (stride index math); continues (200B)"
+    port_status: unported
+    verified: null
+    notes: "200B retn, 0 dyn, cd=0, 1 caller (sub_26CD8). Sprite/table stride lookup: computes a record index (AL*cs:2640A) into the cs:26408-stride table, gated by flag 2646E.1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2574A
+    seg: 0x2574
+    ofs: 0xA
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "state_byte_25488_to_89_near"
+    sig: "NEAR retn fn; cs:25489 = cs:25488 (shadow save, near-twin of state_byte_25489_shadow_save); retn"
+    port_status: unported
+    verified: null
+    notes: "9B retn, 0 dyn, cd=0, 1 caller (sub_257E5). Copies state byte 25488 -> 25489 (near form of the shadow save). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2575C
+    seg: 0x2575
+    ofs: 0xC
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "state_byte_25489_to_88_near"
+    sig: "NEAR retn fn; cs:25488 = cs:25489 (shadow restore, near-twin of state_byte_25488_shadow_restore); retn"
+    port_status: unported
+    verified: null
+    notes: "9B retn, 0 dyn, cd=0, 1 caller (sub_257E5). Copies state byte 25489 -> 25488 (near form of the shadow restore). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1D664
+    seg: 0x1D66
+    ofs: 0x4
+    size: 25
+    far: true
+    class: ASM
+    hypothesis: "state_word_77a4a_test"
+    sig: "void far; ES=7772h; AX = (es:77A4A == 0 ? 1 : 0); retf (tests the event word)"
+    port_status: unported
+    verified: null
+    notes: "25B, 0 dyn, cd=0, 1 caller (sub_19843). Returns AX=1 when es:77A4A is clear (gate test). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25A8B
+    seg: 0x25A8
+    ofs: 0xB
+    size: 15
+    far: false
+    class: ASM
+    hypothesis: "vec2_offset_add_si"
+    sig: "void far; BX += [SI]*4, DI += [SI+2]/2 (applies a 2-word offset scaled into BX/DI); continues body"
+    port_status: unported
+    verified: null
+    notes: "15B DATA-span, 0 dyn, cd=0, 1 caller (sub_263BD). Adds a scaled 2-word offset from [SI] into the BX/DI position pair. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27285
+    seg: 0x2728
+    ofs: 0x5
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "vec3_neg_sar1_store"
+    sig: "NEAR retn fn; [DI]= -[BX]>>1, [DI+2]= -[BX+2]>>1, [DI+4]= -[BX+4]>>1 (negate + >>1 of a 3-word vector); retn"
+    port_status: unported
+    verified: null
+    notes: "29B retn, 0 dyn, cd=0, 1 caller (sub_27180). Negated arithmetic >>1 copy of a 3-word vector (inverse of vec3_sar1_store). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x23E77
+    seg: 0x23E7
+    ofs: 0x7
+    size: 231
+    far: false
+    class: ASM
+    hypothesis: "vec3_norm_es_di"
+    sig: "NEAR retn fn; abs each 64-bit component of es:[DI] (neg/sbb if DX<0), accumulate magnitude (231B); 1 caller (sub_23F62)"
+    port_status: unported
+    verified: null
+    notes: "231B retn, 0 dyn, cd=0, 1 caller. Normalizes/abs-accumulates the 3-component vector at es:[DI] into a magnitude (CX:BP accumulator). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2726E
+    seg: 0x2726
+    ofs: 0xE
+    size: 23
+    far: false
+    class: ASM
+    hypothesis: "vec3_sar1_store"
+    sig: "NEAR retn fn; [DI]=[BX]>>1, [DI+2]=[BX+2]>>1, [DI+4]=[BX+4]>>1 (arithmetic >>1 of a 3-word vector); retn"
+    port_status: unported
+    verified: null
+    notes: "23B retn, 0 dyn, cd=0, 1 caller (sub_27180). Arithmetic right-shift-by-1 copy of a 3-word vector [BX] -> [DI]. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x202BF
+    seg: 0x202B
+    ofs: 0xF
+    size: 28
+    far: false
+    class: ASM
+    hypothesis: "view_scroll_clamp_1f702"
+    sig: "NEAR retn fn; AX -= cs:1F6D6; clamp AX to [-0x1C2..0x1C2] (0xFE3E..0x1C2); cs:1F702 = AX; retn"
+    port_status: unported
+    verified: null
+    notes: "28B retn, 0 dyn, cd=0, 1 caller (sub_1F769). Clamps a scroll delta (relative to cs:1F6D6) to the range -0x1C2..0x1C2 and stores to cs:1F702. conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x2C99B
+    seg: 0x2C99
+    ofs: 0xB
+    size: 10
+    far: false
+    class: ASM
+    hypothesis: "bcd_hex_stosb"
+    sig: "NEAR retn LEAF; AL = BCD->hex ASCII via and/0x90/daa/adc/0x40/daa trick, stosb (writes one hex digit); retn"
+    port_status: unported
+    verified: null
+    notes: "10B LEAF retn, 0 dyn, cd=0, 1 caller (sub_2C98E DATA). Converts a BCD nibble to its ASCII hex digit (classic 90h/daa trick) and stores it. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x38645
+    seg: 0x3864
+    ofs: 0x5
+    size: 23
+    far: false
+    class: ASM
+    hypothesis: "bit_scan_dx_e"
+    sig: "NEAR retn fn; BX=0; loop up to 0x0E: shr DX,1; if carry: BX++ (counts set bits, max 14); retn"
+    port_status: unported
+    verified: null
+    notes: "23B retn, 0 dyn, cd=0, 1 caller (sub_385AD). Counts set bits in DX (population count capped at 14) -> BX. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x35DA0
+    seg: 0x35DA
+    ofs: 0x0
+    size: 81
+    far: false
+    class: ASM
+    hypothesis: "bounce_clamp_7ae"
+    sig: "NEAR retn fn; AX = (0x0C ^ ds:7B2) + ds:7AE; clamp AX to [0x6E..0xD2] (flip direction word ds:7B2 at bounds); ds:7AE=AX; continues (81B); 1 caller (sub_35E21)"
+    port_status: unported
+    verified: null
+    notes: "81B retn, 0 dyn, cd=0, 1 caller. Bounce-clamp of a position word (ds:7AE) against 0x6E..D2 with direction-flip via ds:7B2. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x39AC8
+    seg: 0x39AC
+    ofs: 0x8
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "dgroup_copy_from_4a82"
+    sig: "NEAR retn LEAF; SI=0x4A82, CX=0x49, movsb (copies 0x49 bytes from ds:4A82 to ES:DI); retn"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF retn, 0 dyn, cd=0, 1 caller (sub_3099C). Copies 0x49 bytes of state from DGROUP 4A82h to ES:DI (save direction). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x39AD1
+    seg: 0x39AD
+    ofs: 0x1
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "dgroup_copy_to_4a82"
+    sig: "NEAR retn LEAF; DI=0x4A82, CX=0x49, movsb (copies 0x49 bytes from DS:SI to ds:4A82); retn"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF retn, 0 dyn, cd=0, 1 caller (sub_30AA8). Copies 0x49 bytes of state from DS:SI into DGROUP 4A82h (restore direction, inverse of sub_39AC8). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x31C2F
+    seg: 0x31C2
+    ofs: 0xF
+    size: 21
+    far: false
+    class: ASM
+    hypothesis: "dgroup_cycle_reset_43d"
+    sig: "NEAR retn fn; ds:43D=0xFF, ds:43E=0xFF, ds:435=0, ds:436=0 (resets the dgroup_cycle_435_436 counters); retn"
+    port_status: unported
+    verified: null
+    notes: "21B retn, 0 dyn, cd=0, 1 caller (sub_31BCD). Resets the cycle-detect counters (43D/43E=0xFF, 435/436=0) used by dgroup_cycle_435_436. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x3E4D0
+    seg: 0x3E4D
+    ofs: 0x0
+    size: 130
+    far: false
+    class: ASM
+    hypothesis: "ems_setup_thunk_b"
+    sig: "void far; push bx ... (130B, EMS setup family); 1 caller (sub_30EBE)"
+    port_status: unported
+    verified: null
+    notes: "130B span, 0 dyn, cd=0, 1 caller (sub_30EBE, EMS family). Second EMS-setup thunk/continuation. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4464A
+    seg: 0x4464
+    ofs: 0xA
+    size: 36
+    far: true
+    class: ASM
+    hypothesis: "entity_next_63fd"
+    sig: "void far; DS=63FDh; BL=ds:65985+1 (wrap), ds:65986=BL; BX=[BX*2+0x1834]; test [BX+13].2... (next-entity step); continues (36B); 1 caller (sub_3327A)"
+    port_status: unported
+    verified: null
+    notes: "36B, 0 dyn, cd=0, 1 caller. Steps the entity cursor (ds:65985/65986) in the 63FDh table via the 1834h index, flag test [BX+13].2. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x37BFA
+    seg: 0x37BF
+    ofs: 0xA
+    size: 121
+    far: false
+    class: ASM
+    hypothesis: "entity_timer2e_dec_14"
+    sig: "NEAR retn fn; SI=ds:48BA; if [SI+0CA].9 clear retn; if [SI+2E]==0 retn; [SI+0D1]=0; [SI+2E]-=0x14, if <=0 jmp expiry; retn"
+    port_status: unported
+    verified: null
+    notes: "121B retn, 0 dyn, cd=0, 1 caller (sub_2FEF2). Gated entity-timer step: decrements [SI+2E] by 0x14 under the [SI+0CA].9 flag, branches on expiry. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3C0E4
+    seg: 0x3C0E
+    ofs: 0x4
+    size: 118
+    far: false
+    class: ASM
+    hypothesis: "farobj_adc_di28"
+    sig: "void far; adc [DI+28], 0 then (body 118B); 1 caller (sub_3001E)"
+    port_status: unported
+    verified: null
+    notes: "118B span, 0 dyn, cd=0, 1 caller. Carry-propagating increment of a record field [DI+28] then continues (partial decode head). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x3E90E
+    seg: 0x3E90
+    ofs: 0xE
+    size: 80
+    far: false
+    class: ASM
+    hypothesis: "farobj_bl_15_init"
+    sig: "void far; BL=0x15 then (body 80B); 1 caller (sub_345A0)"
+    port_status: unported
+    verified: null
+    notes: "80B span, 0 dyn, cd=0, 1 caller. Far-object init with BL=0x15 selector then body. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x3AA1C
+    seg: 0x3AA1
+    ofs: 0xC
+    size: 80
+    far: false
+    class: ASM
+    hypothesis: "farobj_dist_bounds_4ac0"
+    sig: "NEAR retn fn; AX=|es:[SI+8A]-ds:4A97|, BX=|es:[SI+8C]-ds:4A99|; if ds:4AC0==1: test AX<=0x38E, BX<=0x1C7... (distance-bounds check); continues (80B); 1 caller (sub_3A9B7)"
+    port_status: unported
+    verified: null
+    notes: "80B retn, 0 dyn, cd=0, 1 caller. Absolute-distance bounds check of an entity (es:[SI+8A/8C]) against ds:4A97/4A99 references under the ds:4AC0 mode. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4431B
+    seg: 0x4431
+    ofs: 0xB
+    size: 55
+    far: false
+    class: ASM
+    hypothesis: "farobj_dx_28_loop"
+    sig: "void far; DX=0x28 then (body 55B loop); 1 caller (sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "55B span, 0 dyn, cd=0, 1 caller. Far-object loop initialized with DX=0x28 count. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x3FCE4
+    seg: 0x3FCE
+    ofs: 0x4
+    size: 13
+    far: false
+    class: ASM
+    hypothesis: "farobj_field60_get"
+    sig: "void far; AX = [DI+60h] (13B, continues); 1 caller (sub_322E5)"
+    port_status: unported
+    verified: null
+    notes: "13B LEAF span, 0 dyn, cd=0, 1 caller. Reads record field [DI+0x60] into AX. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2EA6D
+    seg: 0x2EA6
+    ofs: 0xD
+    size: 11
+    far: true
+    class: ASM
+    hypothesis: "farptr_pair_stosw"
+    sig: "void far; stosw cs:2E108, stosw cs:2E10A (writes the saved far-ptr pair to ES:DI); retf"
+    port_status: unported
+    verified: null
+    notes: "11B, 0 dyn, cd=0, 1 caller (sub_3099C). Stores the saved far-pointer pair (cs:2E108/2E10A) to ES:DI as two words. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2F1EC
+    seg: 0x2F1E
+    ofs: 0xC
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "flag_gate_2e100_skip"
+    sig: "void far; test cs:2E100.0; if set: retf (skips when the enable flag is on; else falls into body); 1 caller (sub_2BFEB)"
+    port_status: unported
+    verified: null
+    notes: "30B span (body to retf@0x2F1F4), 0 dyn, cd=0, 1 caller. Gate: returns early when cs:2E100.0 is set (the flag_gate_zero_abc flag). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3FD82
+    seg: 0x3FD8
+    ofs: 0x2
+    size: 7
+    far: false
+    class: ASM
+    hypothesis: "index_inc_bx"
+    sig: "void far; inc bx (7B, continues); 1 caller (sub_2F400)"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF span, 0 dyn, cd=0, 1 caller. Increments the index register BX then continues. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x29468
+    seg: 0x2946
+    ofs: 0x8
+    size: 185
+    far: false
+    class: ASM
+    hypothesis: "line_table_scan_20"
+    sig: "NEAR retn fn; SI/DI=cs:2796E..+0x20; cs:27968=-1, cs:2796A=0; walk 0x10-stride pairs: ds:43BA/43BC=[bx+6] flags, test bit 0x20... (line-table scan); continues (185B)"
+    port_status: unported
+    verified: null
+    notes: "185B retn, 0 dyn, cd=0, 1 caller (sub_29435). Scans the cs:2796E line table (0x10 stride) testing bit 0x20, publishing flag words to ds:43BA/43BC. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x29521
+    seg: 0x2952
+    ofs: 0x1
+    size: 185
+    far: false
+    class: ASM
+    hypothesis: "line_table_scan_40"
+    sig: "NEAR retn fn; same table walk as sub_29468 but tests bit 0x40 (twin scan); continues (185B); 1 caller (sub_29435)"
+    port_status: unported
+    verified: null
+    notes: "185B retn, 0 dyn, cd=0, 1 caller. Line-table scan testing bit 0x40 (near-twin of line_table_scan_20 at 29468). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A66E
+    seg: 0x2A66
+    ofs: 0xE
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "module_slot0_call_2a662"
+    sig: "void far; if cs:2A662 != -1: DS=cs:2A662 (module seg), BX=[2], cs:2A660=BX, call dword cs:2A660 (slot-0 far call); 1 caller (sub_31BB9)"
+    port_status: unported
+    verified: null
+    notes: "35B, 0 dyn, cd=0, 1 caller. Calls through module slot 0 (far ptr at seg cs:2A662 offset 2), gated on the handle != -1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A691
+    seg: 0x2A69
+    ofs: 0x1
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "module_slot2_call_2a662"
+    sig: "void far; same module-call pattern but slot offset 4 (far ptr [4]); 1 caller (sub_3099C)"
+    port_status: unported
+    verified: null
+    notes: "35B, 0 dyn, cd=0, 1 caller. Calls through module slot 2 (far ptr at offset 4 of seg cs:2A662), gated on handle != -1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A6B4
+    seg: 0x2A6B
+    ofs: 0x4
+    size: 35
+    far: true
+    class: ASM
+    hypothesis: "module_slot4_call_2a662"
+    sig: "void far; same module-call pattern, slot offset 6; 1 caller (sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "35B, 0 dyn, cd=0, 1 caller. Calls through module slot 4 (far ptr at offset 6 of seg cs:2A662), gated on handle != -1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A6D7
+    seg: 0x2A6D
+    ofs: 0x7
+    size: 37
+    far: true
+    class: ASM
+    hypothesis: "module_slot6_call_2a662"
+    sig: "void far; same module-call pattern, slot offset 0 (with extra ax push); 1 caller (sub_386F2)"
+    port_status: unported
+    verified: null
+    notes: "37B, 0 dyn, cd=0, 1 caller. Calls through module slot 6 (far ptr at offset 0 of seg cs:2A662), gated on handle != -1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2ABE0
+    seg: 0x2ABE
+    ofs: 0x0
+    size: 2
+    far: true
+    class: ASM
+    hypothesis: "nop_retf"
+    sig: "void far; nop; retf (2-byte padding return)"
+    port_status: unported
+    verified: null
+    notes: "2B LEAF, 0 dyn, cd=0, 1 caller (sub_2AC4C). NOP + far-return padding stub. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CBEB
+    seg: 0x2CBE
+    ofs: 0xB
+    size: 92
+    far: true
+    class: ASM
+    hypothesis: "overlay_verify_copy"
+    sig: "void far; full frame: ES=AX (seg), CX=es:[0x4C03C] (copy count), if CX: copy CX words from es:0 to dest (overlay verify/memmove); 1 caller (sub_2CC47)"
+    port_status: unported
+    verified: null
+    notes: "92B, 0 dyn, cd=0, 1 caller. Copies an overlay block (count at es:4C03C) for verification/move; bp-framed with full reg save. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x40E54
+    seg: 0x40E5
+    ofs: 0x4
+    size: 14
+    far: true
+    class: ASM
+    hypothesis: "r05_flag_xor_45e4e"
+    sig: "void far; DS=54AFh; ds:45E4E ^= 0x200 (toggles a flag word in the R05 overlay segment); retf"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF, 0 dyn, cd=0, 1 caller (sub_2C0A9). Toggles bit 0x200 of the R05 overlay flag word at 54AF:45E4E. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x417FE
+    seg: 0x417F
+    ofs: 0xE
+    size: 5
+    far: false
+    class: ASM
+    hypothesis: "r05_seg_setup_head"
+    sig: "void far (DATA-class partial span): push ds/es, AX=54AFh then (body continues); 1 caller (sub_3706C)"
+    port_status: unported
+    verified: null
+    notes: "5B span, 0 dyn, cd=0, 1 caller, partial decode. R05 overlay segment-setup prologue (DS=54AF head). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x2E61C
+    seg: 0x2E61
+    ofs: 0xC
+    size: 27
+    far: false
+    class: ASM
+    hypothesis: "slot_find_free_4b1_6"
+    sig: "NEAR retn fn; scan 0x06-stride table at ds:4B1 for first [di]==0 (up to 9 slots) -> AX=BX (index); retn"
+    port_status: unported
+    verified: null
+    notes: "27B retn, 0 dyn, cd=0, 1 caller (sub_2E2F0 blob). Finds the first free slot in a 6-stride 9-entry table at 4B1h, returns the index in AX. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2D31A
+    seg: 0x2D31
+    ofs: 0xA
+    size: 57
+    far: false
+    class: ASM
+    hypothesis: "stack_switch_7a32"
+    sig: "void far (DATA-class span): SS:SP switch to seg 7A32 (cli/sti guarded, delta=(SS-7A32)<<4), DS=AX=7A32, then DX:AX = linear addr math; 1 caller (sub_2BFAF)"
+    port_status: unported
+    verified: null
+    notes: "57B span, 0 dyn, cd=0, 1 caller (r01_e01 is the RTLink key). Stack switch into segment 7A32 with SS:SP rebase (r01 entry glue). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2F20A
+    seg: 0x2F20
+    ofs: 0xA
+    size: 77
+    far: false
+    class: ASM
+    hypothesis: "state_word_2e176_apply"
+    sig: "NEAR retn fn; [SI+6] -= cs:2E176 (signed delta with +0x8000 bias, 64-bit neg check); continues (77B); 1 caller (sub_2F043)"
+    port_status: unported
+    verified: null
+    notes: "77B retn, 0 dyn, cd=0, 1 caller. Applies the signed delta cs:2E176 to a record field [SI+6] with 0x8000 bias + overflow guard. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x36464
+    seg: 0x3646
+    ofs: 0x4
+    size: 7
+    far: false
+    class: ASM
+    hypothesis: "state_word_704_set_5a"
+    sig: "NEAR retn LEAF; ds:704h = 0x5A; retn"
+    port_status: unported
+    verified: null
+    notes: "7B LEAF retn, 0 dyn, cd=0, 1 caller (sub_35934). Sets DGROUP word 0x704 = 0x5A (90 decimal). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2A3D6
+    seg: 0x2A3D
+    ofs: 0x6
+    size: 32
+    far: false
+    class: ASM
+    hypothesis: "uibounds_set_bottom_100"
+    sig: "void far; cs:2A568/592/616=0x100, cs:2A5B9=cs:1F6D0, cs:2A5A8=0x7E; jmp loc_2A518 (UI bound preset, bottom edge)"
+    port_status: unported
+    verified: null
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_2A30E DATA). Sets the bottom-edge UI bound preset (0x100 + bound cs:1F6D0 + char 0x7E). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A376
+    seg: 0x2A37
+    ofs: 0x6
+    size: 31
+    far: false
+    class: ASM
+    hypothesis: "uibounds_set_left_20"
+    sig: "void far; cs:2A446/470/4D5=0x20, cs:2A497=cs:1F6CE, cs:2A486=0x7D; jmp loc_2A3F6 (UI bound preset, left edge)"
+    port_status: unported
+    verified: null
+    notes: "31B, 0 dyn, cd=0, 1 caller (sub_2A340). Sets the left-edge UI bound preset (0x20 + bound cs:1F6CE + char 0x7D), then continues. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A396
+    seg: 0x2A39
+    ofs: 0x6
+    size: 31
+    far: false
+    class: ASM
+    hypothesis: "uibounds_set_right_40"
+    sig: "void far; cs:2A446/470/4D5=0x40, cs:2A497=cs:1F6D2, cs:2A486=0x7E; jmp loc_2A3F6 (UI bound preset, right edge)"
+    port_status: unported
+    verified: null
+    notes: "31B, 0 dyn, cd=0, 1 caller (sub_2A340). Sets the right-edge UI bound preset (0x40 + bound cs:1F6D2 + char 0x7E). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A3B6
+    seg: 0x2A3B
+    ofs: 0x6
+    size: 32
+    far: false
+    class: ASM
+    hypothesis: "uibounds_set_top_80"
+    sig: "void far; cs:2A568/592/616=0x80, cs:2A5B9=cs:1F6CC, cs:2A5A8=0x7D; jmp loc_2A518 (UI bound preset, top edge)"
+    port_status: unported
+    verified: null
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_2A30E DATA). Sets the top-edge UI bound preset (0x80 + bound cs:1F6CC + char 0x7D). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x28AA7
+    seg: 0x28AA
+    ofs: 0x7
+    size: 33
+    far: false
+    class: ASM
+    hypothesis: "view_bounds_shadow_28e26"
+    sig: "NEAR retn fn; cs:28E26=cs:1F6D4, cs:28E33=cs:1F6D6, cs:28E3C=cs:1F6CE, cs:28E46=cs:1F6D2 (shadows the 4 view bounds); retn"
+    port_status: unported
+    verified: null
+    notes: "33B retn, 0 dyn, cd=0, 1 caller (sub_20AC1). Copies the 4 view-bound words (1F6D4/D6/CE/D2) into the cs:28E26 shadow quad. conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x4B650
+    seg: 0x4B65
+    ofs: 0x0
+    size: 32
+    far: true
+    class: ASM
+    hypothesis: "entity_field0f_set_bl"
+    sig: "void far; DS=65E4h; SI = 0x68 + (AX - ds:65EA2)*0x3A; [SI+0F]=BL; retf (field setter, 0x3A stride)"
+    port_status: unported
+    verified: null
+    notes: "32B, 0 dyn, cd=0, 1 caller (sub_4EF1C). Sets byte field +0x0F of the 0x3A-stride record (index = AX - ds:65EA2) in seg 65E4. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4A7C4
+    seg: 0x4A7C
+    ofs: 0x4
+    size: 33
+    far: true
+    class: ASM
+    hypothesis: "entity_field11_set_65e4"
+    sig: "void far; DS=65E4h; DI=0x68 + (DX - ds:65EA2)*0x3A; [DI+11]=0x50 (writes a field at a 0x3A-stride record); continues (33B); 1 caller (sub_3E552)"
+    port_status: unported
+    verified: null
+    notes: "33B span, 0 dyn, cd=0, 1 caller. Writes byte 0x50 into field +0x11 of a 0x3A-stride record (index = DX - ds:65EA2) in seg 65E4. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4B635
+    seg: 0x4B63
+    ofs: 0x5
+    size: 27
+    far: true
+    class: ASM
+    hypothesis: "entity_rec_ptr_65e4_di"
+    sig: "void far; DS=ES=65E4h; DI = 0x68 + (AX - ds:65EA2)*0x3A (record pointer into ES:DI); continues (27B); 1 caller (sub_4E520)"
+    port_status: unported
+    verified: null
+    notes: "27B span, 0 dyn, cd=0, 1 caller. Computes the 0x3A-stride record pointer at 65E4:068+(AX-ds:65EA2) into DI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x458B5
+    seg: 0x458B
+    ofs: 0x5
+    size: 63
+    far: true
+    class: ASM
+    hypothesis: "entity_state_capture_2e10e"
+    sig: "NEAR retn fn; cs:2E112=AX; SI=ds:48BA; cs:2E10E=[SI+7A]; BX=ds:44AA; gate [SI+0CA].1 + BX in {3,4} branches; ds:4876=BH... (63B)"
+    port_status: unported
+    verified: null
+    notes: "63B retn, 0 dyn, cd=0, 1 caller (sub_2FEF2). Captures entity state: saves AX->cs:2E112, [SI+7A]->cs:2E10E, branches on [SI+0CA].1 + mode BX 3/4. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4D810
+    seg: 0x4D81
+    ofs: 0x0
+    size: 15
+    far: true
+    class: ASM
+    hypothesis: "entity_state_pair_6b58_store"
+    sig: "void far; DS=6B58h; ds:6B586=AX, ds:6B588=BX (stores a 2-word state pair); retf"
+    port_status: unported
+    verified: null
+    notes: "15B LEAF, 0 dyn, cd=0, 1 caller (sub_3001E). Stores the state pair AX:BX into 6B58:586/588. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x47BC6
+    seg: 0x47BC
+    ofs: 0x6
+    size: 24
+    far: true
+    class: ASM
+    hypothesis: "entity_table_zero_1940"
+    sig: "void far; ES=63FDh; zero 0x40 bytes at 63FD:1940 (stosb loop); retf"
+    port_status: unported
+    verified: null
+    notes: "24B, 0 dyn, cd=0, 1 caller (sub_3001E). Clears 0x40 bytes of the entity scratch at 63FD:1940. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4E2FD
+    seg: 0x4E2F
+    ofs: 0xD
+    size: 12
+    far: true
+    class: ASM
+    hypothesis: "flag_2e125_gate_stc"
+    sig: "void far; if cs:2E125 == 1: (fallthrough body) else stc, retf (CF=1 when mode != 1); 1 caller (sub_307A5)"
+    port_status: unported
+    verified: null
+    notes: "12B LEAF, 0 dyn, cd=0, 1 caller. Gate: returns CF=1 when state byte cs:2E125 != 1 (pair of flag_24e20_gate_stc pattern). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4B630
+    seg: 0x4B63
+    ofs: 0x0
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "flag_gate_2e100_get_ax"
+    sig: "void far; AX = cs:2E100 (the enable flag word); retf"
+    port_status: unported
+    verified: null
+    notes: "5B, 0 dyn, cd=0, 1 caller (r12_e10). Returns the enable flag cs:2E100 in AX (reader for flag_gate_zero_abc). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4FCE4
+    seg: 0x4FCE
+    ofs: 0x4
+    size: 60
+    far: true
+    class: ASM
+    hypothesis: "hw_flag_85052_set_ff"
+    sig: "void far; DS=7A32h; ds:85052 = 0xFF; retf"
+    port_status: unported
+    verified: null
+    notes: "60B DATA-span (body to retf@0x4FCF2), 0 dyn, cd=0, 1 caller (sub_322E5). Sets hw state byte ds:85052 to 0xFF. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4F893
+    seg: 0x4F89
+    ofs: 0x3
+    size: 41
+    far: true
+    class: ASM
+    hypothesis: "hw_flag_8505f_set_gated"
+    sig: "void far; DS=7A32h; if ds:85060 == 1: ds:8505F = 1; retf (gated one-shot flag set)"
+    port_status: unported
+    verified: null
+    notes: "41B, 0 dyn, cd=0, 1 caller (sub_33443). Sets ds:8505F=1 only when ds:85060==1 (one-shot gate). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4FD80
+    seg: 0x4FD8
+    ofs: 0x0
+    size: 13
+    far: true
+    class: ASM
+    hypothesis: "pop_ds_retf"
+    sig: "void far; pop ds; retf (2-byte tail-entry)"
+    port_status: unported
+    verified: null
+    notes: "2B LEAF, 0 dyn, cd=0, 1 caller (sub_2F400). Tail-entry: restores DS then far-returns (pair of shared_tail_pop_es family). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x47A45
+    seg: 0x47A4
+    ofs: 0x5
+    size: 72
+    far: true
+    class: ASM
+    hypothesis: "r05_mode_check_58f9a"
+    sig: "void far; DS=54AFh; AX=ds:58F9A; if AX not in (6..10) or ds:58F4E==-1 or ds:58E14.3 set: skip (72B gate chain); 1 caller (sub_34C31)"
+    port_status: unported
+    verified: null
+    notes: "72B, 0 dyn, cd=0, 1 caller. R05 overlay mode gate: accepts only 58F9A in 7..9 with 58F4E valid and 58E14.3 clear. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x48D8A
+    seg: 0x48D8
+    ofs: 0xA
+    size: 28
+    far: true
+    class: ASM
+    hypothesis: "r05_state_restore_476e"
+    sig: "void far; ES=54AFh; copy 4 words from DS:SI + lodsw/lodsb into 54AF:476E, 593A6, 593A0, 5948E (restore bundle); 1 caller (sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "28B, 0 dyn, cd=0, 1 caller. Restores the R05 overlay state bundle from DS:SI into 54AF:476E/593A6/593A0/5948E (inverse of sub_48D71). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x48D71
+    seg: 0x48D7
+    ofs: 0x1
+    size: 25
+    far: true
+    class: ASM
+    hypothesis: "r05_state_save_476e"
+    sig: "void far; DS=54AFh; copy 4 words from 54AF:476E + ds:593A6 + ds:593A0 + ds:5948E to ES:DI (save bundle); continues (25B)"
+    port_status: unported
+    verified: null
+    notes: "25B span, 0 dyn, cd=0, 1 caller (sub_3099C). Saves an R05 overlay state bundle (476E words + 593A6/593A0/5948E) to ES:DI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6CD29
+    seg: 0x6CD2
+    ofs: 0x9
+    size: 103
+    far: false
+    class: ASM
+    hypothesis: "r06_init_call_43270"
+    sig: "void far (C frame enter 4): call far unk_43270 -> DX:AX saved; ES=6DE8h: es:6E040=6DE8, es:6E03E=0x325 (R06 init state); retn 0xA326-ish"
+    port_status: unported
+    verified: null
+    notes: "103B C-class, 0 dyn, cd=0, 1 caller (sub_66E62). R06 overlay initializer: far-calls unk_43270 then seeds 6DE8:6E03E/6E040 state (twin of r30_offset_accum_6e03e setup). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x67FB2
+    seg: 0x67FB
+    ofs: 0x2
+    size: 34
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_field_clear"
+    sig: "void far (DATA-class partial span): es:[BX+0x0D]=0 clear then the 79F34*0x17 record walk; 1 caller (sub_2C563)"
+    port_status: unported
+    verified: null
+    notes: "34B span, 0 dyn, cd=0, 1 caller, DATA/partial. R30 entry that clears a record field +0x0D then walks 79E6C. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x67470
+    seg: 0x6747
+    ofs: 0x0
+    size: 16
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_partial_a"
+    sig: "void far (DATA-class partial span, mid-instruction start): decodes into real code at es:6DE8:1C2 far-ptr add; 1 caller (sub_2C5DB)"
+    port_status: unported
+    verified: null
+    notes: "16B span, 0 dyn, cd=0, 1 caller, DATA/partial (RTLink entry landed mid-instruction -- class-c signature, cf. finding 65). R30 entry glue A. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x67F59
+    seg: 0x67F5
+    ofs: 0x9
+    size: 30
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_partial_b"
+    sig: "void far (DATA-class partial span, mid-instruction start): decodes to es:7894:79F34*0x17 record walk via dword_79E6C; 1 caller (sub_2C7F7)"
+    port_status: unported
+    verified: null
+    notes: "30B span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction). R30 entry glue B (record index 79F34*0x17). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x681C1
+    seg: 0x681C
+    ofs: 0x1
+    size: 11
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_partial_c"
+    sig: "void far (DATA-class partial span, mid-instruction start): pop ss / far jmp decode artifacts; 1 caller (sub_2C68F)"
+    port_status: unported
+    verified: null
+    notes: "11B LEAF span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction, class-c). R30 entry glue C. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x682B1
+    seg: 0x682B
+    ofs: 0x1
+    size: 40
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_partial_d"
+    sig: "void far (DATA-class partial span, mid-instruction start: xchg ax,sp artifact); 1 caller (sub_2C63F)"
+    port_status: unported
+    verified: null
+    notes: "40B span, 0 dyn, cd=0, 1 caller, DATA/partial (entry mid-instruction, class-c). R30 entry glue D. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x67F7B
+    seg: 0x67F7
+    ofs: 0xB
+    size: 27
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_record_walk"
+    sig: "void far (DATA-class partial span): decodes to the es:7894:79F34*0x17 -> dword_79E6C record walk (same body as r30_e168 with a different entry); 1 caller (sub_2C653)"
+    port_status: unported
+    verified: null
+    notes: "27B span, 0 dyn, cd=0, 1 caller, DATA/partial. R30 record-walk entry (twin body of r30_e168). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x69AC6
+    seg: 0x69AC
+    ofs: 0x6
+    size: 3
+    far: false
+    class: ASM
+    hypothesis: "r30_entry_retn_1564"
+    sig: "void far; retn 0x1564 (far/near return with 0x1564 operand -- partial 3B entry)"
+    port_status: unported
+    verified: null
+    notes: "3B LEAF, 0 dyn, cd=0, 1 caller (sub_2C775). R30 entry that returns with immediate 0x1564 (RTLink thunk epilogue). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6A54D
+    seg: 0x6A54
+    ofs: 0xD
+    size: 112
+    far: false
+    class: ASM
+    hypothesis: "r30_farobj_proc_f"
+    sig: "void far; push bp ... (112B, undecodable head); 1 caller (sub_683C5 DATA)"
+    port_status: unported
+    verified: null
+    notes: "112B span, 0 dyn, cd=0, 1 caller, undecodable head. R30 far-object processor twin F. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6A389
+    seg: 0x6A38
+    ofs: 0x9
+    size: 55
+    far: false
+    class: ASM
+    hypothesis: "r30_mode_set_637fc_b"
+    sig: "void far; ES=602Eh: es:637FC=0x138, es:637FE=0x7F; then ES=6DE8h far-ptr walk via dword_6E048 (mode preset B, twin of r30_mode_set_637fc); 1 caller (sub_683C5)"
+    port_status: unported
+    verified: null
+    notes: "55B, 0 dyn, cd=0, 1 caller. R30 mode preset B (637FC=0x138 variant) + 6DE8:6E048 far-ptr walk. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4F696
+    seg: 0x4F69
+    ofs: 0x6
+    size: 149
+    far: false
+    class: ASM
+    hypothesis: "r34_farobj_proc"
+    sig: "void far; push si ... (149B, undecodable head); 1 caller (r34_e126)"
+    port_status: unported
+    verified: null
+    notes: "149B span, 0 dyn, cd=0, 1 caller, undecodable head, called by r34_e126. R34 overlay far-object processor. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x4F72B
+    seg: 0x4F72
+    ofs: 0xB
+    size: 141
+    far: false
+    class: ASM
+    hypothesis: "sprite_blend_0ad2d"
+    sig: "void far; per-byte blend: [DI]= [SI] + ([SI]-[BX]) * ds:0AD2D (imul, >>8 form) between tables at SI/A8F8+ and BX, DI/A8F8 out; continues (141B); 1 caller (sub_2C2F7)"
+    port_status: unported
+    verified: null
+    notes: "141B span, 0 dyn, cd=0, 1 caller. Per-byte sprite blend: out = in + (in - ref) * scale ds:0AD2D (fixed-point lerp). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4FE2E
+    seg: 0x4FE2
+    ofs: 0xE
+    size: 41
+    far: true
+    class: ASM
+    hypothesis: "sprite_code_clamp_6cd26"
+    sig: "void far; DS=6BE0h; AH = AL + ds:6CD26, if in [0..4] ds:6CD26=AH (clamped code advance); continues (41B); 1 caller (sub_3A99D)"
+    port_status: unported
+    verified: null
+    notes: "41B span, 0 dyn, cd=0, 1 caller. Clamped advance of a sprite code byte (ds:6CD26 += AL, kept in 0..4) then index math. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x49512
+    seg: 0x4951
+    ofs: 0x2
+    size: 52
+    far: true
+    class: ASM
+    hypothesis: "sprite_slot_index_12d"
+    sig: "void far; if AX in [0x12D..0x155): DS=65A7h, SI=0x0C + (AX-0x12D)*0x18 (slot address); continues (52B); 1 caller (sub_46D42)"
+    port_status: unported
+    verified: null
+    notes: "52B span, 0 dyn, cd=0, 1 caller. Computes a sprite/table slot address (0x0C + (AX-0x12D)*0x18 in seg 65A7) for codes 0x12D..0x155. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4FE57
+    seg: 0x4FE5
+    ofs: 0x7
+    size: 94
+    far: true
+    class: ASM
+    hypothesis: "sprite_state_step_6be0"
+    sig: "void far; DS=6BE0h; AH state transform (cwd/xor 5 form) if AH!=0; BL=ds:6CD26 index... (state step, continues 94B); 1 caller (sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "94B span, 0 dyn, cd=0, 1 caller. Sprite state-machine step over the ds:6BE0 table with a transformed AH and ds:6CD26 index. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4E8FB
+    seg: 0x4E8F
+    ofs: 0xB
+    size: 19
+    far: true
+    class: ASM
+    hypothesis: "state_add_70a03_70a5d"
+    sig: "void far; DS=709Fh; ds:70A03 += BX; ds:70A5D = AX (accumulator + value store); retf"
+    port_status: unported
+    verified: null
+    notes: "19B, 0 dyn, cd=0, 1 caller (sub_2F6D0). Adds BX into ds:709F:70A03 and stores AX to ds:709F:70A5D. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x49A6C
+    seg: 0x49A6
+    ofs: 0xC
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "table_copy_from_65a7"
+    sig: "void far; DS=65A7h; [ES:DI++]=ds:65E3C (header byte); then copy 0x28 blocks of 0x18 bytes from 65A7:000C (save direction); 1 caller (sub_3099C)"
+    port_status: unported
+    verified: null
+    notes: "30B, 0 dyn, cd=0, 1 caller. Copies the 65A7h table (header byte + 0x28 x 0x18B blocks) to ES:DI (save). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4D7C2
+    seg: 0x4D7C
+    ofs: 0x2
+    size: 38
+    far: true
+    class: ASM
+    hypothesis: "table_copy_from_69ff"
+    sig: "void far; DS=69FFh; copy 0x28 x 0x1B-byte blocks from 69FF:0004 then 0x5C-byte run from 69FF:043C (save); continues (38B); 1 caller (sub_3099C)"
+    port_status: unported
+    verified: null
+    notes: "38B span, 0 dyn, cd=0, 1 caller. Saves the 69FFh table (0x28 x 0x1B blocks + 0x5C-byte tail) to ES:DI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4DA87
+    seg: 0x4DA8
+    ofs: 0x7
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "table_copy_from_6b58"
+    sig: "void far; DS=6B58h; [ES:DI++]=ds:6B58A (header byte); then copy 0x0A x 6-byte blocks from 6B58:0033 (save); 1 caller (sub_3099C)"
+    port_status: unported
+    verified: null
+    notes: "30B, 0 dyn, cd=0, 1 caller. Saves the 6B58h entity table (header + 0x0A x 6B records) to ES:DI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x49A8A
+    seg: 0x49A8
+    ofs: 0xA
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "table_copy_to_65a7"
+    sig: "void far; ES=65A7h; ds:65E3C=[SI++] (header byte); then copy 0x28 blocks of 0x18 bytes from DS:SI into 65A7:000C (restore); 1 caller (sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "30B, 0 dyn, cd=0, 1 caller. Restores the 65A7h table from DS:SI (inverse of sub_49A6C). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4D7E8
+    seg: 0x4D7E
+    ofs: 0x8
+    size: 38
+    far: true
+    class: ASM
+    hypothesis: "table_copy_to_69ff"
+    sig: "void far; ES=69FFh; restore 0x28 x 0x1B-byte blocks to 69FF:0004 + 0x5C-byte tail to 69FF:043C from DS:SI; continues (38B); 1 caller (sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "38B span, 0 dyn, cd=0, 1 caller. Restores the 69FFh table from DS:SI (inverse of sub_4D7C2). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4DAA5
+    seg: 0x4DAA
+    ofs: 0x5
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "table_copy_to_6b58"
+    sig: "void far; ES=6B58h; ds:6B58A=[SI++] (header byte); then copy 0x0A x 6-byte blocks from DS:SI into 6B58:0033 (restore); 1 caller (sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "30B, 0 dyn, cd=0, 1 caller. Restores the 6B58h entity table from DS:SI (inverse of sub_4DA87). conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x6DC75
+    seg: 0x6DC7
+    ofs: 0x5
+    size: 38
+    far: false
+    class: ASM
+    hypothesis: "entity_table_walk_49a3"
+    sig: "void far; if ds:49A3!=0: jmp 6DCD8; CX=ds:48B8<<2 -> self-mod word cs:6DC93 (immediate patch); SI=0, CX=0x10 walk loop over entity records; 1 caller (sub_3A3D6)"
+    port_status: unported
+    verified: null
+    notes: "38B span, 0 dyn, cd=0, 1 caller, DATA-class head. Entity-table walk with a self-modifying immediate at cs:6DC93 (patched from ds:48B8). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6E02A
+    seg: 0x6E02
+    ofs: 0xA
+    size: 92
+    far: false
+    class: ASM
+    hypothesis: "farptr_proc_6e02a"
+    sig: "void far; push ds ... (span undecodable to 0x6E074 byte 0x00, far calls 9A); 1 caller (sub_2C045)"
+    port_status: unported
+    verified: null
+    notes: "92B span, 0 dyn, cd=0, 1 caller, undecodable. Far-ptr procedure in the 0x6E02A region (R06 tail / pre-R14 gap). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6DC09
+    seg: 0x6DC0
+    ofs: 0x9
+    size: 108
+    far: true
+    class: ASM
+    hypothesis: "mode_gate_4ac2_4ac4"
+    sig: "void far; early-ret if ds:4AC2==4 or ds:4AC4==0 (else falls into body); retf at 0x6DC17"
+    port_status: unported
+    verified: null
+    notes: "108B span (body to retf@0x6DC17), 0 dyn, cd=0, 1 caller (sub_3A3D6). Dual mode gate: requires ds:4AC2!=4 AND ds:4AC4!=0 before the R06 body. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6DC9C
+    seg: 0x6DC9
+    ofs: 0xC
+    size: 118
+    far: false
+    class: ASM
+    hypothesis: "r06_proc_ah34"
+    sig: "void far; mov AH,0x34 then (span largely undecodable, far calls); 1 caller (sub_66E62)"
+    port_status: unported
+    verified: null
+    notes: "118B span, 0 dyn, cd=0, 1 caller, undecodable body. R06 procedure entered with AH=0x34 selector. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6D4BA
+    seg: 0x6D4B
+    ofs: 0xA
+    size: 58
+    far: true
+    class: ASM
+    hypothesis: "r06_scale_clamp_c3"
+    sig: "void far (partial entry): scale AX around base 0xC3 by CL (shl/sar by sign), clamp result to [0x72..0xBE], then continues; 1 caller (sub_2C257)"
+    port_status: unported
+    verified: null
+    notes: "58B span, 0 dyn, cd=0, 1 caller. R06 entry: signed scale about 0xC3 with CL shift + clamp 0x72..0xBE (head `in ax,dx` is a mid-instruction artifact). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x102DD6
+    seg: 0x102DD
+    ofs: 0x6
+    size: 34
+    far: false
+    class: ASM
+    hypothesis: "r07_farptr_helper"
+    sig: "void far; push ds ... (34B partial); 1 caller (r07_e45)"
+    port_status: unported
+    verified: null
+    notes: "34B span, 0 dyn, cd=0, 1 caller, partial, called by r07_e45. R07 overlay far-ptr helper. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x106E10
+    seg: 0x106E1
+    ofs: 0x0
+    size: 86
+    far: false
+    class: ASM
+    hypothesis: "r12_farptr_helper_c"
+    sig: "void far; push ds ... (86B partial); 1 caller (r12_e40)"
+    port_status: unported
+    verified: null
+    notes: "86B span, 0 dyn, cd=0, 1 caller, partial, called by r12_e40. R12 overlay far-ptr helper C. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x107316
+    seg: 0x10731
+    ofs: 0x6
+    size: 59
+    far: false
+    class: ASM
+    hypothesis: "r12_farptr_helper_d"
+    sig: "void far; push ds ... (59B partial); 1 caller (r12_e42)"
+    port_status: unported
+    verified: null
+    notes: "59B span, 0 dyn, cd=0, 1 caller, partial, called by r12_e42. R12 overlay far-ptr helper D. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6E4CE
+    seg: 0x6E4C
+    ofs: 0xE
+    size: 33
+    far: false
+    class: ASM
+    hypothesis: "r14_entry_partial"
+    sig: "void far (partial entry, mid-instruction head): decodes through a far call to retf; 1 caller (sub_2BE51)"
+    port_status: unported
+    verified: null
+    notes: "33B span, 0 dyn, cd=0, 1 caller, partial (head `add [bp+di]` artifact). R14-region entry glue. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x108BAC
+    seg: 0x108BA
+    ofs: 0xC
+    size: 288
+    far: false
+    class: ASM
+    hypothesis: "r15_flag_107762_body"
+    sig: "void far; cmp cs:107762, 0; jz/jmp into a large far-call body (288B, pad-heavy); 1 caller (r15_e38)"
+    port_status: unported
+    verified: null
+    notes: "288B span, 0 dyn, cd=0, 1 caller, pad-heavy. R15 dispatch gated on flag byte cs:107762. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x108570
+    seg: 0x10857
+    ofs: 0x0
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "r15_flag_10788b_test"
+    sig: "void far; cmp cs:10788B, 0; jz ... retf (flag-byte test, partial span); 1 caller (r15_e14)"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF span, 0 dyn, cd=0, 1 caller, partial, called by r15_e14. Tests R15 flag byte cs:10788B != 0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x107F2E
+    seg: 0x107F2
+    ofs: 0xE
+    size: 42
+    far: false
+    class: ASM
+    hypothesis: "r15_state_107650_set"
+    sig: "void far; cs:107650 = 0x8DE (state word store, body continues with far calls); 1 caller (r15_e11)"
+    port_status: unported
+    verified: null
+    notes: "42B span, 0 dyn, cd=0, 1 caller, called by r15_e11. Stores 0x8DE into R15 overlay state word cs:107650. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6EF1C
+    seg: 0x6EF1
+    ofs: 0xC
+    size: 3
+    far: false
+    class: ASM
+    hypothesis: "r17_entry_partial"
+    sig: "void far (DATA-class partial 3B span, mid-instruction head); 1 caller (sub_2C0EF)"
+    port_status: unported
+    verified: null
+    notes: "3B span, 0 dyn, cd=0, 1 caller, DATA/partial. R17-region entry stub (mid-instruction start, class-c signature). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6F54A
+    seg: 0x6F54
+    ofs: 0xA
+    size: 147
+    far: false
+    class: ASM
+    hypothesis: "r17_farobj_proc_g"
+    sig: "void far; push bp ... (147B, undecodable head); 1 caller (sub_6E8F0 C)"
+    port_status: unported
+    verified: null
+    notes: "147B span, 0 dyn, cd=0, 1 caller, undecodable head. R17 far-object processor. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6F3E1
+    seg: 0x6F3E
+    ofs: 0x1
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "r17_push_args_c8"
+    sig: "void far; push bp, mov bp,sp; push 0x0C8, push 0 (call-frame setup with args 200/0, span 8B); 1 caller (sub_6E8F0 C)"
+    port_status: unported
+    verified: null
+    notes: "8B span, 0 dyn, cd=0, 1 caller. R17-region call-frame setup pushing arguments 0xC8 and 0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x11C1D2
+    seg: 0x11C1D
+    ofs: 0x2
+    size: 53
+    far: false
+    class: ASM
+    hypothesis: "r28_farptr_helper"
+    sig: "void far; push ax ... (53B partial, far calls); 1 caller (r28_e65)"
+    port_status: unported
+    verified: null
+    notes: "53B span, 0 dyn, cd=0, 1 caller, partial, called by r28_e65. R28 overlay far-ptr helper. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x15E221
+    seg: 0x15E22
+    ofs: 0x1
+    size: 98
+    far: true
+    class: ASM
+    hypothesis: "r33_record_scan_4e"
+    sig: "void far; DI=[bp+6]; SI=0; loop: record = es:7894 dword_79B6E + DI*0x4E; skip if es:[bx+si+44]==0xFF (record scan, 0x4E stride); 1 caller (r33_e86)"
+    port_status: unported
+    verified: null
+    notes: "98B, 0 dyn, cd=0, 1 caller. R33 record scan over the 0x4E-stride table at 7894:79B6E keyed by DI, skipping 0xFF-empty slots. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x15F8A1
+    seg: 0x15F8A
+    ofs: 0x1
+    size: 258
+    far: true
+    class: ASM
+    hypothesis: "r33_record_walk_4e"
+    sig: "void far; CL=[bp+6]; loop: index = es:7894:79BDA * 0x4E into dword_79B6E far-ptr table (record walk, 258B); 1 caller (r33_e85)"
+    port_status: unported
+    verified: null
+    notes: "258B, 0 dyn, cd=0, 1 caller. R33 record walk: 79BDA*0x4E index through the 79B6E far-ptr table. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1661DA
+    seg: 0x1661D
+    ofs: 0xA
+    size: 51
+    far: false
+    class: ASM
+    hypothesis: "r36_farptr_helper"
+    sig: "void far; push bp ... (51B partial); 1 caller (r36_e116)"
+    port_status: unported
+    verified: null
+    notes: "51B span, 0 dyn, cd=0, 1 caller, partial, called by r36_e116. R36 overlay far-ptr helper. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x18537E
+    seg: 0x18537
+    ofs: 0xE
+    size: 96
+    far: false
+    class: ASM
+    hypothesis: "r53_farptr_proc"
+    sig: "void far; push ds ... (96B partial, far calls); 1 caller (r53_e88)"
+    port_status: unported
+    verified: null
+    notes: "96B span, 0 dyn, cd=0, 1 caller, partial, called by r53_e88. R53 overlay far-ptr procedure. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x1896D7
+    seg: 0x1896D
+    ofs: 0x7
+    size: 19
+    far: false
+    class: ASM
+    hypothesis: "r53_record_walk_82"
+    sig: "void far (DATA-class partial): AX=SI*0x82 index into es:6894 dword_69BEC far-ptr table (record walk, 0x82 stride); 1 caller (r53_e12)"
+    port_status: unported
+    verified: null
+    notes: "19B span, 0 dyn, cd=0, 1 caller, DATA/partial head. R53 record walk: SI*0x82 index through the 6894:69BEC far-ptr table. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6D830
+    seg: 0x6D83
+    ofs: 0x0
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "state_word_4ab1_zero"
+    sig: "void far; ds:4AB1 = 0; retn (clears a DGROUP word)"
+    port_status: unported
+    verified: null
+    notes: "8B LEAF, 0 dyn, cd=0, 1 caller (sub_2C261). Clears DGROUP word 0x4AB1. conf: high"
+    updated: "2026-10-18"
+
 counts:
   tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
