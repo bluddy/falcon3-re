@@ -327,3 +327,15 @@
   farptr gates + farobj_field_*) have undecodable mid-instruction spans
   (class-c) -- reclassify when span repair lands; 92 low-conf DATA fns;
   24 trap-only thunk far-targets at word_*/unk_* data.
+
+- **Batch 4 done (finding 69):** 36 named, `named` **361 -> 397**,
+  Level-0 queue **454 -> 418**. Slice A = dyn>=10 state/EMS/view math;
+  Slice B = caller_dyn>=1000 fartrans-blind NEAR hotspots (all 17 >=10000
+  consumed; only 6 cd>=1000 remain, 0 >=10000). All 4 gates green (check
+  399, verify_rebuild faithful, verify_idb INTACT, read-back 397/397+2/2).
+- **Next (Batch 5):** remaining **48 `dyn>=10` Level-0 leaves** + 6
+  caller_dyn hotspots; then the long tail (31 dyn 1-9, 11 in>=5, 131
+  in 2-4, 197 in=1). Orphans (397) stay excluded.
+- **Follow-ups:** 3 low-conf undecodable/truncated spans this batch
+  (r39_farptr_gate_big, fixed_arith_shift_loop, state_cursor_advance_11c94)
+  join the class-c repair list; 92 low-conf DATA fns; 24 trap-only thunks.

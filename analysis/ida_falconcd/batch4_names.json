@@ -1,0 +1,218 @@
+{
+ "sub_22455": [
+  "state_word_2222a_get",
+  "void far; AX = cs:2222A; retf",
+  "5B, 129 dyn, 4 callers (hot sub_127D4 11.5K). Getter for state word cs:2222A. conf: high",
+  "high"
+ ],
+ "sub_17F40": [
+  "state_byte_af90_get",
+  "void far; AL = ds:0AF90 (cbw sign-extend); retf",
+  "9B, 128 dyn, 2 callers (sub_18BC8, sub_1BAD6). Reads DGROUP byte at 0xAF90 sign-extended. conf: high",
+  "high"
+ ],
+ "sub_274E1": [
+  "state_word_2747a_set_ax",
+  "void far; cs:2747A = AX; retf",
+  "5B, 126 dyn, 5 callers (hot sub_127D4 11.5K). Setter for state word cs:2747A. conf: high",
+  "high"
+ ],
+ "sub_231EB": [
+  "state_word_22d28_set_ax",
+  "void far; cs:22D28 = AX; retf",
+  "5B, 126 dyn, 6 callers (hot sub_121C2 972). Setter for state word cs:22D28 (fn_table_dispatch index). conf: high",
+  "high"
+ ],
+ "sub_20598": [
+  "view_extent_compute_1f6da",
+  "void far; cs:1F6DA = cs:1F6D0 - cs:1F6CC + 1 (width); AX = 0x972/width -> cs:1F6E0 (scale); preserves bx/dx/ax",
+  "34B, 122 dyn, 7 callers (hot sub_121C2 972). Computes view extent width (cs:1F6D0-1F6CC+1) and scale 0x972/width -> cs:1F6E0. conf: high",
+  "high"
+ ],
+ "sub_103DB": [
+  "ems_save_restore_set",
+  "void far; AX=2, DX=cs:10229, cs:10223=BX, AH=44h int 67h (EMS save/restore map state); preserves dx/ax",
+  "22B, 114 dyn, 4 callers (hot sub_10710 mem_unmap_all, sub_16EE7 97). EMS INT 67h AH=44h save/restore page map. conf: med",
+  "med"
+ ],
+ "sub_1E3DC": [
+  "volume_exponential_adjust",
+  "void far; C frame: imul si, idiv 0x64 on es:77DEC with exponent loop (neg si -> double until >=0x157; pos -> halve until <=0x2AE); clamp vs es:77CF8/77CB2; sets es:7778D=0x1E",
+  "389B, 112 dyn, 1 caller (sub_1A9AA 112). Exponential volume/level adjust (2^si scaling of es:77DEC with clamp). conf: med",
+  "med"
+ ],
+ "sub_20587": [
+  "view_extent_get_quad",
+  "void far; AX:BX=cs:1F6DA, CX=cs:1F6D4, DX=cs:1F6D6 (reads view extent quad); retf",
+  "17B, 105 dyn, 5 callers. Returns the view-extent state quad (1F6DA/D4/D6). conf: high",
+  "high"
+ ],
+ "sub_25EB7": [
+  "dispatch_220f0_stub",
+  "void far; call dword ptr cs:220F0; retf",
+  "6B, 91 dyn, 1 caller (sub_27703 20). Far-call trampoline via cs:220F0. conf: med",
+  "med"
+ ],
+ "sub_105D7": [
+  "state_word_10219_get",
+  "void far; AX = cs:10219; retf",
+  "5B, 91 dyn, 9 callers. Getter for state word cs:10219. conf: high",
+  "high"
+ ],
+ "sub_1B9F4": [
+  "state_pair_7981a_clear_if_set",
+  "void far; ES=7894h; if es:7981A|es:7981C != 0 -> clear both to 0; retf (conditional clear of a 2-word state pair)",
+  "40B, 77 dyn, 2 callers (sub_1BCC2 104, sub_1BAD6 47). Clears the es:7981A/7981C pair if set. conf: high",
+  "high"
+ ],
+ "sub_25EA8": [
+  "dispatch_220f0_invoke_1arg",
+  "void far; AX=[bp+arg0]; call dword ptr cs:220F0; retf",
+  "15B, 75 dyn, 4 callers (r37_e137, sub_6A5BD/6AE59/6B53A). Far-call trampoline with 1 arg via cs:220F0. conf: med",
+  "med"
+ ],
+ "sub_278B9": [
+  "dispatch_22180_then_27474_8",
+  "void far; call dword ptr cs:22180; cs:27474 = 8; retf",
+  "13B, 74 dyn, 6 callers. Far-dispatch via cs:22180 then set state word cs:27474=8. conf: med",
+  "med"
+ ],
+ "sub_25E22": [
+  "dispatch_220f4_stub",
+  "void far; call dword ptr cs:220F4; retf",
+  "6B, 73 dyn, 1 caller (sub_322E5). Far-call trampoline via cs:220F4 (no args). conf: med",
+  "med"
+ ],
+ "sub_254A7": [
+  "state_byte_2549e_get",
+  "void far; AL = cs:2549E; retf",
+  "5B, 71 dyn, 5 callers. Getter for state byte cs:2549E (setter = state_byte_2549e_set, batch2). conf: high",
+  "high"
+ ],
+ "sub_254BB": [
+  "state_byte_254a0_get",
+  "void far; AL = cs:254A0; retf",
+  "5B, 70 dyn, 3 callers (hot sub_10E39 34). Getter for state byte cs:254A0. conf: high",
+  "high"
+ ],
+ "sub_103B1": [
+  "ems_page_move_alt",
+  "void far; DX=cs:1022D, AH=44h int 67h (EMS move src), inc BX, AH=44h int 67h (dst); alt EMS page-move",
+  "21B, 70 dyn, 3 callers. EMS (INT 67h AH=44h) page-move variant (src seg cs:1022D). conf: med",
+  "med"
+ ],
+ "sub_1B469": [
+  "event_time_compare_77dea",
+  "void far; ES=7772h; AX=1 if es:77DEA < SI, else if == and es:77DEC < [bp+2] -> 1, else 0 (time-window compare); hot caller sub_1AB34 42K",
+  "57B, 68 dyn, cd=42,958. Compares event time (es:77DEA/77DEC) against (SI,[bp+2]) -> AX=0/1. conf: high",
+  "high"
+ ],
+ "sub_2128E": [
+  "farobj_record_push_7c054",
+  "NEAR retn fn; ES=7B0Eh; if es:7C054 < 0x12C: push (AX=[DI+1A], DI, DS) 6B record to es:7C058 queue + index at es:[bx+1D8A]; inc count es:7C054",
+  "72B retn, in=1, caller_dyn=282,832 (caller sub_20BDB 282K). Pushes a far-object record into the 7C054 queue (cap 300). conf: high",
+  "high"
+ ],
+ "sub_212D6": [
+  "farobj_record_push_7d0c6",
+  "NEAR retn fn; ES=7B0Eh; push (AX=[DI+1A..1C] packed, DI, DS) 6B record to es:7D0C6 queue + index at es:[bx+2DF8]; inc count es:7D0C2",
+  "70B retn, in=1, caller_dyn=282,832 (caller sub_20BDB 282K). Second far-object record queue (7D0C6), near-twin of sub_2128E. conf: high",
+  "high"
+ ],
+ "sub_256CD": [
+  "farptr_slot_store_7f24a",
+  "NEAR retn fn; DS=7B0Eh; cs:2548A=0x0D; ds:7F24A=[BX+416E], ds:7F24C=DS (stores a far ptr); retn",
+  "26B retn, in=1, caller_dyn=228,087 (caller sub_256BE 228K). Stores a far pointer into the 7F24A slot + sets mode byte 2548A=0x0D. conf: high",
+  "high"
+ ],
+ "sub_23A1B": [
+  "fixed_quadrant_classify",
+  "NEAR retn fn; CX=cs:22DB8; max(AX,DX); if AX==0 && !(DI&0x8000): classify by DI bits -> AX=1/8/4/2 (bit15=none, bit8,bit14,bit13); retn",
+  "62B retn, in=4, caller_dyn=113,485 (hot callers sub_23C18 67K, sub_23B03 38K). Classifies a fixed-point quadrant/direction from DI sign bits -> 1/2/4/8. conf: high",
+  "high"
+ ],
+ "sub_23A59": [
+  "fixed_abs_neg64",
+  "NEAR retn LEAF; if DX<0: DX:AX = -(DX:AX) (64-bit negate); retn",
+  "12B LEAF retn, in=3, caller_dyn=105,416 (hot callers sub_23C18 67K, sub_23B03 38K). 64-bit absolute/negate of DX:AX. conf: high",
+  "high"
+ ],
+ "sub_1144B": [
+  "state_byte_11171_get",
+  "void far; AL = cs:11171; retf",
+  "5B, in=2, caller_dyn=48,004 (hot callers sub_2234B 38K, sub_222D3 9K). Getter for state byte cs:11171 (used by control_axis_value). conf: high",
+  "high"
+ ],
+ "sub_205C3": [
+  "dispatch_22084_near",
+  "NEAR retn fn; call dword ptr cs:22084; retn",
+  "6B retn, in=4, caller_dyn=40,844 (caller sub_205BF NEARTHUNK 18K, sub_228BF int32_to_ascii 22K). NEAR far-call trampoline via cs:22084. conf: med",
+  "med"
+ ],
+ "sub_24F34": [
+  "flag_bits_test_5740",
+  "NEAR retn fn; XLAT mask from cs:5740 by (AL-1); AH=cs:[5C6E+AH]; test AL,AH; retn (ZF=bit state)",
+  "29B retn, in=2, caller_dyn=31,219 (caller sub_24F03 31K). Tests a flag bit via mask table cs:5740 against flag field 5C6Eh. conf: high",
+  "high"
+ ],
+ "sub_15084": [
+  "fixed_neg_clamp_f000",
+  "NEAR retn fn; if AX<0: if AX>=-0x1000 retn; else AX = -(AX+0x2000); retn (negate with 0xF000 clamp)",
+  "26B retn, in=2, caller_dyn=26,999 (hot callers sub_128A1 15K, sub_1509E 11K). Signed negate with -0xF000 floor clamp. conf: high",
+  "high"
+ ],
+ "sub_25268": [
+  "flag_block_merge_zero_5c63",
+  "void far; DS=CS; OR-merge 0x0B bytes 5C63..5C6D with [si+0A] into ES:DI, then zero 5 words+byte at 5C63 (cli/sti); returns merged flag block",
+  "49B, in=5, caller_dyn=22,483 (hot caller sub_24FB9 21K). Merges then resets the 11-byte flag block at 5C63h. conf: med",
+  "med"
+ ],
+ "sub_25777": [
+  "mouse_coord_clamp_25474",
+  "NEAR retn fn; clamp AX to [cs:25474..25478] and BX to [cs:25476..2547A]; cli; cs:25491=AX, cs:25493=BX; sti; retn",
+  "58B retn, in=3, caller_dyn=21,521 (caller sub_25773 NEARTHUNK 19K). Clamps mouse/screen coords to bounds then stores to cs:25491/93. conf: high",
+  "high"
+ ],
+ "sub_28AC8": [
+  "matrix_constants_copy_3820",
+  "NEAR retn fn; copy 9 words ds:3820..3830 -> cs:28BBC/28BE8/28C14/28BC5/28BF1/28C1D/28BCE/28BFA/28C26 (matrix const scatter); retn",
+  "64B retn, in=1, caller_dyn=13,393 (caller sub_231F0 13K). Copies a 9-word matrix from DGROUP 3820h into scattered cs:28Bxx slots. conf: med",
+  "med"
+ ],
+ "sub_15903": [
+  "fixed_matrix_scale_shift_7e900",
+  "NEAR retn fn; ES=7B0Eh; for 6 words es:7E900..7E910: imul 0xCCD, shl1 saturate 0x8001/0x7FFF, arithmetic >>CL (sign-preserving), store to ds:46DB..46E5; retn",
+  "256B retn, in=2, caller_dyn=11,155 (caller sub_1509E 11K). Scales the 7E900 matrix by 0xCCD then >>CL into ds:46DB..E5 (fixed-point matrix scale). conf: high",
+  "high"
+ ],
+ "sub_4DAE0": [
+  "r39_farptr_gate_big",
+  "void far; (span undecodable mid-instruction) push ds; far call 9A; 2 callers (sub_2BEA1 11K, sub_2FD42)",
+  "310B span, in=2, cd=11,155, undecodable. R39 overlay far-ptr gate; body not cleanly decodable. conf: low",
+  "low"
+ ],
+ "sub_1202A": [
+  "fixed_arith_shift_loop",
+  "NEAR fn (span truncated, DATA class); jcxz skip; sign-preserving arithmetic >>CX via shr/rcr loop on DX:AX (neg/sbb for negative); then mov cx,bp,bp,ax -- continues into next fn",
+  "40B span, in=1, cd=11,155, caller sub_1509E 11K. Arithmetic right-shift DX:AX by CX (mid-body, no terminator in span -> DATA). conf: low",
+  "low"
+ ],
+ "sub_15AFD": [
+  "state_cursor_advance_11c94",
+  "void far; ds:5ACC=0; AX=(cs:11C98+0x800)&0x3FFF -> cs:11C94; if AX<0x1000 continue else jmp; cursor/ring advance",
+  "27B span (no terminator in span), in=1, cd=11,155, caller sub_1509E 11K. Advances a ring/cursor index cs:11C94 by 0x800 (mask 0x3FFF). conf: low",
+  "low"
+ ],
+ "sub_11D40": [
+  "terrain_height_lookup_11cc8",
+  "NEAR retn fn; reads [SI]/[SI+4] world pos, add 0x3400:0x33, /0xCCD0, clamp 0..0x7C >>2 -> BX:AX; table es:[3840+bx*2] -> cs:11CC8; byte cs:11C6A mask; retn",
+  "142B retn, in=3, cd=11,118 (hot caller sub_1655A 11K). Terrain/heightmap lookup: world XY -> grid index -> table at es:3840 -> cs:11CC8. conf: high",
+  "high"
+ ],
+ "sub_239F2": [
+  "fixed_long_div_64",
+  "NEAR retn fn; 64-bit divide DX:AX by BP:SI via 0x20-iter restoring-division loop (rcl dividend, sub divisor on carry), quotient -> DX:AX; retn",
+  "41B retn, in=2, cd=9,818 (caller sub_239EE NEARTHUNK 9.8K). 64-bit fixed-point divide (DX:AX / BP:SI). conf: high",
+  "high"
+ ]
+}

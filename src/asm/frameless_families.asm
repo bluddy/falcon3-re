@@ -75,7 +75,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0105CC  0bc0           or       ax, ax
     0105CE  cb             retf     
 
-; sub_105D7  ea=0105D7  size=5
+; state_word_10219_get  ea=0105D7  size=5
     0105D7  2ea10900       mov      ax, word ptr cs:[9]
     0105DB  cb             retf     
 
@@ -87,7 +87,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     010DFE  2ea20c00       mov      byte ptr cs:[0xc], al
     010E02  cb             retf     
 
-; sub_1144B  ea=01144B  size=5
+; state_byte_11171_get  ea=01144B  size=5
     01144B  2ea07100       mov      al, byte ptr cs:[0x71]
     01144F  cb             retf     
 
@@ -108,11 +108,11 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     022289  2e8916522b     mov      word ptr cs:[0x2b52], dx
     02228E  cb             retf     
 
-; sub_22455  ea=022455  size=5
+; state_word_2222a_get  ea=022455  size=5
     022455  2ea16a2b       mov      ax, word ptr cs:[0x2b6a]
     022459  cb             retf     
 
-; sub_231EB  ea=0231EB  size=5
+; state_word_22d28_set_ax  ea=0231EB  size=5
     0231EB  2ea36836       mov      word ptr cs:[0x3668], ax
     0231EF  cb             retf     
 
@@ -133,7 +133,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     0254B6  2ea2e05d       mov      byte ptr cs:[0x5de0], al
     0254BA  cb             retf     
 
-; sub_254BB  ea=0254BB  size=5
+; state_byte_254a0_get  ea=0254BB  size=5
     0254BB  2ea0e05d       mov      al, byte ptr cs:[0x5de0]
     0254BF  cb             retf     
 
@@ -165,7 +165,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
     025F3E  2ea2c85d       mov      byte ptr cs:[0x5dc8], al
     025F42  cb             retf     
 
-; sub_274E1  ea=0274E1  size=5
+; state_word_2747a_set_ax  ea=0274E1  size=5
     0274E1  2ea3ba7d       mov      word ptr cs:[0x7dba], ax
     0274E5  cb             retf     
 
@@ -184,7 +184,7 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
 ; Evidence: findings 14.  Table contents live elsewhere in the segment.
 
 
-; sub_205C3  ea=0205C3  size=6
+; dispatch_22084_near  ea=0205C3  size=6
     0205C3  2eff1ec429     lcall    cs:[0x29c4]
     0205C8  c3             ret      
 
@@ -240,7 +240,7 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     025E8C  2eff1ec829     lcall    cs:[0x29c8]
     025E91  cb             retf     
 
-; sub_25EB7  ea=025EB7  size=6
+; dispatch_220f0_stub  ea=025EB7  size=6
     025EB7  2eff1e302a     lcall    cs:[0x2a30]
     025EBC  cb             retf     
 
@@ -269,7 +269,7 @@ INDIRECT FAR-DISPATCH STUBS (classification: 'lcall cs:[table]; retf')
     02786F  2ec706b47d0000 mov      word ptr cs:[0x7db4], 0
     027876  cb             retf     
 
-; sub_278B9  ea=0278B9  size=13
+; dispatch_22180_then_27474_8  ea=0278B9  size=13
     0278B9  2eff1ec02a     lcall    cs:[0x2ac0]
     0278BE  2ec706b47d0800 mov      word ptr cs:[0x7db4], 8
     0278C5  cb             retf     
