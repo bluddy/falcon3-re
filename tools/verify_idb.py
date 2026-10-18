@@ -20,6 +20,7 @@ Output: analysis/ida_falconcd/integrity.log
 """
 import hashlib
 import json
+from collections import Counter
 
 import ida_bytes
 import ida_funcs
@@ -28,6 +29,7 @@ import idc
 
 FB = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\function_bytes.json"
 SPLITMAN = r"C:\Users\yotam\projects\falcon3\registry\subblock_split_expected.json"
+REGMAN = r"C:\Users\yotam\projects\falcon3\registry\upper_register_expected.json"
 HOLES_OUT = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\data_holes.json"
 LOG = r"C:\Users\yotam\projects\falcon3\analysis\ida_falconcd\integrity.log"
 
@@ -48,42 +50,75 @@ for k, v in fb.items():
     if want and (idc.get_func_name(v["ea"]) or "") != want:
         renamed.append("%s want=%r got=%r" % (k, want, idc.get_func_name(v["ea"])))
 
-# ---- data holes (finding 59) ----
+# ---- data holes (finding 59) + parentless register holes (finding 61) ----
 hole_problems = []
 holes_out = []
-try:
-    splits = json.loads(open(SPLITMAN).read()).get("splits", [])
-except Exception:
-    splits = []
+
+
+def load_json(path):
+    try:
+        return json.loads(open(path).read())
+    except Exception:
+        return None
+
+
+splits = (load_json(SPLITMAN) or {}).get("splits", [])
+regdoc = load_json(REGMAN) or {}
+
+specs = []
 for e in splits:
-    # pre-carve iff the parent function still spans the whole old range
-    # (planned children share the parent's start EA, so testing for a child's
-    # presence alone would read the parent as carved)
-    pf = ida_funcs.get_func(e["ea"])
-    carved = not (pf and (pf.end_ea - pf.start_ea) == e["old_size"])
+    carved = not (ida_funcs.get_func(e["ea"]) and
+                  (ida_funcs.get_func(e["ea"]).end_ea
+                   - ida_funcs.get_func(e["ea"]).start_ea) == e["old_size"])
     for h in e["data_holes"]:
-        ea, n = h["ea"], h["size"]
-        raw = idc.get_bytes(ea, n)
-        sha = (hashlib.sha256(raw).hexdigest()
-               if raw is not None and len(raw) == n else None)
-        in_fn = bool(ida_funcs.get_func(ea) or ida_funcs.get_func(ea + n - 1))
-        is_data = bool(ida_bytes.is_data(ida_bytes.get_flags(ea)))
-        holes_out.append({"ea": ea, "size": n, "sha256": sha,
-                          "in_function": in_fn, "is_data": is_data,
-                          "parent": e["key"], "carved": carved})
-        if sha != h["sha256"]:
-            hole_problems.append("hole 0x%X bytes: live %s != manifest %s"
-                                 % (ea, sha, h["sha256"]))
-        if carved:
-            if in_fn:
-                hole_problems.append("hole 0x%X is covered by a function" % ea)
-            if not is_data:
-                hole_problems.append("hole 0x%X is not flagged as data" % ea)
-    log.append("carve %s: %d planned fns present=%s, %d data holes"
-               % (e["key"], len(e["new_fns"]), carved, len(e["data_holes"])))
-if splits:
+        specs.append(("split", h, e["key"], carved,
+                      [e["ea"], e["ea"] + e["old_size"]]))
+for rng in regdoc.get("ranges", []):
+    lo, hi = rng["range"]
+    carved = any(ida_funcs.get_func(f["ea"]) for f in rng["new_fns"])
+    for h in rng["data_holes"]:
+        if lo <= h["ea"] < hi:
+            specs.append(("register", h, rng.get("name") or "%X..%X" % (lo, hi),
+                          carved, [lo, hi]))
+for h in regdoc.get("standalone_holes", []):
+    specs.append(("standalone", h, "no range", False, None))
+
+for kind, h, owner, carved, rng in specs:
+    ea, n = h["ea"], h["size"]
+    raw = idc.get_bytes(ea, n)
+    sha = (hashlib.sha256(raw).hexdigest()
+           if raw is not None and len(raw) == n else None)
+    in_fn = bool(ida_funcs.get_func(ea) or ida_funcs.get_func(ea + n - 1))
+    is_data = bool(ida_bytes.is_data(ida_bytes.get_flags(ea)))
+    holes_out.append({"ea": ea, "size": n, "sha256": sha, "kind": kind,
+                      "owner": owner, "range": rng, "carved": carved,
+                      "in_function": in_fn, "is_data": is_data})
+    if sha != h["sha256"]:
+        hole_problems.append("[%s] hole 0x%X bytes: live %s != manifest %s"
+                             % (kind, ea, sha, h["sha256"]))
+    # register/standalone holes must NEVER be inside a function (they are
+    # outside every registered range by construction, pre- and post-carve)
+    if kind in ("register", "standalone"):
+        if in_fn:
+            hole_problems.append("[%s] hole 0x%X is covered by a function" % (kind, ea))
+        if carved and kind == "register" and not is_data:
+            hole_problems.append("[%s] hole 0x%X is not flagged as data" % (kind, ea))
+    elif carved:
+        if in_fn:
+            hole_problems.append("[split] hole 0x%X is covered by a function" % ea)
+        if not is_data:
+            hole_problems.append("[split] hole 0x%X is not flagged as data" % ea)
+
+if specs:
     json.dump({"holes": holes_out}, open(HOLES_OUT, "w"))
-    log.append("hole export: %s (%d holes)" % (HOLES_OUT, len(holes_out)))
+    log.append("hole export: %s (%d holes: %s)"
+               % (HOLES_OUT, len(holes_out),
+                  dict(Counter(s[0] for s in specs))))
+    for rng in regdoc.get("ranges", []):
+        carved = any(ida_funcs.get_func(f["ea"]) for f in rng["new_fns"])
+        log.append("register %s: %d planned fns present=%s"
+                   % (rng.get("name") or "%X..%X" % tuple(rng["range"]),
+                      len(rng["new_fns"]), carved))
 
 ok = not (missing or span or renamed or hole_problems)
 log.append("ida function count      : %d  (ground truth: %d)"

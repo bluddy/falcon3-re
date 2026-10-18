@@ -2972,4 +2972,112 @@ was not touched.
 
 ---
 
+## 2026-10-18 61 — P2+P3: the upper-half chain sweep and manifest-backed
+registration — 116 new functions, `static_unresolved` 957 -> 772
+
+Executes finding 60's plan steps P2 and P3 on the evidence-rich blocks:
+`0x3B830..0x43AE0` (163 refs), `0x43AE0..0x48DB0` (93), the `0x4E520..0x4FD20`
+cluster (82) and the `0x54AF0..0x669F0` UI block (36). The three zero-evidence
+blocks (1,552 / 880 / **18,992 B**) were left documented-unregistered -- no
+chain from an adjacent verified entry reached them.
+
+### Step 1 -- the gate first: `REGISTER` (parentless ranges)
+
+`verify_rebuild.py` gained a **REGISTER** class for ranges that never had a
+parent function (a plain ADDED wave would otherwise sail through, as finding
+54's 45 entries did). A range validates only if
+`new_fns | keep_fns | data_holes` tiles `[lo,hi)` **exactly** (no gap, no
+overlap) and every hole's sha256 matches the **live** export that
+`verify_idb.py` writes to `data_holes.json`; before anything is applied the
+range reports `pending`, so the gate stays green pre-mutation. `verify_idb`
+now exports three hole kinds: **3 split + 58 register + 10 standalone = 71**,
+and enforces register/standalone holes are function-free always, data-flagged
+once their range is registered.
+
+### Step 2 -- P2: forward-chain + preceding-terminator sweep (`sweep_upper.py`)
+
+The sweep walks each gap (range minus keep fns minus holes) with these rules,
+each added because a run refused to give the coverage it promised:
+
+1. **an existing IDA decode always wins**; fresh decode only fills undefined
+   bytes;
+2. **`00` does not decode in this IDB**, so zero runs are skipped only when
+   what follows is entry-like (`ENTRY_AFTER_PAD`) -- and only 64 bytes of it;
+   leading padding becomes uncovered, padding after a terminator is attributed
+   to the previous instruction (so the next boundary still counts as
+   terminator-preceded);
+3. a **mid-item conflict adopts IDA's item and resyncs to its end** (never
+   walks backwards, never contradicts) -- this alone took block i from 12.5 KB
+   to 24 KB;
+4. a **stale `<=15 B` data item** (a 2-byte `dw` was blocking 19 KB of block
+   ii) is stepped over; **`>=16 B` stops** the sweep unless mid-body;
+5. **mid-body island bridging**: on an undecodable byte or a real data blob,
+   the sweep may jump at most 64 bytes to a position where a chain **re-closes
+   on a terminator** within 160 instructions (this is what unblocked block ii
+   past the `0F 3C` island and took block iii to 6,143/6,144 B);
+6. **seeds** (the 197 in-scope unresolved destinations + RTLink `entry_ea`s)
+   become boundaries only on a sweep boundary whose previous instruction is a
+   terminator -- finding 59's rule, now exact because the stream is known;
+7. **emission evidence**: a piece is registered only with an accepted seed
+   inside, an existing IDA code item, a chain closed on an authoritative
+   keep/hole/range boundary, or *any* referenced destination inside (an
+   interior call still proves code);
+8. **stage 2**: self-contained chains seeded at leftover destinations
+   (terminator behind + chain closes, <=4 KB) -- 2 of 94 qualified (36 had no
+   terminator behind, the rest could not close); **9 suspect holes** (a sweep
+   overran into them) were dropped from tiling and the plan re-run 2x.
+
+Result: **22,240 instructions walked, 59,641 B covered**, 77 contiguous
+ranges, **116 planned functions** (block i 49 / ii 36 / iii 24 / iv 7), 167
+spans left uncovered (74,631 B) with stop reasons recorded.
+
+### Step 3 -- P3: manifest, then mutate
+
+`tools/plan_register.py` -> `registry/upper_register_expected.json`
+(77 ranges, 116 new + 24 keep fns, **68 pinned holes / 6,278 B** -- all of
+them, including the 10 outside any range, so `YOUR PLANE HAS BEEN
+DESTROYED!` and friends are protected). The generator refuses to write on any
+tiling gap/overlap, duplicate key, drifted keep function or missing hash.
+Then `tools/register_upper.py` (backup `FALCONCD.EXE.i64.bak_upper`):
+preconditions checked (pre-state == keep for all 77 ranges, all 68 hashes
+match) -> 58 holes converted to data (sha re-verified after conversion) ->
+**116 functions registered, 19,289 instructions created** (only where no item
+existed) -> guards: spans match plan, ranges still tile, holes byte-identical
+and function-free, heads/code-refs never decreased -> **guards PASSED, SAVED**.
+
+### Measured effect
+
+| metric | f60 | f61 |
+|---|---|---|
+| functions | 1,935 | **2,051** (+116) |
+| static edges | 4,013 | **4,907 (+894)** |
+| `static_unresolved` | 957 | **772 (-185)** |
+| union | 4,034 | 4,928 |
+| code refs | 9,244 | 10,917 (**+1,673 revealed**) |
+| new fns with >=1 incoming edge | - | **107 / 116** |
+| overlay zero-indegree orphans | 226 | 234 (+8 uncalled pieces) |
+
+The drop decomposes exactly: **957 - 291 (in-scope destinations now inside a
+function: 153 of 197 dsts) + 106 (refs revealed by the new instructions whose
+destination is still outside every function) = 772**. Per block: i 49 fns /
+24,675 B, ii 36 / 19,028, iii 24 / 5,908, iv 7 / 1,262 plus 5,263 B of pinned
+strings; 44 in-scope dsts (83 refs) remain unresolved inside the stops
+(data, undecodable, chains that never close), and 318 dsts / 583 refs are
+outside the four scope blocks.
+
+Gates: `naming.py check` OK (267) . `verify_rebuild` **faithful -- REGISTER 18
+applied / 59 pending (hole-only ranges), ADDED 116 all manifest-planned, LOST
+0, CHANGED 0** . `verify_idb` **INTACT (2,051, 0 span / 0 name / 0 data-hole
+problems)** . read-back **265/265 + 2/2**. Backup `FALCONCD.EXE.i64.bak_upper`.
+
+Impact: the upper half went from **38 functions / 2.4% coverage to 154
+functions / ~35% of its bytes inside registered ranges** (59,641 B covered +
+3,505 B keep), the zero-evidence blocks were deliberately left alone, and the
+REGISTER gate now makes any future parentless registration exact-match
+instead of a free ADDED wave. Remaining: the 44 in-scope stragglers, the
+`0x54AF0` UI block's data-dominated gaps, and 74,631 B of documented
+uncovered scope.
+
+---
+
 (append new findings below)

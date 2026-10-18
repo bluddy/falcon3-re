@@ -202,3 +202,21 @@
   **Still open:** **0 dynamic events src-or-dst land in the upper half** --
   no call evidence exists for it yet, so **P2 (chain sweep) is the
   load-bearing step**, then P3 (manifest registration) and P4 (measure).
+
+- **Upper-half P2+P3 DONE (finding 61):** 116 functions registered over
+  77 manifest ranges (i 49 fns/24,675 B, ii 36/19,028, iii 24/5,908, iv
+  7/1,262 + 5,263 B pinned strings), **68 holes / 6,278 B sha256-pinned**
+  (58 in-range + 10 standalone) via the new **REGISTER** gate (exact
+  tiling + live hole export; `pending` before, `applied` after). Sweep
+  walked 22,240 insns / 59,641 B; static **4,013 -> 4,907** and
+  **`static_unresolved` 957 -> 772** (exactly -291 in-scope dsts now
+  registered +106 newly revealed refs still outside); 107/116 new fns
+  called; zero-evidence blocks (1,552 / 880 / 18,992 B) untouched by
+  design. **Still open:** (a) 44 in-scope dsts / 83 refs sit in
+  documented stops (data, undecodable, chains that never close); (b) the
+  UI block `0x54AF0..0x669F0` is data-dominated: only 6,525 B of 73,472
+  covered, 7 fns -- its 67 string gaps are pinned but its code islands
+  mostly fail the entry-after-padding test; (c) 74,631 B of scope stays
+  uncovered with stop reasons in `upper_sweep.json`; (d) out-of-scope
+  residue: 318 dsts / 583 refs plus blocks `0x493C0..0x4E520`,
+  `0x4FD20..0x500C0`.

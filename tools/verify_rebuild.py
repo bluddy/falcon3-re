@@ -64,6 +64,12 @@ def load_patches():
 # (data_holes.json), so this gate checks plan <-> live IDB <-> ground truth.
 SPLITMAN = ROOT / "registry" / "subblock_split_expected.json"
 HOLES_EXPORT = ROOT / "analysis" / "ida_falconcd" / "data_holes.json"
+# Parentless registration manifest (finding 61 / P3): ranges of the R05 upper
+# half that never had a parent function, so a plain ADDED wave would sail
+# through the gate.  Validated as an exact tiling of
+# new_fns | keep_fns | data_holes over the stated range, with each hole's
+# live sha256 checked against verify_idb's export.
+REGMAN = ROOT / "registry" / "upper_register_expected.json"
 
 
 def load_splits():
@@ -71,6 +77,12 @@ def load_splits():
         return {}
     return {e["key"]: e
             for e in json.loads(SPLITMAN.read_text()).get("splits", [])}
+
+
+def load_registers():
+    if not REGMAN.exists():
+        return []
+    return json.loads(REGMAN.read_text()).get("ranges", [])
 
 
 def load_holes():
@@ -95,8 +107,10 @@ def main():
     expected = load_expected()
     patches = load_patches()
     split_man = load_splits()
+    reg_man = load_registers()
     hole_live = load_holes()
-    split_plan_keys = {f["key"] for e in split_man.values() for f in e["new_fns"]}
+    split_plan_keys = ({f["key"] for e in split_man.values() for f in e["new_fns"]}
+                       | {f["key"] for r in reg_man for f in r["new_fns"]})
 
     def validate_split(k, a, b):
         """Manifest plan vs current ground truth vs the live hole export.
@@ -227,16 +241,81 @@ def main():
             lost.remove(k)
             splitdata.append((k, why + "  [parent key retired]"))
 
+    # ---- parentless registration ranges (finding 61 / REGISTER) ----
+    registers, reg_pending = [], []
+
+    def reg_validate(rng):
+        lo, hi = rng["range"]
+        keep = {(f["key"], f["ea"], f["size"]) for f in rng.get("keep_fns", [])}
+        want = keep | {(f["key"], f["ea"], f["size"]) for f in rng["new_fns"]}
+        have = {(k, v["ea"], v["size"]) for k, v in now.items()
+                if v.get("ea") is not None and lo <= v["ea"] < hi}
+        if have == keep:
+            return "pending"          # nothing applied yet: gate stays green
+        if have != want:
+            return ("functions differ: missing %d %s / extra %d %s"
+                    % (len(want - have), sorted(want - have)[:3],
+                       len(have - want), sorted(have - want)[:3]))
+        spans = sorted(
+            [(f["ea"], f["ea"] + f["size"])
+             for f in rng["new_fns"] + rng.get("keep_fns", [])]
+            + [(h["ea"], h["ea"] + h["size"]) for h in rng.get("data_holes", [])
+               if lo <= h["ea"] < hi])
+        cur = lo
+        for s, e in spans:
+            if s != cur:
+                return "tiling breaks at 0x%X (expected 0x%X)" % (s, cur)
+            cur = e
+        if cur != hi:
+            return "coverage ends 0x%X != range end 0x%X" % (cur, hi)
+        for h in rng.get("data_holes", []):
+            if not (lo <= h["ea"] < hi):
+                continue
+            live = hole_live.get(h["ea"])
+            if not live:
+                return "no live hole export for 0x%X -- run tools/verify_idb.py" % h["ea"]
+            if (live.get("size"), live.get("sha256")) != (h["size"], h["sha256"]):
+                return "hole 0x%X sha/size differs from the live database" % h["ea"]
+            if live.get("in_function"):
+                return "hole 0x%X is covered by a function" % h["ea"]
+        return None
+
+    for rng in reg_man:
+        lo, hi = rng["range"]
+        name = rng.get("name") or ("0x%X..0x%X" % (lo, hi))
+        verdict = reg_validate(rng)
+        if verdict == "pending":
+            reg_pending.append(name)
+        elif verdict is None:
+            registers.append((name, "%d new + %d keep fns + %d holes tile %d B"
+                              % (len(rng["new_fns"]), len(rng.get("keep_fns", [])),
+                                 len([h for h in rng.get("data_holes", [])
+                                      if lo <= h["ea"] < hi]), hi - lo)))
+        else:
+            changed.append((name, "register manifest violated: " + verdict))
+    for h in json.loads(REGMAN.read_text()).get("standalone_holes", []) \
+            if REGMAN.exists() else []:
+        live = hole_live.get(h["ea"])
+        if live is None:
+            changed.append(("hole 0x%X" % h["ea"],
+                            "no live hole export -- run tools/verify_idb.py"))
+        elif (live.get("size"), live.get("sha256")) != (h["size"], h["sha256"]):
+            changed.append(("hole 0x%X" % h["ea"], "sha/size differs live"))
+        elif live.get("in_function"):
+            changed.append(("hole 0x%X" % h["ea"], "covered by a function"))
+
     added_split = [k for k in added if k in split_plan_keys]
     added_free = [k for k in added if k not in split_plan_keys]
 
     print("committed: %d   now: %d" % (len(head), len(now)))
     print("  LOST    : %d" % len(lost))
-    print("  ADDED   : %d  (%d planned by the carve manifest, %d new otherwise)"
+    print("  ADDED   : %d  (%d planned by the manifests, %d new otherwise)"
           % (len(added), len(added_split), len(added_free)))
     print("  SPLIT   : %d  (intentional: old fn subdivided, full coverage)" % len(splits))
     print("  CARVE   : %d  (intentional: manifest-planned fns + sha256-pinned data holes)"
           % len(splitdata))
+    print("  REGISTER: %d applied, %d pending  (parentless ranges: exact tiling + "
+          "hole sha256)" % (len(registers), len(reg_pending)))
     print("  RECODE  : %d  (intentional: bitness fix, allowlisted in manifest)" % len(recodes))
     print("  PATCH   : %d  (intentional: sub-block fixup words, exact sha match)"
           % len(bytepatches))
@@ -253,6 +332,15 @@ def main():
             print("   %-16s %s" % (k, why))
         if len(recodes) > 10:
             print("   ... +%d" % (len(recodes) - 10))
+    if registers:
+        print("\n-- REGISTER (parentless range: exact tiling, hole sha256 from the "
+              "live export) --")
+        for name, why in registers:
+            print("   %-20s %s" % (name, why))
+    if reg_pending:
+        print("\n-- REGISTER pending (manifest on file, nothing applied yet) --")
+        for name in reg_pending:
+            print("   %s" % name)
     if splitdata:
         print("\n-- CARVE (manifest-planned subdivision; data holes checked "
               "against the live IDB export) --")
