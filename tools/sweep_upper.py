@@ -47,6 +47,17 @@ SCOPE = [
     {"name": "iii_4E520", "lo": 0x4E520, "hi": 0x4FD20},
     {"name": "iv_54AF0_UI", "lo": 0x54AF0, "hi": 0x669F0},
 ]
+# finding 62: the remaining evidence-bearing blocks of R05_1E10 (from the
+# post-f61 recount).  Zero-evidence blocks enter only when a newly revealed
+# ref lands in them -- see analysis/ida_falconcd/register_scope.json
+try:
+    _sc = json.loads(open(IDA + r"\register_scope.json").read())["scope"]
+    SCOPE = SCOPE + [{"name": s["name"], "lo": s["lo"], "hi": s["hi"]}
+                     for s in _sc
+                     if not any(s["lo"] >= x["lo"] and s["hi"] <= x["hi"]
+                                for x in SCOPE)]
+except Exception:
+    pass
 TERMS = {"retn", "retf", "ret", "iret", "jmp"}
 MIN_FN = 3
 MAX_GAP_INSNS = 40000
@@ -189,6 +200,13 @@ def sweep_gap(a, b, holes_lo_set):
                         cur = q
                         continue
                 return insns, "data-item@0x%X" % cur, cur, lead
+            # a gap may START on a small data item (finding 62: a 2-byte
+            # `word_4FD48` at the start of blk_4FD20 made add_func refuse the
+            # whole range).  Skip it and move gap_start so the function begins
+            # on the first code byte; the skipped bytes become lead-padding.
+            if not insns:
+                lead = (a, cur + isz)
+                gap_start = cur + isz
             cur += isz
             continue
         if src == "mid":
@@ -454,7 +472,7 @@ def main():
                 if not prev_term_ok(ea):
                     stage2_rej.append((ea, "no-terminator-behind"))
                     continue
-                ins, stop, stop_pos, lead = sweep_gap(ea, min(ea + 4096, hi),
+                ins, stop, stop_pos, lead = sweep_gap(ea, min(ea + 16384, hi),
                                                       hole_lo_set)
                 if lead:
                     stage2_rej.append((ea, "lead-padding-at-seed"))

@@ -103,15 +103,23 @@ def main():
     log.append("manifest: %d ranges, %d new fns, %d holes (%d B)"
                % (len(ranges), man["n_new_fns"], man["n_holes"], man["hole_bytes"]))
 
-    # ---- preconditions: exact pre-state + live hole hashes ----
+    # ---- preconditions: pre-state == keep (fresh) OR == keep+new (idempotent
+    # re-run after a guard-failed attempt whose dirty DB idat persisted) ----
     pre = {}
     for rng in ranges:
         lo, hi = rng["range"]
         live = [(s, ida_funcs.get_func(s).end_ea) for s in idautils.Functions(lo, hi)]
         want = [(f["ea"], f["ea"] + f["size"]) for f in rng["keep_fns"]]
-        if sorted(live) != sorted(want):
-            raise SystemExit("FATAL: %s pre-state has %d fns, expected keep %d"
-                             % (rng["name"], len(live), len(want)))
+        applied = want + [(f["ea"], f["ea"] + f["size"]) for f in rng["new_fns"]]
+        if sorted(live) == sorted(want):
+            state = "keep"
+        elif sorted(live) == sorted(applied):
+            state = "already"
+        else:
+            raise SystemExit("FATAL: %s pre-state has %d fns, expected keep %d "
+                             "or applied %d" % (rng["name"], len(live), len(want),
+                                                len(applied)))
+        rng["_state"] = state
         for h in rng["data_holes"]:
             if sha(idc.get_bytes(h["ea"], h["size"])) != h["sha256"]:
                 raise SystemExit("FATAL: %s hole 0x%X bytes differ"
@@ -128,13 +136,18 @@ def main():
     log.append("preconditions OK (pre-state == keep for all ranges, "
                "all %d hashes match)" % (man["n_holes"]))
 
-    # ---- apply ----
-    n_holes = n_fns = created_total = 0
+    # ---- apply (idempotent: skip ranges already applied, skip holes already
+    # converted to data with the right hash) ----
+    n_holes = n_fns = created_total = skipped = 0
     for rng in ranges:
         lo, hi = rng["range"]
         hole_spans = [(h["ea"], h["ea"] + h["size"]) for h in rng["data_holes"]]
         for h in rng["data_holes"]:
             ea, n = h["ea"], h["size"]
+            if (ida_bytes.is_data(ida_bytes.get_flags(ea))
+                    and sha(idc.get_bytes(ea, n)) == h["sha256"]):
+                n_holes += 1
+                continue                     # already converted
             ida_bytes.del_items(ea, ida_bytes.DELIT_SIMPLE, n)
             made = False
             try:
@@ -148,6 +161,10 @@ def main():
             if sha(idc.get_bytes(ea, n)) != h["sha256"]:
                 raise SystemExit("FATAL: hole 0x%X changed while converting" % ea)
             n_holes += 1
+        if rng.get("_state") == "already":
+            n_fns += len(rng["new_fns"])
+            skipped += len(rng["new_fns"])
+            continue
         for f in rng["new_fns"]:
             s, e, key = f["ea"], f["ea"] + f["size"], f["key"]
             # entry must be decodable: clear blocking items first (finding 59)
@@ -185,8 +202,9 @@ def main():
                                  % (key, s, e,
                                     ("%X..%X" % (g.start_ea, g.end_ea)) if g else "NONE"))
             n_fns += 1
-    log.append("holes converted: %d   functions registered: %d   "
-               "instructions created: %d" % (n_holes, n_fns, created_total))
+    log.append("holes converted (or already): %d   functions registered: %d "
+               "(%d idempotent-skip)   instructions created: %d"
+               % (n_holes, n_fns, skipped, created_total))
 
     # ---- guards ----
     ok_all = True

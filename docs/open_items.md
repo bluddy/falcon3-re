@@ -220,3 +220,17 @@
   uncovered with stop reasons in `upper_sweep.json`; (d) out-of-scope
   residue: 318 dsts / 583 refs plus blocks `0x493C0..0x4E520`,
   `0x4FD20..0x500C0`.
+
+- **R05_1E10 sweep DONE (finding 62):** 12 remaining evidence blocks
+  registered (82 fns, 96 ranges), `static_unresolved` **772 -> 660**;
+  block iv (73 KB / 7 fns) diagnosed: its 28 residual dsts sit behind
+  binary UI tables and **26/27 fail Stage-2 for no terminator behind**
+  (class-c anomalies, not clean functions). **Still open:** (a) **93
+  resident dsts / 236 refs** in `0x10000..0x2CF60` -- needs a
+  finding-54-style registration pass over resident gaps; (b) **254
+  other-overlay dsts / 424 refs** -- `R30_569F` 71, `R06_5CD9` 25,
+  `R53_569Fs` 16, `R14_5E0B` 14, `R17_5E8F` 12, `R35_569Fs` 12,
+  `R12/R32/R40_569Fs` 4 each -- separate RTLink records already mapped
+  by finding 60's runtime map, each needs its own sweep/REGISTER cycle;
+  (c) in-scope residue 63 dsts / 109 refs inside documented stops;
+  (d) untouched zero block `0x500C0..0x54AF0` (0 dsts) stays out.

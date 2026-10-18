@@ -3080,4 +3080,106 @@ uncovered scope.
 
 ---
 
+## 2026-10-18 62 — The R05_1E10 sweep is finished: 82 more functions,
+`static_unresolved` 772 -> 660, and the block-iv anomaly diagnosed
+
+Finding 61 left the four evidence-rich blocks registered and the rest of
+`R05_1E10` (the lower `0x3ACAC..0x3B830` tail, the `0x48DB0..0x4FD20` run,
+the `0x4FD20..0x500C0` tail, and the untouched `0x500C0..0x54AF0`) pending a
+recount. This session ran that recount, swept every remaining evidence-bearing
+block, registered the result, and diagnosed why the `0x54AF0` UI block yielded
+only 7 functions.
+
+### Step 1 -- the post-f61 recount
+
+Re-running `dst_list.py` against the finding-61 refs: **415 destinations /
+772 refs** (was 515/957). The **13 other anchor blocks** of `0x3ACAC..0x669F0`
+carry **26,260 B / 83 dsts / 130 refs** now (the recount moved some evidence:
+the previously zero-evidence `0x48DB0..0x493C0` gained **4 dsts / 10 refs**
+from a newly revealed reference, so it enters scope per the standing rule;
+`0x4DAD0..0x4DE40` and `0x500C0..0x54AF0` remain at 0 and stay out).
+
+### Step 2 -- sweep + register the remaining evidence-bearing blocks
+
+`register_scope.json` now lists **12 blocks / 26,260 B** (unioned with the
+finding-61 four = 16 scope blocks total, 0x3ACAC..0x669F0 minus the two
+untouched zero-evidence blocks). The same
+`sweep_upper.py -> plan_register.py -> register_upper.py` pass ran, with two
+findings:
+
+1. **a gap may start on a small data item.** `blk_4FD20` starts on a 2-byte
+   `word_4FD48`; the sweep's small-data skip advanced `cur` but not
+   `gap_start`, so the planned function `0x4FD48..0x4FD80` began on a data
+   byte and `add_func` refused the whole range. Fixed: when a gap *starts* on
+   a `<=15 B` data item, move `gap_start` past it and record it as
+   lead-padding (the range split cleanly into `0x4FD20..0x4FD38` keep +
+   `0x4FD4A..0x4FD80` new).
+2. **suspect holes must not be enforced.** The sweep dropped 10 holes it had
+   overrun into (`0x4aca1`, `0x5a33b`, ... `0x5c04d`) from tiling, but they
+   stayed in `all_holes` and flowed into `standalone_holes`, where the mutator
+   required `sha256 + not in function`. A guard-failed attempt then left a
+   dirty DB (idat persists on exit) that covered `0x4ACA1`. Fixed in
+   `plan_register.py`: suspects are recorded (`suspect_holes_not_enforced`)
+   but never enforced, and `register_upper.py` became **idempotent** (pre-state
+   accepts `keep` *or* `keep+new`; already-converted holes and already-added
+   functions are skipped), so the re-run after the guard was a no-op that
+   passed and saved.
+
+Result: **96 ranges, 82 new functions, 58 in-range holes converted, 8,727
+instructions created; guards PASSED, SAVED** (backup `FALCONCD.EXE.i64.bak_upper2`).
+
+### Measured effect
+
+| metric | f61 | f62 |
+|---|---|---|
+| functions | 2,051 | **2,133** (+82) |
+| static edges | 4,907 | **5,289 (+382)** |
+| `static_unresolved` | 772 | **660 (-112)** |
+| union | 4,928 | 5,310 |
+| new fns with >=1 incoming edge | - | **76 / 82** |
+| overlay zero-indegree orphans | 234 | 238 |
+
+Gates: `naming.py check` OK (267) . `verify_rebuild` **faithful -- REGISTER 19
+applied / 77 pending, ADDED 82 all manifest-planned, LOST 0, CHANGED 0** .
+`verify_idb` **INTACT (2,133, 0 span / 0 name / 0 data-hole problems)** .
+read-back **265/265 + 2/2**.
+
+### Step 3 -- diagnose the remaining 660 unresolved
+
+**Block `iv` (`0x54AF0..0x669F0`, 73,472 B, only 7 fns):** 28 dsts / 36 refs
+remain. The forward sweep from the anchor dies at `pad-then-nonentry` /
+`undecodable` / `zero-run` ~40 times because between the 7 functions sit
+**binary UI/struct tables**, not `00` padding. **Stage-2 (cap raised 4 KB ->
+16 KB) rejects all 27 attempts: 26 have no terminator behind them**, and the
+one that does (`0x5DF97`, `prev=jmp`) sits inside an already-covered range
+whose piece was rejected for no other evidence. Finding-58's audit agrees:
+**27 of 28 are class-c anomalies with no terminator behind** — so these are
+*not* clean functions separated by tables; the destinations themselves are
+mid-instruction / data points, and only a handful of genuine functions exist
+in the block (which the 7 registered).
+
+**Residency of the remaining 660 (347 dsts):**
+
+| zone | dsts | refs |
+|---|---|---|
+| **Resident `0x10000..0x2CF60`** | **93** | **236** |
+| **other `R*` overlays** | **254** | **424** |
+| — `R05_1E10` (in-scope stops + carved region) | 79 | 109 |
+| — `R30_569F` | 71 | - |
+| — `R06_5CD9` | 25 | - |
+| — `R53_569Fs` / `R14_5E0B` / `R17_5E8F` / `R35_569Fs` | 16/14/12/12 | - |
+| carved region `0x2E2F0..0x3ACAC` | 4 | 12 |
+| untouched zero block `0x500C0..0x54AF0` | **0** | **0** |
+
+The **in-scope residue is 63 dsts / 109 refs** — all in the sweep's documented
+stops (the 40 `pad-then-nonentry` / `undecodable` / `zero-run` in block iv,
+plus anomalies like `0x43E0C` ×16 which is class-c undecodable in block ii).
+The bulk of the remainder (**93 resident + 254 other-overlay**) is outside
+`R05_1E10` entirely: resident needs the same treatment as finding 54's
+registration pass, and the `R*` overlays (`R30_569F` 71 dsts, `R06_5CD9` 25,
+etc.) are the next registration targets (they are separate RTLink records
+already mapped by finding 60's runtime map).
+
+---
+
 (append new findings below)

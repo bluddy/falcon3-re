@@ -75,19 +75,29 @@ for r in sw["ranges"]:
     ranges_out.append({"name": name, "range": [lo, hi], "keep_fns": keep,
                        "new_fns": new, "data_holes": holes})
 
+# every candidate hole must be either in a range or standalone (no orphans).
+# Suspect holes the sweep dropped from tiling are recorded for the record but
+# NOT enforced (a sweep overran into them -- they may be code, and a function
+# legitimately covers them); enforcing them would make the mutator fail.
 all_holes = sw.get("all_holes", [])
-standalone = [{"ea": h["ea"], "size": h["size"], "sha256": h["sha256"],
-               "why": h["why"], "block": h.get("block")}
-              for h in sw.get("standalone_holes", [])]
+suspect = set(sw.get("suspect_holes", []))
+standalone_all = [{"ea": h["ea"], "size": h["size"], "sha256": h["sha256"],
+                   "why": h["why"], "block": h.get("block")}
+                  for h in all_holes if h["ea"] not in suspect]
+in_ranges = {h["ea"] for r in ranges_out for h in r["data_holes"]}
+standalone = [h for h in standalone_all if h["ea"] not in in_ranges]
+suspect_out = [h for h in all_holes if h["ea"] in suspect]
 for h in standalone:
     if not h["sha256"]:
         problems.append("standalone hole 0x%X has no sha256" % h["ea"])
 
-# every candidate hole must be either in a range or standalone (no orphans)
-in_ranges = {h["ea"] for r in ranges_out for h in r["data_holes"]}
+# every candidate hole must be either in a range or standalone (no orphans).
+# Suspect holes are exempt: the sweep overran into them, so they may be code
+# and a function may legitimately cover them (finding 62: 0x4ACA1).
 orphans = [h["ea"] for h in all_holes
            if h["ea"] not in in_ranges
-           and h["ea"] not in {s["ea"] for s in standalone}]
+           and h["ea"] not in {s["ea"] for s in standalone}
+           and h["ea"] not in suspect]
 if orphans:
     problems.append("holes in no bucket: %s" % [hex(x) for x in orphans[:8]])
 
