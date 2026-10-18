@@ -4889,6 +4889,474 @@ symbols:
     sig: "void far; far-call slope_flag_test_bx, then (304B pad-heavy) far-call dispatch sequence; 1 caller (r59_e177)"
     notes: "304B span, callee slope_flag_test_bx. Far-call driver around the slope test with a long callback sequence. conf: low"
 
+  - ida: sub_23A73
+    name: angle_delta_quadrant
+    kind: function
+    sig: "NEAR retn fn; 2x near-call pos_delta_abs_64 ([SI] vs es:[DI], SI/DI += 4 -- X then Y), OR the results, near-call fixed_quadrant_classify, ... (46B); 3 callers (sub_23AB7, angle_xy_near, angle_xy_far)"
+    notes: "46B retn, dyn=0, cd=116,805, callees fixed_quadrant_classify + pos_delta_abs_64. The angle_xy core: two absolute position deltas then quadrant classification. conf: high"
+  - ida: sub_22EF8
+    name: angle_matrix_far_invoke
+    kind: function
+    sig: "void far; push ds, near-call angle_matrix_build_neg, pop ds (6B primary path; 223B span incl shared tails); 6 callers (sub_2F400, sub_2FEF2, sub_355E6, sub_3A88D, sub_3FFEF, sub_45057)"
+    notes: "223B span, dyn=17,888, callee angle_matrix_build_neg. Far invocation of the negated-angle matrix build with DS preserved. conf: med"
+  - ida: sub_1189E
+    name: cb_layout_step_1189e
+    kind: function
+    sig: "void far; ES=CS DI=0: near-call cs_state_copy_es; text-cell layout math (cs:11854-11850-1186C)>>1 -> cs:11858... (366B) with stub_to_205c3 + far_cb_3/7; 1 caller (cb_args_invoke)"
+    notes: "366B, cd=5, callees cs_state_copy_es + stub_to_205c3 + far_cb_3 + far_cb_7. Callback-args layout step: saves CS state then computes the cell layout with the cb dispatchers. conf: med"
+  - ida: sub_17B11
+    name: channel_reg_dispatch
+    kind: function
+    sig: "NEAR retn fn; BX=[bp+arg4] clamp <= 0x12, near-ptr jump-table cs:jpt_17B22 selecting among channel_mode_reg_write, channel_reg_write_8/field/shift4/field_b/ae76/table, adlib_operator_write... (86B); 1 caller (sub_17A5D)"
+    notes: "86B retn, cd=722, 8 callees: channel_reg_write_table + channel_reg_write_8 + channel_reg_write_field + channel_reg_write_shift4 + channel_reg_write_field_b + adlib_operator_write + channel_mode_reg_write + channel_reg_write_ae76. THE channel-register dispatcher: 0x12-case near-ptr jump-table routing opcodes to the whole channel_reg_write family (structural parent, all children named in f71). conf: high"
+  - ida: sub_17E83
+    name: channel_seq_args_hw
+    kind: function
+    sig: "NEAR retn fn; collect channel-sequence args: [si-0x517A] + [bx-0x51B0] word + [si-0x5194] cbw, push all -> hw_seq_step (43B); 3 callers (sub_176BE, sub_1789B, sub_178D4)"
+    notes: "43B retn, cd=4,884, callee hw_seq_step. Gathers three fields from the 0x51xx channel tables into the hardware-sequencer step call. conf: med"
+  - ida: sub_17835
+    name: channel_volume_store
+    kind: function
+    sig: "void far (C frame): SI=arg, clamp SI < ds:0AE78 (channel count), clamp value <= 0x7F; [SI-0x5186]=value; gate ds:0AF90 then (102B) channel_reg_write_table; 10 callers (list_record_register, entity_counters_update, ...)"
+    notes: "102B C-class, dyn=7,914, cd=11,926, callee channel_reg_write_table. Stores a clamped volume (0..0x7F) into the 0x5186 table then writes the channel register. conf: med"
+  - ida: sub_25CB3
+    name: clip_rect_compute_frame
+    kind: function
+    sig: "void far; frame args: BX=[bp+arg0], DI=[bp+arg2], LDS SI=[bp+arg4], push cs, near-call clip_rect_compute_guard; (24B); 0 static callers (indirect, dyn=64)"
+    notes: "24B, dyn=64, callee clip_rect_compute_guard. Stack-frame variant of the clip-rect guard wrapper (far-ptr arg via LDS). conf: high"
+  - ida: sub_14EAE
+    name: farobj_tile_copy_resolve
+    kind: function
+    sig: "NEAR retn fn; gate cs:11C88==0xFF -> AX=DX=0 retf; else body (470B) with tile_index_resolve copying/resolving entity tiles; 35 callers (entity_setup_step, farobj_copy_invoke, angle_adjusted_copy, sub_2F6D0...)"
+    notes: "470B retn, dyn=396,820 (2nd-hottest), in=35 (widest L2 fan-in), callee tile_index_resolve. The entity/tile copy worker behind farobj_copy_invoke: resolves tile indices while copying, 0xFF sentinel aborts. conf: med"
+  - ida: sub_25087
+    name: flag_block_build_far_thunk
+    kind: function
+    sig: "void far; push cs, near-call flag_block_build, nop; AX = 0 + CF (adc ax,0 passthrough); retf (18B); 0 static callers (indirect)"
+    notes: "18B, dyn=160,669, callee flag_block_build. Far thunk exposing the flag-block build with condition-code passthrough (pair of flag_table_pop_far_thunk). conf: high"
+  - ida: sub_251C3
+    name: flag_table_pop_far_thunk
+    kind: function
+    sig: "void far; push cs, near-call flag_table_pop, nop; pop di/si/bp; retf (12B LEAF); 11 callers (r17/r22-r26/r29 overlay entries + sub_6Exxx)"
+    notes: "12B LEAF, dyn=542,872 (hottest callee in the graph), callee flag_table_pop. Far-returning thunk exposing the flag-table pop -- the flag_block_build/flag_table_pop pair from finding 39. conf: high"
+  - ida: sub_11B25
+    name: font_advance_compute
+    kind: function
+    sig: "NEAR retn fn; near-call font_glyph_max_loop; AX+=0x10, DX+=2; AX=(AX*(DX+1)+9)&~1 (advance metric) (47B); 1 caller (cb_args_invoke)"
+    notes: "47B retn, cd=5, callee font_glyph_max_loop. Computes the glyph advance metric from the max-glyph width (+0x10) and line height (+2), 9-aligned. conf: high"
+  - ida: sub_1BFF2
+    name: int8_hook_gated_77ca9
+    kind: function
+    sig: "NEAR retn fn; gate es:7772:77CA9==0: near-call int8_vector_hook, es:77B34=1, further state (46B); 3 callers (sub_1D19F, sub_2F6D0, sub_3001E)"
+    notes: "46B retn, cd=39, callee int8_vector_hook. Hooks INT 8 (timer) gated on the once-flag es:77CA9, marks es:77B34=1. conf: high"
+  - ida: sub_11450
+    name: joystick_axis_read_clamp
+    kind: function
+    sig: "NEAR retn fn; gate cs:11171 (joystick present) else skip; near-call joystick_dispatch_6d + state3_copy_3c6_3ce; clamp AX to [-0x800..0x800] (114B); 1 caller (control_axes_read)"
+    notes: "114B retn, cd=38,794, callees joystick_dispatch_6d + state3_copy_3c6_3ce. Joystick axis read with dead-zone clamp, gated on the presence flag cs:11171. conf: high"
+  - ida: sub_29B82
+    name: line_table_build_dispatch
+    kind: function
+    sig: "NEAR retn fn; edge bits cs:2796A: .3 -> line_from_points (CX>=3 guards), .4 -> line_table_entry_clone_slope, other -> line_table_entry_clone / line_table_entry_clone_b (108B); 2 callers (r58_e180, record_queue_push)"
+    notes: "108B retn, cd=70,789, callees line_table_entry_clone + line_table_entry_clone_b + line_from_points + line_table_entry_clone_slope. The line-table builder dispatcher: selects among the 4 line-construction variants on edge bits 3/4. conf: high"
+  - ida: sub_2514B
+    name: mouse_button_gate_5762
+    kind: function
+    sig: "NEAR retn fn; cs:24E40=AX; INT 1Ah (time-of-day) -> cs:24E3C/24E3E snapshot; near-call mouse_buttons_get; if AL==0: scan the 5762 flag block; + stub_to_239f2 + flag_block_merge_zero_5c63 paths (120B); 2 callers (sub_2513A, far_op_execute)"
+    notes: "120B retn, cd=20, callees mouse_buttons_get + stub_to_239f2 + flag_block_merge_zero_5c63. Mouse-button gate: timestamps via INT 1Ah, reads buttons, falls into the flag-block scan path. conf: med"
+  - ida: sub_10012
+    name: mouse_delta_scale_stub
+    kind: function
+    sig: "void far; CX=AX, DX=BX, AX>>=1, near-call stub_to_25777 (clamp); gate cs:10000 (mouse enable) else retf (26B); 3 callers (sub_10002, sub_1005A, sub_100BB)"
+    notes: "26B, dyn=3, cd=6,334, callee stub_to_25777. Mouse delta halving + clamp, gated on the cs:10000 enable flag (mouse_buttons family). conf: med"
+  - ida: sub_237FF
+    name: ratio_blend_sign_norm_far_thunk
+    kind: function
+    sig: "void far NEARTHUNK; near-call ratio_blend_sign_norm; retf (4B); 1 caller (sub_355E6)"
+    notes: "4B NEARTHUNK, dyn=498, callee ratio_blend_sign_norm. Far thunk over the sign-normalized ratio blend. conf: high"
+  - ida: sub_1F46C
+    name: sbi_level_sync_periodic
+    kind: function
+    sig: "NEAR retn fn; es:77CAE++ counter; every 0x50th (80th) tick: near-call sbi_level_sync_77de2 (40B); 1 caller (event_state_machine)"
+    notes: "40B retn, cd=42,313, callee sbi_level_sync_77de2. Every-80th-tick invoke of the SBI level sync. conf: high"
+  - ida: sub_1D796
+    name: sbi_level_write_6
+    kind: function
+    sig: "void far; push es:7772:77DE8 + es:77DE6 (the level pair), push 6, near-call scaled_hw_write (param 6); 1 caller (event_state_machine)"
+    notes: "34B, dyn=2,260, cd=42,313, callee scaled_hw_write. SBI scaled hardware write of the level pair (es:77DE6/77DE8) with parameter 6. conf: high"
+  - ida: sub_1F180
+    name: sbi_midi_event_loop
+    kind: function
+    sig: "NEAR retn fn; SI=0..0x18 (25 iterations): push SI, near-call sbi_midi_event_write (23B); 2 callers (irq_state_init, sub_2FD42)"
+    notes: "23B retn, cd=86, callee sbi_midi_event_write. Writes SBI MIDI events for slots 0..24 (the initialization loop over the event table). conf: high"
+  - ida: sub_1E9A3
+    name: sbi_midi_note_seq
+    kind: function
+    sig: "NEAR retn fn; push 5, 6, 7, 8... sequence of near-calls to sbi_midi_event_write (note/message events), then body continues (181B); 3 callers (sub_18BC8, key_action_execute, sub_1EA58)"
+    notes: "181B retn, cd=36, callee sbi_midi_event_write. MIDI note/event sequence writer: emits the ordered event slots 5,6,7,8... on key actions. conf: high"
+  - ida: sub_1E1CE
+    name: sbi_periodic_5_write
+    kind: function
+    sig: "NEAR retn fn; es:77CAA % 5 == 0 gate (every 5th tick) else retn; body scaled_hw_write of the 77DE6/DE8 pair (107B); 2 callers (event_state_machine, sub_397FB)"
+    notes: "107B retn, cd=42,313, callee scaled_hw_write. Every-5th-tick scaled SBI write of the level/scroll pair (caller-side of scaled_hw_write, pair of sbi_level_write_6). conf: med"
+  - ida: sub_16E84
+    name: sbi_pit_period_gate_0
+    kind: function
+    sig: "void far; gate es:7772:777EA==0 else jmp 0x16EB9; then near-call pit_period_set_1000 (58B); 1 caller (sub_18126)"
+    notes: "58B, dyn=79, callee pit_period_set_1000. PIT period set gated on the es:777EA==0 polarity (twin of gate_1). conf: med"
+  - ida: sub_16E3A
+    name: sbi_pit_period_gate_1
+    kind: function
+    sig: "void far; gate es:7772:777EA==1 else jmp 0x16E7E; then near-call pit_period_set_1000 (74B); 1 caller (sub_180FA)"
+    notes: "74B, dyn=79, callee pit_period_set_1000. PIT period set gated on the es:777EA==1 polarity. conf: med"
+  - ida: sub_1D7B8
+    name: sbi_scroll_write_0
+    kind: function
+    sig: "void far; push es:7772:77DE4 + es:77DE2 (scroll pair), push 0, near-call scaled_hw_write (param 0); 1 caller (index_scroll_step)"
+    notes: "34B, cd=645, callee scaled_hw_write. SBI scaled write of the scroll pair (es:77DE2/77DE4) with parameter 0 (twin of sbi_level_write_6). conf: high"
+  - ida: sub_18BBE
+    name: state_7894_all_far_thunk
+    kind: function
+    sig: "void far; push bp, near-call state_7894_all_zero, pop bp; retf (10B); 3 callers (kb_record_commit, sub_186E6, sub_1B684)"
+    notes: "10B, cd=1, callee state_7894_all_zero. Far thunk exposing the full es:7894 accumulator reset. conf: high"
+  - ida: sub_11DCE
+    name: terrain_advance_gated
+    kind: function
+    sig: "NEAR retn fn; gate cs:11D04 != 0 else retn; body (444B) into terrain_dot_advance_11cf8; 1 caller (entity_state_load)"
+    notes: "444B retn, dyn=11,155, callee terrain_dot_advance_11cf8. Gates the terrain advance on the step counter cs:11D04 then runs the body. conf: med"
+  - ida: sub_13110
+    name: terrain_attr_walk_13110
+    kind: function
+    sig: "NEAR retn fn; unpack cs:11C2C/11C2E coords (CX=9+0x19, SI=cs:11C40-0x32); cs:11C8B = (CX < 0x13); near-call terrain_lookup_gated_b (82B); 3 callers (state_farptr_get, sub_153A5, sub_399F2)"
+    notes: "82B retn, cd=26,999, callee terrain_lookup_gated_b. Terrain attribute walker: in-range flag cs:11C8B + gated table lookup on the unpacked coords. conf: med"
+  - ida: sub_120EA
+    name: tile_base_set_stream
+    kind: function
+    sig: "void far; DS=ES=71C1h, near-call tile_base_set_11bc6, jb on CF; lodsb stream with 0x80-bit flag handling (45B); 1 caller (sub_49350)"
+    notes: "45B, dyn=2,370, callee tile_base_set_11bc6. Sets the tile base then walks the 71C1 stream with hi-bit (0x80) continuation flags. conf: med"
+  - ida: sub_1656F
+    name: tile_index_clamp_5f
+    kind: function
+    sig: "void far LEAF; near-call tile_index_resolve; if AL <= 0x5F retf else AL=0 (10B); 1 caller (sub_3B6BB)"
+    notes: "10B LEAF, dyn=10,434, callee tile_index_resolve. Tile index resolve with a 0x5F clamp (out-of-range -> 0). conf: high"
+  - ida: sub_142DA
+    name: tile_world_index_3334
+    kind: function
+    sig: "void far; DX:AX=[SI] pos + 0x3400:0x33, div 0x3334, -0x1FF, neg -> BX index; then [SI+4/6] second coord (124B); 0 static callers (indirect, dyn=19,305); callee tile_index_resolve"
+    notes: "124B, dyn=19,305, callee tile_index_resolve. Converts world coordinates to tile indices via the 0x3334 (13108) divisor (the /10000-ish fixed scale). conf: med"
+  - ida: sub_23793
+    name: vec_ratio_norm_a_far_thunk
+    kind: function
+    sig: "void far NEARTHUNK; near-call vec_ratio_norm_a; retf (4B); 1 caller (sub_14CC6)"
+    notes: "4B NEARTHUNK, dyn=771, cd=2,133, callee vec_ratio_norm_a. Far thunk over ratio-normalize variant A. conf: high"
+  - ida: sub_237C9
+    name: vec_ratio_norm_b_far_thunk
+    kind: function
+    sig: "void far NEARTHUNK; near-call vec_ratio_norm_b; retf (4B); 2 callers (sub_14CC6, sub_355E6)"
+    notes: "4B NEARTHUNK, dyn=1,269, cd=2,133, callee vec_ratio_norm_b. Far thunk over the near ratio-normalize variant B. conf: high"
+  - ida: sub_20B4D
+    name: view_extent_init_0c
+    kind: function
+    sig: "void far; full reg save, ES=CS, DI=0x0C: movsw 6-word record; AX=cs:1F6D0-cs:1F6CC (extent delta)... (53B) then view_bounds_distribute; 8 callers (entity_setup_step + 7)"
+    notes: "53B, dyn=125, cd=972, callee view_bounds_distribute. Initializes the 0x0C record from the view extent then fans the bounds out. conf: med"
+  - ida: sub_22EA2
+    name: view_proj_matmul_3896
+    kind: function
+    sig: "NEAR retn fn; near-call farptr_table_get_22db4; AX/CX = es:3896/3898, push cs, near-call fixed_matrix_mul; DI=0x388A, add [si]... (70B); 1 caller (angle_adjusted_copy)"
+    notes: "70B retn, cd=2,608, callees farptr_table_get_22db4 + fixed_matrix_mul. View-projection offset apply: farptr-table matrix at es:3896/3898 multiplied into the 388A accumulator. conf: med"
+  - ida: sub_24530
+    name: view_rotation_far_thunk
+    kind: function
+    sig: "void far LEAF; push ds, near-call view_rotation_build, pop ds; retf (6B); 2 callers (sub_36785, sub_46D42)"
+    notes: "6B LEAF, dyn=13,218, callee view_rotation_build. Far-returning thunk exposing the near view-rotation build. conf: high"
+
+  - ida: sub_1709D
+    name: adlib_fallback_config
+    kind: function
+    sig: "void far; push cs, near-call adlib_detect_init; if es:7772:77740 != 0 skip; else store the fallback triple 7773A=0xEF, 7773C=0x11, 7773E=0x35 (39B); 1 caller (sub_168E0)"
+    notes: "39B, cd=0, callee adlib_detect_init. AdLib detection with the 0xEF/0x11/0x35 fallback config triple when es:77740 says no card. conf: high"
+  - ida: sub_149C8
+    name: avg_pair_dispatch_149d2
+    kind: function
+    sig: "NEAR retn fn; BX=cs:11C74; jmp cs:off_149D2[BX] -- near-ptr jump-table selecting among state_byte_11c61_get_ah + avg_pair_11c60_11c61_jmp + avg_pair_11c5e_11c61_jmp + avg_pair_11c5e_11c60_jmp; 1 caller (sub_14956)"
+    notes: "10B retn, 4 callees: state_byte_11c61_get_ah + avg_pair_11c60_11c61_jmp + avg_pair_11c5e_11c61_jmp + avg_pair_11c5e_11c60_jmp. THE average-pair dispatcher: 0x149D2 near-ptr jump-table routing cs:11C74 selectors to the 4 named avg/get variants (structural parent, all children named in f71). conf: high"
+  - ida: sub_39D87
+    name: bound_check_gated_4a83
+    kind: function
+    sig: "NEAR retn fn; gate ds:4A83 <= 1 else retn; body (140B) into bound_range_check_4aad; 3 callers (r29_e06, r32_e83, sub_33443)"
+    notes: "140B retn, cd=0, callee bound_range_check_4aad. Bound check gated on the ds:4A83 mode byte. conf: med"
+  - ida: sub_1C49C
+    name: critical_section_timeout_1000
+    kind: function
+    sig: "void far; push 0x1000 (timeout), near-call critical_section_wrap, pop (14B); 2 callers (sub_1C059, sub_1C451)"
+    notes: "14B, cd=0, callee critical_section_wrap. Enters a critical section with timeout 0x1000 ticks. conf: high"
+  - ida: sub_4EED3
+    name: ems_state_flags_709f
+    kind: function
+    sig: "void far; DS=709Fh; AX = state flags from ds:709F0/709F2 counters (0/1/+2 pattern), near-call flag1084c_get... (73B); 9 callers (sub_3001E, sub_30882, sub_32C62, ...)"
+    notes: "73B, cd=0, callee flag1084c_get. Derives an EMS state flag byte from the 709F counter pair (the sub_4E4D0 state family). conf: med"
+  - ida: sub_1D369
+    name: event_tone_offset_setup
+    kind: function
+    sig: "NEAR retn fn; SI=arg, cli: near-call event_offset_table_3_jpt -> AX, es:7894:79824=AX (tone freq); event_arg_range_check + pcspk_tone_start_79824 path (72B); 2 callers (sub_1914E, sub_19843)"
+    notes: "72B retn, cd=0, callees pcspk_tone_start_79824 + event_offset_table_3_jpt + event_offset_table_3_jpt_b + event_arg_range_check. Event tone setup: offset-table lookup -> stores the frequency at es:79824 then starts the speaker tone. conf: med"
+  - ida: sub_4F3A3
+    name: farobj_cfg_gate_85059
+    kind: function
+    sig: "void far; DS=7A32h; gate ds:85059==1: near-call farobj_cfg_delta_apply paths, ds:85059=0 (one-shot); retf (52B); 2 callers (r33_e105, sub_37C73)"
+    notes: "52B, cd=0, callee farobj_cfg_delta_apply. One-shot gate on ds:85059 before the hardware-config delta apply. conf: med"
+  - ida: sub_3A9B7
+    name: farobj_floor_match_dispatch
+    kind: function
+    sig: "NEAR retn fn; gates ds:4AC2==3, ds:4AC4!=0; match [di+0x1734] ptr vs ES:DI -> near-call floor_copy_4aa3 then farobj_dist_bounds_4ac0 + bound_table_check_49b8 + bound_range_check_4aad chain (101B); 2 callers (sub_39F1D, sub_4A7E5)"
+    notes: "101B retn, cd=0, callees farobj_dist_bounds_4ac0 + bound_table_check_49b8 + bound_range_check_4aad + floor_copy_4aa3. Entity pointer match then the floor-copy + bound-check dispatch chain. conf: med"
+  - ida: sub_26CD8
+    name: farobj_render_draw_1f712
+    kind: function
+    sig: "NEAR retn fn; same context save (1F712/1F716) + field staging, then sprite_stride_lookup_26408 + ramp_stosw_loop draw path (551B); 6 callers (same family)"
+    notes: "551B retn, cd=0, callees farobj_field4_get_stc + shadow save/restore + clip_rect_compute_guard + cs_byte_set_25488 + sprite_stride_lookup_26408 + ramp_stosw_loop. Render draw: context save + stride lookup + ramp fill (the draw twin of farobj_render_prep). conf: med"
+  - ida: sub_26A49
+    name: farobj_render_prep_1f712
+    kind: function
+    sig: "NEAR retn fn; save cs:1F712=ES, cs:1F716=SI; stage [DI+0x12..0x16] -> 7B0E:7E930..34; body: shadow save/restore + clip_rect_compute_guard + cs_byte_set_25488 paths (196B); 6 callers (sprite/view family)"
+    notes: "196B retn, cd=0, callees farobj_field4_get_stc + state_byte_25489_shadow_save + state_byte_25488_shadow_restore + clip_rect_compute_guard + cs_byte_set_25488. Render prep: saves ES:SI context to cs:1F712/1F716, stages 3 fields, clip+shadow path. conf: med"
+  - ida: sub_34A99
+    name: farobj_resource_fetch
+    kind: function
+    sig: "NEAR retn fn; near-call farptr_table_get; [DI+0x22] flag bit (BH) test; near-call table_dword_get sentinel -1 check; then DS:DX resource swap... (104B); 2 callers (sub_34954, sub_34C31)"
+    notes: "104B retn, cd=0, callees adlib_detect_init-overlapping farptr_table_get ref + table_dword_get + farptr_table_get. Fetches a farptr-table resource with the [DI+0x22] flag + table_dword sentinel check. conf: med"
+  - ida: sub_3111F
+    name: farptr_entry_store_41b
+    kind: function
+    sig: "NEAR retn fn; if BL==0 skip; BL--; ds:41B=BL; AX=[SI+7A]; near-call farptr_table_entry_store; retn (25B); 3 callers (sub_310F9, sub_398A4, sub_4111F)"
+    notes: "25B retn, cd=0, callee farptr_table_entry_store. Decrements the ds:41B counter then stores [SI+7A] into the farptr table. conf: med"
+  - ida: sub_2E910
+    name: farptr_table_field22_store
+    kind: function
+    sig: "NEAR retn fn; near-call farptr_table_get; DI+=0x22; es:[DI]=BX; retn (13B); 8 callers (sub_2E2F0, sub_2E37B, sub_3099C, ...)"
+    notes: "13B retn, cd=0, callees farptr_table_get + farptr_table_field20_get. Stores BX at entry+0x22 of the farptr table (the +0x22 field write). conf: high"
+  - ida: sub_2E8BE
+    name: farptr_table_offset_apply
+    kind: function
+    sig: "NEAR retn fn; near-call farptr_table_get; DI+=0x0C: [DI]+=BX (via stub_to_24980), [DI+2]+=CX (via stub_to_24988)... (54B); 6 callers (sub_2E48C, sub_3CE92, sub_3E16B, ...)"
+    notes: "54B retn, cd=0, callees stub_to_24980 + stub_to_24988 + farptr_table_get. Applies position deltas BX/CX to the farptr-table entry's 0x0C fields (angle-fold stubs for wrap). conf: med"
+  - ida: sub_2E992
+    name: farptr_table_scan_store
+    kind: function
+    sig: "NEAR retn fn; ES=0x5982, [SI] byte -> 59820; CX=0x64 list walk over [SI] (BX entries), near-call farptr_table_field_store with cs:2E91E=0x155 (126B); 2 callers (sub_30AA8, sub_4E90E)"
+    notes: "126B retn, cd=0, callee farptr_table_field_store. Scans a 0x64-entry list from [SI] storing each via the +0x20 field write (base seg 5982). conf: med"
+  - ida: sub_3825F
+    name: game_setup_gate_82c
+    kind: function
+    sig: "NEAR retn fn; gate ds:82C==1 else retn; body (76B) game_setup_variant_5169 + fixed_vec2_half_add; 2 callers (sub_3099C, sub_37B1E)"
+    notes: "76B retn, cd=0, callees game_setup_variant_5169 + fixed_vec2_half_add. Game-setup path gated on ds:82C==1. conf: med"
+  - ida: sub_10FD9
+    name: kbd_state_clear_417
+    kind: function
+    sig: "void far; BDA gate es:417 bits 4-6; clear es:417 + es:497 low bits, cli, near-call kbd_ctrl_wait_64 (+ kbd_led_update_60h path); (56B); 1 caller (sub_355E6)"
+    notes: "56B, cd=0, callees kbd_ctrl_wait_64 + kbd_led_update_60h. Clears BDA keyboard shift/LED state with 8042 synchronization. conf: med"
+  - ida: sub_6D88B
+    name: r06_mode_dispatch_bx0
+    kind: function
+    sig: "NEAR retn fn; AX=ds:4A97, near-call r06_mode_dispatch_bx8; BX=ds:4AC2*2 -> call word ptr cs:[BX+0] (near-ptr table at cs:+0); gate ds:49A2 (91B); 3 callers (sub_6D68D, sub_6D747, sub_6D7FF)"
+    notes: "91B retn, cd=0, callee r06_mode_dispatch_bx8. R06 mode dispatcher via the cs:+0 near-ptr table (the +0 variant of r06_mode_dispatch_bx8's +8 form). conf: med"
+  - ida: sub_6D4F4
+    name: r06_mode_gate_49a3
+    kind: function
+    sig: "NEAR retn fn; gate ds:49A3==0 else retn; body (178B) into r06_mode_dispatch_bx8 + dispatch_220d4_stub; 3 callers (sub_6D19F, sub_6D256, sub_6D5DF)"
+    notes: "178B retn, cd=0, callees dispatch_220d4_stub + r06_mode_dispatch_bx8. R06 mode dispatch gated on ds:49A3==0. conf: med"
+  - ida: sub_6DA34
+    name: r06_state_display
+    kind: function
+    sig: "NEAR retn fn; gate ds:49A3==0 else retn; body (469B) int32_to_ascii_short + stub_to_24980 + far_cb_with_args + dispatch_220d4_stub; 2 callers (sub_66E62, sub_6D747)"
+    notes: "469B retn, cd=0, callees int32_to_ascii_short + stub_to_24980 + far_cb_with_args + dispatch_220d4_stub. R06 state/ascii display path gated on ds:49A3==0. conf: med"
+  - ida: r06_e55
+    name: r06_state_init_e55
+    kind: function
+    sig: "void far; near-call floor_bounds_set_9f; zero 4A8B/4A82/4AC4/4AB1/4AA1; if ds:4AC1!=0 jmp sub_6D7F3 else ds:4AC0=0, ds:4A99=0xFBBC... (68B); 3 callers (sub_2C22F, sub_2C275, sub_6CDA8)"
+    notes: "68B, cd=0, callee floor_bounds_set_9f. R06 entry: floor-bounds preset + DGROUP init, branch on ds:4AC1. conf: med"
+  - ida: r06_e56
+    name: r06_state_init_e56
+    kind: function
+    sig: "void far; near-call entity_flags_reset_1734; then zero/init the DGROUP block (4A8F/4AC8=0, 4A8B=-1, 4AC4/4AC5/4AC7=0, 4AB5=0xAAB, 4A91=0xA00, 4A93=0x500, 4A82... (116B)); 3 callers (sub_2C27F, sub_3A3D6, sub_6CDA8)"
+    notes: "116B, cd=1, callees floor_bounds_set_9f + entity_flags_reset_1734. R06 entry: full DGROUP state/flag init after the entity-flag reset. conf: med"
+  - ida: sub_170C4
+    name: sbi_config_081b_opl
+    kind: function
+    sig: "void far; push (seg006, 0x81B) -> state_pair_777e6_set, push (seg006, 0x819) -> 77730/77734 pairs; then near-call opl_addr_data_init_60_80 (53B); 2 callers (sub_168E0, sub_3A88D)"
+    notes: "53B, cd=0, callees opl_addr_data_init_60_80 + state_pair_777e6_set + state_pair_77730_set + state_pair_77734_set. SBI config triple (base seg006:081B/0819) + OPL register-space init. conf: high"
+  - ida: sub_36FAC
+    name: sprite_in_view_test
+    kind: function
+    sig: "NEAR retn fn; AX=[SI]>>4 (4x sar) tested against the ds:6E8..6EC x-bounds, [SI+2] y-path continues (61B); 5 callers (sub_36785, sub_36E3A, sub_45976, sub_45F2C, sub_46D42)"
+    notes: "61B retn, cd=0, callee point_in_rect_6e8. Sprite position in-view test: [SI] >>4 vs the ds:6E8..6EE rect then the near rect test. conf: med"
+  - ida: sub_35DF1
+    name: sprite_pos_gate_499e
+    kind: function
+    sig: "NEAR retn fn; gate ds:499E==0 -> tail-jmp sprite_pos_bounce_dispatch; else near-call sprite_pos_default_a032; gates ds:105B, ds:4A84 then compute with ds:6F8/6FA deltas (48B); 2 callers (sub_35BCE, sub_3606C)"
+    notes: "48B retn, cd=0, callees sprite_pos_default_a032 + sprite_pos_bounce_dispatch. Sprite position gate: default vs bounce dispatch on ds:499E + further flag gates. conf: med"
+  - ida: sub_1C4AA
+    name: stream_check_accum
+    kind: function
+    sig: "void far (C frame): compare es:7772:77B74/77B72 (cursor) vs args; match -> skip; else body with critical_section_wrap + long_accumulate + fixed_repeat_sub_count (138B); 2 callers (sub_1C33D, sub_1CC2D)"
+    notes: "138B C-class, cd=0, callees critical_section_wrap + long_accumulate + fixed_repeat_sub_count. Stream cursor check then guarded accumulate. conf: med"
+  - ida: sub_39B67
+    name: stream_reset_gate_4a83
+    kind: function
+    sig: "NEAR retn fn; AX=0; gate ds:4A83<=1: ds:4AC4=0, retn; else body stream_accumulate_loop + entity_flags_reset_1734 + sub_2C121 (89B); 2 callers (sub_187E94, sub_33443)"
+    notes: "89B retn, cd=0, callees stream_accumulate_loop + sub_2C121 + entity_flags_reset_1734. Stream/flags reset gated on ds:4A83<=1. conf: med"
+  - ida: sub_1490C
+    name: terrain_attr_scan_4
+    kind: function
+    sig: "NEAR retn fn; DI=0, BL=BH=4 (4x4 window): near-call terrain_attr_default_60; if BL <= 0x5F ok else (stc fail path) (74B); 4 callers (sub_1469A, sub_14737, sub_147D4, sub_14870)"
+    notes: "74B retn, cd=0, callee terrain_attr_default_60. Terrain attribute scan with a 4x4 window and the 0x5F validity check (CF=1 invalid). conf: med"
+  - ida: sub_144AC
+    name: terrain_attr_store_11c8e
+    kind: function
+    sig: "NEAR retn fn; BL=BH=8: near-call terrain_attr_default_60; [DI]=BL, DI++; if BL > 0x5F: cs:11C8E++ (out-of-range counter) (146B); 2 callers (sub_143D7, sub_36785)"
+    notes: "146B retn, cd=0, callee terrain_attr_default_60. Terrain attr store with the 0x5F out-of-range counter cs:11C8E (8x8 window form). conf: med"
+  - ida: sub_145CF
+    name: terrain_attr_store_11c8e_b
+    kind: function
+    sig: "NEAR retn fn; same 8x8 store + 11C8E++ pattern (143B); 2 callers (sub_143D7, sub_355E6)"
+    notes: "143B retn, cd=0, callee terrain_attr_default_60. Terrain attr store twin B (near-twin of terrain_attr_store_11c8e). conf: med"
+  - ida: sub_1441C
+    name: terrain_attr_store_11c8e_c
+    kind: function
+    sig: "NEAR retn fn; same 8x8 store + 11C8E++ pattern (144B); 1 caller (sub_143D7)"
+    notes: "144B retn, cd=0, callee terrain_attr_default_60. Terrain attr store twin C. conf: med"
+  - ida: sub_1453E
+    name: terrain_attr_store_11c8e_d
+    kind: function
+    sig: "NEAR retn fn; same 8x8 store + 11C8E++ pattern (145B); 1 caller (sub_143D7)"
+    notes: "145B retn, cd=0, callee terrain_attr_default_60. Terrain attr store twin D. conf: med"
+  - ida: sub_15A03
+    name: terrain_pos_delta_11cfc
+    kind: function
+    sig: "NEAR retn fn; near-call terrain_attr_unpack_11c2c -> BX:AX coords; DX:AX = cs:11CF8/11CFA - BX (floor 0) -> cs:11CFC/11CFE; body with stub_to_24a94 (250B); 26 callers (widest L2 fan-in)"
+    notes: "250B retn, cd=0, callees terrain_attr_unpack_11c2c + stub_to_24a94. Position delta against the cs:11CF8 anchor, stored to cs:11CFC/CFE (the terrain-walk worker). conf: med"
+  - ida: sub_123E9
+    name: tile_base_search_11caa
+    kind: function
+    sig: "NEAR retn fn; save cs:11CAC/11CAA (ds/si); remap BX:AX (0xFF neg -> +0x100); near-call tile_base_set_11c26 + tile_record_search_bl (44B); 1 caller (sub_3A88D)"
+    notes: "44B retn, cd=0, callees tile_base_set_11c26 + tile_record_search_bl. Tile base set with the 0xFF/0x100 index remap then record search. conf: med"
+  - ida: sub_236C8
+    name: view_basis_build_3850
+    kind: function
+    sig: "NEAR retn fn; SI=0x3820, DI=0x3850, BX=0x3838: 2x near-call fixed_vec3_transform_es (rows, +6 step); then 0x2000 imul scale + vec_ratio_norm_a/b + ratio_blend_sign_norm paths (203B); 2 callers (view_matrix_build, sub_236B8)"
+    notes: "203B retn, cd=0, callees vec_ratio_norm_a + vec_ratio_norm_b + ratio_blend_sign_norm + fixed_vec3_transform_es. Builds the view basis: transforms the 3820 matrix into 3850 with 0x2000 scaling + ratio norms. Called BY view_matrix_build. conf: high"
+  - ida: sub_28503
+    name: view_proj_setup_1f73d
+    kind: function
+    sig: "NEAR retn fn; stage [DI+0x12..0x16] -> 7B0E:7E92A..2E; near-call proj_scale_setup_22d20; gate cs:1F73D; body: view_proj_rotation_identity + fixed_vec3_transform_es + fixed_expand_0f3e (155B); 4 callers (sub_26B2E, sub_27A20, sub_286CE, sub_28774)"
+    notes: "155B retn, cd=0, callees view_proj_rotation_identity + fixed_vec3_transform_es + proj_scale_setup_22d20 + fixed_expand_0f3e. View-projection setup: stage fields + scale setup + rotation/transform, gated on cs:1F73D. conf: med"
+
+  - ida: sub_2C987
+    name: bcd_hex_byte_ah
+    kind: function
+    sig: "void far; AL = AH, near-call bcd_hex_hi_nibble (writes the byte's hex digits), restore AL (7B DATA-head); 1 caller (sub_2C975)"
+    notes: "7B, cd=0, callee bcd_hex_hi_nibble. Converts the AH byte of a word to its ASCII hex digits (the AH half of the word-to-hex pair). conf: high"
+  - ida: sub_17773
+    name: channel_mode3_store
+    kind: function
+    sig: "void far; store 3 frame args -> ds:0AF93, ds:0AF91, ds:0AF94; near-call channel_mode_reg_write + channel_reg_write_8; retf (33B); 1 caller (sub_17643)"
+    notes: "33B, callees channel_reg_write_8 + channel_mode_reg_write. Stores the three channel mode bytes (AF91/AF93/AF94) then writes mode + register 8. conf: high"
+  - ida: sub_17B8B
+    name: channel_reg_program
+    kind: function
+    sig: "void far; SI=arg: near-call channel_mode_reg_write, channel_reg_write_8, channel_reg_write_table, channel_reg_write_field, ... the FULL ordered register program (62B, 8 callees); 1 caller (dgroup_record_writer)"
+    notes: "62B, cd=0, 8 callees: channel_reg_write_table + channel_reg_write_8 + channel_reg_write_field + channel_reg_write_shift4 + channel_reg_write_field_b + adlib_operator_write + channel_mode_reg_write + channel_reg_write_ae76. THE complete channel register program: runs the whole write family in sequence for one record (composition over channel_reg_dispatch). conf: high"
+  - ida: sub_47A8D
+    name: entity_table_gate_47a8d
+    kind: function
+    sig: "void far; DS=63FDh, BX=0x0C5E, CX=0x30; tail-jmp state_gate_451_dispatch (14B); 1 caller (sub_2FD42)"
+    notes: "14B, cd=0, callee state_gate_451_dispatch. Tail-entry into the state gate carrying the 63FD:0C5E table params (CX=0x30 count). conf: high"
+  - ida: sub_1D400
+    name: event_tone_dispatch_1d418
+    kind: function
+    sig: "NEAR retn fn; BX = es:7772:77A4A - 1 (clamp <= 9), near-ptr jump-table cs:jpt_1D418 (10 cases) selecting tone/state-flag paths: pcspk_tone_start_79824 + state_flags_clear (326B); 1 caller (sub_16CA7)"
+    notes: "326B retn, cd=0, callees pcspk_tone_start_79824 + state_flags_clear. Event-code dispatcher: 10-case jump-table from es:77A4A routing to speaker-tone and state-flag handlers. conf: med"
+  - ida: sub_266AB
+    name: farobj_delta_swap_266ab
+    kind: function
+    sig: "NEAR retn fn; CX=DX=0; xchg AX=[DI+1A] with es:[SI+12] (swap with delta tracking + abs fix); body farobj_field4_from_di12 (148B); 1 caller (sub_2676D)"
+    notes: "148B retn, cd=0, callee farobj_field4_from_di12. Farobj delta swap: exchanges [DI+1A] against es:[SI+12] with signed-delta accounting, then the field-4 fetch. conf: med"
+  - ida: sub_34193
+    name: farobj_scan_74_clear_b
+    kind: function
+    sig: "void far; same 0x1734 walk: gate es:[DI+74].0, AX=[DI+7A] near-call farptr_table_get, AND [DI+24] &= 0x7FFF (clear age-flag) (45B); 1 caller (sub_2FD42)"
+    notes: "45B, cd=0, callees farptr_table_get. Farobj table scan B: fetch + clear the [DI+24].15 flag (age reset). conf: med"
+  - ida: sub_3415F
+    name: farobj_scan_74_gate_a
+    kind: function
+    sig: "void far; DS=54AFh; walk table 0x1734 (0x10 entries): gate es:[DI+74].0 + [DI+24]>=0x3C, AX=[DI+7A] near-call farptr_table_get... (52B); 1 caller (sub_2FD42)"
+    notes: "52B, cd=0, callees adlib_detect_init-overlapping + farptr_table_get. Farobj table scan A: gate on [DI+74].0 with the [DI+24]>=60 age check, fetch via [DI+7A]. conf: med"
+  - ida: sub_341C0
+    name: farobj_scan_74_timer_c
+    kind: function
+    sig: "void far; same walk: gate [DI+74].0 + [DI+0D1]!=0, AX=[DI+1E] timer path... (92B); 1 caller (sub_2FD42)"
+    notes: "92B, cd=0, callees farptr_table_get. Farobj table scan C: gate on the [DI+0D1] timer with [DI+1E] read. conf: med"
+  - ida: sub_28ED8
+    name: line_flag_dispatch_28ed8
+    kind: function
+    sig: "NEAR retn fn; edge bits cs:2796A: .3 -> line_flag_patch_291b1, .4 -> line_table_scan_slope, further -> line_flag_patch_28f37/29075 (95B); 1 caller (sub_28E50)"
+    notes: "95B retn, cd=0, 4 callees: line_flag_patch_28f37 + line_flag_patch_29075 + line_flag_patch_291b1 + line_table_scan_slope. Edge-bit dispatcher routing to the line_flag_patch family + slope scan (the dispatcher that the 3 patchers hang off). conf: high"
+  - ida: sub_2590C
+    name: mouse_record_clip_2590c
+    kind: function
+    sig: "NEAR retn fn; pushf, DS=7B0Eh; far-dispatch cs:2219C + cs:220BC -> store BX/DI to ds:7F0DA/7F0DC; gate cs:2548C path; near-call mouse_bounds_clamp_25474 + clip_rect_compute_guard (126B); 1 caller (sub_257E5)"
+    notes: "126B retn, cd=0, callees mouse_bounds_clamp_25474 + clip_rect_compute_guard. Mouse record: far-dispatch fetch, then clamp + clip-rect guard, storing coords to 7F0DA. conf: med"
+  - ida: sub_2CC47
+    name: overlay_loader_main
+    kind: function
+    sig: "NEAR retn fn; the RTLink overlay file loader: lodsb name walk + overlay_verify_copy + drive_path_build + dos_version_ge3_check + fname_open_3d00 + dos_handle_dup_path sequence (264B); 1 caller (sub_2AEA9)"
+    notes: "264B retn, cd=0, 5 callees: overlay_verify_copy + drive_path_build + dos_version_ge3_check + fname_open_3d00 + dos_handle_dup_path. THE overlay loader: verifies the copy, builds the path, checks DOS>=3, opens the file, dups handles. conf: high"
+  - ida: sub_6DE83
+    name: r06_trig_accum_6de83
+    kind: function
+    sig: "NEAR retn fn; SI=ds:706, CX=[SI+0E], AX=-[SI+10], BX=0x49B4: near-call stub_to_249d8; neg CX, imul 0x3FC scale chain (164B); 1 caller (sub_3A3D6)"
+    notes: "164B retn, cd=0, callee stub_to_249d8. R06-region trig/scale accumulate: table lookup at 0x49B4 with 0x3FC scaling on the [SI+0E/10] fields. conf: med"
+  - ida: sub_21A48
+    name: record_queue_swap_drain
+    kind: function
+    sig: "NEAR retn fn; swap the ds:0F68/0F6A cursors, local call pass A, jcxz done; swap again, pass B... -> record_op_dispatch_220b0 + record_span_init_eba (114B); 1 caller (sub_21A13)"
+    notes: "114B retn, cd=0, callees record_op_dispatch_220b0 + record_span_init_eba. Double-swap cursor drain of the record queue: two passes alternating the 0F68/0F6A cursors with full op dispatch. conf: med"
+  - ida: sub_47686
+    name: sprite_delta_project_47686
+    kind: function
+    sig: "NEAR retn fn; DX:AX = es:[BX] - [SI] -> ds:4816/4818 (abs-tracked delta), BP/CX = delta with sign fix; body sprite_project_gate_c5 path (257B); 1 caller (sub_36437)"
+    notes: "257B retn, cd=0, callee sprite_project_gate_c5. Sprite delta: es:[BX]-[SI] with abs tracking into ds:4816/4818 then the C5-gated projection. conf: med"
+  - ida: sub_2B1E5
+    name: startup_arena_init
+    kind: function
+    sig: "void far; pushf: ES=cs:2B4B6, near-call mcb_save_2c9be, far_entry_register(1, 0x9F4), near-call arena_off_ax18 on ds:0C19 -> ds:0A90, arena for ds:0C1B... (113B); 1 caller (start -- the program entry)"
+    notes: "113B, cd=0, callees arena_off_ax18 + stc_retf_const + mcb_save_2c9be + far_entry_register. CRT STARTUP arena initialization: saves the MCB, registers far-entry 0x9F4, computes arena offsets -- runs from `start`. conf: high"
+  - ida: sub_1C12F
+    name: stream_accumulate_driver
+    kind: function
+    sig: "void far (C frame 8): far-ptr cursor at es:7772:045E; SI loop: push args (+4 stride) -> near-call stream_accumulate_loop (87B); 1 caller (sub_1C21B)"
+    notes: "87B C-class, cd=0, callee stream_accumulate_loop. Loop driver around the stream accumulator using the 7772:45E cursor. conf: med"
+  - ida: sub_1CE08
+    name: stream_sbi_flush
+    kind: function
+    sig: "void far (C frame 8): near-call stream_long_accumulate -> DX:AX saved; gate es:7894:7981E != 0; body sbi_data_write + sbi_command_wait flush (155B); 1 caller (sub_1D068)"
+    notes: "155B C-class, cd=0, callees sbi_data_write + sbi_command_wait + stream_long_accumulate. Accumulates the stream then flushes via SBI when the es:7981E flag is set. conf: med"
+  - ida: sub_33F38
+    name: view_limits_apply_33f38
+    kind: function
+    sig: "NEAR retn fn; walk the cs:2E12F/2E131/2E14F record chain (BX=0x44 stride, AL=0x0D): near-call view_limits_wrap per record (551B); 1 caller (sub_31CA1)"
+    notes: "551B retn, cd=0, callees view_limits_wrap + game_state_setup_multi-overlapping ref. Applies view limits over the 2E12F record chain with the 0x44-stride wrap. conf: med"
+  - ida: sub_28496
+    name: view_proj_setup_1f73d_rot
+    kind: function
+    sig: "NEAR retn fn; stage [DI+0x12..0x16] -> 7B0E:7E92A..2E; near-call proj_scale_setup_22d20; gate cs:1F73D; body: view_proj_rotation_build (non-identity!) + fixed_vec3_transform_es + fixed_expand_0f3e (109B); 1 caller (sub_28147)"
+    notes: "109B retn, cd=0, callees view_proj_rotation_build + fixed_vec3_transform_es + proj_scale_setup_22d20 + fixed_expand_0f3e. View-projection setup, ROTATION variant (vs view_proj_setup_1f73d's identity form). conf: med"
+  - ida: sub_1F769
+    name: view_scroll_rotate_apply
+    kind: function
+    sig: "NEAR retn fn; far-ptr cs:22DBA:22DBC; AX:DX = [SI+8/0A] <<3 (scroll scale); body: view_scroll_clamp_1f702 + view_rotation_build + fixed_vec3_transform_es + farobj_field4_get_stc (111B); 1 caller (sub_20726)"
+    notes: "111B retn, cd=0, callees view_scroll_clamp_1f702 + farobj_field4_get_stc + view_rotation_build + fixed_vec3_transform_es. Applies the scroll-scaled view rotation: <<3 scale + clamp + rotation + transform chain. conf: med"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table

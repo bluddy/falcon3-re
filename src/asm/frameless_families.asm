@@ -20,11 +20,11 @@ FAR-ENTRY THUNKS (classification: 'far stub: call next-near-func; retf')
     0205BF  e80100         call     0x205c3
     0205C2  cb             retf     
 
-; sub_23793  ea=023793  size=4
+; vec_ratio_norm_a_far_thunk  ea=023793  size=4
     023793  e80100         call     0x23797
     023796  cb             retf     
 
-; sub_237C9  ea=0237C9  size=4
+; vec_ratio_norm_b_far_thunk  ea=0237C9  size=4
     0237C9  e80100         call     0x237cd
     0237CC  cb             retf     
 

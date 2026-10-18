@@ -383,3 +383,17 @@
 - **Follow-ups carried:** class-c / undecodable overlay spans (r14/r17/
   r30 entry partials conf:low); 92 low-conf DATA fns; 24 trap-only
   thunks; 397 global orphans stay excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 2 COMPLETE (finding 73):** 3 batches named all 93 L2
+  fns, `named` **964 -> 1,057 (4 digits)**, **L2 queue 93 -> 0** (9
+  orphans + 3 thunks, 0 other). Structural parents resolved:
+  channel_reg_dispatch / avg_pair_dispatch_149d2 / line_flag_dispatch_28ed8
+  + channel_reg_program; system routines overlay_loader_main +
+  startup_arena_init. All 4 gates green (check 1059, verify_rebuild
+  faithful, verify_idb INTACT, read-back 1057/1057+2/2).
+- **Next: Global Level-3 naming** (queue 574 across Levels 3..22). Same
+  cadence; callees now 100% named 3 levels deep. Long tail ahead: most
+  remaining nodes are dyn0/in=1 static-only leaves + in=2-4 bands.
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

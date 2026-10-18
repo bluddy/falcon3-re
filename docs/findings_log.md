@@ -4085,4 +4085,51 @@ problems)** . `name_readback` **964/964 function + 2/2 global**.
 
 ---
 
+## 2026-10-18 73 — Global Level-2 COMPLETE: 3 batches named all 93
+Level-2 functions (`named` 964 -> 1057, **4 digits**), L2 queue 93 -> 0
+
+Finding 72 finished Level 1; **92/93** L2 queue entries started with 100%
+named callees (the one exception calls an L2 SCC peer, resolved within the
+batch). Same cadence as Level 1 (`dump_level1.py` with
+`FALCON_L1_TARGETS`/`TAG`), 3 batches: **36 + 36 + 21 = 93**.
+
+### Cadence
+
+| batch | named after | L2 queue after | highlights |
+|---|---|---|---|
+| l2a | 1,000 🎉 | 57 | **`channel_reg_dispatch`** (the 0x12-case parent jump-table of the whole channel_reg_write family), `flag_table_pop_far_thunk` (**dyn=542,872 -- hottest callee in the graph**), `farobj_tile_copy_resolve` (in=35 widest, dyn=396,820), `flag_block_build_far_thunk` (160,669), `line_table_build_dispatch`, `angle_delta_quadrant` (cd=116,805) |
+| l2b | 1,036 | 21 | `avg_pair_dispatch_149d2` (parent jump-table of the 4 avg variants), `terrain_pos_delta_11cfc` (in=26 widest L2), `view_basis_build_3850` (called by `view_matrix_build`), `sbi_config_081b_opl`, `farptr_table_field22_store`, 4 terrain-attr store twins |
+| l2c | **1,057** | **0** | finale: **`overlay_loader_main`** (the RTLink overlay file loader: verify + path + DOS>=3 + open + handle-dup), **`startup_arena_init`** (CRT startup -- called FROM `start`: MCB save + far_entry_register 0x9F4 + arena offsets), `channel_reg_program` (the full ordered 8-callee register program, caller `dgroup_record_writer`), `line_flag_dispatch_28ed8` (dispatcher of the 3 line_flag_patchers), `event_tone_dispatch_1d418` |
+
+### MILESTONE: Level-2 naming_queue = 0 · `named` in four digits
+
+| metric | f72 | f73 |
+|---|---|---|
+| named (fb join) | 964 | **1,057 (+93)** |
+| naming_queue (global) | 667 | **574** |
+| **Level-2 queue** | **93** | **0** |
+
+L2 residue = **9 orphans + 3 thunk slots, 0 other**. Global queue 574
+remains (Levels 3..22). **`named` crossed 1,000 during batch l2a.**
+
+### Structural parents now named (children all named earlier)
+
+The bottom-up completion surfaced three dispatcher parents whose children
+were named in previous levels:
+* **`channel_reg_dispatch`** -> 8 `channel_reg_write_*` + `adlib_operator_write`
+  + `channel_mode_reg_write` (f71/f72) -- and its composition
+  **`channel_reg_program`** (caller: `dgroup_record_writer`).
+* **`avg_pair_dispatch_149d2`** -> the 3 `avg_pair_*` + `state_byte_11c61_get_ah`
+  (f71).
+* **`line_flag_dispatch_28ed8`** -> `line_flag_patch_28f37/29075/291b1` +
+  `line_table_scan_slope` (f71/f72).
+
+### Gates (all green)
+
+`naming.py check` **1,059** . `verify_rebuild` **faithful (2,237 == 2,237,
+LOST 0, CHANGED 0)** . `verify_idb` **INTACT (0 span / 0 name / 0 data-hole
+problems)** . `name_readback` **1,057/1057 function + 2/2 global**.
+
+---
+
 (append new findings below)
