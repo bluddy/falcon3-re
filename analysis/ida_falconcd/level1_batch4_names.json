@@ -1,0 +1,218 @@
+{
+ "sub_1846A": [
+  "state_block_77720_commit_12",
+  "void far; push fixed args (0,0,0,0,0,0,0x12,1) -> near-call state_block_77720_store8; add sp,0x10 (29B); 1 caller (sub_1914E)",
+  "29B, callee state_block_77720_store8. Commits the fixed state block with count 0x12, slot 1 (near-twin of state_block_77720_commit). conf: high",
+  "high"
+ ],
+ "sub_18487": [
+  "state_block_77720_slot_select",
+  "void far; AX=[bp+arg0]: if 7 or 0x0B -> selected payload (0x6A...) else alt; body near-calls state_block_77720_store8 (76B); 1 caller (sub_1914E)",
+  "76B, callee state_block_77720_store8. Slot-select commit: routes args 7/0x0B vs default into the 8-word state store. conf: med",
+  "med"
+ ],
+ "sub_18510": [
+  "state_block_77720_commit_19",
+  "void far; push fixed args (0,0,0,0,0,[bp+arg0],0x19,1) -> near-call state_block_77720_store8 (30B); 1 caller (sub_1914E)",
+  "30B, callee state_block_77720_store8. Commits the state block with count 0x19, variable slot from the frame. conf: high",
+  "high"
+ ],
+ "sub_1F197": [
+  "sbi_event_advance_1174",
+  "void far (C frame): SI/DI from args; es:7772:[SI*2+0x1174] + DI -> working var, then (452B) sbi_data_write + sbi_command_wait sequence; 1 caller (sub_3001E)",
+  "452B C-class, callees sbi_data_write + sbi_command_wait. SBI event advance: base at es:7772:1174 indexed by SI, offset DI. conf: med",
+  "med"
+ ],
+ "sub_1FADA": [
+  "farobj_flag24_select",
+  "NEAR retn fn; AX=[DI+0x24]&0xE00: if 0 -> tail-jmp active_farptr_match_b2; else decode bits (AH>>1 &7 -> cs:[di+9F] table) and select (61B); 1 caller (sub_2142E)",
+  "61B retn, callee active_farptr_match_b2. Farobj flag-field selector: [DI+0x24] bits 9-11 pick a cs:9F table entry; zero falls to the farptr match. conf: med",
+  "med"
+ ],
+ "sub_1FCD0": [
+  "rect_edge_dispatch_a",
+  "NEAR retn fn; gate cs:1F734!=0 && cs:1F736!=0 else retn; lodsw BX, lodsw DI, push SI, near-call rect_edge_skip_dispatch (save CX variant); 1 caller (sub_29917)",
+  "32B retn, callee rect_edge_skip_dispatch. Record-edge dispatch form A (pushes CX around the dispatch). conf: high",
+  "high"
+ ],
+ "sub_1FCF0": [
+  "rect_edge_dispatch_b",
+  "NEAR retn fn; same 1F734/1F736 gates; lodsw BX,DI, near-call rect_edge_skip_dispatch, then lodsw continues (record stream); 1 caller (sub_28E50)",
+  "37B retn, callee rect_edge_skip_dispatch. Record-edge dispatch form B (continues the record stream after the call). conf: high",
+  "high"
+ ],
+ "sub_1FE76": [
+  "orient_classify_fallback",
+  "NEAR retn fn; near-call sign_classify_bp; if BP!=0 -> retf; near-call quat_orient_flags_911; if BP!=0 -> retf; clc (CF=0 = neither); 1 caller (record_xform_apply)",
+  "28B retn, callees sign_classify_bp + quat_orient_flags_911. Two-stage orientation classifier: sign test then full flag test; CF=0 when both clear. conf: high",
+  "high"
+ ],
+ "sub_205C9": [
+  "dispatch_22084_args_frame",
+  "void far; loads CX,AX,BX,DI,BP from [bp+arg0..8] (5-arg frame), near-call dispatch_22084_near; retf; 1 caller (r17_e07)",
+  "27B, callee dispatch_22084_near. Loads a 5-word argument frame from the stack then far-dispatches via cs:22084. conf: high",
+  "high"
+ ],
+ "sub_20666": [
+  "trig_scroll_project_3452",
+  "NEAR retn fn; trig_table_lookup into slot 0x3452 (AX=BX); scale by cs:1F702 scroll (imul + saturating shl1) and further trig math (177B); 1 caller (sub_20726)",
+  "177B retn, callee trig_table_lookup. Scroll-scaled trig projection using the 0x3452 table slot + cs:1F702 scale. conf: med",
+  "med"
+ ],
+ "sub_216F3": [
+  "param6_append_cursor_a",
+  "NEAR retn fn; DS=SS; AX++; DI=es:0F66 cursor; es:[DI]=AX, stride BX=DI+AX*4; copy [SI+2] fields... then near-call param6_append_0f66 (97B); 1 caller (sub_29917)",
+  "97B retn, callee param6_append_0f66. Parameter append form A: cursor store with AX-derived stride at es:0F66. conf: med",
+  "med"
+ ],
+ "sub_21754": [
+  "param6_append_avg_b",
+  "NEAR retn fn; DS=SS; DI=es:0F66; store AX*2 + fields [SI+2..8] averaged (sar 1) into the cursor record; (141B); 1 caller (sub_29917)",
+  "141B retn, callee param6_append_0f66. Parameter append form B: stores half-scale averaged fields. conf: med",
+  "med"
+ ],
+ "sub_217E1": [
+  "param6_append_3w_c",
+  "NEAR retn fn; DS=SS; DI=es:0F66; store AX*2 + [SI+2..6] (3 words), cursor += 6; (125B); 1 caller (sub_29917)",
+  "125B retn, callee param6_append_0f66. Parameter append form C: 3-word record, +6 cursor. conf: med",
+  "med"
+ ],
+ "sub_2185E": [
+  "param6_append_scale_d",
+  "NEAR retn fn; DS=SS; DI=es:0F66; store AX*4 + [SI+2..6], cursor += 6, further scaled fields; (213B); 1 caller (sub_29917)",
+  "213B retn, callee param6_append_0f66. Parameter append form D: AX*4-scaled header + 3 words. conf: med",
+  "med"
+ ],
+ "sub_22A79": [
+  "vector_shutdown_restore",
+  "void far; ES=0, cli: IVT[0]=cs:22218/2221A (restore INT0), near-call int9_vector_unhook, pit_divisor_set_bx(0), int8_vector_restore_2221c, sti; (38B); 1 caller (sub_229C0)",
+  "38B, callees int9_vector_unhook + pit_divisor_set_bx + int8_vector_restore_2221c. Full interrupt shutdown: restores INT 0/8/9 vectors and stops the PIT (inverse of the hook trio). conf: high",
+  "high"
+ ],
+ "sub_22B3A": [
+  "joystick_gate_counter",
+  "void far (partial head): cs:22230 compare + flag_bits_test_5740 (AL=0x1A) gate, cs:2223A counter with cs:22230 bound, joystick_poll path (238B); 1 caller (sub_29917)",
+  "238B span, callees joystick_poll + flag_bits_test_5740. Joystick gate: flag-0x1A test + rate counter cs:2223A bounded by cs:22230. conf: low",
+  "low"
+ ],
+ "sub_233D6": [
+  "view_proj_ring_shift",
+  "NEAR retn fn; near-call flag_byte_get -> CL; DX:AX=BX << CX (barrel shift); DI=0x3E80...; 1 caller (view_proj_ring_push)",
+  "39B retn, callee flag_byte_get. View-projection ring shift: rotates BX left by the flag byte count into the 0x3E80 buffer path. conf: med",
+  "med"
+ ],
+ "sub_24EF3": [
+  "flag_24e20_gate_far_thunk",
+  "void far; near-call flag_24e20_gate_stc; retf (4B NEARTHUNK); 1 caller (sub_4E520)",
+  "4B NEARTHUNK, callee flag_24e20_gate_stc. Far-returning thunk exposing the 24E20 flag gate (pair of the near gate). conf: high",
+  "high"
+ ],
+ "sub_2650C": [
+  "sprite_stride_dispatch_1f718",
+  "void far (partial head): lodsw >>2 + cs:1F718 base -> BX stride math, lodsw fields... near-call dispatch_220a4_near (135B); 1 caller (sub_2676D)",
+  "135B span, callee dispatch_220a4_near. Sprite stride dispatch: table stride from cs:1F718 then far-dispatch via cs:220A4. conf: low",
+  "low"
+ ],
+ "sub_27E37": [
+  "anim_record_clip_step5",
+  "NEAR retn fn; if [SI+4]==1: skip; BX=[SI], DI=[SI+2]; near-call rect_clip_then_dispatch_2209c; SI+=5 (record stride); 1 caller (sub_27A20)",
+  "28B retn, callee rect_clip_then_dispatch_2209c. Clips+dispatches a 5-byte record unless the [SI+4] flag selects the skip path. conf: high",
+  "high"
+ ],
+ "sub_27E53": [
+  "anim_frame_step_clip",
+  "NEAR retn fn; gate cs:2797A.4 else jmp 279BF; near-call anim_frame_addr_27984 + rect_clip_then_dispatch_2209c + anim_frame_tick_27989 (43B); 1 caller (sub_27A20)",
+  "43B retn, callees rect_clip_then_dispatch_2209c + anim_frame_tick_27989 + anim_frame_addr_27984. The animation frame-step: resolve frame addr, clip-dispatch it, tick the counter. conf: high",
+  "high"
+ ],
+ "sub_28F37": [
+  "line_flag_patch_28f37",
+  "NEAR retn fn; walk cs:2796E (0x10 stride) patching ds:43BA/43BC flag words + fixed_scale_clamp_or40 (318B); 1 caller (sub_28ED8)",
+  "318B retn, callee fixed_scale_clamp_or40. Line flag-word patcher form A (from the sub_28ED8 walker family). conf: med",
+  "med"
+ ],
+ "sub_29075": [
+  "line_flag_patch_29075",
+  "NEAR retn fn; same 2796E walk patching ds:43BA/43BC + clamp (316B); 1 caller (sub_28ED8)",
+  "316B retn, callee fixed_scale_clamp_or40. Line flag-word patcher form B (near-twin of form A). conf: med",
+  "med"
+ ],
+ "sub_291B1": [
+  "line_flag_patch_291b1",
+  "NEAR retn fn; same walk + slope_flag_test_bc + fixed_scale_clamp_or40 (323B); 1 caller (sub_28ED8)",
+  "323B retn, callees slope_flag_test_bc + fixed_scale_clamp_or40. Line flag-word patcher form C (with slope test). conf: med",
+  "med"
+ ],
+ "sub_29435": [
+  "line_table_scan_dispatch",
+  "NEAR retn fn; gate cs:2796A.5 -> near-call line_table_scan_20 (CX/27968 guards); gate .6 -> near-call line_table_scan_40 (same guards); (51B); 1 caller (sub_28E50)",
+  "51B retn, callees line_table_scan_20 + line_table_scan_40. The dispatcher half pairing the two line-table scanners on edge bits 5/6. conf: high",
+  "high"
+ ],
+ "sub_295DA": [
+  "line_draw_prepare_441e",
+  "NEAR retn fn; cs:27968=-1, cs:2796A=0; 43BE=cs:2796E; gate cs:27966.0; DI=43BE, BP=0x441E: lodsw+add table walk into the 441E buffer (436B); 1 caller (sub_28E50)",
+  "436B retn, callee fixed_scale_clamp_or40. Prepares the 0x441E draw buffer from the cs:2796E line list (gated on cs:27966.0). conf: med",
+  "med"
+ ],
+ "sub_2A0B5": [
+  "line_table_entry_clone_slope",
+  "NEAR retn fn; entry clone at cs:2796E + CX*0x10 (movsw x4, 43BE=27970) + slope_flag_test_bc + clamp (403B); 1 caller (sub_29B82)",
+  "403B retn, callees slope_flag_test_bc + fixed_scale_clamp_or40. Line-table entry clone with the slope test (near-twin of line_table_entry_clone). conf: med",
+  "med"
+ ],
+ "sub_2A30E": [
+  "uibounds_top_bottom_dispatch",
+  "void far; gate cs:2796A.7 -> near-call uibounds_set_top_80 (CX>=3 + 27968 guards); gate .8 (0x100) -> near-call uibounds_set_bottom_100; tails into uibounds_left_right_dispatch (50B DATA-head); 1 caller (sub_2A248)",
+  "50B, callees uibounds_set_top_80 + uibounds_set_bottom_100. Top/bottom UI-bound dispatcher (the vertical pair of uibounds_left_right_dispatch). conf: high",
+  "high"
+ ],
+ "sub_2ABE2": [
+  "farobj_flag7_branch",
+  "NEAR retn fn; gate [SI+7].4; ds:0A84 + [SI+7].2/3 flag tests with es: push paths... (106B, body continues); 1 caller (sub_2AC4C)",
+  "106B retn, callee stc_retf_const. Farobj [SI+7] multi-flag branch with the stc-const fallback path. conf: med",
+  "med"
+ ],
+ "sub_2B088": [
+  "patch_table_scan_c1f",
+  "void far; DS=ES=CS, DI=0, SI=0x0C1F, CX=word_2B649 (entry count): per-entry table walk calling patch_scan_e8_58d (55B); 1 caller (sub_2B256)",
+  "55B, callee patch_scan_e8_58d. Drives the relocation patch scan over the 0x0C1F table (count at cs:2B649). conf: med",
+  "med"
+ ],
+ "sub_2C98E": [
+  "bcd_hex_hi_nibble",
+  "void far; AL >>= 4 (high nibble), near-call bcd_hex_stosb (writes its hex digit), restore AL (13B DATA-head); 1 caller (sub_2C987)",
+  "13B, callee bcd_hex_stosb. Converts the HIGH nibble of AL to its ASCII hex digit (the pair half of bcd_hex_stosb's low-nibble path). conf: high",
+  "high"
+ ],
+ "sub_2CDF6": [
+  "fname_open_3d00",
+  "NEAR retn fn; near-call fname_ext_lower_copy (normalize the name); DS:[bp+0Ch], AL=[bp+0Eh], AH=0x3D int 21h (DOS open); retn (20B); 1 caller (sub_2CC47)",
+  "20B retn, callee fname_ext_lower_copy. Normalizes a filename then opens it (INT 21h AH=3Dh) with the frame drive/path. conf: high",
+  "high"
+ ],
+ "sub_2CE47": [
+  "dos_handle_dup_path",
+  "NEAR retn fn; AH=0x45 (dup handle) on BX=0 and BX=1, AH=0x46 force-dup BX=2/CX=0 ... drive_path_build + fname_ext_lower_copy sequence (216B); 1 caller (sub_2CC47)",
+  "216B retn, callees drive_path_build + fname_ext_lower_copy. DOS handle duplication (INT 21h AH=45/46h) + path/fname setup for the overlay file sequence. conf: med",
+  "med"
+ ],
+ "sub_2E637": [
+  "entity_accum_find_4ed",
+  "NEAR retn fn; scan the 0x27-entry 0x0E-stride table at ds:4ED for the first [DI]!=0; found -> near-call fixed_vec3_accumulate_b (74B); 1 caller (sub_2E37B)",
+  "74B retn, callee fixed_vec3_accumulate_b. Finds the first active entity in the ds:4ED table then runs the vec3 accumulator on it. conf: med",
+  "med"
+ ],
+ "sub_2EFC3": [
+  "farptr_7075_copy_30",
+  "void far; near-call farptr_7075_cond_82_a9 -> DX:AX; DS=DX, SI=AX; ES=CS, DI=0x30, CX=6, movsw (copies 12B into cs:0030); retf (29B); 1 caller (sub_2EB65)",
+  "29B, callee farptr_7075_cond_82_a9. Copies 6 words from the conditional 7075 far-pointer into the cs:0030 scratch. conf: high",
+  "high"
+ ],
+ "sub_35D59": [
+  "sprite_pos_default_a032",
+  "NEAR retn fn; if ds:78A==0x7FFF (sentinel): ds:7AE=0xA0, ds:7B0=0x32, retn (else falls into body); 1 caller (sub_35DF1)",
+  "71B retn, callee rect_bounds_test_6e. Default sprite position: sets ds:7AE/7B0 = 0xA0/0x32 when the ds:78A sentinel is set. conf: high",
+  "high"
+ ]
+}

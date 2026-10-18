@@ -370,3 +370,16 @@
   low-conf DATA fns; 24 trap-only thunk far-targets; 688 -> 0 verified
   but 168-Level0-orphan + global 397 orphans stay excluded from
   bottom-up naming.
+
+- **GLOBAL LEVEL 1 COMPLETE (finding 72):** 5 batches named all 149 L1
+  fns, `named` **815 -> 964**, **L1 queue 149 -> 0** (residue: 42
+  orphans + 12 thunks, 0 other). Callee-context naming validated (142/149
+  had 100% named callees at start). All 4 gates green (check 966,
+  verify_rebuild faithful, verify_idb INTACT, read-back 964/964+2/2).
+- **Next: Global Level-2 naming** (queue 667 across Levels 2..22). Same
+  cadence: dump_level1.py with FALCON_L1_TARGETS/TAG pointing at
+  level2_batchN_targets.json (extend sort to level==2), derive, append,
+  apply, push-ida, gates.  Level-2 callees are now 100% named (L0+L1).
+- **Follow-ups carried:** class-c / undecodable overlay spans (r14/r17/
+  r30 entry partials conf:low); 92 low-conf DATA fns; 24 trap-only
+  thunks; 397 global orphans stay excluded from bottom-up naming.

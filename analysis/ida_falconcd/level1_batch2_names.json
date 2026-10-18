@@ -1,0 +1,218 @@
+{
+ "r01_e04": [
+  "r01_file_create_3ch",
+  "void far; DS=ES=2CF6h, AH=0x3Ch (create file), CX=0, DX=6 int 21h; on error jmp 0x2D0C1; else body with far_cb_0/1 + int32_to_ascii_short + dispatch_2210c (316B); 1 caller (sub_2BFD7)",
+  "316B, caller_dyn=14, callees int32_to_ascii_short + dispatch_2210c_invoke_5arg + far_cb_0/1 + state_word_26400_get_zero. R01 overlay entry doing DOS file creation (INT 21h AH=3Ch) in seg 2CF6 + callback sequence. conf: med",
+  "med"
+ ],
+ "sub_1303A": [
+  "state_table_apply_71c1",
+  "void far; DS=71C1h, cs:11BEE=AX (index); AL=cs:[bx+0x65] -> state_byte_7e54e_set; bx=index*3+0x56, call state_word_2222a_get; then (155B) applies table state incl far_cb_9; 7 callers",
+  "155B, caller_dyn=8, callees state_byte_7e54e_set + state_byte_7e54d_set + state_word_2222a_get + far_cb_9. Applies an indexed state record from the 71C1 table (index in AX, cs:11BEE). conf: med",
+  "med"
+ ],
+ "sub_6B87A": [
+  "r06_vec3_main_proc",
+  "void far (C frame enter 0xC): near-call far_cb_1, call fixed_vec3_read; AX%0x22 index; far-ptr args 6DE8:03D9 + r06_state_proc_6de8 + sub_2BFC3 (2899B); 5 callers (r33_e105, r39_e81, sub_2C441/44B, sub_66E62)",
+  "2899B C-class, caller_dyn=6, callees fixed_vec3_read + far_cb_1 + sub_2BFC3 + r06_state_proc_6de8. R06 main vector-3 processing routine (largest L1 fn). conf: low",
+  "low"
+ ],
+ "sub_68121": [
+  "r30_counter_step_tail",
+  "void far; ES=AX gate es:[0]==3; es:709F:7A2B++ (counter); far-call r30_shared_tail_es with the counter; continues (56B); 2 callers (r32_e83, sub_2C3E7)",
+  "56B DATA-class (decodable body), caller_dyn=6, callee r30_shared_tail_es. R30 counter step gated on es:[0]==3, tail-calls the shared es-swap helper. conf: med",
+  "med"
+ ],
+ "sub_11AE7": [
+  "font_glyph_advance_11860",
+  "NEAR retn fn; AL=es:[bx+1]+2 -> cs:11860 (glyph advance); DI=cs:1185A+6; near-call font_glyph_lookup; (62B); 1 caller (cb_args_invoke)",
+  "62B retn, caller_dyn=5, callees font_glyph_lookup + far_cb_gated. Text renderer: computes glyph advance into cs:11860 and fetches the glyph. conf: med",
+  "med"
+ ],
+ "sub_4DF94": [
+  "ems_install_gated_near",
+  "NEAR retn LEAF; near-call state_byte_10218_get_zf; branch (EMS-present gate) -> fall into ems_install_impl; clc; retf (9B)",
+  "9B LEAF, caller_dyn=2, callees state_byte_10218_get_zf + ems_install_impl. Gated EMS install wrapper: checks the 10218 flag then falls into the installer. conf: med",
+  "med"
+ ],
+ "sub_184D3": [
+  "state_block_77720_commit",
+  "void far; push fixed args (0,0,0,[bp+arg0],0,0,0x14,1) -> near-call state_block_77720_store8 (8-word block store); 2 callers (kb_record_commit, sub_1914E)",
+  "31B span, caller_dyn=1, callee state_block_77720_store8. Commits a keyboard record: fixed 8-word state block (count 0x14, arg at +6). conf: high",
+  "high"
+ ],
+ "sub_6C896": [
+  "r06_init_call_43270_b",
+  "void far (C frame enter 4): far-call unk_43270 -> DX:AX; ES=6DE8h: 6E040=6DE8, 6E03E=0x325 (init state); far_cb_0/1 + sub_2BFC3 sequence (1171B); 2 callers (sub_2C333, sub_66E62)",
+  "1171B C-class, caller_dyn=1, callees far_cb_0 + far_cb_1 + sub_2BFC3. R06 overlay initializer (near-twin of r06_init_call_43270 at 6CD29, + callback sequence). conf: med",
+  "med"
+ ],
+ "sub_17005": [
+  "adlib_detect_init",
+  "NEAR retn fn; DX=0x388, AX=0x2021: 3x near-call adlib_reg_write_delay (OPL setup words 0x2021/0x60F0/...); (152B); 18 callers (!)",
+  "152B, caller_dyn=0 in=18, callee adlib_reg_write_delay. The AdLib/OPL detection+init register sequence at port 388h -- hottest L1 by fan-in (18 callers). conf: high",
+  "high"
+ ],
+ "sub_244E8": [
+  "view_proj_rotation_build",
+  "NEAR retn fn; the [SI] angle triple as-is; 3x near-call trig_table_lookup into 0x3870/0x3868/0x386C (DS=7B0Eh) + fixed_mat3_scale family; 9 callers (view_proj_default + 7 presets + sub_28496)",
+  "72B retn, caller_dyn=0 in=9, callees fixed_mat3_scale_a/b/c + trig_table_lookup. View-projection rotation build from angles (twin of view_rotation_build, called by the view_proj_preset_* family). conf: high",
+  "high"
+ ],
+ "sub_2F35B": [
+  "farobj_cfg_delta_apply",
+  "NEAR retn fn; and cs:2E17E,1; DS:0Ah*2 - cs:2E172/7174 delta with sign test + 0x1C shift ladder; body applies hw_cfg_copy_ac13 + hw_cfg_copy_a76f + farobj_record_proc_si (139B); 9 callers",
+  "139B, caller_dyn=0 in=9, callees farobj_record_proc_si + hw_cfg_copy_ac13 + hw_cfg_copy_a76f. Applies a time-delta (ds:0Ah - cs:2E172) to hardware config + record processing. conf: med",
+  "med"
+ ],
+ "sub_3AA7E": [
+  "bound_range_check_4aad",
+  "NEAR retn fn; DX:AX >>= 1; if DX!=0 fail; if AX in [ds:4AAD..ds:4AAF]: clc, retn (in-range) else continue (157B); 7 callers",
+  "157B retn, caller_dyn=0 in=7, callee bound_table_check_49b8. Range check of a halved DX:AX against the ds:4AAD..4AAF window (CF=0 in range). conf: high",
+  "high"
+ ],
+ "sub_1C186": [
+  "stream_long_accumulate",
+  "void far (C frame 0xA): far-ptr cursor at es:77B68, walk record bytes, per-record long_accumulate (42B+ body); 6 callers (sub_1C21B, sub_1C534, sub_1CC2D, sub_1CE08, sub_3A3D6, sub_3A6B1)",
+  "149B C-class, caller_dyn=0 in=6, callee long_accumulate. Stream record walker feeding the 32-bit accumulator (far cursor es:77B68). conf: med",
+  "med"
+ ],
+ "sub_6D8E6": [
+  "r06_mode_dispatch_bx8",
+  "NEAR retn fn; AX=ds:4A99; near-call local; BX=ds:4AC2*2 -> call word ptr cs:[BX+8] (mode jump-table via cs:+8); gate ds:49A2 else retn (334B); 6 callers (R06 sub_6Dxxx family)",
+  "334B retn, caller_dyn=0 in=6, callee dispatch_220d4_stub. R06 mode dispatcher: indexes a near-pointer table at cs:+8 by ds:4AC2 (mode). conf: med",
+  "med"
+ ],
+ "sub_12F1D": [
+  "terrain_attr_default_60",
+  "NEAR retn LEAF; near-call terrain_attr_lookup_3840; if BH==0: retn else BL=0x60; retn (10B)",
+  "10B LEAF retn, caller_dyn=0 in=5, callee terrain_attr_lookup_3840. Terrain attribute with fallback: returns 0x60 in BL when the lookup yields BH==0. conf: high",
+  "high"
+ ],
+ "sub_1C0E4": [
+  "stream_accumulate_loop",
+  "void far (C frame 4): loop pushing (0x100, running-32bit-acc) -> near-call long_accumulate, then dispatches via [bp+arg0] table (75B); 5 callers (sub_1C12F, sub_1C21B, sub_39B67, sub_39E13, sub_3A3D6)",
+  "75B C-class, caller_dyn=0 in=5, callee long_accumulate. Accumulate loop (add 0x100 per pass into the 64-bit accumulator) -- the driver around long_accumulate. conf: med",
+  "med"
+ ],
+ "sub_35B2F": [
+  "sprite_offset_dispatch_343e",
+  "NEAR retn fn; SI=[SI+0x7B6]-AX; BX+=ds:6F8; DI+=ds:6FA; far-call dword cs:343E4; retn (24B)",
+  "24B retn, caller_dyn=0 in=5, callee far_cb_with_args. Sprite offset compute (ds:6F8/6FA base deltas) then far-dispatch at cs:343E4. conf: med",
+  "med"
+ ],
+ "r30_e150": [
+  "r30_mode_set_637fc_c",
+  "void far; gate es:7894:79EAA==0 else jmp 0x6A0EE; es:602E:637FC=0x10D, 637FE=0xC1; far_cb_0/1 + sub_2BFC3 + r30_farobj_proc (360B); 5 callers",
+  "360B, caller_dyn=0 in=5, callees far_cb_0 + far_cb_1 + sub_2BFC3 + r30_farobj_proc. R30 mode-preset variant C (637FC=0x10D/637FE=0xC1) with callback sequence. conf: med",
+  "med"
+ ],
+ "sub_15CCB": [
+  "game_setup_variant_5169",
+  "void far; cs:162E7=DX, BP=0x5169, DX=2, ds:5ACC=0xFE; tail-jmp game_state_setup_multi (variant parameterization); 4 callers (sub_35505, sub_356A7, sub_37B1E, sub_3825F)",
+  "19B, caller_dyn=0 in=4, callee game_state_setup_multi. Game-state setup variant: seeds cs:162E7 + ds:5ACC=0xFE then tail-jumps into game_state_setup_multi with BP=0x5169. conf: high",
+  "high"
+ ],
+ "sub_35E21": [
+  "sprite_pos_bounce_dispatch",
+  "NEAR retn fn; BX=0xA0, DI=0x32; gates ds:44AA==1 + ds:4890 + [ds:48BA+0xB1]: near-call bounce_clamp_7ae, BX=ds:7AE, DI=ds:7B0; BP=2 dispatch prep (148B); 4 callers",
+  "148B retn, caller_dyn=0 in=4, callees dispatch_220d4_stub + bounce_clamp_7ae. Sprite position bounce: gated clamp of ds:7AE/7B0 then dispatch with BX/DI position. conf: med",
+  "med"
+ ],
+ "sub_36FE9": [
+  "point_in_rect_6e8",
+  "NEAR retn fn; CX=0; AX in [ds:6E8..6EC] AND BX in [ds:6EA..6EE] -> CX=0 retn else set path flags (57B); 4 callers (sub_36347, sub_36FAC, sub_46D42, sub_47F9E)",
+  "57B retn, caller_dyn=0 in=4, callee rect_bounds_test_6e. Point-in-rect test against the ds:6E8..6EE rectangle, returns CX result flags. conf: high",
+  "high"
+ ],
+ "sub_40E62": [
+  "r05_table_snapshot_55e50",
+  "void far; DS=ES=54AFh; CX=0x10, BP=0x10+ds:55E50 index wrap, counts + compares ds:55E50/55E4E, then near-call farobj_table_snapshot (70B); 4 callers (sub_32453, sub_3252B, sub_33443, sub_34954)",
+  "70B, caller_dyn=0 in=4, callee farobj_table_snapshot. R05 overlay table snapshot driver: index wrap on ds:55E50 then the 0x0C/0x0A record snapshot. conf: med",
+  "med"
+ ],
+ "sub_4F3D7": [
+  "hw_cfg_scan_22158",
+  "void far; ES=7A32h, DI=0xA526, CX=0x100, BX=0; far-call dword cs:22158 (0x100-slot scan with zero base); pop es (21B); 4 callers (sub_2F6D0, sub_3001E, sub_30307, sub_33443)",
+  "21B, caller_dyn=0 in=4, callee dispatch_22158_stub. Hardware-config scan: dispatches a 0x100-slot zero-based walk over the 7A32:A526 table. conf: med",
+  "med"
+ ],
+ "sub_17C7A": [
+  "channel_reg_write_8",
+  "NEAR retn fn; gate ds:0AF94 -> AX=0x40 else 0; push AX, 8; near-call hw_reg_write_pair (register-pair write index 8); (29B); 3 callers (sub_17773, sub_17B11, sub_17B8B)",
+  "29B retn, caller_dyn=0 in=3, callee hw_reg_write_pair. Sound-channel register write: value (0x40 gated by ds:0AF94) to pair index 8. conf: med",
+  "med"
+ ],
+ "sub_1E782": [
+  "sbi_level_sync_77de2",
+  "NEAR retn fn; compare es:77DE2 vs es:77DEC (base-level vs current), step es:78862 +/-0x0C, emit via sbi_data_write/wait (545B); 3 callers (sub_1F46C, sub_3099C, sub_30AA8)",
+  "545B retn, caller_dyn=0 in=3, callees sbi_data_write + sbi_command_wait. SBI base-level sync (es:77DE2 -> es:77DEC, near-twin of sbi_level_sync_77de6). conf: med",
+  "med"
+ ],
+ "sub_2E797": [
+  "vec3_accum_ratio",
+  "NEAR retn fn; DX=CX, near-call fixed_vec3_accum_b; then remap: AX=CL/BL ratio (idiv), +=BH, 16-bit CH sign handling (50B+); 3 callers (sub_2E37B, sub_3E552, sub_4E520)",
+  "50B+ retn, caller_dyn=0 in=3, callee fixed_vec3_accumulate_b. Vec-3 accumulation followed by a ratio remap (CL/BL with BH addend). conf: med",
+  "med"
+ ],
+ "sub_2E902": [
+  "farptr_table_field_store",
+  "NEAR retn LEAF; near-call farptr_table_get; DI+=0x20; es:[DI]=BX; retn (14B)",
+  "14B LEAF retn, caller_dyn=0 in=3, callee farptr_table_get. Stores BX at entry+0x20 of the farptr table (field write variant of farptr_table_entry_store). conf: med",
+  "med"
+ ],
+ "sub_31BB9": [
+  "module_slot0_gated_call",
+  "NEAR retn fn; gate ds:135C==3 AND ds:476!=0: near-call module_slot0_call_2a662; retn (20B); 3 callers (sub_3001E, sub_33443, sub_386F2)",
+  "20B retn, caller_dyn=0 in=3, callees event_table_find_name + module_slot0_call_2a662. Gated module slot-0 invocation (mode ds:135C==3 + ds:476 set). conf: high",
+  "high"
+ ],
+ "sub_31BCD": [
+  "dgroup_cycle_step_438",
+  "NEAR retn fn; change-detect ds:43C vs ds:440 -> advance ds:438 mod 8 (publish to ds:434); mirror walk for ds:43B/441 -> ds:435 path; near-call dgroup_cycle_reset_43d (98B); 3 callers (sub_2F6D0, sub_30CB8, sub_31319)",
+  "98B retn, caller_dyn=0 in=3, callee dgroup_cycle_reset_43d. The STEP half of the dgroup_cycle_435_436 mechanism: advances the mod-8 cursors on change detect. conf: high",
+  "high"
+ ],
+ "sub_353BA": [
+  "far_cb_setup_dispatch",
+  "NEAR retn fn; if AX!=0 skip; BX=ds:550, DI=ds:552 table ptrs, CX=BX+0x1A: near-call far_cb_3 (AL=0x34), second pass far_cb_7... (247B); 3 callers (sub_34C31, sub_45057, sub_4697E)",
+  "247B retn, caller_dyn=0 in=3, callees game_state_setup_multi + far_cb_3 + far_cb_7. Callback setup dispatcher: runs far_cb_3/far_cb_7 over the ds:550/552 table when AX==0. conf: med",
+  "med"
+ ],
+ "sub_3769B": [
+  "sprite_project_gate_c5",
+  "NEAR retn fn; ds:7FC=BX, SI=BX; gate [SI+0xC5]!=0 else retn; body near-calls sprite_project_screen_y (146B); 3 callers (sub_2FEF2, sub_3C4F2, sub_47686)",
+  "146B retn, caller_dyn=0 in=3, callee sprite_project_screen_y. Sprite projection gated on the [SI+0xC5] flag. conf: med",
+  "med"
+ ],
+ "sub_37AD0": [
+  "state_gate_451_dispatch",
+  "NEAR retn fn; gate ds:451==0xFF -> ds:1073=0; if ds:1073>1 retn; body near-calls game_state_setup_multi + dispatch_220ec_stub (78B); 3 callers (sub_305E4, sub_37A0A, sub_47A8D)",
+  "78B retn, caller_dyn=0 in=3, callees game_state_setup_multi + dispatch_220ec_stub. State gate: resets ds:1073 on ds:451==0xFF, dispatches when ds:1073<=1 path. conf: med",
+  "med"
+ ],
+ "sub_6CE4B": [
+  "r06_farptr_dispatch_gate",
+  "void far; starts retf (early-out for the mode_4ac2 else-path that jumps here), then (107B) body with near-call r06_farptr_dispatch; 3 callers (sub_2C117, sub_2C243, sub_6CF90)",
+  "107B DATA-class head (retf first = else-return target of mode_4ac2_advance_1_2), caller_dyn=0 in=3, callee r06_farptr_dispatch. R06 far-ptr dispatch with an early-return prologue. conf: low",
+  "low"
+ ],
+ "sub_1426A": [
+  "tile_clip_draw_1426a",
+  "NEAR retn fn; BP=cs:11C7A*2+0x110; DI+=cs:11C4E; CH=CL=7; push args, near-call segment_bitfield_decode + param4_compare_flags (98B); 2 callers (sub_160DE, sub_16124)",
+  "98B retn, caller_dyn=0 in=2, callees segment_bitfield_decode + param4_compare_flags. Tile clip/draw: decodes segment bitfield + compares 4 params at the cs:11C7A-derived base. conf: med",
+  "med"
+ ],
+ "sub_17C97": [
+  "channel_reg_write_field",
+  "NEAR retn fn; gate [SI-0x661F]; AX=SI*0x0E, AL=[BX-0x52AC] cbw field, ... near-call hw_reg_write_pair (79B); 2 callers (sub_17B11, sub_17B8B)",
+  "79B retn, caller_dyn=0 in=2, callee hw_reg_write_pair. Sound-channel register write from the 0x0E-stride table field at -0x52AC (near-twin of channel_reg_write_table). conf: med",
+  "med"
+ ],
+ "sub_17CE6": [
+  "channel_reg_write_shift4",
+  "NEAR retn fn; AX=SI*0x0E, AL=[BX-0x52AB], cbw, AX<<=4 -> DI; near-call hw_reg_write_pair (67B); 2 callers (sub_17B11, sub_17B8B)",
+  "67B retn, caller_dyn=0 in=2, callee hw_reg_write_pair. Sound-channel register write with the field shifted <<4 (third 0x0E-stride variant). conf: med",
+  "med"
+ ]
+}

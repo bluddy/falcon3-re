@@ -4034,4 +4034,55 @@ problems)** . `name_readback` **815/815 function + 2/2 global**.
 
 ---
 
+## 2026-10-18 72 — Global Level-1 COMPLETE: 5 batches named all 149
+Level-1 functions (`named` 815 -> 964), Level-1 `naming_queue` 149 -> 0
+
+Finding 71 finished Level 0, which made Level 1 nameable **with full callee
+context**: at Level 1, 142/149 queue entries already had **100% named
+callees** (the rest call Level-1 SCC peers, named within the same batch).
+`dump_level1.py` prints each target's callees' semantic names alongside the
+disassembly -- the bottom-up method paying off.
+
+### Cadence (5 batches: 36+36+36+36+5 = 149)
+
+| batch | named after | L1 queue after | highlights |
+|---|---|---|---|
+| l1a | 851 | 113 | `record_op_dispatch_220b0` (cd=70,789), `view_rotation_build`, `angle_matrix_build_neg`, `adlib_detect_init` prep, SBI event writers (`sbi_midi_event_write`, `sbi_slot_scan_periodic`, `sbi_level_sync_*`) |
+| l1b | 887 | 77 | `adlib_detect_init` (**in=18, hottest L1 fan-in**), `view_proj_rotation_build` (in=9), `dgroup_cycle_step_438`, `point_in_rect_6e8`, `r06_vec3_main_proc` (2,899B, largest L1), DOS file ops (`r01_file_create_3ch`, `module_open_3d00`) |
+| l1c | 923 | 41 | `coord_delta_dispatch_13bba` (jump-table to 5 named coord-delta variants), `ems_state_bootstrap_2e100` (seeds the `flag_gate_zero_abc` flag!), `kbd_led_update_60h`, `vector_shutdown_restore` (INT 0/8/9 unhook), `sbi_config_triple_*` |
+| l1d | 959 | 5 | `line_table_scan_dispatch` + 3 `line_flag_patch_*` + `uibounds_top_bottom_dispatch` (completing the line-table/UI-bound driver families), `anim_frame_step_clip`, `vector_shutdown` twins, `state_block_77720_*` commit trio |
+| l1e | **964** | **0** | finale: `entity_event_0e_dispatch`, `r06_gate_4ac9`, `r17_dispatch_seq_2211c`, **`r53_record_walk_entry`** (the SCC partner of `r53_record_walk_main` -- `xor si,si; tail-jmp` loop-entry alias), `slope_far_call_driver` |
+
+### MILESTONE: Level-1 naming_queue = 0
+
+| metric | f71 | f72 |
+|---|---|---|
+| named (fb join) | 815 | **964 (+149)** |
+| naming_queue (global) | 854 | **667** |
+| **Level-1 queue** | **149** | **0** |
+
+Level-1 residue = **42 orphans + 12 thunk slots, 0 other**. Global queue 667
+remains (Levels 2..22).
+
+### Notable findings from the callee context
+
+* The **line-table / UI-bound driver family** resolved into a coherent set:
+  `line_table_scan_dispatch` → `line_table_scan_20`/`_40` →
+  `line_flag_patch_28f37/29075/291b1` → `line_table_entry_clone(_slope)` →
+  `uibounds_left_right_dispatch` + `uibounds_top_bottom_dispatch` (all four
+  edge presets now named).
+* `ems_state_bootstrap_2e100` **seeds `cs:2E100` from `state_word_10219_get`**
+  — closing the loop on `flag_gate_zero_abc`/`state_byte_2e100_zero` (f66/f71).
+* The `r53` record-walk SCC: `r53_record_walk_main` <-> `r53_record_walk_entry`
+  (a 2-instruction `xor si,si; tail-jmp` loop head) -- both named, cycle
+  intact, invariant re-verified by the callgraph re-run.
+
+### Gates (all green)
+
+`naming.py check` **966** . `verify_rebuild` **faithful (2,237 == 2,237,
+LOST 0, CHANGED 0)** . `verify_idb` **INTACT (0 span / 0 name / 0 data-hole
+problems)** . `name_readback` **964/964 function + 2/2 global**.
+
+---
+
 (append new findings below)

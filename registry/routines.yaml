@@ -10089,6 +10089,1799 @@ routines:
     notes: "8B LEAF, 0 dyn, cd=0, 1 caller (sub_2C261). Clears DGROUP word 0x4AB1. conf: high"
     updated: "2026-10-18"
 
+  - ea: 0x24440
+    seg: 0x2444
+    ofs: 0x0
+    size: 78
+    far: false
+    class: ASM
+    hypothesis: "angle_matrix_build_neg"
+    sig: "NEAR retn fn; negate the [SI] angle triple (CX,DX,AX); 3x near-call trig_table_lookup into slots 0x3870/0x3868/0x386C (DS=7B0Eh); then the fixed_mat3_scale_a/b/c family; 3 callers (sub_22EF8, fn_table_dispatch, sub_236B8)"
+    port_status: unported
+    verified: null
+    notes: "78B retn, caller_dyn=31,281, callees fixed_mat3_scale_a/b/c + trig_table_lookup. Builds a rotation matrix from NEGATED angles (inverse rotation) via 3 trig lookups. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x20641
+    seg: 0x2064
+    ofs: 0x1
+    size: 37
+    far: false
+    class: ASM
+    hypothesis: "angle_wrap_mask_3fff"
+    sig: "NEAR retn fn; wrap CX: if >0x1000: CX-=0x2000, neg; elif <-0x1000: +0x2000, neg (0x1000-period wrap); AX=BX+0x2000; near-call fixed_angle_mask_3fff; BX=AX; retn; 2 callers (sub_20726, math_saturate_store)"
+    port_status: unported
+    verified: null
+    notes: "37B retn, caller_dyn=498, callee fixed_angle_mask_3fff. Wraps an angle into the 0x1000 period with sign fix, then 14-bit mask. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x26250
+    seg: 0x2625
+    ofs: 0x0
+    size: 49
+    far: false
+    class: ASM
+    hypothesis: "bbox_corner_transform"
+    sig: "NEAR retn fn; near-call trig_table_lookup (slot 0x3868); CX=ds:3FD8, DX:AX = trig result * scaled ds:3868 >> ... idiv 0x0D; (49B); 1 caller (bbox_clamp)"
+    port_status: unported
+    verified: null
+    notes: "49B retn, caller_dyn=2,792, callee trig_table_lookup. Corner transform for bbox_clamp: trig-scaled projection of a bbox corner. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x263BD
+    seg: 0x263B
+    ofs: 0xD
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "bbox_offset_dispatch_pair"
+    sig: "NEAR retn fn; push es; far-call dword cs:220D0; push cs, near-call vec2_offset_add_si; far-call dword cs:220DC; pop es; retn; 1 caller (bbox_clamp)"
+    port_status: unported
+    verified: null
+    notes: "17B retn, caller_dyn=2,792, callees cs:220D0 dispatch + vec2_offset_add_si + cs:220DC dispatch. bbox_clamp's offset-apply sandwich (dispatch / vec2 offset add / dispatch). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x17E00
+    seg: 0x17E0
+    ofs: 0x0
+    size: 72
+    far: true
+    class: ASM
+    hypothesis: "channel_mode_reg_write"
+    sig: "NEAR retn fn; build a port value from mode flags ds:0AF93 (->0x80) | ds:0AF91 (->0x40) into SI, then (72B) near-call hw_reg_write_pair; 6 callers (sub_176BE, sub_17773, sub_178D4, channel_release, sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "72B retn, caller_dyn=13,733, callee hw_reg_write_pair. Sound-channel register write selected by the two mode flags (ds:0AF91/AF93). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17BC9
+    seg: 0x17BC
+    ofs: 0x9
+    size: 177
+    far: true
+    class: ASM
+    hypothesis: "channel_reg_write_table"
+    sig: "void far (C frame): gate ds:0AF90 selects table base ([si-0x65FB] vs [si-0x660D]); AX=si*0x0E record index; (177B) near-call hw_reg_write_pair; 3 callers (sub_17835, sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "177B C-class, caller_dyn=7,914, callee hw_reg_write_pair. Channel register write from a 0x0E-stride table with a mode-selected field offset. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2586E
+    seg: 0x2586
+    ofs: 0xE
+    size: 4
+    far: true
+    class: ASM
+    hypothesis: "clip_bounds_restore_far_thunk"
+    sig: "void far; near-call clip_bounds_restore_25450; retf (far thunk over the near restore); 2 callers (sub_359B2, sub_3A5D2)"
+    port_status: unported
+    verified: null
+    notes: "4B NEARTHUNK, 184 dyn, callee clip_bounds_restore_25450. Far-returning thunk exposing the near clip-bounds restore. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25849
+    seg: 0x2584
+    ofs: 0x9
+    size: 4
+    far: true
+    class: ASM
+    hypothesis: "clip_bounds_save_far_thunk"
+    sig: "void far; near-call clip_bounds_save_2546c; retf (far thunk over the near save); 2 callers (sub_359B2, sub_3A5D2)"
+    port_status: unported
+    verified: null
+    notes: "4B NEARTHUNK, 184 dyn, callee clip_bounds_save_2546c. Far-returning thunk exposing the near clip-bounds save. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x25CD8
+    seg: 0x25CD
+    ofs: 0x8
+    size: 39
+    far: true
+    class: ASM
+    hypothesis: "clip_rect_compute_guard"
+    sig: "void far; near-call clip_rect_compute_shr1; if CF clear: retf else fallthrough body; 4 callers (sub_2590C, sub_25CB3, sub_26A49, sub_26CD8)"
+    port_status: unported
+    verified: null
+    notes: "39B, caller_dyn=64, callee clip_rect_compute_shr1. Guard wrapper: runs the clip-rect compute and returns on CF clear. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x224C2
+    seg: 0x224C
+    ofs: 0x2
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "draw_struct_args_dispatch"
+    sig: "NEAR retn fn; AX=[SI], DI=[SI+2], BX=[SI+4], BP=[SI+6], CL=[SI+8]; tail-jmp dispatch_22084_near (5-arg struct frame); 1 caller (draw_from_struct)"
+    port_status: unported
+    verified: null
+    notes: "17B retn, caller_dyn=649, callee dispatch_22084_near. Loads a 5-word draw-struct frame from [SI] and tail-dispatches via cs:22084. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x202DB
+    seg: 0x202D
+    ofs: 0xB
+    size: 29
+    far: true
+    class: ASM
+    hypothesis: "farobj_field4_from_3850"
+    sig: "void far; ES=7B0Eh, DI=0x3850: copy 4 words from [SI] into 7B0E:3850; then DS=7B0E, SI=0x3850, push cs, near-call farobj_field4_get_stc; nop; restores; 1 caller (sub_34C31)"
+    port_status: unported
+    verified: null
+    notes: "29B, 449 dyn, callee farobj_field4_get_stc. Stages 4 words at 7B0E:3850 then invokes the field-4 farobj getter on them. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1273A
+    seg: 0x1273
+    ofs: 0xA
+    size: 55
+    far: true
+    class: ASM
+    hypothesis: "farobj_step_flags_get"
+    sig: "NEAR retn fn; SI=cs:11BBA, DS=cs:11BBE, BX=SI, SI=[SI+4]; push cs, near-call hw_flag_bit1_22e_extract; AL>>=1 + stride math, bl=[bx+6]; (55B); 1 caller (entity_step_flags)"
+    port_status: unported
+    verified: null
+    notes: "55B retn, caller_dyn=55, callees hw_flag_bit1_22e_extract + table_dword_get. Extracts farobj step flags via the hw-flag bit1 + dword table. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x28B08
+    seg: 0x28B0
+    ofs: 0x8
+    size: 409
+    far: false
+    class: ASM
+    hypothesis: "line_draw_441e"
+    sig: "void far; DI=0x441E (buffer), cs:27966=0, then (409B pad-heavy line-draw body); 2 callers (pos_diff_norm, sub_2FD42)"
+    port_status: unported
+    verified: null
+    notes: "409B span, caller_dyn=17,961, callee fixed_scale_clamp_or40. Line-drawing routine over the 0x441E buffer (paired with farobj_di_441e_init). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x27FC7
+    seg: 0x27FC
+    ofs: 0x7
+    size: 384
+    far: false
+    class: ASM
+    hypothesis: "line_table_build_2796e"
+    sig: "NEAR retn fn; cs:27968=-1, cs:2796A=0; walk the cs:2796E line list (lodsw + cs:27972 base), patch es:43BA/43BE flag words, gate fixed_scale_clamp_or40; 1 caller (record_queue_push)"
+    port_status: unported
+    verified: null
+    notes: "384B retn, caller_dyn=70,789, callee fixed_scale_clamp_or40. Builds the 43BAh display-line table from the cs:2796E line list (the write-half of line_table_scan). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17EAE
+    seg: 0x17EA
+    ofs: 0xE
+    size: 146
+    far: true
+    class: ASM
+    hypothesis: "opl_index_data_write"
+    sig: "void far (C frame): near-call hw_reg_write_pair with (0x60,4) then (0x80,4) (OPL address/data pair selects); push ds:0AD50, near-call port_read_dx_ax (read-back); (146B); 1 caller (sub_17625)"
+    port_status: unported
+    verified: null
+    notes: "146B C-class, caller_dyn=46, callees hw_reg_write_pair + port_read_dx_ax. AdLib/OPL-style index (0x60) + data (0x80) register write with port read-back. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x16D88
+    seg: 0x16D8
+    ofs: 0x8
+    size: 19
+    far: true
+    class: ASM
+    hypothesis: "pit_period_set_1000"
+    sig: "void far; BX=0x1000, AX=0; near-call pit_divisor_set_pushf (PIT ch0 divisor 4096); ds:0AF=0; retf; 4 callers (sub_168E0, sub_16CE5, sub_16E3A, sub_16E84)"
+    port_status: unported
+    verified: null
+    notes: "19B, caller_dyn=158, callee pit_divisor_set_pushf. Programs PIT ch0 with divisor 0x1000 (the SBI/sound timer period) + clears ds:0AF. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x23A65
+    seg: 0x23A6
+    ofs: 0x5
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "pos_delta_abs_64"
+    sig: "NEAR retn fn; DX:AX = [SI] - es:[DI] (64-bit delta), tail-jmp fixed_abs_neg64 (abs); 2 callers (sub_23A73, vec_transform_scale)"
+    port_status: unported
+    verified: null
+    notes: "14B retn, caller_dyn=8,069, callee fixed_abs_neg64. Position delta then 64-bit absolute (tail-jmp form). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x6A519
+    seg: 0x6A51
+    ofs: 0x9
+    size: 52
+    far: true
+    class: ASM
+    hypothesis: "r30_farcb_seq"
+    sig: "void far; es:63800=DX; near-call far_cb_1; push (0x49F7,0x14B6,0x49F7,0x1507) + es:7894:7A270/7A26E pair; far-call sub_2BFC3 (stc stub); near-call far_cb_0; (52B); 2 callers (r33_e79, sub_2C347)"
+    port_status: unported
+    verified: null
+    notes: "52B, caller_dyn=16, callees far_cb_0 + far_cb_1 + sub_2BFC3 (thunk slot #055 stc stub). R30 entry sequencing two far callbacks around an arg-pushed stc-stub call. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x23803
+    seg: 0x2380
+    ofs: 0x3
+    size: 90
+    far: false
+    class: ASM
+    hypothesis: "ratio_blend_sign_norm"
+    sig: "NEAR retn fn; sign-normalize CX/BH/BL and AX/BX (neg on negative), then near-call fixed_ratio_blend; (90B); 2 callers (sub_236C8, sub_237FF)"
+    port_status: unported
+    verified: null
+    notes: "90B retn, caller_dyn=498, callee fixed_ratio_blend. Sign-normalizes operands then fixed-point ratio blend (caller-side prep for fixed_ratio_blend). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2061B
+    seg: 0x2061
+    ofs: 0xB
+    size: 32
+    far: false
+    class: ASM
+    hypothesis: "record_op_dispatch_220b0"
+    sig: "NEAR retn fn; frame from state: SI=0xB9A, DI=cs:off_1F710 (indirect table), CL=1F73B, AH=1F72A, BP=1F700, BX=1F6FE; call dispatch_220b0_near; retn; 3 callers (sub_21A48, record_queue_push, sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "32B retn, caller_dyn=70,789 (record_queue_push), callee dispatch_220b0_near. Builds a 6-word op frame from cs:1F6xx state (DI via the off_1F710 table) and far-dispatches record ops. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1F7D8
+    seg: 0x1F7D
+    ofs: 0x8
+    size: 265
+    far: false
+    class: ASM
+    hypothesis: "record_rect_init"
+    sig: "NEAR retn fn; if CX<3: retn; else (265B) rect_init_4word + rect_min_track_1f722 on the record; 1 caller (record_queue_push)"
+    port_status: unported
+    verified: null
+    notes: "265B retn, caller_dyn=70,789, callees rect_init_4word + rect_min_track_1f722. Initializes a queued record's 4-word rect + running-min track. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x21EB0
+    seg: 0x21EB
+    ofs: 0x0
+    size: 138
+    far: false
+    class: ASM
+    hypothesis: "record_span_init_eba"
+    sig: "NEAR retn fn; es:0EBA=0xB9A (record id); if CX<3: retn; then (138B body) rect_span_min_track; 3 callers (record_queue_push family)"
+    port_status: unported
+    verified: null
+    notes: "138B retn, caller_dyn=70,789, callee rect_span_min_track. Initializes record id 0xB9A at es:0EBA gated on CX>=3, then span-tracks the rect. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1E561
+    seg: 0x1E56
+    ofs: 0x1
+    size: 545
+    far: true
+    class: ASM
+    hypothesis: "sbi_level_sync_77de6"
+    sig: "NEAR retn fn; compare es:77DE6 vs es:77DEC (level target vs current), step es:78866 +/-0x0C toward it, emit via sbi_data_write/wait (545B); 1 caller (event_state_machine)"
+    port_status: unported
+    verified: null
+    notes: "545B retn, caller_dyn=42,313, callees sbi_data_write + sbi_command_wait. SBI level/target synchronization loop (es:77DE6 -> es:77DEC). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F090
+    seg: 0x1F09
+    ofs: 0x0
+    size: 240
+    far: true
+    class: ASM
+    hypothesis: "sbi_midi_event_write"
+    sig: "NEAR retn fn; ES=7772h; gate es:[bx+105A+SI*2] != 0 (event slot active); body (240B) issues sbi_data_write + sbi_command_wait sequence; 5 callers (sub_18BC8, key_action_execute, event_state_machine, sub_1E9A3, sub_1F180)"
+    port_status: unported
+    verified: null
+    notes: "240B retn, caller_dyn=42,349, callees sbi_data_write + sbi_command_wait. Writes an SBI/MIDI event for an active slot (key-action -> sound path). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F494
+    seg: 0x1F49
+    ofs: 0x4
+    size: 119
+    far: true
+    class: ASM
+    hypothesis: "sbi_periodic_5_77df0"
+    sig: "void far (C frame): es:77CAA % 5 == 0 gate (every 5th tick); es:77DF0 -= 0x32 with 0x7F mask logic; emit via sbi_data_write/wait; 1 caller (event_state_machine)"
+    port_status: unported
+    verified: null
+    notes: "119B C-class, caller_dyn=42,313, callees sbi_data_write + sbi_command_wait. Every-5th-tick SBI period update on es:77DF0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1F35B
+    seg: 0x1F35
+    ofs: 0xB
+    size: 273
+    far: true
+    class: ASM
+    hypothesis: "sbi_slot_scan_periodic"
+    sig: "NEAR retn fn; es:77CAA++ counter; every 0x10th tick: push 7772h + slot-table offset, near-call far_slot_scan_zero; body continues with sbi_data_write/wait; 2 callers (event_state_machine, sub_3001E)"
+    port_status: unported
+    verified: null
+    notes: "273B retn, caller_dyn=42,313, callees sbi_data_write + sbi_command_wait + far_slot_scan_zero. Periodic (16-tick) SBI slot scan + write. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1293B
+    seg: 0x1293
+    ofs: 0xB
+    size: 188
+    far: false
+    class: ASM
+    hypothesis: "terrain_matrix_advance_11d04"
+    sig: "NEAR retn fn; cs:11D04++; near-call fixed_matrix_scale_shift_7e900; CX=cs:11D04, DI=0xCCD: DX:AX = 0xFFF6*DI - cs:11C38 with sign-preserving loop shifts; 5 callers (state_farptr_get, sub_2F6D0, sub_31138, sub_31319, sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "188B retn, caller_dyn=15,844, callee fixed_matrix_scale_shift_7e900. Advances the terrain/anim matrix step (counter cs:11D04) and recomputes the 0xCCD-scaled offset. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13301
+    seg: 0x1330
+    ofs: 0x1
+    size: 167
+    far: false
+    class: ASM
+    hypothesis: "tile_base_set_11bc6"
+    sig: "NEAR retn fn; cs:11BCC=AX, cs:11BCA=BX; then 4x (AX,BX)>>=1 chains -> cs:11BC8/11BC6 (>>7 packed base coords); then tile-table setup (167B); 2 callers (sub_120EA, sub_132F2)"
+    port_status: unported
+    verified: null
+    notes: "167B retn, caller_dyn=2,370, callee sorted_key_search_bl. Sets the packed tile-base coordinates (cs:11BC6..CC, >>7) from an input pair. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1260C
+    seg: 0x1260
+    ofs: 0xC
+    size: 138
+    far: false
+    class: ASM
+    hypothesis: "tile_base_set_11c26"
+    sig: "NEAR retn fn; DS=71C1h; cs:11BCC/BCA from AX,BX >>7 chain; then AX -= cs:11C26 (subtract the current pos), CX=AX with sign fix (138B); 2 callers (sub_123E9, entity_step_flags)"
+    port_status: unported
+    verified: null
+    notes: "138B retn, caller_dyn=55, callee sorted_key_search_bl. Tile-base set variant that subtracts the current position cs:11C26 (near-twin of tile_base_set_11bc6). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x12781
+    seg: 0x1278
+    ofs: 0x1
+    size: 83
+    far: true
+    class: ASM
+    hypothesis: "tile_pos_store_ccd"
+    sig: "NEAR retn fn; SI=cs:11BBA table, DS=cs:11BBE; AX = (0x7FF - cs:11BD0 neg - 0x400) * 0xCCD + [SI] -> stosw pair (position store); then tile-record search; 2 callers (entity_step_flags, sub_48EC7)"
+    port_status: unported
+    verified: null
+    notes: "83B retn, caller_dyn=55, callee tile_record_search_bl. Computes the 0xCCD-scaled tile position from cs:11BD0 and stores it, then searches. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A340
+    seg: 0x2A34
+    ofs: 0x0
+    size: 54
+    far: false
+    class: ASM
+    hypothesis: "uibounds_left_right_dispatch"
+    sig: "NEAR retn fn; gate cs:2796A.5 -> near-call uibounds_set_left_20 (CX>=3 + cs:27968 guard); gate .6 -> near-call uibounds_set_right_40 (same guards); 1 caller (record_queue_push)"
+    port_status: unported
+    verified: null
+    notes: "54B retn, caller_dyn=70,789, callees uibounds_set_left_20 + uibounds_set_right_40. Dispatches the left/right UI bound presets from the 2796A edge bits. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x23E66
+    seg: 0x23E6
+    ofs: 0x6
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "vec2_normalize_seq"
+    sig: "void far; AX=[SI], BX=[SI+4], near-call fixed_vec_normalize_7b0e (pair 1); then BX=[SI+2], tail-jmp fixed_vec_normalize_7b0e (pair 2); 2 callers (view_projection, sub_216B8)"
+    port_status: unported
+    verified: null
+    notes: "17B, caller_dyn=282,832, callee fixed_vec_normalize_7b0e. Sequential 2-pass normalize of two vector pairs (call + tail-jmp form). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x23797
+    seg: 0x2379
+    ofs: 0x7
+    size: 50
+    far: false
+    class: ASM
+    hypothesis: "vec_ratio_norm_a"
+    sig: "NEAR retn fn; CX==0 -> AX=0 retn; else (50B) fixed_ratio_blend + fixed_vec_normalize_7b0e path; 2 callers (sub_236C8, sub_23793 NEARTHUNK)"
+    port_status: unported
+    verified: null
+    notes: "50B retn, caller_dyn=771, callees fixed_ratio_blend + fixed_vec_normalize_7b0e. Ratio-normalize variant A (near-twin of vec_ratio_norm_b). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x237CD
+    seg: 0x237C
+    ofs: 0xD
+    size: 50
+    far: false
+    class: ASM
+    hypothesis: "vec_ratio_norm_b"
+    sig: "NEAR retn fn; CX==0 -> AX=0 retn; else (50B) fixed_ratio_blend + fixed_vec_normalize_7b0e path; 2 callers (sub_236C8, sub_237C9)"
+    port_status: unported
+    verified: null
+    notes: "50B retn, caller_dyn=1,269, callees fixed_ratio_blend + fixed_vec_normalize_7b0e. Ratio-normalize variant B (zero-CX short-circuit first). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x20AC1
+    seg: 0x20AC
+    ofs: 0x1
+    size: 140
+    far: false
+    class: ASM
+    hypothesis: "view_bounds_distribute"
+    sig: "NEAR retn fn; distribute cs:1F6CC/D0/D2 into five cached copies each (2161E/21B68/21B74/21BAF/21E42, 21623/21BFE/..., 21607/...); near-call view_bounds_shadow_28e26; (140B); 2 callers (sub_20B4D, config_defaults_init)"
+    port_status: unported
+    verified: null
+    notes: "140B retn, caller_dyn=130, callee view_bounds_shadow_28e26. Fans the 3 view-bound words out to all UI caches, then shadows them to 28E26. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24536
+    seg: 0x2453
+    ofs: 0x6
+    size: 82
+    far: false
+    class: ASM
+    hypothesis: "view_rotation_build"
+    sig: "NEAR retn fn; the [SI] angle triple (CX,DX,AX) as-is; 3x near-call trig_table_lookup into 0x3870/0x3868/0x386C (DS=7B0Eh) + fixed_mat3_scale family; 6 callers (sub_1F769, record_xform_apply, view_matrix_build, sub_24530, sub_26B2E, sub_27180)"
+    port_status: unported
+    verified: null
+    notes: "82B retn, caller_dyn=13,218, callees fixed_mat3_scale_a/b/c + trig_table_lookup. Builds the view rotation matrix directly from angles (unlike angle_matrix_build_neg). Called BY view_matrix_build. conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x17005
+    seg: 0x1700
+    ofs: 0x5
+    size: 152
+    far: true
+    class: ASM
+    hypothesis: "adlib_detect_init"
+    sig: "NEAR retn fn; DX=0x388, AX=0x2021: 3x near-call adlib_reg_write_delay (OPL setup words 0x2021/0x60F0/...); (152B); 18 callers (!)"
+    port_status: unported
+    verified: null
+    notes: "152B, caller_dyn=0 in=18, callee adlib_reg_write_delay. The AdLib/OPL detection+init register sequence at port 388h -- hottest L1 by fan-in (18 callers). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x3AA7E
+    seg: 0x3AA7
+    ofs: 0xE
+    size: 157
+    far: false
+    class: ASM
+    hypothesis: "bound_range_check_4aad"
+    sig: "NEAR retn fn; DX:AX >>= 1; if DX!=0 fail; if AX in [ds:4AAD..ds:4AAF]: clc, retn (in-range) else continue (157B); 7 callers"
+    port_status: unported
+    verified: null
+    notes: "157B retn, caller_dyn=0 in=7, callee bound_table_check_49b8. Range check of a halved DX:AX against the ds:4AAD..4AAF window (CF=0 in range). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x17C7A
+    seg: 0x17C7
+    ofs: 0xA
+    size: 29
+    far: true
+    class: ASM
+    hypothesis: "channel_reg_write_8"
+    sig: "NEAR retn fn; gate ds:0AF94 -> AX=0x40 else 0; push AX, 8; near-call hw_reg_write_pair (register-pair write index 8); (29B); 3 callers (sub_17773, sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "29B retn, caller_dyn=0 in=3, callee hw_reg_write_pair. Sound-channel register write: value (0x40 gated by ds:0AF94) to pair index 8. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17C97
+    seg: 0x17C9
+    ofs: 0x7
+    size: 79
+    far: true
+    class: ASM
+    hypothesis: "channel_reg_write_field"
+    sig: "NEAR retn fn; gate [SI-0x661F]; AX=SI*0x0E, AL=[BX-0x52AC] cbw field, ... near-call hw_reg_write_pair (79B); 2 callers (sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "79B retn, caller_dyn=0 in=2, callee hw_reg_write_pair. Sound-channel register write from the 0x0E-stride table field at -0x52AC (near-twin of channel_reg_write_table). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17CE6
+    seg: 0x17CE
+    ofs: 0x6
+    size: 67
+    far: true
+    class: ASM
+    hypothesis: "channel_reg_write_shift4"
+    sig: "NEAR retn fn; AX=SI*0x0E, AL=[BX-0x52AB], cbw, AX<<=4 -> DI; near-call hw_reg_write_pair (67B); 2 callers (sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "67B retn, caller_dyn=0 in=2, callee hw_reg_write_pair. Sound-channel register write with the field shifted <<4 (third 0x0E-stride variant). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x31BCD
+    seg: 0x31BC
+    ofs: 0xD
+    size: 98
+    far: true
+    class: ASM
+    hypothesis: "dgroup_cycle_step_438"
+    sig: "NEAR retn fn; change-detect ds:43C vs ds:440 -> advance ds:438 mod 8 (publish to ds:434); mirror walk for ds:43B/441 -> ds:435 path; near-call dgroup_cycle_reset_43d (98B); 3 callers (sub_2F6D0, sub_30CB8, sub_31319)"
+    port_status: unported
+    verified: null
+    notes: "98B retn, caller_dyn=0 in=3, callee dgroup_cycle_reset_43d. The STEP half of the dgroup_cycle_435_436 mechanism: advances the mod-8 cursors on change detect. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4DF94
+    seg: 0x4DF9
+    ofs: 0x4
+    size: 9
+    far: false
+    class: ASM
+    hypothesis: "ems_install_gated_near"
+    sig: "NEAR retn LEAF; near-call state_byte_10218_get_zf; branch (EMS-present gate) -> fall into ems_install_impl; clc; retf (9B)"
+    port_status: unported
+    verified: null
+    notes: "9B LEAF, caller_dyn=2, callees state_byte_10218_get_zf + ems_install_impl. Gated EMS install wrapper: checks the 10218 flag then falls into the installer. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x353BA
+    seg: 0x353B
+    ofs: 0xA
+    size: 247
+    far: false
+    class: ASM
+    hypothesis: "far_cb_setup_dispatch"
+    sig: "NEAR retn fn; if AX!=0 skip; BX=ds:550, DI=ds:552 table ptrs, CX=BX+0x1A: near-call far_cb_3 (AL=0x34), second pass far_cb_7... (247B); 3 callers (sub_34C31, sub_45057, sub_4697E)"
+    port_status: unported
+    verified: null
+    notes: "247B retn, caller_dyn=0 in=3, callees game_state_setup_multi + far_cb_3 + far_cb_7. Callback setup dispatcher: runs far_cb_3/far_cb_7 over the ds:550/552 table when AX==0. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2F35B
+    seg: 0x2F35
+    ofs: 0xB
+    size: 139
+    far: false
+    class: ASM
+    hypothesis: "farobj_cfg_delta_apply"
+    sig: "NEAR retn fn; and cs:2E17E,1; DS:0Ah*2 - cs:2E172/7174 delta with sign test + 0x1C shift ladder; body applies hw_cfg_copy_ac13 + hw_cfg_copy_a76f + farobj_record_proc_si (139B); 9 callers"
+    port_status: unported
+    verified: null
+    notes: "139B, caller_dyn=0 in=9, callees farobj_record_proc_si + hw_cfg_copy_ac13 + hw_cfg_copy_a76f. Applies a time-delta (ds:0Ah - cs:2E172) to hardware config + record processing. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2E902
+    seg: 0x2E90
+    ofs: 0x2
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "farptr_table_field_store"
+    sig: "NEAR retn LEAF; near-call farptr_table_get; DI+=0x20; es:[DI]=BX; retn (14B)"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF retn, caller_dyn=0 in=3, callee farptr_table_get. Stores BX at entry+0x20 of the farptr table (field write variant of farptr_table_entry_store). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x11AE7
+    seg: 0x11AE
+    ofs: 0x7
+    size: 62
+    far: false
+    class: ASM
+    hypothesis: "font_glyph_advance_11860"
+    sig: "NEAR retn fn; AL=es:[bx+1]+2 -> cs:11860 (glyph advance); DI=cs:1185A+6; near-call font_glyph_lookup; (62B); 1 caller (cb_args_invoke)"
+    port_status: unported
+    verified: null
+    notes: "62B retn, caller_dyn=5, callees font_glyph_lookup + far_cb_gated. Text renderer: computes glyph advance into cs:11860 and fetches the glyph. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x15CCB
+    seg: 0x15CC
+    ofs: 0xB
+    size: 19
+    far: false
+    class: ASM
+    hypothesis: "game_setup_variant_5169"
+    sig: "void far; cs:162E7=DX, BP=0x5169, DX=2, ds:5ACC=0xFE; tail-jmp game_state_setup_multi (variant parameterization); 4 callers (sub_35505, sub_356A7, sub_37B1E, sub_3825F)"
+    port_status: unported
+    verified: null
+    notes: "19B, caller_dyn=0 in=4, callee game_state_setup_multi. Game-state setup variant: seeds cs:162E7 + ds:5ACC=0xFE then tail-jumps into game_state_setup_multi with BP=0x5169. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x4F3D7
+    seg: 0x4F3D
+    ofs: 0x7
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "hw_cfg_scan_22158"
+    sig: "void far; ES=7A32h, DI=0xA526, CX=0x100, BX=0; far-call dword cs:22158 (0x100-slot scan with zero base); pop es (21B); 4 callers (sub_2F6D0, sub_3001E, sub_30307, sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "21B, caller_dyn=0 in=4, callee dispatch_22158_stub. Hardware-config scan: dispatches a 0x100-slot zero-based walk over the 7A32:A526 table. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x31BB9
+    seg: 0x31BB
+    ofs: 0x9
+    size: 20
+    far: false
+    class: ASM
+    hypothesis: "module_slot0_gated_call"
+    sig: "NEAR retn fn; gate ds:135C==3 AND ds:476!=0: near-call module_slot0_call_2a662; retn (20B); 3 callers (sub_3001E, sub_33443, sub_386F2)"
+    port_status: unported
+    verified: null
+    notes: "20B retn, caller_dyn=0 in=3, callees event_table_find_name + module_slot0_call_2a662. Gated module slot-0 invocation (mode ds:135C==3 + ds:476 set). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x36FE9
+    seg: 0x36FE
+    ofs: 0x9
+    size: 57
+    far: true
+    class: ASM
+    hypothesis: "point_in_rect_6e8"
+    sig: "NEAR retn fn; CX=0; AX in [ds:6E8..6EC] AND BX in [ds:6EA..6EE] -> CX=0 retn else set path flags (57B); 4 callers (sub_36347, sub_36FAC, sub_46D42, sub_47F9E)"
+    port_status: unported
+    verified: null
+    notes: "57B retn, caller_dyn=0 in=4, callee rect_bounds_test_6e. Point-in-rect test against the ds:6E8..6EE rectangle, returns CX result flags. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CF8B
+    seg: 0x2CF8
+    ofs: 0xB
+    size: 316
+    far: true
+    class: ASM
+    hypothesis: "r01_file_create_3ch"
+    sig: "void far; DS=ES=2CF6h, AH=0x3Ch (create file), CX=0, DX=6 int 21h; on error jmp 0x2D0C1; else body with far_cb_0/1 + int32_to_ascii_short + dispatch_2210c (316B); 1 caller (sub_2BFD7)"
+    port_status: unported
+    verified: null
+    notes: "316B, caller_dyn=14, callees int32_to_ascii_short + dispatch_2210c_invoke_5arg + far_cb_0/1 + state_word_26400_get_zero. R01 overlay entry doing DOS file creation (INT 21h AH=3Ch) in seg 2CF6 + callback sequence. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x40E62
+    seg: 0x40E6
+    ofs: 0x2
+    size: 70
+    far: true
+    class: ASM
+    hypothesis: "r05_table_snapshot_55e50"
+    sig: "void far; DS=ES=54AFh; CX=0x10, BP=0x10+ds:55E50 index wrap, counts + compares ds:55E50/55E4E, then near-call farobj_table_snapshot (70B); 4 callers (sub_32453, sub_3252B, sub_33443, sub_34954)"
+    port_status: unported
+    verified: null
+    notes: "70B, caller_dyn=0 in=4, callee farobj_table_snapshot. R05 overlay table snapshot driver: index wrap on ds:55E50 then the 0x0C/0x0A record snapshot. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6CE4B
+    seg: 0x6CE4
+    ofs: 0xB
+    size: 107
+    far: true
+    class: ASM
+    hypothesis: "r06_farptr_dispatch_gate"
+    sig: "void far; starts retf (early-out for the mode_4ac2 else-path that jumps here), then (107B) body with near-call r06_farptr_dispatch; 3 callers (sub_2C117, sub_2C243, sub_6CF90)"
+    port_status: unported
+    verified: null
+    notes: "107B DATA-class head (retf first = else-return target of mode_4ac2_advance_1_2), caller_dyn=0 in=3, callee r06_farptr_dispatch. R06 far-ptr dispatch with an early-return prologue. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x6C896
+    seg: 0x6C89
+    ofs: 0x6
+    size: 1171
+    far: true
+    class: ASM
+    hypothesis: "r06_init_call_43270_b"
+    sig: "void far (C frame enter 4): far-call unk_43270 -> DX:AX; ES=6DE8h: 6E040=6DE8, 6E03E=0x325 (init state); far_cb_0/1 + sub_2BFC3 sequence (1171B); 2 callers (sub_2C333, sub_66E62)"
+    port_status: unported
+    verified: null
+    notes: "1171B C-class, caller_dyn=1, callees far_cb_0 + far_cb_1 + sub_2BFC3. R06 overlay initializer (near-twin of r06_init_call_43270 at 6CD29, + callback sequence). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6D8E6
+    seg: 0x6D8E
+    ofs: 0x6
+    size: 334
+    far: false
+    class: ASM
+    hypothesis: "r06_mode_dispatch_bx8"
+    sig: "NEAR retn fn; AX=ds:4A99; near-call local; BX=ds:4AC2*2 -> call word ptr cs:[BX+8] (mode jump-table via cs:+8); gate ds:49A2 else retn (334B); 6 callers (R06 sub_6Dxxx family)"
+    port_status: unported
+    verified: null
+    notes: "334B retn, caller_dyn=0 in=6, callee dispatch_220d4_stub. R06 mode dispatcher: indexes a near-pointer table at cs:+8 by ds:4AC2 (mode). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6B87A
+    seg: 0x6B87
+    ofs: 0xA
+    size: 2899
+    far: false
+    class: ASM
+    hypothesis: "r06_vec3_main_proc"
+    sig: "void far (C frame enter 0xC): near-call far_cb_1, call fixed_vec3_read; AX%0x22 index; far-ptr args 6DE8:03D9 + r06_state_proc_6de8 + sub_2BFC3 (2899B); 5 callers (r33_e105, r39_e81, sub_2C441/44B, sub_66E62)"
+    port_status: unported
+    verified: null
+    notes: "2899B C-class, caller_dyn=6, callees fixed_vec3_read + far_cb_1 + sub_2BFC3 + r06_state_proc_6de8. R06 main vector-3 processing routine (largest L1 fn). conf: low"
+    updated: "2026-10-18"
+  - ea: 0x68121
+    seg: 0x6812
+    ofs: 0x1
+    size: 56
+    far: false
+    class: ASM
+    hypothesis: "r30_counter_step_tail"
+    sig: "void far; ES=AX gate es:[0]==3; es:709F:7A2B++ (counter); far-call r30_shared_tail_es with the counter; continues (56B); 2 callers (r32_e83, sub_2C3E7)"
+    port_status: unported
+    verified: null
+    notes: "56B DATA-class (decodable body), caller_dyn=6, callee r30_shared_tail_es. R30 counter step gated on es:[0]==3, tail-calls the shared es-swap helper. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6A050
+    seg: 0x6A05
+    ofs: 0x0
+    size: 360
+    far: true
+    class: ASM
+    hypothesis: "r30_mode_set_637fc_c"
+    sig: "void far; gate es:7894:79EAA==0 else jmp 0x6A0EE; es:602E:637FC=0x10D, 637FE=0xC1; far_cb_0/1 + sub_2BFC3 + r30_farobj_proc (360B); 5 callers"
+    port_status: unported
+    verified: null
+    notes: "360B, caller_dyn=0 in=5, callees far_cb_0 + far_cb_1 + sub_2BFC3 + r30_farobj_proc. R30 mode-preset variant C (637FC=0x10D/637FE=0xC1) with callback sequence. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1E782
+    seg: 0x1E78
+    ofs: 0x2
+    size: 545
+    far: true
+    class: ASM
+    hypothesis: "sbi_level_sync_77de2"
+    sig: "NEAR retn fn; compare es:77DE2 vs es:77DEC (base-level vs current), step es:78862 +/-0x0C, emit via sbi_data_write/wait (545B); 3 callers (sub_1F46C, sub_3099C, sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "545B retn, caller_dyn=0 in=3, callees sbi_data_write + sbi_command_wait. SBI base-level sync (es:77DE2 -> es:77DEC, near-twin of sbi_level_sync_77de6). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x35B2F
+    seg: 0x35B2
+    ofs: 0xF
+    size: 20
+    far: false
+    class: ASM
+    hypothesis: "sprite_offset_dispatch_343e"
+    sig: "NEAR retn fn; SI=[SI+0x7B6]-AX; BX+=ds:6F8; DI+=ds:6FA; far-call dword cs:343E4; retn (24B)"
+    port_status: unported
+    verified: null
+    notes: "24B retn, caller_dyn=0 in=5, callee far_cb_with_args. Sprite offset compute (ds:6F8/6FA base deltas) then far-dispatch at cs:343E4. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x35E21
+    seg: 0x35E2
+    ofs: 0x1
+    size: 148
+    far: false
+    class: ASM
+    hypothesis: "sprite_pos_bounce_dispatch"
+    sig: "NEAR retn fn; BX=0xA0, DI=0x32; gates ds:44AA==1 + ds:4890 + [ds:48BA+0xB1]: near-call bounce_clamp_7ae, BX=ds:7AE, DI=ds:7B0; BP=2 dispatch prep (148B); 4 callers"
+    port_status: unported
+    verified: null
+    notes: "148B retn, caller_dyn=0 in=4, callees dispatch_220d4_stub + bounce_clamp_7ae. Sprite position bounce: gated clamp of ds:7AE/7B0 then dispatch with BX/DI position. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3769B
+    seg: 0x3769
+    ofs: 0xB
+    size: 146
+    far: true
+    class: ASM
+    hypothesis: "sprite_project_gate_c5"
+    sig: "NEAR retn fn; ds:7FC=BX, SI=BX; gate [SI+0xC5]!=0 else retn; body near-calls sprite_project_screen_y (146B); 3 callers (sub_2FEF2, sub_3C4F2, sub_47686)"
+    port_status: unported
+    verified: null
+    notes: "146B retn, caller_dyn=0 in=3, callee sprite_project_screen_y. Sprite projection gated on the [SI+0xC5] flag. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x184D3
+    seg: 0x184D
+    ofs: 0x3
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "state_block_77720_commit"
+    sig: "void far; push fixed args (0,0,0,[bp+arg0],0,0,0x14,1) -> near-call state_block_77720_store8 (8-word block store); 2 callers (kb_record_commit, sub_1914E)"
+    port_status: unported
+    verified: null
+    notes: "31B span, caller_dyn=1, callee state_block_77720_store8. Commits a keyboard record: fixed 8-word state block (count 0x14, arg at +6). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x37AD0
+    seg: 0x37AD
+    ofs: 0x0
+    size: 78
+    far: false
+    class: ASM
+    hypothesis: "state_gate_451_dispatch"
+    sig: "NEAR retn fn; gate ds:451==0xFF -> ds:1073=0; if ds:1073>1 retn; body near-calls game_state_setup_multi + dispatch_220ec_stub (78B); 3 callers (sub_305E4, sub_37A0A, sub_47A8D)"
+    port_status: unported
+    verified: null
+    notes: "78B retn, caller_dyn=0 in=3, callees game_state_setup_multi + dispatch_220ec_stub. State gate: resets ds:1073 on ds:451==0xFF, dispatches when ds:1073<=1 path. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1303A
+    seg: 0x1303
+    ofs: 0xA
+    size: 155
+    far: true
+    class: ASM
+    hypothesis: "state_table_apply_71c1"
+    sig: "void far; DS=71C1h, cs:11BEE=AX (index); AL=cs:[bx+0x65] -> state_byte_7e54e_set; bx=index*3+0x56, call state_word_2222a_get; then (155B) applies table state incl far_cb_9; 7 callers"
+    port_status: unported
+    verified: null
+    notes: "155B, caller_dyn=8, callees state_byte_7e54e_set + state_byte_7e54d_set + state_word_2222a_get + far_cb_9. Applies an indexed state record from the 71C1 table (index in AX, cs:11BEE). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1C0E4
+    seg: 0x1C0E
+    ofs: 0x4
+    size: 75
+    far: true
+    class: ASM
+    hypothesis: "stream_accumulate_loop"
+    sig: "void far (C frame 4): loop pushing (0x100, running-32bit-acc) -> near-call long_accumulate, then dispatches via [bp+arg0] table (75B); 5 callers (sub_1C12F, sub_1C21B, sub_39B67, sub_39E13, sub_3A3D6)"
+    port_status: unported
+    verified: null
+    notes: "75B C-class, caller_dyn=0 in=5, callee long_accumulate. Accumulate loop (add 0x100 per pass into the 64-bit accumulator) -- the driver around long_accumulate. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1C186
+    seg: 0x1C18
+    ofs: 0x6
+    size: 149
+    far: true
+    class: ASM
+    hypothesis: "stream_long_accumulate"
+    sig: "void far (C frame 0xA): far-ptr cursor at es:77B68, walk record bytes, per-record long_accumulate (42B+ body); 6 callers (sub_1C21B, sub_1C534, sub_1CC2D, sub_1CE08, sub_3A3D6, sub_3A6B1)"
+    port_status: unported
+    verified: null
+    notes: "149B C-class, caller_dyn=0 in=6, callee long_accumulate. Stream record walker feeding the 32-bit accumulator (far cursor es:77B68). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x12F1D
+    seg: 0x12F1
+    ofs: 0xD
+    size: 10
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_default_60"
+    sig: "NEAR retn LEAF; near-call terrain_attr_lookup_3840; if BH==0: retn else BL=0x60; retn (10B)"
+    port_status: unported
+    verified: null
+    notes: "10B LEAF retn, caller_dyn=0 in=5, callee terrain_attr_lookup_3840. Terrain attribute with fallback: returns 0x60 in BL when the lookup yields BH==0. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1426A
+    seg: 0x1426
+    ofs: 0xA
+    size: 98
+    far: false
+    class: ASM
+    hypothesis: "tile_clip_draw_1426a"
+    sig: "NEAR retn fn; BP=cs:11C7A*2+0x110; DI+=cs:11C4E; CH=CL=7; push args, near-call segment_bitfield_decode + param4_compare_flags (98B); 2 callers (sub_160DE, sub_16124)"
+    port_status: unported
+    verified: null
+    notes: "98B retn, caller_dyn=0 in=2, callees segment_bitfield_decode + param4_compare_flags. Tile clip/draw: decodes segment bitfield + compares 4 params at the cs:11C7A-derived base. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2E797
+    seg: 0x2E79
+    ofs: 0x7
+    size: 150
+    far: false
+    class: ASM
+    hypothesis: "vec3_accum_ratio"
+    sig: "NEAR retn fn; DX=CX, near-call fixed_vec3_accum_b; then remap: AX=CL/BL ratio (idiv), +=BH, 16-bit CH sign handling (50B+); 3 callers (sub_2E37B, sub_3E552, sub_4E520)"
+    port_status: unported
+    verified: null
+    notes: "50B+ retn, caller_dyn=0 in=3, callee fixed_vec3_accumulate_b. Vec-3 accumulation followed by a ratio remap (CL/BL with BH addend). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x244E8
+    seg: 0x244E
+    ofs: 0x8
+    size: 72
+    far: false
+    class: ASM
+    hypothesis: "view_proj_rotation_build"
+    sig: "NEAR retn fn; the [SI] angle triple as-is; 3x near-call trig_table_lookup into 0x3870/0x3868/0x386C (DS=7B0Eh) + fixed_mat3_scale family; 9 callers (view_proj_default + 7 presets + sub_28496)"
+    port_status: unported
+    verified: null
+    notes: "72B retn, caller_dyn=0 in=9, callees fixed_mat3_scale_a/b/c + trig_table_lookup. View-projection rotation build from angles (twin of view_rotation_build, called by the view_proj_preset_* family). conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x14A87
+    seg: 0x14A8
+    ofs: 0x7
+    size: 16
+    far: false
+    class: ASM
+    hypothesis: "avg_pair_11c5e_11c60_jmp"
+    sig: "NEAR retn fn; AL=0, DL=0, AH=cs:11C5E, DH=cs:11C60; tail-jmp avg2_ax_dx (16B); 1 caller (sub_149C8)"
+    port_status: unported
+    verified: null
+    notes: "16B retn, callee avg2_ax_dx. Averages the cs:11C5E/11C60 byte pair (form 3). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x14A69
+    seg: 0x14A6
+    ofs: 0x9
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "avg_pair_11c5e_11c61_jmp"
+    sig: "NEAR retn fn; AL=0, DL=0, AH=cs:11C5E, DH=cs:11C61; tail-jmp avg2_ax_dx (17B); 1 caller (sub_149C8)"
+    port_status: unported
+    verified: null
+    notes: "17B retn, callee avg2_ax_dx. Averages the cs:11C5E/11C61 byte pair (form 2). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x14A0B
+    seg: 0x14A0
+    ofs: 0xB
+    size: 17
+    far: false
+    class: ASM
+    hypothesis: "avg_pair_11c60_11c61_jmp"
+    sig: "NEAR retn fn; AL=0, DL=0, AH=cs:11C60, DH=cs:11C61; tail-jmp avg2_ax_dx (17B); 1 caller (sub_149C8)"
+    port_status: unported
+    verified: null
+    notes: "17B retn, callee avg2_ax_dx. Averages the cs:11C60/11C61 byte pair via tail-jmp (form 1 of the avg trio). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x17715
+    seg: 0x1771
+    ofs: 0x5
+    size: 64
+    far: true
+    class: ASM
+    hypothesis: "channel_mode20_write_ae76"
+    sig: "NEAR retn fn; if [bp+arg0]!=0: AX=0x20 else 0; ds:0AE76=AX; loop: push args -> near-call hw_reg_write_pair (value 0x20 / index 4 style, 64B); 1 caller (sub_17643)"
+    port_status: unported
+    verified: null
+    notes: "64B retn, callee hw_reg_write_pair. Channel mode gate: sets ds:0AE76 from a boolean arg (0x20|0) then issues the paired register writes. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17E48
+    seg: 0x17E4
+    ofs: 0x8
+    size: 59
+    far: true
+    class: ASM
+    hypothesis: "channel_reg_write_ae76"
+    sig: "NEAR retn fn; gate ds:0AE76!=0: AX=SI*0x0E, AL=[BX-0x52A1]... near-call hw_reg_write_pair (59B); 2 callers (sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "59B retn, callee hw_reg_write_pair. Sound-channel register write gated on ds:0AE76, field -0x52A1 (fifth variant). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17D29
+    seg: 0x17D2
+    ofs: 0x9
+    size: 67
+    far: true
+    class: ASM
+    hypothesis: "channel_reg_write_field_b"
+    sig: "NEAR retn fn; AX=SI*0x0E, AL=[BX-0x52AA], cbw, AX<<=4 ... near-call hw_reg_write_pair (67B); 2 callers (sub_17B11, sub_17B8B)"
+    port_status: unported
+    verified: null
+    notes: "67B retn, callee hw_reg_write_pair. Sound-channel register write, field at -0x52AA shifted <<4 (fourth 0x0E-stride variant). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13B91
+    seg: 0x13B9
+    ofs: 0x1
+    size: 41
+    far: false
+    class: ASM
+    hypothesis: "coord_delta_dispatch_13bba"
+    sig: "NEAR retn fn; BX=[BX+0x218]; AL=[BX] (variant idx), DI=AL*6; call cs:off_13BBA[DI] (near-ptr table -> the 5 coord_delta_pair_* variants); then DI=DX, imul BP, idiv 0xCCD... (41B); 1 caller (sub_13A71)"
+    port_status: unported
+    verified: null
+    notes: "41B retn, callees coord_delta_pair_11c5c_a/b + coord_delta_pair_11c59_a + coord_delta_11c56 + coord_delta_pair_11c5a. Coordinate-delta jump-table dispatcher: selects one of 5 delta variants via cs:0x13BBA then scales by BP/0xCCD. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x16D9B
+    seg: 0x16D9
+    ofs: 0xB
+    size: 159
+    far: false
+    class: ASM
+    hypothesis: "ems_paging_nested_save"
+    sig: "NEAR retn fn; ds:97h++ (nest level); if != ds:99h: near-call ems_save_restore_set; ds:81h = ds:83h - 0x4000; depth bookkeeping (159B); 1 caller (sub_16CE5)"
+    port_status: unported
+    verified: null
+    notes: "159B retn, callee ems_save_restore_set. Nested EMS page-map save: nest counter ds:97h/99h + segment adjust ds:81h. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4E4D0
+    seg: 0x4E4D
+    ofs: 0x0
+    size: 71
+    far: true
+    class: ASM
+    hypothesis: "ems_state_bootstrap_2e100"
+    sig: "void far; BX=4, near-call farptr_field2f_or_test -> cs:2E124 (byte+0); near-call state_word_10219_get -> cs:2E100 (the gate flag!); near-call state_word_1023d_get -> cs:2E102; zero cs:2E106/108/10A... (71B); 2 callers (sub_30EBE, sub_6E581)"
+    port_status: unported
+    verified: null
+    notes: "71B, callees farptr_field2f_or_test + state_word_10219_get + state_word_1023d_get. EMS-state bootstrap: seeds cs:2E100 gate + cs:2E102 from the EMS state words. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2673F
+    seg: 0x2673
+    ofs: 0xF
+    size: 46
+    far: false
+    class: ASM
+    hypothesis: "farobj_field4_from_di12"
+    sig: "void far; ES=7B0Eh; copy [DI+0x12..0x16] words into 7B0E:7E930/32/34 then (near-call farobj_field4_get_stc body); 2 callers (sub_266AB, sub_2676D)"
+    port_status: unported
+    verified: null
+    notes: "46B, callee farobj_field4_get_stc. Stages three farobj fields from [DI+0x12] into 7E930..34 then runs the field-4 getter (twin of farobj_field4_from_3850). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2E896
+    seg: 0x2E89
+    ofs: 0x6
+    size: 40
+    far: true
+    class: ASM
+    hypothesis: "farptr_table_accum_fields"
+    sig: "NEAR retn fn; near-call farptr_table_get; then 64-bit add DX:AX -> es:[DI+8/0A], CX:BX -> es:[DI+4/6], BX -> +0 (accumulates into the entry fields); (40B); 2 callers (sub_2E48C, sub_2E681)"
+    port_status: unported
+    verified: null
+    notes: "40B retn, callee farptr_table_get. Accumulates computed values into a farptr-table entry's position/field words (es:[DI+4..0A]). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2E8F4
+    seg: 0x2E8F
+    ofs: 0x4
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "farptr_table_field20_get"
+    sig: "NEAR retn LEAF; near-call farptr_table_get; DI+=0x20; BX=es:[DI]; retn (14B)"
+    port_status: unported
+    verified: null
+    notes: "14B LEAF retn, callee farptr_table_get. Reads the word at entry+0x20 of the farptr table (reader pair of farptr_table_field_store). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x24F51
+    seg: 0x24F5
+    ofs: 0x1
+    size: 13
+    far: true
+    class: ASM
+    hypothesis: "flag_bits_clear_far_thunk"
+    sig: "void far; AX=[bp+arg0]; push cs, near-call flag_bits_clear; nop; retf (13B); 2 callers (sub_683C5, sub_6A5BD)"
+    port_status: unported
+    verified: null
+    notes: "13B, callee flag_bits_clear. Far-returning thunk exposing the near flag-bit clear with the arg from the frame. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x39D6C
+    seg: 0x39D6
+    ofs: 0xC
+    size: 27
+    far: true
+    class: ASM
+    hypothesis: "floor_bounds_set_9f"
+    sig: "void far; ds:4AAB=-1, ds:4AA5=0x9F, ds:4AA7=0x9F, ds:4AA9=0x96; tail-jmp shared body (27B); 2 callers (r06_e55, r06_e56)"
+    port_status: unported
+    verified: null
+    notes: "27B, callee state_gate_4ac2_4a83 (shared-tail target). Sets the floor-bounds preset (0x9F/0x9F/0x96 + sentinel -1) then tail-jumps into the shared gate body. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x11B54
+    seg: 0x11B5
+    ofs: 0x4
+    size: 22
+    far: false
+    class: ASM
+    hypothesis: "font_glyph_max_loop"
+    sig: "NEAR retn fn; CX loop: near-call font_glyph_lookup (AX=0), track max into AX vs BP; DL=es:[bx+1] width; retn (22B); 1 caller (sub_11B25)"
+    port_status: unported
+    verified: null
+    notes: "22B retn, callee font_glyph_lookup. Font renderer: loops glyphs tracking a running max, returns the advance width in DL. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x11373
+    seg: 0x1137
+    ofs: 0x3
+    size: 216
+    far: false
+    class: ASM
+    hypothesis: "joystick_dispatch_6d"
+    sig: "void far; DS=ES=CS; BP=AX (mode); BX=0x6D table, AL=(AX-1) XLAT -> push; cmp byte_11178... dispatch chain with callees int15_joystick_read + segment_change_debounce_cx (216B); 1 caller (sub_11450)"
+    port_status: unported
+    verified: null
+    notes: "216B, callees int15_joystick_read + segment_change_debounce_cx. Joystick mode dispatcher: XLAT table at cs:0x6D selects the read/debounce path. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1101A
+    seg: 0x1101
+    ofs: 0xA
+    size: 48
+    far: false
+    class: ASM
+    hypothesis: "kbd_led_update_60h"
+    sig: "NEAR retn fn; AH=AL (new LED byte), gate ds:497 bit2 clear, cli: near-call kbd_ctrl_wait_64, out 60h,AL (LED set), sti; timing via ds:46C... (48B); 1 caller (sub_10FD9)"
+    port_status: unported
+    verified: null
+    notes: "48B retn, callee kbd_ctrl_wait_64. Keyboard LED update: waits the 8042 then outputs the LED command byte to port 60h. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x29BEE
+    seg: 0x29BE
+    ofs: 0xE
+    size: 410
+    far: false
+    class: ASM
+    hypothesis: "line_table_entry_clone"
+    sig: "NEAR retn fn; DI = cs:2796E + CX*0x10 (entry addr); copy 4 words (movsw) from the entry, ds:43BE=cs:27970, gate fixed_scale_clamp_or40 (410B); 2 callers (sub_29B82, sub_32C62)"
+    port_status: unported
+    verified: null
+    notes: "410B retn, callee fixed_scale_clamp_or40. Clones/derives a cs:2796E line-table entry at index CX (0x10 stride) into the working slot. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x29D88
+    seg: 0x29D8
+    ofs: 0x8
+    size: 408
+    far: false
+    class: ASM
+    hypothesis: "line_table_entry_clone_b"
+    sig: "NEAR retn fn; same entry-clone pattern as sub_29BEE with a different flag path (408B); 2 callers (r29_e06, sub_29B82)"
+    port_status: unported
+    verified: null
+    notes: "408B retn, callee fixed_scale_clamp_or40. Line-table entry clone variant B (near-twin of line_table_entry_clone). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x292F4
+    seg: 0x292F
+    ofs: 0x4
+    size: 321
+    far: false
+    class: ASM
+    hypothesis: "line_table_scan_slope"
+    sig: "NEAR retn fn; walk cs:2796E (0x10 stride) patching ds:43BA/43BC flag words, gate + slope_flag_test_bc + fixed_scale_clamp_or40 (321B); 2 callers (sub_1820C0, sub_28ED8)"
+    port_status: unported
+    verified: null
+    notes: "321B retn, callees slope_flag_test_bc + fixed_scale_clamp_or40. Line-table scanner variant that also applies the slope-flag test (third scan form). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A6FC
+    seg: 0x2A6F
+    ofs: 0xC
+    size: 103
+    far: false
+    class: ASM
+    hypothesis: "module_open_3d00"
+    sig: "void far; push cs, near-call ems_seg_free_21_49 (free first); then AH=0x3D00 int 21h (open file at cs:0xAFA8), body continues with handle ops; 2 callers (sub_3001E, sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "103B, callee ems_seg_free_21_49. EMS segment release + DOS file open (INT 21h AH=3Dh) of the module at cs:0xAFA8. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x17112
+    seg: 0x1711
+    ofs: 0x2
+    size: 145
+    far: true
+    class: ASM
+    hypothesis: "opl_addr_data_init_60_80"
+    sig: "NEAR retn fn; near-call hw_reg_write_pair with (0x60,4) then (0x80,4) ... full OPL init sequence (145B); 1 caller (sub_170C4)"
+    port_status: unported
+    verified: null
+    notes: "145B retn, callee hw_reg_write_pair. OPL/AdLib register-space init: repeated address(0x60)/data(0x80) pair writes (the init half of opl_index_data_write). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1D3B1
+    seg: 0x1D3B
+    ofs: 0x1
+    size: 42
+    far: true
+    class: ASM
+    hypothesis: "pcspk_tone_start_79824"
+    sig: "void far; push es:7894:79824 (tone freq); near-call pcspk_tone_on_b6; es:79826=0, ds:9A36=1, AX=1 (42B); 2 callers (sub_1D369, sub_1D400)"
+    port_status: unported
+    verified: null
+    notes: "42B, callee pcspk_tone_on_b6. Starts a PC-speaker tone from the es:79824 frequency word + marks state ds:9A36=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x16D68
+    seg: 0x16D6
+    ofs: 0x8
+    size: 32
+    far: true
+    class: ASM
+    hypothesis: "pit_period_set_dsys"
+    sig: "void far; BX=ds:1A (system divisor), AX=0; near-call pit_divisor_set_pushf; ds:0AF=1, ds:0B1=ds:1C, ds:0B3=ds:1E; (32B); 1 caller (sub_168E0)"
+    port_status: unported
+    verified: null
+    notes: "32B, callee pit_divisor_set_pushf. Programs PIT ch0 from the system divisor ds:1A + latches ds:1C/1E into ds:0B1/0B3 (the alternate of pit_period_set_1000). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x41593
+    seg: 0x4159
+    ofs: 0x3
+    size: 59
+    far: true
+    class: ASM
+    hypothesis: "r05_snapshot_gate_449"
+    sig: "void far; AX=-1; gate ds:449!=0 else retf; body near-calls farobj_table_snapshot (59B); 2 callers (sub_34923, sub_34954)"
+    port_status: unported
+    verified: null
+    notes: "59B, callee farobj_table_snapshot. R05 table snapshot gated on ds:449, returns -1 when clear. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6C3F7
+    seg: 0x6C3F
+    ofs: 0x7
+    size: 1089
+    far: false
+    class: ASM
+    hypothesis: "r06_init_call_43270_c"
+    sig: "void far (C frame): far-call unk_43270; ES=6DE8h 6E040=6DE8, 6E03E=0x325; far_cb_0/1 + sub_2BFC3 + r06_table_zero_30b (1089B); 2 callers (r33_e85, sub_66E62)"
+    port_status: unported
+    verified: null
+    notes: "1089B C-class, callees far_cb_0 + far_cb_1 + sub_2BFC3 + r06_table_zero_30b. R06 initializer variant C (third twin of r06_init_call_43270). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1896EA
+    seg: 0x1896E
+    ofs: 0xA
+    size: 303
+    far: true
+    class: ASM
+    hypothesis: "r53_record_walk_main"
+    sig: "void far; AL=es:[BX+0x15] cbw -> [bp-8]; loop: SI*0x82 index into es:6894:dword_69BEC walk + sub_1896D2 (L1 peer) + r53_record_walk_82 (303B); 2 callers (sub_188DF2, sub_1896D2)"
+    port_status: unported
+    verified: null
+    notes: "303B, callees sub_1896D2 (L1 SCC peer, still unnamed at this batch) + r53_record_walk_82. R53 main record walker (mutually recursive with sub_1896D2). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x16F7B
+    seg: 0x16F7
+    ofs: 0xB
+    size: 51
+    far: true
+    class: ASM
+    hypothesis: "sbi_config_triple_06ea"
+    sig: "void far; push (seg006, 0x6EA) -> state_pair_777e6_set; push (seg006, 0x6CE) -> state_pair_77730_set; third pair state_pair_77734_set (51B); 1 caller (sub_168E0)"
+    port_status: unported
+    verified: null
+    notes: "51B, callees state_pair_777e6_set + state_pair_77730_set + state_pair_77734_set. SBI config: loads the three far-ptr pairs (seg006:06EA/06CE/...) into the es:7772 state. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1722C
+    seg: 0x1722
+    ofs: 0xC
+    size: 55
+    far: true
+    class: ASM
+    hypothesis: "sbi_config_triple_0983"
+    sig: "void far; DS=7772h; push (seg006, 0x983) -> state_pair_777e6_set + the 77730/77734 pairs (55B); 1 caller (sub_168E0)"
+    port_status: unported
+    verified: null
+    notes: "55B, callees state_pair_777e6_set + state_pair_77730_set + state_pair_77734_set. SBI config triple load with base seg006:0983 (near-twin of sbi_config_triple_06ea). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x19BE8
+    seg: 0x19BE
+    ofs: 0x8
+    size: 23
+    far: true
+    class: ASM
+    hypothesis: "state_7894_all_zero"
+    sig: "void far; near-call state_pair_78944_zero_ax1, state_pair_78948_zero_ax1, state_word_78942_zero_ax1 (all three zeroers); AX=1 (23B); 2 callers (sub_18BBE, sub_1B631)"
+    port_status: unported
+    verified: null
+    notes: "23B, callee trio state_pair_78944/78948/78942 zeroers. Composite reset: zeroes the entire es:7894 accumulator state, returns AX=1. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x18388
+    seg: 0x1838
+    ofs: 0x8
+    size: 52
+    far: true
+    class: ASM
+    hypothesis: "state_block_77720_slot_clamp"
+    sig: "void far; SI=[bp+arg0] clamp to [0..5] else AX=0 path; body near-calls state_block_77720_store8 with the slot index (52B); 1 caller (sub_1914E)"
+    port_status: unported
+    verified: null
+    notes: "52B, callee state_block_77720_store8. Commits a state block for a slot clamped to 0..5 (valid-range guard for the 8-word store). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x14356
+    seg: 0x1435
+    ofs: 0x6
+    size: 129
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_unpack_11c2c"
+    sig: "NEAR retn fn; unpack cs:11C2C/11C2E (nibble split AX>>4/DX<<1) -> near-call terrain_attr_lookup_3840 with the packed coords; (129B); 1 caller (sub_15A03)"
+    port_status: unported
+    verified: null
+    notes: "129B retn, callee terrain_attr_lookup_3840. Terrain attribute lookup with nibble-unpacked coordinates from cs:11C2C/2E. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x11F8A
+    seg: 0x11F8
+    ofs: 0xA
+    size: 121
+    far: false
+    class: ASM
+    hypothesis: "terrain_dot_advance_11cf8"
+    sig: "NEAR retn fn; DX:AX = cs:11CF8/11CFA - BP (position delta) with sign-fix loop + BP=1<<CL mask; body near-calls fixed_vec2_dot_7e900 (121B); 1 caller (sub_11DCE)"
+    port_status: unported
+    verified: null
+    notes: "121B retn, callee fixed_vec2_dot_7e900. Terrain/anim advance: masked position delta then the 7E900 matrix dot. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x13162
+    seg: 0x1316
+    ofs: 0x2
+    size: 21
+    far: false
+    class: ASM
+    hypothesis: "terrain_lookup_gated_b"
+    sig: "NEAR retn fn; gate cs:11C69 bits0-1 set: near-call terrain_attr_lookup_3840_b, jb on CF else near-call ds_swap_fail_ret; retn (21B); 1 caller (sub_13110)"
+    port_status: unported
+    verified: null
+    notes: "21B retn, callees ds_swap_fail_ret + terrain_attr_lookup_3840_b. Gated terrain lookup: bit-gated table access with the DS-swap fail path. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x14200
+    seg: 0x1420
+    ofs: 0x0
+    size: 106
+    far: false
+    class: ASM
+    hypothesis: "tile_clip_draw_14200"
+    sig: "NEAR retn fn; BP=cs:11C7A*2+0x110, DI+=cs:11C4E, CH=CL=7; push args, near-call segment_bitfield_decode + param4_compare_flags (106B); 1 caller (sub_16060)"
+    port_status: unported
+    verified: null
+    notes: "106B retn, callees segment_bitfield_decode + param4_compare_flags. Tile clip/draw variant (near-twin of tile_clip_draw_1426a). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2448E
+    seg: 0x2448
+    ofs: 0xE
+    size: 90
+    far: false
+    class: ASM
+    hypothesis: "view_proj_rotation_identity"
+    sig: "NEAR retn fn; the [SI] angle triple + 3x trig_table_lookup (0x3870/3868/386C) + fixed_mat3_scale family AND mat3_scale_identity_diag (the identity-diagonal setter); 2 callers (sub_28503, sub_2F535)"
+    port_status: unported
+    verified: null
+    notes: "90B retn, callees fixed_mat3_scale_a/b/c + mat3_scale_identity_diag + trig_table_lookup. View-projection rotation build with identity-diagonal completion (third twin of the angle-matrix trio). conf: high"
+    updated: "2026-10-18"
+
+  - ea: 0x27E53
+    seg: 0x27E5
+    ofs: 0x3
+    size: 43
+    far: false
+    class: ASM
+    hypothesis: "anim_frame_step_clip"
+    sig: "NEAR retn fn; gate cs:2797A.4 else jmp 279BF; near-call anim_frame_addr_27984 + rect_clip_then_dispatch_2209c + anim_frame_tick_27989 (43B); 1 caller (sub_27A20)"
+    port_status: unported
+    verified: null
+    notes: "43B retn, callees rect_clip_then_dispatch_2209c + anim_frame_tick_27989 + anim_frame_addr_27984. The animation frame-step: resolve frame addr, clip-dispatch it, tick the counter. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x27E37
+    seg: 0x27E3
+    ofs: 0x7
+    size: 28
+    far: false
+    class: ASM
+    hypothesis: "anim_record_clip_step5"
+    sig: "NEAR retn fn; if [SI+4]==1: skip; BX=[SI], DI=[SI+2]; near-call rect_clip_then_dispatch_2209c; SI+=5 (record stride); 1 caller (sub_27A20)"
+    port_status: unported
+    verified: null
+    notes: "28B retn, callee rect_clip_then_dispatch_2209c. Clips+dispatches a 5-byte record unless the [SI+4] flag selects the skip path. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2C98E
+    seg: 0x2C98
+    ofs: 0xE
+    size: 13
+    far: false
+    class: ASM
+    hypothesis: "bcd_hex_hi_nibble"
+    sig: "void far; AL >>= 4 (high nibble), near-call bcd_hex_stosb (writes its hex digit), restore AL (13B DATA-head); 1 caller (sub_2C987)"
+    port_status: unported
+    verified: null
+    notes: "13B, callee bcd_hex_stosb. Converts the HIGH nibble of AL to its ASCII hex digit (the pair half of bcd_hex_stosb's low-nibble path). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x205C9
+    seg: 0x205C
+    ofs: 0x9
+    size: 27
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22084_args_frame"
+    sig: "void far; loads CX,AX,BX,DI,BP from [bp+arg0..8] (5-arg frame), near-call dispatch_22084_near; retf; 1 caller (r17_e07)"
+    port_status: unported
+    verified: null
+    notes: "27B, callee dispatch_22084_near. Loads a 5-word argument frame from the stack then far-dispatches via cs:22084. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CE47
+    seg: 0x2CE4
+    ofs: 0x7
+    size: 216
+    far: false
+    class: ASM
+    hypothesis: "dos_handle_dup_path"
+    sig: "NEAR retn fn; AH=0x45 (dup handle) on BX=0 and BX=1, AH=0x46 force-dup BX=2/CX=0 ... drive_path_build + fname_ext_lower_copy sequence (216B); 1 caller (sub_2CC47)"
+    port_status: unported
+    verified: null
+    notes: "216B retn, callees drive_path_build + fname_ext_lower_copy. DOS handle duplication (INT 21h AH=45/46h) + path/fname setup for the overlay file sequence. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2E637
+    seg: 0x2E63
+    ofs: 0x7
+    size: 74
+    far: false
+    class: ASM
+    hypothesis: "entity_accum_find_4ed"
+    sig: "NEAR retn fn; scan the 0x27-entry 0x0E-stride table at ds:4ED for the first [DI]!=0; found -> near-call fixed_vec3_accumulate_b (74B); 1 caller (sub_2E37B)"
+    port_status: unported
+    verified: null
+    notes: "74B retn, callee fixed_vec3_accumulate_b. Finds the first active entity in the ds:4ED table then runs the vec3 accumulator on it. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1FADA
+    seg: 0x1FAD
+    ofs: 0xA
+    size: 61
+    far: false
+    class: ASM
+    hypothesis: "farobj_flag24_select"
+    sig: "NEAR retn fn; AX=[DI+0x24]&0xE00: if 0 -> tail-jmp active_farptr_match_b2; else decode bits (AH>>1 &7 -> cs:[di+9F] table) and select (61B); 1 caller (sub_2142E)"
+    port_status: unported
+    verified: null
+    notes: "61B retn, callee active_farptr_match_b2. Farobj flag-field selector: [DI+0x24] bits 9-11 pick a cs:9F table entry; zero falls to the farptr match. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2ABE2
+    seg: 0x2ABE
+    ofs: 0x2
+    size: 106
+    far: true
+    class: ASM
+    hypothesis: "farobj_flag7_branch"
+    sig: "NEAR retn fn; gate [SI+7].4; ds:0A84 + [SI+7].2/3 flag tests with es: push paths... (106B, body continues); 1 caller (sub_2AC4C)"
+    port_status: unported
+    verified: null
+    notes: "106B retn, callee stc_retf_const. Farobj [SI+7] multi-flag branch with the stc-const fallback path. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2EFC3
+    seg: 0x2EFC
+    ofs: 0x3
+    size: 29
+    far: false
+    class: ASM
+    hypothesis: "farptr_7075_copy_30"
+    sig: "void far; near-call farptr_7075_cond_82_a9 -> DX:AX; DS=DX, SI=AX; ES=CS, DI=0x30, CX=6, movsw (copies 12B into cs:0030); retf (29B); 1 caller (sub_2EB65)"
+    port_status: unported
+    verified: null
+    notes: "29B, callee farptr_7075_cond_82_a9. Copies 6 words from the conditional 7075 far-pointer into the cs:0030 scratch. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x24EF3
+    seg: 0x24EF
+    ofs: 0x3
+    size: 4
+    far: true
+    class: ASM
+    hypothesis: "flag_24e20_gate_far_thunk"
+    sig: "void far; near-call flag_24e20_gate_stc; retf (4B NEARTHUNK); 1 caller (sub_4E520)"
+    port_status: unported
+    verified: null
+    notes: "4B NEARTHUNK, callee flag_24e20_gate_stc. Far-returning thunk exposing the 24E20 flag gate (pair of the near gate). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2CDF6
+    seg: 0x2CDF
+    ofs: 0x6
+    size: 20
+    far: false
+    class: ASM
+    hypothesis: "fname_open_3d00"
+    sig: "NEAR retn fn; near-call fname_ext_lower_copy (normalize the name); DS:[bp+0Ch], AL=[bp+0Eh], AH=0x3D int 21h (DOS open); retn (20B); 1 caller (sub_2CC47)"
+    port_status: unported
+    verified: null
+    notes: "20B retn, callee fname_ext_lower_copy. Normalizes a filename then opens it (INT 21h AH=3Dh) with the frame drive/path. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x22B3A
+    seg: 0x22B3
+    ofs: 0xA
+    size: 238
+    far: true
+    class: ASM
+    hypothesis: "joystick_gate_counter"
+    sig: "void far (partial head): cs:22230 compare + flag_bits_test_5740 (AL=0x1A) gate, cs:2223A counter with cs:22230 bound, joystick_poll path (238B); 1 caller (sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "238B span, callees joystick_poll + flag_bits_test_5740. Joystick gate: flag-0x1A test + rate counter cs:2223A bounded by cs:22230. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x295DA
+    seg: 0x295D
+    ofs: 0xA
+    size: 436
+    far: false
+    class: ASM
+    hypothesis: "line_draw_prepare_441e"
+    sig: "NEAR retn fn; cs:27968=-1, cs:2796A=0; 43BE=cs:2796E; gate cs:27966.0; DI=43BE, BP=0x441E: lodsw+add table walk into the 441E buffer (436B); 1 caller (sub_28E50)"
+    port_status: unported
+    verified: null
+    notes: "436B retn, callee fixed_scale_clamp_or40. Prepares the 0x441E draw buffer from the cs:2796E line list (gated on cs:27966.0). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x28F37
+    seg: 0x28F3
+    ofs: 0x7
+    size: 318
+    far: false
+    class: ASM
+    hypothesis: "line_flag_patch_28f37"
+    sig: "NEAR retn fn; walk cs:2796E (0x10 stride) patching ds:43BA/43BC flag words + fixed_scale_clamp_or40 (318B); 1 caller (sub_28ED8)"
+    port_status: unported
+    verified: null
+    notes: "318B retn, callee fixed_scale_clamp_or40. Line flag-word patcher form A (from the sub_28ED8 walker family). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x29075
+    seg: 0x2907
+    ofs: 0x5
+    size: 316
+    far: false
+    class: ASM
+    hypothesis: "line_flag_patch_29075"
+    sig: "NEAR retn fn; same 2796E walk patching ds:43BA/43BC + clamp (316B); 1 caller (sub_28ED8)"
+    port_status: unported
+    verified: null
+    notes: "316B retn, callee fixed_scale_clamp_or40. Line flag-word patcher form B (near-twin of form A). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x291B1
+    seg: 0x291B
+    ofs: 0x1
+    size: 323
+    far: false
+    class: ASM
+    hypothesis: "line_flag_patch_291b1"
+    sig: "NEAR retn fn; same walk + slope_flag_test_bc + fixed_scale_clamp_or40 (323B); 1 caller (sub_28ED8)"
+    port_status: unported
+    verified: null
+    notes: "323B retn, callees slope_flag_test_bc + fixed_scale_clamp_or40. Line flag-word patcher form C (with slope test). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A0B5
+    seg: 0x2A0B
+    ofs: 0x5
+    size: 403
+    far: false
+    class: ASM
+    hypothesis: "line_table_entry_clone_slope"
+    sig: "NEAR retn fn; entry clone at cs:2796E + CX*0x10 (movsw x4, 43BE=27970) + slope_flag_test_bc + clamp (403B); 1 caller (sub_29B82)"
+    port_status: unported
+    verified: null
+    notes: "403B retn, callees slope_flag_test_bc + fixed_scale_clamp_or40. Line-table entry clone with the slope test (near-twin of line_table_entry_clone). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x29435
+    seg: 0x2943
+    ofs: 0x5
+    size: 51
+    far: false
+    class: ASM
+    hypothesis: "line_table_scan_dispatch"
+    sig: "NEAR retn fn; gate cs:2796A.5 -> near-call line_table_scan_20 (CX/27968 guards); gate .6 -> near-call line_table_scan_40 (same guards); (51B); 1 caller (sub_28E50)"
+    port_status: unported
+    verified: null
+    notes: "51B retn, callees line_table_scan_20 + line_table_scan_40. The dispatcher half pairing the two line-table scanners on edge bits 5/6. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1FE76
+    seg: 0x1FE7
+    ofs: 0x6
+    size: 18
+    far: true
+    class: ASM
+    hypothesis: "orient_classify_fallback"
+    sig: "NEAR retn fn; near-call sign_classify_bp; if BP!=0 -> retf; near-call quat_orient_flags_911; if BP!=0 -> retf; clc (CF=0 = neither); 1 caller (record_xform_apply)"
+    port_status: unported
+    verified: null
+    notes: "28B retn, callees sign_classify_bp + quat_orient_flags_911. Two-stage orientation classifier: sign test then full flag test; CF=0 when both clear. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x217E1
+    seg: 0x217E
+    ofs: 0x1
+    size: 125
+    far: false
+    class: ASM
+    hypothesis: "param6_append_3w_c"
+    sig: "NEAR retn fn; DS=SS; DI=es:0F66; store AX*2 + [SI+2..6] (3 words), cursor += 6; (125B); 1 caller (sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "125B retn, callee param6_append_0f66. Parameter append form C: 3-word record, +6 cursor. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x21754
+    seg: 0x2175
+    ofs: 0x4
+    size: 141
+    far: false
+    class: ASM
+    hypothesis: "param6_append_avg_b"
+    sig: "NEAR retn fn; DS=SS; DI=es:0F66; store AX*2 + fields [SI+2..8] averaged (sar 1) into the cursor record; (141B); 1 caller (sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "141B retn, callee param6_append_0f66. Parameter append form B: stores half-scale averaged fields. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x216F3
+    seg: 0x216F
+    ofs: 0x3
+    size: 97
+    far: false
+    class: ASM
+    hypothesis: "param6_append_cursor_a"
+    sig: "NEAR retn fn; DS=SS; AX++; DI=es:0F66 cursor; es:[DI]=AX, stride BX=DI+AX*4; copy [SI+2] fields... then near-call param6_append_0f66 (97B); 1 caller (sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "97B retn, callee param6_append_0f66. Parameter append form A: cursor store with AX-derived stride at es:0F66. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2185E
+    seg: 0x2185
+    ofs: 0xE
+    size: 213
+    far: false
+    class: ASM
+    hypothesis: "param6_append_scale_d"
+    sig: "NEAR retn fn; DS=SS; DI=es:0F66; store AX*4 + [SI+2..6], cursor += 6, further scaled fields; (213B); 1 caller (sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "213B retn, callee param6_append_0f66. Parameter append form D: AX*4-scaled header + 3 words. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2B088
+    seg: 0x2B08
+    ofs: 0x8
+    size: 55
+    far: false
+    class: ASM
+    hypothesis: "patch_table_scan_c1f"
+    sig: "void far; DS=ES=CS, DI=0, SI=0x0C1F, CX=word_2B649 (entry count): per-entry table walk calling patch_scan_e8_58d (55B); 1 caller (sub_2B256)"
+    port_status: unported
+    verified: null
+    notes: "55B, callee patch_scan_e8_58d. Drives the relocation patch scan over the 0x0C1F table (count at cs:2B649). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1FCD0
+    seg: 0x1FCD
+    ofs: 0x0
+    size: 32
+    far: false
+    class: ASM
+    hypothesis: "rect_edge_dispatch_a"
+    sig: "NEAR retn fn; gate cs:1F734!=0 && cs:1F736!=0 else retn; lodsw BX, lodsw DI, push SI, near-call rect_edge_skip_dispatch (save CX variant); 1 caller (sub_29917)"
+    port_status: unported
+    verified: null
+    notes: "32B retn, callee rect_edge_skip_dispatch. Record-edge dispatch form A (pushes CX around the dispatch). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1FCF0
+    seg: 0x1FCF
+    ofs: 0x0
+    size: 37
+    far: false
+    class: ASM
+    hypothesis: "rect_edge_dispatch_b"
+    sig: "NEAR retn fn; same 1F734/1F736 gates; lodsw BX,DI, near-call rect_edge_skip_dispatch, then lodsw continues (record stream); 1 caller (sub_28E50)"
+    port_status: unported
+    verified: null
+    notes: "37B retn, callee rect_edge_skip_dispatch. Record-edge dispatch form B (continues the record stream after the call). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x1F197
+    seg: 0x1F19
+    ofs: 0x7
+    size: 452
+    far: true
+    class: ASM
+    hypothesis: "sbi_event_advance_1174"
+    sig: "void far (C frame): SI/DI from args; es:7772:[SI*2+0x1174] + DI -> working var, then (452B) sbi_data_write + sbi_command_wait sequence; 1 caller (sub_3001E)"
+    port_status: unported
+    verified: null
+    notes: "452B C-class, callees sbi_data_write + sbi_command_wait. SBI event advance: base at es:7772:1174 indexed by SI, offset DI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x35D59
+    seg: 0x35D5
+    ofs: 0x9
+    size: 71
+    far: false
+    class: ASM
+    hypothesis: "sprite_pos_default_a032"
+    sig: "NEAR retn fn; if ds:78A==0x7FFF (sentinel): ds:7AE=0xA0, ds:7B0=0x32, retn (else falls into body); 1 caller (sub_35DF1)"
+    port_status: unported
+    verified: null
+    notes: "71B retn, callee rect_bounds_test_6e. Default sprite position: sets ds:7AE/7B0 = 0xA0/0x32 when the ds:78A sentinel is set. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x2650C
+    seg: 0x2650
+    ofs: 0xC
+    size: 135
+    far: false
+    class: ASM
+    hypothesis: "sprite_stride_dispatch_1f718"
+    sig: "void far (partial head): lodsw >>2 + cs:1F718 base -> BX stride math, lodsw fields... near-call dispatch_220a4_near (135B); 1 caller (sub_2676D)"
+    port_status: unported
+    verified: null
+    notes: "135B span, callee dispatch_220a4_near. Sprite stride dispatch: table stride from cs:1F718 then far-dispatch via cs:220A4. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x1846A
+    seg: 0x1846
+    ofs: 0xA
+    size: 29
+    far: true
+    class: ASM
+    hypothesis: "state_block_77720_commit_12"
+    sig: "void far; push fixed args (0,0,0,0,0,0,0x12,1) -> near-call state_block_77720_store8; add sp,0x10 (29B); 1 caller (sub_1914E)"
+    port_status: unported
+    verified: null
+    notes: "29B, callee state_block_77720_store8. Commits the fixed state block with count 0x12, slot 1 (near-twin of state_block_77720_commit). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x18510
+    seg: 0x1851
+    ofs: 0x0
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "state_block_77720_commit_19"
+    sig: "void far; push fixed args (0,0,0,0,0,[bp+arg0],0x19,1) -> near-call state_block_77720_store8 (30B); 1 caller (sub_1914E)"
+    port_status: unported
+    verified: null
+    notes: "30B, callee state_block_77720_store8. Commits the state block with count 0x19, variable slot from the frame. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x18487
+    seg: 0x1848
+    ofs: 0x7
+    size: 76
+    far: true
+    class: ASM
+    hypothesis: "state_block_77720_slot_select"
+    sig: "void far; AX=[bp+arg0]: if 7 or 0x0B -> selected payload (0x6A...) else alt; body near-calls state_block_77720_store8 (76B); 1 caller (sub_1914E)"
+    port_status: unported
+    verified: null
+    notes: "76B, callee state_block_77720_store8. Slot-select commit: routes args 7/0x0B vs default into the 8-word state store. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x20666
+    seg: 0x2066
+    ofs: 0x6
+    size: 177
+    far: false
+    class: ASM
+    hypothesis: "trig_scroll_project_3452"
+    sig: "NEAR retn fn; trig_table_lookup into slot 0x3452 (AX=BX); scale by cs:1F702 scroll (imul + saturating shl1) and further trig math (177B); 1 caller (sub_20726)"
+    port_status: unported
+    verified: null
+    notes: "177B retn, callee trig_table_lookup. Scroll-scaled trig projection using the 0x3452 table slot + cs:1F702 scale. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A30E
+    seg: 0x2A30
+    ofs: 0xE
+    size: 50
+    far: false
+    class: ASM
+    hypothesis: "uibounds_top_bottom_dispatch"
+    sig: "void far; gate cs:2796A.7 -> near-call uibounds_set_top_80 (CX>=3 + 27968 guards); gate .8 (0x100) -> near-call uibounds_set_bottom_100; tails into uibounds_left_right_dispatch (50B DATA-head); 1 caller (sub_2A248)"
+    port_status: unported
+    verified: null
+    notes: "50B, callees uibounds_set_top_80 + uibounds_set_bottom_100. Top/bottom UI-bound dispatcher (the vertical pair of uibounds_left_right_dispatch). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x22A79
+    seg: 0x22A7
+    ofs: 0x9
+    size: 38
+    far: false
+    class: ASM
+    hypothesis: "vector_shutdown_restore"
+    sig: "void far; ES=0, cli: IVT[0]=cs:22218/2221A (restore INT0), near-call int9_vector_unhook, pit_divisor_set_bx(0), int8_vector_restore_2221c, sti; (38B); 1 caller (sub_229C0)"
+    port_status: unported
+    verified: null
+    notes: "38B, callees int9_vector_unhook + pit_divisor_set_bx + int8_vector_restore_2221c. Full interrupt shutdown: restores INT 0/8/9 vectors and stops the PIT (inverse of the hook trio). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x233D6
+    seg: 0x233D
+    ofs: 0x6
+    size: 39
+    far: false
+    class: ASM
+    hypothesis: "view_proj_ring_shift"
+    sig: "NEAR retn fn; near-call flag_byte_get -> CL; DX:AX=BX << CX (barrel shift); DI=0x3E80...; 1 caller (view_proj_ring_push)"
+    port_status: unported
+    verified: null
+    notes: "39B retn, callee flag_byte_get. View-projection ring shift: rotates BX left by the flag byte count into the 0x3E80 buffer path. conf: med"
+    updated: "2026-10-18"
+
+  - ea: 0x37FDD
+    seg: 0x37FD
+    ofs: 0xD
+    size: 110
+    far: false
+    class: ASM
+    hypothesis: "entity_event_0e_dispatch"
+    sig: "NEAR retn fn; SI=ds:48BA->[SI+0CA]; if == ds:0E: ds:1077=0, retn; else body (110B) with game_state_setup_multi + state_byte_25488_get; 1 caller (sub_37A0A)"
+    port_status: unported
+    verified: null
+    notes: "110B retn, callees game_state_setup_multi + state_byte_25488_get. Entity event gate: equal-path clears ds:1077, else dispatches the entity state path. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6D13D
+    seg: 0x6D13
+    ofs: 0xD
+    size: 98
+    far: true
+    class: ASM
+    hypothesis: "r06_gate_4ac9"
+    sig: "void far; gate ds:4AC9!=0 else retf; body (98B) into mode_gate_4a83_4ac2_r; 1 caller (sub_66E62)"
+    port_status: unported
+    verified: null
+    notes: "98B, callee mode_gate_4a83_4ac2_r. R06 outer gate on ds:4AC9 before the dual mode gate. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6F3E9
+    seg: 0x6F3E
+    ofs: 0x9
+    size: 47
+    far: false
+    class: ASM
+    hypothesis: "r17_dispatch_seq_2211c"
+    sig: "void far; near-call dispatch_2211c_invoke_2arg, then push args (0xC8, 0, ...) + far-call sequence (47B, pad-heavy); 1 caller (sub_2C149)"
+    port_status: unported
+    verified: null
+    notes: "47B span, callee dispatch_2211c_invoke_2arg. R17 dispatch sequence: 2-arg dispatch then argument-pushed far-call chain. conf: low"
+    updated: "2026-10-18"
+  - ea: 0x1896D2
+    seg: 0x1896D
+    ofs: 0x2
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "r53_record_walk_entry"
+    sig: "void far; SI=0; tail-jmp r53_record_walk_main (loop-entry alias -- the SCC partner; mutual recursion with r53_record_walk_main); 1 caller"
+    port_status: unported
+    verified: null
+    notes: "5B, callee r53_record_walk_main (L1 SCC peer). Loop-entry trampoline: clears SI then joins the record walk (condenses with its caller into one SCC). conf: high"
+    updated: "2026-10-18"
+  - ea: 0x196E63
+    seg: 0x196E6
+    ofs: 0x3
+    size: 304
+    far: false
+    class: ASM
+    hypothesis: "slope_far_call_driver"
+    sig: "void far; far-call slope_flag_test_bx, then (304B pad-heavy) far-call dispatch sequence; 1 caller (r59_e177)"
+    port_status: unported
+    verified: null
+    notes: "304B span, callee slope_flag_test_bx. Far-call driver around the slope test with a long callback sequence. conf: low"
+    updated: "2026-10-18"
+
 counts:
   tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
