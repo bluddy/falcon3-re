@@ -1,0 +1,182 @@
+{
+ "sub_1018F": [
+  "mouse_int33_dispatch",
+  "void far; AX=subfn in [si]; dispatches INT 33h mouse subfns 9,0C,10,14,16-19,1F-21 via int 33h; writes AX,BX,CX,DX result to es:[di..di+6]",
+  "120B, 337K dyn calls (hottest). Full C prologue; compares [si] (subfn) against a set of INT 33h codes then executes `int 33h`, stores 4-word result block. Indirect far-call target (0 static refs). conf: high",
+  "high"
+ ],
+ "sub_24E5D": [
+  "bda_equipment_flag_get",
+  "AX = BDA byte at 0040:0417 (keyboard shift flags); void far",
+  "17B, 243K calls. ES=0, BX=417h -> AL=ES:[BX] = BDA 0040:0417 shift-flag byte, zero-extended to AX. conf: high",
+  "high"
+ ],
+ "sub_22AFF": [
+  "timer_tick_isr",
+  "IRET handler; gates on cs:2224B==1 (skip inc); incs cs:22220; incs cs:22222, every 4th tick sends EOI (out 20h,20h) else just iret",
+  "40B, 229K dyn. Ends in `iret` = interrupt service routine. Reads/writes tick counters cs:22220/22222, EOI to PIC port 20h. Indirect (vector/callback) target. conf: high",
+  "high"
+ ],
+ "sub_22C91": [
+  "fixed_vec3_accumulate_a",
+  "void far; dx:ax accumulator over cs:22C71/22C73/22C75 triple: mul/div accumulate, writes dx back, returns cx=sum; span is TRUNCATED (runs to retf@0x22CD4, ~66B, split by nullsub_19@0x22C9E)",
+  "13B span (really ~66B to retf@0x22CD4), 51K calls, 26 callers. Shares the 3-word state cs:22C71/73/75 with sub_22C53/22C62/22CD5. mul/div accumulate + add cx. NOTE: span truncated by spurious nullsub_19. conf: med",
+  "med"
+ ],
+ "sub_263F0": [
+  "dispatch_220d4_stub",
+  "void far; call dword ptr cs:220D4 (runtime-populated far ptr, 0000:0000 in image); retf",
+  "128B span but body is 5B call+retf; 50K calls, 21 callers. Far-call trampoline through cs:220D4 (filled at load). conf: med",
+  "med"
+ ],
+ "sub_22C62": [
+  "fixed_vec3_read",
+  "void far; AX,BX,CX = cs:22C71, cs:22C73, cs:22C75 (read 3-word state); retf@0x22C70. Bytes after retf are the DATA TABLE it reads, not code (span over-extends)",
+  "41B span (real body 15B to retf@0x22C70), 45K calls, 11 callers incl RTLink r33/r34/r36. Reads the shared cs:22C71/73/75 triple. Span includes its own data table after retf. conf: high",
+  "high"
+ ],
+ "sub_25EF4": [
+  "dispatch_220ec_invoke",
+  "void far; lds si,[bp+4]; call dword ptr cs:220EC; restores ds; retf. Far-call trampoline with far-ptr arg",
+  "25B, 35K calls, 2 callers (r29_e06, r32_e146). Loads far ptr arg then dispatches via cs:220EC. conf: med",
+  "med"
+ ],
+ "sub_25F0D": [
+  "dispatch_220ec_stub",
+  "void far; call dword ptr cs:220EC; retf",
+  "37B span (body 5B); 35K calls, 8 callers. Same dispatch slot as sub_25EF4, no far-ptr arg. conf: med",
+  "med"
+ ],
+ "sub_22841": [
+  "state_word_2223e_set",
+  "void far; cs:2223E = AX; retf",
+  "20B span (body 5B), 33K calls, 1 caller (sub_31022). Setter for state word cs:2223E (used by control_axes_read). conf: high",
+  "high"
+ ],
+ "sub_22EE8": [
+  "fixed_abs_div4",
+  "AX = |AX| / 4 (arith): shl ax,1 x2; sign-fix via cwd/xor/sub; shr ax,1 x2; retf. Preserves dx",
+  "16B, 25K calls, 10 callers. Absolute-value then /4 (fixed-point >>2 with sign correction). LEAF. conf: high",
+  "high"
+ ],
+ "sub_24DE6": [
+  "dispatch_220dc_stub",
+  "void far; call dword ptr cs:220DC; retf",
+  "119B span (body 5B); 17K calls, 8 callers. Far-call trampoline via cs:220DC. conf: med",
+  "med"
+ ],
+ "sub_24B94": [
+  "fixed_matrix_load_7b0e",
+  "void far; DS=0x7B0E, SI=0x3820; copies 9 words (matrix) via 9x MOVSW to ES:DI; retf",
+  "272B span; 15K calls, 3 callers. Loads the 3x3 fixed matrix from DS=7B0E:3820 (9 words = 18B). Related to fixed_matrix_mul. conf: med",
+  "med"
+ ],
+ "sub_2322B": [
+  "state_byte_word_set",
+  "void far; cs:2322A = AL; cs:2324A = BX; retf",
+  "10B, 14K calls, 1 caller (sub_310B7). Setter: byte cs:2322A=AL, word cs:2324A=BX. conf: high",
+  "high"
+ ],
+ "sub_24DDC": [
+  "dispatch_220d8_via_24bba",
+  "void far; AL = cs:24BBA; call dword ptr cs:220D8; retf",
+  "10B, 13K calls, 2 callers. Reads state byte cs:24BBA into AL then far-dispatches via cs:220D8. conf: med",
+  "med"
+ ],
+ "sub_22964": [
+  "tick_rate_compute",
+  "void far; CX=cs:22220 (tick count); if 0 -> AX=4,BX=40h; else AX=0x123/CX clamped >=4, BX=40h; retf. Returns rate+period",
+  "50B, 12K calls, 2 callers. Computes a rate divisor from tick counter cs:22220 (0x123/ticks, min 4), BX=0x40 period. conf: med",
+  "med"
+ ],
+ "sub_22884": [
+  "int32_to_ascii_short",
+  "void far; converts DX:AX (signed 32b) to decimal ASCII at [SI]: sign byte at [SI], digits back-to-front, NUL-terminated; BL=' ' or '-'; pad count in CL",
+  "59B, 12K calls, 15 callers. Adjacent to (immediately before) int32_to_ascii@0x228BF; same push-ax/bx/cx/dx/si + mov bl,20h prologue but SHORTER body -- a compact signed-32b-to-ASCII variant (div-by-10 loop, sign at [si], BL=space/-). Sibling of int32_to_ascii, not a tail. conf: high",
+  "high"
+ ],
+ "sub_22CD5": [
+  "fixed_vec3_accumulate_b",
+  "void far; second accumulator over cs:22C77/22C79/22C7B triple (mul/div/add cx); shares mul/div constants at cs:22C7D..22C87; retf@0x22D18",
+  "68B, 11K calls, 9 callers. Companion to sub_22C91 but operates on the cs:22C77/79/7B triple with the cs:22C7D..C87 constant table. conf: med",
+  "med"
+ ],
+ "sub_22C53": [
+  "fixed_vec3_write",
+  "void far; cs:22C71=AX, cs:22C73=BX, cs:22C75=CX; retf (write 3-word state)",
+  "15B, 10K calls, 2 callers. Setter counterpart to sub_22C62 (fixed_vec3_read). conf: high",
+  "high"
+ ],
+ "sub_16579": [
+  "state_word_11cc8_get",
+  "AX = cs:11CC8; retf",
+  "5B, 10K calls, 1 caller (sub_2FD42). Getter for state word cs:11CC8. conf: high",
+  "high"
+ ],
+ "sub_100AF": [
+  "bda_kb_flag_10000_get",
+  "AL = cs:10000 (sign-extended via cbw); retf. Reads the 0x10000 keyboard/mouse-enable flag",
+  "12B, 9.5K calls, 9 callers (incl r17/r22-r26 overlay entries). Reads byte cs:10000 (the mouse_buttons_get gate flag) sign-extended. conf: high",
+  "high"
+ ],
+ "sub_222AA": [
+  "control_axis_scale_store",
+  "void far; AX = (AX*0x90)>>8 (scale); clamped min AX>=0x12, DX>=8; stores AX->cs:2222C, DX->cs:2222E/22230; retf",
+  "41B, 9.2K calls, 1 caller (sub_2F6D0). Scales input axis (mul 0x90, take high byte), clamps (>=0x12/8), stores to cs:2222C/2222E/22230. conf: med",
+  "med"
+ ],
+ "sub_25EA3": [
+  "state_byte_25487_get",
+  "AL = cs:25487; retf",
+  "5B, 7.4K calls, 2 callers. Getter for state byte cs:25487. conf: high",
+  "high"
+ ],
+ "sub_24D46": [
+  "dispatch_220a8_stub",
+  "void far; call dword ptr cs:220A8; retf",
+  "6B, 6.6K calls, 0 static callers (indirect dispatch). Far-call trampoline via cs:220A8. conf: med",
+  "med"
+ ],
+ "sub_25EEE": [
+  "dispatch_22120_stub",
+  "void far; call dword ptr cs:22120; retf",
+  "6B, 5.7K calls, 1 caller (sub_37A0A). Far-call trampoline via cs:22120. conf: med",
+  "med"
+ ],
+ "sub_22DDC": [
+  "state_farptr_dxax_store",
+  "void far; cs:22DC2 = DX, cs:22DC4 = AX (store far ptr DX:AX into 4-byte slot); retf",
+  "30B span (body ~10B), 3.5K calls, 5 callers. Stores a far pointer DX:AX into cs:22DC2:22DC4. conf: high",
+  "high"
+ ],
+ "sub_25DEB": [
+  "dispatch_22100_invoke",
+  "void far; loads 5 args (si,di,bx,ax,dx) from frame; call dword ptr cs:22100; retf",
+  "29B, 3.3K calls, 9 callers (incl r17/r22-r26). Far-call trampoline via cs:22100 with 5 register args. conf: med",
+  "med"
+ ],
+ "sub_256B2": [
+  "dispatch_220a4_stub",
+  "void far; call dword ptr cs:220A4; retf",
+  "6B, 3.2K calls, 4 callers. Far-call trampoline via cs:220A4. conf: med",
+  "med"
+ ],
+ "sub_231D3": [
+  "state_word_22d26_get",
+  "AX = cs:22D26; retf",
+  "5B, 2.4K calls, 1 caller (sub_320D9). Getter for state word cs:22D26. conf: high",
+  "high"
+ ],
+ "sub_25CCB": [
+  "fixed_vec2_half_add",
+  "AX=[si]>>1 -> BX+=AX; AX=[si+2]>>1 -> DI+=AX; (mid-body, no terminator in span - continues into next fn)",
+  "13B span, 1.8K calls, 4 callers. Halves two words at [si]/[si+2] and accumulates into BX/DI (fixed-point midpoint). Span truncated (DATA class - no ret in 13B). conf: low",
+  "low"
+ ],
+ "sub_22DFA": [
+  "state_word_22e27_set",
+  "void far; cs:22E27 = AX; retf",
+  "5B, 1.7K calls, 2 callers. Setter for state word cs:22E27. conf: high",
+  "high"
+ ]
+}

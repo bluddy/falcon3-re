@@ -283,3 +283,18 @@
   window + the `nullsub_19` truncation of `sub_22C91`); consider whether
   the 24 trap-only thunk far-targets deserve resolution (they point at
   `word_*`/`unk_*` data -- possibly real targets behind data tables).
+
+- **Global Level-0 Batch 1 done (finding 66):** 30 named, `named`
+  **265 -> 295**, Level-0 queue **718 -> 688**. All 4 gates green
+  (check 297, verify_rebuild faithful, verify_idb INTACT, read-back
+  295/295+2/2). Hygiene: epilogues 2,237/2,237; `sub_22C91` confirmed
+  truncated by spurious `nullsub_19@0x22C9E` (real retf@0x22CD4),
+  `sub_22C62` span over-extends into its own data table.
+- **Next (Batch 2):** Level-0 ranks 31-60 (tail of the dyn>0 band: last
+  dyn>0 at rank **130**, first dyn==0 at rank **131 = r30_e66** overlay
+  in=39). Ranks 31-50: sub_103C6(162), sub_25247(136), sub_27673(131),
+  ... sub_254BB(70). After rank 130 the queue becomes static-fan-in
+  R05/overlay leaves (no trace coverage).
+- **Follow-ups:** reclassify the 92 low-confidence DATA fns (epilogue
+  window + `nullsub_19` truncation of `sub_22C91`); resolve the 24
+  trap-only thunk far-targets (point at `word_*`/`unk_*` data).
