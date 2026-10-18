@@ -3887,4 +3887,76 @@ blind spot is largely closed at Level 0.
 
 ---
 
+## 2026-10-18 70 — Global Batch 5 (36 named: `dyn>=10` + the last
+hotspots + high-fan-in tail), `named` 397 -> 433, Level-0 queue 418 -> 382,
+**`caller_dyn>=1000` and `in>=5` buckets now EMPTY**
+
+Finding 69 left the Level-0 queue at 454 with 48 `dyn>=10`, 6
+`caller_dyn>=1000` hotspots, and 11 `in>=5` high-fan-in leaves. This session
+ran **Batch 5 (36)**: Slice A = top 18 `dyn>=10`; Slice B = the **last 6
+`caller_dyn` hotspots** + 12 high-fan-in long-tail static leaves.
+
+### Batch 5 (36)
+
+Disassembled via `dump_batch5.py` -> `batch5_disasm.txt`/`batch5_context.json`.
+
+**Slice A (top 18 `dyn>=10`)** — state/EMS/dispatch:
+`overlay_seg_word_read` (66), `state_word_9a36_get` (65),
+`fixed_repeat_sub_count` (64 — repeat-count loop), `farptr_7075_const_9c`
+(63 — returns constant `7075:009C`), `dispatch_2211c_invoke_2arg` (61),
+`dispatch_22178_then_27474_0` (59, cd=11,565), `event_mode_set_77c98` (53 —
+switch 1/2/3/else -> `es:77C98`=2/3/4/0), `ems_map_pages_4` (44 — 4x INT 67h
+AH=44h), `state_byte_2549f_set` (44), `state_byte_254a0_set` (44),
+`state_7eab8_zero` (40), `state_word_77b32_get` (39, cd=133),
+`state_word_77804_set` (39 — atomic cli store), `state_word_1f6e2_get` (36),
+`state_byte_2549f_get` (36), `dispatch_2211c_stub` (34),
+`dispatch_22178_invoke_3arg` (33), `state_byte_25488_set_arg` (32).
+
+**Slice B (6 hotspots + 12 long-tail static)**:
+*Hotspots (the last `caller_dyn>=1000`):* `farobj_batch_flush_2548c`
+(**cd=8,606**, caller `sub_258B2` 8.6K — one-shot 4x far-dispatch flush),
+`trig_table_lookup_83a5` (2,369 — near-twin trig lookup at `ES=83A5h`),
+`dispatch_22188/2218c/22190/22194_stub` (2,019 each, all from `sub_27697`
+2K). *Long-tail static (in>=4):* `flag_1f733_gate` (in=6),
+`matrix_constants_copy_es3852` (in=6 — 12-word matrix scatter, twin of
+`..._3820`), `farobj_index_range_check` (in=6 — index 1..15 bounds),
+`flag_532_set_dispatch_4ab` (in=6 — one-shot flag merge + far dispatch),
+`farobj_magic_feec_check` (in=6, low-conf undecodable),
+`r17_farptr_dispatch`/`r17_farptr_dispatch2` (in=5, low-conf overlay),
+`farobj_attr_table_lookup` (in=5 — byte/word table lookup),
+`farobj_record_build_6b58` (in=5), `hw_config_copy_85061` (in=5),
+`r06_farptr_dispatch` (in=5, low-conf overlay), `hw_flag_bit2_22e_set`
+(in=4). Four low-confidence undecodable overlay/farobj routines flagged.
+
+### Ledger + gates
+
+`naming.yaml` **399 -> 435** (+36), `routines.yaml` **398 -> 434** ea (+36,
+CRLF normalized). `naming.py apply` (36 fb_fields + 1 source text, 7 hits) +
+`push-ida` (36 renamed in IDB).
+
+Gates (all green): `naming.py check` **435** . `verify_rebuild` **faithful
+(2,237==2,237, LOST 0, CHANGED 0)** . `verify_idb` **INTACT (0 span/name/
+hole problems)** . `name_readback` **433/433 function + 2/2 global**.
+
+### Effect + re-bucketed queue — two buckets hit ZERO
+
+| metric | f69 | f70 |
+|---|---|---|
+| named (fb join) | 397 | **433 (+36)** |
+| naming_queue | 1,234 | **1,198 (−36)** |
+| Level-0 queue | 418 | **382 (−36)** |
+
+`callgraph_bottomup` re-run: **all 36 removed** (0 remain). Re-bucketed
+Level-0 (382): `dyn>=10` **30**, `1<=dyn<10` 31, **`dyn0,in>=5` 0**,
+`dyn0,2-4` 129, `dyn0,in1` 192. **Two milestones:**
+* **`caller_dyn>=1000` hotspots = 0** (was 24 at f68) — the fartrans blind
+  spot is fully closed at Level 0.
+* **`dyn0,in>=5` = 0** (was 45 at f67) — every high static fan-in Level-0
+  leaf is now named.
+
+Remaining Level-0 (382): 30 `dyn>=10` + 31 `dyn 1-9` + 321 static-only
+(`2-4` 129, `in=1` 192) — the long tail.
+
+---
+
 (append new findings below)

@@ -339,3 +339,17 @@
 - **Follow-ups:** 3 low-conf undecodable/truncated spans this batch
   (r39_farptr_gate_big, fixed_arith_shift_loop, state_cursor_advance_11c94)
   join the class-c repair list; 92 low-conf DATA fns; 24 trap-only thunks.
+
+- **Batch 5 done (finding 70):** 36 named, `named` **397 -> 433**,
+  Level-0 queue **418 -> 382**. **Two buckets emptied: caller_dyn>=1000
+  hotspots = 0 (was 24) and dyn0,in>=5 = 0 (was 45).** All 4 gates green
+  (check 435, verify_rebuild faithful, verify_idb INTACT, read-back
+  433/433+2/2).
+- **Next (Batch 6):** the long tail of Level-0 (382): **30 dyn>=10** +
+  31 dyn 1-9 + 321 static-only (129 in 2-4, 192 in=1). With the hot
+  buckets empty, rank by (dyn DESC, in DESC) across the whole set; use
+  caller_dyn_sum only as tie-break (max now <1000).
+- **Follow-ups:** 4 low-conf undecodable overlay dispatch routines this
+  batch (r06/r17 x2/farobj_magic) join the class-c repair list; 92
+  low-conf DATA fns; 24 trap-only thunks; consider advancing to Level 1
+  once Level 0 nears exhaustion.
