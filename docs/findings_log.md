@@ -4289,4 +4289,42 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 79 — Global Level-8 COMPLETE: 13 named, L8 queue 13 -> 0
+(`named` 1,304 -> **1,317**)
+
+Finding 78 closed Level 7. Level 8 was a single clean batch (13 fns,
+**0 truncated**). Highlights: **`kb_record_key_event`** (692B class-C
+per-key brain behind `key_event_process`: kb record fetch/commit +
+`state_block_77720` clamp/select/commit chain + 0x4A/0x13 key special
+cases), **`stream_command_interpret`** (475B class-C stream opcode
+interpreter: '/' terminator, 'Q' 3-byte quantize accum vs 77B66, 0x7F ->
+`channel_mode_cmd_dispatch`, default record-skip), the **five-member
+`param454_apply_*` family** (ds:454h param-block writers dispatched by
+sub_32C62: `_thresholds` writes 0x5DC0/0x9088/0xC738 constants,
+`_tableinit` gates on param_table_init + 478h bit0/bit1, and
+`_single`/`_double`/`_triple` count their repeated ch=1 field pairs with
+field index si=2/4/6), **`farobj_record_lookup_step`** (72B slot-table
+indirection front end into `farobj_record_step`, cd=338,048),
+**`slot3_window_scroll_up`** (fourth slot3 direction: vertical edge at
+Y-2, tail into `slot3_window_reload_col1`), **`worldmap_state_apply`**
+(71C1 state table -> map window + 3x3 tile refresh), `adlib_device_init`
+(OPL probe + `adlib_synth_init`), `channel_voice_register_setup`
+(volume/pitch field compute + `channel_list_register_batch`), and
+`view_delta_ratio_compute` (delta normalize -> angle matrix -> signed
+ratio pair ds:5C6/5C8).
+
+### MILESTONE
+
+**Levels 0–8 are all complete.** `named` = **1,317**; global
+`naming_queue` = **314** across Levels 9..22 (L9=7 next, then L19=206
+giant SCC); L8 residue = 2 unnamed (0 queue), **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,319** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,317/1,317
+function + 2/2 global**.
+
+---
+
 (append new findings below)

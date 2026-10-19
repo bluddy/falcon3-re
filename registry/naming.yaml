@@ -6601,6 +6601,72 @@ symbols:
     sig: "NEAR (112B): terrain_point_project_store; jb retn; point_in_rect_6e8: in -> view_rect_strip_draw (restores di/bx) then marker loop: es=ds:796, si=0F8E, bp=2, cx=9, bounds-check di vs 702/6FE and bx vs 6FC/700, (bx-8, di-4) draw via dword ptr cs:loc_343E0; out -> alt label: si=0FA0 or 0FB6 (ds:4A82 gate), (bx-8, di-5) 0xB-char draw; retn; 1 caller (sub_3606C)"
     notes: "112B, cd=0, in=1, callees terrain_point_project_store + point_in_rect_6e8 + view_rect_strip_draw + dword draw at cs:343E0. Terrain point label: projects the point, and when it lands in the 6E8 rect strip-draws the view rect then stamps a bounds-checked 9-char marker from the 0F8E table (or the 0FA0/0FB6 alt label) at the projected (bx,di) -- the label companion of view_rect_strip_draw. conf: med-high"
 
+  - ida: sub_17625
+    name: adlib_device_init
+    kind: function
+    sig: "FAR retf C-frame (30B): ds:AD50=[bp+arg_0] (device id); si=1; opl_index_data_write(ax=arg?) -> si; adlib_synth_init; ax=si (status); retf; 3 callers (sound_device_init, sub_1D19F, sub_1E086)"
+    notes: "30B far, cd=56, in=3, callees opl_index_data_write + adlib_synth_init. AdLib device initializer: saves the caller's device id to ds:AD50, performs the OPL index/data write probe (status kept in si), runs adlib_synth_init and returns the status -- the synth half of sound_device_init. conf: med-high"
+  - ida: sub_1D914
+    name: channel_voice_register_setup
+    kind: function
+    sig: "FAR retf bp-frame (292B): si=arg_0 (voice idx), di=arg_2; di && es:77789==0 -> group_children_release_dynamic; di -> es:77CAA=arg_10; es:77CB0=0; es:[si*2+61E]=arg_4/7772:6AA (volume); gate es:77799 in {2,3} && 77797==2 && event_key_valid_9_jpt(si)==0 -> sar es:[si*2+61E],1 (halve); es:[si*2+5D8]=arg_6/12; es:[si*2+592]=7772:[(arg_6%12)*2+0F0C]; args8/A !=FFFF -> channel_list_register_batch(arg E,C,A,8); es:77789=arg_12 (else 7778B); retf; 1 caller (group_register_main)"
+    notes: "292B far, cd=552, in=1, callees group_children_release_dynamic + event_key_valid_9_jpt + channel_list_register_batch. Channel voice register setup: computes the voice volume (7772:61E, halved for the mode-2/3 key-valid case), pitch/preset fields (5D8=arg/12, 592=table[(arg%12)]), optionally registers the channel list and publishes the group id (77789) -- called only from group_register_main. conf: med-high"
+  - ida: sub_213E6
+    name: farobj_record_lookup_step
+    kind: function
+    sig: "NEAR retn (72B): es=ds; si=[di+22h], ax=[di+24h]; if ax&0x10: es=7B0Eh, si=si*4+3052h -> les si,es:[si] (slot table resolve); FFFF -> retn early; else al=es:[si] (length byte), si+=al; scan 8-stride until es:[si]==FFFF (terminator); cs:byte_1F742=0; jmp loc_214B9 (tail into farobj_record_step dispatch); 2 callers (view_projection, sub_2131C)"
+    notes: "72B, cd=338048 (inherits the farobj hot path), in=2, callee farobj_record_step (tail-jump). Farobj record lookup entry: when [di+24h]&0x10 resolves the record through the 7B0E:3052 slot-handle table (+len byte), skips to the 8-stride table terminator, clears 1F742 and tail-enters farobj_record_step -- the slot-indirection front end of the farobj pipeline called by view_projection. conf: med-high"
+  - ida: sub_1914E
+    name: kb_record_key_event
+    kind: function
+    sig: "FAR retf class-C (692B): si=arg_0 (key); state_word_77b34_get gate + state_mode_check(0); es:77797==0 -> ret 0; kb_index_get < si+1 -> ret 0; es:77A52>=arg_4 && state_word_77743==0 -> ret 0; slot_flag_query(0) fails -> ret 0; clear 0xD-word buffer, kb_record_name_get(si) fails -> ret 0; kb_field_get_22 set -> ret 0; kb_field_get_25==0 -> kb_record_commit + kb_field_set_25_1 else kb_field_get_26 -> kb_record_save_apply(1,0); state_word_77a4a_zero; state_word_9a36 -> state_flags_clear(1); sbi_pit_period_enable; event_key_valid_3_jpt(si) && es:77797==1 -> event_tone_offset_setup(si); state_block_77720_slot_clamp(arg_6) fails -> sbi_pit_period_disable + ret 0; es:77797!=3 -> sbi_mode_slot_store(1,77797), ds:9A18=0; kb_field_get_28; event_key_valid_3_jpt_b -> arg_2=0; arg_2==0 -> state_block_77720_commit_12(77797) else !=1 -> commit_19(arg_2); kb_field_get_2c -> slot_select; kb_field_get_24/2d; if field24==2: 64-bit accumulate with si==4Ah->-1388h, si==13h->-3A98h special cases, loop -4000h -> var_12 counter -> es:777B9=var_12+1, state_block_77720_commit(var_A); state_word_77743_zero; state_block_77720_store8(1, 8 args) -> var_10; var_10 -> es:77A50=si, 77A52=arg_4, kb_field_set_26(1), 77B52=1 else kb_record_save_apply(1,0); ret var_10; retf; 1 caller (key_event_process)"
+    notes: "692B far class-C (largest in the level), cd=240, in=1, callees the full kb record + state_block_77720 commit family (33 callees incl kb_record_commit, kb_record_save_apply, sbi_mode_slot_store, sbi_pit_period_enable/disable, event_tone_offset_setup). Keyboard record key-event handler: the per-key brain behind key_event_process -- validates key/index/slot gates, fetches or commits the named kb record, runs the 77720 state block clamp/select/commit chain (with the 0x4A/0x13 key special cases and 4000h-quantized counter), stores the 8-field state word and returns the commit status. conf: med-high"
+  - ida: sub_318DD
+    name: param454_apply_double
+    kind: function
+    sig: "NEAR retn (341B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah/ch=0 set + write; TWO si=0/ch=1 field pairs; publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=4/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); block_words_fetch; 2 callers (sub_30AA8, sub_32C62)"
+    notes: "341B, cd=0, in=2, param454_apply family: TWO ch=1 field-set pairs, post-publish field index si=4 (=2x2) -- the double-pair variant. conf: med"
+  - ida: sub_317AF
+    name: param454_apply_single
+    kind: function
+    sig: "NEAR retn (302B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch,dx=0); si=0Ah/ch=0 set + op(0A,cx=2); ONE si=0/ch=1 field pair (op(0E) set + op(0A,cx=2)); publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=2/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); block_words_fetch; 3 callers (sub_3099C, sub_32C62, sub_3706C)"
+    notes: "302B, cd=0, in=3, member of the five-variant param454_apply family: exactly ONE ch=1 field-set pair and post-publish field index si=2 (=2x1) -- the single-pair variant dispatched by sub_32C62. conf: med"
+  - ida: sub_316B6
+    name: param454_apply_tableinit
+    kind: function
+    sig: "NEAR retn (249B): gate ds:478h&1 == 0 -> param_table_init; state_word_26400_get_zero -> 2E12F, ds=dx; op_dispatch(6,2,454h) open -> 2E12D; op(0A,cx=0Ch,dx=0); gate es:478h&1 -> SKIP publish; else full publish block (far_cb_8(1), si=0Ah/ch=0 set+write cx=0Ch dx=0Ch, 2747a(bx=0Ch)/27476 sets, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8(0)); post: si=0/ch=0 set + op(0A,cx=2,dx=0); si=0 -> 5DC0h->2E131; op(8) close; block_words_fetch; 4 callers (sub_2F6D0, sub_32C62, sub_39F1D, sub_41646)"
+    notes: "249B, cd=0, in=4, param454_apply family member: unique param_table_init prologue on ds:478h-bit0==0 and a publish skip on es:478h-bit1, post-publish field index si=0 -- the table-initialized variant dispatched by sub_32C62 alongside the single/double/triple/threshold variants. conf: med"
+  - ida: sub_315BC
+    name: param454_apply_thresholds
+    kind: function
+    sig: "NEAR retn (250B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ah,dx=0); si=0/ch=0 set + op(0A,cx=2,dx=0Ah); si=0Ah -> dx=5DC0h written (2E131=5DC0); si=6 set + write; si=0 -> dx=9088h written; si=8 set + write; si=0 -> dx=0C738h written; op(8) close; block_words_fetch; NO publish block; 6 callers (sub_30587, sub_32C62, sub_33443, sub_3EEDB, sub_4111F, sub_41646)"
+    notes: "250B, cd=0, in=6, same callee family as the other param454_apply_*. ds:454h apply variant that writes three escalating constants 0x5DC0 (24000), 0x9088 (37000), 0xC738 (51000) into fields at si=0/6/8 (no channel publish block) -- the thresholds/limits writer of the five, dispatched alongside the others by sub_32C62. conf: med (constant semantics inferred from the literal values)."
+  - ida: sub_31A32
+    name: param454_apply_triple
+    kind: function
+    sig: "NEAR retn (391B): op_dispatch(6,2,454h) open -> cs:2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah set+write; THREE repeated field pairs (si=0, cl=0/ch=1 -> op(0E) set, op(0A,cx=2)) ; publish block (far_cb_8(1), 2747a/27476 state sets, dispatch_22180_then_27474_8, farptr_table_invoke(4), dispatch_22174_stub, far_cb_8(0)); si=6 set+write; si=0 -> dx=5DC0h written to cs:2E131; op_dispatch(8) close; block_words_fetch; gate es:478h&4 skips the middle; 10+ callers (sub_3252B, sub_327BE, sub_329B1, sub_32C62, sub_33443, sub_34923, sub_34954, sub_34C31, sub_3706C, sub_397FB)"
+    notes: "391B, cd=0, in=11 (hottest caller fan-in of the five), callees op_dispatch + state_word_26400_get_zero + state_2747a/27476 setters + far_cb_8 + dispatch_22174/22180 + farptr_table_invoke + block_words_fetch. Third of five ds:454h param-block apply variants (sub_32C62 dispatches all five): three ch=1 field-set pairs, field index si=6, 478h-bit2 gate, channel/clip publish block, shared 5DC0h->2E131 tail write. conf: med"
+  - ida: sub_13578
+    name: slot3_window_scroll_up
+    kind: function
+    sig: "NEAR (200B): release handles ds:154/15A/160 if !=-1 (op 2; the THIRD word of each 3-word slot triple 150/152/154, 156/158/15A, 15C/15E/160); far sub_2BEBF(ax=3); std shifts push each triple one word toward higher addresses (154<-152<-150 etc.); op_slot_mask_release x3 (si=182/1B2/1E2; third row of each mask group); roll mask rows 172->182, 162->172, 1A2->1B2, 192->1A2, 1D2->1E2, 1C2->1D2 (8 words each); 150/156/15C=FFFF (slot heads emptied); si=0, bx=cs:11BC2-2 -> jmp loc_13706 (tail into slot3_window_reload_col1's 3-tile loader); 3 callers (r56_e174, r64_e187, sub_13406)"
+    notes: "200B, cd=0, in=3, callees op_slot_mask_release x3 + op_dispatch + far sub_2BEBF + tail-enters slot3_window_reload_col1. Fourth slot3 window direction: vertical counterpart of scroll_left/right -- vacates each slot's third word and the third mask row, rolls content down (toward higher addresses), empties the slot heads and tail-loads the new row edge at Y-2 (bx=11BC2-2, si=0) through reload_col1's loader. conf: med"
+  - ida: sub_1CC2D
+    name: stream_command_interpret
+    kind: function
+    sig: "FAR retf class-C (475B): follow 7772:unk_77B68 current-stream ptr; byte '/'(2Fh): optional sbi_command_wait(5) if 7894:7981E, write 2Fh at 77B6C target, dec position -> ret; byte 'Q'(51h): +2, read 3 stream bytes -> 64-bit value via 2x long_accumulate(100h,..), +3, store 77CA6:77CA4, stream_check_accum(77B66, value) -> ret; byte 7Fh: ++, stream_long_accumulate -> len, read far ptr at [bx+2]; bytes 0,0,3Fh && 7894:7981E==0 -> channel_mode_cmd_dispatch(ptr+5, (b3<<8)|b4); fall: add len to stream position; default: ++, stream_long_accumulate -> advance position (record skip); retf; 1 caller (sub_1D068)"
+    notes: "475B far class-C, cd=0, in=1, callees sbi_command_wait + long_accumulate x2 + stream_long_accumulate + stream_check_accum + channel_mode_cmd_dispatch. Stream command interpreter: dispatches on the opcode byte at the 77B68 stream cursor -- '/' resets the terminator (with 7894:7981E-qualified SBI wait), 'Q' accumulates the 3 following bytes and quantize-checks against 77B66, 0x7F reads a mode-command far ptr and hands it to channel_mode_cmd_dispatch, everything else skips forward by its accumulated record length. conf: med-high"
+  - ida: sub_355E6
+    name: view_delta_ratio_compute
+    kind: function
+    sig: "NEAR retn (139B): if ds:666h: ds=cs:333AA, si=cs:333A8 -> vec_delta_norm_1f6ee(bx=20h, di=5A8h); else farptr_table_get -> ds, si=di, di=5A8h, cx=[si+18h] -> vec_delta_scaled_stosw(bx=20h); call loc_22EFE; si=(byte at cs:2E129)+0Ch -> angle_matrix_far_invoke; fixed_vec3_transform_7e900(5A8->5A2); ratio_blend_sign_norm(5A2,5A6) -> stub_to_24988 -> ds:5C6=ax; vec_ratio_norm_b(5A2,5A6,-5A4) -> neg -> ds:5C8; call loc_22F15; retn; 2 callers (sub_34954, sub_34C31)"
+    notes: "139B, cd=0, in=2, callees vec_delta_norm_1f6ee / vec_delta_scaled_stosw + angle_matrix_far_invoke + fixed_vec3_transform_7e900 + ratio_blend_sign_norm_far_thunk + vec_ratio_norm_b_far_thunk + stub_to_24988 + farptr_table_get. View delta ratio computer: normalizes an input delta (either from cs:333A8 table or a farptr-table record), rotates it by the angle matrix, transforms through 7e900 and publishes the signed ratio pair ds:5C6/ds:5C8 -- the screen-delta half of the sub_34954/34C31 view steps. conf: med"
+  - ida: sub_130D5
+    name: worldmap_state_apply
+    kind: function
+    sig: "FAR retf (59B): cs:11BEE=ax (mode); ds=es=7075h->71C1h; handle_onetime_op; block_words_fetch; state_table_apply_71c1(cs:11BEE); slot2_map_window_read; slot3_tile3x3_load; if cs:byte_11CF3==0: far sub_2BEB5(ax=11BEE); retf; 2 callers (entity_setup_step, sub_3001E)"
+    notes: "59B far, cd=972, in=2, callees handle_onetime_op + block_words_fetch + state_table_apply_71c1 + slot2_map_window_read + slot3_tile3x3_load + far sub_2BEB5. World-map state applier: applies the 71C1 state table for the saved mode, then re-reads the slot2 map window and reloads the slot3 3x3 tiles (optionally pinging 2BEB5) -- the full world-view refresh behind entity_setup_step. conf: med-high"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table
