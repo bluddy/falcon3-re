@@ -460,3 +460,21 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 7 COMPLETE (finding 78):** 21 named, `named`
+  **1283 -> 1304**, **L7 queue 21 -> 0**. Highlights: farobj_record_step
+  (hottest queue fn, cd=338048), slot2_map_window_update, slot3
+  windowing triad (tile3x3_load + scroll_left/right + reload_col1),
+  r32_hud_phase_dispatch, kb_preset_table_load,
+  kb_stream_open_write_close, op_cstring_bank_far_entry,
+  kb_record_load_far, adlib_synth_init, channel_mode_cmd_dispatch,
+  channel_list_register_batch, entity_slot_pair_create,
+  entity_record_build_gate, terrain_point_label_draw, record_script
+  field0c/14_setup, hud_data_panel_gate_draw, slot2_map_window_refresh.
+  All 4 gates green (check 1306, verify_rebuild faithful, verify_idb
+  INTACT, read-back 1304/1304+2/2).
+- **Next: Global Level-8** (13 targets) -- global queue 327 across
+  L8..L22 (L8=13, L9=7, L10=11, ..., L19=206 giant SCC, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

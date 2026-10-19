@@ -4253,4 +4253,40 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 78 — Global Level-7 COMPLETE: 21 named, L7 queue 21 -> 0
+(`named` 1,283 -> **1,304**)
+
+Finding 77 closed Level 6. This finding delivers all of Level 7 in a
+single batch (21 fns; 4 truncated bodies -- sub_47A9B, sub_12D2F,
+sub_2142E, sub_36347 -- were full-dumped via `dump_full.py`). The new
+generic `tools/_extract_level.py` + `tools/_trunc_check.py` (from f77)
+sped up the queue/dump/verify loop.
+
+### Highlights
+
+| function | what it is |
+|---|---|
+| `farobj_record_step` | **hottest fn in the queue** (caller_dyn = 338,048) -- the per-record farobj driver behind `view_projection`: resolves the record (or the 7B0E:3052 slot handle), walks the 8-stride threshold tables, decodes the flag word into the 1F73x direction globals, scales [di+20] and dispatches one of the 14 object op handlers via off_26426 |
+| `slot2_map_window_update` | incremental slot2 5x5 window updater (1-cell move = one-row/one-column refresh through a fresh handle, bigger jump = full `slot2_map_window_read`); hot behind `entity_update_batch` (cd = 11,109) |
+| slot3 windowing | `slot3_tile3x3_load` (full 3x3 neighbourhood reload + mask rebuild) with the three incremental siblings `slot3_window_scroll_left` / `slot3_window_scroll_right` (3-slot queue shift + new column load via the shared loc_1372D loader) and `slot3_window_reload_col1` (centre-column refresh, no scroll) |
+| `r32_hud_phase_dispatch` | 5-entry R32 HUD cluster: 6847A phase routing into `hud_rowlist_panel_draw` internals, timer countdown + per-record `rect_clip_then_dispatch_2209c` ops 0xE/4, plus the 54AF scale/matrix/projection helpers |
+| keyboard | `kb_preset_table_load` (op6 open, scatter all 35 presets via `kb_preset_record_scatter`), `kb_stream_open_write_close` (wait, op6/open, `kb_stream_far_write`, op8 close), `kb_record_load_far` + `op_cstring_bank_far_entry` (far trampolines) |
+| audio | `adlib_synth_init` (OPL init: zero regs 1..0xF5, 0x2000 period tables, widen/mode3/seq-clamp/mode20), `channel_mode_cmd_dispatch` (mode 1 program write / 2 widen / 3 clamp), `channel_list_register_batch` (cli list-register with unlink rollback + volume/HW publish) |
+| entity/UI | `entity_slot_pair_create` (2 stream words -> 2 `entity_slot_create`), `entity_record_build_gate` (709F table build -> far 2C1CB), `terrain_point_label_draw` (projected point -> view-rect strip draw + 9-char marker), `record_script_field14_setup` / `record_script_field0c_setup` (terrain-delta reveal + coord dispatch for the 48BA entity fields), `hud_data_panel_gate_draw` (quad-clear + `hud_data_panel_draw` dispatch shim), `slot2_map_window_refresh` (gate byte + optional re-read) |
+
+### MILESTONE
+
+**Levels 0, 1, 2, 3, 4, 5, 6 AND 7 are all complete.** `named` =
+**1,304**; global `naming_queue` = **327** across Levels 8..22 (L8=13
+next, then L19=206 giant SCC); L7 residue = 3 unnamed (0 queue:
+thunks/orphans), **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,306** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,304/1,304
+function + 2/2 global**.
+
+---
+
 (append new findings below)
