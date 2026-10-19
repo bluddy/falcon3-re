@@ -14999,6 +14999,728 @@ routines:
     notes: "128B, cd=0, in=2, callees view_limits_load + segment_clip_test + tile_strip_sample_draw. Screen-anchored strip draw: clamps the 0x7A6 list rect + screen origin into 320x200, brackets with view_limits_load(47D6/6E8), computes the offset rect and clip-draws one tile strip. conf: med"
     updated: "2026-10-18"
 
+  - ea: 0x176BE
+    seg: 0x176B
+    ofs: 0xE
+    size: 87
+    far: true
+    class: ASM
+    hypothesis: "channel_widen_forward_apply"
+    sig: "NEAR retf (87B): if arg!=0: ds:0AE74=0x18, 0AE60=0x2000, channel_seq_args_hw(8); ds:0AE73=0x1F, 0AE5E=0x2000, channel_seq_args_hw(7); ds:0AF90=arg; ds:0AE78 = arg?0x0B:9; ds:0AF92=0; channel_widen_forward_bulk(); channel_mode_reg_write(); 9 callers (sub_17643, sub_18BC8, mode_slot_masks, sub_1CBB3, sub_1E086, sub_316B6, sub_317AF, sub_318DD, sub_31A32)"
+    port_status: unported
+    verified: null
+    notes: "87B, cd=49, in=9, callees channel_seq_args_hw + channel_widen_forward_bulk + channel_mode_reg_write. Applies the widen-forward channel configuration: programs sequencer args 8/7 (0x18/0x1F with 0x2000 periods) when enabling, picks mode reg value 0x0B or 9, zeroes 0AF92 and commits through widen_forward_bulk + mode_reg_write. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x2ED9C
+    seg: 0x2ED9
+    ofs: 0xC
+    size: 374
+    far: true
+    class: ASM
+    hypothesis: "entity_record_table_build"
+    sig: "FAR retf (374B): op(2,6) -> cs:2E114 (open); op(2E114, cx=2, dx=0x12, bx=0x0A); op(2E114, cx=2E112, dx=0x2A, bx=0x0A) bind record table; op(2, bx=6, dx=0x30) -> 2E116 (open2); 2E11C=0, 2E110=0x34; loop cx=2E112 records: si=0x2A, lodsb id -> dx=id*4, op(2E116, bx=0x0E, ch=0, dx=id*4); op(2E116, cx=4, dx=0x18, bx=0x0A); op(2E116, 2E118/2E11A, bx=0x0E); op(2E116, cx=2, dx=0x12, bx=0x0A); handle_seg_publish(2E110++), 2E11C+=2; op(2E116, bx=8) close x2; write 2E112 to 500C:400C6; per record: op(2E116, cx=6, dx=0x3D, bx=0x0A), farptr_table_get(2E13D) -> es:[di+22/26/27] farptr fields; op(2E116, cx=2E112, dx=0x5208, bx=0x0A) copy to 5208 state; op close; retf; 8 callers (sub_3001E, sub_3E95E, sub_4E520, sub_4E90E, sub_4EAF8, sub_4EF1C, sub_4F168, sub_4F181)"
+    port_status: unported
+    verified: null
+    notes: "374B far, cd=0, in=8, callees op_dispatch (op 6/0xE/0xA/8 cycles) + handle_seg_publish + farptr_table_get. Entity record table builder: opens the record-set handle, walks the 2A-table type ids through op 0xE/0xA binds, publishes each handle segment, stamps the farptr triple ([di+22h]=off, +26h=seg, +27h=byte) per record and mirrors the table to the 5208 state block. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x2EBCD
+    seg: 0x2EBC
+    ofs: 0xD
+    size: 463
+    far: true
+    class: ASM
+    hypothesis: "entity_slot_create"
+    sig: "FAR retf (463B, 2 bodies): entry (ax=callback, bx=slot): save ax at cs:[bx+8], word_2E10C=ax, 2E10E=bx*2; op(2,bx=6,dx=0x30) -> 2E116; op(2E116, dx=word_2E10C*4, bx=0x0E); op(2E116, cx=4, dx=0x18, bx=0x0A); op(2E116, 2E118/11A, bx=0x0E); op(2E116, cx=2, dx=0x12, bx=0x0A); if cs:[2E10E]!=-1 op(bx=2); op(2E112, bx=0) -> ds=segment, cs:[2E10E]=ax, table_dword_set(dx=seg, bx=[bx+4]); op(2E116, cx=2E112, dx=0, bx=0x0A); op(2E116, bx=8) close; retf. Second body at 0x2ECA6 (stream decoder, same IDA chunk): push ds/es, lodsw count -> rep movsb to cs:2A, lodsw -> 500C:400C6, loop count: rep movsb 6 bytes to cs:3D + farptr_table_get -> es:[di+22/26/27]; lodsw count -> state 5208 via op cycles + per-byte handle_seg_publish (2E110++/2E11C+=2); op(2E116,bx=8); retf; 5 callers (sub_2EA78, sub_3E95E, sub_4E90E, sub_4EAF8, sub_5EC94)"
+    port_status: unported
+    verified: null
+    notes: "463B far, cd=0, in=5, callees op_dispatch + table_dword_set + handle_seg_publish + farptr_table_get. Entity slot creator: registers the caller's callback ax at [slot*2+8], opens/binds a 0x30 handle for the slot, publishes its segment into the dword table, and carries the inline lodsw-stream decoder body (the shared callback that materializes records + farptr triples into the entity table -- sibling of entity_record_table_build, shared callers sub_3E95E/4E90E/4EAF8). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x276E9
+    seg: 0x276E
+    ofs: 0x9
+    size: 26
+    far: true
+    class: ASM
+    hypothesis: "far_op_execute_farptr"
+    sig: "NEAR retf (26B): push bp/si/di/ds; lds dx, [bp+arg_2] (load seg:off far ptr into ds:dx); ax=[bp+arg_0]; push cs; call far_op_execute; nop; pop ds/di/si/bp; retf; 1 caller (sub_683C5)"
+    port_status: unported
+    verified: null
+    notes: "26B, cd=0, in=1, callee far_op_execute. Far-pointer argument wrapper: converts the seg:off pair at [bp+arg_2] into ds:dx and executes the op in ax through far_op_execute. conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x2E2D0
+    seg: 0x2E2D
+    ofs: 0x0
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "farobj_sweep_all"
+    sig: "NEAR retf (16B LEAF): push cs, call farobj_slot_sweep, nop; push cs, call farobj_cmd_sweep, nop; push cs, call farobj_entity_accum_sweep, nop; retf; 3 callers (sub_2FEF2, sub_31319, sub_3DC55)"
+    port_status: unported
+    verified: null
+    notes: "16B leaf, cd=0, in=3, callees farobj_slot_sweep + farobj_cmd_sweep + farobj_entity_accum_sweep. Combined farobj sweep: runs all three table sweeps (slot 0x0C/0x64 bit0, cmd 0x06 bit1, entity-accum 0x0E/0x27 bit4) in one call. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x31022
+    seg: 0x3102
+    ofs: 0x2
+    size: 149
+    far: false
+    class: ASM
+    hypothesis: "flag_quad_state_clear"
+    sig: "NEAR retn (149B): bl=ds:47A; 4 gated branches (test bl,1/2/4/8 set -> skip): if cs:2E137<=0x1E: flag_bits_clear(0x48,0x32 | 0x50,0x17 | 0x4B,0x24 | 0x4D,0x26); ax=0 -> state set via unk_2284B / unk_22850 / state_word_2223e_set / unk_22846 respectively; retn; 4 callers (sub_2F6D0, sub_40EA8, sub_40F5D, sub_40F77)"
+    port_status: unported
+    verified: null
+    notes: "149B, cd=0, in=4, callees flag_bits_clear x8 + state_word_2223e_set + param_table_init (xref pair). Four-bit gated state reset: for each clear bit of ds:47A (while the 2E137 frame counter <= 0x1E) clears its flag pair (48/32, 50/17, 4B/24, 4D/26) and zeroes the paired state word. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x1E04B
+    seg: 0x1E04
+    ofs: 0xB
+    size: 23
+    far: true
+    class: ASM
+    hypothesis: "group_children_release_all"
+    sig: "NEAR retf (23B): si=0; loop: push si, call group_children_release, pop cx, inc si; until si>=0x16 (0..21); 1 caller (irq_state_init)"
+    port_status: unported
+    verified: null
+    notes: "23B, cd=86, in=1, callee group_children_release. Full reset: releases every child slot 0..21 (called from irq_state_init alongside the irq/state zeroing). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x1E062
+    seg: 0x1E06
+    ofs: 0x2
+    size: 36
+    far: true
+    class: ASM
+    hypothesis: "group_children_release_dynamic"
+    sig: "NEAR retf (36B): si=5; loop: push si, push cs, call group_children_release, pop cx, inc si; until si>=0x16 (5..21); 3 callers (key_action_execute, sub_1D914, group_register_main)"
+    port_status: unported
+    verified: null
+    notes: "36B, cd=588, in=3, callee group_children_release. Releases child slots 5..21 (the dynamic tail of the 0..21 table) -- sibling of group_children_release_all which sweeps 0..21 from irq_state_init; callers run it before assigning keys / registering groups. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x30F11
+    seg: 0x30F1
+    ofs: 0x1
+    size: 273
+    far: false
+    class: ASM
+    hypothesis: "hud_data_panel_draw"
+    sig: "NEAR retn (273B): gate ds:474==0 else retn; cs_word_store(0x0C); loc_128AB (state_farptr_get); 8 gated text draws through far_cb_gated with int32_to_ascii(_short) format buffers at 41D/41E: ax x2 at (+0,+0xA)/(+0x1E,+0xA), ds:20:22 at (+0,+0x14), ds:24:26 at (+0x32,+0x14), ds:28:2A at (+0x64,+0x14), ds:23D at (+0x96,+0x14), cs:2E137 at (+0,+0x1E) -- bx=ds:24F, di=ds:251 bases; retn; 12 callers (sub_2F6D0, sub_31319, sub_32453, sub_3252B, sub_3267C, sub_329B1, sub_32C62, sub_3327A, sub_33443, sub_40F5D, sub_40F77, sub_4227A)"
+    port_status: unported
+    verified: null
+    notes: "273B, cd=0, in=12, callees cs_word_store + int32_to_ascii + int32_to_ascii_short + far_cb_gated + state_farptr_get. Gated HUD data panel: when ds:474==0 renders eight fields (two ax values, three 32-bit words at ds:20/24/28, ds:23D and cs:2E137) through the far_cb_gated text callback on a 0x1E/0x32-column grid anchored at ds:24F/251. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x37F27
+    seg: 0x37F2
+    ofs: 0x7
+    size: 182
+    far: false
+    class: ASM
+    hypothesis: "hud_dualvalue_panel_draw"
+    sig: "NEAR retn (182B): phase gate ds:451? -> 1076=0 : if 1076<=1 farwrap_25a1c(si=0x4A, di=0xAE, cx=0x108, bx=0x19, bp=0x18, ax=1) + 1076++; ax=0x6363 default or ds:48BA:[0xC0/0xC1] byte pair; first: al -> int32_to_ascii_short(7FC, cl=0xFE), zero->space pad (keep last 0), far_cb_gated at (0x10B, 0xB0+6FA? bx=0x10B, di=0xB0); second: ah -> same format, far_cb_gated at (0x10B, 0xC0); retn; 4 callers (sub_2FEF2, sub_31319, sub_37A0A, sub_47F9E)"
+    port_status: unported
+    verified: null
+    notes: "182B, cd=0, in=4, callees farwrap_25a1c (terrain_pos_delta xref) + int32_to_ascii_short + far_cb_gated. Phased dual-value HUD panel (phase byte ds:1076): formats the two bytes at entity+0xC0/0xC1 (default 0x63/0x63) as zero-padded numbers and draws them at the (0x10B, 0xB0/0xC0) slots after the 2-step terrain-delta reveal. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x36B11
+    seg: 0x36B1
+    ofs: 0x1
+    size: 253
+    far: false
+    class: ASM
+    hypothesis: "hud_field0c_value_draw"
+    sig: "NEAR retn (253B): di=ds:706, ax=[di+0x0C]; if ds:4A84 (TIME) !=0 -> 36B65: ax*0x90 -> si table idx (3*(dx)+0xDFE string rows), ax=[di+0x0C]*0xD80 >>16, rem mod 0x18 -> hour/minute style layout, 3-iteration draw loop (cx=3, si+=3, bx+=0x18) at (bx+6F8, di-6+6FA), then bp=8/cx=5 char loop at (0x88, ds:704) + bp=1/cx=3 chars (0xE7C) at (0xA0); else ax*0x5A0>>16 (cl=3) -> format 103A, two draws at (0x9A+6F8, 2+704+6FA) and (0x92, -4+704); retn; 2 callers (sub_35BCE, sub_46999)"
+    port_status: unported
+    verified: null
+    notes: "253B, cd=0, in=2, callees int32_to_ascii_short + param_table_init + far_cb_with_args + dispatch_220d4_stub (xref). HUD field renderer for [ds:706+0x0C]: scalar path scales by 0x5A0/0x1000 (cl=3) into two strings at (0x9A/0x92, 704-relative); TIME path (ds:4A84) converts through the 0x90/0xD80 quotients + 0x18-wrap layout and draws the 3-column char grid + 0xE7C label -- sibling of hud_field14_value_draw. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x36C0E
+    seg: 0x36C0
+    ofs: 0xE
+    size: 193
+    far: false
+    class: ASM
+    hypothesis: "hud_field14_value_draw"
+    sig: "NEAR retn (193B): si=ds:706, ax=[si+0x14]; if ds:4A84 (TIME) !=0 -> 36C53: div 0x32, table 0xA0C+4*(ax/50), rem>>1 digit, draws cs:loc_343E2+2 strings at (0x55+6F8, rem+0x30+6FA) and (di-0x19, si+4), then bp=1/cx=0x32 char loop at (0x64+6F8, 0x19+6FA) from 0x9C0 + cx=6 chars at (0x6C, 0x2D) from 0xE76; else format [si+0x14] (cl=4, 103A) -> two draws at (0x60+6F8, 0x38+6FA) and (0x60, 0x32); retn; 3 callers (sub_35BCE, sub_46999, sub_47BDE)"
+    port_status: unported
+    verified: null
+    notes: "193B, cd=0, in=3, callees int32_to_ascii_short + param_table_init + far_cb_with_args + dispatch_220d4_stub (xref). HUD field renderer for [ds:706+0x14]: scalar path formats it with scale 4 and draws two strings at the 0x60/0x38/0x32 slots; TIME path (ds:4A84) converts via the 0x32-quotient + 0xA0C table and draws the clock plus the 0x32-char/6-char blocks -- sibling of hud_field0c_value_draw (shared callers sub_35BCE, sub_46999). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x37D84
+    seg: 0x37D8
+    ofs: 0x4
+    size: 419
+    far: false
+    class: ASM
+    hypothesis: "hud_rowlist_panel_draw"
+    sig: "NEAR retn (419B): phase gate ds:451? -> 1075=0 : if 1075<=2 farwrap_25a1c(si=0x3E, di=0xA2, cx=0, bx=0x28, bp=0x50, ax=1) + 1075++; ds:1108=ds:44AA; bx=ds:106D: if 0 and ds:82C==1 -> far_cb_gated(10F5, bx=5, di=0xA4) single string, else table 10F9[bx] row list: per row cx=[si] count, pos=[si+1] -> ds:816/818, idx=[si+3] -> 113D table row -> far_cb_gated label at (bx+0x11, di), value pick from [bx+11DD] (0x12 < value <.. / 48BA+0C2 / 44D5 tables + ds:834/4890 defaults), int32_to_ascii_short(7FC, cl=0xFD/0xFE) with zero->space padding, 'R' prefix (2052h) + far_cb_gated value at (+0x0C,+9) or (+0x32), y+=9 per row; tail: cs:343E9 index table string at (5,0xA4), ds:44C==0xFF -> 10EE string at (5,0xAD); retn; 4 callers (sub_37A0A, sub_45976, sub_47BDE, sub_484C1)"
+    port_status: unported
+    verified: null
+    notes: "419B, cd=0, in=4, callees farwrap_25a1c (terrain_pos_delta xref) + far_cb_gated xN + int32_to_ascii_short + param_table_init. Phased HUD row-list panel (phase byte ds:1075, 2-step terrain-delta reveal): renders the 10F9[bx] table rows -- label from the 113D/11DD lookups, right-aligned numeric value with zero->space padding and an 'R' prefix -- at 9-pixel row steps plus the tail 10EE string when ds:44C==0xFF. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x37569
+    seg: 0x3756
+    ofs: 0x9
+    size: 113
+    far: false
+    class: ASM
+    hypothesis: "hud_timer_countdown_draw"
+    sig: "NEAR retn (113B): if ds:836==0 retn; ax=ds:838-cs:2E139 -> 838 (countdown); if >=0 skip; reload 838=836 (restart), draw block si=855, cx=0xB, bp=5, di=0x20+6FA, bx=0x91+6F8 through cs:loc_343E0; then si=84C string at (0x54+6F8, 0x4C+6FA) via loc_35B35; ax=ds:83A*0x28F -> dx, cl=0xFE, si=826 int32_to_ascii_short, poke '.' at [si+4] + NUL, draw at (0x6B+6F8, 0x4C+6FA); retn; 3 callers (sub_35BCE, sub_46D42, sub_47A9B)"
+    port_status: unported
+    verified: null
+    notes: "113B, cd=0, in=3, callees int32_to_ascii_short + param_table_init + sprite_offset_dispatch_343e (xref). HUD countdown timer: decrements ds:838 by the cs:2E139 tick, on expiry reloads from ds:836 and flashes the 0xB-char block at (0x91,0x20), then draws the 84C label and the ds:83A value scaled by 0x28F with an inserted decimal point at (0x6B,0x4C). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x3B83A
+    seg: 0x3B83
+    ofs: 0xA
+    size: 307
+    far: false
+    class: ASM
+    hypothesis: "hw_config_flags_build"
+    sig: "NEAR (307B, DATA tail): patch cs:loc_2E819+1=1; rep movsb 0x2B1 bytes ds:si -> 54AF:3E4F + call loc_34474 (handle_build_8f_block xref); two length-prefixed copies -> 54AF:37D9 / 263B; 2E104=[2F64:2F667]; 55E50=500C:500C0; far thunks: word_4FD46+1 (r08_farptr_load_thunk) -> 560A3, word_4FD52/4FD5C+1 (hw_state_partial_4fd) -> 560A4/560A6; read 706E config bytes (+4,+0x20,+0xA,+0x16,+0x10,+0x12,+0xE) -> OR into 54AF:55E4E bits 0-1/4-5/8..0x1000; ems_state_flags_709f -> bits 0x40/0x80; switch ds:54F67: 0 -> tail farobj_process_386f; 1 -> 55E4E|=0x20 -> process; else |=0x10 (+0x400/0x800/0x1000 unless 0x40) -> process; 3 callers (r33_e105, sub_32AF6, sub_4B68D)"
+    port_status: unported
+    verified: null
+    notes: "307B, cd=0, in=3, callees handle_build_8f_block + ems_state_flags_709f + farobj_process_386f (tail) + r08_farptr_load_thunk + hw_state_partial_4fd. Hardware/config state aggregator: copies three length-prefixed tables into 54AF (3E4F/37D9/263B), snapshots the r08/hw-state thunks into 560A3..A6, folds the 706E config bytes + EMS flags into the 55E4E feature bitfield, then tail-enters farobj_process_386f under the 54F67 mode switch. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x18872
+    seg: 0x1887
+    ofs: 0x2
+    size: 90
+    far: true
+    class: ASM
+    hypothesis: "kb_record_slots_release"
+    sig: "NEAR retf (90B): si=7; loop: bx=si*4, es=7772, ax=[bx+0x340] | [bx+0x342]: if both 0 skip; op_dispatch_far_entry(0, [bx+0x342], 2) close; clear [bx+0x342] and [bx+0x340]; dec si while >=0 (8 slots); retf; 2 callers (kb_record_commit, sub_186E6)"
+    port_status: unported
+    verified: null
+    notes: "90B, cd=1, in=2, callee op_dispatch_far_entry (op 2 release). Keyboard record slot flush: for each of the 8 far-ptr slots at 7772:340..34F releases the pending record through op 2 and zeroes the slot (called from kb_record_commit before committing). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x1B8EE
+    seg: 0x1B8E
+    ofs: 0xE
+    size: 262
+    far: true
+    class: ASM
+    hypothesis: "mode_slot_index_build"
+    sig: "FAR C-frame (262B): zero 0x80 words at es=7894:0DDA to FFFF; op_far_entry(arg_2,arg_0,0,0,6) -> si (FFFF -> return 0); op_far_wide(si,0,0,2,0xE) -> var_2 (twice); store arg_6:arg_4 far ptr to es:7981A/7981C; op_far_entry(7981A pair, var_2, si, 0xA); op_far_entry(si,0,0,8); walk record table from offset 0x1C stride 0xC while < [base+0x10] (size): idx=[entry]*0x1E+base -> es:[bx+0DDA] (128-entry index); return 1; 1 caller (mode_slot_masks)"
+    port_status: unported
+    verified: null
+    notes: "262B far, cd=47, in=1, callees op_dispatch_far_entry + op_dispatch_far_wide (op 6 open / 0xE query / 0xA bind / 8 close cycle). Builds the 128-slot index table at 7894:0DDA (FFFF = empty): opens the caller-supplied slot resource, binds its far ptr, then maps each 0xC-stride record's word field to its 0x1E-stride slot address. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x2713D
+    seg: 0x2713
+    ofs: 0xD
+    size: 67
+    far: true
+    class: ASM
+    hypothesis: "object_frame_advance_step"
+    sig: "NEAR retf (67B): bx=di+2A; ax=[bx]; if ax!=-1: ax++ wrap mod es:[si+6] -> [bx]; si=es:si base, si+=ax*2 -> si=es:[si+0A]; di=[bx+8], ax=[bx+4] x3 -> rep movsw (3 words) into record+1C; then si=es:[bx], bx=es:[bx+2], call cs:off_26426[bx]; retf; 5 callers (sub_2142E, sub_264C5, sub_2676D, sub_26C4A, sub_272A2)"
+    port_status: unported
+    verified: null
+    notes: "67B, cd=0, in=5, callees off_26426 op-table dispatch (xref pair). Frame-advance process step: increments the [di+2A] frame counter (wrapping at es:[si+6]), copies the 3-word frame row from the frame table into record+1C, then continues through the op-table dispatch. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x2676D
+    seg: 0x2676
+    ofs: 0xD
+    size: 368
+    far: true
+    class: ASM
+    hypothesis: "object_record_stream_step"
+    sig: "FAR retf (368B): gate cs:byte_26465==0; [di+24h] bit0x100 -> clear it, tail-post; es:[si+18h] bit0 -> farobj_delta_swap_266ab (CF set -> tail-post); stream walk: si=es:[si+1Ah], lodsw word !=-1 per record: word bits -> 1F73A(1)/1F73B(0x8000)/1F72D(0x2000 &1F731)/1F73E(0x1000)/1F72E(0x0E)/1F72F(ah1 &1F730)/byte-pair lookups via 22212:22210 -> 1F72A/1F72C; if 1F73E: walk [si] word list -> call cs:off_26468[bx] stride dispatch (xref sprite_stride_dispatch_1f718); else single call; post: off_26426 dispatch, word_1F71A flags -> es:[si+18h], farobj_field4_from_di12 bounds <=0x200 -> commit 0xFF01 state + copy 4 words from 7B0E:441E view block into record+1C; retf; 5 callers (sub_2142E, sub_264C5, sub_26C4A, sub_2713D, sub_272A2)"
+    port_status: unported
+    verified: null
+    notes: "368B far, cd=0, in=5, callees sub_264C5/sub_26C4A/sub_2713D/sub_27180 (mutual family) + farobj_delta_swap_266ab + farobj_field4_from_di12 + off_26468 stride dispatch. Object record-stream walker: decodes each stream record's flag word into the 1F72A..1F73E globals (with 22210/22212 byte-pair table lookups), runs the stride-handler chain (off_26468), then on success commits the 0xFF01 state and copies the 441E view-matrix words into the record. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x264C5
+    seg: 0x264C
+    ofs: 0x5
+    size: 64
+    far: true
+    class: ASM
+    hypothesis: "object_type3_table_step"
+    sig: "NEAR retf (64B): farobj_type_field_get([di+22h]) -> must al==3 else ret; bx=di+2A, ax=[bx]; cx=es:[si+4]*3; di=es:[si+6]; si+=ax*2 -> si=es:[si+8]; rep movsw word into es:[di]; then bx=es:[si+2], si=es:[si], call cs:off_26426[bx] (14-handler op table); retf; 5 callers (sub_2142E, sub_2676D, sub_26C4A, sub_2713D, sub_272A2)"
+    port_status: unported
+    verified: null
+    notes: "64B, cd=0, in=5, callees farobj_type_field_get + off_26426 op-table dispatch (14 handlers). Type-3 process step: for type==3 objects resolves the [di+2A] index through the es:[si+4/6/8] row tables, copies the selected word into the record then continues through the op-table dispatch (records chain via es:[si] next / es:[si+2] op). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x26C4A
+    seg: 0x26C4
+    ofs: 0xA
+    size: 93
+    far: true
+    class: ASM
+    hypothesis: "object_type_field_step"
+    sig: "NEAR retf (93B): farobj_type_field_get([di+22h]); if ah==0 -> direct op-table dispatch (bx=es:[si+2], si=es:[si], cs:off_26426[bx]); else bx=di+2A (+2 if al==2 or 3), if [bx]!=0: cx=es:[si+6]*3, di=es:[si+8], si=[bx]*2 -> si=es:[si+8], rep movsw word, dispatch via es:[si+2]/es:[si+4]; retf; 5 callers (sub_2142E, sub_264C5, sub_2676D, sub_2713D, sub_272A2)"
+    port_status: unported
+    verified: null
+    notes: "93B, cd=0, in=5, callees farobj_type_field_get + off_26426 op-table dispatch. Type-field gated process step: ah==0 falls straight through to the op dispatch; otherwise resolves the [di+2A(+2)] field (types 2/3 adjust) and, when non-zero, copies the selected table word before dispatching on the next record link. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x27180
+    seg: 0x2718
+    ofs: 0x0
+    size: 238
+    far: true
+    class: ASM
+    hypothesis: "object_view_matrix_build"
+    sig: "FAR retf (238B): save ds/es/di to cs:26418/41A/41C; matrix_copy_42c8_7b0e; copy 3 words si+0x12 -> 7B0E:43B4; view_rotation_build x2 (42C0:[8] with si+0x0C, 42D2:[8] with si+0x2A); fixed_vec3_dot_es x3 into 43A2 (di steps 6); fixed_vec3_dot_3820 x3 from 42C0:[8] into 437E; fixed_vec3_dot_3820_si x3 43A2->4390; vec3_neg_sar1_store/sar1_store x6 -> 4354/434E/4348/4366/4360/435A; call sub_272A2; retf; 6 callers (sub_2142E, sub_264C5, sub_2676D, sub_26C4A, sub_2713D, sub_272A2)"
+    port_status: unported
+    verified: null
+    notes: "238B far, cd=0, in=6, callees view_rotation_build x2 + fixed_vec3_dot_es/3820/3820_si x9 + vec3_(neg_)sar1_store x6 + matrix_copy_42c8_7b0e + sub_272A2 (mutual). Object view-matrix builder: copies the 42C8 matrix, builds both view rotations (42C0/42D2 rows), computes the 3x3 dot-product chain into 43A2/437E/4390, derives the six sar1 half-vectors into 4348..4366 and hands off to sub_272A2. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x10CD8
+    seg: 0x10CD
+    ofs: 0x8
+    size: 115
+    far: true
+    class: ASM
+    hypothesis: "op_cstring_bank_load"
+    sig: "NEAR retf (115B, no frame): op_dispatch(ax=0, bx=6) -> cs:word_10840 (handle); es=7075, ds=cs; 13x op_read_cstring at di=0x27,0x34,...,0xC3 (0x0D stride, 13-byte slots); op_dispatch(word_10840, bx=8) close; retf; 1 caller (sub_10CC3)"
+    port_status: unported
+    verified: null
+    notes: "115B, cd=24, in=1, callees op_dispatch (op 6 open / 8 close) + op_read_cstring. Loads a 13-entry cstring bank: opens the op stream, reads 13 fixed 0x0D-byte strings into 7075:027..0C3, then closes the handle. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x12003
+    seg: 0x1200
+    ofs: 0x3
+    size: 39
+    far: false
+    class: ASM
+    hypothesis: "op_slot_mask_release"
+    sig: "NEAR retn (39B): bp=8, bx=0x200; per row: lodsw from ds:si; if 0 -> bx+=0x40 next row; else cx=16: bit test (shl ax), CF set -> op_slot_release(bx); bx+=4; bx+=0x40 row, dec bp x8; retn; 4 callers (sub_13464, sub_134F6, sub_13578, sub_13640)"
+    port_status: unported
+    verified: null
+    notes: "39B, cd=0, in=4, callee op_slot_release. Bitmask slot releaser: consumes 8 mask words from the ds:si stream (one per 0x40-row starting 0x200) and releases the op slot at 0x200+4*i for every set bit of each 16-bit row -- the shared inner loop of sub_137E0's scan. conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x3ADAA
+    seg: 0x3ADA
+    ofs: 0xA
+    size: 48
+    far: true
+    class: ASM
+    hypothesis: "pos_move_angle_gate"
+    sig: "NEAR retf (48B): call loc_12890 (param_table_init xref); al==0 -> ret 1; ax=[si+0xA], bx=es:[di+0xA]: both non-zero -> ret 1; ax=[si+8], bx=[di+8]: ax<0x6000 -> tail-jmp pos_move_angle_step; bx<0x6000 -> tail-jmp pos_move_angle_step; else ax=1, or ax,ax, retf; 3 callers (overlay_tail_bridge, sub_4AD30, sub_4CD1D)"
+    port_status: unported
+    verified: null
+    notes: "48B far, cd=8053, in=3, callees param_table_init (xref) + pos_move_angle_step (tail x2). Precondition gate for the position step chain: passes (tail-jumps) into pos_move_angle_step when one of the two [rec+0xA] fields is zero AND a [rec+8] speed is <0x6000, otherwise returns 1 -- the entry predicate alongside pos_step_chain_engine / pos_move_angle_step. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x6E8F0
+    seg: 0x6E8F
+    ofs: 0x0
+    size: 330
+    far: true
+    class: ASM
+    hypothesis: "r17_event_main_loop"
+    sig: "FAR C-frame (330B): set es:6E45 8B7/8D7/8DA=1, 451=0; r17_push_args_c8, r17_farptr_dispatch, r17_screen_draw; event loop: set 8D7/8DA=1, flag_table_pop_far_thunk -> 6E8D2 (mask 0xFF00 -> 8D4, &=0xDF -> 8D0); 0x1B -> 8D2=-1 else far 6E8F:1294 translate; scan cs:14A (4 keys) -> jmp cs:[bx+8]: case -> r17_menu_event_loop / r17_router_event_loop / far sub_2C293 / 8DA=0; while 8DA!=0; mouse_gate_far_entry, flag_block_zero_5762_5c63, dispatch_22100(0,2,0xC8,0,0), dispatch_220f4(0xC8,0), r17_farobj_proc_g; return byte_6E451; 4 callers (sub_2C031, sub_2C04F, sub_2C081, sub_2C293)"
+    port_status: unported
+    verified: null
+    notes: "330B far, cd=33, in=4, callees r17_menu_event_loop + r17_router_event_loop + flag_table_pop_far_thunk + mouse_gate_far_entry + dispatch_22100/220f4 + r17_screen_draw/farptr_dispatch/push_args/farobj_proc_g. The R17 module main loop: draws the screen, pops flag-table events, translates them (6E8F:1294) and dispatches through the 4-key cs:14A table to the menu loop, router loop or sub_2C293; on exit zeroes the 5762/5C63 flag block, runs the 22100/220f4 dispatches + farobj proc and returns es:6E451. conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x386A8
+    seg: 0x386A
+    ofs: 0x8
+    size: 74
+    far: false
+    class: ASM
+    hypothesis: "record_script_coord_dispatch"
+    sig: "NEAR retn (74B): push cx; stub_to_249d8(bx=0x816) (tile_strip_sample_draw xref); nibble adjust: ax=ds:816 rol4 &0xF, (+(-8)^-8 fold) +si -> bx; ax=(0-ds:818) rol4 &0xF fold -> +di; store cs:804=bx, 806=ax, 808=si, 80A=di; al=cl, si=0x804; dispatch_220a4_stub; retn; 5 callers (sub_37818, sub_384D0, sub_38506, sub_38537, sub_484C1)"
+    port_status: unported
+    verified: null
+    notes: "74B, cd=0, in=5, callees stub_to_249d8 + dispatch_220a4_stub (+ record_script_exec_main xref). Record-script coordinate dispatch: samples the 816/818 words, applies the folded nibble adjustment to the incoming si/di position, stores the {x,y,si,di} block at cs:804 and invokes dispatch_220a4 with the caller's opcode in al. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x3865C
+    seg: 0x3865
+    ofs: 0xC
+    size: 76
+    far: false
+    class: ASM
+    hypothesis: "record_script_slots_run"
+    sig: "NEAR retn (76B): cx=0x0E (14 slots), bx=0x108E, si=0x1080; scan: [si]>2 -> next (inc si, bx+=6, loop), all done -> retn; found [si]<=2: inc byte [si] (one-shot), bp=[bx], di=[bx+2], arg=[bx+4]; ds=cs:word_2E12F, si=2E131, si=[bx+si]+2E131 (resolve script offset), bx=bp, al=0x0D, dispatch_22134_stub; restore si/bx/cx, continue scan; retn; 2 callers (sub_385AD, sub_484C1)"
+    port_status: unported
+    verified: null
+    notes: "76B, cd=0, in=2, callees dispatch_22134_stub + record_script_exec_main (xref). Record-script slot runner: scans the 14 state bytes at ds:1080 (skipping those >2), one-shot bumps the first eligible slot's state, resolves its script offset through the 108E {bp,di,arg} table + the 2E12F/2E131 script base and dispatches op 0x0D -- continuing until every slot has run. conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x37CFA
+    seg: 0x37CF
+    ofs: 0xA
+    size: 138
+    far: false
+    class: ASM
+    hypothesis: "record_script_tilepos_dispatch"
+    sig: "NEAR retn (138B): si=ds:48BA, ax=[si+0x2E]; ax==ds:1062? no -> 1074=0, 1062=ax; phase: ds:451? -> 1074=0 : if 1074<=1 farwrap_25a1c(si=0x0A, di=0x6E, cx=0xF0, bx=0x1F, bp=0x28, ax=1) + 1074++; ax*=0x2F, stub_to_249d8(bx=0x123A) (tile_strip_sample_draw xref); ds:1236=([123A]*0xA<<1)+ds:1232, ds:1238=([123C]*-0xA<<1)+ds:1234; al=0x63, si=0x1232; dispatch_220a4_stub; 1074++; retn; 2 callers (sub_37A0A, sub_47BDE)"
+    port_status: unported
+    verified: null
+    notes: "138B, cd=0, in=2, callees stub_to_249d8 (tile_strip_sample_draw xref) + farwrap_25a1c (terrain_pos_delta xref) + dispatch_220a4_stub + record_script_exec_main (xref). Record-script tile-position dispatch: re-triggers the phase when entity+0x2E changes, runs the 2-step terrain-delta reveal (phase ds:1074), samples the tile words at 123A/123C, derives the {1232,1234,1236,1238} position block (x' = +10*sx, y' = -10*sy added to the 1232/1234 bases) and invokes dispatch_220a4 with opcode 0x63. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x1C693
+    seg: 0x1C69
+    ofs: 0x3
+    size: 1286
+    far: true
+    class: ASM
+    hypothesis: "sbi_channel_event_dispatch"
+    sig: "FAR C-frame (1286B): var_2=(arg>>4)&7 (class), si=arg&0xF (channel); if 7894:7981E==0 -> no-seq path 1C81C: channel<0xB and class<=7 -> jmp jpt_1C831: cases channel_release + clear 536/556; program_fetch + volume ([si+506]*streambyte/0x7F -> channel_volume_store) + channel_note_seq_write; note/vel pair (536/556) with volume; channel_seq_word_store (long_accumulate 0x80 + word); state writes 4EE/516 + stream echo via sbi_data_write (count from 7894:0F24[class]); etc. Active-seq path: sbi_command_wait(0xD7), sbi_data_write(arg), class jump jpt_1C707 (0..4): clear 4EE[ch] / read 2 stream bytes -> 4EE+536 / if head==7 store [si+506] / stream-copy loop count=0F24[class] via sbi_data_write / skip-loop inc stream; return via def_1C831/1CB7E (pop di/si, leave, retf); 3 callers (r53_e88, sub_1820C0, sub_1D068)"
+    port_status: unported
+    verified: null
+    notes: "1286B far, cd=0, in=3, callees sbi_command_wait + sbi_data_write + channel_volume_store + channel_note_seq_write + channel_release + channel_program_fetch_write + channel_seq_word_store + long_accumulate. SBI channel event dispatcher: splits the packed event byte into (class, channel), writes it to the SBI (cmd 0xD7) when the sequencer is live and runs the per-class state machine (note/velocity/program/volume/channel release + stream echoes), with a second 8-way jump table for the no-sequencer path. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x12BEA
+    seg: 0x12BE
+    ofs: 0xA
+    size: 200
+    far: false
+    class: ASM
+    hypothesis: "slot2_map_window_load"
+    sig: "NEAR retn (200B): ds/es=state_word_26400; if cs:byte_11BB8 (EMS path): state_word_10219_get, ems_page_move_alt(bx=0), rep movsw 0x800 -> 4040h + 0x400 -> 3840h; else (op path): slot2_handle_alloc, op_dispatch(11C14, bx=0x0A, cx=0x1000, dx=0x4040) + op_dispatch(cx=0x800, dx=0x3840) bank reads; 11C0E=11C24, 11C10=11C26, 11C12=(11C26<<5); bx=(((11C26<<5)+11C24-0x42)*2)+0x3840; 5x5 window loop: slot2_handle_read([bx]&0x1FF, dx=0x1F40+, ch=5) dx+=0x100/bx+=2 then bx+=0x36 (row stride 0x40) -> 25x 0x100-byte records into 1F40..; byte_11C0C/11C0D=0; slot2_handle_release; retn; 10 callers (r53_e166, r53_e88, block_words_fetch, sub_186ADC, sub_188DF2, sub_2F6D0, sub_30882, sub_30CB8, sub_39F1D, sub_3A3D6)"
+    port_status: unported
+    verified: null
+    notes: "200B, cd=74, in=10, callees slot2_handle_alloc/read/release + op_dispatch + ems_page_move_alt + state_word_10219_get. Map window loader: fetches the id-bank (0x1000+0x800 bytes to 4040/3840, or EMS copy) then reads the 5x5 cell window centered at (11C24,11C26) (-0x42 = -2 cols-2 rows of the 32-wide 3840 grid) as 0x100-byte records into 1F40..37FF. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x12EA7
+    seg: 0x12EA
+    ofs: 0x7
+    size: 118
+    far: false
+    class: ASM
+    hypothesis: "slot2_map_window_read"
+    sig: "NEAR retn (118B): slot2_handle_alloc; 11C0E=11C24, 11C10=11C26, 11C12=(11C26<<5); bx=((11C12+11C24-0x42)*2)+0x3840; ds/es=state_word_26400; same 5x5 loop: slot2_handle_read([bx]&0x1FF, dx=0x1F40..) dx+=0x100/bx+=2, bx+=0x36 -> 25 records; byte_11C0C/11C0D=0; slot2_handle_release; retn; 9 callers (entity_seg_reset, sub_12895, sub_12D2F, sub_130D5, sub_2F400, sub_2FEF2, sub_355E6, sub_36785, sub_3A88D)"
+    port_status: unported
+    verified: null
+    notes: "118B, cd=44, in=9, callees slot2_handle_alloc/read/release + state_word_26400_get_zero. Map window re-read: same 5x5 cell-window read as slot2_map_window_load but without the bank fetch -- refreshes the 1F40.. records through a fresh slot2 handle (callers include entity_seg_reset). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x137E0
+    seg: 0x137E
+    ofs: 0x0
+    size: 144
+    far: false
+    class: ASM
+    hypothesis: "slot3_mask_rebuild"
+    sig: "NEAR retn (144B): rep movsw 162->202 (8 words); fold: di=202 fixed, 8x (8 lodsw from 172,182,..1E2 OR into 202..211) = OR-reduce the 8x16-byte mask table 162..1E1 into one 16-byte row at 202; release scan: si=1F2, bp=8, bx=0x200, per mask word 16 bits -> op_slot_release(bx) (old state); publish scan: si=202, bp=8, bx=0 (0x200 rows) -> slot3_record_publish(bx) (new state); rep movsw 202->1F2 (8 words save); retn; 3 callers (sub_13640, sub_13755, sub_355E6)"
+    port_status: unported
+    verified: null
+    notes: "144B, cd=0, in=3, callees op_slot_release + slot3_record_publish. Slot3 mask rebuild: OR-folds the 8-row 162.. mask table into the single 202 row, releases every op slot set in the old 1F2 state, publishes every record set in the new 202 state, then saves 202 back to 1F2 (the transaction driver behind slot3_tile_record_load / slot3_record_publish / op_slot_release). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x3081B
+    seg: 0x3081
+    ofs: 0xB
+    size: 50
+    far: false
+    class: ASM
+    hypothesis: "state_bits_pack"
+    sig: "NEAR retn (50B): bx=cs_word_get_25499 &3 (2-bit base); flag_byte_get(bx) -> ror x2, shl/rcl bx insert; state_byte_2549e_get -> shr, rcl bx; loc_254C5 (flag254a1 xref) -> shr, rcl bx; ax=bx; retn; 3 callers (sub_307A5, sub_3099C, sub_3FFEF)"
+    port_status: unported
+    verified: null
+    notes: "50B, cd=0, in=3, callees cs_word_get_25499 + flag_byte_get + state_byte_2549e_get + flag254a1_set (xref pair). Packs the four UI state fields (25499 2-bit clamp, flag byte, 2549e, 254a1) into a single code in AX -- the save half of the pack/unpack pair both called from sub_3FFEF. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x3084D
+    seg: 0x3084
+    ofs: 0xD
+    size: 53
+    far: false
+    class: ASM
+    hypothesis: "state_bits_unpack"
+    sig: "NEAR retn (53B): bx=ax; bit0 -> flag254a1_set; bit1 -> state_byte_2549e_set; (bx&3) -> state_byte_1f743_set; ((bx>>2)&3) -> state_word_25499_set_clamp; retn; 3 callers (sub_30AA8, sub_30CB8, sub_3FFEF)"
+    port_status: unported
+    verified: null
+    notes: "53B, cd=0, in=3, callees flag254a1_set + state_byte_2549e_set + state_byte_1f743_set + state_word_25499_set_clamp. Unpacks the code in AX back into the four state fields (254a1, 2549e, 1f743 2-bit, 25499 clamp 2-bit) -- the restore half of state_bits_pack. conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x36437
+    seg: 0x3643
+    ofs: 0x7
+    size: 45
+    far: false
+    class: ASM
+    hypothesis: "terrain_point_project_store"
+    sig: "NEAR retn (45B): push es; farptr_table_get (adlib_detect_init xref pair, ax from di); lea bx,[di]; si=0x20, di=0x47D6 -> sprite_delta_project_47686; si=di, push cs, call terrain_attr_project_point; CF set -> ds:78A=ds:78C=ax (fail); else ds:78A=bx, 78C=ax, xchg ax,bx; pop es; retn; 3 callers (sub_35BCE, sub_36347, sub_45F2C)"
+    port_status: unported
+    verified: null
+    notes: "45B, cd=0, in=3, callees farptr_table_get + sprite_delta_project_47686 + terrain_attr_project_point. Terrain point projection with cache: resolves the farptr table entry, delta-projects the [di+0x20] offset into 47D6, runs terrain_attr_project_point and stores the resulting point at ds:78A/78C (ax=carry-fail sentinel on CF). conf: med-high"
+    updated: "2026-10-19"
+
+  - ea: 0x2F3E6
+    seg: 0x2F3E
+    ofs: 0x6
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "accum_div_ratio"
+    sig: "NEAR retf leaf (26B): push ax; call fixed_vec3_accumulate_b (dual-ref with slot2_handle_read); pop ax; xor ah,ah; xchg al,cl; div cl; retn; 1 caller (sub_2F257)"
+    port_status: unported
+    verified: null
+    notes: "26B leaf, cd=0, in=1, callees fixed_vec3_accumulate_b (xref pair). Ratio-after-accumulate leaf: runs the vec3 accumulate then returns cl_orig/al_orig as the division quotient (al the caller's count, cl the accumulated remainder from the callee). conf: low"
+    updated: "2026-10-19"
+  - ea: 0x2A96C
+    seg: 0x2A96
+    ofs: 0xC
+    size: 142
+    far: true
+    class: ASM
+    hypothesis: "config_defaults_table_load"
+    sig: "FAR bp-frame retf (142B): cs:2222A=arg; bx=cs:[bx-4D91] (table); handle_query_onetime(cs:bx far) -> result; op_dispatch(cs:bx, bx=0) -> ax; 2A782=0, 2A780=2A784=2A786=ax; int 21h ax=4B03h dx=7B0E:3676 bx=0B0C4 (overlay/module hook); cs:22212=22216=dx, lodsw pair count -> 22210/22214; copy (val,dx) word pairs FFFF-terminated into 0B0C8; call cs:dword_2A788(ax=2222A callback); retf; 1 caller (config_defaults_init)"
+    port_status: unported
+    verified: null
+    notes: "142B far, cd=5, in=1, callees handle_query_onetime + op_dispatch + config_defaults_init (caller). Config defaults table loader: resolves the key-indexed table entry, one-shot queries its handle, publishes the segment (2A780..86), runs the int 21 4B03 module hook, copies the (value,segment) pair list to 0B0C8 and invokes the 2A788 callback with the saved key. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x3A771
+    seg: 0x3A77
+    ofs: 0x1
+    size: 105
+    far: false
+    class: ASM
+    hypothesis: "hud_crosshair_ratio_draw"
+    sig: "NEAR retn (105B): far call sub_2C22F (dual-ref sbi_stream_stop_load) gate -> jb ret; stub_to_24980 -> ax; *0x5A0>>16 -> si=41D, cl=0xFD, int32_to_ascii_short; far_cb_with_args(si=41F, bx=0x72, di=0xAB); dispatch_220d4 loop (si=4B31, bp=1, cx=3, bx=0x81, di=0xAA, es=2F64:[A462] far ptr); int32_to_ascii_short(41D, 0xFD); far_cb_with_args(41F, bx=0x85, di=0xAB); retn; 1 caller (sub_3A6B1)"
+    port_status: unported
+    verified: null
+    notes: "105B, cd=0, in=1, callees stub_to_24980 + int32_to_ascii_short x2 + far_cb_with_args x2 + dispatch_220d4_stub (+ sub_2C22F gate). Crosshair ratio HUD readout: gated by the far 2C22F check, samples a quad value, scales by 0x5A0/0x1000, formats it twice and draws the two (0x72/0x85, 0xAB) labels bracketed by a 3-row dispatch_220d4 block (same caller family as cross_strip_draw / box_edge_strip_draw). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x1A82F
+    seg: 0x1A82
+    ofs: 0xF
+    size: 144
+    far: true
+    class: ASM
+    hypothesis: "kb_preset_record_scatter"
+    sig: "FAR C-frame retf (144B): di=arg_0 (index), var_A=arg_2 (handle); op 0x0A read 0x50 bytes from var_A into [bp-5A]; dest1=7772:(di*0x3C+0x6D6), dest2=7772:(di*0x3C+0x6F4); loop si=0..0xC: byte-expand ss:[bp-58+si*2] -> dest1[si], ss:[bp-3E+si*2] -> dest2[si]; store var_24 -> dest1[0x0D], var_22 -> dest2[0x0D]; return 1; retf; 1 caller (sub_1A8BF)"
+    port_status: unported
+    verified: null
+    notes: "144B far, cd=2, in=1, callee op_dispatch_far_entry (op 0x0A read). Keyboard preset-record scatter: reads a 0x50-byte record from the handle and scatters its two 13-byte-expanded field groups (+1 trailing word) into the 0x3C-stride tables at 7772:6D6 and 7772:6F4 indexed by the caller's slot di. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x18A1E
+    seg: 0x18A1
+    ofs: 0xE
+    size: 416
+    far: true
+    class: ASM
+    hypothesis: "kb_record_delta_write"
+    sig: "FAR C-frame retf (416B): same prologue as kb_record_far_write (dgroup_long_get_08, 7779F, kb_field_get_2d, farwrap, 0x4000 clamp with si start); phase1 (start segment): per remaining unit write op 0x0A (var_10, var_12, 1) then read-1 to [bp+var_13] with dx=var_12+1, var_12++, count steps; phase2 (per following segment via inc di + farwrap): same 1-byte write/read alternation with var_12=0x8000 base; kb_field_set_31(di+1-start), dist_accumulate, publish 77A5C/E + 77A60/62; retf; 1 caller (kb_record_commit)"
+    port_status: unported
+    verified: null
+    notes: "416B far, cd=1, in=1, same callee set as kb_record_far_write. Keyboard record interleaved delta writer: instead of 0x4000 block writes, alternates 1-byte op writes with 1-byte reads into var_13 (a delta/pair stream) while stepping through segments, then updates the kb field, distance accumulator and the 77A5C/E + 77A60/62 publishes. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x18905
+    seg: 0x1890
+    ofs: 0x5
+    size: 281
+    far: true
+    class: ASM
+    hypothesis: "kb_record_far_write"
+    sig: "FAR C-frame retf (281B): dgroup_long_get_08 -> var_C:E; var_10=es:7779F; var_12=(var_E&FFFF)+0x8000, si=var_C; kb_field_get_2d -> var_6:4 (total count); farwrap_103db(si); di=min(0x4000-var_E&FFFF, count); op 0x0A write (var_10, var_12, di, arg_0); loop: inc si, farwrap_103db, var_12=0x8000, write 0x4000 chunks until count exhausted; kb_field_set_31(si+1-start); dist_accumulate(1, count); publish 77A5C/E=si count, 77A60/62=var_C:E dgroup pair; retf; 1 caller (kb_record_commit)"
+    port_status: unported
+    verified: null
+    notes: "281B far, cd=1, in=1, callees dgroup_long_get_08 + kb_field_get_2d/set_31 + farwrap_103db + dist_accumulate + op_dispatch_far_entry. Keyboard record far-span writer: fetches the dgroup base and the field count, writes the byte stream in 0x4000-byte chunks across segment boundaries (farwrap per segment step), updates the kb field length, accumulates the distance and publishes the count + dgroup pointer to 77A5C/E / 77A60/62. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x18711
+    seg: 0x1871
+    ofs: 0x1
+    size: 203
+    far: true
+    class: ASM
+    hypothesis: "kb_record_slots_open"
+    sig: "FAR C-frame retf (203B): zero 7 slot pairs 7772:340..35C (si=0..6); loop while 32-bit arg_2:arg_0 != 0 and si<7: clamp chunk to 0xFFF0 (if arg > 0xFFF0 -> ax=0xFFF0, dx=0); op_dispatch_far_entry(0, dx=chunk, 0) -> var_6; if FFFF: release slots 0..si via op 2 and return 0; else [bx+342]=handle, [bx+340]=0, subtract chunk from arg; return 1; retf; 1 caller (kb_record_commit)"
+    port_status: unported
+    verified: null
+    notes: "203B far, cd=1, in=1, callee op_dispatch_far_entry (op 0 open / op 2 release). Keyboard record chunk opener: allocates up to 7 handles in 0xFFF0-byte chunks to cover the requested 32-bit record length, publishing them into the 7772:340.. slot table; on exhaustion rolls back the already-opened slots and returns 0 (the open half of the kb_record_slots_release/write pair). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x187DC
+    seg: 0x187D
+    ofs: 0xC
+    size: 150
+    far: true
+    class: ASM
+    hypothesis: "kb_record_slots_write"
+    sig: "FAR C-frame retf (150B): var_2=0xFFF0; walk si over live 7772:340/342 slot pairs (si<7): op_dispatch_far_entry(0x0A, dx=var_2, ax=arg_0, handle) write -> var_4; stop at first dead slot; si--; copy last slot pair (342:340) -> unk_77A5E/77A5C; copy unk_77A62:77A60 -> unk_77A5A/77A58; return var_4; retf; 1 caller (kb_record_commit)"
+    port_status: unported
+    verified: null
+    notes: "150B far, cd=1, in=1, callee op_dispatch_far_entry (op 0x0A write). Keyboard record slot writer: pushes a 0xFFF0 write through each live slot handle of the 7772:340.. table, then publishes the last handle to 77A5C/E and shifts the previous 77A60/62 pair down to 77A58/5A (the write half opened by kb_record_slots_open). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x1B6EE
+    seg: 0x1B6E
+    ofs: 0xE
+    size: 224
+    far: true
+    class: ASM
+    hypothesis: "kb_stream_far_write"
+    sig: "FAR C-frame retf (224B): dgroup_long_get_08 -> var_A:8; var_C=es:7779F; var_E=(var_A&FFFF)+0x8000, si=var_8; count=arg_4:arg_2 directly (no kb_field_get); farwrap_103db(si); di=min(0x4000-var_A&FFFF, count); op 0x0A write (var_C, var_E, di, arg_0); loop inc si + farwrap + 0x8000/0x4000 chunks; dist_accumulate(1, count); publish 77A60/62=var_8:A dgroup pair only; retf; 1 caller (sub_1B684)"
+    port_status: unported
+    verified: null
+    notes: "224B far, cd=0, in=1, callees dgroup_long_get_08 + farwrap_103db + dist_accumulate + op_dispatch_far_entry. Far-span stream writer: same 0x4000-chunk cross-segment write loop as kb_record_far_write but takes the count directly from the args (no kb_field_get/set), accumulates the distance and publishes only the dgroup pointer to 77A60/62 -- called from sub_1B684 rather than kb_record_commit. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x272A2
+    seg: 0x272A
+    ofs: 0x2
+    size: 129
+    far: false
+    class: ASM
+    hypothesis: "object_process_list_walk"
+    sig: "NEAR retn (129B): bx=42C0, call loc_27323 (setup); outer walk: si=[si], bx=[si], FFFF end; push si; if [bx]==0: si=[bx+2], bx=[bx+4], swap ds/es/di from cs:26418/41A/41C, call cs:off_26426[bx] (14-handler op table, restore); else call loc_27323(bx=[bx+2]) then inner walk at 272D8 (same structure, nested list); pop si, si+=2, loop; retn; 1 caller (object_view_matrix_build, mutual)"
+    port_status: unported
+    verified: null
+    notes: "129B, cd=0, in=1, callees off_26426 op-table dispatch (14 handlers) + loc_27323 setup (xref). Nested object process-list walker: traverses the 42C0-rooted lists two levels deep, restoring the saved ds/es/di context and dispatching each [bx]==0 leaf through the op table -- the mutual driver invoked by object_view_matrix_build after the matrix build. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x1D2B7
+    seg: 0x1D2B
+    ofs: 0x7
+    size: 178
+    far: true
+    class: ASM
+    hypothesis: "op_onetime_full_write"
+    sig: "FAR C-frame retf (178B): op 6 open (arg_2:arg_0) -> si; si<0 -> return 0:0; op 0xE wide query (dx:ax pos) -> var_A:8; second 0xE query (size); if size > 0xFFFE: op 8 close, return 0:0; op 0x0A write (arg_6:arg_4 buffer, var_A length) -> var_2; if var_A != var_2: close, return 0:0; op 8 close; return the far ptr pair var_6:4; retf; 1 caller (sub_1D19F)"
+    port_status: unported
+    verified: null
+    notes: "178B far, cd=39, in=1, callees op_dispatch_far_entry + op_dispatch_far_wide (op 6 open / 0xE query x2 / 0x0A write / 8 close). One-shot full-buffer write: opens the handle, queries its length, refuses >0xFFFE, writes the whole caller buffer and returns the written far ptr pair -- zero on any size mismatch or open failure (write-side sibling of handle_query_onetime). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x4B584
+    seg: 0x4B58
+    ofs: 0x4
+    size: 172
+    far: true
+    class: ASM
+    hypothesis: "pos_state_block_read"
+    sig: "FAR retf (172B, 2 entries): entry0 (0x4B584, deserialize): es=65E4; ax=[si++]; nonzero -> loc_3B596 store 65EA4, [si] -> 65EA6, si+=2; di=0x68, cx=65EA4: movsb 0x3A-stride records (di=[di+8] indirection, 0x1B second copy, loop at 3B5A9+2); byte [si]/[si+1] -> 65E4A/65E4B, si+=2; retf. Attached body (0x4B5D5): ds=65E4, cl=(65EA4-65EA6) flag bytes derived from record type/flags ([si+0C]/[si+0F]/[si+10] tests, or 0xC0/0x80/0x40 bits) written to es:[di]; retf; 1 caller (sub_30AA8)"
+    port_status: unported
+    verified: null
+    notes: "172B far, cd=0, in=1, callees pos_step_chain_engine (tail x2). Position state block reader: deserializes the stream at si into the 65E4 module (65EA4/65EA6 counts, the 0x68 0x3A-stride record table with pointer indirection, 65E4A/B flags) plus an attached flag-byte emitter deriving per-record type/state bits (0xC0/0x80/0x40) -- the load counterpart of pos_state_block_write. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x4B535
+    seg: 0x4B53
+    ofs: 0x5
+    size: 79
+    far: true
+    class: ASM
+    hypothesis: "pos_state_block_write"
+    sig: "FAR retf (79B, 2 entries): entry0 (0x4B535, serialize): ds=65E4; es:[di++]=65EA4 (count); nonzero -> tail-jump loc_3B549+2 inside pos_step_chain_engine; zero -> loc_3B573+1. Attached body (0x4B54B): es:[di++]=65EA6; cx=65EA4 records: movsb 0x3A-stride from ds:68 (with [si+8] indirection + 0x1B second copy), loop at 3B55B; es:[di++]=byte_65E4A, 65E4B; retf; 1 caller (sub_3099C)"
+    port_status: unported
+    verified: null
+    notes: "79B far, cd=0, in=1, callees pos_step_chain_engine (tail-jumps into its body). Position state block writer: serializes the 65E4 module state (65EA4 count, 65EA6, the 0x3A-stride records at +0x68 with the [base+8] pointer indirection and 0x1B flag copies, then the 65E4A/B bytes) to es:di -- the save counterpart of pos_state_block_read. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x6CDA8
+    seg: 0x6CDA
+    ofs: 0x8
+    size: 146
+    far: false
+    class: ASM
+    hypothesis: "r06_mode_step_dispatch"
+    sig: "FAR (146B, 3 entries): entry0 (0x6CDA8): call word ptr cs:byte_6CDA0[bx]; retf (bx-indexed dispatch to r06_mode_tick_wrapper / r06_mode_step_entry). Entry1 (0x6CDAE, mode init): 4AC4=0, 4ABD=1, bx=-1 -> state_word_2e12b_set, 48BC=bx; gate 4A83==2 -> set 4AC3=3, 4AC2=3, 4AC1=0, jmp r06_state_init_e55; else 4AC3=3, 4AC2=1, 4ABF=2, r06_state_init_e56, state_gate_4ac2_4a83(ax=2); retf. Entry2 (0x6CDFA, change detect): gate 4AC2==1 && 4AC9!=0 && 4A83>1 -> xchg es:[di+96/98] with ds:4AA7/4AA9, xor-compare, call loc_39D02 (state_gate) on either change; retf; 2 callers (sub_2C01D, sub_3A3D6)"
+    port_status: unported
+    verified: null
+    notes: "146B far, cd=8, in=2, callees r06_mode_tick_wrapper + r06_mode_step_entry (table) + state_word_2e12b_set + state_gate_4ac2_4a83 + r06_state_init_e55/e56. R06 mode step dispatcher: the head is a bx-indexed call table into the tick/step entries, followed by the mode-state init entry (4AC2/4AC3/4ABF gating, e55/e56 transitions) and the position-change detect entry (di+96/98 vs 4AA7/4AA9). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x6B3CA
+    seg: 0x6B3C
+    ofs: 0xA
+    size: 184
+    far: true
+    class: ASM
+    hypothesis: "r30_config_block_create"
+    sig: "FAR C-frame retf (184B): es=602E; op_dispatch_far_entry(6, 602E:6030E) open -> handle [bp-2]; 6 op 0x0A writes through the handle: (cx=0,dx=0x18,602E:18), (cx=1,dx=19C2,7894:19C2), (cx=12h,dx=19h,602E:19), (cx=1,dx=19D2,7894:19D2), (cx=1,dx=19D9,7894:19D9), (cx=1,dx=19CE,7894:19CE); op 8 close with query ptr ss:[bp-2]; retf; 2 callers (sub_2C35B, sub_66ABD)"
+    port_status: unported
+    verified: null
+    notes: "184B far, cd=0, in=2, callee op_dispatch_far_entry (op 6 create / 0x0A write x6 / 8 close). R30 config-block creator: opens a fresh handle on the 602E:6030E resource (bx=6) and writes the six config regions (602E:18/19 + the 7894:19C2/19CE/19D2/19D9 words) then closes -- the create-side twin of r30_config_block_link. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x6B482
+    seg: 0x6B48
+    ofs: 0x2
+    size: 184
+    far: true
+    class: ASM
+    hypothesis: "r30_config_block_link"
+    sig: "FAR C-frame retf (184B): es=602E; op_dispatch_far_entry(4, 602E:6030E) open-existing -> handle [bp-2]; 6 op 0x0C link-writes of the same six regions (602E:18/19, 7894:19C2/19D2/19D9/19CE); op 8 close with ss:[bp-2]; retf; 2 callers (sub_2C365, sub_6AE59)"
+    port_status: unported
+    verified: null
+    notes: "184B far, cd=0, in=2, callee op_dispatch_far_entry (op 4 open / 0x0C link x6 / 8 close). R30 config-block linker: opens the existing 602E:6030E resource (bx=4) and links the same six config regions through op 0x0C (vs r30_config_block_create's bx=6 + 0x0A write path). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x6940E
+    seg: 0x6940
+    ofs: 0xE
+    size: 84
+    far: true
+    class: ASM
+    hypothesis: "r30_record_link"
+    sig: "FAR retf (84B, data-head): [bp-6]=ax; es=602E; op_dispatch_far_entry(4, 602E:637CE) open-existing -> si; op 0x0C (cx=12DE, size 0x258, seg=602E) link-write through si; op 8 close with ([bp-4]:[bp-6]) result; pop si; leave; retf; 1 caller (sub_2C8BF)"
+    port_status: unported
+    verified: null
+    notes: "84B far, cd=3, in=1, callee op_dispatch_far_entry (op 4 open / 0x0C link / 8 close). R30 record linker: opens the 602E:637CE resource (bx=4) and links the 0x258-byte block at 602E:12DE through the handle then closes (the 0x0C sibling of r30_record_write's 0x0A path). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x69486
+    seg: 0x6948
+    ofs: 0x6
+    size: 51
+    far: true
+    class: ASM
+    hypothesis: "r30_record_write"
+    sig: "FAR retf (51B, data-head): si=ax (handle); op 0x0A (cx=12DE, size 0x258, seg=602E, handle=si) write; op 8 close with ([bp-4]:[bp-6]) result; pop si; leave; retf; 1 caller (sub_2C5E5)"
+    port_status: unported
+    verified: null
+    notes: "51B far, cd=3, in=1, callee op_dispatch_far_entry (op 0x0A write / 8 close). R30 record writer: writes the 0x258-byte block at 602E:12DE through the caller-supplied handle then closes it (the write counterpart of r30_record_link, shared 12DE/258 pair). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x6E581
+    seg: 0x6E58
+    ofs: 0x1
+    size: 285
+    far: true
+    class: ASM
+    hypothesis: "r69_pending_session_step"
+    sig: "FAR (285B, 3+ entries, partial): entry0 (0x6E581): pending_task_run; far_cb_1; call loc_6F00D; loc_6E9C8+2 test: Z -> (far_cb_0, clip_pending_atomic_apply, retf) else (loc_6EF9D+2, far_cb_0, clip_pending_atomic_apply, 6E147=2, ems_state_bootstrap_2e100, jmp 6E9A3+3). Entry1 (0x6E5B9): pending_task_run, far_cb_1, loc_6F103+4, 6E9C8+2 gate: N -> 6E0C0=0x30 or 0x88 (by 6E148==2), int 21h ah=41h (file delete at 6E0C0 name), loc_6EB83+1, loc_6EBBC, zero 6E148/10A/106/104/108, loc_6EDEF, optional r69_ui_event_loop+2 + 6F17A+4, loc_6F0C9; then far_cb_0 + clip_pending_atomic_apply + retf. Entry2 (0x6E63C): gate 6E145 -> jmp word_6E6BC else 6E146=1; pending_task_run, far_cb_1, loc_6EF53+2, ds=cs si=0x1D7 call loc_6ECF1+6, far_cb_0, clip_pending_atomic_apply, 6E147=0/2 dispatch, 6E0C0=0x30; [truncated]; 1 caller (sub_2C18F)"
+    port_status: unported
+    verified: null
+    notes: "285B far, cd=0, in=1, callees pending_task_run + far_cb_0/1 + clip_pending_atomic_apply + ems_state_bootstrap_2e100 (+ r69_ui_event_loop). R69 pending/session step chain: several entries that pump pending tasks and the far callbacks, run the clip atomic apply, and on the failure branch delete the 6E0C0-named file (int 21h ah=41h) with the 6E14x-state machine routing between them -- the R69-module cleanup/step driver. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x694B9
+    seg: 0x694B
+    ofs: 0x9
+    size: 588
+    far: false
+    class: ASM
+    hypothesis: "r6e_heap_layout_build"
+    sig: "FAR C-frame retf (588B, truncated): base=7894:79E5C dword copy -> 6DE8:6E074; 6E070=base+0x4C, 6E185=0; op cycle (open 6E191:18F, 0x0A write 0x4C at 6E074, close via ss byte); op cycle (open 6E19C:19A, write 0x4422 at 6E072, close); 6E06C=6E072+0x4422, 6E068=+0x14, 6E18B=0, 6E18D=1; op cycle (open 6E16B:169, write 0x14 at 6E06C, close); op cycle (open 6E179:177, write 0x9F4 at 6E06A, close); 6E060=+0x9F4, 6E064=+0x58, 6E147=0, 6E143=0; [truncated]; 1 caller (sub_683C5)"
+    port_status: unported
+    verified: null
+    notes: "588B far, cd=0, in=1, callee op_dispatch_far_entry (4 op-6/0x0A/8 cycles). R6E heap layout builder: carves the 7894:79E5C base into successive 6DE8:6E074/72/70/6C/6A/68/64/60 handle blocks (0x4C, 0x4422, 0x14, 0x9F4, ...) via create-write-close op cycles, laying the pointer table and publishing the 6E14x/6E18x state flags (continued by r6e_heap_layout_finish). conf: med"
+    updated: "2026-10-19"
+  - ea: 0x69723
+    seg: 0x6972
+    ofs: 0x3
+    size: 931
+    far: false
+    class: ASM
+    hypothesis: "r6e_heap_layout_finish"
+    sig: "FAR retf (931B, truncated; continues r6e_heap_layout_build): op cycle (open 6E15E:15C, write 0x58 at 6E066, close); 6E058=6E066+0x2B4E, 6E05C=+0xC; op cycle (open 6E12D:12B, write 0xC at 6E058, close); op cycle (open 6E139:137, write 0x8B7 at 6E05E, close); 6E048=+0x8B7, 6E04C=+0x48; op cycle (open 6E0C3:0C1, write 0x48 at 6E048, close); op cycle (open 6E0D3:D1, write 0x513 at 6E04E, close); 6E052=+0x30, 6E056=+0x2AA9; op cycles on 6E0E3:E1 (0x30) and 6E0F3:F1 (0x2AA9); copy 602E:615AE/B0 -> 615BE/C0; 6E10F=1, 6E0FE+3=1, 6E11D=1; 7894:79E60+0xA8F -> 6E001; [truncated]; 1 caller (sub_2C49B)"
+    port_status: unported
+    verified: null
+    notes: "931B far, cd=35, in=1, callee op_dispatch_far_entry (5 more op-6/0x0A/8 cycles). R6E heap layout finisher: continues the carve with the 0x58/0x2B4E/0xC/0x8B7/0x48/0x513/0x30/0x2AA9 blocks into the 6E048..6E066 table, copies the 602E:615A pair into 615B, sets the 6E10F/6E0FE/6E11D flags and derives 6E001 from 7894:79E60+0xA8F -- the tail of r6e_heap_layout_build's allocator init. conf: med"
+    updated: "2026-10-19"
+  - ea: 0x12E6A
+    seg: 0x12E6
+    ofs: 0xA
+    size: 61
+    far: false
+    class: ASM
+    hypothesis: "slot2_window_col_read"
+    sig: "NEAR retn (61B): col base cl=cs:11C0D, dx=(cx*5)+ax (row+col base), dh=dl<<8; cx=5: per di slot (di+=0x40 row stride): dx+0x1F40, slot2_handle_read([di]&0x1FF, dx, cx=5); dh+=5 wrap mod 0x19, loop; retn; 1 caller (sub_12D2F)"
+    port_status: unported
+    verified: null
+    notes: "61B, cd=0, in=1, callee slot2_handle_read. Slot2 window column reader: for the 5 di rows (0x40 stride) reads 5 cell records at cs:11C0D+row*5 into the 1F40-window (wrap mod 0x19) -- the column half of the 5x5 window fill. conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x12E2F
+    seg: 0x12E2
+    ofs: 0xF
+    size: 59
+    far: false
+    class: ASM
+    hypothesis: "slot2_window_row_read"
+    sig: "NEAR retn (59B): row base dx=((ax*5)<<2) row -> dh=dl<<8; bl=cs:11C0C (col base), cx=5: per di slot (di+=2): dx=(dh+bl)+0x1F40, slot2_handle_read([di]&0x1FF, dx, ch=5); inc bl wrapping 0..4, loop cx; retn; 1 caller (sub_12D2F)"
+    port_status: unported
+    verified: null
+    notes: "59B, cd=0, in=1, callee slot2_handle_read. Slot2 window row reader: for the 5 di-indexed cells reads 5 column records (cs:11C0C..+4 base, wrap mod 5) into the 1F40-window at row*5 -- the row half of sub_12D2F's 5x5 window fill (column half = slot2_window_col_read). conf: med-high"
+    updated: "2026-10-19"
+  - ea: 0x36DA7
+    seg: 0x36DA
+    ofs: 0x7
+    size: 123
+    far: false
+    class: ASM
+    hypothesis: "sprite_trail_strip_draw"
+    sig: "NEAR retn (123B): si=ds:706; cx=[si+0E], ax=-[si+10]; stub_to_249d8(bx=6C8) table lookup; vel_pair_scale_di(bx=0xC8, di=6D0); scale=(0x10E4-cx)*0x1C20<<4 -> 6D4; add ds:79C/79E view adjustments -> 6D4/6D6; swap 6C8/6CA (flip), vel_pair_scale_di(0x200, 6CC); loop cx=0x4D (77 iters): 70A=cx-0x27, sprite_rect_strip_draw, step 6D4-=6D0 / 6D6+=6D2; retn; 1 caller (sub_35BCE)"
+    port_status: unported
+    verified: null
+    notes: "123B, cd=0, in=1, callees stub_to_249d8 (trig) + vel_pair_scale_di x3 + sprite_rect_strip_draw. Sprite trail renderer: builds two scaled velocity offsets from the ds:706 record (+ trig table + view adjustments), flips the 6C8 pair, then draws 77 successive sprite_rect_strip_draw quads stepping the 6D4 anchor by the 6D0 delta -- motion-streak sibling of sprite_rect_strip_draw. conf: med"
+    updated: "2026-10-19"
+
 counts:
   tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)

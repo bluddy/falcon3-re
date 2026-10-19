@@ -445,3 +445,18 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 6 COMPLETE (finding 77):** 2 batches (36+24) named all
+  60 L6 fns, `named` **1223 -> 1283**, **L6 queue 60 -> 0**. Highlights:
+  r17_event_main_loop, sbi_channel_event_dispatch, slot3 mask rebuild/
+  release, slot2 map window + row/col readers, object draw-step family,
+  entity table/slot builders, 6 HUD panels, record-script trio, kb
+  record pipeline, pos_state_block write/read, r6e heap layout, r69
+  pending session step, r06_mode_step_dispatch, op_onetime_full_write.
+  All 4 gates green (check 1285, verify_rebuild faithful, verify_idb
+  INTACT, read-back 1283/1283+2/2).
+- **Next: Global Level-7** (21 targets) -- global queue 348 across
+  L7..L21 (L7=21, L8=13, ..., L19=206 giant SCC, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

@@ -1,0 +1,146 @@
+{
+ "r30_e70": [
+  "r30_config_block_create",
+  "FAR C-frame retf (184B): es=602E; op_dispatch_far_entry(6, 602E:6030E) open -> handle [bp-2]; 6 op 0x0A writes through the handle: (cx=0,dx=0x18,602E:18), (cx=1,dx=19C2,7894:19C2), (cx=12h,dx=19h,602E:19), (cx=1,dx=19D2,7894:19D2), (cx=1,dx=19D9,7894:19D9), (cx=1,dx=19CE,7894:19CE); op 8 close with query ptr ss:[bp-2]; retf; 2 callers (sub_2C35B, sub_66ABD)",
+  "184B far, cd=0, in=2, callee op_dispatch_far_entry (op 6 create / 0x0A write x6 / 8 close). R30 config-block creator: opens a fresh handle on the 602E:6030E resource (bx=6) and writes the six config regions (602E:18/19 + the 7894:19C2/19CE/19D2/19D9 words) then closes -- the create-side twin of r30_config_block_link. conf: med",
+  "med"
+ ],
+ "r30_e71": [
+  "r30_config_block_link",
+  "FAR C-frame retf (184B): es=602E; op_dispatch_far_entry(4, 602E:6030E) open-existing -> handle [bp-2]; 6 op 0x0C link-writes of the same six regions (602E:18/19, 7894:19C2/19D2/19D9/19CE); op 8 close with ss:[bp-2]; retf; 2 callers (sub_2C365, sub_6AE59)",
+  "184B far, cd=0, in=2, callee op_dispatch_far_entry (op 4 open / 0x0C link x6 / 8 close). R30 config-block linker: opens the existing 602E:6030E resource (bx=4) and links the same six config regions through op 0x0C (vs r30_config_block_create's bx=6 + 0x0A write path). conf: med",
+  "med"
+ ],
+ "sub_6CDA8": [
+  "r06_mode_step_dispatch",
+  "FAR (146B, 3 entries): entry0 (0x6CDA8): call word ptr cs:byte_6CDA0[bx]; retf (bx-indexed dispatch to r06_mode_tick_wrapper / r06_mode_step_entry). Entry1 (0x6CDAE, mode init): 4AC4=0, 4ABD=1, bx=-1 -> state_word_2e12b_set, 48BC=bx; gate 4A83==2 -> set 4AC3=3, 4AC2=3, 4AC1=0, jmp r06_state_init_e55; else 4AC3=3, 4AC2=1, 4ABF=2, r06_state_init_e56, state_gate_4ac2_4a83(ax=2); retf. Entry2 (0x6CDFA, change detect): gate 4AC2==1 && 4AC9!=0 && 4A83>1 -> xchg es:[di+96/98] with ds:4AA7/4AA9, xor-compare, call loc_39D02 (state_gate) on either change; retf; 2 callers (sub_2C01D, sub_3A3D6)",
+  "146B far, cd=8, in=2, callees r06_mode_tick_wrapper + r06_mode_step_entry (table) + state_word_2e12b_set + state_gate_4ac2_4a83 + r06_state_init_e55/e56. R06 mode step dispatcher: the head is a bx-indexed call table into the tick/step entries, followed by the mode-state init entry (4AC2/4AC3/4ABF gating, e55/e56 transitions) and the position-change detect entry (di+96/98 vs 4AA7/4AA9). conf: med-high",
+  "med-high"
+ ],
+ "sub_12E2F": [
+  "slot2_window_row_read",
+  "NEAR retn (59B): row base dx=((ax*5)<<2) row -> dh=dl<<8; bl=cs:11C0C (col base), cx=5: per di slot (di+=2): dx=(dh+bl)+0x1F40, slot2_handle_read([di]&0x1FF, dx, ch=5); inc bl wrapping 0..4, loop cx; retn; 1 caller (sub_12D2F)",
+  "59B, cd=0, in=1, callee slot2_handle_read. Slot2 window row reader: for the 5 di-indexed cells reads 5 column records (cs:11C0C..+4 base, wrap mod 5) into the 1F40-window at row*5 -- the row half of sub_12D2F's 5x5 window fill (column half = slot2_window_col_read). conf: med-high",
+  "med-high"
+ ],
+ "sub_12E6A": [
+  "slot2_window_col_read",
+  "NEAR retn (61B): col base cl=cs:11C0D, dx=(cx*5)+ax (row+col base), dh=dl<<8; cx=5: per di slot (di+=0x40 row stride): dx+0x1F40, slot2_handle_read([di]&0x1FF, dx, cx=5); dh+=5 wrap mod 0x19, loop; retn; 1 caller (sub_12D2F)",
+  "61B, cd=0, in=1, callee slot2_handle_read. Slot2 window column reader: for the 5 di rows (0x40 stride) reads 5 cell records at cs:11C0D+row*5 into the 1F40-window (wrap mod 0x19) -- the column half of the 5x5 window fill. conf: med-high",
+  "med-high"
+ ],
+ "sub_18711": [
+  "kb_record_slots_open",
+  "FAR C-frame retf (203B): zero 7 slot pairs 7772:340..35C (si=0..6); loop while 32-bit arg_2:arg_0 != 0 and si<7: clamp chunk to 0xFFF0 (if arg > 0xFFF0 -> ax=0xFFF0, dx=0); op_dispatch_far_entry(0, dx=chunk, 0) -> var_6; if FFFF: release slots 0..si via op 2 and return 0; else [bx+342]=handle, [bx+340]=0, subtract chunk from arg; return 1; retf; 1 caller (kb_record_commit)",
+  "203B far, cd=1, in=1, callee op_dispatch_far_entry (op 0 open / op 2 release). Keyboard record chunk opener: allocates up to 7 handles in 0xFFF0-byte chunks to cover the requested 32-bit record length, publishing them into the 7772:340.. slot table; on exhaustion rolls back the already-opened slots and returns 0 (the open half of the kb_record_slots_release/write pair). conf: med-high",
+  "med-high"
+ ],
+ "sub_187DC": [
+  "kb_record_slots_write",
+  "FAR C-frame retf (150B): var_2=0xFFF0; walk si over live 7772:340/342 slot pairs (si<7): op_dispatch_far_entry(0x0A, dx=var_2, ax=arg_0, handle) write -> var_4; stop at first dead slot; si--; copy last slot pair (342:340) -> unk_77A5E/77A5C; copy unk_77A62:77A60 -> unk_77A5A/77A58; return var_4; retf; 1 caller (kb_record_commit)",
+  "150B far, cd=1, in=1, callee op_dispatch_far_entry (op 0x0A write). Keyboard record slot writer: pushes a 0xFFF0 write through each live slot handle of the 7772:340.. table, then publishes the last handle to 77A5C/E and shifts the previous 77A60/62 pair down to 77A58/5A (the write half opened by kb_record_slots_open). conf: med-high",
+  "med-high"
+ ],
+ "sub_18905": [
+  "kb_record_far_write",
+  "FAR C-frame retf (281B): dgroup_long_get_08 -> var_C:E; var_10=es:7779F; var_12=(var_E&FFFF)+0x8000, si=var_C; kb_field_get_2d -> var_6:4 (total count); farwrap_103db(si); di=min(0x4000-var_E&FFFF, count); op 0x0A write (var_10, var_12, di, arg_0); loop: inc si, farwrap_103db, var_12=0x8000, write 0x4000 chunks until count exhausted; kb_field_set_31(si+1-start); dist_accumulate(1, count); publish 77A5C/E=si count, 77A60/62=var_C:E dgroup pair; retf; 1 caller (kb_record_commit)",
+  "281B far, cd=1, in=1, callees dgroup_long_get_08 + kb_field_get_2d/set_31 + farwrap_103db + dist_accumulate + op_dispatch_far_entry. Keyboard record far-span writer: fetches the dgroup base and the field count, writes the byte stream in 0x4000-byte chunks across segment boundaries (farwrap per segment step), updates the kb field length, accumulates the distance and publishes the count + dgroup pointer to 77A5C/E / 77A60/62. conf: med",
+  "med"
+ ],
+ "sub_18A1E": [
+  "kb_record_delta_write",
+  "FAR C-frame retf (416B): same prologue as kb_record_far_write (dgroup_long_get_08, 7779F, kb_field_get_2d, farwrap, 0x4000 clamp with si start); phase1 (start segment): per remaining unit write op 0x0A (var_10, var_12, 1) then read-1 to [bp+var_13] with dx=var_12+1, var_12++, count steps; phase2 (per following segment via inc di + farwrap): same 1-byte write/read alternation with var_12=0x8000 base; kb_field_set_31(di+1-start), dist_accumulate, publish 77A5C/E + 77A60/62; retf; 1 caller (kb_record_commit)",
+  "416B far, cd=1, in=1, same callee set as kb_record_far_write. Keyboard record interleaved delta writer: instead of 0x4000 block writes, alternates 1-byte op writes with 1-byte reads into var_13 (a delta/pair stream) while stepping through segments, then updates the kb field, distance accumulator and the 77A5C/E + 77A60/62 publishes. conf: med",
+  "med"
+ ],
+ "sub_1A82F": [
+  "kb_preset_record_scatter",
+  "FAR C-frame retf (144B): di=arg_0 (index), var_A=arg_2 (handle); op 0x0A read 0x50 bytes from var_A into [bp-5A]; dest1=7772:(di*0x3C+0x6D6), dest2=7772:(di*0x3C+0x6F4); loop si=0..0xC: byte-expand ss:[bp-58+si*2] -> dest1[si], ss:[bp-3E+si*2] -> dest2[si]; store var_24 -> dest1[0x0D], var_22 -> dest2[0x0D]; return 1; retf; 1 caller (sub_1A8BF)",
+  "144B far, cd=2, in=1, callee op_dispatch_far_entry (op 0x0A read). Keyboard preset-record scatter: reads a 0x50-byte record from the handle and scatters its two 13-byte-expanded field groups (+1 trailing word) into the 0x3C-stride tables at 7772:6D6 and 7772:6F4 indexed by the caller's slot di. conf: med",
+  "med"
+ ],
+ "sub_1B6EE": [
+  "kb_stream_far_write",
+  "FAR C-frame retf (224B): dgroup_long_get_08 -> var_A:8; var_C=es:7779F; var_E=(var_A&FFFF)+0x8000, si=var_8; count=arg_4:arg_2 directly (no kb_field_get); farwrap_103db(si); di=min(0x4000-var_A&FFFF, count); op 0x0A write (var_C, var_E, di, arg_0); loop inc si + farwrap + 0x8000/0x4000 chunks; dist_accumulate(1, count); publish 77A60/62=var_8:A dgroup pair only; retf; 1 caller (sub_1B684)",
+  "224B far, cd=0, in=1, callees dgroup_long_get_08 + farwrap_103db + dist_accumulate + op_dispatch_far_entry. Far-span stream writer: same 0x4000-chunk cross-segment write loop as kb_record_far_write but takes the count directly from the args (no kb_field_get/set), accumulates the distance and publishes only the dgroup pointer to 77A60/62 -- called from sub_1B684 rather than kb_record_commit. conf: med",
+  "med"
+ ],
+ "sub_1D2B7": [
+  "op_onetime_full_write",
+  "FAR C-frame retf (178B): op 6 open (arg_2:arg_0) -> si; si<0 -> return 0:0; op 0xE wide query (dx:ax pos) -> var_A:8; second 0xE query (size); if size > 0xFFFE: op 8 close, return 0:0; op 0x0A write (arg_6:arg_4 buffer, var_A length) -> var_2; if var_A != var_2: close, return 0:0; op 8 close; return the far ptr pair var_6:4; retf; 1 caller (sub_1D19F)",
+  "178B far, cd=39, in=1, callees op_dispatch_far_entry + op_dispatch_far_wide (op 6 open / 0xE query x2 / 0x0A write / 8 close). One-shot full-buffer write: opens the handle, queries its length, refuses >0xFFFE, writes the whole caller buffer and returns the written far ptr pair -- zero on any size mismatch or open failure (write-side sibling of handle_query_onetime). conf: med-high",
+  "med-high"
+ ],
+ "sub_272A2": [
+  "object_process_list_walk",
+  "NEAR retn (129B): bx=42C0, call loc_27323 (setup); outer walk: si=[si], bx=[si], FFFF end; push si; if [bx]==0: si=[bx+2], bx=[bx+4], swap ds/es/di from cs:26418/41A/41C, call cs:off_26426[bx] (14-handler op table, restore); else call loc_27323(bx=[bx+2]) then inner walk at 272D8 (same structure, nested list); pop si, si+=2, loop; retn; 1 caller (object_view_matrix_build, mutual)",
+  "129B, cd=0, in=1, callees off_26426 op-table dispatch (14 handlers) + loc_27323 setup (xref). Nested object process-list walker: traverses the 42C0-rooted lists two levels deep, restoring the saved ds/es/di context and dispatching each [bx]==0 leaf through the op table -- the mutual driver invoked by object_view_matrix_build after the matrix build. conf: med",
+  "med"
+ ],
+ "sub_2A96C": [
+  "config_defaults_table_load",
+  "FAR bp-frame retf (142B): cs:2222A=arg; bx=cs:[bx-4D91] (table); handle_query_onetime(cs:bx far) -> result; op_dispatch(cs:bx, bx=0) -> ax; 2A782=0, 2A780=2A784=2A786=ax; int 21h ax=4B03h dx=7B0E:3676 bx=0B0C4 (overlay/module hook); cs:22212=22216=dx, lodsw pair count -> 22210/22214; copy (val,dx) word pairs FFFF-terminated into 0B0C8; call cs:dword_2A788(ax=2222A callback); retf; 1 caller (config_defaults_init)",
+  "142B far, cd=5, in=1, callees handle_query_onetime + op_dispatch + config_defaults_init (caller). Config defaults table loader: resolves the key-indexed table entry, one-shot queries its handle, publishes the segment (2A780..86), runs the int 21 4B03 module hook, copies the (value,segment) pair list to 0B0C8 and invokes the 2A788 callback with the saved key. conf: med",
+  "med"
+ ],
+ "sub_2F3E6": [
+  "accum_div_ratio",
+  "NEAR retf leaf (26B): push ax; call fixed_vec3_accumulate_b (dual-ref with slot2_handle_read); pop ax; xor ah,ah; xchg al,cl; div cl; retn; 1 caller (sub_2F257)",
+  "26B leaf, cd=0, in=1, callees fixed_vec3_accumulate_b (xref pair). Ratio-after-accumulate leaf: runs the vec3 accumulate then returns cl_orig/al_orig as the division quotient (al the caller's count, cl the accumulated remainder from the callee). conf: low",
+  "low"
+ ],
+ "sub_36DA7": [
+  "sprite_trail_strip_draw",
+  "NEAR retn (123B): si=ds:706; cx=[si+0E], ax=-[si+10]; stub_to_249d8(bx=6C8) table lookup; vel_pair_scale_di(bx=0xC8, di=6D0); scale=(0x10E4-cx)*0x1C20<<4 -> 6D4; add ds:79C/79E view adjustments -> 6D4/6D6; swap 6C8/6CA (flip), vel_pair_scale_di(0x200, 6CC); loop cx=0x4D (77 iters): 70A=cx-0x27, sprite_rect_strip_draw, step 6D4-=6D0 / 6D6+=6D2; retn; 1 caller (sub_35BCE)",
+  "123B, cd=0, in=1, callees stub_to_249d8 (trig) + vel_pair_scale_di x3 + sprite_rect_strip_draw. Sprite trail renderer: builds two scaled velocity offsets from the ds:706 record (+ trig table + view adjustments), flips the 6C8 pair, then draws 77 successive sprite_rect_strip_draw quads stepping the 6D4 anchor by the 6D0 delta -- motion-streak sibling of sprite_rect_strip_draw. conf: med",
+  "med"
+ ],
+ "sub_3A771": [
+  "hud_crosshair_ratio_draw",
+  "NEAR retn (105B): far call sub_2C22F (dual-ref sbi_stream_stop_load) gate -> jb ret; stub_to_24980 -> ax; *0x5A0>>16 -> si=41D, cl=0xFD, int32_to_ascii_short; far_cb_with_args(si=41F, bx=0x72, di=0xAB); dispatch_220d4 loop (si=4B31, bp=1, cx=3, bx=0x81, di=0xAA, es=2F64:[A462] far ptr); int32_to_ascii_short(41D, 0xFD); far_cb_with_args(41F, bx=0x85, di=0xAB); retn; 1 caller (sub_3A6B1)",
+  "105B, cd=0, in=1, callees stub_to_24980 + int32_to_ascii_short x2 + far_cb_with_args x2 + dispatch_220d4_stub (+ sub_2C22F gate). Crosshair ratio HUD readout: gated by the far 2C22F check, samples a quad value, scales by 0x5A0/0x1000, formats it twice and draws the two (0x72/0x85, 0xAB) labels bracketed by a 3-row dispatch_220d4 block (same caller family as cross_strip_draw / box_edge_strip_draw). conf: med",
+  "med"
+ ],
+ "sub_4B535": [
+  "pos_state_block_write",
+  "FAR retf (79B, 2 entries): entry0 (0x4B535, serialize): ds=65E4; es:[di++]=65EA4 (count); nonzero -> tail-jump loc_3B549+2 inside pos_step_chain_engine; zero -> loc_3B573+1. Attached body (0x4B54B): es:[di++]=65EA6; cx=65EA4 records: movsb 0x3A-stride from ds:68 (with [si+8] indirection + 0x1B second copy), loop at 3B55B; es:[di++]=byte_65E4A, 65E4B; retf; 1 caller (sub_3099C)",
+  "79B far, cd=0, in=1, callees pos_step_chain_engine (tail-jumps into its body). Position state block writer: serializes the 65E4 module state (65EA4 count, 65EA6, the 0x3A-stride records at +0x68 with the [base+8] pointer indirection and 0x1B flag copies, then the 65E4A/B bytes) to es:di -- the save counterpart of pos_state_block_read. conf: med",
+  "med"
+ ],
+ "sub_4B584": [
+  "pos_state_block_read",
+  "FAR retf (172B, 2 entries): entry0 (0x4B584, deserialize): es=65E4; ax=[si++]; nonzero -> loc_3B596 store 65EA4, [si] -> 65EA6, si+=2; di=0x68, cx=65EA4: movsb 0x3A-stride records (di=[di+8] indirection, 0x1B second copy, loop at 3B5A9+2); byte [si]/[si+1] -> 65E4A/65E4B, si+=2; retf. Attached body (0x4B5D5): ds=65E4, cl=(65EA4-65EA6) flag bytes derived from record type/flags ([si+0C]/[si+0F]/[si+10] tests, or 0xC0/0x80/0x40 bits) written to es:[di]; retf; 1 caller (sub_30AA8)",
+  "172B far, cd=0, in=1, callees pos_step_chain_engine (tail x2). Position state block reader: deserializes the stream at si into the 65E4 module (65EA4/65EA6 counts, the 0x68 0x3A-stride record table with pointer indirection, 65E4A/B flags) plus an attached flag-byte emitter deriving per-record type/state bits (0xC0/0x80/0x40) -- the load counterpart of pos_state_block_write. conf: med",
+  "med"
+ ],
+ "r30_e183": [
+  "r30_record_link",
+  "FAR retf (84B, data-head): [bp-6]=ax; es=602E; op_dispatch_far_entry(4, 602E:637CE) open-existing -> si; op 0x0C (cx=12DE, size 0x258, seg=602E) link-write through si; op 8 close with ([bp-4]:[bp-6]) result; pop si; leave; retf; 1 caller (sub_2C8BF)",
+  "84B far, cd=3, in=1, callee op_dispatch_far_entry (op 4 open / 0x0C link / 8 close). R30 record linker: opens the 602E:637CE resource (bx=4) and links the 0x258-byte block at 602E:12DE through the handle then closes (the 0x0C sibling of r30_record_write's 0x0A path). conf: med-high",
+  "med-high"
+ ],
+ "r30_e124": [
+  "r30_record_write",
+  "FAR retf (51B, data-head): si=ax (handle); op 0x0A (cx=12DE, size 0x258, seg=602E, handle=si) write; op 8 close with ([bp-4]:[bp-6]) result; pop si; leave; retf; 1 caller (sub_2C5E5)",
+  "51B far, cd=3, in=1, callee op_dispatch_far_entry (op 0x0A write / 8 close). R30 record writer: writes the 0x258-byte block at 602E:12DE through the caller-supplied handle then closes it (the write counterpart of r30_record_link, shared 12DE/258 pair). conf: med-high",
+  "med-high"
+ ],
+ "sub_694B9": [
+  "r6e_heap_layout_build",
+  "FAR C-frame retf (588B, truncated): base=7894:79E5C dword copy -> 6DE8:6E074; 6E070=base+0x4C, 6E185=0; op cycle (open 6E191:18F, 0x0A write 0x4C at 6E074, close via ss byte); op cycle (open 6E19C:19A, write 0x4422 at 6E072, close); 6E06C=6E072+0x4422, 6E068=+0x14, 6E18B=0, 6E18D=1; op cycle (open 6E16B:169, write 0x14 at 6E06C, close); op cycle (open 6E179:177, write 0x9F4 at 6E06A, close); 6E060=+0x9F4, 6E064=+0x58, 6E147=0, 6E143=0; [truncated]; 1 caller (sub_683C5)",
+  "588B far, cd=0, in=1, callee op_dispatch_far_entry (4 op-6/0x0A/8 cycles). R6E heap layout builder: carves the 7894:79E5C base into successive 6DE8:6E074/72/70/6C/6A/68/64/60 handle blocks (0x4C, 0x4422, 0x14, 0x9F4, ...) via create-write-close op cycles, laying the pointer table and publishing the 6E14x/6E18x state flags (continued by r6e_heap_layout_finish). conf: med",
+  "med"
+ ],
+ "sub_69723": [
+  "r6e_heap_layout_finish",
+  "FAR retf (931B, truncated; continues r6e_heap_layout_build): op cycle (open 6E15E:15C, write 0x58 at 6E066, close); 6E058=6E066+0x2B4E, 6E05C=+0xC; op cycle (open 6E12D:12B, write 0xC at 6E058, close); op cycle (open 6E139:137, write 0x8B7 at 6E05E, close); 6E048=+0x8B7, 6E04C=+0x48; op cycle (open 6E0C3:0C1, write 0x48 at 6E048, close); op cycle (open 6E0D3:D1, write 0x513 at 6E04E, close); 6E052=+0x30, 6E056=+0x2AA9; op cycles on 6E0E3:E1 (0x30) and 6E0F3:F1 (0x2AA9); copy 602E:615AE/B0 -> 615BE/C0; 6E10F=1, 6E0FE+3=1, 6E11D=1; 7894:79E60+0xA8F -> 6E001; [truncated]; 1 caller (sub_2C49B)",
+  "931B far, cd=35, in=1, callee op_dispatch_far_entry (5 more op-6/0x0A/8 cycles). R6E heap layout finisher: continues the carve with the 0x58/0x2B4E/0xC/0x8B7/0x48/0x513/0x30/0x2AA9 blocks into the 6E048..6E066 table, copies the 602E:615A pair into 615B, sets the 6E10F/6E0FE/6E11D flags and derives 6E001 from 7894:79E60+0xA8F -- the tail of r6e_heap_layout_build's allocator init. conf: med",
+  "med"
+ ],
+ "sub_6E581": [
+  "r69_pending_session_step",
+  "FAR (285B, 3+ entries, partial): entry0 (0x6E581): pending_task_run; far_cb_1; call loc_6F00D; loc_6E9C8+2 test: Z -> (far_cb_0, clip_pending_atomic_apply, retf) else (loc_6EF9D+2, far_cb_0, clip_pending_atomic_apply, 6E147=2, ems_state_bootstrap_2e100, jmp 6E9A3+3). Entry1 (0x6E5B9): pending_task_run, far_cb_1, loc_6F103+4, 6E9C8+2 gate: N -> 6E0C0=0x30 or 0x88 (by 6E148==2), int 21h ah=41h (file delete at 6E0C0 name), loc_6EB83+1, loc_6EBBC, zero 6E148/10A/106/104/108, loc_6EDEF, optional r69_ui_event_loop+2 + 6F17A+4, loc_6F0C9; then far_cb_0 + clip_pending_atomic_apply + retf. Entry2 (0x6E63C): gate 6E145 -> jmp word_6E6BC else 6E146=1; pending_task_run, far_cb_1, loc_6EF53+2, ds=cs si=0x1D7 call loc_6ECF1+6, far_cb_0, clip_pending_atomic_apply, 6E147=0/2 dispatch, 6E0C0=0x30; [truncated]; 1 caller (sub_2C18F)",
+  "285B far, cd=0, in=1, callees pending_task_run + far_cb_0/1 + clip_pending_atomic_apply + ems_state_bootstrap_2e100 (+ r69_ui_event_loop). R69 pending/session step chain: several entries that pump pending tasks and the far callbacks, run the clip atomic apply, and on the failure branch delete the 6E0C0-named file (int 21h ah=41h) with the 6E14x-state machine routing between them -- the R69-module cleanup/step driver. conf: med",
+  "med"
+ ]
+}
