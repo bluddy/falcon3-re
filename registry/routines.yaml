@@ -13627,6 +13627,1089 @@ routines:
     notes: "97B, cd=0, in=2, callees view_limits_wrap + farwrap_25a1c (+ trampoline aliases game_state_setup_multi / terrain_pos_delta_11cfc). Applies the view-limit wrap to the two 2E131-chain records at +0x24/+0x26 (bx selectors 0/0x130, al=0x0D -- params matching view_limits_apply_33f38) then runs the paired position-delta step. conf: med"
     updated: "2026-10-18"
 
+  - ea: 0x4E415
+    seg: 0x4E41
+    ofs: 0x5
+    size: 187
+    far: true
+    class: ASM
+    hypothesis: "accum_record_append"
+    sig: "FAR retf multi-entry (187B): +0: byte_2E129=0; bx=word_2E104, if bx>=0x258 (600) ret; ds=funcs_4E5C0; off_2E11E:20 += ax (64-bit cursor), record [0]=++count [2/4]=cursor [6]=word_2E10E (timer, +=0x31 each append); count>=0x258 -> ret; +0x55: bx=word_2E10A +4 wrap mod word_2E102 (limit): byte_2E127=1 on wrap; off_2E11E:20=0 reset; if byte_2E126: advance cursors 2E10C (mod limit) and 2E108 (mod 2E106+1); byte_2E128=1 (ready); retf (xref edges to farobj_entity_accum_sweep/sub_2E42C are cross-function jumps); 2 callers (r34_e126 RTLink, sub_307A5)"
+    port_status: unported
+    verified: null
+    notes: "187B far multi-entry, cd=0, in=2, callee edge farobj_entity_accum_sweep (cross-jump). Record ring driver for the accum subsystem: entry+0 appends {seq, 64-bit cursor, +0x31 timer} until 600 entries; entry+0x55 advances/wraps the cursors against the 2E102 limit and raises the ready flags. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x25E42
+    seg: 0x25E4
+    ofs: 0x2
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "angle_quad_norm_far"
+    sig: "FAR retf LEAF, 2 entries (16B): +0: push ds/es, es=ds (segment harmonize), call angle_quad_norm_scale, pops, retf; +0x12: call angle_quad_norm_scale, retf (es already set); 14 callers incl r07_e48, r08_e46 (RTLink imports), sub_36785, sub_3718D, sub_45976"
+    port_status: unported
+    verified: null
+    notes: "16B far leaf, dyn=52,201 (hottest of batch), in=14, callee angle_quad_norm_scale. Far API entry to the L3 angle primitive: entry+0 harmonizes ES=DS before the call, entry+0x12 assumes ES. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x1D696
+    seg: 0x1D69
+    ofs: 0x6
+    size: 128
+    far: true
+    class: ASM
+    hypothesis: "channel_node_release_unlink"
+    sig: "FAR bp-frame retf (128B): di=[arg_0] node; si=es:7772:(2di+0x664); if si==-1 ret; channel_reg_store_dispatch(table byte 7A32:2si-0x6647, 7, 0x0A), if byte-0x6646!=0xFF -> second store_dispatch; channel_release(node channel); list_node_unlink(di); 1 caller (sub_1D88C)"
+    port_status: unported
+    verified: null
+    notes: "128B far, cd=977, callees channel_reg_store_dispatch + channel_release + list_node_unlink. Per-node teardown: resolves node id -> channel, programs the release register pair from the 7A32 table, releases the channel and unlinks the list node (single-node sibling of sbi_channel_release_close). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x17794
+    seg: 0x1779
+    ofs: 0x4
+    size: 161
+    far: true
+    class: ASM
+    hypothesis: "channel_program_pair_write"
+    sig: "FAR C-frame retf (161B): si=[arg_0] channel, gate si < ds:0AE78 (channel count) else ret; read two words from far ptr (arg_4:arg_2 +0x34) and one far ptr at +0x1A; per-channel program table select: ds:0AF90 (rhythm) ? 0x99B9+2si : 0x99A7+2si; dgroup_record_writer(table[0], word@+0x34, arg_4:arg_2) then if table[1]!=0xFF: dgroup_record_writer(word2, ptr@+0x1A); 2 callers (sub_1B7CE, sub_1CBB3)"
+    port_status: unported
+    verified: null
+    notes: "161B C-class, dyn=271, cd=268, callee dgroup_record_writer. Writes the two-record program pair for one channel from the melodic (0x99A7) or rhythm (0x99B9, gated by ds:0AF90) table, second record optional (0xFF = none). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2FC08
+    seg: 0x2FC0
+    ofs: 0x8
+    size: 63
+    far: false
+    class: ASM
+    hypothesis: "clip_flag_gated_callback"
+    sig: "NEAR retn (63B): gate ds:460&0x40 else tail; if !(460&0x80): 460&=~0x40; xor 460,2; if bit1 now clear -> tail; state_byte_25487_get; cs_word_store; bx=0x74, di=ds:251+0x28, si=0x461 -> far_cb_gated; stc; retn (tail: CF-clear path); 3 callers (sub_2F6D0, sub_2FB5A, sub_3FBCC)"
+    port_status: unported
+    verified: null
+    notes: "63B, cd=0, in=3, callees state_byte_25487_get + cs_word_store + far_cb_gated. Flag-transition gated draw: toggles ds:460 bit1 under the 0x40 gate, fetches the clip state byte 25487 and invokes the far callback at (0x74, ds:251+0x28, ds:461), returning CF=1 on the taken path. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x257C9
+    seg: 0x257C
+    ofs: 0x9
+    size: 12
+    far: true
+    class: ASM
+    hypothesis: "clip_pending_apply_gate"
+    sig: "FAR retf LEAF (12B): gate cs:byte_2549D==0 else return; call clip_pending_apply_record; retf; 0 static callers (indirect far-call target, dyn=18,677)"
+    port_status: unported
+    verified: null
+    notes: "12B far leaf, dyn=18,677, in=0, callee clip_pending_apply_record. Gated clip-apply far entry: applies the pending clip only when the 2549D latch is clear (the latch is set by clip_pending_apply_latch). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x257D5
+    seg: 0x257D
+    ofs: 0x5
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "clip_pending_apply_latch"
+    sig: "FAR retf LEAF (16B): cs:byte_2549D=1; call clip_pending_apply_record; cs:byte_2549D=0; retf; 1 caller (sub_2589F)"
+    port_status: unported
+    verified: null
+    notes: "16B far leaf, cd=7,119, callee clip_pending_apply_record. Latched clip apply: holds the 2549D guard flag across the apply (blocking the gated far entry during the task) -- the task-context pair of clip_pending_apply_gate. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x224D3
+    seg: 0x224D
+    ofs: 0x3
+    size: 145
+    far: false
+    class: ASM
+    hypothesis: "error_display_terminate"
+    sig: "NEAR retn (145B): gate cs:byte_22248&0x7F else ret; message mode (bit0x80): int21 ah=9 print cs:3792 separators + [bx+362C] message (bx=byte_22249 index), int21 ah=4C EXIT; interactive: copy [bx+3620] 11 words -> 7B0E:3648, far_cb_1, cb_args_invoke(si=3638,cx=4), far_cb_0, flag_block_zero_5762_5c63, mouse_wait_click, flag_table_pop; bit0 -> program_terminate (far/near shim); 1 caller (op_dispatch)"
+    port_status: unported
+    verified: null
+    notes: "145B, cd=6,488, in=1, 7 callees: cb_args_invoke + program_terminate + mouse_wait_click + flag_table_pop + flag_block_zero_5762_5c63 + far_cb_0/1. THE fatal-error op handler (only caller = op_dispatch): prints+exits (int21 4C) in message mode, else renders the error dialog (string table 3620/362C), waits for a click and optionally terminates. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x19843
+    seg: 0x1984
+    ofs: 0x3
+    size: 119
+    far: true
+    class: ASM
+    hypothesis: "event_tone_key_play"
+    sig: "FAR bp-frame retf (119B): si=[arg_0] key/event; state_word_77a4a_test -> if !=0: es:7772:77A56=0xFFFF; rate-limit: if si!=0x103 and 77A56>[arg_2] and 77A56>0 -> return 0; si=event_key_valid_103_jpt(si); sbi_pit_period_enable; di=event_tone_offset_setup(si); if di!=0: 77A56=[arg_2] (arm cooldown) else sbi_pit_period_disable; return di; 1 caller (key_event_process)"
+    port_status: unported
+    verified: null
+    notes: "119B far, cd=240, callees sbi_pit_period_enable/_disable + event_key_valid_103_jpt + event_tone_offset_setup + state_word_77a4a_test. Key->tone player with rate limit: maps the event, brackets with the PIT period (open kept on success, closed on failure), plays via event_tone_offset_setup and arms the 77A56 cooldown. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x2E6C2
+    seg: 0x2E6C
+    ofs: 0x2
+    size: 213
+    far: false
+    class: ASM
+    hypothesis: "farobj_cmd_interp"
+    sig: "NEAR multi-entry (213B): +0: ax+=0x1B9, farptr_table_field20_get -> bx -= [di+4], farptr_table_field_store, retn (field20 delta adjust); +0x6D: command interpreter: bh mod 16 -> cs:[0xEC+2n] list head, walk packed (count, base) pairs: al-=count byte, per sub-command: bl=base+ah, vec=cs:[0x78+4*bl] (bx,cx), sign fix via ah&4, farobj_entity_accum_copy(...) per count; tail: fixed_vec3_accumulate_b, idiv remainder -> second spawn batch with farobj_entity_accum_copy; retn; 4 callers (sub_2C301 RTLink, sub_2E42C, sub_3E552, sub_4E520)"
+    port_status: unported
+    verified: null
+    notes: "213B, cd=3, in=4, callees farobj_entity_accum_copy + fixed_vec3_accumulate_b + farptr_table_field20_get/farptr_table_field_store. Farobj command interpreter: decodes the cs:0xEC packed command lists, pulls per-command vectors from cs:0x78 and spawns entities through farobj_entity_accum_copy (plus a field20-delta entry). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x14BD7
+    seg: 0x14BD
+    ofs: 0x7
+    size: 160
+    far: true
+    class: ASM
+    hypothesis: "farobj_pos_wrap_update"
+    sig: "FAR retf (160B): set cs:byte_11C8A=0xFF; wrap-normalize both [si]/[si+2] and [si+4]/[si+6] coordinate pairs (+0x333400, and dx,1FFh, -0x333400 range fold); if byte_11C8A==0 -> clc retf; branch on [si+0Ah] sign: high<0 -> resolve, ==0 -> resolve only if farobj_tile_copy_resolve()+0x0C >= [si+8] else clc retf, >0 -> clc retf; store new height [si+8]=resolved+0x0C, [si+0Ah]=0; then es=71C1, ax=[bx], si=0x586D -> farobj_rect_ratio_build, store ratio pair into [bx+2/4]; stc retf (updated) / clc retf (nothing); 2 callers (sub_2FD42, sub_399A2)"
+    port_status: unported
+    verified: null
+    notes: "160B far, dyn=10,756, in=2, callees farobj_tile_copy_resolve + farobj_rect_ratio_build. Farobj position update: folds x/y into range, conditionally re-resolves the terrain height (+0x0C) when the sign test passes, recomputes the projection ratio pair; CF=1 when updated. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x4D8A7
+    seg: 0x4D8A
+    ofs: 0x7
+    size: 415
+    far: true
+    class: ASM
+    hypothesis: "farobj_slot_step_spawn"
+    sig: "FAR retf multi-entry (415B): ds=0x49AB -> cs:word_2E195=[4A3E8]; ds=0x6B58, gate byte_6B58A&1 else tail; loop ax=0..9, di=0x33 stride 6: skip [di]==0; dl=1: fixed_vec3_accumulate_b x2 with velocity (6B586/6B588 + (cx&7)-3) * 2E195 -> dx/bp; slot record: si=([di]&7)*2; if [di+3]==0xFF -> farptr_table_get else entity_step_flags + farobj_tile_copy_resolve -> [di+8]=height [di+0A]=0; fixed_vec3_accumulate_b; mask combine via [si+0x17]/[si+0x25]; al&0x40 ? 3DA3D : 3D9FC spawn helpers: conditional farobj_slot_create(0x11, 0x0D,0x67) when (cx&0x7F)<=0x19, farobj_slot_create(0x1A, 0x20D) when <=0x40; dec [di+4] counter -> 0: [di]=0; end: if none active -> ds:0Ah&=~1; entry+0x11C: slot-select helper (index by cx%10 into the 0x33 table); 2 callers (sub_2FEF2, sub_31319)"
+    port_status: unported
+    verified: null
+    notes: "415B far multi-entry, cd=0, in=2, 6 callees: fixed_vec3_accumulate_b + entity_step_flags + farobj_tile_copy_resolve + farptr_table_get + farobj_slot_create + shared_tail_pop_es. THE slot step+spawn engine: per active slot integrates velocity deltas (6B586/8 x 2E195), re-resolves height against terrain, spawns new slots via farobj_slot_create (types 0x11/0x1A by range) and expires finished counters. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x2E3CC
+    seg: 0x2E3C
+    ofs: 0xC
+    size: 96
+    far: true
+    class: ASM
+    hypothesis: "farobj_slot_sweep"
+    sig: "FAR retf (96B): ds=5982, gate byte_59820 bit0 (set by farobj_slot_create) else ret; scan 0x64 entries of the 0x0C-stride table from di=1: if [di]==1: bl=[di+1] countdown -> if 0: [di]=0 (expire) else dec [di+1], farobj_slot_cycle(dx saved) , dl=1 (any active); continue; end: if dl!=1 -> clear ds:59820 bit0; retf; 2 callers (sub_2E2D0, sub_4DE76)"
+    port_status: unported
+    verified: null
+    notes: "96B far, cd=0, in=2, callee farobj_slot_cycle. Slot sweep driver (the bit0/0x0C/0x64-table pair of farobj_entity_accum_sweep's bit4/0x0E/0x27 table): ages every active slot's countdown, cycles live ones via farobj_slot_cycle, expires empties and clears the mode bit when none remain. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x35505
+    seg: 0x3550
+    ofs: 0x5
+    size: 225
+    far: false
+    class: ASM
+    hypothesis: "game_setup_scroll_half_accum"
+    sig: "NEAR retn (225B): ax=-(ds:546+0x2000) -> stub_to_24988; window gate 0xE845 < ax <= 0x17BB else ret; ax*=0x1E00 -> patch cs:loc_3339C+4 immediate; ds:548 window <=0xA8C: scale *0x1E00 (or 0) +0x64 -> patch cs:word_333A2; 5x far fixed_vec2_half_add with dest (bx_base + patched_x, di_base + patched_y) for bases (0x18,0x54,0xEC,0x4D,0x9B)/(0x52,0x52,0x52,0x22,0) and sources 9088+[0,2,4,6,8]; retn; 2 callers (sub_34C31, sub_45057)"
+    port_status: unported
+    verified: null
+    notes: "225B, cd=0, in=2, callees stub_to_24988 + fixed_vec2_half_add (+ game_setup_variant_5169 xref pair). Scroll-positioned half-accumulator: gates on the (ds:546,ds:548) window, patches the scaled offsets into code immediates and applies five vec2 half-adds from the 9088 table (5-slot sibling of game_setup_half_accum). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x19402
+    seg: 0x1940
+    ofs: 0x2
+    size: 266
+    far: true
+    class: ASM
+    hypothesis: "kb_record_save_apply"
+    sig: "FAR C-frame retf (266B): if es:7772:77A50==-1 -> return 0; kb_record_name_get(77A50, buf0xD) -> if 0 ret 0; kb_field_get_26(buf) -> if 0 return 1; event_key_valid_3_jpt(arg_0) && es:77797==1 -> state_flags_clear(1), di=1 else slot_flag_query(0)==0 -> ret 0; sbi_pit_period_enable; state_block_77720_store8((1,0x0A,0,0,0,0,0,0)); di=ax; if di!=0: kb_field_set_26(buf,0), if arg_2==0: kb_clear_24(buf)+kb_field_set_25_0(buf); end: 77A50=-1, 77A52=-1, 77B52=0; sbi_pit_period_disable; return di; 2 callers (key_code_resolve, sub_1914E)"
+    port_status: unported
+    verified: null
+    notes: "266B C-class, cd=83, 11 callees (kb_record_name_get + kb_field_set/get + kb_clear_24 + state_block_77720_store8 + sbi_pit_period bracket + slot_flag_query + event_key_valid_3_jpt + state_flags_clear). THE key-record save: fetches the recorded key's name (77A50), validates, sends the (1,0x0A) mailbox request, commits fields 24/25/26, invalidates 77A50/77A52 and closes the PIT bracket. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x287A8
+    seg: 0x287A
+    ofs: 0x8
+    size: 204
+    far: false
+    class: ASM
+    hypothesis: "line_record_flag_dispatch"
+    sig: "NEAR retn (204B): si=cs:word_1F716 -> [si+4] -> word_1F718; walk list (0xFFFF term): if flags&0x4000 skip; state_flag_unpack_1f735 -> 1F73A/1F73B/1F72D(&1F731)/1F73E/1F72E/1F72F(&1F730); byte&2 -> two xlat reads -> 1F72A AND 1F72C op bytes; if 1F73E: sub-list walk (1F714 cursor) -> call cs:off_27974[bx] (line_record_draw_loop / 0x2978E), else direct off_27974 dispatch; retn; 3 callers (sub_28147 rotation setup, sub_286CE, sub_28774)"
+    port_status: unported
+    verified: null
+    notes: "204B, cd=0, in=3, callees state_flag_unpack_1f735 + line_record_draw_loop. THE record flag walker: unpacks each record's flags into the 1F72A/1F72C op bytes (with the 1F730/1F731 masks), walks optional sub-lists and dispatches through the off_27974 draw table (parent of line_record_draw_loop for the rotated-setup callers). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x26B2E
+    seg: 0x26B2
+    ofs: 0xE
+    size: 244
+    far: true
+    class: ASM
+    hypothesis: "object_proj_draw_dispatch"
+    sig: "FAR retf (244B): save es:si record (word_1F712/1F716); view_proj_setup_1f73d(di); view_rotation_build([di+0C] -> 437E matrix); transform loop cx=[record]: fixed_vec3_transform_es (bx=437E, di=0x238, z=0) -> projected points; farobj_di_441e_init; if word_27964==0: walk [record+4] list (0xFFFF term): state_flag_unpack_1f735 -> flags 1F73B/1F73E/1F72D/1F73A/1F72E/1F72F, byte&2 -> xlat table 22210 -> 1F72A op; if 1F73E: sub-list walk (1F714 cursor) -> call cs:off_27974[bx] (line_record_draw_loop / 0x2978E), else direct off_27974 dispatch; 6 callers (sub_2142E, sub_264C5, sub_2676D, sub_26C4A, sub_2713D, sub_272A2 -- same set as anim_line_object_draw)"
+    port_status: unported
+    verified: null
+    notes: "244B far, cd=0, in=6, callees view_proj_setup_1f73d + view_rotation_build + fixed_vec3_transform_es + state_flag_unpack_1f735 + farobj_di_441e_init + line_record_draw_loop. Project-and-dispatch renderer: projects the object points through the view matrix, unpacks each record's flags into the 1F72x op state and dispatches via the off_27974 table (parent of line_record_draw_loop; sibling of anim_line_object_draw). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x34495
+    seg: 0x3449
+    ofs: 0x5
+    size: 9
+    far: true
+    class: ASM
+    hypothesis: "op_26400_clear_delay"
+    sig: "FAR retf LEAF (9B): call state_word_26400_get_zero (clears the pending-op id; return discarded); ax=0xEA70 (60000 constant); retf; 3 callers (sub_30A72, sub_30AA8, sub_4B670)"
+    port_status: unported
+    verified: null
+    notes: "9B far leaf, in=3, callee state_word_26400_get_zero. Clears the recorded op slot cs:26400 and hands back the fixed 60000 (0xEA70) delay constant for the caller's next step. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x26CBF
+    seg: 0x26CB
+    ofs: 0xF
+    size: 25
+    far: true
+    class: ASM
+    hypothesis: "op_26400_release"
+    sig: "FAR retf (25B): ax=cs:word_26400; if !=0xFFFF: bx=2 -> op_dispatch(ax, bx) (finalize the recorded op); cs:word_26400=0xFFFF (clear); retf; 1 caller (program_terminate)"
+    port_status: unported
+    verified: null
+    notes: "25B far, cd=3, callee op_dispatch. Finalizes the pending op recorded in cs:26400 at exit: dispatches it with bx=2 (release code) then clears the slot (pair of state_word_26400_get_zero). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2AC4C
+    seg: 0x2AC4
+    ofs: 0xC
+    size: 605
+    far: true
+    class: ASM
+    hypothesis: "overlay_segment_load"
+    sig: "NEAR multi-entry (605B): ax==-1 -> retf; save all; ds=seg021; arena_off_ax18 -> bx entry; if [bx+8]==-1 or [bx+7]&2 -> already loaded (clc, return [bx+0C]); row scan si=0xC1F stride 0x12 distance checks -> farobj_flag7_branch, fail -> error path (bcd_hex_ch_store hex of [bx+0E]/[si+0E] into 2AA3A/2AA3C, error code ax=6 cx=3 -> 2B478); else name=[bx+2] (byte7&8 indirection) -> overlay_file_open; compute para load address, int21 4200 seek, chunked read loop (int21 3F into DS:0, 0xF80 window) or far 0:0 path (byte7&0x20), relocation fixups: read 4B-entry table at 0xA92 and add load para into es:[fix]; byte7|=2 (loaded); clc; exit: return [bx+0C]; if byte_2B622: recursively call sub_2AC4C (chain next); 4 callers (r58_e180, sub_2AFBD, sub_2B135, sub_2B256)"
+    port_status: unported
+    verified: null
+    notes: "605B, cd=0, in=4, 7 callees: arena_off_ax18 + overlay_file_open + bcd_hex_ch_store + mem_block_move_ax + farobj_flag7_branch + stc_retf_const + nop_retf. THE overlay segment loader: opens via overlay_file_open, reads the file into memory in chunks, applies the 0xA92 relocation fixup table, marks the loaded flag, chains the next queued entry, hex-formats errors through bcd_hex_ch_store. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x1406A
+    seg: 0x1406
+    ofs: 0xA
+    size: 66
+    far: false
+    class: ASM
+    hypothesis: "point_bits_record_push"
+    sig: "NEAR (66B): si=cs:word_11D14 -> [si+8]+ds:0C63; point_xy_transform -> ax; bit scan: shl ax,1 carry-test up to cx iterations (first set bit / exhausted); carry -> add cs:byte_11C6D, +0x18; exhausted -> if cs:byte_11C69&1 push path else require bx==2; record_queue_push(byte_11C6D, ds:0C63); retn; 3 callers (sub_15416, sub_15480, sub_15568)"
+    port_status: unported
+    verified: null
+    notes: "66B, cd=0, in=3, callees point_xy_transform + record_queue_push. Transforms the point, scans its bits (carry position bumps the cs:11C6D op byte by 0x18) and pushes (11C6D, ds:0C63) onto the record queue under the 11C69 flag gate. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6D747
+    seg: 0x6D74
+    ofs: 0x7
+    size: 104
+    far: false
+    class: ASM
+    hypothesis: "r06_mode_step_entry"
+    sig: "NEAR multi-entry block (104B, data-head at +0): +0x13: bx=ds:4AB1 mode table, ds:4A9F=([bx+4A0E or 4A16 if 4ABD]+4AA1), ds:4AB3=([bx+4A1E]*49A0)>>8, r06_mode_dispatch_bx0 + r06_mode_dispatch_bx8, if ds:4AB1>=8: 4AB1=0, r06_mode_state_update, retn; +0x53: if ds:4AC4==1: r06_farobj_proc_e then r06_state_display (tail); else ds:4ABD=0, tail-jmp r06_mode_param_dispatch; 2 callers (sub_2BFFF RTLink, sub_6CDA8)"
+    port_status: unported
+    verified: null
+    notes: "104B multi-entry, cd=0, in=2, 6 callees (r06_mode_dispatch_bx0/bx8 + r06_mode_state_update + r06_mode_param_dispatch + r06_farobj_proc_e + r06_state_display). R06 mode step: applies the 4AB1 table params, runs both dispatch tables, rolls the mode id past 7 into a state update, branches to farobj proc + display or tails into the param dispatcher. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6D5DF
+    seg: 0x6D5D
+    ofs: 0xF
+    size: 80
+    far: false
+    class: ASM
+    hypothesis: "r06_mode_tick"
+    sig: "NEAR retn (80B): al=ds:4AC2 mode: mode 2 -> if 4AC4==1: jmp r06_farobj_proc_e else ret; mode 1 with 4AC4==1: r06_farobj_proc_e; general path: if ds:49A2==0 && ds:4AC5!=0: countdown ds:4A91 -= 49A0 (floor 0xA00, 4AC5=0), r06_mode_gate_49a3; r06_mode_state_update (loc_6D6EC), r06_mode_gate_49a3 (loc_6D51A), tail-jmp r06_ui_dispatch_block (loc_6D2D5 HUD entry); 2 callers (sub_66E62, sub_6D5A6)"
+    port_status: unported
+    verified: null
+    notes: "80B, cd=0, in=2, callees r06_ui_dispatch_block + r06_mode_gate_49a3 + r06_farobj_proc_e + r06_mode_state_update. R06 per-tick driver: routes on mode 4AC2 (farobj proc when 4AC4==1), runs the 4A91 timer countdown at the 49A0 tick, chains gate -> state update -> gate -> tail-jumps into the r06 UI HUD entry. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6CF90
+    seg: 0x6CF9
+    ofs: 0x0
+    size: 313
+    far: true
+    class: ASM
+    hypothesis: "r06_proximity_select"
+    sig: "FAR retf (313B): gates ds:4A83>1; mode 3 (4AC2): gate 449==0 && 4AC4!=1; r06_farptr_dispatch_gate -> 4AC4=4AC7; on CF: state_word_2e12b_set -> bx, 48BC=bx, entry test es:[bx+1734] flags 76h/79h -> if clear: 4AC3=3, 4AC2=2 (select) else 4AC4=0; no CF: 4A87=1; mode 2: ret; else: 4AB7 timer countdown -> r06_ui_dispatch_block; 16-entry [si+1734] proximity scan: |[si+96]-4AA5|<=5 && |[si+98]-4AA9|<=3 with flags 74h.1&&.6 && 79h.1 -> OR [si+74]|=0x80, si==4AAB -> 4A8F=[si+3E]*0x106>>8; r06_farptr_dispatch_gate, 4A87=1, 4A89=0, 4A8B=-1; CF -> r06_ui_dispatch_block; retf; 2 callers (sub_2C26B RTLink, sub_3A3D6)"
+    port_status: unported
+    verified: null
+    notes: "313B far, cd=0, in=2, callees state_word_2e12b_set + r06_farptr_dispatch_gate + r06_ui_dispatch_block. R06 proximity selector: farptr-gates the current entry, scans the 0x1734 table for the nearest entry within (5,3) of the 4AA5/4AA9 reference, marks it 74h.7, flips the 4AC2/4AC3/4AC4 mode states and refreshes the UI. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x39BC0
+    seg: 0x39BC
+    ofs: 0x0
+    size: 19
+    far: false
+    class: ASM
+    hypothesis: "r06_stream_mode_toggle"
+    sig: "NEAR (19B): xor ds:byte_4AC1, 1 (toggle); if ds:4AC2==3: call far sub_2C275 (far target xref pair incl sbi_stream_stop_load); retn (mode !=3: just toggled); 2 callers (sub_32C62, sub_49AB4)"
+    port_status: unported
+    verified: null
+    notes: "19B, cd=0, in=2, callee sub_2C275 (far xref pair with sbi_stream_stop_load). R06 mode-3 stream toggle: flips the ds:4AC1 flag every call and, only in mode 3 (ds:4AC2), issues the far stream stop/reload call. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6F5E2
+    seg: 0x6F5E
+    ofs: 0x2
+    size: 221
+    far: false
+    class: ASM
+    hypothesis: "r17_screen_draw"
+    sig: "FAR bp-frame (221B, tail merges into the next block): mouse_gate_far_entry; dispatch_22100(0,2,0xC8,0,0); far 6E16E(0xF,6,5,0xA,0x13F,0,0) frame draw; 3x dispatch_22090(0xF, [6E68C/6E696 rect].y+3, [rect].x, 8) -- draws three pointer-based rects; continues with 6E452/454 rect pair pushes (fall-through tail); 3 callers (sub_2C1D5, sub_2C1DF RTLink, sub_6E8F0)"
+    port_status: unported
+    verified: null
+    notes: "221B far, cd=0, in=3, callees mouse_gate_far_entry + dispatch_22100_invoke + dispatch_22090_invoke_4arg. R17 module paint entry (same 6Fxxx block as r17_e07): mouse gate + 22100 setup + the 320x200 frame draw + three pointer-rect draws; tail merges into the following block. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6EF31
+    seg: 0x6EF3
+    ofs: 0x1
+    size: 669
+    far: true
+    class: ASM
+    hypothesis: "r17_ui_event_loop"
+    sig: "FAR (669B, data-head): frame init dispatch_22084_args_frame(0xC8,0,0x13F,0,0) (320x200), 4x far 6DFF0 rect ops on 6E45 rects + far 6E16E draw, dispatch_220f4, bda_kb_flag, es:6E8D2=0x52; EVENT LOOP: scan cs:8DE table (5 keys) for 6E8D2 -> jmp cs:[bx+0xA] cases (rect-query far 6E1EA -> ax, sub_2BE65/r17_farptr_helper/sub_2BE6F paths, 6E8B7 flags); flag_table_pop_far_thunk -> 6E8D2=next, 6E8D4=code&0xFF00; loop while es:6E8B7: mouse_gate_far_entry, dispatch_22100(0,2,0xC8,...), dispatch_220f4(0xC8,0), bda_kb_flag; leave/retf; 9 callers (sub_2C009..sub_2C1B7 -- RTLink runtime)"
+    port_status: unported
+    verified: null
+    notes: "669B far, cd=0, in=9, 9 callees (mouse_gate_far_entry + flag_table_pop_far_thunk + dispatch_22084/22100/220f4 + sub_2BE65/2BE6F + r17_farptr_helper + bda_kb_flag_10000_get). R17 module UI screen: builds the 320x200 frame, runs the 5-case event dispatch off the flag-table pop, redraws through the dispatch trio, gated by the mouse entry block. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6ED0A
+    seg: 0x6ED0
+    ofs: 0xA
+    size: 530
+    far: true
+    class: ASM
+    hypothesis: "r69_ui_event_loop"
+    sig: "FAR C-frame (530B): mouse_gate_far_entry; dispatch_22100(1,0,0xC8,...); 3x far 6DFF0 rect draws (6E47C/494/498 vs 6E6B2..BC pairs, 6E8C7 select 1/2); dispatch_220f4; bda_kb_flag; es:6E8B7=1; EVENT LOOP: flag_table_pop_far_thunk -> 6E8D2/6E8D4, mask 0xDF; far unk_6F8F2 (r69_farptr_dispatch_entry); scan cs:62C (5 keys) -> jmp [bx+0xA] cases (far 6E1EA query -> ax, sub_2BE0B + r17_farptr_helper + sub_2BE79 / far 6EF30 path, 6E8B7/6E8D7 flags); loop while 6E8B7; mouse_gate_far_entry, dispatch_22100(0,1,...), dispatch_220f4, bda_kb_flag; leave/retf; 4 callers (sub_2C077, sub_2C0D1, sub_2C185 RTLink, sub_6EC2C)"
+    port_status: unported
+    verified: null
+    notes: "530B C-far, cd=0, in=4, 9 callees (mouse_gate_far_entry + flag_table_pop_far_thunk + dispatch trio + sub_2BE0B/2BE79 + r17_farptr_helper + r69_farptr_dispatch_entry). RTLink screen loop dispatching through r69_farptr_dispatch_entry: rect draws, 5-case event table (cs:62C), flag-table pop, mouse gate -- the r69-flavored sibling of r17_ui_event_loop. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27ED4
+    seg: 0x27ED
+    ofs: 0x4
+    size: 18
+    far: true
+    class: ASM
+    hypothesis: "record_queue_push_guard"
+    sig: "FAR retf (18B): cs:byte_2798B=1; push cs; call record_queue_push; cs:byte_2798B=0; retf; 1 caller (sub_140AC)"
+    port_status: unported
+    verified: null
+    notes: "18B, dyn=14,158, callee record_queue_push. Queue push bracketed by the cs:2798B marker (set around the push so consumers/reentrancy see the in-push flag; adjacent to the 27988/2798A anim state). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1D235
+    seg: 0x1D23
+    ofs: 0x5
+    size: 130
+    far: true
+    class: ASM
+    hypothesis: "sbi_channel_release_close"
+    sig: "FAR bp-frame retf (130B): if es:7772:77B38!=0 -> sbi_command_flush_clear; if es:7894:7981E==0: loop si=0..0x0A: channel_reg_store_dispatch(table byte at 7A32:2si-0x6647, 7, 0x0A), if second byte !=0xFF -> channel_reg_store_dispatch(byte-0x6646, 7, 0x0A), channel_release(si); then sbi_int8_close; 2 callers (state_mode_check, sub_1BD31)"
+    port_status: unported
+    verified: null
+    notes: "130B far, dyn=77, cd=104, callees channel_reg_store_dispatch + channel_release + sbi_command_flush_clear + sbi_int8_close. Sound-mode shutdown: flush the pending command, program the release registers for all 11 channels from the 7A32 table, release each channel, unhook INT8. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x183F8
+    seg: 0x183F
+    ofs: 0x8
+    size: 114
+    far: true
+    class: ASM
+    hypothesis: "sbi_range_step_dispatch"
+    sig: "FAR bp-frame retf (114B): si=[bp+arg_2]; gate es:7772:77A82!=0 else return 0; si==0 -> return 1 (noop); sbi_pit_period_enable; op=[bp+arg_0] high byte: 0x100 -> gate 77A82 bit0 then range_validate(si), 0x102 -> gate bit1 then step_dir_apply(si), else nothing; return did-op flag; 1 caller (sub_10F32)"
+    port_status: unported
+    verified: null
+    notes: "114B far, dyn=8,765, cd=8,765, callees sbi_pit_period_enable + range_validate + step_dir_apply. Capability-gated 2-op dispatcher: op 0x100 = range_validate, op 0x102 = step_dir_apply, both under the PIT period enable with the 77A82 feature bits checked per op. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x198BA
+    seg: 0x198B
+    ofs: 0xA
+    size: 25
+    far: true
+    class: ASM
+    hypothesis: "state_flags_clear_close"
+    sig: "FAR bp-frame retf (25B): state_flags_clear(1) -> si; sbi_pit_period_disable; return si; 1 caller (key_code_resolve)"
+    port_status: unported
+    verified: null
+    notes: "25B far, cd=83, callees state_flags_clear + sbi_pit_period_disable. Cancel counterpart of kb_record_save_apply: clears state flag bit 1 and closes the PIT period bracket; returns the flag-clear result. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x3601B
+    seg: 0x3601
+    ofs: 0xB
+    size: 81
+    far: true
+    class: ASM
+    hypothesis: "terrain_attr_project_point"
+    sig: "FAR retf (81B): es=7B0E; bx=0x3820, di=0x384A -> stub_to_248d1 (trampoline pair: terrain_attr_block_scan writes results at es:384A); cx=es:[384A+4]; if cx<1 -> CF=1 fail; x=[si]*ds:78E/cx + ds:792, y=[si+2]*ds:78E/cx + ds:794 (0x7FFF overflow -> CF=1); success: bx=x, ax=y, CF=0; 4 callers (sub_35EB5, sub_36437, sub_45F2C, sub_46D42)"
+    port_status: unported
+    verified: null
+    notes: "81B far, cd=0, in=4, callees stub_to_248d1 (-> terrain_attr_block_scan). Runs the block scan into es:384A then scales its two sums by ds:78E/count with the ds:792/794 offsets into a projected point (bx=x, ax=y); CF set on empty/overflow. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x13C3F
+    seg: 0x13C3
+    ofs: 0xF
+    size: 113
+    far: false
+    class: ASM
+    hypothesis: "tile_quad_sample_group"
+    sig: "NEAR retn (113B): 4x tile_quad_sample around base (cs:word_11BCA, cs:word_11BCC): (x,y)->11C5D/11C5C, (x+1,y)->11C5B/11C5A, (x+1,y-1)->11C59/11C58, (x,y-1)->11C57/11C56 (each al>0x5F -> 0); retn; 3 callers (sub_13A71, sub_3454C, sub_39F1D)"
+    port_status: unported
+    verified: null
+    notes: "113B, cd=0, in=3, callee tile_quad_sample. Samples the 4-tile quad around the 11BCA/11BCC base into the second paired-byte group 11C56..11C5D (clamp >0x5F to 0) -- the quad-group sibling feeding the avg-pair family. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x16060
+    seg: 0x1606
+    ofs: 0x0
+    size: 126
+    far: false
+    class: ASM
+    hypothesis: "tile_strip_sample_draw"
+    sig: "NEAR retn (126B): patch cs immediates word_1608E=word_11C2A, word_1609D=word_11C28-word_11C44; loop 0x40 times over the record list at ds:46E7: coord=[si]+patched offsets, and ax,7FFh -> ds:[bp+2], tile_quad_sample -> al/ah; count al>0x5F misses in dx; store [di]=al [di+0x40]=ah (buffers 46E9/4729); if dx<0x40: bx=47E9, si=46E9, di=4AE9, byte_11CAF=1 -> tile_clip_draw_14200; retn; 23 callers (entity_state_load + 22 render fns)"
+    port_status: unported
+    verified: null
+    notes: "126B, cd=11,155, in=23 (widest of batch), callees tile_quad_sample + tile_clip_draw_14200. Builds a 64-tile strip: samples a quad per list record into the paired 46E9/4729 buffers (self-patched world offsets) and clip-draws it unless all 64 samples missed (>0x5F). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x229C0
+    seg: 0x229C
+    ofs: 0x0
+    size: 8
+    far: true
+    class: ASM
+    hypothesis: "vector_shutdown_chain"
+    sig: "FAR retf LEAF (8B): call vector_shutdown_restore; push cs; call sub_2A9FA; retf; 1 caller (program_terminate)"
+    port_status: unported
+    verified: null
+    notes: "8B far leaf, cd=3, callees vector_shutdown_restore + sub_2A9FA. Shutdown chain step from program_terminate: restores the interrupt vectors then continues teardown via sub_2A9FA (named in the same level's batch 2). conf: med-high"
+    updated: "2026-10-18"
+
+  - ea: 0x344DE
+    seg: 0x344D
+    ofs: 0xE
+    size: 110
+    far: false
+    class: ASM
+    hypothesis: "control_axis_step_quantize"
+    sig: "NEAR retn (110B): gate ds:449==0 else stc ret; control_axes_read (xref pair 0x1241E/control_axes_read) -> CF: ret; si=entity: if [si+0D2]&4: &2 -> return ax=[si+2E] bx=0; else neg ax: <0x80 deadzone-ish -> scale ax*0xB7/0x800 bx=0, tiny -> return 0,0; ax>=0x200 -> residual ax=(ax-0x200)>>8 + bx=(0x131+? clamp<=5) clc ret; 1 caller (sub_2FC79)"
+    port_status: unported
+    verified: null
+    notes: "110B, cd=0, in=1, callee control_axes_read. Reads the control axis (gated by ds:449) and quantizes it: deadzone/scale band (x*0xB7/0x800), big values become (al residual, bx = step count clamped to 5), special [si+0D2]&6 paths; CF=1 when gated/no-data. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x36F82
+    seg: 0x36F8
+    ofs: 0x2
+    size: 42
+    far: false
+    class: ASM
+    hypothesis: "far_cb_rect_bounds"
+    sig: "NEAR retn (42B): bounds gate: bx in [ds:6E8, ds:6EC-0x0F) AND di in [ds:6EA, ds:6EE-5) else retn; si=ds:708; far_cb_with_args (xref pair w/ farobj_rect_ratio_build); retn; 1 caller (sub_36E3A)"
+    port_status: unported
+    verified: null
+    notes: "42B, cd=0, in=1, callee far_cb_with_args. Rect-bounds gated callback: validates the (bx,di) point against the ds:6E8/6EA/6EC/6EE rect shrunk by (0x0F,5) margins then invokes far_cb_with_args with si=ds:708. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4E109
+    seg: 0x4E10
+    ofs: 0x9
+    size: 67
+    far: true
+    class: ASM
+    hypothesis: "farobj_slot_create_ems"
+    sig: "FAR retf (67B): gate cs:byte_2E124!=0 else retf; if byte_2E127+1==1: push cs, call loc_2E361 (farobj_slot_create entry); else retf; ems_map_seg_10233; es=funcs_4E5C0, di=0x2EF3; ax=word_2E106 (dec if byte_2E128), stosw -> word_2E110; if ax>=1: call far sub_2C17B; retf; 1 caller (sub_32C62)"
+    port_status: unported
+    verified: null
+    notes: "67B far, cd=0, in=1, callees ems_map_seg_10233 + sub_2C17B + farobj_slot_create. Gated create + EMS publish: creates a farobj slot (entry 2E361 under flag 2E127), maps EMS seg 10233, writes the new count word at funcs_4E5C0:2EF3 and pings sub_2C17B when >=1. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4E09C
+    seg: 0x4E09
+    ofs: 0xC
+    size: 29
+    far: true
+    class: ASM
+    hypothesis: "farobj_slot_create_gate"
+    sig: "FAR retf (29B): gate cs:byte_2E124!=0 else retf; if byte_2E125==1: push cs, call loc_2E361 (farobj_slot_create internal entry B); else: push cs, call loc_2E32B (internal entry A); retf; 1 caller (sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "29B far, cd=0, in=1, callee farobj_slot_create (internal entries 2E361/2E32B). Flag-gated farobj creation: 2E124 gate, 2E125 selects which internal create entry runs (the two-entry selector sibling of farobj_slot_create_ems / _status). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4E309
+    seg: 0x4E30
+    ofs: 0x9
+    size: 23
+    far: true
+    class: ASM
+    hypothesis: "farobj_slot_create_status"
+    sig: "FAR retf (23B): push cs, call loc_2E314 (farobj_slot_create internal entry); nop; ax=0; adc ax,ax (ax=CF -> 0/1); retf; trailing entries: word_2E127+1==0 -> loc_2E31C entry else stc/clc mini-dispatch; 1 caller (sub_6EA4A)"
+    port_status: unported
+    verified: null
+    notes: "23B far, cd=0, in=1, callee farobj_slot_create (entry 2E314). Status-returning create: runs the internal create entry and converts its carry into an AX 0/1 success flag for the RTLink caller sub_6EA4A. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x4820B
+    seg: 0x4820
+    ofs: 0xB
+    size: 135
+    far: true
+    class: ASM
+    hypothesis: "game_setup_ramp_accum"
+    sig: "FAR retf multi-entry (135B, seg ds=0x54AF): entry+0: bx=ds:58F9A record, cx=[bx+487E], si=bx+0x44D5 (value slot), di=ds:593AA+0xAE+cx (limit slot); al += [si]; clamp al to [2,0x18]; if cs:dword_2E13F+3 &1 -> cap al<=4; if ds:59380==0 skip; cap al by [di]; [si]=al; retf; entry+0x53: cap-only variant (al=[si], cap by [di], store); 1 caller (sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "135B far multi-entry, cd=0, in=1, callee edge game_setup_staged_step. Limited ramp accumulator for the staged setup: adds the incoming rate into the 58F9A record slot, clamps 2..24 (4 under the 2E13F flag), caps by the 593AA+0xAE limit table under the 59380 gate (second entry = cap-only). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2A9FA
+    seg: 0x2A9F
+    ofs: 0xA
+    size: 21
+    far: true
+    class: ASM
+    hypothesis: "op_2a780_release"
+    sig: "FAR retf (21B): ax=cs:word_2222A -> call cs:dword_2A7F0 (indirect handler); ax=cs:word_2A780, bx=2 -> push cs, call op_dispatch (finalize recorded op); retf; 1 caller (vector_shutdown_chain)"
+    port_status: unported
+    verified: null
+    notes: "21B far, cd=0, in=1, callee op_dispatch. Second shutdown step (called by vector_shutdown_chain after vector_shutdown_restore): invokes the stored 2A7F0 handler with 2222A then finalizes the op recorded in cs:2A780 with bx=2 (pair of op_26400_release). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x2B0BF
+    seg: 0x2B0B
+    ofs: 0xF
+    size: 70
+    far: true
+    class: ASM
+    hypothesis: "overlay_patch_verify"
+    sig: "NEAR retn (70B): ds=cs, si=word_2B12D (scan start); loop: patch_scan_e8_58d until CF; if si == word_2B12F (end) -> clean return; else error: cx = (ds - ds:0A86 - 0x10), dx=ds:0E -> bcd_hex_ch_store (hex para delta), cx=si, dx=ds:0E+5 -> bcd_hex_ch_store (hex site); ax=0x12, cx=3, bx=ds:0E -> jmp loc_2B478 (overlay_segment_load error reporter); 1 caller (sub_2AFBD)"
+    port_status: unported
+    verified: null
+    notes: "70B, cd=0, in=1, callees patch_scan_e8_58d + bcd_hex_ch_store. Overlay relocation verifier: walks the E8/58D patch chain over the relocated segment; on a mismatch formats the para-delta + site as hex through bcd_hex_ch_store and reports via the overlay_segment_load error path (code 0x12/3). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x6D19F
+    seg: 0x6D19
+    ofs: 0xF
+    size: 183
+    far: true
+    class: ASM
+    hypothesis: "r06_entry_scan_draw"
+    sig: "FAR retf (183B): gate ds:4AC2!=3 else retf; patch cs immediate cx=48B8*4; loop si=0..0x0F over [si+1734] entries: flags 74h.0&&.6 required; bx/di=[si+96/98]; mode 2: idx==48BC -> r06_ui_dispatch_block entry 6D3D5 + early exit; else: 4AC4&&idx==48BC -> 6D3D5; if 4A83!=1: call r06_ui_dispatch_block entry 6D3FB, screen-x = (48BA+0C - [si+9A])*0x630>>16 + base, range gate [0x60,0xE2]; [si+79]&1 -> r06_mode_gate_49a3; 1 caller (sub_3A3D6)"
+    port_status: unported
+    verified: null
+    notes: "183B far, cd=0, in=1, callees r06_ui_dispatch_block + r06_mode_gate_49a3. R06 entry scan+draw: walks the 0x1734 table (16 entries), hot-draws the selected idx (48BC) via the r06_ui_dispatch_block 6D3D5/6D3FB entries, project-checks x into the [0x60,0xE2] y-band and runs the mode gate (draw counterpart of r06_proximity_select). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x106C86
+    seg: 0x106C8
+    ofs: 0x6
+    size: 37
+    far: true
+    class: ASM
+    hypothesis: "r12_cb_args_render"
+    sig: "FAR retf (37B): push ds/es/pusha; far_cb_1 (context begin); ds=cs; si=[bx+0], lodsb -> cx=length, al=0x0F; loc_11A7D (xref pair cb_args_invoke) with (al=0x0F, cx=len); far_cb_0 (context end); popa/retf; 1 caller (r12_e43)"
+    port_status: unported
+    verified: null
+    notes: "37B far, cd=0, in=1, callees cb_args_invoke + far_cb_0 + far_cb_1. R12 module render callback: brackets far_cb_1/far_cb_0 around a length-prefixed arg invoke (al=0x0F) read from [bx] -- the R12 sibling of the far_cb_1 -> cb_args_invoke -> far_cb_0 pattern in error_display_terminate. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x6F2F2
+    seg: 0x6F2F
+    ofs: 0x2
+    size: 167
+    far: true
+    class: ASM
+    hypothesis: "r17_screen_draw_b"
+    sig: "FAR bp-frame (167B): mouse_gate_far_entry; dispatch_2211c(0xC8,0); far 6DFF0 rect pair (6E472/474 vs 6E6AE/6B0, select 6E8C7==0?2:1); second 6DFF0 pair (6E47A/47C vs 6E6B2/6B4, 6E8C7>=1?2:1); dispatch_220f4(0xC8,0); bda_kb_flag; retf; 1 caller (sub_2C135)"
+    port_status: unported
+    verified: null
+    notes: "167B far, cd=0, in=1, callees mouse_gate_far_entry + dispatch_220f4_invoke_2arg + dispatch_2211c_invoke_2arg + bda_kb_flag_10000_get. R17 screen paint variant B (same 6Fxxx cluster as r17_screen_draw): mouse gate + 2211c clear + two pointer-rect 6DFF0 draws selected by the 6E8C7 mode + 220f4 refresh. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x203F8
+    seg: 0x203F
+    ofs: 0x8
+    size: 43
+    far: true
+    class: ASM
+    hypothesis: "record_queue_gather_drain"
+    sig: "FAR retf (43B): es=7B0E, di=0x238 (queue base); cx=lodsw+1 (record count); loop: bx += lodsw (walk the offset stream at DS:SI), copy [bx]/[bx+2] words -> es:di (stosw x2); ds=7B0E -> record_queue_select_drain(); pops; retf; 1 caller (sub_268DD)"
+    port_status: unported
+    verified: null
+    notes: "43B far, cd=0, in=1, callee record_queue_select_drain. Gathers count+1 record quads from the DS:SI offset stream into the 7B0E:238 queue buffer then drains it (fill half of the select-and-drain pair). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x1C534
+    seg: 0x1C53
+    ofs: 0x4
+    size: 351
+    far: true
+    class: ASM
+    hypothesis: "sbi_stream_next_advance"
+    sig: "FAR C-frame retf (351B): cursor es:7772:77B6C; if byte!=0x2F: stream_long_accumulate -> dx:ax, add into es:[77B7C*4 + 4AE/4B0] (item accumulator); else set item = 77FFF/0xFFFF (sentinel = ended); min-scan over items 1..77B64 (skip [i+49E]==0x2F) -> si=argmin; if item[si+49E]==0x2F: 77CA8=1, sbi_command_flush_clear, return 0; else delta = item - 77B78/77B7A, update 77B7A/77B78, cursors 77B68=7772:(45E+4si), 77B6C=7772:(49E+si), 77B7C=si; return delta; 1 caller (sub_1D068)"
+    port_status: unported
+    verified: null
+    notes: "351B C-far, cd=0, in=1, callees stream_long_accumulate + sbi_command_flush_clear. SBI stream scheduler tick: accumulates each stream item (or sentinel-marks ended ones at 0x2F), picks the earliest-due item, advances the 77B68/77B6C/77B7C cursors and returns the delta vs the previous position. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x34B92
+    seg: 0x34B9
+    ofs: 0x2
+    size: 139
+    far: false
+    class: ASM
+    hypothesis: "scroll_decay_limit"
+    sig: "NEAR multi-entry (139B): entry+0: ax=-ds:546 -> stub_to_24988 (trampoline pair w/ tile_quad_sample); bx=ds:54C rate clamp (min 0xC8); sign-normalize; if delta < 0xC8 -> RELEASE: ds:5A1&=~1, ds:546=0, ds:664=0; else ds:546 = stub(546+delta) (decay); entry+0x2F: ax=ds:548 vs bx=ds:54E same shape -> if <0xC8 or negative: ds:5A1&=~2, ds:548=0, ds:665=0 else ds:548 = stub(548-delta); 1 caller (sub_34C31)"
+    port_status: unported
+    verified: null
+    notes: "139B, cd=0, in=1, callees stub_to_24988 + tile_quad_sample (xref pair). Scroll decay/limit (called by sub_34C31 beside game_setup_scroll_half_accum): decays the ds:546/ds:548 scroll cursors by the ds:54C/54E rates through the stub, clears the ds:5A1 active bits and zeroes cursors when the delta falls below 0xC8. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x143D7
+    seg: 0x143D
+    ofs: 0x7
+    size: 69
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_quadrant_dispatch"
+    sig: "NEAR retn (69B): cs:word_11C90=ax, 11C92=bx (grid origin); split cell: cx=ax&0xF, ax>>=4 (row), dx=(bx&0xF)<<4, si=(bx&0xFFF0)<<1 (col); cs:word_11C8E=0 (hit counter); bl=cs:byte_11C7A (quadrant) -> call cs:off_11C9A[bx] (8-entry table: 4 terrain_attr_store_11c8e variants + 4 terrain_attr_block_scan variants); dx=cs:word_11C8E (hits); retn; 1 caller (sub_160DE)"
+    port_status: unported
+    verified: null
+    notes: "69B, cd=0, in=1, 8 table targets: terrain_attr_store_11c8e(+_b/_c/_d) + terrain_attr_block_scan(+_inc/_axdec/_dec). THE terrain-attr quadrant dispatcher: stores the 11C90/11C92 origin pair (the ramps the scans fill), splits the cell coordinates and routes the quadrant byte 11C7A through the cs:11C9A table; returns the hit count. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x1465E
+    seg: 0x1465
+    ofs: 0xE
+    size: 60
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_quadrant_dispatch_b"
+    sig: "NEAR retn (60B): cx=ax&0x0C, ax>>=4, dx=(bx&0x0C)<<3, si=(bx&0xFFF0)<<1 (0x0C quadrant masks, no origin store); cs:word_11C8E=0; bl=cs:byte_11C7A -> call cs:off_11CA2[bx] (4-entry table: the 4 terrain_attr_block_scan variants); dx=cs:word_11C8E; retn; 1 caller (sub_16124)"
+    port_status: unported
+    verified: null
+    notes: "60B, cd=0, in=1, 4 table targets: terrain_attr_block_scan + _inc/_axdec/_dec. Scan-only quadrant dispatcher (sibling of terrain_attr_quadrant_dispatch, table at cs:11CA2 with the 0x0C quadrant masks and no 11C90/92 origin write). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x20897
+    seg: 0x2089
+    ofs: 0x7
+    size: 4
+    far: true
+    class: ASM
+    hypothesis: "view_extent_shadow_restore_far"
+    sig: "FAR retf NEARTHUNK (4B): call view_extent_shadow_restore; retf; 1 caller (sub_3A88D)"
+    port_status: unported
+    verified: null
+    notes: "4B far thunk, in=1, callee view_extent_shadow_restore (near). Far adapter for the view-extent rollback (the restore half of the sub_3A88D bracket). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x20843
+    seg: 0x2084
+    ofs: 0x3
+    size: 4
+    far: true
+    class: ASM
+    hypothesis: "view_extent_shadow_save_far"
+    sig: "FAR retf NEARTHUNK (4B): call view_extent_shadow_save; retf; 1 caller (sub_3A88D)"
+    port_status: unported
+    verified: null
+    notes: "4B far thunk, in=1, callee view_extent_shadow_save (near). Far adapter: exposes the near view-extent checkpoint to far callers (sub_3A88D). conf: med-high"
+    updated: "2026-10-18"
+
+  - ea: 0x3A7DA
+    seg: 0x3A7D
+    ofs: 0xA
+    size: 109
+    far: false
+    class: ASM
+    hypothesis: "box_edge_strip_draw"
+    sig: "NEAR retn (109B): rect at ds:49D8 = (bx-0x1C..bx+0x1C, di-0x11..di+0x11); es=segment at loc_38561+1; 4x: reconfigure 49D8/49DA/49DC/49DE edge pair (top/bottom/left/right bands), si=49D8, ax=0 -> call (xref pair tile_strip_sample_draw / segment_clip_test); retn; 7 callers (r37_e137 RTLink, sub_3A6B1, sub_4A3EE, sub_67781, sub_683C5, sub_6AE59, sub_6B53A)"
+    port_status: unported
+    verified: null
+    notes: "109B, cd=0, in=7, callees tile_strip_sample_draw + segment_clip_test. Draws the four tile strips framing the (bx,di) box: reconfigures the 49D8 rect edge-by-edge (bands +-0x1C/+-0x11) and samples/draws each strip via the strip draw/clip pair. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x275D8
+    seg: 0x275D
+    ofs: 0x8
+    size: 155
+    far: true
+    class: ASM
+    hypothesis: "buffer_budget_entry_block"
+    sig: "FAR multi-entry block (155B, all retf 8): +0: budget write -- lds bx=[arg0], cx=[bx], cap at cs:word_2747A (remaining budget), consume it, if cx: lds dx=[arg4], op_dispatch(ax=cs:27476, bx=0x0A, cx); +0x32: budget copy -- same cap, copy cx bytes from cursor cs:27482:27480 to es:[arg4], advance cursor; +0x69/+0x83: set cursor 27482:27480 from stack/regs; +0x8F: set cs:word_27476 (op id); in=0 indirect far target, dyn=1,238"
+    port_status: unported
+    verified: null
+    notes: "155B far multi-entry, dyn=1,238, in=0, callee op_dispatch. RTLink buffer entry block: budget-capped write (op 0x0A against cs:27476, budget cs:2747A), budget-capped cursor copy-out, and cursor/op-id setters. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x274E6
+    seg: 0x274E
+    ofs: 0x6
+    size: 242
+    far: true
+    class: ASM
+    hypothesis: "buffer_callback_api_block"
+    sig: "FAR multi-entry block (242B): +0/+0xC: set cs:word_2747C; +0x11: ds=cs:27470, bx*4 -> far-call sub_2BFB9 with 6 pushed far args (cs:[7E06+bx], cs:[7E08+bx], cursor 2748A:27488, 7DCE, 7DCC) -- callback invoke; +0x47/+0x5B: set cursor 2748A:27488; +0x65/+0x71: set cs:word_27478; +0x76: budget-less write via op(cs:27478, bx=0x0C); +0x95/+0xAC: set cursor 27486:27484 + 2747E=0; +0xC1: copy [ptr] bytes from [arg4] to cursor 27486:27484 with 2747E+=cx, advance; in=0, dyn=612"
+    port_status: unported
+    verified: null
+    notes: "242B far multi-entry, dyn=612, in=0, callees op_dispatch + sub_2BFB9. RTLink buffer/callback master block: 11-entry API with the far sub_2BFB9 callback invoke, op 0x0C write, two cursor pairs (27478/27484) and copy-with-counter entry. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x27678
+    seg: 0x2767
+    ofs: 0x8
+    size: 31
+    far: true
+    class: ASM
+    hypothesis: "buffer_write_entry"
+    sig: "FAR retf 8 (31B): lds bx=[arg0]; cx=[bx]; jcxz skip; lds dx=[arg4]; ax=cs:word_27476 (op id), bx=0x0A; op_dispatch; retf 8 (callee pops 8); in=0 indirect far target, dyn=694"
+    port_status: unported
+    verified: null
+    notes: "31B far, dyn=694, in=0, callee op_dispatch. Plain buffer write: sends the [ptr] count through op 0x0A (op id cs:27476) to the far destination -- the budget-less sibling of buffer_budget_entry_block. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1B7CE
+    seg: 0x1B7C
+    ofs: 0xE
+    size: 288
+    far: true
+    class: ASM
+    hypothesis: "channel_program_fetch_write"
+    sig: "FAR C-frame retf (288B): es:516+bx=dl byte, es:7779B=al; device index si=es:7894:[arg2*2+0DDA]; read two cbw mask bytes from far 7894:7981A+si (var_2/var_4); read 0x0D+0x13 payload bytes with channel-count masks (arg_0>6 selects mask bit) into local buf var_3C; mask-hit slots forced 0; channel_program_pair_write(channel=arg_0, buf, ss); 2 callers (sub_1BA1C, sub_1C693)"
+    port_status: unported
+    verified: null
+    notes: "288B C-far, dyn=268, in=2, callee channel_program_pair_write. Masked program fetcher: pulls the channel program bytes from the device stream (7894:7981A indexed by the 0xDDA table), applies the per-channel-count masks and hands the buffer to channel_program_pair_write (fetch half of the pair writer). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x179C7
+    seg: 0x179C
+    ofs: 0x7
+    size: 150
+    far: true
+    class: ASM
+    hypothesis: "channel_widen_forward_bulk"
+    sig: "FAR bp-frame retf (150B): si=0..0x11 (18): if [si-0x661F]!=0 -> widen_and_forward(0, ds:9945+? or 9937+, si) flag-selected; then if ds:0AF90 (rhythm mode): 6 more widen_and_forward with fixed records 9953/9961/996F/997D/998B/9999 at channel ids 0x0C,0x0F,0x10,0x0E,0x11,0x0D; retf; 1 caller (sub_176BE)"
+    port_status: unported
+    verified: null
+    notes: "150B far, cd=11, in=1, callee widen_and_forward. Bulk register forward: pushes the 18 flagged per-index records (tables 9937/9945) through widen_and_forward, then the 6 rhythm-voice records (9953..9999, ids 0x0C..0x11) when ds:0AF90 rhythm mode is on (bulk sibling of channel_widen_forward_pair). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x1A7C3
+    seg: 0x1A7C
+    ofs: 0x3
+    size: 108
+    far: true
+    class: ASM
+    hypothesis: "channel_widen_forward_pair"
+    sig: "FAR bp-frame retf (108B): si=[arg_0] channel; widen_and_forward(al=es:[arg2+0D], farptr=arg2, reg=7A32:2si-0x6647); if es:7772:7862A==0 or si<=6: widen_and_forward(al=es:[arg6+0D], farptr=arg6, reg=7A32:2si-0x6646); 1 caller (list_record_register)"
+    port_status: unported
+    verified: null
+    notes: "108B far, cd=667, in=1, callee widen_and_forward. Pair forwarder: sends record field +0D through widen_and_forward for BOTH per-channel table registers (7A32:2si-0x6647 and -0x6646, the same table bytes used by channel_reg_store_dispatch / sbi_channel_release_close), second gated by si<=6 or es:7862A. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x2589F
+    seg: 0x2589
+    ofs: 0xF
+    size: 19
+    far: true
+    class: ASM
+    hypothesis: "clip_pending_atomic_apply"
+    sig: "FAR retf (19B): cli; cs:byte_2548B=0xFF (task-pending marker), cs:byte_2548C=0; push cs; call clip_pending_apply_latch; sti; retf; 4 callers (r27_e05 RTLink, sub_683C5, sub_6E558, sub_6E581)"
+    port_status: unported
+    verified: null
+    notes: "19B far, dyn=7,119, in=4, callee clip_pending_apply_latch. Atomic clip apply: marks the 2548B task flag + clears 2548C under cli/sti around the latched pending-clip apply (RTLink-facing entry). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x1D88C
+    seg: 0x1D88
+    ofs: 0xC
+    size: 136
+    far: true
+    class: ASM
+    hypothesis: "group_children_release"
+    sig: "FAR C-frame retf (136B): bx=[arg_0]*4, far ptr pair es:7772:0F34/0F36 -> null => return 0; loop si over es:[ptr] count: child=es:[ptr+2+2si]; es:7772:[child*2+592]=0, [child*2+5D8]=0 (clear two slot words); channel_release(es:[child*2+664]); channel_node_release_unlink(child); return 1; 5 callers (key_action_execute, event_state_machine, group_register_main, sub_1E04B, sub_1E062)"
+    port_status: unported
+    verified: null
+    notes: "136B C-far, dyn=977, cd=42,979, callees channel_release + channel_node_release_unlink. Unregister counterpart of group_register_main: walks the group's far-ptr child table and, per child, clears its 592/5D8 slots, releases the channel and unlinks the node. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x12B76
+    seg: 0x12B7
+    ofs: 0x6
+    size: 61
+    far: false
+    class: ASM
+    hypothesis: "handle_onetime_op"
+    sig: "NEAR retn (61B): ds=7075: op_dispatch(ax=0, dx=0x68, bx=6) -> cs:11BDA=handle; ds=7A32: op_dispatch(ax=handle, cx=0x348, dx=0x9FE, bx=0x0A) (link/copy op); op_dispatch(ax=handle, bx=8) (release); retn; 1 caller (sub_130D5)"
+    port_status: unported
+    verified: null
+    notes: "61B, cd=8, in=1, callee op_dispatch. One-shot handle op: allocates a 0x68 handle (bx=6), runs the 0x0A link op with (0x9FE -> 0x348) then immediately releases it (bx=8). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x28774
+    seg: 0x2877
+    ofs: 0x4
+    size: 52
+    far: true
+    class: ASM
+    hypothesis: "object_init_flag_draw"
+    sig: "FAR retf (52B): save record (1F712/1F716); view_proj_setup_1f73d; cx=[record], si=[record+2] -> farobj_di_441e_init; if word_27964==0 -> line_record_flag_dispatch; retf; 6 callers (same render set)"
+    port_status: unported
+    verified: null
+    notes: "52B far, cd=0, in=6, callees view_proj_setup_1f73d + farobj_di_441e_init + line_record_flag_dispatch. Minimal object renderer: plain projection setup + farobj 441E table init + flag dispatch (no point transform -- the entry-only sibling of the object_* draw variants). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x286CE
+    seg: 0x286C
+    ofs: 0xE
+    size: 166
+    far: true
+    class: ASM
+    hypothesis: "object_quad_proj_draw"
+    sig: "FAR retf (166B): save record; view_proj_setup_1f73d; cx=[record]-4; transform 4 points (fixed_vec3_transform_es x4, di 441E+0x10 steps); patch immediates 2869D/286AE/286BF/28758 from the projected points; loc_28695 edge helper x3 -> cx flags; call loc_28CA4 (neighbor); if 27964==0: patched shl ax + [record+4] index -> 1F718 -> internal entry loc_287B5 of line_record_flag_dispatch; retf; 6 callers (same render set)"
+    port_status: unported
+    verified: null
+    notes: "166B far, cd=0, in=6, callees view_proj_setup_1f73d + fixed_vec3_transform_es + line_record_flag_dispatch (internal entry 287B5). Quad-point object renderer: projects 4 points into 441E, patches the results as code immediates, computes edge flags and dispatches the selected line record (the transform-heavy sibling). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x28147
+    seg: 0x2814
+    ofs: 0x7
+    size: 109
+    far: true
+    class: ASM
+    hypothesis: "object_rot_proj_draw"
+    sig: "FAR retf (109B): save es:si record (1F712/1F716); view_proj_setup_1f73d_rot; once-guard: bit from [record+6] into es:EB Cx table (skip body if already set); fresh: call loc_281B4 (neighbor, cx=[record], di=[record+8], si=[record+2]); call loc_282A4 (neighbor); if word_27964==0 -> line_record_flag_dispatch; retf; 6 callers (same render set)"
+    port_status: unported
+    verified: null
+    notes: "109B far, cd=0, in=6, callees view_proj_setup_1f73d_rot + line_record_flag_dispatch. Rotation-variant object renderer: runs the ROT projection setup (vs the plain view_proj_setup_1f73d), guards with the EBC bitmap, two neighbor setup calls then the flag dispatch. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x268DD
+    seg: 0x268D
+    ofs: 0xD
+    size: 338
+    far: true
+    class: ASM
+    hypothesis: "object_scale_gather_draw"
+    sig: "FAR retf (338B, data-head): es=7B0E; 7E930/932/934 = [di+12/14/16], word_26416=[di+20] (scale); farobj_field4_get_stc(si=3850) -> CF fail exit, else 26402/404; record (1F716): 2640A/40C, add into 7E930/932; second field4_get -> CF fail; 26406 = |dx delta|*26416>>8, 26408 = |dy delta|*26416>>8; patch 6 code immediates (269D1/D4/E4/E7/DD/F0); point loop cx=[record+8]: patched arithmetic over [si] -> stosw transforms; walk [record+0C] sub-list (0xFFFF term): record_queue_gather_drain per entry; retf; 6 callers (sub_2142E, sub_264C5, sub_2676D, sub_26C4A, sub_2713D, sub_272A2)"
+    port_status: unported
+    verified: null
+    notes: "338B far, cd=0, in=6, callees farobj_field4_get_stc + record_queue_gather_drain. Scaled point renderer: derives the scale factors from two field4 fetches, patches+runs the point-transform loop and then gather-drains the record queue for each sub-record (the scale/gather sibling of the object_* draw variants; same 6 callers). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x26CAF
+    seg: 0x26CA
+    ofs: 0xF
+    size: 16
+    far: true
+    class: ASM
+    hypothesis: "op_26400_record"
+    sig: "FAR retf LEAF (16B): ax=0xFE00, bx=0 -> op_dispatch; cs:word_26400 = ax; retf; in=0 indirect far target, dyn=5"
+    port_status: unported
+    verified: null
+    notes: "16B far leaf, dyn=5, in=0, callee op_dispatch. Records the pending op: dispatches pseudo-op 0xFE00 and stores the returned id in cs:26400 (the slot finalized by op_26400_release and cleared by state_word_26400_get_zero / op_26400_clear_delay). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x12361
+    seg: 0x1236
+    ofs: 0x1
+    size: 136
+    far: true
+    class: ASM
+    hypothesis: "op_bitmap_sweep_clear"
+    sig: "FAR retf (136B): ds=71C1, es=7B0E, si=0x1F2, bx=0x200, bp=8 rows: per flag word lodsw, walk 16 bits -- set bit: ax=es:[bx+3054], es:[bx+3052]=es:[bx+3054]=-1, op_dispatch(ax, bx=2); bx+=4/bit; row end bx+=0x40; then 9 words at si=0x150 !=-1 -> op_dispatch(ax, bx=2); finally zero 71C1:1F2 (8 words) and fill 71C1:150 with -1 x9; 4 callers (entity_setup_step, sub_32C62, sub_33443, sub_4DF9D)"
+    port_status: unported
+    verified: null
+    notes: "136B far, cd=972, in=4, callee op_dispatch. Bitmap sweep: dispatches (id, bx=2) for every set bit of the 8x16 flag rows plus 9 sentinel words (consuming es:3052/3054 slot ids), then resets both flag tables. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x22598
+    seg: 0x2259
+    ofs: 0x8
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "op_dispatch_far_entry"
+    sig: "FAR bp-frame retf (30B): bx=[bp+arg_0], ax=[bp+arg_2], cx=[bp+arg_4], dx=[bp+arg_6], ds=[bp+arg_8] -> push cs; call op_dispatch; retf; 30 callers (r30_e70/e71/e124/e183, r32_e146, r33_e105, r35_e100/e193, r48_e165/e191, ... -- RTLink module imports)"
+    port_status: unported
+    verified: null
+    notes: "30B far, dyn=7,838, in=30 (widest of batch), callee op_dispatch. THE far register-marshalling entry for op_dispatch (5 stack args -> bx/ax/cx/dx/ds), imported by 9+ RTLink modules. conf: high"
+    updated: "2026-10-18"
+  - ea: 0x225D4
+    seg: 0x225D
+    ofs: 0x4
+    size: 32
+    far: true
+    class: ASM
+    hypothesis: "op_dispatch_far_regs"
+    sig: "FAR bp-frame retf (32B): bx=[arg_0], cx=[arg_2], ax=[arg_4], lds si=[arg_6], les di=[arg_A]; push cs; call op_dispatch; retf; in=0 indirect far target, dyn=5"
+    port_status: unported
+    verified: null
+    notes: "32B far, dyn=5, in=0, callee op_dispatch. Third far marshalling variant: loads bx/cx/ax plus the ds:si / es:di far pointer pair (register-file entry vs the stack-arg entries). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x225B6
+    seg: 0x225B
+    ofs: 0x6
+    size: 30
+    far: true
+    class: ASM
+    hypothesis: "op_dispatch_far_wide"
+    sig: "FAR bp-frame retf (30B): ax=[arg_2], dx=[arg_4], cx=[arg_6], bl=[arg_8] -> ch=bl (packed byte into CH), bx=[arg_0]; push cs; call op_dispatch; retf; 4 callers (r33_e105, r48_e165, sub_1B8EE, sub_1D2B7)"
+    port_status: unported
+    verified: null
+    notes: "30B far, dyn=966, in=4, callee op_dispatch. Second far marshalling variant: loads ax/dx/cx with the arg_8 byte packed into CH and bx from arg_0 (distinct arg layout from op_dispatch_far_entry/_regs). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10D4B
+    seg: 0x10D4
+    ofs: 0xB
+    size: 30
+    far: false
+    class: ASM
+    hypothesis: "op_read_cstring"
+    sig: "NEAR retn (30B): di saved; op_dispatch(ax=cs:10840, cx=1, dx=0x0A, bx=0x0A) read byte -> al=cs:byte_1084A; stosb (store to ES:DI); or al,al; jnz SELF (loop until NUL); retn; 1 caller (sub_10CD8)"
+    port_status: unported
+    verified: null
+    notes: "30B, cd=1, in=1, callee op_dispatch. Reads a NUL-terminated string from handle cs:10840 one byte at a time (op 0x0A, cx=1) into ES:DI until a zero byte. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x3ADDA
+    seg: 0x3ADD
+    ofs: 0xA
+    size: 1349
+    far: true
+    class: ASM
+    hypothesis: "pos_move_angle_step"
+    sig: "FAR retf mega-entry (1349B): copy two 6-word records (es:di->cs:10, ds:si->cs:4); unk_2E1B8=1; angle_aux_near(4,10) -> |angle|>=0xAE6 bail; angle_xy_near -> quadrant byte 2E12D (+0x80 near-180); delta pairs x/y/z -> 2E11C..2E126 + zero-flags bl(1/2/4) -> 2E12C; order via quadrant bit, classify magnitudes via tile_quad_classify entries -> 2E128/2E12A; working copies 32h/4Ch; grid-diff routing: equal grids -> chain append 3B1B9 (rotate record, apply magnitude, height clamp vs 2E1AE, set 2E1B8=0 on underflow) + optional chain cleanup cx=2; differing grids -> full inline step engine (self-mod 2E4xx immediates, grid-div, classify, append 3B1B9, cleanup 3B503); ds:2D&1 alternate tail 3B2F3; return unk_2E1B8 status; 8 callers (sub_3B338 mutual, sub_49AB4, sub_4A47B, sub_4A4F6, sub_4A7E5, sub_4AD30, sub_4AEC4, sub_683C5)"
+    port_status: unported
+    verified: null
+    notes: "1349B far mega, cd=0, in=8, callees angle_aux_near + angle_xy_near + sub_3B338 (mutual recursion) + tile_quad_classify. The angle/delta mover: derives yaw/offsets and the 3-axis deltas between two records, classifies them against terrain, then either appends directly to the step chain (same grid) or runs the full inline step engine (cross-grid) -- decision front-end paired with pos_step_chain_engine. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x3B338
+    seg: 0x3B33
+    ofs: 0x8
+    size: 852
+    far: false
+    class: ASM
+    hypothesis: "pos_step_chain_engine"
+    sig: "NEAR multi-entry (852B): entry: sign/abs ax -> ds:7B190, *0x3334 -> 7B192 (step scale), abs -> 7B194 (step count); record 32h->66h + es:43BA (13 words), patch immediates 2E7E9/2E7EF/2E805; LOOP 7B194 steps: add self-mod imm 0xABCD to [si+12h], 7B17A/B += 0xABCD -> [si+4/6] (position), !(7B10C&2): scaled step (loc_3B5DB) add [si]/[si+2], grid-div 0x3334 -> [si+0C/0E]; tile_quad_classify entries 3B6F5/3B72C -> ds:7B18E (height classify); height vs classify: below -> 7B198=0 abort, else re-patch step params + append record (self-mod di=0ABCD); per-append: grid compare -> sub_3ADDA entry 3B256 (edge fixup), count cs:2E1B4; final: chain dedupe/sort 3B503 (adjacent 0x1A-stride compare via 3B57F/5BD -> 3B618 intersect handler); retn; 10 callers (sub_3001E, sub_3099C, sub_30AA8, sub_3ADDA, sub_4AD30, sub_4AEC4, sub_4B36A, sub_4B535, sub_4B584, sub_66ABD)"
+    port_status: unported
+    verified: null
+    notes: "852B, cd=0, in=10, callees sub_3ADDA (mutual recursion!) + tile_quad_classify (internal entries 3B6F5/3B72C/3B7F3). THE fixed-point step-chain engine: multi-step position advance with self-modifying 0xABCD increments, grid division (0x3334), tile height classification, chain append (0x1A stride) + dedupe/sort, aborting when height underflows the classified terrain. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x15416
+    seg: 0x1541
+    ofs: 0x6
+    size: 106
+    far: false
+    class: ASM
+    hypothesis: "record_script_exec_lite"
+    sig: "NEAR retn (106B): gate cs:byte_11C69&4; same 4BE9/47A9 setup, ds:0C63=0xC65, 49-step 11C8C stream; only the cmd&4 path: swap 11C6C->11C6D, point_bits_record_push(cx=4); else skip; loop; 1 caller (sub_153A5)"
+    port_status: unported
+    verified: null
+    notes: "106B, cd=11,155, in=1, callee point_bits_record_push. Lite record script executor: only the cmd&4 path of the quad stream (single 4-bit push per record) -- the minimal sibling run by sub_153A5 alongside the full executors. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x15568
+    seg: 0x1556
+    ofs: 0x8
+    size: 502
+    far: false
+    class: ASM
+    hypothesis: "record_script_exec_main"
+    sig: "NEAR retn (502B): gate cs:byte_11C69&2; loc_162DF(bx=4B69,dx=4769) setup; ds:0C63=0x1465; 5869=4553+4551, 586B=48E9; si=cs:11C8C script stream, cx=0x31 steps: byte_11C8B=(cx>=0x1C); cmd=lodsb -> record at 0x32C0+cmd*5; cmd&0x80 marker: byte_11C0B=1 -> coord pair [ds:5ACB+5869]+48E9 -> ds_swap_fail_ret; else op bytes 11C6D/11C6C, ptr 11D14; cmd&4 -> swap bytes + point_bits_record_push(cx=2); cmd&2/1 paths: paired point_bits_record_push(cx=2) with ds_swap_fail_ret fallback; loop 0x31; 13 callers (sub_153A5, sub_2F6D0, sub_2FD42, sub_3084D, sub_31EBF, sub_33443, sub_3454C, sub_34C31, sub_359B2, sub_37CFA, sub_3865C, sub_386A8, sub_386F2)"
+    port_status: unported
+    verified: null
+    notes: "502B, cd=11,155, in=13, callees ds_swap_fail_ret + point_bits_record_push. THE record script executor (main): walks the 49-step 11C8C stream through the 0x32C0 *5 table, pushes 2-bit point records and applies coordinate swaps with the ds_swap_fail_ret fallback (pair-buffer 4B69/4769 variant, gate 11C69.1). conf: med"
+    updated: "2026-10-18"
+  - ea: 0x15480
+    seg: 0x1548
+    ofs: 0x0
+    size: 232
+    far: false
+    class: ASM
+    hypothesis: "record_script_exec_quad"
+    sig: "NEAR retn (232B): gate cs:byte_11C69&4; loc_162DF(bx=4BE9,dx=47A9); ds:0C63=0xC65; same 49-step 11C8C stream / 0x32C0 records; extra gates cs:11C68 / cs:11C7B / cmd bits 4/2/1 select paths; each path: point_bits_record_push(cx=4) pairs (11C6C<->11C6D order swap on bit1); loop; 12 callers (sub_109FCA, sub_109FDD, sub_109FF0, sub_10A009, sub_153A5, sub_2F6D0, sub_3001E, sub_3081B, sub_3084D, sub_30AA8, sub_32C62, sub_33443)"
+    port_status: unported
+    verified: null
+    notes: "232B, cd=11,155, in=12, callee point_bits_record_push. Record script executor (quad): same stream with 4-bit point pushes into the 4BE9/47A9 buffers (gate 11C69.2) plus the 11C68/11C7B flag gating of the cmd paths. conf: med"
+    updated: "2026-10-18"
+  - ea: 0x10F32
+    seg: 0x10F3
+    ofs: 0x2
+    size: 20
+    far: true
+    class: ASM
+    hypothesis: "sbi_range_step_far_entry"
+    sig: "FAR retf (20B): push ds/es; ds = cs:word_10842 (data segment load); push bx, ax; call sbi_range_step_dispatch (2 stack args); add sp,4; pops; retf; 2 callers (sub_30356, sub_34832)"
+    port_status: unported
+    verified: null
+    notes: "20B far, dyn=8,765, in=2, callee sbi_range_step_dispatch. Far entry that loads DS from cs:10842 then marshals (ax,bx) into the L4 range/step dispatcher (sole direct caller). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x12BB3
+    seg: 0x12BB
+    ofs: 0x3
+    size: 34
+    far: false
+    class: ASM
+    hypothesis: "slot2_handle_alloc"
+    sig: "NEAR retn (34B): gate cs:byte_11BB8!=1; ds=7075; op_dispatch(ax=2, dx=0x41, bx=6) -> cs:word_11C14 = ax (handle); retn; 5 callers (sub_12BEA, sub_12D2F, sub_12EA7, slot2_alloc, slot2_copy_chunks)"
+    port_status: unported
+    verified: null
+    notes: "34B, cd=14, in=5, callee op_dispatch. Slot2 resource allocator: allocates (bx=6) a 0x41-unit handle from the 7075 context and stores it in cs:11C14 (pair of slot2_handle_release/_read). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x12CB2
+    seg: 0x12CB
+    ofs: 0x2
+    size: 125
+    far: false
+    class: ASM
+    hypothesis: "slot2_handle_read"
+    sig: "NEAR retn (125B): ax<6 -> fill [dx] with -1 x0x80 (invalid fill), ret; ds:11BB8==0 path: dx=(al<<8)+0x1800, cx=ah -> op_dispatch(ax=cs:11C14, bx=0x0E seek), then op_dispatch(ax=11C14, cx=0x100, bx=0x0A read); alt path (11BB8!=0): compute dx/ax page pair, ems_page_move_alt (dx&0x3FFF), state_word_10219_get -> ds, movsw x0x80 copy to ds:0; retn; 7 callers (sub_12BEA, sub_12E2F, sub_12E6A, sub_12EA7, sub_2EFE0, sub_2F257, sub_2F3E6)"
+    port_status: unported
+    verified: null
+    notes: "125B, cd=0, in=7, callees ems_page_move_alt + state_word_10219_get + op_dispatch. Slot2 handle reader: seeks (bx=0x0E) + reads (bx=0x0A, 0x100) through cs:11C14 or EMS-maps + word-copies (alt), filling -1 for indices >=6. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x12BD5
+    seg: 0x12BD
+    ofs: 0x5
+    size: 21
+    far: false
+    class: ASM
+    hypothesis: "slot2_handle_release"
+    sig: "NEAR retn (21B): gate cs:byte_11BB8!=1; bx=8, ax=cs:word_11C14 -> op_dispatch (release); retn; 5 callers (sub_12BEA, sub_12D2F, sub_12EA7, slot2_alloc, slot2_copy_chunks)"
+    port_status: unported
+    verified: null
+    notes: "21B, cd=14, in=5, callee op_dispatch. Slot2 handle release: frees the cs:11C14 handle (bx=8) under the same 11BB8 gate (exact release pair of slot2_handle_alloc). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x167A1
+    seg: 0x167A
+    ofs: 0x1
+    size: 304
+    far: false
+    class: ASM
+    hypothesis: "slot3_copy_ems_move"
+    sig: "NEAR retn (304B): 11BE0=dx page; op_dispatch(11BDA, bx=0x0E seek) x2 with header reads via op 0x0A (cx=4/0x20), header pair -> 11BA0; 16-iteration chunk loop: header (11BA6/11BA4) stored to es:di, seek (bx=0x0E) to [si]+11BA0, ems_page_move_67(11BA6), op 0x0A cx=2, then per-record copy op 0x0A (len+0x10); page wrap: 11BA4>=0x4000 -> -=0x4000, inc byte_11BA6; retn; 1 caller (slot3_copy_chunks)"
+    port_status: unported
+    verified: null
+    notes: "304B, cd=7, in=1, callees ems_page_move_67 + op_dispatch. Slot3 chunk copier: seek/read headers, moves EMS pages (ems_page_move_67), copies 16 chunk groups via op 0x0A with the 0x4000 page-wrap carry into byte_11BA6 (the heavy lifter called by slot3_copy_chunks). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x13EA4
+    seg: 0x13EA
+    ofs: 0x4
+    size: 59
+    far: false
+    class: ASM
+    hypothesis: "slot3_handle_alloc_pair"
+    sig: "NEAR retn (59B): gate cs:byte_11BB9!=1; farptr_7075_pick -> ds:dx ptr; op_dispatch(ax=2, dx=ptr, bx=6) -> cs:word_11BDA=handle; farptr_7075_const_9c -> ds:dx; op_dispatch(ax=2, dx, bx=6) -> cs:word_11BDC=handle; retn; 4 callers (sub_13640, sub_13755, slot3_alloc, slot3_copy_chunks)"
+    port_status: unported
+    verified: null
+    notes: "59B, cd=14, in=4, callees farptr_7075_pick + farptr_7075_const_9c + op_dispatch. Slot3 dual allocator: creates two handles (cs:11BDA picked, cs:11BDC const-9c, bx=6) under the 11BB9 gate (pair of slot3_handle_release_pair). conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x13EDF
+    seg: 0x13ED
+    ofs: 0xF
+    size: 33
+    far: false
+    class: ASM
+    hypothesis: "slot3_handle_release_pair"
+    sig: "NEAR retn (33B): gate cs:byte_11BB9!=1; op_dispatch(ax=cs:11BDA, bx=8); op_dispatch(ax=cs:11BDC, bx=8); retn; 4 callers (sub_13640, sub_13755, slot3_alloc, slot3_copy_chunks)"
+    port_status: unported
+    verified: null
+    notes: "33B, cd=14, in=4, callee op_dispatch. Slot3 dual release: frees both cs:11BDA/11BDC handles (bx=8) under the 11BB9 gate. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x2AFBD
+    seg: 0x2AFB
+    ofs: 0xD
+    size: 131
+    far: true
+    class: ASM
+    hypothesis: "tail_bridge_overlay_load"
+    sig: "NEAR retn (131B): save all+flags; ds=seg021; if word_2B63D&0x100 -> overlay_patch_verify; cx=[bp+2] entry seg; si=2B4A2+2B4A0 (queue cursor), slot=6B: 2B4A0+=6, overflow >= 2B4A6 -> error (ax=2,cx=2 -> loc_2B478 reporter); slot[0]=cx (entry seg), slot[2]=saved param, slot[4]= (2B63D&1 ? [arg0] : seg021); var_s4=0x701; ds=cs, ax=cx -> overlay_segment_load; restore+retf; 302 callers (sub_2BD9D..tail_bridge_r01_e02, tail_bridge_r30_e66, ... -- every RTLink tail bridge)"
+    port_status: unported
+    verified: null
+    notes: "131B, cd=50,839 (hottest cd in batch), in=302 (every far entry!), callees overlay_segment_load + overlay_patch_verify. THE tail-bridge landing pad: registers each far-call context (entry seg/param) into the 6-byte 2B4A0 queue, optionally verifies patches and lazily loads the overlay segment through overlay_segment_load before restoring. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x160DE
+    seg: 0x160D
+    ofs: 0xE
+    size: 70
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_scan_draw_a"
+    sig: "NEAR retn (70B): si=ds:46E7 list; bx=((word_11C2E-word_11C46)+[si]) &0x1FF, ax=((word_11C2C-word_11C48)+[si+2]) &0x1FF (wrapped coords); bp=48E9, di=4769 -> terrain_attr_quadrant_dispatch; if dx(hits)>=0x40 ret; tile_clip_draw_1426a(bx=48E9, si=4769, di=4B69, cs:11CAF=1); retn; 2 callers (entity_state_load, sub_3606C)"
+    port_status: unported
+    verified: null
+    notes: "70B, cd=11,155, in=2, callees terrain_attr_quadrant_dispatch + tile_clip_draw_1426a. Group-A scan+draw driver: computes the wrapped quadrant coords (0x1FF), runs the quadrant scan (11C90/92 origin preset by its caller chain) and clip-draws the 48E9/4769/4B69 buffers with the 11CAF=1 mode. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x16124
+    seg: 0x1612
+    ofs: 0x4
+    size: 88
+    far: false
+    class: ASM
+    hypothesis: "terrain_attr_scan_draw_b"
+    sig: "NEAR retn (88B): si=ds:46E7; cs:word_11C92=((word_11C32-word_11C4A)+[si])&0x7F <<2; cs:word_11C90=((word_11C30-word_11C4C)+[si+2])&0x7F <<2 (origin store for dispatch_b!); bp=49E9, di=47A9 -> terrain_attr_quadrant_dispatch_b; if hits>=0x40 ret; tile_clip_draw_1426a(bx=49E9, si=47A9, di=4BE9, cs:11CAF=4); retn; 1 caller (entity_state_load)"
+    port_status: unported
+    verified: null
+    notes: "88B, cd=11,155, in=1, callees terrain_attr_quadrant_dispatch_b + tile_clip_draw_1426a. Group-B scan+draw driver: stores the 11C90/92 origin (0x7F<<2 scale, needed because dispatch_b skips the store), runs the scan-only quadrant dispatch and clip-draws 49E9/47A9/4BE9 with mode 11CAF=4. conf: med-high"
+    updated: "2026-10-18"
+  - ea: 0x23AC0
+    seg: 0x23AC
+    ofs: 0x0
+    size: 4
+    far: true
+    class: ASM
+    hypothesis: "vec_transform_scale_far"
+    sig: "FAR retf LEAF (4B): push ds; push es; jmp loc_23ACA (tail-enters vec_transform_scale); 8 callers (sub_34907, sub_3FFEF, sub_46D42, sub_47F9E, sub_48916, sub_48E25, sub_48EC7, sub_4DC16)"
+    port_status: unported
+    verified: null
+    notes: "4B far leaf, dyn=49,210 (hottest of batch), in=8, callee vec_transform_scale. Far entry stub for the L4 vec transform: saves ds/es then tail-jumps into vec_transform_scale (segment-save wrapper). conf: med-high"
+    updated: "2026-10-18"
+
 counts:
   tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)

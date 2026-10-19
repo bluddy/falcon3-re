@@ -1,0 +1,1676 @@
+## LEVEL-1 BATCH (top 36 by dyn, caller_dyn, in) -- callees at Level 0
+======================================================================
+#1 sub_25E42  ea=0x25E42  size=16  class=LEAF  in=14  dyn=52201  cd=0
+  --- callees (1): angle_quad_norm_scale(L3)
+  0x25E42: push   ds
+  0x25E43: push   es
+  0x25E44: mov    ax, ds
+  0x25E46: mov    es, ax
+  0x25E48: call   angle_quad_norm_scale  ->code ['angle_quad_norm_scale']
+  0x25E4B: pop    es
+  0x25E4C: pop    ds
+  0x25E4D: retf   
+  [TERM RETF @ 0x25E4D]
+  --- callers (14): r07_e48, r08_e46, sub_36785, sub_3718D, sub_375DA, sub_39F1D, sub_3E552, sub_44352, sub_45976, sub_45F2C
+
+======================================================================
+#2 sub_257C9  ea=0x257C9  size=12  class=LEAF  in=0  dyn=18677  cd=0
+  --- callees (1): clip_pending_apply_record(L3)
+  0x257C9: cmp    cs:byte_2549D, 0
+  0x257CF: jnz    locret_257D4  ->code ['sub_257C9']
+  0x257D1: call   clip_pending_apply_record  ->code ['clip_pending_apply_record']
+  0x257D4: retf   
+  [TERM RETF @ 0x257D4]
+  --- callers (0): 
+  --- NO static caller (indirect far-call target)
+
+======================================================================
+#3 sub_27ED4  ea=0x27ED4  size=18  class=ASM  in=1  dyn=14158  cd=0
+  --- callees (1): record_queue_push(L3)
+  0x27ED4: mov    cs:byte_2798B, 1
+  0x27EDA: push   cs
+  0x27EDB: call   near ptr record_queue_push  ->code ['record_queue_push']
+  0x27EDE: nop    
+  0x27EDF: mov    cs:byte_2798B, 0
+  0x27EE5: retf   
+  [TERM RETF @ 0x27EE5]
+  --- callers (1): sub_140AC
+
+======================================================================
+#4 sub_14BD7  ea=0x14BD7  size=160  class=ASM  in=2  dyn=10756  cd=0
+  --- callees (2): farobj_rect_ratio_build(L3), farobj_tile_copy_resolve(L2)
+  0x14BD7: mov    cs:byte_11C8A, 0FFh
+  0x14BDD: jmp    loc_14BE6  ->code ['sub_14BD7']
+  0x14BDF:        2, 2, 2
+  0x14BE0: mov    cs:byte_11C8A, 0
+  0x14BE6: mov    ax, [si]
+  0x14BE8: mov    dx, [si+2]
+  0x14BEB: add    ax, 3400h
+  0x14BEE: adc    dx, 33h
+  0x14BF1: and    dx, 1FFh
+  0x14BF5: sub    ax, 3400h
+  0x14BF8: sbb    dx, 33h
+  0x14BFB: mov    [si], ax
+  0x14BFD: mov    [si+2], dx
+  0x14C00: mov    ax, [si+4]
+  0x14C03: mov    dx, [si+6]
+  0x14C06: add    ax, 3400h
+  0x14C09: adc    dx, 33h
+  0x14C0C: and    dx, 1FFh
+  0x14C10: sub    ax, 3400h
+  0x14C13: sbb    dx, 33h
+  0x14C16: mov    [si+4], ax
+  0x14C19: mov    [si+6], dx
+  0x14C1C: cmp    cs:byte_11C8A, 0
+  0x14C22: jnz    loc_14C26  ->code ['sub_14BD7']
+  0x14C24: clc    
+  0x14C25: retf   
+  [TERM RETF @ 0x14C25]
+  --- callers (2): sub_2FD42, sub_399A2
+
+======================================================================
+#5 sub_183F8  ea=0x183F8  size=114  class=ASM  in=1  dyn=8765  cd=8765
+  --- callees (3): sbi_pit_period_enable(L3), range_validate(L1), step_dir_apply(L1)
+  0x183F8: push   bp
+  0x183F9: mov    bp, sp
+  0x183FB: push   si
+  0x183FC: push   di
+  0x183FD: mov    si, [bp+arg_2]
+  0x18400: xor    di, di
+  0x18402: mov    ax, 7772h
+  0x18405: mov    es, ax
+  0x18407: cmp    word ptr es:unk_77A82, 0
+  0x1840D: jnz    loc_18413  ->code ['sub_183F8']
+  0x1840F: xor    ax, ax
+  0x18411: jmp    loc_18466  ->code ['sub_183F8']
+  0x18413: or     si, si
+  0x18415: jnz    loc_1841C  ->code ['sub_183F8']
+  0x18417: mov    ax, 1
+  0x1841A: jmp    loc_18466  ->code ['sub_183F8']
+  0x1841C: push   cs
+  0x1841D: call   near ptr sbi_pit_period_enable  ->code ['sbi_pit_period_enable']
+  0x18420: test   [bp+arg_0], 0FF00h
+  0x18425: jz     loc_18464  ->code ['sub_183F8']
+  0x18427: mov    ax, [bp+arg_0]
+  0x1842A: cmp    ax, 100h
+  0x1842D: jz     loc_18436  ->code ['sub_183F8']
+  0x1842F: cmp    ax, 102h
+  0x18432: jz     loc_1844C  ->code ['sub_183F8']
+  0x18434: jmp    loc_18464  ->code ['sub_183F8']
+  0x18436: mov    ax, 7772h
+  0x18439: mov    es, ax
+  0x1843B: test   word ptr es:unk_77A82, 1
+  0x18442: jz     loc_18464  ->code ['sub_183F8']
+  0x18444: push   si
+  0x18445: call   range_validate  ->code ['range_validate']
+  0x1844A: jmp    loc_18460  ->code ['sub_183F8']
+  0x1844C: mov    ax, 7772h
+  0x1844F: mov    es, ax
+  0x18451: test   word ptr es:unk_77A82, 2
+  0x18458: jz     loc_18464  ->code ['sub_183F8']
+  0x1845A: push   si
+  0x1845B: call   step_dir_apply  ->code ['step_dir_apply']
+  0x18460: pop    cx
+  0x18461: mov    di, 1
+  0x18464: mov    ax, di
+  0x18466: pop    di
+  0x18467: pop    si
+  0x18468: pop    bp
+  0x18469: retf   
+  [TERM RETF @ 0x18469]
+  --- callers (1): sub_10F32
+
+======================================================================
+#6 sub_17794  ea=0x17794  size=161  class=C  in=2  dyn=271  cd=268
+  --- callees (1): dgroup_record_writer(L3)
+  0x17794: enter  10h, 0
+  0x17798: push   si
+  0x17799: mov    si, [bp+arg_0]
+  0x1779C: cmp    si, ds:0AE78h
+  0x177A0: jb     loc_177A5  ->code ['sub_17794']
+  0x177A2: jmp    loc_17832  ->code ['sub_17794']
+  0x177A5: mov    ax, [bp+arg_4]
+  0x177A8: mov    dx, [bp+arg_2]
+  0x177AB: add    dx, 34h
+  0x177AE: mov    word ptr [bp+var_C+2], ax
+  0x177B1: mov    word ptr [bp+var_C], dx
+  0x177B4: les    bx, [bp+var_C]
+  0x177B7: mov    ax, es:[bx]
+  0x177BA: mov    [bp+var_2], ax
+  0x177BD: add    word ptr [bp+var_C], 2
+  0x177C1: les    bx, [bp+var_C]
+  0x177C4: mov    ax, es:[bx]
+  0x177C7: mov    [bp+var_4], ax
+  0x177CA: mov    ax, [bp+arg_4]
+  0x177CD: mov    dx, [bp+arg_2]
+  0x177D0: add    dx, 1Ah
+  0x177D3: mov    [bp+var_6], ax
+  0x177D6: mov    [bp+var_8], dx
+  0x177D9: cmp    byte ptr ds:0AF90h, 0
+  0x177DE: jz     loc_177E9  ->code ['sub_17794']
+  0x177E0: mov    ax, si
+  0x177E2: shl    ax, 1
+  0x177E4: add    ax, 99B9h
+  0x177E7: jmp    loc_177F0  ->code ['sub_17794']
+  0x177E9: mov    ax, si
+  0x177EB: shl    ax, 1
+  0x177ED: add    ax, 99A7h
+  0x177F0: mov    word ptr [bp+var_10+2], ds
+  0x177F3: mov    word ptr [bp+var_10], ax
+  0x177F6: push   [bp+var_2]
+  0x177F9: push   [bp+arg_4]
+  0x177FC: push   [bp+arg_2]
+  0x177FF: les    bx, [bp+var_10]
+  0x17802: mov    al, es:[bx]
+  0x17805: mov    ah, 0
+  0x17807: push   ax
+  0x17808: call   dgroup_record_writer  ->code ['dgroup_record_writer']
+  0x1780D: add    sp, 8
+  0x17810: les    bx, [bp+var_10]
+  0x17813: cmp    byte ptr es:[bx+1], 0FFh
+  0x17818: jz     loc_17832  ->code ['sub_17794']
+  0x1781A: push   [bp+var_4]
+  0x1781D: push   [bp+var_6]
+  0x17820: push   [bp+var_8]
+  0x17823: mov    al, es:[bx+1]
+  0x17827: mov    ah, 0
+  0x17829: push   ax
+  0x1782A: call   dgroup_record_writer  ->code ['dgroup_record_writer']
+  0x1782F: add    sp, 8
+  0x17832: pop    si
+  0x17833: leave  
+  0x17834: retf   
+  [TERM RETF @ 0x17834]
+  --- callers (2): sub_1B7CE, sub_1CBB3
+
+======================================================================
+#7 sub_1D235  ea=0x1D235  size=130  class=ASM  in=2  dyn=77  cd=104
+  --- callees (4): channel_release(L2), channel_reg_store_dispatch(L3), sbi_int8_close(L3), sbi_command_flush_clear(L3)
+  0x1D235: push   bp
+  0x1D236: mov    bp, sp
+  0x1D238: push   si
+  0x1D239: mov    ax, 7772h
+  0x1D23C: mov    es, ax
+  0x1D23E: cmp    word ptr es:unk_77B38, 0
+  0x1D244: jz     loc_1D24A  ->code ['sub_1D235']
+  0x1D246: push   cs
+  0x1D247: call   near ptr sbi_command_flush_clear  ->code ['sbi_command_flush_clear']
+  0x1D24A: mov    ax, 7894h
+  0x1D24D: mov    es, ax
+  0x1D24F: cmp    word ptr es:unk_7981E, 0
+  0x1D255: jnz    loc_1D2B0  ->code ['sub_1D235']
+  0x1D257: xor    si, si
+  0x1D259: jmp    loc_1D2AB  ->code ['sub_1D235']
+  0x1D25B: push   0Ah
+  0x1D25D: push   7
+  0x1D25F: mov    bx, si
+  0x1D261: shl    bx, 1
+  0x1D263: mov    ax, 7A32h
+  0x1D266: mov    es, ax
+  0x1D268: mov    al, es:[bx-6647h]
+  0x1D26D: mov    ah, 0
+  0x1D26F: push   ax
+  0x1D270: call   channel_reg_store_dispatch  ->code ['channel_reg_store_dispatch']
+  0x1D275: add    sp, 6
+  0x1D278: mov    bx, si
+  0x1D27A: shl    bx, 1
+  0x1D27C: mov    ax, 7A32h
+  0x1D27F: mov    es, ax
+  0x1D281: cmp    byte ptr es:[bx-6646h], 0FFh
+  0x1D287: jz     loc_1D2A3  ->code ['sub_1D235']
+  0x1D289: push   0Ah
+  0x1D28B: push   7
+  0x1D28D: mov    bx, si
+  0x1D28F: shl    bx, 1
+  0x1D291: mov    es, ax
+  0x1D293: mov    al, es:[bx-6646h]
+  0x1D298: mov    ah, 0
+  0x1D29A: push   ax
+  0x1D29B: call   channel_reg_store_dispatch  ->code ['channel_reg_store_dispatch']
+  0x1D2A0: add    sp, 6
+  0x1D2A3: push   si
+  0x1D2A4: call   channel_release  ->code ['channel_release']
+  0x1D2A9: pop    cx
+  0x1D2AA: inc    si
+  0x1D2AB: cmp    si, 0Bh
+  0x1D2AE: jl     loc_1D25B  ->code ['sub_1D235']
+  0x1D2B0: push   cs
+  0x1D2B1: call   near ptr sbi_int8_close  ->code ['sbi_int8_close']
+  0x1D2B4: pop    si
+  0x1D2B5: pop    bp
+  0x1D2B6: retf   
+  [TERM RETF @ 0x1D2B6]
+  --- callers (2): state_mode_check, sub_1BD31
+
+======================================================================
+#8 sub_16060  ea=0x16060  size=126  class=ASM  in=23  dyn=0  cd=11155
+  --- callees (2): tile_clip_draw_14200(L1), tile_quad_sample(L3)
+  0x16060: mov    ax, cs:word_11C2A
+  0x16064:        2Eh, 2Eh, 2Eh
+  0x16069: mov    cs:word_1608E, ax
+  0x1606D: mov    ax, cs:word_11C28
+  0x16071: sub    ax, cs:word_11C44
+  0x16076: mov    cs:word_1609D, ax
+  0x1607A: jmp    $+2  ->code ['sub_16060']
+  0x1607C: mov    di, 46E9h
+  0x1607F: mov    bp, 47E9h
+  0x16082: mov    cx, 40h
+  0x16085: sub    dx, dx
+  0x16087: mov    si, ds:46E7h
+  0x1608B: mov    ax, [si]
+  0x1608D:        5, 5, 5
+  0x16090:        25h, 25h, 25h
+  0x1609D:        0ABCDh, 0ABCDh, 0ABCDh
+  0x1609F: and    ax, 7FFh
+  0x160A2: mov    ds:[bp+2], ax
+  0x160A6: push   cx
+  0x160A7: push   dx
+  0x160A8: push   si
+  0x160A9: push   di
+  0x160AA: call   tile_quad_sample  ->code ['tile_quad_sample']
+  0x160AD: pop    di
+  0x160AE: pop    si
+  0x160AF: pop    dx
+  0x160B0: pop    cx
+  0x160B1: cmp    al, 5Fh
+  0x160B3: jbe    loc_160B6  ->code ['sub_16060']
+  0x160B5: inc    dx
+  0x160B6: mov    [di], al
+  0x160B8: mov    [di+40h], ah
+  0x160BB: inc    di
+  0x160BC: add    si, 4
+  0x160BF: add    bp, 4
+  0x160C2: loop   loc_1608B  ->code ['sub_16060']
+  0x160C4: cmp    dx, 40h
+  0x160C7: jnb    locret_160DD  ->code ['sub_16060']
+  0x160C9: push   dx
+  0x160CA: mov    bx, 47E9h
+  0x160CD: mov    si, 46E9h
+  0x160D0: mov    di, 4AE9h
+  0x160D3: mov    cs:byte_11CAF, 1
+  0x160D9: call   tile_clip_draw_14200  ->code ['tile_clip_draw_14200']
+  0x160DC: pop    dx
+  0x160DD: retn   
+  [TERM RETN @ 0x160DD]
+  --- callers (23): entity_state_load, sub_35671, sub_35BCE, sub_35EB5, sub_3606C, sub_361FC, sub_363B7, sub_3646B, sub_36DA7, sub_36E3A
+
+======================================================================
+#9 sub_257D5  ea=0x257D5  size=16  class=LEAF  in=1  dyn=0  cd=7119
+  --- callees (1): clip_pending_apply_record(L3)
+  0x257D5: mov    cs:byte_2549D, 1
+  0x257DB: call   clip_pending_apply_record  ->code ['clip_pending_apply_record']
+  0x257DE: mov    cs:byte_2549D, 0
+  0x257E4: retf   
+  [TERM RETF @ 0x257E4]
+  --- callers (1): sub_2589F
+
+======================================================================
+#10 sub_224D3  ea=0x224D3  size=145  class=ASM  in=1  dyn=0  cd=6488
+  --- callees (7): cb_args_invoke(L3), program_terminate(L4), mouse_wait_click(L2), flag_table_pop(L1), flag_block_zero_5762_5c63(L0), far_cb_0(L0), far_cb_1(L0)
+  0x224D3: test   cs:byte_22248, 7Fh
+  0x224D9: jnz    loc_224DC  ->code ['sub_224D3']
+  0x224DB: retn   
+  [TERM RETN @ 0x224DB]
+  --- callers (1): op_dispatch
+
+======================================================================
+#11 sub_1D696  ea=0x1D696  size=128  class=ASM  in=1  dyn=0  cd=977
+  --- callees (3): channel_release(L2), channel_reg_store_dispatch(L3), list_node_unlink(L0)
+  0x1D696: push   bp
+  0x1D697: mov    bp, sp
+  0x1D699: push   si
+  0x1D69A: push   di
+  0x1D69B: mov    di, [bp+arg_0]
+  0x1D69E: mov    bx, di
+  0x1D6A0: shl    bx, 1
+  0x1D6A2: mov    ax, 7772h
+  0x1D6A5: mov    es, ax
+  0x1D6A7: mov    si, es:[bx+664h]
+  0x1D6AC: cmp    si, 0FFFFh
+  0x1D6AF: jz     loc_1D712  ->code ['sub_1D696']
+  0x1D6B1: push   0Ah
+  0x1D6B3: push   7
+  0x1D6B5: mov    bx, si
+  0x1D6B7: shl    bx, 1
+  0x1D6B9: mov    ax, 7A32h
+  0x1D6BC: mov    es, ax
+  0x1D6BE: mov    al, es:[bx-6647h]
+  0x1D6C3: cbw    
+  0x1D6C4: push   ax
+  0x1D6C5: call   channel_reg_store_dispatch  ->code ['channel_reg_store_dispatch']
+  0x1D6CA: add    sp, 6
+  0x1D6CD: mov    bx, si
+  0x1D6CF: shl    bx, 1
+  0x1D6D1: mov    ax, 7A32h
+  0x1D6D4: mov    es, ax
+  0x1D6D6: cmp    byte ptr es:[bx-6646h], 0FFh
+  0x1D6DC: jz     loc_1D6F7  ->code ['sub_1D696']
+  0x1D6DE: push   0Ah
+  0x1D6E0: push   7
+  0x1D6E2: mov    bx, si
+  0x1D6E4: shl    bx, 1
+  0x1D6E6: mov    es, ax
+  0x1D6E8: mov    al, es:[bx-6646h]
+  0x1D6ED: cbw    
+  0x1D6EE: push   ax
+  0x1D6EF: call   channel_reg_store_dispatch  ->code ['channel_reg_store_dispatch']
+  0x1D6F4: add    sp, 6
+  0x1D6F7: mov    bx, di
+  0x1D6F9: shl    bx, 1
+  0x1D6FB: mov    ax, 7772h
+  0x1D6FE: mov    es, ax
+  0x1D700: push   word ptr es:[bx+664h]
+  0x1D705: call   channel_release  ->code ['channel_release']
+  0x1D70A: pop    cx
+  0x1D70B: push   di
+  0x1D70C: call   list_node_unlink  ->code ['list_node_unlink']
+  0x1D711: pop    cx
+  0x1D712: pop    di
+  0x1D713: pop    si
+  0x1D714: pop    bp
+  0x1D715: retf   
+  [TERM RETF @ 0x1D715]
+  --- callers (1): sub_1D88C
+
+======================================================================
+#12 sub_19843  ea=0x19843  size=119  class=ASM  in=1  dyn=0  cd=240
+  --- callees (5): sbi_pit_period_enable(L3), sbi_pit_period_disable(L3), event_key_valid_103_jpt(L0), event_tone_offset_setup(L2), state_word_77a4a_test(L0)
+  0x19843: push   bp
+  0x19844: mov    bp, sp
+  0x19846: push   si
+  0x19847: push   di
+  0x19848: mov    si, [bp+arg_0]
+  0x1984B: xor    di, di
+  0x1984D: call   state_word_77a4a_test  ->code ['state_word_77a4a_test']
+  0x19852: or     ax, ax
+  0x19854: jz     loc_19862  ->code ['sub_19843']
+  0x19856: mov    ax, 7772h
+  0x19859: mov    es, ax
+  0x1985B: mov    word ptr es:unk_77A56, 0FFFFh
+  0x19862: cmp    si, 103h
+  0x19866: jz     loc_19887  ->code ['sub_19843']
+  0x19868: mov    ax, 7772h
+  0x1986B: mov    es, ax
+  0x1986D: mov    ax, word ptr es:unk_77A56
+  0x19871: cmp    ax, [bp+arg_2]
+  0x19874: jle    loc_19887  ->code ['sub_19843']
+  0x19876: mov    ax, 7772h
+  0x19879: mov    es, ax
+  0x1987B: cmp    word ptr es:unk_77A56, 0FFFFh
+  0x19881: jle    loc_19887  ->code ['sub_19843']
+  0x19883: xor    ax, ax
+  0x19885: jmp    loc_198B6  ->code ['sub_19843']
+  0x19887: push   si
+  0x19888: call   event_key_valid_103_jpt  ->code ['event_key_valid_103_jpt']
+  0x1988D: pop    cx
+  0x1988E: mov    si, ax
+  0x19890: push   cs
+  0x19891: call   near ptr sbi_pit_period_enable  ->code ['sbi_pit_period_enable']
+  0x19894: push   si
+  0x19895: call   event_tone_offset_setup  ->code ['event_tone_offset_setup']
+  0x1989A: pop    cx
+  0x1989B: mov    di, ax
+  0x1989D: or     di, di
+  0x1989F: jz     loc_198B0  ->code ['sub_19843']
+  0x198A1: mov    ax, 7772h
+  0x198A4: mov    dx, [bp+arg_2]
+  0x198A7: mov    es, ax
+  0x198A9: mov    word ptr es:unk_77A56, dx
+  0x198AE: jmp    loc_198B4  ->code ['sub_19843']
+  0x198B0: push   cs
+  0x198B1: call   near ptr sbi_pit_period_disable  ->code ['sbi_pit_period_disable']
+  0x198B4: mov    ax, di
+  0x198B6: pop    di
+  0x198B7: pop    si
+  0x198B8: pop    bp
+  0x198B9: retf   
+  [TERM RETF @ 0x198B9]
+  --- callers (1): key_event_process
+
+======================================================================
+#13 sub_19402  ea=0x19402  size=266  class=C  in=2  dyn=0  cd=83
+  --- callees (11): slot_flag_query(L1), sbi_pit_period_enable(L3), sbi_pit_period_disable(L3), state_block_77720_store8(L0), event_key_valid_3_jpt(L0), kb_record_name_get(L0), kb_clear_24(L3), kb_field_set_25_0(L2), kb_field_get_26(L2), kb_field_set_26(L2), state_flags_clear(L1)
+  0x19402: enter  0Eh, 0
+  0x19406: push   si
+  0x19407: push   di
+  0x19408: mov    ax, 7772h
+  0x1940B: mov    es, ax
+  0x1940D: cmp    word ptr es:unk_77A50, 0FFFFh
+  0x19413: jnz    loc_1941A  ->code ['sub_19402']
+  0x19415: xor    ax, ax
+  0x19417: jmp    loc_19508  ->code ['sub_19402']
+  0x1941A: xor    si, si
+  0x1941C: jmp    loc_19423  ->code ['sub_19402']
+  0x1941E: mov    [bp+si+var_E], 0
+  0x19422: inc    si
+  0x19423: cmp    si, 0Dh
+  0x19426: jl     loc_1941E  ->code ['sub_19402']
+  0x19428: push   ss
+  0x19429: lea    ax, [bp+var_E]
+  0x1942C: push   ax
+  0x1942D: mov    ax, 7772h
+  0x19430: mov    es, ax
+  0x19432: push   word ptr es:unk_77A50
+  0x19437: call   kb_record_name_get  ->code ['kb_record_name_get']
+  0x1943C: add    sp, 6
+  0x1943F: or     ax, ax
+  0x19441: jnz    loc_19445  ->code ['sub_19402']
+  0x19443: jmp    loc_19415  ->code ['sub_19402']
+  0x19445: push   ss
+  0x19446: lea    ax, [bp+var_E]
+  0x19449: push   ax
+  0x1944A: call   kb_field_get_26  ->code ['kb_field_get_26']
+  0x1944F: pop    cx
+  0x19450: pop    cx
+  0x19451: or     ax, ax
+  0x19453: jnz    loc_1945B  ->code ['sub_19402']
+  0x19455: mov    ax, 1
+  0x19458: jmp    loc_19508  ->code ['sub_19402']
+  0x1945B: push   [bp+arg_0]
+  0x1945E: call   event_key_valid_3_jpt  ->code ['event_key_valid_3_jpt']
+  0x19463: pop    cx
+  0x19464: or     ax, ax
+  0x19466: jz     loc_19482  ->code ['sub_19402']
+  0x19468: mov    ax, 7772h
+  0x1946B: mov    es, ax
+  0x1946D: cmp    word ptr es:unk_77797, 1
+  0x19473: jnz    loc_19482  ->code ['sub_19402']
+  0x19475: push   1
+  0x19477: call   state_flags_clear  ->code ['state_flags_clear']
+  0x1947C: pop    cx
+  0x1947D: mov    di, 1
+  0x19480: jmp    loc_194AD  ->code ['sub_19402']
+  0x19482: push   0
+  0x19484: call   slot_flag_query  ->code ['slot_flag_query']
+  0x19489: pop    cx
+  0x1948A: or     ax, ax
+  0x1948C: jnz    loc_19490  ->code ['sub_19402']
+  0x1948E: jmp    loc_19415  ->code ['sub_19402']
+  0x19490: push   cs
+  0x19491: call   near ptr sbi_pit_period_enable  ->code ['sbi_pit_period_enable']
+  0x19494: push   0
+  0x19496: push   0
+  0x19498: push   0
+  0x1949A: push   0
+  0x1949C: push   0
+  0x1949E: push   0
+  0x194A0: push   0Ah
+  0x194A2: push   1
+  0x194A4: push   cs
+  0x194A5: call   near ptr state_block_77720_store8  ->code ['state_block_77720_store8']
+  0x194A8: add    sp, 10h
+  0x194AB: mov    di, ax
+  0x194AD: or     di, di
+  0x194AF: jz     loc_194DE  ->code ['sub_19402']
+  0x194B1: push   0
+  0x194B3: push   ss
+  0x194B4: lea    ax, [bp+var_E]
+  0x194B7: push   ax
+  0x194B8: call   kb_field_set_26  ->code ['kb_field_set_26']
+  0x194BD: add    sp, 6
+  0x194C0: cmp    [bp+arg_2], 0
+  0x194C4: jnz    loc_194DE  ->code ['sub_19402']
+  0x194C6: push   ss
+  0x194C7: lea    ax, [bp+var_E]
+  0x194CA: push   ax
+  0x194CB: call   kb_clear_24  ->code ['kb_clear_24']
+  0x194D0: pop    cx
+  0x194D1: pop    cx
+  0x194D2: push   ss
+  0x194D3: lea    ax, [bp+var_E]
+  0x194D6: push   ax
+  0x194D7: call   kb_field_set_25_0  ->code ['kb_field_set_25_0']
+  0x194DC: pop    cx
+  0x194DD: pop    cx
+  0x194DE: mov    ax, 7772h
+  0x194E1: mov    es, ax
+  0x194E3: mov    word ptr es:unk_77A50, 0FFFFh
+  0x194EA: mov    ax, 7772h
+  0x194ED: mov    es, ax
+  0x194EF: mov    word ptr es:unk_77A52, 0FFFFh
+  0x194F6: mov    ax, 7772h
+  0x194F9: mov    es, ax
+  0x194FB: mov    word ptr es:unk_77B52, 0
+  0x19502: push   cs
+  0x19503: call   near ptr sbi_pit_period_disable  ->code ['sbi_pit_period_disable']
+  0x19506: mov    ax, di
+  0x19508: pop    di
+  0x19509: pop    si
+  0x1950A: leave  
+  0x1950B: retf   
+  [TERM RETF @ 0x1950B]
+  --- callers (2): key_code_resolve, sub_1914E
+
+======================================================================
+#14 sub_198BA  ea=0x198BA  size=25  class=ASM  in=1  dyn=0  cd=83
+  --- callees (2): sbi_pit_period_disable(L3), state_flags_clear(L1)
+  0x198BA: push   bp
+  0x198BB: mov    bp, sp
+  0x198BD: push   si
+  0x198BE: xor    si, si
+  0x198C0: push   1
+  0x198C2: call   state_flags_clear  ->code ['state_flags_clear']
+  0x198C7: pop    cx
+  0x198C8: mov    si, ax
+  0x198CA: push   cs
+  0x198CB: call   near ptr sbi_pit_period_disable  ->code ['sbi_pit_period_disable']
+  0x198CE: mov    ax, si
+  0x198D0: pop    si
+  0x198D1: pop    bp
+  0x198D2: retf   
+  [TERM RETF @ 0x198D2]
+  --- callers (1): key_code_resolve
+
+======================================================================
+#15 sub_6D747  ea=0x6D747  size=104  class=DATA  in=2  dyn=0  cd=7
+  --- callees (6): r06_farobj_proc_e(L0), r06_mode_state_update(L3), r06_mode_param_dispatch(L3), r06_mode_dispatch_bx0(L2), r06_mode_dispatch_bx8(L1), r06_state_display(L2)
+  0x6D747: popf   
+  0x6D748: add    [bp+di-4EC2h], ax
+  0x6D74C: dec    dx
+  0x6D74D: add    al, 7Ch
+  0x6D74F: or     di, ax
+  0x6D751: push   es
+  0x6D752: mov    cl, 4Ah
+  0x6D754: <undecodable 0x00>
+  --- callers (2): sub_2BFFF, sub_6CDA8
+
+======================================================================
+#16 sub_2E6C2  ea=0x2E6C2  size=213  class=ASM  in=4  dyn=0  cd=3
+  --- callees (4): fixed_vec3_accumulate_b(L0), farobj_entity_accum_copy(L3), farptr_table_field20_get(L1), farptr_table_field_store(L1)
+  0x2E6C2: add    ax, 1B9h
+  0x2E6C5: push   ax
+  0x2E6C6: push   di
+  0x2E6C7: call   farptr_table_field20_get  ->code ['farptr_table_field20_get']
+  0x2E6CA: pop    di
+  0x2E6CB: mov    ax, [di+4]
+  0x2E6CE: sub    bx, ax
+  0x2E6D0: pop    ax
+  0x2E6D1: call   farptr_table_field_store  ->code ['farptr_table_field_store']
+  0x2E6D4: retn   
+  [TERM RETN @ 0x2E6D4]
+  --- callers (4): sub_2C301, sub_2E42C, sub_3E552, sub_4E520
+
+======================================================================
+#17 sub_229C0  ea=0x229C0  size=8  class=LEAF  in=1  dyn=0  cd=3
+  --- callees (2): vector_shutdown_restore(L1), sub_2A9FA(L4)
+  0x229C0: call   vector_shutdown_restore  ->code ['vector_shutdown_restore']
+  0x229C3: push   cs
+  0x229C4: call   near ptr sub_2A9FA  ->code ['sub_2A9FA']
+  0x229C7: retf   
+  [TERM RETF @ 0x229C7]
+  --- callers (1): program_terminate
+
+======================================================================
+#18 sub_26CBF  ea=0x26CBF  size=25  class=ASM  in=1  dyn=0  cd=3
+  --- callees (1): op_dispatch(L4)
+  0x26CBF: mov    ax, cs:word_26400
+  0x26CC3: cmp    ax, 0FFFFh
+  0x26CC6: jz     loc_26CD0  ->code ['sub_26CBF']
+  0x26CC8: mov    bx, 2
+  0x26CCB: call   op_dispatch  ->code ['op_dispatch']
+  0x26CD0: mov    cs:word_26400, 0FFFFh
+  0x26CD7: retf   
+  [TERM RETF @ 0x26CD7]
+  --- callers (1): program_terminate
+
+======================================================================
+#19 r17_e07  ea=0x6EF31  size=669  class=ASM  in=9  dyn=0  cd=2
+  --- callees (9): bda_kb_flag_10000_get(L0), mouse_gate_far_entry(L3), dispatch_22084_args_frame(L1), flag_table_pop_far_thunk(L2), dispatch_22100_invoke(L0), dispatch_220f4_invoke_2arg(L0), sub_2BE65(L0), sub_2BE6F(L0), r17_farptr_helper(L0)
+  0x6EF31: add    al, [bx+si]
+  0x6EF33: add    [bp+si+0BBh], bl
+  0x6EF37: add    [bx+si], dl
+  0x6EF39: push   0C8h
+  0x6EF3C: push   0
+  0x6EF3E: push   13Fh
+  0x6EF41: push   0
+  0x6EF43: push   0
+  0x6EF45: call   dispatch_22084_args_frame  ->code ['dispatch_22084_args_frame']
+  0x6EF4A: add    sp, 0Ah
+  0x6EF4D: push   0Dh
+  0x6EF4F: push   0Dh
+  0x6EF51: push   0Bh
+  0x6EF53: push   0B4h
+  0x6EF56: push   0EBh
+  0x6EF59: push   32h
+  0x6EF5B: push   55h
+  0x6EF5D: call   far ptr unk_6E16E  ->code ['0x6e16e']
+  0x6EF62: add    sp, 0Eh
+  0x6EF65: push   0
+  0x6EF67: mov    ax, 6E45h
+  0x6EF6A: mov    es, ax
+  0x6EF6C: push   word ptr es:r14_entry_partial+2
+  0x6EF71: push   word ptr es:r14_entry_partial
+  0x6EF76: mov    ax, 6E45h
+  0x6EF79: mov    es, ax
+  0x6EF7B: push   es:word_6E740
+  0x6EF80: push   es:word_6E73E
+  0x6EF85: push   0
+  0x6EF87: push   0
+  0x6EF89: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6EF8E: add    sp, 0Eh
+  0x6EF91: push   0
+  0x6EF93: mov    ax, 6E45h
+  0x6EF96: mov    es, ax
+  0x6EF98: push   word ptr es:unk_6E4D4
+  0x6EF9D: push   word ptr es:unk_6E4D2
+  0x6EFA2: mov    ax, 6E45h
+  0x6EFA5: mov    es, ax
+  0x6EFA7: push   es:word_6E744
+  0x6EFAC: push   es:word_6E742
+  0x6EFB1: push   0
+  0x6EFB3: push   0
+  0x6EFB5: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6EFBA: add    sp, 0Eh
+  0x6EFBD: push   0
+  0x6EFBF: mov    ax, 6E45h
+  0x6EFC2: mov    es, ax
+  0x6EFC4: push   es:word_6E4D8
+  0x6EFC9: push   es:word_6E4D6
+  0x6EFCE: mov    ax, 6E45h
+  0x6EFD1: mov    es, ax
+  0x6EFD3: push   es:word_6E748
+  0x6EFD8: push   es:word_6E746
+  0x6EFDD: push   0
+  0x6EFDF: push   0
+  0x6EFE1: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6EFE6: add    sp, 0Eh
+  0x6EFE9: push   0
+  0x6EFEB: mov    ax, 6E45h
+  0x6EFEE: mov    es, ax
+  0x6EFF0: push   es:word_6E4DC
+  0x6EFF5: push   es:word_6E4DA
+  0x6EFFA: mov    ax, 6E45h
+  0x6EFFD: mov    es, ax
+  0x6EFFF: push   es:word_6E74C
+  0x6F004: push   es:word_6E74A
+  0x6F009: push   0
+  0x6F00B: push   0
+  0x6F00D: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6F012: add    sp, 0Eh
+  0x6F015: push   0C8h
+  0x6F018: push   0
+  0x6F01A: call   dispatch_220f4_invoke_2arg  ->code ['dispatch_220f4_invoke_2arg']
+  0x6F01F: pop    cx
+  0x6F020: pop    cx
+  0x6F021: call   unk_100B5  ->code ['bda_kb_flag_10000_get']
+  0x6F026: mov    ax, 6E45h
+  0x6F029: mov    es, ax
+  0x6F02B: mov    es:word_6E8D2, 52h
+  0x6F032: jmp    loc_6F181  ->code ['r17_e07']
+  0x6F035: call   far ptr 6E8Fh:1175h
+  0x6F03A: mov    ax, 6E45h
+  0x6F03D: mov    es, ax
+  0x6F03F: mov    ax, es:word_6E8D2
+  0x6F043: mov    [bp-2], ax
+  0x6F046: mov    cx, 5
+  0x6F049: mov    bx, 8DEh
+  0x6F04C: mov    ax, cs:[bx]
+  0x6F04F: cmp    ax, [bp-2]
+  0x6F052: jz     loc_6F05B  ->code ['r17_e07']
+  0x6F054: inc    bx
+  0x6F055: inc    bx
+  0x6F056: loop   loc_6F04C  ->code ['r17_e07']
+  0x6F058: jmp    loc_6F152  ->code ['r17_e07']
+  0x6F05B: jmp    word ptr cs:[bx+0Ah]
+  0x6F05F: push   0
+  0x6F061: push   0
+  0x6F063: mov    ax, 6E45h
+  0x6F066: mov    es, ax
+  0x6F068: push   word ptr es:r14_entry_partial+2
+  0x6F06D: push   word ptr es:r14_entry_partial
+  0x6F072: mov    ax, 6E45h
+  0x6F075: mov    es, ax
+  0x6F077: push   es:word_6E740
+  0x6F07C: push   es:word_6E73E
+  0x6F081: call   far ptr byte_6E1C9+21h  ->code ['0x6e1ea']
+  0x6F086: add    sp, 0Ch
+  0x6F089: or     ax, ax
+  0x6F08B: jnz    loc_6F090  ->code ['r17_e07']
+  0x6F08D: jmp    loc_6F152  ->code ['r17_e07']
+  0x6F090: push   0A3h
+  0x6F093: push   0DDh
+  0x6F096: push   4Dh
+  0x6F098: push   55h
+  0x6F09A: call   far ptr sub_2BE65  ->code ['sub_2BE65']
+  0x6F09F: add    sp, 8
+  0x6F0A2: push   1
+  0x6F0A4: call   far ptr r17_farptr_helper  ->code ['r17_farptr_helper']
+  0x6F0A9: pop    cx
+  0x6F0AA: inc    byte ptr ds:0A250h
+  0x6F0AE: jmp    loc_6F152  ->code ['r17_e07']
+  0x6F0B1: push   0
+  0x6F0B3: push   0
+  0x6F0B5: mov    ax, 6E45h
+  0x6F0B8: mov    es, ax
+  0x6F0BA: push   word ptr es:unk_6E4D4
+  0x6F0BF: push   word ptr es:unk_6E4D2
+  0x6F0C4: mov    ax, 6E45h
+  0x6F0C7: mov    es, ax
+  0x6F0C9: push   es:word_6E744
+  0x6F0CE: push   es:word_6E742
+  0x6F0D3: call   far ptr byte_6E1C9+21h  ->code ['0x6e1ea']
+  0x6F0D8: add    sp, 0Ch
+  0x6F0DB: or     ax, ax
+  0x6F0DD: jz     loc_6F152  ->code ['r17_e07']
+  0x6F0DF: jmp    loc_6F146  ->code ['r17_e07']
+  0x6F0E1: push   0
+  0x6F0E3: push   0
+  0x6F0E5: mov    ax, 6E45h
+  0x6F0E8: mov    es, ax
+  0x6F0EA: push   es:word_6E4D8
+  0x6F0EF: push   es:word_6E4D6
+  0x6F0F4: mov    ax, 6E45h
+  0x6F0F7: mov    es, ax
+  0x6F0F9: push   es:word_6E748
+  0x6F0FE: push   es:word_6E746
+  0x6F103: call   far ptr byte_6E1C9+21h  ->code ['0x6e1ea']
+  0x6F108: add    sp, 0Ch
+  0x6F10B: or     ax, ax
+  0x6F10D: jz     loc_6F152  ->code ['r17_e07']
+  0x6F10F: call   far ptr sub_2BE6F  ->code ['sub_2BE6F']
+  0x6F114: jmp    loc_6F152  ->code ['r17_e07']
+  0x6F116: push   0
+  0x6F118: push   0
+  0x6F11A: mov    ax, 6E45h
+  0x6F11D: mov    es, ax
+  0x6F11F: push   es:word_6E4DC
+  0x6F124: push   es:word_6E4DA
+  0x6F129: mov    ax, 6E45h
+  0x6F12C: mov    es, ax
+  0x6F12E: push   es:word_6E74C
+  0x6F133: push   es:word_6E74A
+  0x6F138: call   far ptr byte_6E1C9+21h  ->code ['0x6e1ea']
+  0x6F13D: add    sp, 0Ch
+  0x6F140: or     ax, ax
+  0x6F142: jz     loc_6F152  ->code ['r17_e07']
+  0x6F144: jmp    $+2  ->code ['r17_e07']
+  0x6F146: mov    ax, 6E45h
+  0x6F149: mov    es, ax
+  0x6F14B: mov    es:word_6E8B7, 0
+  0x6F152: call   flag_table_pop_far_thunk  ->code ['flag_table_pop_far_thunk']
+  0x6F157: mov    dx, 6E45h
+  0x6F15A: mov    es, dx
+  0x6F15C: mov    es:word_6E8D2, ax
+  0x6F160: mov    ax, 6E45h
+  0x6F163: mov    es, ax
+  0x6F165: mov    ax, es:word_6E8D2
+  0x6F169: and    ax, 0FF00h
+  0x6F16C: mov    dx, 6E45h
+  0x6F16F: mov    es, dx
+  0x6F171: mov    es:word_6E8D4, ax
+  0x6F175: mov    ax, 6E45h
+  0x6F178: mov    es, ax
+  0x6F17A: and    es:word_6E8D2, 0DFh
+  0x6F181: mov    ax, 6E45h
+  0x6F184: mov    es, ax
+  0x6F186: mov    ax, es:word_6E8D2
+  0x6F18A: mov    dx, 6E45h
+  0x6F18D: mov    es, dx
+  0x6F18F: mov    es:word_6E8D0, ax
+  0x6F193: mov    ax, 6E45h
+  0x6F196: mov    es, ax
+  0x6F198: cmp    es:word_6E8B7, 0
+  0x6F19E: jz     loc_6F1A3  ->code ['r17_e07']
+  0x6F1A0: jmp    loc_6F035  ->code ['r17_e07']
+  0x6F1A3: call   mouse_gate_far_entry  ->code ['mouse_gate_far_entry']
+  0x6F1A8: push   0
+  0x6F1AA: push   2
+  0x6F1AC: push   0C8h
+  0x6F1AF: push   0
+  0x6F1B1: push   0
+  0x6F1B3: call   dispatch_22100_invoke  ->code ['dispatch_22100_invoke']
+  0x6F1B8: add    sp, 0Ah
+  0x6F1BB: push   0C8h
+  0x6F1BE: push   0
+  0x6F1C0: call   dispatch_220f4_invoke_2arg  ->code ['dispatch_220f4_invoke_2arg']
+  0x6F1C5: pop    cx
+  0x6F1C6: pop    cx
+  0x6F1C7: call   unk_100B5  ->code ['bda_kb_flag_10000_get']
+  0x6F1CC: leave  
+  0x6F1CD: retf   
+  [TERM RETF @ 0x6F1CD]
+  --- callers (9): sub_2C009, sub_2C08B, sub_2C0B3, sub_2C0C7, sub_2C15D, sub_2C167, sub_2C171, sub_2C1AD, sub_2C1B7
+
+======================================================================
+#20 sub_26B2E  ea=0x26B2E  size=244  class=ASM  in=6  dyn=0  cd=0
+  --- callees (6): state_flag_unpack_1f735(L0), view_rotation_build(L1), fixed_vec3_transform_es(L0), view_proj_setup_1f73d(L2), farobj_di_441e_init(L0), line_record_draw_loop(L3)
+  0x26B2E: push   ds
+  0x26B2F: push   es
+  0x26B30: mov    cs:word_1F712, es
+  0x26B35: mov    cs:word_1F716, si
+  0x26B3A: mov    ax, 7B0Eh
+  0x26B3D: mov    es, ax
+  0x26B3F: push   di
+  0x26B40: call   view_proj_setup_1f73d  ->code ['view_proj_setup_1f73d']
+  0x26B43: pop    di
+  0x26B44: lea    si, [di+0Ch]
+  0x26B47: mov    di, 437Eh
+  0x26B4A: call   view_rotation_build  ->code ['view_rotation_build']
+  0x26B4D: mov    bx, 437Eh
+  0x26B50: mov    di, 238h
+  0x26B53: mov    ds, cs:word_1F712
+  0x26B58: mov    si, cs:word_1F716
+  0x26B5D: mov    cx, [si]
+  0x26B5F: mov    si, [si+2]
+  0x26B62: push   cx
+  0x26B63: push   cx
+  0x26B64: call   fixed_vec3_transform_es  ->code ['fixed_vec3_transform_es']
+  0x26B67: mov    word ptr es:[di+2], 0
+  0x26B6D: add    di, 6
+  0x26B70: pop    cx
+  0x26B71: loop   loc_26B63  ->code ['sub_26B2E']
+  0x26B73: pop    cx
+  0x26B74: mov    ax, es
+  0x26B76: mov    ds, ax
+  0x26B78: mov    si, 238h
+  0x26B7B: call   farobj_di_441e_init  ->code ['farobj_di_441e_init']
+  0x26B7E: cmp    cs:word_27964, 0
+  0x26B84: jnz    loc_26B99  ->code ['sub_26B2E']
+  0x26B86: mov    ds, cs:word_1F712
+  0x26B8B: mov    si, cs:word_1F716
+  0x26B90: mov    si, [si+4]
+  0x26B93: lodsw  
+  0x26B94: cmp    ax, 0FFFFh
+  0x26B97: jnz    loc_26B9C  ->code ['sub_26B2E']
+  0x26B99: jmp    loc_26C1F  ->code ['sub_26B2E']
+  0x26B9C: push   si
+  0x26B9D: mov    si, ax
+  0x26B9F: lodsw  
+  0x26BA0: call   state_flag_unpack_1f735  ->code ['state_flag_unpack_1f735']
+  0x26BA3: mov    bx, ax
+  0x26BA5: and    bx, 8000h
+  0x26BA9: mov    cs:byte_1F73B, bh
+  0x26BAE: mov    bx, ax
+  0x26BB0: and    bx, 1000h
+  0x26BB4: mov    cs:byte_1F73E, bh
+  0x26BB9: mov    cs:byte_1F72D, 0
+  0x26BBF: mov    cs:byte_1F73A, 0
+  0x26BC5: mov    cs:byte_1F72E, 0
+  0x26BCB: mov    cs:byte_1F72F, 0
+  0x26BD1: and    ax, 2
+  0x26BD4: mov    bx, ax
+  0x26BD6: push   es
+  0x26BD7: mov    es, cs:word_22212
+  0x26BDC: lodsb  
+  0x26BDD: mov    di, cs:word_22210
+  0x26BE2: add    di, ax
+  0x26BE4: mov    al, es:[di]
+  0x26BE7: mov    cs:byte_1F72A, al
+  0x26BEB: lodsb  
+  0x26BEC: pop    es
+  0x26BED: cmp    cs:byte_1F73E, 0
+  0x26BF3: jz     loc_26C16  ->code ['sub_26B2E']
+  0x26BF5: mov    di, [si]
+  0x26BF7: cmp    di, 0FFFFh
+  0x26BFA: jz     loc_26C1B  ->code ['sub_26B2E']
+  0x26BFC: add    di, 2
+  0x26BFF: shl    di, 1
+  0x26C01: add    di, si
+  0x26C03: mov    cs:word_1F714, di
+  0x26C08: push   bx
+  0x26C09: call   cs:off_27974[bx]  ->code ['line_record_draw_loop', '0x2978e']
+  0x26C0E: pop    bx
+  0x26C0F: mov    si, cs:word_1F714
+  0x26C14: jmp    loc_26BF5  ->code ['sub_26B2E']
+  0x26C16: call   cs:off_27974[bx]  ->code ['line_record_draw_loop', '0x2978e']
+  0x26C1B: pop    si
+  0x26C1C: jmp    loc_26B93  ->code ['sub_26B2E']
+  0x26C1F: pop    es
+  0x26C20: pop    ds
+  0x26C21: retf   
+  [TERM RETF @ 0x26C21]
+  --- callers (6): sub_2142E, sub_264C5, sub_2676D, sub_26C4A, sub_2713D, sub_272A2
+
+======================================================================
+#21 sub_2AC4C  ea=0x2AC4C  size=605  class=ASM  in=4  dyn=0  cd=0
+  --- callees (7): nop_retf(L0), farobj_flag7_branch(L1), overlay_file_open(L3), arena_off_ax18(L0), mem_block_move_ax(L0), stc_retf_const(L0), bcd_hex_ch_store(L3)
+  0x2AC4C: cmp    ax, 0FFFFh
+  0x2AC4F: jnz    loc_2AC52  ->code ['sub_2AC4C']
+  0x2AC51: retf   
+  [TERM RETF @ 0x2AC51]
+  --- callers (4): r58_e180, sub_2AFBD, sub_2B135, sub_2B256
+
+======================================================================
+#22 sub_3601B  ea=0x3601B  size=81  class=ASM  in=4  dyn=0  cd=0
+  --- callees (2): terrain_attr_block_scan(L3), stub_to_248d1(L1)
+  0x3601B: push   es
+  0x3601C: mov    ax, 7B0Eh
+  0x3601F: mov    es, ax
+  0x36021: mov    bx, 3820h
+  0x36024: mov    di, 384Ah
+  0x36027: call   stub_to_248d1  ->code ['terrain_attr_block_scan', 'stub_to_248d1']
+  0x3602C: mov    si, 384Ah
+  0x3602F: mov    cx, es:[si+4]
+  0x36033: mov    ax, 7FFFh
+  0x36036: cmp    cx, 1
+  0x36039: jl     loc_36067  ->code ['sub_3601B']
+  0x3603B: mov    bx, ds:78Eh
+  0x3603F: mov    ax, es:[si]
+  0x36042: imul   bx
+  0x36044: idiv   cx
+  0x36046: cmp    ax, 7FFFh
+  0x36049: jz     loc_36067  ->code ['sub_3601B']
+  0x3604B: add    ax, ds:792h
+  0x3604F: mov    bp, ax
+  0x36051: mov    ax, es:[si+2]
+  0x36055: imul   bx
+  0x36057: idiv   cx
+  0x36059: cmp    ax, 7FFFh
+  0x3605C: jz     loc_36067  ->code ['sub_3601B']
+  0x3605E: add    ax, ds:794h
+  0x36062: mov    bx, bp
+  0x36064: clc    
+  0x36065: pop    es
+  0x36066: retf   
+  [TERM RETF @ 0x36066]
+  --- callers (4): sub_35EB5, sub_36437, sub_45F2C, sub_46D42
+
+======================================================================
+#23 sub_6ED0A  ea=0x6ED0A  size=530  class=C  in=4  dyn=0  cd=0
+  --- callees (9): bda_kb_flag_10000_get(L0), mouse_gate_far_entry(L3), flag_table_pop_far_thunk(L2), dispatch_22100_invoke(L0), dispatch_220f4_invoke_2arg(L0), sub_2BE0B(L0), sub_2BE79(L0), r17_farptr_helper(L0), r69_farptr_dispatch_entry(L0)
+  0x6ED0A: enter  2, 0
+  0x6ED0E: call   mouse_gate_far_entry  ->code ['mouse_gate_far_entry']
+  0x6ED13: push   1
+  0x6ED15: push   0
+  0x6ED17: push   0C8h
+  0x6ED1A: push   0
+  0x6ED1C: push   0
+  0x6ED1E: call   dispatch_22100_invoke  ->code ['dispatch_22100_invoke']
+  0x6ED23: add    sp, 0Ah
+  0x6ED26: push   1
+  0x6ED28: mov    ax, 6E45h
+  0x6ED2B: mov    es, ax
+  0x6ED2D: push   es:word_6E47C
+  0x6ED32: push   es:word_6E47A
+  0x6ED37: mov    ax, 6E45h
+  0x6ED3A: mov    es, ax
+  0x6ED3C: push   es:word_6E6B4
+  0x6ED41: push   es:word_6E6B2
+  0x6ED46: mov    ax, 6E45h
+  0x6ED49: mov    es, ax
+  0x6ED4B: cmp    es:byte_6E8C7, 1
+  0x6ED51: jl     loc_6ED58  ->code ['sub_6ED0A']
+  0x6ED53: mov    ax, 2
+  0x6ED56: jmp    loc_6ED5B  ->code ['sub_6ED0A']
+  0x6ED58: mov    ax, 1
+  0x6ED5B: push   ax
+  0x6ED5C: push   0
+  0x6ED5E: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6ED63: add    sp, 0Eh
+  0x6ED66: push   0
+  0x6ED68: mov    ax, 6E45h
+  0x6ED6B: mov    es, ax
+  0x6ED6D: push   es:word_6E494
+  0x6ED72: push   es:word_6E492
+  0x6ED77: mov    ax, 6E45h
+  0x6ED7A: mov    es, ax
+  0x6ED7C: push   es:word_6E6B8
+  0x6ED81: push   es:word_6E6B6
+  0x6ED86: push   0
+  0x6ED88: push   0
+  0x6ED8A: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6ED8F: add    sp, 0Eh
+  0x6ED92: push   0
+  0x6ED94: mov    ax, 6E45h
+  0x6ED97: mov    es, ax
+  0x6ED99: push   es:word_6E498
+  0x6ED9E: push   es:word_6E496
+  0x6EDA3: mov    ax, 6E45h
+  0x6EDA6: mov    es, ax
+  0x6EDA8: push   es:word_6E6BC
+  0x6EDAD: push   es:word_6E6BA
+  0x6EDB2: push   0
+  0x6EDB4: push   0
+  0x6EDB6: call   far ptr unk_6DFF0  ->code ['0x6dff0']
+  0x6EDBB: add    sp, 0Eh
+  0x6EDBE: push   0C8h
+  0x6EDC1: push   0
+  0x6EDC3: call   dispatch_220f4_invoke_2arg  ->code ['dispatch_220f4_invoke_2arg']
+  0x6EDC8: pop    cx
+  0x6EDC9: pop    cx
+  0x6EDCA: call   unk_100B5  ->code ['bda_kb_flag_10000_get']
+  0x6EDCF: mov    ax, 6E45h
+  0x6EDD2: mov    es, ax
+  0x6EDD4: mov    es:word_6E8B7, 1
+  0x6EDDB: jmp    loc_6EEE1  ->code ['sub_6ED0A']
+  0x6EDDE: call   flag_table_pop_far_thunk  ->code ['flag_table_pop_far_thunk']
+  0x6EDE3: mov    dx, 6E45h
+  0x6EDE6: mov    es, dx
+  0x6EDE8: mov    es:word_6E8D2, ax
+  0x6EDEC: mov    ax, 6E45h
+  0x6EDEF: mov    es, ax
+  0x6EDF1: mov    ax, es:word_6E8D2
+  0x6EDF5: and    ax, 0FF00h
+  0x6EDF8: mov    dx, 6E45h
+  0x6EDFB: mov    es, dx
+  0x6EDFD: mov    es:word_6E8D4, ax
+  0x6EE01: mov    ax, 6E45h
+  0x6EE04: mov    es, ax
+  0x6EE06: and    es:word_6E8D2, 0DFh
+  0x6EE0D: mov    es, ax
+  0x6EE0F: mov    ax, es:word_6E8D2
+  0x6EE13: mov    dx, 6E45h
+  0x6EE16: mov    es, dx
+  0x6EE18: mov    es:word_6E8D0, ax
+  0x6EE1C: call   far ptr unk_6F8F2  ->code ['r69_farptr_dispatch_entry']
+  0x6EE21: mov    ax, 6E45h
+  0x6EE24: mov    es, ax
+  0x6EE26: mov    ax, es:word_6E8D2
+  0x6EE2A: mov    [bp-2], ax
+  0x6EE2D: mov    cx, 5
+  0x6EE30: mov    bx, 62Ch
+  0x6EE33: mov    ax, cs:[bx]
+  0x6EE36: cmp    ax, [bp-2]
+  0x6EE39: jz     loc_6EE42  ->code ['sub_6ED0A']
+  0x6EE3B: inc    bx
+  0x6EE3C: inc    bx
+  0x6EE3D: loop   loc_6EE33  ->code ['sub_6ED0A']
+  0x6EE3F: jmp    loc_6EEE1  ->code ['sub_6ED0A']
+  0x6EE42: jmp    word ptr cs:[bx+0Ah]
+  0x6EE46: push   0
+  0x6EE48: push   0
+  0x6EE4A: mov    ax, 6E45h
+  0x6EE4D: mov    es, ax
+  0x6EE4F: push   es:word_6E494
+  0x6EE54: push   es:word_6E492
+  0x6EE59: mov    ax, 6E45h
+  0x6EE5C: mov    es, ax
+  0x6EE5E: push   es:word_6E6B8
+  0x6EE63: push   es:word_6E6B6
+  0x6EE68: call   far ptr byte_6E1C9+21h  ->code ['0x6e1ea']
+  0x6EE6D: add    sp, 0Ch
+  0x6EE70: or     ax, ax
+  0x6EE72: jz     loc_6EEE1  ->code ['sub_6ED0A']
+  0x6EE74: call   far ptr sub_2BE0B  ->code ['sub_2BE0B']
+  0x6EE79: push   1
+  0x6EE7B: call   far ptr r17_farptr_helper  ->code ['r17_farptr_helper']
+  0x6EE80: pop    cx
+  0x6EE81: call   far ptr sub_2BE79  ->code ['sub_2BE79']
+  0x6EE86: jmp    loc_6EEBB  ->code ['sub_6ED0A']
+  0x6EE88: push   0
+  0x6EE8A: push   0
+  0x6EE8C: mov    ax, 6E45h
+  0x6EE8F: mov    es, ax
+  0x6EE91: push   es:word_6E498
+  0x6EE96: push   es:word_6E496
+  0x6EE9B: mov    ax, 6E45h
+  0x6EE9E: mov    es, ax
+  0x6EEA0: push   es:word_6E6BC
+  0x6EEA5: push   es:word_6E6BA
+  0x6EEAA: call   far ptr byte_6E1C9+21h  ->code ['0x6e1ea']
+  0x6EEAF: add    sp, 0Ch
+  0x6EEB2: or     ax, ax
+  0x6EEB4: jz     loc_6EEE1  ->code ['sub_6ED0A']
+  0x6EEB6: call   far ptr unk_6EF30  ->code ['0x6ef30']
+  0x6EEBB: mov    ax, 6E45h
+  0x6EEBE: mov    es, ax
+  0x6EEC0: mov    es:word_6E8B7, 0
+  0x6EEC7: mov    ax, 6E45h
+  0x6EECA: mov    es, ax
+  0x6EECC: mov    es:word_6E8D7, 0
+  0x6EED3: jmp    loc_6EEE1  ->code ['sub_6ED0A']
+  0x6EED5: mov    ax, 6E45h
+  0x6EED8: mov    es, ax
+  0x6EEDA: mov    es:word_6E8B7, 0
+  0x6EEE1: mov    ax, 6E45h
+  0x6EEE4: mov    es, ax
+  0x6EEE6: cmp    es:word_6E8B7, 0
+  0x6EEEC: jz     loc_6EEF1  ->code ['sub_6ED0A']
+  0x6EEEE: jmp    loc_6EDDE  ->code ['sub_6ED0A']
+  0x6EEF1: call   mouse_gate_far_entry  ->code ['mouse_gate_far_entry']
+  0x6EEF6: push   0
+  0x6EEF8: push   1
+  0x6EEFA: push   0C8h
+  0x6EEFD: push   0
+  0x6EEFF: push   0
+  0x6EF01: call   dispatch_22100_invoke  ->code ['dispatch_22100_invoke']
+  0x6EF06: add    sp, 0Ah
+  0x6EF09: push   0C8h
+  0x6EF0C: push   0
+  0x6EF0E: call   dispatch_220f4_invoke_2arg  ->code ['dispatch_220f4_invoke_2arg']
+  0x6EF13: pop    cx
+  0x6EF14: pop    cx
+  0x6EF15: call   unk_100B5  ->code ['bda_kb_flag_10000_get']
+  0x6EF1A: leave  
+  0x6EF1B: retf   
+  [TERM RETF @ 0x6EF1B]
+  --- callers (4): sub_2C077, sub_2C0D1, sub_2C185, sub_6EC2C
+
+======================================================================
+#24 sub_13C3F  ea=0x13C3F  size=113  class=ASM  in=3  dyn=0  cd=0
+  --- callees (1): tile_quad_sample(L3)
+  0x13C3F: mov    ax, cs:word_11BCA
+  0x13C43: mov    bx, cs:word_11BCC
+  0x13C48: call   tile_quad_sample  ->code ['tile_quad_sample']
+  0x13C4B: cmp    al, 5Fh
+  0x13C4D: jbe    loc_13C51  ->code ['sub_13C3F']
+  0x13C4F: sub    ax, ax
+  0x13C51: mov    cs:byte_11C5D, al
+  0x13C55: mov    cs:byte_11C5C, ah
+  0x13C5A: mov    ax, cs:word_11BCA
+  0x13C5E: mov    bx, cs:word_11BCC
+  0x13C63: inc    ax
+  0x13C64: call   tile_quad_sample  ->code ['tile_quad_sample']
+  0x13C67: cmp    al, 5Fh
+  0x13C69: jbe    loc_13C6D  ->code ['sub_13C3F']
+  0x13C6B: sub    ax, ax
+  0x13C6D: mov    cs:byte_11C5B, al
+  0x13C71: mov    cs:byte_11C5A, ah
+  0x13C76: mov    ax, cs:word_11BCA
+  0x13C7A: mov    bx, cs:word_11BCC
+  0x13C7F: inc    ax
+  0x13C80: dec    bx
+  0x13C81: call   tile_quad_sample  ->code ['tile_quad_sample']
+  0x13C84: cmp    al, 5Fh
+  0x13C86: jbe    loc_13C8A  ->code ['sub_13C3F']
+  0x13C88: sub    ax, ax
+  0x13C8A: mov    cs:byte_11C59, al
+  0x13C8E: mov    cs:byte_11C58, ah
+  0x13C93: mov    ax, cs:word_11BCA
+  0x13C97: mov    bx, cs:word_11BCC
+  0x13C9C: dec    bx
+  0x13C9D: call   tile_quad_sample  ->code ['tile_quad_sample']
+  0x13CA0: cmp    al, 5Fh
+  0x13CA2: jbe    loc_13CA6  ->code ['sub_13C3F']
+  0x13CA4: sub    ax, ax
+  0x13CA6: mov    cs:byte_11C57, al
+  0x13CAA: mov    cs:byte_11C56, ah
+  0x13CAF: retn   
+  [TERM RETN @ 0x13CAF]
+  --- callers (3): sub_13A71, sub_3454C, sub_39F1D
+
+======================================================================
+#25 sub_1406A  ea=0x1406A  size=66  class=DATA  in=3  dyn=0  cd=0
+  --- callees (2): point_xy_transform(L1), record_queue_push(L3)
+  0x1406A: push   si
+  0x1406B: mov    si, cs:word_11D14
+  0x14070: mov    si, [si+8]
+  0x14073: add    si, ds:0C63h
+  0x14077: push   cx
+  0x14078: call   point_xy_transform  ->code ['point_xy_transform']
+  0x1407D: pop    cx
+  0x1407E: pop    si
+  0x1407F: mov    bx, cx
+  0x14081: shl    ax, 1
+  0x14083: jb     loc_14089  ->code ['sub_1406A']
+  0x14085: loop   loc_14081  ->code ['sub_1406A']
+  0x14087: jmp    loc_14091  ->code ['sub_1406A']
+  0x14089: add    cs:byte_11C6D, 18h
+  0x1408F: jmp    loc_14099  ->code ['sub_1406A']
+  0x14091: test   cs:byte_11C69, 1
+  0x14097: jz     loc_140A7  ->code ['sub_1406A']
+  0x14099: mov    al, cs:byte_11C6D
+  0x1409D: mov    bx, ds:0C63h
+  0x140A1: call   record_queue_push  ->code ['record_queue_push']
+  0x140A6: retn   
+  [TERM RETN @ 0x140A6]
+  --- callers (3): sub_15416, sub_15480, sub_15568
+
+======================================================================
+#26 sub_287A8  ea=0x287A8  size=204  class=ASM  in=3  dyn=0  cd=0
+  --- callees (2): state_flag_unpack_1f735(L0), line_record_draw_loop(L3)
+  0x287A8: mov    si, cs:word_1F716
+  0x287AD: mov    si, [si+4]
+  0x287B0: mov    cs:word_1F718, si
+  0x287B5: lodsw  
+  0x287B6: cmp    ax, 0FFFFh
+  0x287B9: jnz    loc_287BE  ->code ['sub_287A8']
+  0x287BB: jmp    locret_28873  ->code ['sub_287A8']
+  0x287BE: push   si
+  0x287BF: mov    si, ax
+  0x287C1: lodsw  
+  0x287C2: mov    bx, ax
+  0x287C4: and    bx, 4000h
+  0x287C8: jz     loc_287CD  ->code ['sub_287A8']
+  0x287CA: jmp    loc_2886F  ->code ['sub_287A8']
+  0x287CD: call   state_flag_unpack_1f735  ->code ['state_flag_unpack_1f735']
+  0x287D0: mov    bx, ax
+  0x287D2: and    bx, 1
+  0x287D5: mov    cs:byte_1F73A, bl
+  0x287DA: mov    bx, ax
+  0x287DC: and    bx, 8000h
+  0x287E0: mov    cs:byte_1F73B, bh
+  0x287E5: mov    bx, ax
+  0x287E7: and    bx, 2000h
+  0x287EB: and    bh, cs:byte_1F731
+  0x287F0: mov    cs:byte_1F72D, bh
+  0x287F5: mov    bx, ax
+  0x287F7: and    bx, 1000h
+  0x287FB: mov    cs:byte_1F73E, bh
+  0x28800: mov    bx, ax
+  0x28802: and    bh, 0Eh
+  0x28805: mov    cs:byte_1F72E, bh
+  0x2880A: and    ah, 1
+  0x2880D: and    ah, cs:byte_1F730
+  0x28812: mov    cs:byte_1F72F, ah
+  0x28817: and    ax, 2
+  0x2881A: mov    bx, ax
+  0x2881C: push   es
+  0x2881D: mov    es, cs:word_22212
+  0x28822: lodsb  
+  0x28823: mov    di, cs:word_22210
+  0x28828: add    di, ax
+  0x2882A: mov    al, es:[di]
+  0x2882D: mov    cs:byte_1F72A, al
+  0x28831: lodsb  
+  0x28832: mov    di, cs:word_22210
+  0x28837: add    di, ax
+  0x28839: mov    al, es:[di]
+  0x2883C: mov    cs:byte_1F72C, al
+  0x28840: pop    es
+  0x28841: cmp    cs:byte_1F73E, 0
+  0x28847: jz     loc_2886A  ->code ['sub_287A8']
+  0x28849: mov    di, [si]
+  0x2884B: cmp    di, 0FFFFh
+  0x2884E: jz     loc_2886F  ->code ['sub_287A8']
+  0x28850: add    di, 2
+  0x28853: shl    di, 1
+  0x28855: add    di, si
+  0x28857: mov    cs:word_1F714, di
+  0x2885C: push   bx
+  0x2885D: call   cs:off_27974[bx]  ->code ['line_record_draw_loop', '0x2978e']
+  0x28862: pop    bx
+  0x28863: mov    si, cs:word_1F714
+  0x28868: jmp    loc_28849  ->code ['sub_287A8']
+  0x2886A: call   cs:off_27974[bx]  ->code ['line_record_draw_loop', '0x2978e']
+  0x2886F: pop    si
+  0x28870: jmp    loc_287B5  ->code ['sub_287A8']
+  0x28873: retn   
+  [TERM RETN @ 0x28873]
+  --- callers (3): sub_28147, sub_286CE, sub_28774
+
+======================================================================
+#27 sub_2FC08  ea=0x2FC08  size=63  class=ASM  in=3  dyn=0  cd=0
+  --- callees (5): farobj_rect_ratio_build(L3), game_state_setup_multi(L0), cs_word_store(L0), far_cb_gated(L0), state_byte_25487_get(L0)
+  0x2FC08: test   byte ptr ds:460h, 40h
+  0x2FC0D: jz     loc_2FC45  ->code ['sub_2FC08']
+  0x2FC0F: test   byte ptr ds:460h, 80h
+  0x2FC14: jnz    loc_2FC1B  ->code ['sub_2FC08']
+  0x2FC16: and    byte ptr ds:460h, 0BFh
+  0x2FC1B: xor    byte ptr ds:460h, 2
+  0x2FC20: test   byte ptr ds:460h, 2
+  0x2FC25: jz     loc_2FC45  ->code ['sub_2FC08']
+  0x2FC27: call   state_byte_25487_get  ->code ['game_state_setup_multi', 'state_byte_25487_get']
+  0x2FC2C: call   cs_word_store  ->code ['farobj_rect_ratio_build', 'cs_word_store']
+  0x2FC31: mov    bx, 74h
+  0x2FC34: mov    di, ds:251h
+  0x2FC38: add    di, 28h
+  0x2FC3B: mov    si, 461h
+  0x2FC3E: call   far_cb_gated  ->code ['farobj_rect_ratio_build', 'far_cb_gated']
+  0x2FC43: stc    
+  0x2FC44: retn   
+  [TERM RETN @ 0x2FC44]
+  --- callers (3): sub_2F6D0, sub_2FB5A, sub_3FBCC
+
+======================================================================
+#28 sub_34495  ea=0x34495  size=9  class=LEAF  in=3  dyn=0  cd=0
+  --- callees (2): event_tone_isr_wrapper(L3), state_word_26400_get_zero(L0)
+  0x34495: call   state_word_26400_get_zero  ->code ['event_tone_isr_wrapper', 'state_word_26400_get_zero']
+  0x3449A: mov    ax, 0EA70h
+  0x3449D: retf   
+  [TERM RETF @ 0x3449D]
+  --- callers (3): sub_30A72, sub_30AA8, sub_4B670
+
+======================================================================
+#29 sub_6F5E2  ea=0x6F5E2  size=221  class=ASM  in=3  dyn=0  cd=0
+  --- callees (3): mouse_gate_far_entry(L3), dispatch_22100_invoke(L0), dispatch_22090_invoke_4arg(L0)
+  0x6F5E2: push   bp
+  0x6F5E3: mov    bp, sp
+  0x6F5E5: call   mouse_gate_far_entry  ->code ['mouse_gate_far_entry']
+  0x6F5EA: push   0
+  0x6F5EC: push   2
+  0x6F5EE: push   0C8h
+  0x6F5F1: push   0
+  0x6F5F3: push   0
+  0x6F5F5: call   dispatch_22100_invoke  ->code ['dispatch_22100_invoke']
+  0x6F5FA: add    sp, 0Ah
+  0x6F5FD: push   0Fh
+  0x6F5FF: push   6
+  0x6F601: push   5
+  0x6F603: push   0Ah
+  0x6F605: push   13Fh
+  0x6F608: push   0
+  0x6F60A: push   0
+  0x6F60C: call   far ptr unk_6E16E  ->code ['0x6e16e']
+  0x6F611: add    sp, 0Eh
+  0x6F614: push   0Fh
+  0x6F616: mov    ax, 6E45h
+  0x6F619: mov    es, ax
+  0x6F61B: les    bx, dword ptr es:loc_6E68C+2
+  0x6F620: mov    ax, es:[bx]
+  0x6F623: add    ax, 3
+  0x6F626: push   ax
+  0x6F627: mov    ax, 6E45h
+  0x6F62A: mov    es, ax
+  0x6F62C: les    bx, dword ptr es:loc_6E68C+2
+  0x6F631: push   word ptr es:[bx]
+  0x6F634: push   8
+  0x6F636: call   dispatch_22090_invoke_4arg  ->code ['dispatch_22090_invoke_4arg']
+  0x6F63B: add    sp, 8
+  0x6F63E: push   0Fh
+  0x6F640: mov    ax, 6E45h
+  0x6F643: mov    es, ax
+  0x6F645: les    bx, dword ptr es:loc_6E68C+6
+  0x6F64A: mov    ax, es:[bx]
+  0x6F64D: add    ax, 3
+  0x6F650: push   ax
+  0x6F651: mov    ax, 6E45h
+  0x6F654: mov    es, ax
+  0x6F656: les    bx, dword ptr es:loc_6E68C+6
+  0x6F65B: push   word ptr es:[bx]
+  0x6F65E: push   8
+  0x6F660: call   dispatch_22090_invoke_4arg  ->code ['dispatch_22090_invoke_4arg']
+  0x6F665: add    sp, 8
+  0x6F668: push   0Fh
+  0x6F66A: mov    ax, 6E45h
+  0x6F66D: mov    es, ax
+  0x6F66F: les    bx, dword ptr es:unk_6E696
+  0x6F674: mov    ax, es:[bx]
+  0x6F677: add    ax, 3
+  0x6F67A: push   ax
+  0x6F67B: mov    ax, 6E45h
+  0x6F67E: mov    es, ax
+  0x6F680: les    bx, dword ptr es:unk_6E696
+  0x6F685: push   word ptr es:[bx]
+  0x6F688: push   8
+  0x6F68A: call   dispatch_22090_invoke_4arg  ->code ['dispatch_22090_invoke_4arg']
+  0x6F68F: add    sp, 8
+  0x6F692: mov    ax, 6E45h
+  0x6F695: mov    es, ax
+  0x6F697: push   es:word_6E454
+  0x6F69C: push   es:word_6E452
+  0x6F6A1: mov    ax, 6E45h
+  0x6F6A4: mov    es, ax
+  0x6F6A6: les    bx, dword ptr es:loc_6E68C+2
+  0x6F6AB: mov    ax, es:[bx+2]
+  0x6F6AF: inc    ax
+  0x6F6B0: inc    ax
+  0x6F6B1: push   ax
+  0x6F6B2: mov    ax, 6E45h
+  0x6F6B5: mov    es, ax
+  0x6F6B7: les    bx, dword ptr es:loc_6E68C+2
+  0x6F6BC: push   word ptr es:[bx]
+  --- callers (3): sub_2C1D5, sub_2C1DF, sub_6E8F0
+
+======================================================================
+#30 sub_2E3CC  ea=0x2E3CC  size=96  class=ASM  in=2  dyn=0  cd=0
+  --- callees (1): farobj_slot_cycle(L3)
+  0x2E3CC: push   ds
+  0x2E3CD: push   es
+  0x2E3CE: mov    ax, 5982h
+  0x2E3D1: mov    ds, ax
+  0x2E3D3: mov    al, ds:byte_59820
+  0x2E3D6: test   al, 1
+  0x2E3D8: jz     loc_2E429  ->code ['sub_2E3CC']
+  0x2E3DA: mov    dl, 0
+  0x2E3DC: mov    ax, 0
+  0x2E3DF: mov    di, 1
+  0x2E3E2: mov    bl, [di]
+  0x2E3E4: cmp    bl, 1
+  0x2E3E7: jz     loc_2E3F4  ->code ['sub_2E3CC']
+  0x2E3E9: cmp    ax, 63h
+  0x2E3EC: jz     loc_2E41C  ->code ['sub_2E3CC']
+  0x2E3EE: inc    ax
+  0x2E3EF: add    di, 0Ch
+  0x2E3F2: jmp    loc_2E3E2  ->code ['sub_2E3CC']
+  0x2E3F4: push   ax
+  0x2E3F5: push   di
+  0x2E3F6: mov    bl, [di+1]
+  0x2E3F9: cmp    bl, 0
+  0x2E3FC: jnz    loc_2E403  ->code ['sub_2E3CC']
+  0x2E3FE: mov    byte ptr [di], 0
+  0x2E401: jmp    loc_2E40F  ->code ['sub_2E3CC']
+  0x2E403: dec    bl
+  0x2E405: mov    [di+1], bl
+  0x2E408: push   dx
+  0x2E409: call   farobj_slot_cycle  ->code ['farobj_slot_cycle']
+  0x2E40C: pop    dx
+  0x2E40D: mov    dl, 1
+  0x2E40F: pop    di
+  0x2E410: pop    ax
+  0x2E411: cmp    ax, 63h
+  0x2E414: jz     loc_2E41C  ->code ['sub_2E3CC']
+  0x2E416: inc    ax
+  0x2E417: add    di, 0Ch
+  0x2E41A: jmp    loc_2E3E2  ->code ['sub_2E3CC']
+  0x2E41C: cmp    dl, 1
+  0x2E41F: jz     loc_2E429  ->code ['sub_2E3CC']
+  0x2E421: mov    al, ds:byte_59820
+  0x2E424: and    al, 0FEh
+  0x2E426: mov    ds:byte_59820, al
+  0x2E429: pop    es
+  0x2E42A: pop    ds
+  0x2E42B: retf   
+  [TERM RETF @ 0x2E42B]
+  --- callers (2): sub_2E2D0, sub_4DE76
+
+======================================================================
+#31 sub_35505  ea=0x35505  size=225  class=ASM  in=2  dyn=0  cd=0
+  --- callees (4): tile_quad_sample(L3), game_setup_variant_5169(L1), stub_to_24988(L1), fixed_vec2_half_add(L0)
+  0x35505: mov    ax, ds:546h
+  0x35508: add    ax, 2000h
+  0x3550B: neg    ax
+  0x3550D: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x35512: cmp    ax, 17BBh
+  0x35515: jg     locret_3551C  ->code ['sub_35505']
+  0x35517: cmp    ax, 0E845h
+  0x3551A: jg     loc_3551D  ->code ['sub_35505']
+  0x3551C: retn   
+  [TERM RETN @ 0x3551C]
+  --- callers (2): sub_34C31, sub_45057
+
+======================================================================
+#32 sub_39BC0  ea=0x39BC0  size=19  class=ASM  in=2  dyn=0  cd=0
+  --- callees (2): sbi_stream_stop_load(L3), sub_2C275(L2)
+  0x39BC0: xor    byte ptr ds:4AC1h, 1
+  0x39BC5: cmp    byte ptr ds:4AC2h, 3
+  0x39BCA: jz     loc_39BCD  ->code ['sub_39BC0']
+  0x39BCC: retn   
+  [TERM RETN @ 0x39BCC]
+  --- callers (2): sub_32C62, sub_49AB4
+
+======================================================================
+#33 sub_4D8A7  ea=0x4D8A7  size=415  class=DATA  in=2  dyn=0  cd=0
+  --- callees (6): entity_step_flags(L2), farobj_tile_copy_resolve(L2), fixed_vec3_accumulate_b(L0), farptr_table_get(L0), farobj_slot_create(L3), shared_tail_pop_es(L0)
+  0x4D8A7: push   ds
+  0x4D8A8: push   es
+  0x4D8A9: mov    ax, 49ABh
+  0x4D8AC: mov    ds, ax
+  0x4D8AE: mov    ax, ds:word_4A3E8
+  0x4D8B1: mov    cs:word_2E195, ax
+  0x4D8B5: mov    ax, 6B58h
+  0x4D8B8: mov    ds, ax
+  0x4D8BA: mov    al, ds:byte_6B58A
+  0x4D8BD: test   al, 1
+  0x4D8BF: jnz    near ptr unk_3D8C4  ->code ['shared_tail_pop_es']
+  0x4D8C1: jmp    near ptr unk_3D9C0  ->code ['0x3d9c0']
+  0x4D8C4: mov    dl, 0
+  0x4D8C6: xor    ax, ax
+  0x4D8C8: mov    di, 33h
+  0x4D8CB: cmp    byte ptr [di], 0
+  0x4D8CE: jnz    near ptr unk_3D8DE  ->code ['shared_tail_pop_es']
+  0x4D8D0: cmp    ax, 9
+  0x4D8D3: jnz    near ptr unk_3D8D8  ->code ['shared_tail_pop_es']
+  0x4D8D5: jmp    near ptr unk_3D9B3  ->code ['0x3d9b3']
+  0x4D8D8: inc    ax
+  0x4D8D9: add    di, 6
+  0x4D8DC: jmp    near ptr unk_3D8CB  ->code ['shared_tail_pop_es']
+  0x4D8DE: mov    dl, 1
+  0x4D8E0: push   dx
+  0x4D8E1: push   ax
+  0x4D8E2: call   fixed_vec3_accumulate_b  ->code ['fixed_vec3_accumulate_b']
+  0x4D8E7: mov    ax, ds:word_6B586
+  0x4D8EA: and    cx, 7
+  0x4D8ED: sub    cx, 3
+  0x4D8F0: add    ax, cx
+  0x4D8F2: mov    cx, cs:word_2E195
+  0x4D8F7: imul   cx
+  0x4D8F9: mov    al, ah
+  0x4D8FB: mov    ah, dl
+  0x4D8FD: mov    dx, ax
+  0x4D8FF: call   fixed_vec3_accumulate_b  ->code ['fixed_vec3_accumulate_b']
+  0x4D904: mov    ax, ds:word_6B588
+  0x4D907: and    cx, 7
+  0x4D90A: sub    cx, 3
+  0x4D90D: add    ax, cx
+  0x4D90F: mov    cx, cs:word_2E195
+  0x4D914: imul   cx
+  0x4D916: mov    al, ah
+  0x4D918: mov    ah, dl
+  0x4D91A: mov    bp, ax
+  0x4D91C: push   di
+  0x4D91D: push   es
+  0x4D91E: push   ds
+  0x4D91F: mov    al, [di]
+  0x4D921: push   ax
+  0x4D922: and    al, 7
+  0x4D924: shl    al, 1
+  0x4D926: xor    ah, ah
+  0x4D928: mov    si, ax
+  0x4D92A: mov    ax, [di+1]
+  0x4D92D: cmp    byte ptr [di+3], 0FFh
+  0x4D931: jz     near ptr unk_3D962  ->code ['0x3d962']
+  0x4D933: push   dx
+  0x4D934: push   bp
+  0x4D935: mov    dx, 6B58h
+  0x4D938: mov    es, dx
+  0x4D93A: mov    bl, ah
+  0x4D93C: mov    cl, 1
+  0x4D93E: xor    dh, dh
+  0x4D940: mov    dl, [di+3]
+  0x4D943: mov    di, 0Bh
+  0x4D946: push   si
+  0x4D947: call   entity_step_flags  ->code ['entity_step_flags']
+  0x4D94C: mov    si, di
+  0x4D94E: push   di
+  0x4D94F: call   farobj_tile_copy_resolve  ->code ['farobj_tile_copy_resolve']
+  0x4D954: pop    di
+  0x4D955: pop    si
+  0x4D956: mov    [di+8], ax
+  0x4D959: mov    word ptr [di+0Ah], 0
+  0x4D95E: pop    bp
+  0x4D95F: pop    dx
+  0x4D960: jmp    near ptr unk_3D967  ->code ['0x3d967']
+  0x4D962: call   farptr_table_get  ->code ['farptr_table_get']
+  0x4D967: call   fixed_vec3_accumulate_b  ->code ['fixed_vec3_accumulate_b']
+  0x4D96C: mov    bx, cx
+  0x4D96E: push   si
+  0x4D96F: add    si, 17h
+  0x4D973: and    bx, [si]
+  0x4D975: pop    si
+  0x4D976: add    si, 25h
+  0x4D97A: mov    cx, [si]
+  0x4D97C: add    bx, cx
+  0x4D97E: mov    ax, es
+  0x4D980: mov    ds, ax
+  0x4D982: mov    si, di
+  0x4D984: mov    ax, 0Ah
+  0x4D987: mov    es, ax
+  0x4D989: pop    ax
+  0x4D98A: test   al, 40h
+  0x4D98C: jnz    near ptr unk_3D993  ->code ['0x3d993']
+  0x4D98E: call   near ptr unk_3D9FC  ->code ['0x3d9fc']
+  0x4D991: jmp    near ptr unk_3D996  ->code ['0x3d996']
+  0x4D993: call   near ptr unk_3DA3D  ->code ['0x3da3d']
+  0x4D996: pop    ds
+  0x4D997: pop    es
+  0x4D998: pop    di
+  0x4D999: dec    word ptr [di+4]
+  0x4D99C: cmp    word ptr [di+4], 0
+  0x4D9A0: jnz    near ptr unk_3D9A5  ->code ['0x3d9a5']
+  0x4D9A2: mov    byte ptr [di], 0
+  0x4D9A5: pop    ax
+  0x4D9A6: pop    dx
+  0x4D9A7: cmp    ax, 9
+  0x4D9AA: jz     near ptr unk_3D9B3  ->code ['0x3d9b3']
+  0x4D9AC: inc    ax
+  0x4D9AD: add    di, 6
+  0x4D9B0: jmp    near ptr unk_3D8CB  ->code ['shared_tail_pop_es']
+  0x4D9B3: cmp    dl, 1
+  0x4D9B6: jz     near ptr unk_3D9C0  ->code ['0x3d9c0']
+  0x4D9B8: mov    al, ds:0Ah
+  0x4D9BB: and    al, 0FEh
+  0x4D9BD: mov    ds:0Ah, al
+  0x4D9C0: pop    es
+  0x4D9C1: pop    ds
+  0x4D9C2: retf   
+  [TERM RETF @ 0x4D9C2]
+  --- callers (2): sub_2FEF2, sub_31319
+
+======================================================================
+#34 sub_4E415  ea=0x4E415  size=187  class=ASM  in=2  dyn=0  cd=0
+  --- callees (1): farobj_entity_accum_sweep(L3)
+  0x4E415: mov    byte ptr cs:word_2E128+1, 0
+  0x4E41B: mov    bx, cs:word_2E104
+  0x4E420: cmp    bx, 258h
+  0x4E424: jnb    near ptr loc_2E469+1  ->code ['sub_2E42C']
+  0x4E426: push   ds
+  0x4E427: mov    ds, cs:funcs_4E5C0
+  0x4E42C: mov    bx, 0
+  0x4E42F: sub    dx, dx
+  0x4E431: add    ax, cs:off_2E11E
+  0x4E436: adc    dx, cs:off_2E120
+  0x4E43B: mov    cs:off_2E11E, ax
+  0x4E43F: mov    cs:off_2E120, dx
+  0x4E444: mov    [bx+2], ax
+  0x4E447: mov    [bx+4], dx
+  0x4E44A: mov    ax, cs:word_2E10E
+  0x4E44E: add    ax, 31h
+  0x4E451: mov    cs:word_2E10E, ax
+  0x4E455: mov    [bx+6], ax
+  0x4E458: inc    cs:word_2E104
+  0x4E45D: mov    ax, cs:word_2E104
+  0x4E461: mov    [bx], ax
+  0x4E463: pop    ds
+  0x4E464: cmp    ax, 258h
+  0x4E467: jnb    near ptr loc_2E469+1  ->code ['sub_2E42C']
+  0x4E469: retf   
+  [TERM RETF @ 0x4E469]
+  --- callers (2): r34_e126, sub_307A5
+
+======================================================================
+#35 sub_6CF90  ea=0x6CF90  size=313  class=ASM  in=2  dyn=0  cd=0
+  --- callees (3): state_word_2e12b_set(L0), r06_farptr_dispatch_gate(L1), r06_ui_dispatch_block(L3)
+  0x6CF90: cmp    byte ptr ds:4A83h, 1
+  0x6CF95: jle    locret_6CFAD  ->code ['sub_6CF90']
+  0x6CF97: cmp    byte ptr ds:4AC2h, 3
+  0x6CF9C: jnz    loc_6D003  ->code ['sub_6CF90']
+  0x6CF9E: cmp    byte ptr ds:449h, 0
+  0x6CFA3: jz     loc_6CFA6  ->code ['sub_6CF90']
+  0x6CFA5: retf   
+  [TERM RETF @ 0x6CFA5]
+  --- callers (2): sub_2C26B, sub_3A3D6
+
+======================================================================
+#36 sub_6D5DF  ea=0x6D5DF  size=80  class=ASM  in=2  dyn=0  cd=0
+  --- callees (4): r06_ui_dispatch_block(L3), r06_mode_gate_49a3(L2), r06_farobj_proc_e(L0), r06_mode_state_update(L3)
+  0x6D5DF: mov    al, ds:4AC2h
+  0x6D5E2: cmp    al, 2
+  0x6D5E4: jz     loc_6D624  ->code ['sub_6D5DF']
+  0x6D5E6: cmp    al, 1
+  0x6D5E8: jnz    loc_6D5F6  ->code ['sub_6D5DF']
+  0x6D5EA: cmp    byte ptr ds:4AC4h, 1
+  0x6D5EF: jnz    loc_6D5F6  ->code ['sub_6D5DF']
+  0x6D5F1: call   r06_farobj_proc_e  ->code ['r06_farobj_proc_e']
+  0x6D5F4: jmp    loc_6D61B  ->code ['sub_6D5DF']
+  0x6D5F6: cmp    byte ptr ds:49A2h, 0
+  0x6D5FB: jnz    loc_6D61B  ->code ['sub_6D5DF']
+  0x6D5FD: cmp    byte ptr ds:4AC5h, 0
+  0x6D602: jz     loc_6D61B  ->code ['sub_6D5DF']
+  0x6D604: mov    ax, ds:4A91h
+  0x6D607: sub    ax, ds:49A0h
+  0x6D60B: jg     loc_6D615  ->code ['sub_6D5DF']
+  0x6D60D: mov    ax, 0A00h
+  0x6D610: mov    byte ptr ds:4AC5h, 0
+  0x6D615: mov    ds:4A91h, ax
+  0x6D618: call   loc_6D575  ->code ['r06_mode_gate_49a3']
+  0x6D61B: call   loc_6D6EC  ->code ['r06_mode_state_update']
+  0x6D61E: call   loc_6D51A  ->code ['r06_mode_gate_49a3']
+  0x6D621: jmp    loc_6D2D5  ->code ['r06_ui_dispatch_block']
+  0x6D624: cmp    byte ptr ds:4AC4h, 1
+  0x6D629: jnz    locret_6D62E  ->code ['sub_6D5DF']
+  0x6D62B: jmp    r06_farobj_proc_e  ->code ['r06_farobj_proc_e']
+  0x6D62D: nop    
+  0x6D62E: retn   
+  [TERM RETN @ 0x6D62E]
+  --- callers (2): sub_66E62, sub_6D5A6

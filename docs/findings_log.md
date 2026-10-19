@@ -4170,4 +4170,34 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 75 — Global Level-4 COMPLETE (52 named) + Level-5
+Batch 1 (36 named): `named` 1,111 -> **1,199**, L4 queue 54 -> 0,
+L5 queue 60 -> 24
+
+### Level-4 COMPLETE (36 + 16 = 52)
+
+Same cadence as before (`dump_level1.py` disasm + `dump_full.py`
+completions; 14 + 8 truncated bodies full-dumped).
+
+| batch | named after | L4 queue after | highlights |
+|---|---|---|---|
+| l4a | 1,145 | 18 | **`angle_quad_norm_far`** (dyn=49,210 far stub into the L3 angle primitive), `clip_pending_apply_gate`/`_latch` (the 2549D-latch pair), **`overlay_segment_load`** (605B: chunked read + 0xA92 relocation fixups + chain), `kb_record_save_apply` (11-callee key-record save), `event_tone_key_play` (rate-limited), `sbi_channel_release_close`, `channel_release_close` pairs, `tile_strip_sample_draw` (in=23, 64-tile strip), `line_record_flag_dispatch` (record walker parent of line_record_draw_loop), `object_proj_draw_dispatch`, `farobj_slot_create`, `farobj_pos_wrap_update`, `error_display_terminate`, `r17_ui_event_loop` + `r69_ui_event_loop`, `r06_proximity_select`, `farobj_slot_step_spawn`, `farobj_entity_accum_sweep` |
+| l4b | **1,163** | **0** | **`sbi_stream_next_advance`** (min-scan scheduler + cursor advance), `terrain_attr_quadrant_dispatch` + `_b` (8-/4-entry quadrant tables at cs:11C9A/11CA2), `record_queue_gather_drain`, `overlay_patch_verify`, `game_setup_ramp_accum` (7-phase ramp cap), `farobj_slot_create_gate`/`_ems`/`_status` (three gated creators), `scroll_decay_limit` (pair of game_setup_scroll_half_accum), `r17_screen_draw` + `_b`, `r12_cb_args_render`, `view_extent_shadow_save_far`/`_restore_far` thunks, `control_axis_step_quantize`, `op_2a780_release` |
+
+L4 residue = 5 orphans + 18 thunks, **0 other**.
+
+### Level-5 Batch 1 (36 of 60)
+
+| named after | L5 queue after | highlights |
+|---|---|---|
+| **1,199** | **24** | **`op_dispatch_far_entry`** (in=30 -- the 5-arg far marshaller imported by r30/r32/r33/r35/r48), **`tail_bridge_overlay_load`** (in=302, cd=50,839 -- THE lazy-overlay landing pad every RTLink tail bridge crosses: queue slot + patch verify + overlay_segment_load), **`group_children_release`** (pair of group_register_main), **slot2/slot3 handle subsystem** (slot2_handle_alloc/release/read, slot3_handle_alloc_pair/release_pair, slot3_copy_ems_move with ems_page_move_67), `record_script_exec_main`/`_quad`/`_lite` (49-step 11C8C interpreters), `terrain_attr_scan_draw_a`/`_b` (scan+draw drivers for the quadrant dispatchers), the 4 `object_*_draw` render variants (`scale_gather`/`rot_proj`/`quad_proj`/`init_flag` -- same 6-caller render set), the twin movement engines **`pos_step_chain_engine`** (852B) + **`pos_move_angle_step`** (1,349B, mutually recursive, tile_quad_classify internal entries), `clip_pending_atomic_apply`, `channel_program_fetch_write`, `op_26400_record` (records the slot op_26400_release finalizes) |
+
+### Gates (each milestone verified)
+
+`naming.py check` **1,201** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,199/1,199
+function + 2/2 global**.
+
+---
+
 (append new findings below)

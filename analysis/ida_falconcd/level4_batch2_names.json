@@ -1,0 +1,110 @@
+{
+ "sub_143D7": [
+  "terrain_attr_quadrant_dispatch",
+  "NEAR retn (69B): cs:word_11C90=ax, 11C92=bx (grid origin); split cell: cx=ax&0xF, ax>>=4 (row), dx=(bx&0xF)<<4, si=(bx&0xFFF0)<<1 (col); cs:word_11C8E=0 (hit counter); bl=cs:byte_11C7A (quadrant) -> call cs:off_11C9A[bx] (8-entry table: 4 terrain_attr_store_11c8e variants + 4 terrain_attr_block_scan variants); dx=cs:word_11C8E (hits); retn; 1 caller (sub_160DE)",
+  "69B, cd=0, in=1, 8 table targets: terrain_attr_store_11c8e(+_b/_c/_d) + terrain_attr_block_scan(+_inc/_axdec/_dec). THE terrain-attr quadrant dispatcher: stores the 11C90/11C92 origin pair (the ramps the scans fill), splits the cell coordinates and routes the quadrant byte 11C7A through the cs:11C9A table; returns the hit count. conf: med-high",
+  "med-high"
+ ],
+ "sub_1465E": [
+  "terrain_attr_quadrant_dispatch_b",
+  "NEAR retn (60B): cx=ax&0x0C, ax>>=4, dx=(bx&0x0C)<<3, si=(bx&0xFFF0)<<1 (0x0C quadrant masks, no origin store); cs:word_11C8E=0; bl=cs:byte_11C7A -> call cs:off_11CA2[bx] (4-entry table: the 4 terrain_attr_block_scan variants); dx=cs:word_11C8E; retn; 1 caller (sub_16124)",
+  "60B, cd=0, in=1, 4 table targets: terrain_attr_block_scan + _inc/_axdec/_dec. Scan-only quadrant dispatcher (sibling of terrain_attr_quadrant_dispatch, table at cs:11CA2 with the 0x0C quadrant masks and no 11C90/92 origin write). conf: med",
+  "med"
+ ],
+ "sub_1C534": [
+  "sbi_stream_next_advance",
+  "FAR C-frame retf (351B): cursor es:7772:77B6C; if byte!=0x2F: stream_long_accumulate -> dx:ax, add into es:[77B7C*4 + 4AE/4B0] (item accumulator); else set item = 77FFF/0xFFFF (sentinel = ended); min-scan over items 1..77B64 (skip [i+49E]==0x2F) -> si=argmin; if item[si+49E]==0x2F: 77CA8=1, sbi_command_flush_clear, return 0; else delta = item - 77B78/77B7A, update 77B7A/77B78, cursors 77B68=7772:(45E+4si), 77B6C=7772:(49E+si), 77B7C=si; return delta; 1 caller (sub_1D068)",
+  "351B C-far, cd=0, in=1, callees stream_long_accumulate + sbi_command_flush_clear. SBI stream scheduler tick: accumulates each stream item (or sentinel-marks ended ones at 0x2F), picks the earliest-due item, advances the 77B68/77B6C/77B7C cursors and returns the delta vs the previous position. conf: med-high",
+  "med-high"
+ ],
+ "sub_203F8": [
+  "record_queue_gather_drain",
+  "FAR retf (43B): es=7B0E, di=0x238 (queue base); cx=lodsw+1 (record count); loop: bx += lodsw (walk the offset stream at DS:SI), copy [bx]/[bx+2] words -> es:di (stosw x2); ds=7B0E -> record_queue_select_drain(); pops; retf; 1 caller (sub_268DD)",
+  "43B far, cd=0, in=1, callee record_queue_select_drain. Gathers count+1 record quads from the DS:SI offset stream into the 7B0E:238 queue buffer then drains it (fill half of the select-and-drain pair). conf: med-high",
+  "med-high"
+ ],
+ "sub_20843": [
+  "view_extent_shadow_save_far",
+  "FAR retf NEARTHUNK (4B): call view_extent_shadow_save; retf; 1 caller (sub_3A88D)",
+  "4B far thunk, in=1, callee view_extent_shadow_save (near). Far adapter: exposes the near view-extent checkpoint to far callers (sub_3A88D). conf: med-high",
+  "med-high"
+ ],
+ "sub_20897": [
+  "view_extent_shadow_restore_far",
+  "FAR retf NEARTHUNK (4B): call view_extent_shadow_restore; retf; 1 caller (sub_3A88D)",
+  "4B far thunk, in=1, callee view_extent_shadow_restore (near). Far adapter for the view-extent rollback (the restore half of the sub_3A88D bracket). conf: med-high",
+  "med-high"
+ ],
+ "sub_2A9FA": [
+  "op_2a780_release",
+  "FAR retf (21B): ax=cs:word_2222A -> call cs:dword_2A7F0 (indirect handler); ax=cs:word_2A780, bx=2 -> push cs, call op_dispatch (finalize recorded op); retf; 1 caller (vector_shutdown_chain)",
+  "21B far, cd=0, in=1, callee op_dispatch. Second shutdown step (called by vector_shutdown_chain after vector_shutdown_restore): invokes the stored 2A7F0 handler with 2222A then finalizes the op recorded in cs:2A780 with bx=2 (pair of op_26400_release). conf: med",
+  "med"
+ ],
+ "sub_2B0BF": [
+  "overlay_patch_verify",
+  "NEAR retn (70B): ds=cs, si=word_2B12D (scan start); loop: patch_scan_e8_58d until CF; if si == word_2B12F (end) -> clean return; else error: cx = (ds - ds:0A86 - 0x10), dx=ds:0E -> bcd_hex_ch_store (hex para delta), cx=si, dx=ds:0E+5 -> bcd_hex_ch_store (hex site); ax=0x12, cx=3, bx=ds:0E -> jmp loc_2B478 (overlay_segment_load error reporter); 1 caller (sub_2AFBD)",
+  "70B, cd=0, in=1, callees patch_scan_e8_58d + bcd_hex_ch_store. Overlay relocation verifier: walks the E8/58D patch chain over the relocated segment; on a mismatch formats the para-delta + site as hex through bcd_hex_ch_store and reports via the overlay_segment_load error path (code 0x12/3). conf: med-high",
+  "med-high"
+ ],
+ "sub_344DE": [
+  "control_axis_step_quantize",
+  "NEAR retn (110B): gate ds:449==0 else stc ret; control_axes_read (xref pair 0x1241E/control_axes_read) -> CF: ret; si=entity: if [si+0D2]&4: &2 -> return ax=[si+2E] bx=0; else neg ax: <0x80 deadzone-ish -> scale ax*0xB7/0x800 bx=0, tiny -> return 0,0; ax>=0x200 -> residual ax=(ax-0x200)>>8 + bx=(0x131+? clamp<=5) clc ret; 1 caller (sub_2FC79)",
+  "110B, cd=0, in=1, callee control_axes_read. Reads the control axis (gated by ds:449) and quantizes it: deadzone/scale band (x*0xB7/0x800), big values become (al residual, bx = step count clamped to 5), special [si+0D2]&6 paths; CF=1 when gated/no-data. conf: med",
+  "med"
+ ],
+ "sub_34B92": [
+  "scroll_decay_limit",
+  "NEAR multi-entry (139B): entry+0: ax=-ds:546 -> stub_to_24988 (trampoline pair w/ tile_quad_sample); bx=ds:54C rate clamp (min 0xC8); sign-normalize; if delta < 0xC8 -> RELEASE: ds:5A1&=~1, ds:546=0, ds:664=0; else ds:546 = stub(546+delta) (decay); entry+0x2F: ax=ds:548 vs bx=ds:54E same shape -> if <0xC8 or negative: ds:5A1&=~2, ds:548=0, ds:665=0 else ds:548 = stub(548-delta); 1 caller (sub_34C31)",
+  "139B, cd=0, in=1, callees stub_to_24988 + tile_quad_sample (xref pair). Scroll decay/limit (called by sub_34C31 beside game_setup_scroll_half_accum): decays the ds:546/ds:548 scroll cursors by the ds:54C/54E rates through the stub, clears the ds:5A1 active bits and zeroes cursors when the delta falls below 0xC8. conf: med-high",
+  "med-high"
+ ],
+ "sub_36F82": [
+  "far_cb_rect_bounds",
+  "NEAR retn (42B): bounds gate: bx in [ds:6E8, ds:6EC-0x0F) AND di in [ds:6EA, ds:6EE-5) else retn; si=ds:708; far_cb_with_args (xref pair w/ farobj_rect_ratio_build); retn; 1 caller (sub_36E3A)",
+  "42B, cd=0, in=1, callee far_cb_with_args. Rect-bounds gated callback: validates the (bx,di) point against the ds:6E8/6EA/6EC/6EE rect shrunk by (0x0F,5) margins then invokes far_cb_with_args with si=ds:708. conf: med",
+  "med"
+ ],
+ "sub_4820B": [
+  "game_setup_ramp_accum",
+  "FAR retf multi-entry (135B, seg ds=0x54AF): entry+0: bx=ds:58F9A record, cx=[bx+487E], si=bx+0x44D5 (value slot), di=ds:593AA+0xAE+cx (limit slot); al += [si]; clamp al to [2,0x18]; if cs:dword_2E13F+3 &1 -> cap al<=4; if ds:59380==0 skip; cap al by [di]; [si]=al; retf; entry+0x53: cap-only variant (al=[si], cap by [di], store); 1 caller (sub_33443)",
+  "135B far multi-entry, cd=0, in=1, callee edge game_setup_staged_step. Limited ramp accumulator for the staged setup: adds the incoming rate into the 58F9A record slot, clamps 2..24 (4 under the 2E13F flag), caps by the 593AA+0xAE limit table under the 59380 gate (second entry = cap-only). conf: med",
+  "med"
+ ],
+ "sub_4E09C": [
+  "farobj_slot_create_gate",
+  "FAR retf (29B): gate cs:byte_2E124!=0 else retf; if byte_2E125==1: push cs, call loc_2E361 (farobj_slot_create internal entry B); else: push cs, call loc_2E32B (internal entry A); retf; 1 caller (sub_33443)",
+  "29B far, cd=0, in=1, callee farobj_slot_create (internal entries 2E361/2E32B). Flag-gated farobj creation: 2E124 gate, 2E125 selects which internal create entry runs (the two-entry selector sibling of farobj_slot_create_ems / _status). conf: med",
+  "med"
+ ],
+ "sub_4E109": [
+  "farobj_slot_create_ems",
+  "FAR retf (67B): gate cs:byte_2E124!=0 else retf; if byte_2E127+1==1: push cs, call loc_2E361 (farobj_slot_create entry); else retf; ems_map_seg_10233; es=funcs_4E5C0, di=0x2EF3; ax=word_2E106 (dec if byte_2E128), stosw -> word_2E110; if ax>=1: call far sub_2C17B; retf; 1 caller (sub_32C62)",
+  "67B far, cd=0, in=1, callees ems_map_seg_10233 + sub_2C17B + farobj_slot_create. Gated create + EMS publish: creates a farobj slot (entry 2E361 under flag 2E127), maps EMS seg 10233, writes the new count word at funcs_4E5C0:2EF3 and pings sub_2C17B when >=1. conf: med",
+  "med"
+ ],
+ "sub_4E309": [
+  "farobj_slot_create_status",
+  "FAR retf (23B): push cs, call loc_2E314 (farobj_slot_create internal entry); nop; ax=0; adc ax,ax (ax=CF -> 0/1); retf; trailing entries: word_2E127+1==0 -> loc_2E31C entry else stc/clc mini-dispatch; 1 caller (sub_6EA4A)",
+  "23B far, cd=0, in=1, callee farobj_slot_create (entry 2E314). Status-returning create: runs the internal create entry and converts its carry into an AX 0/1 success flag for the RTLink caller sub_6EA4A. conf: med",
+  "med"
+ ],
+ "sub_6D19F": [
+  "r06_entry_scan_draw",
+  "FAR retf (183B): gate ds:4AC2!=3 else retf; patch cs immediate cx=48B8*4; loop si=0..0x0F over [si+1734] entries: flags 74h.0&&.6 required; bx/di=[si+96/98]; mode 2: idx==48BC -> r06_ui_dispatch_block entry 6D3D5 + early exit; else: 4AC4&&idx==48BC -> 6D3D5; if 4A83!=1: call r06_ui_dispatch_block entry 6D3FB, screen-x = (48BA+0C - [si+9A])*0x630>>16 + base, range gate [0x60,0xE2]; [si+79]&1 -> r06_mode_gate_49a3; 1 caller (sub_3A3D6)",
+  "183B far, cd=0, in=1, callees r06_ui_dispatch_block + r06_mode_gate_49a3. R06 entry scan+draw: walks the 0x1734 table (16 entries), hot-draws the selected idx (48BC) via the r06_ui_dispatch_block 6D3D5/6D3FB entries, project-checks x into the [0x60,0xE2] y-band and runs the mode gate (draw counterpart of r06_proximity_select). conf: med",
+  "med"
+ ],
+ "sub_6F2F2": [
+  "r17_screen_draw_b",
+  "FAR bp-frame (167B): mouse_gate_far_entry; dispatch_2211c(0xC8,0); far 6DFF0 rect pair (6E472/474 vs 6E6AE/6B0, select 6E8C7==0?2:1); second 6DFF0 pair (6E47A/47C vs 6E6B2/6B4, 6E8C7>=1?2:1); dispatch_220f4(0xC8,0); bda_kb_flag; retf; 1 caller (sub_2C135)",
+  "167B far, cd=0, in=1, callees mouse_gate_far_entry + dispatch_220f4_invoke_2arg + dispatch_2211c_invoke_2arg + bda_kb_flag_10000_get. R17 screen paint variant B (same 6Fxxx cluster as r17_screen_draw): mouse gate + 2211c clear + two pointer-rect 6DFF0 draws selected by the 6E8C7 mode + 220f4 refresh. conf: med",
+  "med"
+ ],
+ "r12_e36": [
+  "r12_cb_args_render",
+  "FAR retf (37B): push ds/es/pusha; far_cb_1 (context begin); ds=cs; si=[bx+0], lodsb -> cx=length, al=0x0F; loc_11A7D (xref pair cb_args_invoke) with (al=0x0F, cx=len); far_cb_0 (context end); popa/retf; 1 caller (r12_e43)",
+  "37B far, cd=0, in=1, callees cb_args_invoke + far_cb_0 + far_cb_1. R12 module render callback: brackets far_cb_1/far_cb_0 around a length-prefixed arg invoke (al=0x0F) read from [bx] -- the R12 sibling of the far_cb_1 -> cb_args_invoke -> far_cb_0 pattern in error_display_terminate. conf: med",
+  "med"
+ ]
+}

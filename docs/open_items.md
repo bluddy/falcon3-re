@@ -414,3 +414,19 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 4 COMPLETE + LEVEL-5 BATCH 1 (finding 75):** L4 = 52
+  fns named (queue 54 -> 0, 5 orphans + 18 thunks, 0 other); L5 = 36
+  of 60 named (queue 60 -> 24). `named` **1111 -> 1199**. Highlights:
+  angle_quad_norm_far (dyn=49,210), overlay_segment_load (reloc
+  fixups), sbi_stream_next_advance, quadrant dispatchers + scan draws,
+  op_dispatch_far_entry (in=30), tail_bridge_overlay_load (in=302,
+  cd=50,839), slot2/slot3 handle subsystem, record_script_exec trio,
+  pos_step_chain_engine + pos_move_angle_step. All 4 gates green (check
+  1201, verify_rebuild faithful, verify_idb INTACT, read-back
+  1199/1199+2/2).
+- **Next: finish Global Level-5** (24 targets, batch 2), then Level 6
+  (60) -- global queue 432 across L5..L21 (L19=206 giant SCC).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

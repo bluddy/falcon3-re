@@ -1,0 +1,742 @@
+[
+ {
+  "rank": 1,
+  "key": "sub_143D7",
+  "ea": 82903,
+  "size": 69,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "terrain_attr_store_11c8e_c",
+   "terrain_attr_store_11c8e",
+   "terrain_attr_store_11c8e_d",
+   "terrain_attr_store_11c8e_b",
+   "terrain_attr_block_scan_inc",
+   "terrain_attr_block_scan_axdec",
+   "terrain_attr_block_scan_dec",
+   "terrain_attr_block_scan"
+  ],
+  "callers": [
+   "sub_160DE"
+  ],
+  "body": [
+   "  0x143D7: push   es",
+   "  0x143D8: mov    cs:word_11C90, ax",
+   "  0x143DC: mov    cs:word_11C92, bx",
+   "  0x143E1: mov    cx, ax",
+   "  0x143E3: and    cx, 0Fh",
+   "  0x143E6: shr    ax, 1",
+   "  0x143E8: shr    ax, 1",
+   "  0x143EA: shr    ax, 1",
+   "  0x143EC: shr    ax, 1",
+   "  0x143EE: mov    dx, bx",
+   "  0x143F0: and    dx, 0Fh",
+   "  0x143F3: shl    dx, 1",
+   "  0x143F5: shl    dx, 1",
+   "  0x143F7: shl    dx, 1",
+   "  0x143F9: shl    dx, 1",
+   "  0x143FB: and    bx, 0FFF0h",
+   "  0x143FE: shl    bx, 1",
+   "  0x14400: mov    si, bx",
+   "  0x14402: mov    cs:word_11C8E, 0",
+   "  0x14409: mov    bl, cs:byte_11C7A",
+   "  0x1440E: sub    bh, bh",
+   "  0x14410: call   cs:off_11C9A[bx]  ->code ['terrain_attr_store_11c8e_c', 'terrain_attr_store_11c8e', 'terrain_attr_store_11c8e_d', 'terrain_attr_store_11c8e_b', 'terrain_attr_block_scan_inc', 'terrain_attr_block_scan_axdec', 'terrain_attr_block_scan_dec', 'terrain_attr_block_scan']",
+   "  0x14415: mov    dx, cs:word_11C8E",
+   "  0x1441A: pop    es",
+   "  0x1441B: retn   ",
+   "  [TERM RETN @ 0x1441B]"
+  ]
+ },
+ {
+  "rank": 2,
+  "key": "sub_1465E",
+  "ea": 83550,
+  "size": 60,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "terrain_attr_block_scan_inc",
+   "terrain_attr_block_scan_axdec",
+   "terrain_attr_block_scan_dec",
+   "terrain_attr_block_scan"
+  ],
+  "callers": [
+   "sub_16124"
+  ],
+  "body": [
+   "  0x1465E: push   es",
+   "  0x1465F: mov    cx, ax",
+   "  0x14661: and    cx, 0Ch",
+   "  0x14664: shr    ax, 1",
+   "  0x14666: shr    ax, 1",
+   "  0x14668: shr    ax, 1",
+   "  0x1466A: shr    ax, 1",
+   "  0x1466C: mov    dx, bx",
+   "  0x1466E: and    dx, 0Ch",
+   "  0x14671: shl    dx, 1",
+   "  0x14673: shl    dx, 1",
+   "  0x14675: shl    dx, 1",
+   "  0x14677: shl    dx, 1",
+   "  0x14679: and    bx, 0FFF0h",
+   "  0x1467C: shl    bx, 1",
+   "  0x1467E: mov    si, bx",
+   "  0x14680: mov    cs:word_11C8E, 0",
+   "  0x14687: mov    bl, cs:byte_11C7A",
+   "  0x1468C: sub    bh, bh",
+   "  0x1468E: call   cs:off_11CA2[bx]  ->code ['terrain_attr_block_scan_inc', 'terrain_attr_block_scan_axdec', 'terrain_attr_block_scan_dec', 'terrain_attr_block_scan']",
+   "  0x14693: mov    dx, cs:word_11C8E",
+   "  0x14698: pop    es",
+   "  0x14699: retn   ",
+   "  [TERM RETN @ 0x14699]"
+  ]
+ },
+ {
+  "rank": 3,
+  "key": "sub_1C534",
+  "ea": 116020,
+  "size": 351,
+  "class": "C",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "stream_long_accumulate",
+   "sbi_command_flush_clear"
+  ],
+  "callers": [
+   "sub_1D068"
+  ],
+  "body": [
+   "  0x1C534: enter  4, 0",
+   "  0x1C538: push   si",
+   "  0x1C539: push   di",
+   "  0x1C53A: mov    ax, 7772h",
+   "  0x1C53D: mov    es, ax",
+   "  0x1C53F: les    bx, dword ptr es:unk_77B6C",
+   "  0x1C544: cmp    byte ptr es:[bx], 2Fh",
+   "  0x1C548: jz     loc_1C578  ->code ['sub_1C534']",
+   "  0x1C54A: push   cs",
+   "  0x1C54B: call   near ptr stream_long_accumulate  ->code ['stream_long_accumulate']",
+   "  0x1C54E: mov    [bp+var_2], dx",
+   "  0x1C551: mov    [bp+var_4], ax",
+   "  0x1C554: mov    ax, 7772h",
+   "  0x1C557: mov    es, ax",
+   "  0x1C559: mov    bx, word ptr es:unk_77B7C",
+   "  0x1C55E: shl    bx, 2",
+   "  0x1C561: mov    ax, 7772h",
+   "  0x1C564: mov    dx, [bp+var_2]",
+   "  0x1C567: mov    cx, [bp+var_4]",
+   "  0x1C56A: mov    es, ax",
+   "  0x1C56C: add    es:[bx+4AEh], cx",
+   "  0x1C571: adc    es:[bx+4B0h], dx",
+   "  0x1C576: jmp    loc_1C598  ->code ['sub_1C534']",
+   "  0x1C578: mov    ax, 7772h",
+   "  0x1C57B: mov    es, ax",
+   "  0x1C57D: mov    bx, word ptr es:unk_77B7C",
+   "  0x1C582: shl    bx, 2",
+   "  0x1C585: mov    ax, 7772h",
+   "  0x1C588: mov    es, ax",
+   "  0x1C58A: mov    word ptr es:[bx+4B0h], 7FFFh",
+   "  0x1C591: mov    word ptr es:[bx+4AEh], 0FFFFh",
+   "  0x1C598: xor    si, si",
+   "  0x1C59A: mov    di, 1",
+   "  0x1C59D: jmp    loc_1C5DD  ->code ['sub_1C534']",
+   "  0x1C59F: mov    bx, di",
+   "  0x1C5A1: shl    bx, 2",
+   "  0x1C5A4: mov    ax, 7772h",
+   "  0x1C5A7: mov    es, ax",
+   "  0x1C5A9: mov    ax, es:[bx+4B0h]",
+   "  0x1C5AE: mov    dx, es:[bx+4AEh]",
+   "  0x1C5B3: mov    bx, si",
+   "  0x1C5B5: shl    bx, 2",
+   "  0x1C5B8: mov    cx, 7772h",
+   "  0x1C5BB: mov    es, cx",
+   "  0x1C5BD: cmp    ax, es:[bx+4B0h]",
+   "  0x1C5C2: jg     loc_1C5DC  ->code ['sub_1C534']",
+   "  0x1C5C4: jl     loc_1C5CD  ->code ['sub_1C534']",
+   "  0x1C5C6: cmp    dx, es:[bx+4AEh]",
+   "  0x1C5CB: jnb    loc_1C5DC  ->code ['sub_1C534']",
+   "  0x1C5CD: mov    ax, 7772h",
+   "  0x1C5D0: mov    es, ax",
+   "  0x1C5D2: cmp    byte ptr es:[di+49Eh], 2Fh",
+   "  0x1C5D8: jz     loc_1C5DC  ->code ['sub_1C534']",
+   "  0x1C5DA: mov    si, di",
+   "  0x1C5DC: inc    di",
+   "  0x1C5DD: mov    ax, 7772h",
+   "  0x1C5E0: mov    es, ax",
+   "  0x1C5E2: cmp    word ptr es:unk_77B64, di",
+   "  0x1C5E7: jg     loc_1C59F  ->code ['sub_1C534']",
+   "  0x1C5E9: mov    ax, 7772h",
+   "  0x1C5EC: mov    es, ax",
+   "  0x1C5EE: cmp    byte ptr es:[si+49Eh], 2Fh",
+   "  0x1C5F4: jnz    loc_1C60A  ->code ['sub_1C534']",
+   "  0x1C5F6: mov    ax, 7772h",
+   "  0x1C5F9: mov    es, ax",
+   "  0x1C5FB: mov    byte ptr es:unk_77CA8, 1",
+   "  0x1C601: push   cs",
+   "  0x1C602: call   near ptr sbi_command_flush_clear  ->code ['sbi_command_flush_clear']",
+   "  0x1C605: xor    ax, ax",
+   "  0x1C607: jmp    loc_1C68F  ->code ['sub_1C534']",
+   "  0x1C60A: mov    bx, si",
+   "  0x1C60C: shl    bx, 2",
+   "  0x1C60F: mov    ax, 7772h",
+   "  0x1C612: mov    es, ax",
+   "  0x1C614: mov    ax, es:[bx+4B0h]",
+   "  0x1C619: mov    dx, es:[bx+4AEh]",
+   "  0x1C61E: mov    bx, 7772h",
+   "  0x1C621: mov    es, bx",
+   "  0x1C623: sub    dx, word ptr es:unk_77B78",
+   "  0x1C628: sbb    ax, word ptr es:unk_77B7A",
+   "  0x1C62D: mov    [bp+var_2], ax",
+   "  0x1C630: mov    [bp+var_4], dx",
+   "  0x1C633: mov    bx, si",
+   "  0x1C635: shl    bx, 2",
+   "  0x1C638: mov    ax, 7772h",
+   "  0x1C63B: mov    es, ax",
+   "  0x1C63D: mov    ax, es:[bx+4B0h]",
+   "  0x1C642: mov    dx, es:[bx+4AEh]",
+   "  0x1C647: mov    bx, 7772h",
+   "  0x1C64A: mov    es, bx",
+   "  0x1C64C: mov    word ptr es:unk_77B7A, ax",
+   "  0x1C650: mov    word ptr es:unk_77B78, dx",
+   "  0x1C655: mov    ax, si",
+   "  0x1C657: shl    ax, 2",
+   "  0x1C65A: add    ax, 45Eh",
+   "  0x1C65D: mov    dx, 7772h",
+   "  0x1C660: mov    es, dx",
+   "  0x1C662: mov    word ptr es:unk_77B6A, 7772h",
+   "  0x1C669: mov    word ptr es:unk_77B68, ax",
+   "  0x1C66D: mov    ax, si",
+   "  0x1C66F: add    ax, 49Eh",
+   "  0x1C672: mov    dx, 7772h",
+   "  0x1C675: mov    es, dx",
+   "  0x1C677: mov    word ptr es:unk_77B6E, 7772h",
+   "  0x1C67E: mov    word ptr es:unk_77B6C, ax",
+   "  0x1C682: mov    ax, 7772h",
+   "  0x1C685: mov    es, ax",
+   "  0x1C687: mov    word ptr es:unk_77B7C, si",
+   "  0x1C68C: mov    ax, [bp+var_4]",
+   "  0x1C68F: pop    di",
+   "  0x1C690: pop    si",
+   "  0x1C691: leave  ",
+   "  0x1C692: retf   ",
+   "  [TERM RETF @ 0x1C692]"
+  ]
+ },
+ {
+  "rank": 4,
+  "key": "sub_203F8",
+  "ea": 132088,
+  "size": 43,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "record_queue_select_drain"
+  ],
+  "callers": [
+   "sub_268DD"
+  ],
+  "body": [
+   "  0x203F8: push   ds",
+   "  0x203F9: push   es",
+   "  0x203FA: push   ax",
+   "  0x203FB: mov    ax, 7B0Eh",
+   "  0x203FE: mov    es, ax",
+   "  0x20400: mov    di, 238h",
+   "  0x20403: lodsw  ",
+   "  0x20404: inc    ax",
+   "  0x20405: mov    cx, ax",
+   "  0x20407: push   cx",
+   "  0x20408: push   bx",
+   "  0x20409: lodsw  ",
+   "  0x2040A: add    bx, ax",
+   "  0x2040C: mov    ax, [bx]",
+   "  0x2040E: stosw  ",
+   "  0x2040F: mov    ax, [bx+2]",
+   "  0x20412: stosw  ",
+   "  0x20413: pop    bx",
+   "  0x20414: loop   loc_20408  ->code ['sub_203F8']",
+   "  0x20416: pop    cx",
+   "  0x20417: pop    ax",
+   "  0x20418: mov    bx, 7B0Eh",
+   "  0x2041B: mov    ds, bx",
+   "  0x2041D: call   record_queue_select_drain  ->code ['record_queue_select_drain']",
+   "  0x20420: pop    es",
+   "  0x20421: pop    ds",
+   "  0x20422: retf   ",
+   "  [TERM RETF @ 0x20422]"
+  ]
+ },
+ {
+  "rank": 5,
+  "key": "sub_20843",
+  "ea": 133187,
+  "size": 4,
+  "class": "NEARTHUNK",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "view_extent_shadow_save"
+  ],
+  "callers": [
+   "sub_3A88D"
+  ],
+  "body": [
+   "  0x20843: call   view_extent_shadow_save  ->code ['view_extent_shadow_save']",
+   "  0x20846: retf   ",
+   "  [TERM RETF @ 0x20846]"
+  ]
+ },
+ {
+  "rank": 6,
+  "key": "sub_20897",
+  "ea": 133271,
+  "size": 4,
+  "class": "NEARTHUNK",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "view_extent_shadow_restore"
+  ],
+  "callers": [
+   "sub_3A88D"
+  ],
+  "body": [
+   "  0x20897: call   view_extent_shadow_restore  ->code ['view_extent_shadow_restore']",
+   "  0x2089A: retf   ",
+   "  [TERM RETF @ 0x2089A]"
+  ]
+ },
+ {
+  "rank": 7,
+  "key": "sub_2A9FA",
+  "ea": 174586,
+  "size": 21,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "op_dispatch"
+  ],
+  "callers": [
+   "vector_shutdown_chain"
+  ],
+  "body": [
+   "  0x2A9FA: mov    ax, cs:word_2222A",
+   "  0x2A9FE: call   cs:dword_2A7F0",
+   "  0x2AA03: mov    ax, cs:word_2A780",
+   "  0x2AA07: mov    bx, 2",
+   "  0x2AA0A: push   cs",
+   "  0x2AA0B: call   near ptr op_dispatch  ->code ['op_dispatch']",
+   "  0x2AA0E: retf   ",
+   "  [TERM RETF @ 0x2AA0E]"
+  ]
+ },
+ {
+  "rank": 8,
+  "key": "sub_2B0BF",
+  "ea": 176319,
+  "size": 70,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "patch_scan_e8_58d",
+   "bcd_hex_ch_store"
+  ],
+  "callers": [
+   "sub_2AFBD"
+  ],
+  "body": [
+   "  0x2B0BF: push   ds",
+   "  0x2B0C0: push   si",
+   "  0x2B0C1: mov    si, cs",
+   "  0x2B0C3: mov    ds, si",
+   "  0x2B0C5: mov    si, word_2B12D",
+   "  0x2B0C9: call   patch_scan_e8_58d  ->code ['patch_scan_e8_58d']",
+   "  0x2B0CC: jnb    loc_2B0C9  ->code ['sub_2B0BF']",
+   "  0x2B0CE: cmp    si, word_2B12F",
+   "  0x2B0D2: jnz    loc_2B0D7  ->code ['sub_2B0BF']",
+   "  0x2B0D4: pop    si",
+   "  0x2B0D5: pop    ds",
+   "  0x2B0D6: retn   ",
+   "  [TERM RETN @ 0x2B0D6]"
+  ]
+ },
+ {
+  "rank": 9,
+  "key": "sub_344DE",
+  "ea": 214238,
+  "size": 110,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "control_axes_read"
+  ],
+  "callers": [
+   "sub_2FC79"
+  ],
+  "body": [
+   "  0x344DE: cmp    byte ptr ds:449h, 0",
+   "  0x344E3: jz     loc_344E7  ->code ['sub_344DE']",
+   "  0x344E5: stc    ",
+   "  0x344E6: retn   ",
+   "  [TERM RETN @ 0x344E6]"
+  ]
+ },
+ {
+  "rank": 10,
+  "key": "sub_34B92",
+  "ea": 215954,
+  "size": 139,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "tile_quad_sample",
+   "stub_to_24988"
+  ],
+  "callers": [
+   "sub_34C31"
+  ],
+  "body": [
+   "  0x34B92: mov    ax, ds:546h",
+   "  0x34B95: neg    ax",
+   "  0x34B97: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']",
+   "  0x34B9C: mov    bx, ds:54Ch",
+   "  0x34BA0: push   ax",
+   "  0x34BA1: cwd    ",
+   "  0x34BA2: xor    ax, dx",
+   "  0x34BA4: sub    ax, dx",
+   "  0x34BA6: cmp    ax, bx",
+   "  0x34BA8: pop    ax",
+   "  0x34BA9: jg     loc_34BB4  ->code ['sub_34B92']",
+   "  0x34BAB: cmp    bx, 0C8h",
+   "  0x34BAF: jle    loc_34BB4  ->code ['sub_34B92']",
+   "  0x34BB1: mov    bx, 0C8h",
+   "  0x34BB4: or     ax, ax",
+   "  0x34BB6: jns    loc_34BBC  ->code ['sub_34B92']",
+   "  0x34BB8: neg    ax",
+   "  0x34BBA: neg    bx",
+   "  0x34BBC: cmp    ax, 0C8h",
+   "  0x34BBF: jl     loc_34BD0  ->code ['sub_34B92']",
+   "  0x34BC1: add    bx, ds:546h",
+   "  0x34BC5: mov    ax, bx",
+   "  0x34BC7: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']",
+   "  0x34BCC: mov    ds:546h, ax",
+   "  0x34BCF: retn   ",
+   "  [TERM RETN @ 0x34BCF]"
+  ]
+ },
+ {
+  "rank": 11,
+  "key": "sub_36F82",
+  "ea": 225154,
+  "size": 42,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "farobj_rect_ratio_build",
+   "far_cb_with_args"
+  ],
+  "callers": [
+   "sub_36E3A"
+  ],
+  "body": [
+   "  0x36F82: cmp    bx, ds:6E8h",
+   "  0x36F86: jl     locret_36FAB  ->code ['sub_36F82']",
+   "  0x36F88: mov    ax, ds:6ECh",
+   "  0x36F8B: sub    ax, 0Fh",
+   "  0x36F8E: cmp    bx, ax",
+   "  0x36F90: ja     locret_36FAB  ->code ['sub_36F82']",
+   "  0x36F92: cmp    di, ds:6EAh",
+   "  0x36F96: jl     locret_36FAB  ->code ['sub_36F82']",
+   "  0x36F98: mov    ax, ds:6EEh",
+   "  0x36F9B: sub    ax, 5",
+   "  0x36F9E: cmp    di, ax",
+   "  0x36FA0: ja     locret_36FAB  ->code ['sub_36F82']",
+   "  0x36FA2: mov    si, ds:708h",
+   "  0x36FA6: call   far_cb_with_args  ->code ['farobj_rect_ratio_build', 'far_cb_with_args']",
+   "  0x36FAB: retn   ",
+   "  [TERM RETN @ 0x36FAB]"
+  ]
+ },
+ {
+  "rank": 12,
+  "key": "sub_4820B",
+  "ea": 295435,
+  "size": 135,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "game_setup_staged_step"
+  ],
+  "callers": [
+   "sub_33443"
+  ],
+  "body": [
+   "  0x4820B: push   ds",
+   "  0x4820C: mov    bx, 54AFh",
+   "  0x4820F: mov    ds, bx",
+   "  0x48211: mov    bx, ds:word_58F9A",
+   "  0x48215: xor    cx, cx",
+   "  0x48217: mov    cl, [bx+487Eh]",
+   "  0x4821B: sub    bx, 0Bh",
+   "  0x4821E: jl     near ptr loc_3825A+2  ->code ['game_setup_staged_step']",
+   "  0x48220: lea    si, [bx+44D5h]",
+   "  0x48224: mov    di, ds:word_593AA",
+   "  0x48228: lea    di, [di+0AEh]",
+   "  0x4822C: add    di, cx",
+   "  0x4822E: add    al, [si]",
+   "  0x48230: cmp    al, 2",
+   "  0x48232: jge    near ptr loc_38235+3  ->code ['game_setup_staged_step']",
+   "  0x48234: mov    al, 2",
+   "  0x48236: jmp    near ptr loc_3824C+1  ->code ['game_setup_staged_step']",
+   "  0x48238: cmp    al, 18h",
+   "  0x4823A: jle    near ptr loc_3823A+4  ->code ['game_setup_staged_step']",
+   "  0x4823C: mov    al, 18h",
+   "  0x4823E: test   word ptr cs:dword_2E13F+3, 1",
+   "  0x48245: jz     near ptr loc_3824C+1  ->code ['game_setup_staged_step']",
+   "  0x48247: cmp    al, 4",
+   "  0x48249: jle    near ptr loc_3824C+1  ->code ['game_setup_staged_step']",
+   "  0x4824B: mov    al, 4",
+   "  0x4824D: cmp    ds:byte_59380, 0",
+   "  0x48252: jz     loc_3825A  ->code ['game_setup_staged_step']",
+   "  0x48254: cmp    al, [di]",
+   "  0x48256: jle    loc_3825A  ->code ['game_setup_staged_step']",
+   "  0x48258: mov    al, [di]",
+   "  0x4825A: mov    [si], al",
+   "  0x4825C: pop    ds",
+   "  0x4825D: retf   ",
+   "  [TERM RETF @ 0x4825D]"
+  ]
+ },
+ {
+  "rank": 13,
+  "key": "sub_4E09C",
+  "ea": 319644,
+  "size": 29,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "farobj_slot_create"
+  ],
+  "callers": [
+   "sub_33443"
+  ],
+  "body": [
+   "  0x4E09C: cmp    byte ptr cs:word_2E124, 0",
+   "  0x4E0A2: jnz    loc_3E0A5  ->code ['sub_3DC55']",
+   "  0x4E0A4: retf   ",
+   "  [TERM RETF @ 0x4E0A4]"
+  ]
+ },
+ {
+  "rank": 14,
+  "key": "sub_4E109",
+  "ea": 319753,
+  "size": 67,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "ems_map_seg_10233",
+   "sub_2C17B",
+   "farobj_slot_create"
+  ],
+  "callers": [
+   "sub_32C62"
+  ],
+  "body": [
+   "  0x4E109: cmp    byte ptr cs:word_2E124, 0",
+   "  0x4E10F: jnz    near ptr word_2E112  ->code ['0x2e112']",
+   "  0x4E111: retf   ",
+   "  [TERM RETF @ 0x4E111]"
+  ]
+ },
+ {
+  "rank": 15,
+  "key": "sub_4E309",
+  "ea": 320265,
+  "size": 23,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "farobj_slot_create"
+  ],
+  "callers": [
+   "sub_6EA4A"
+  ],
+  "body": [
+   "  0x4E309: push   cs",
+   "  0x4E30A: call   near ptr loc_2E312+2  ->code ['farobj_slot_create']",
+   "  0x4E30D: nop    ",
+   "  0x4E30E: mov    ax, 0",
+   "  0x4E311: adc    ax, ax",
+   "  0x4E313: retf   ",
+   "  [TERM RETF @ 0x4E313]"
+  ]
+ },
+ {
+  "rank": 16,
+  "key": "sub_6D19F",
+  "ea": 446879,
+  "size": 183,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "r06_ui_dispatch_block",
+   "r06_mode_gate_49a3"
+  ],
+  "callers": [
+   "sub_3A3D6"
+  ],
+  "body": [
+   "  0x6D19F: cmp    byte ptr ds:4AC2h, 3",
+   "  0x6D1A4: jnz    loc_6D1A7  ->code ['sub_6D19F']",
+   "  0x6D1A6: retf   ",
+   "  [TERM RETF @ 0x6D1A6]"
+  ]
+ },
+ {
+  "rank": 17,
+  "key": "sub_6F2F2",
+  "ea": 455410,
+  "size": 167,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "bda_kb_flag_10000_get",
+   "mouse_gate_far_entry",
+   "dispatch_220f4_invoke_2arg",
+   "dispatch_2211c_invoke_2arg"
+  ],
+  "callers": [
+   "sub_2C135"
+  ],
+  "body": [
+   "  0x6F2F2: push   bp",
+   "  0x6F2F3: mov    bp, sp",
+   "  0x6F2F5: call   mouse_gate_far_entry  ->code ['mouse_gate_far_entry']",
+   "  0x6F2FA: push   0C8h",
+   "  0x6F2FD: push   0",
+   "  0x6F2FF: call   dispatch_2211c_invoke_2arg  ->code ['dispatch_2211c_invoke_2arg']",
+   "  0x6F304: pop    cx",
+   "  0x6F305: pop    cx",
+   "  0x6F306: push   0",
+   "  0x6F308: mov    ax, 6E45h",
+   "  0x6F30B: mov    es, ax",
+   "  0x6F30D: push   es:word_6E474",
+   "  0x6F312: push   es:word_6E472",
+   "  0x6F317: mov    ax, 6E45h",
+   "  0x6F31A: mov    es, ax",
+   "  0x6F31C: push   es:word_6E6B0",
+   "  0x6F321: push   es:word_6E6AE",
+   "  0x6F326: mov    ax, 6E45h",
+   "  0x6F329: mov    es, ax",
+   "  0x6F32B: cmp    es:byte_6E8C7, 0",
+   "  0x6F331: jnz    loc_6F338  ->code ['sub_6F2F2']",
+   "  0x6F333: mov    ax, 2",
+   "  0x6F336: jmp    loc_6F33B  ->code ['sub_6F2F2']",
+   "  0x6F338: mov    ax, 1",
+   "  0x6F33B: push   ax",
+   "  0x6F33C: push   0",
+   "  0x6F33E: call   far ptr unk_6DFF0  ->code ['0x6dff0']",
+   "  0x6F343: add    sp, 0Eh",
+   "  0x6F346: push   0",
+   "  0x6F348: mov    ax, 6E45h",
+   "  0x6F34B: mov    es, ax",
+   "  0x6F34D: push   es:word_6E47C",
+   "  0x6F352: push   es:word_6E47A",
+   "  0x6F357: mov    ax, 6E45h",
+   "  0x6F35A: mov    es, ax",
+   "  0x6F35C: push   es:word_6E6B4",
+   "  0x6F361: push   es:word_6E6B2",
+   "  0x6F366: mov    ax, 6E45h",
+   "  0x6F369: mov    es, ax",
+   "  0x6F36B: cmp    es:byte_6E8C7, 1",
+   "  0x6F371: jl     loc_6F378  ->code ['sub_6F2F2']",
+   "  0x6F373: mov    ax, 2",
+   "  0x6F376: jmp    loc_6F37B  ->code ['sub_6F2F2']",
+   "  0x6F378: mov    ax, 1",
+   "  0x6F37B: push   ax",
+   "  0x6F37C: push   0",
+   "  0x6F37E: call   far ptr unk_6DFF0  ->code ['0x6dff0']",
+   "  0x6F383: add    sp, 0Eh",
+   "  0x6F386: push   0C8h",
+   "  0x6F389: push   0",
+   "  0x6F38B: call   dispatch_220f4_invoke_2arg  ->code ['dispatch_220f4_invoke_2arg']",
+   "  0x6F390: pop    cx",
+   "  0x6F391: pop    cx",
+   "  0x6F392: call   unk_100B5  ->code ['bda_kb_flag_10000_get']",
+   "  0x6F397: pop    bp",
+   "  0x6F398: retf   ",
+   "  [TERM RETF @ 0x6F398]"
+  ]
+ },
+ {
+  "rank": 18,
+  "key": "r12_e36",
+  "ea": 1076358,
+  "size": 37,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "cb_args_invoke",
+   "far_cb_0",
+   "far_cb_1"
+  ],
+  "callers": [
+   "r12_e43"
+  ],
+  "body": [
+   "  0x106C86: push   ds",
+   "  0x106C87: push   es",
+   "  0x106C88: pusha  ",
+   "  0x106C89: call   far_cb_1  ->code ['far_cb_1']",
+   "  0x106C8E: mov    ax, cs",
+   "  0x106C90: mov    ds, ax",
+   "  0x106C92: mov    si, [bx+0]",
+   "  0x106C96: lodsb  ",
+   "  0x106C97: xor    ah, ah",
+   "  0x106C99: mov    cx, ax",
+   "  0x106C9B: mov    al, 0Fh",
+   "  0x106C9D: call   loc_11A7D  ->code ['cb_args_invoke']",
+   "  0x106CA2: call   far_cb_0  ->code ['far_cb_0']",
+   "  0x106CA7: popa   ",
+   "  0x106CA8: pop    es",
+   "  0x106CA9: pop    ds",
+   "  0x106CAA: retf   ",
+   "  [TERM RETF @ 0x106CAA]"
+  ]
+ }
+]
