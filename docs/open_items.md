@@ -537,3 +537,18 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 12 COMPLETE (finding 83):** 11 named, `named`
+  **1350 -> 1361**, **L12 queue 11 -> 0** (3 full-dumped).
+  Highlights: key_event_gated_process (dyn=266), key_code_resolve_entry,
+  farobj_tile_stream_build + tile_base_batch_build,
+  fixed_matrix_proj_factor, viewobj_5982_scan100/10/40,
+  terrain_vm_sweep_sample, entity_move_project_step,
+  viewobj_self_copy_project. All 4 gates green (check 1363,
+  verify_rebuild faithful, verify_idb INTACT, read-back
+  1361/1361+2/2).
+- **Next: Global Level-13** (15 targets) -- global queue 270 across
+  L13..L22 (L13=15, L14=11, ..., L19=206 giant SCC, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

@@ -4433,4 +4433,36 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 83 — Global Level-12 COMPLETE: 11 named, L12 queue 11 -> 0
+(`named` 1,350 -> **1,361**)
+
+Single batch, 3 of 11 full-dumped. Highlights: **`key_event_gated_process`**
+(dyn=266 hottest L12: keys 100/101/102 gated by the 10E22/10E23 latches
+from L11, forwarded to key_event_process) + **`key_code_resolve_entry`**
+(far wrapper), the **tile/build layer** **`farobj_tile_stream_build`**
+(11 callers: compressed tile stream or 59CB/598B pick tables -> shared
+11BCC/11BCA vars -> farobj_batch_build_project) and
+**`tile_base_batch_build`** (15B set-base-and-build),
+**`fixed_matrix_proj_factor`** (8 callers: dual matrix transform +
+dot-accum / divide -> record +88 scale/depth), the **5982 scanner
+trio** viewobj_5982_scan100/scan10/scan40 (bit0/bit1/bit4 gated table
+walks), **`terrain_vm_sweep_sample`** (309B VM + 90-degree rotation
+sweep up to 280x140 terrain correlation), **`entity_move_project_step`**
+(pos_move_angle_step + type-2 select), and **`viewobj_self_copy_project`**
+(object 0 refresh).
+
+### MILESTONE
+
+**Levels 0–12 are all complete.** `named` = **1,361**; global
+`naming_queue` = **270** across Levels 13..22 (L13=15 next, L19=206
+giant SCC); L12 residue = 2 unnamed (0 queue), **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,363** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,361/1,361
+function + 2/2 global**.
+
+---
+
 (append new findings below)

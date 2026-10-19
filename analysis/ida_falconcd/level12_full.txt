@@ -1,0 +1,163 @@
+======================================================================
+sub_10EC7  ea=0x10EC7  size=64  L12  in=8
+  --- callees (1): key_event_process(L11)
+  0x10EC7: cmp    ax, 100h
+  0x10ECA: jnz    loc_10ED5  ->code ['sub_10EC7']
+  0x10ECC: cmp    cs:byte_10E22, 1
+  0x10ED2: jz     loc_10EF1  ->code ['sub_10EC7']
+  0x10ED4: retf   
+  0x10ED5: cmp    ax, 101h
+  0x10ED8: jnz    loc_10EE3  ->code ['sub_10EC7']
+  0x10EDA: cmp    cs:byte_10E22, 1
+  0x10EE0: jz     loc_10EF1  ->code ['sub_10EC7']
+  0x10EE2: retf   
+  0x10EE3: cmp    ax, 102h
+  0x10EE6: jnz    loc_10EF1  ->code ['sub_10EC7']
+  0x10EE8: cmp    cs:byte_10E23, 1
+  0x10EEE: jz     loc_10EF1  ->code ['sub_10EC7']
+  0x10EF0: retf   
+  0x10EF1: push   ds
+  0x10EF2: push   es
+  0x10EF3: mov    ds, word ptr cs:byte_10842
+  0x10EF8: push   dx
+  0x10EF9: push   bx
+  0x10EFA: push   cx
+  0x10EFB: push   ax
+  0x10EFC: call   key_event_process  ->code ['key_event_process']
+  0x10F01: add    sp, 8
+  0x10F04: pop    es
+  0x10F05: pop    ds
+  0x10F06: retf   
+  --- callers: sub_30356, sub_3327A, sub_3421C, sub_345BA, sub_3470D, sub_3480F, sub_41646, sub_46D42
+
+======================================================================
+sub_399F2  ea=0x399F2  size=183  L12  in=8
+  --- callees (5): terrain_attr_walk_13110(L2), farobj_batch_build_project(L11), farptr_state_set(L1), fixed_matrix_mul(L1), stub_to_23dcd(L1)
+  0x399F2: push   ds
+  0x399F3: push   di
+  0x399F4: mov    ax, [di+0Ch]
+  0x399F7: mov    ds:47D6h, ax
+  0x399FA: mov    cx, [di+0Eh]
+  0x399FD: mov    ds:47D8h, cx
+  0x39A01: mov    di, es:[di+14h]
+  0x39A05: call   fixed_matrix_mul  ->code ['farobj_batch_build_project', 'fixed_matrix_mul']
+  0x39A0A: push   cx
+  0x39A0B: push   di
+  0x39A0C: mov    si, cs:word_2E12A+1
+  0x39A11: lds    si, es:[si+1734h]
+  0x39A16: mov    ax, [si+0Ch]
+  0x39A19: mov    cx, [si+0Eh]
+  0x39A1C: mov    di, [si+14h]
+  0x39A1F: call   fixed_matrix_mul  ->code ['farobj_batch_build_project', 'fixed_matrix_mul']
+  0x39A24: pop    dx
+  0x39A25: push   cx
+  0x39A26: mov    ax, [si+8Ah]
+  0x39A2A: mov    bp, ax
+  0x39A2C: call   off_23134  ->code ['terrain_attr_walk_13110', 'farptr_state_set']
+  0x39A31: imul   dx
+  0x39A33: shl    ax, 1
+  0x39A35: rcl    dx, 1
+  0x39A37: mov    cx, dx
+  0x39A39: mov    ax, bp
+  0x39A3B: add    ax, es:47D6h
+  0x39A40: add    ax, 2000h
+  0x39A43: sub    ax, [si+0Ch]
+  0x39A46: call   off_23134  ->code ['terrain_attr_walk_13110', 'farptr_state_set']
+  0x39A4B: imul   di
+  0x39A4D: shl    ax, 1
+  0x39A4F: rcl    dx, 1
+  0x39A51: add    cx, dx
+  0x39A53: pop    di
+  0x39A54: pop    dx
+  0x39A55: mov    ax, [si+8Ch]
+  0x39A59: mov    bp, ax
+  0x39A5B: call   off_23134  ->code ['terrain_attr_walk_13110', 'farptr_state_set']
+  0x39A60: imul   dx
+  0x39A62: shl    ax, 1
+  0x39A64: rcl    dx, 1
+  0x39A66: mov    ax, bp
+  0x39A68: mov    bp, dx
+  0x39A6A: add    ax, es:47D8h
+  0x39A6F: neg    ax
+  0x39A71: sub    ax, [si+0Ch]
+  0x39A74: call   off_23134  ->code ['terrain_attr_walk_13110', 'farptr_state_set']
+  0x39A79: imul   di
+  0x39A7B: shl    ax, 1
+  0x39A7D: rcl    dx, 1
+  0x39A7F: add    bp, dx
+  0x39A81: mov    ax, cx
+  0x39A83: mov    bx, bp
+  0x39A85: add    cx, bp
+  0x39A87: pushf  
+  0x39A88: call   stub_to_23dcd  ->code ['farobj_batch_build_project', 'stub_to_23dcd']
+  0x39A8D: popf   
+  0x39A8E: jns    loc_39A92  ->code ['sub_399F2']
+  0x39A90: neg    ax
+  0x39A92: pop    di
+  0x39A93: mov    es:[di+88h], ax
+  0x39A98: pop    ds
+  0x39A99: retn   
+  0x39A9A: <undecodable 0x00>
+  0x39A9B: <undecodable 0x00>
+  0x39A9C: <undecodable 0x00>
+  0x39A9D: <undecodable 0x00>
+  0x39A9E: <undecodable 0x00>
+  0x39A9F: <undecodable 0x00>
+  0x39AA0: <undecodable 0x00>
+  0x39AA1: <undecodable 0x00>
+  0x39AA2: <undecodable 0x00>
+  0x39AA3: add    [bx+si-3D50h], al
+  0x39AA7: scasw  
+  0x39AA8:        0, 0, 0
+  --- callers: sub_3099C, sub_30AA8, sub_39F1D, sub_3AB59, sub_49428, sub_494B2, sub_49546, sub_495DF
+
+======================================================================
+sub_4A47B  ea=0x4A47B  size=90  L12  in=1
+  --- callees (2): viewobj_project_select(L11), pos_move_angle_step(L5)
+  0x4A47B: push   ds
+  0x4A47C: push   es
+  0x4A47D: mov    ax, 65E4h
+  0x4A480: mov    ds, ax
+  0x4A482: mov    ax, 54AFh
+  0x4A485: mov    es, ax
+  0x4A487: mov    si, 68h
+  0x4A48A: mov    cx, ds:word_65EA4
+  0x4A48E: push   cx
+  0x4A48F: push   ds
+  0x4A490: push   si
+  0x4A491: mov    bp, 9C40h
+  0x4A494: mov    ax, [si+4]
+  0x4A497: mov    si, [si+6]
+  0x4A49A: mov    ds, ax
+  0x4A49C: mov    di, 20h
+  0x4A49F: mov    ax, 1
+  0x4A4A2: call   near ptr loc_3AE65+1  ->code ['pos_move_angle_step']
+  0x4A4A5: pop    si
+  0x4A4A6: pop    ds
+  0x4A4A7: or     ax, ax
+  0x4A4A9: jz     near ptr loc_3A4C2+1  ->code ['sub_3A3D6']
+  0x4A4AB: cmp    word ptr [si], 2
+  0x4A4AE: jnz    loc_3A4B6  ->code ['sub_3A3D6']
+  0x4A4B0: test   byte ptr [si+0Ch], 10h
+  0x4A4B4: jz     near ptr loc_3A4C2+1  ->code ['sub_3A3D6']
+  0x4A4B6: push   si
+  0x4A4B7: mov    ax, [si+2]
+  0x4A4BA: mov    bx, 20h
+  0x4A4BD: call   viewobj_project_select  ->code ['viewobj_project_select']
+  0x4A4C2: pop    si
+  0x4A4C3: pop    cx
+  0x4A4C4: add    si, 3Ah
+  0x4A4C7: nop    
+  0x4A4C8: loop   near ptr loc_3A48C+2  ->code ['sub_3A3D6']
+  0x4A4CA: pop    es
+  0x4A4CB: pop    ds
+  0x4A4CC: retf   
+  0x4A4CD: <undecodable 0x00>
+  0x4A4CE: <undecodable 0x00>
+  0x4A4CF: <undecodable 0x00>
+  0x4A4D0: <undecodable 0x00>
+  0x4A4D1: <undecodable 0x00>
+  0x4A4D2: <undecodable 0x00>
+  0x4A4D3: <undecodable 0x00>
+  0x4A4D4:        0, 0, 0
+  --- callers: sub_2FD42
