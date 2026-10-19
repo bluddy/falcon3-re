@@ -522,3 +522,18 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 11 COMPLETE (finding 82):** 15 named, `named`
+  **1335 -> 1350**, **L11 queue 15 -> 0** (6 full-dumped).
+  Highlights: farobj_batch/single_build_project, vga_dac_palette_upload,
+  HUD cluster (hud_readout_render, hud_terrain_strip_render,
+  hud_heading_tape_draw), viewobj_project_select (dyn=59038) +
+  if_moved + table64/72/32 scanners, key_action_100/102_apply,
+  view_block4287_angles, vec_transform_scale_norm. All 4 gates
+  green (check 1352, verify_rebuild faithful, verify_idb INTACT,
+  read-back 1350/1350+2/2).
+- **Next: Global Level-12** (11 targets) -- global queue 281 across
+  L12..L22 (L12=11, L13=15, ..., L19=206 giant SCC, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

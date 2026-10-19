@@ -4398,4 +4398,39 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 82 — Global Level-11 COMPLETE: 15 named, L11 queue 15 -> 0
+(`named` 1,335 -> **1,350**)
+
+Single batch, 6 of 15 full-dumped. Highlights: the **farobj build
+pair** **`farobj_batch_build_project`** (346B/10 callers: view-centered
+deltas, 10-byte record stream -> 2Ah slots, align+project, then
+farobj_sort_and_step) + **`farobj_single_build_project`** (9 callers,
+tail-call), **`vga_dac_palette_upload`** (306B one-shot DAC upload from
+7A32:8505B latch across 5 palette tables via ports 3C8/3C9), the
+**HUD cluster** **`hud_readout_render`** (908B: signed readouts, heading
+XXX/degrees, 'A ' altitude, rotation matrix, view cursor sprite), +
+**`hud_terrain_strip_render`** (988B terrain clamp + clipped quad
+strips) + **`hud_heading_tape_draw`** (FD1/FCC/FD6 heading ribbon), the
+**viewobj gates** **`viewobj_project_select`** (dyn=59,038 hottest L11,
+11C88 route between the L10 pair) + **`viewobj_project_if_moved`**
+(7BC0 bound diff gate) + three **`viewobj_table*_*_project`** scanners
+(64/72/32 records at 63FD), **`key_action_100_apply`/`_102_apply`**
+(mode_flags_apply -> key_action_execute latches), and
+**`view_block4287_angles`** (mode-selected 500h+44D3D*12 config ->
+44AF6/44AF8) + **`vec_transform_scale_norm`** (/165 transform).
+
+### MILESTONE
+
+**Levels 0–11 are all complete.** `named` = **1,350**; global
+`naming_queue` = **281** across Levels 12..22 (L12=11 next, L19=206
+giant SCC); L11 residue = 2 unnamed (0 queue), **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,352** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,350/1,350
+function + 2/2 global**.
+
+---
+
 (append new findings below)
