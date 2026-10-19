@@ -4327,4 +4327,39 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 80 — Global Level-9 COMPLETE: 7 named, L9 queue 7 -> 0
+(`named` 1,317 -> **1,324**)
+
+Single clean batch (7 fns, 0 truncated). Highlights: **`farobj_sort_and_step`**
+(202B, dyn=55,216 -- the 2nd-hottest fn left: bubble-sorts the
+7B0E:2DF8 list by its 1FE8 key and steps it through
+`farobj_record_lookup_step`, then sorts the 1D8A list (key 0F7A) and
+steps it through `farobj_record_step`), **`stream_event_dispatch_step`**
+(cd=11,259 -- the stream pump: routes one 77B68-cursor event to SBI
+flush / `stream_command_interpret` / `sbi_channel_event_dispatch`,
+advances, and runs the 77CA8/77B3A end-of-stream reload chain), the
+**stream-state pair** **`stream_state_init`** (cursor re-point + SBI
+16-channel reset (B8/B9, D7, E0+i) + accum check + first pump) and
+**`stream_stop_reload_gate`** (8 callers; 77CA9-enabled stop/load +
+reinit), **`slot3_window_scroll_dispatch`** (cd=11,109 -- the
+1-cell/fallback dispatcher over all five slot3 window fns, slot3's
+counterpart of `slot2_map_window_update`), **`mode_slot_adlib_init`**
+(mode_slot_setup: adlib_device_init(0x388) + widen-forward + voice
+table defaults 9 channels / 35 voices), and `r05_seg_setup_change_gate`
+(change-detect wrapper around `r05_seg_setup_head` on record +0x39).
+
+### MILESTONE
+
+**Levels 0–9 are all complete.** `named` = **1,324**; global
+`naming_queue` = **307** across Levels 10..22 (L10=11 next, then L19=206
+giant SCC); L9 residue = 1 unnamed (0 queue), **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,326** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,324/1,324
+function + 2/2 global**.
+
+---
+
 (append new findings below)

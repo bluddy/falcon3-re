@@ -1,0 +1,44 @@
+{
+ "sub_2131C": [
+  "farobj_sort_and_step",
+  "FAR retf (202B): ds=es=7B0Eh; PASS A: bubble-sort pointer pairs at 7B0E:2DF8 (count=ds:7D0C2) by key [ptr+1FE8], swap on ascending (repeats while dx flag set); then loop si over sorted list: resolve ds=es:[es:[si]+1FE8+4], di=[...+2] -> farobj_record_lookup_step. PASS B: sort pairs at 1D8A (count=ds:0F74) by key [ptr+0F7A]; loop: resolve ds/di the same way -> farobj_record_step; retf; 4 callers (sub_13CB0, sub_2FD42, sub_31138, sub_3A88D)",
+  "202B far, cd=0, in=4, dyn=55216 (2nd-hottest fn in the remaining queue), callees farobj_record_lookup_step + farobj_record_step. Farobj sort-and-step: bubble-sorts the 7B0E:2DF8 pointer list by its 1FE8 sort key and steps each entry through farobj_record_lookup_step, then sorts the second list (1D8A, key 0F7A) and steps it through farobj_record_step -- the ordered draw/update sweep over both farobj tables. conf: med-high",
+  "med-high"
+ ],
+ "sub_1E086": [
+  "mode_slot_adlib_init",
+  "FAR retf C-frame (138B): push 388h -> adlib_device_init; si=ax; 0 -> ret 0; es=7772: 7862A=0; channel_widen_forward_apply(0); loop si=0..8: [si*2+6AC]=FFFF (9 channel slots); loop si=0..0x22 (35 voices): [si*2+664]=FFFF, [si*2+61E]=0x50 (volume 80), [si*2+592]=0 (pitch); ret 1; retf; 1 caller (mode_slot_setup)",
+  "138B far, cd=16, in=1, callees adlib_device_init (id 0x388) + channel_widen_forward_apply. ADLIB mode-slot initializer: probes/inits the device with id 0x388, applies widen-forward(0), then defaults the shared voice tables -- 9 channel slots 6AC=-1 and 35 voices (664=-1, 61E volume=80, 592 pitch=0), the inverse layout of channel_voice_register_setup -- called only from mode_slot_setup. conf: med-high",
+  "med-high"
+ ],
+ "sub_1C020": [
+  "stream_stop_reload_gate",
+  "FAR retf C-frame (57B): al=es:77CA9, cbw; ax==0 -> ret 0; if es:77B36==0: sbi_stream_stop_load(arg_2:arg_0); sub_1C33D(); ret 1; retf; 8 callers (sub_1D068, sub_1D19F, sub_3001E, sub_305E4, sub_3141A, sub_3267C, sub_329B1, sub_32C62)",
+  "57B far, cd=39, in=8, callees sbi_stream_stop_load + sub_1C33D (stream_state_init). Stream stop/reload gate: when the 77CA9 enable byte is set, stops/loads the far stream pair (77C9C/77E args) unless 77B36 is already busy and re-runs stream_state_init; returns the enabled flag -- the widely-called 'reload the stream now' entry. conf: med-high",
+  "med-high"
+ ],
+ "sub_1D068": [
+  "stream_event_dispatch_step",
+  "FAR retf (311B): follow 77B68 cursor; byte&0x80 -> echo it to the 77B6C target and inc cursor; dispatch on target byte: 0xF7/0xF0 -> stream_sbi_flush(al); 0xFF -> stream_command_interpret; else -> sbi_channel_event_dispatch(al); sbi_stream_next_advance -> si; si==0 && es:77CA8==0 -> loop (retry); exit: if 77CA8 && 77B3A: 77B74=77B72=FFFF, sub_1C020(77C9E,77C9C); 77B3A==0 -> 77B76=0; 77C96 -> 77C9A+=si; ret si ?: 1; retf; 2 callers (sub_1C33D, entity_counters_update)",
+  "311B far, cd=11259 (hottest caller_dyn at L9), in=2, callees sub_1C020 + sbi_stream_next_advance + sbi_channel_event_dispatch + stream_command_interpret + stream_sbi_flush. Stream event dispatch step: reads one event at the 77B68 cursor, echoes high-bit status bytes into the 77B6C target, routes it to SBI flush / command interpreter / channel event dispatch, advances the stream (looping while the advance keeps returning 0), handles the 77CA8/77B3A end-of-stream reload chain and returns the advance count. conf: med-high",
+  "med-high"
+ ],
+ "sub_1C33D": [
+  "stream_state_init",
+  "FAR retf class-C (276B): if 77B36==0: cursors 77B68=7772:045E, 77B6C=7772:049E, 77CA8=0; if 7894:7981E (SBI present): sbi_command_wait(0xB8), sbi_command_wait(0xB9); loop i=0..15: sbi_command_wait(0xD7), sbi_data_write(0xE0|i), sbi_data_write(0), sbi_data_write(0x40) (16x SBI channel init); 77B44=0; stream_check_accum(77B66, 77CA4:77CA6); if 77B76==0: ax=sub_1D068() -> state_word_77804_set(ax); 77C96=0; 77B38=1; if 77B3A: 77B76=1; retf; 2 callers (sub_1820C0, sub_1C020)",
+  "276B far class-C, cd=0, in=2, callees sbi_data_write x48 + sbi_command_wait x18 + stream_check_accum + sub_1D068 + state_word_77804_set. Stream state initializer: (re)points the read/write cursors at 7772:045E/049E, runs the SBI 16-channel reset sequence (B8/B9 then D7 + E0+i/0/40 per channel) when 7894:7981E is present, quantize-checks the accumulators, pumps the first event through stream_event_dispatch_step and latches 77B38=1 -- mutual with stream_stop_reload_gate. conf: med-high",
+  "med-high"
+ ],
+ "sub_13406": [
+  "slot3_window_scroll_dispatch",
+  "NEAR retn (94B): dy=cs:11C26-cs:11BC4, dx=abs(dy); dx_=cs:11C24-cs:11BC2, abs; if either |delta|>1 -> slot3_tile3x3_load (full reload), retn; else: dy!=0 -> dy<0 ? slot3_window_scroll_left : slot3_window_scroll_right; 11BC4=11C26; cx!=0 -> cx<0 ? slot3_window_scroll_up : slot3_window_reload_col1; 11BC2=11C24; retn; 1 caller (entity_update_batch)",
+  "94B, cd=11109, in=1, callees ALL five slot3 window fns (scroll_left/right/up, reload_col1, tile3x3_load). Slot3 window scroll dispatcher: compares the pending position (11C24/11C26) with the window origin (11BC2/11BC4); a jump >1 cell in either axis falls back to the full slot3_tile3x3_load, otherwise a 1-cell move picks the matching incremental scroll (11C26 delta -> left/right, 11C24 delta -> up/reload_col1) and commits the origin -- the slot3 counterpart of slot2_map_window_update, called only from entity_update_batch. conf: med-high",
+  "med-high"
+ ],
+ "sub_3706C": [
+  "r05_seg_setup_change_gate",
+  "NEAR retn (35B): bx=ds:48BA; ax=[bx+7Ah]; r12_farptr_load_thunk(ax) -> far ptr di; al=[di+39h]; if ds:69A != al: ds:69A=al, di=692h, far r05_seg_setup_head(di); pop es; retn; 1 caller (sub_35BCE)",
+  "35B, cd=0, in=1, callees r12_farptr_load_thunk + r05_seg_setup_head (param454_apply_* in the static list are jump-table noise). Record-field change gate: resolves the farptr at [48BA]+7A, compares its +0x39 byte with the cached ds:69A, and on change stores it and re-runs r05_seg_setup_head with di=0x692 -- the change-detect wrapper around r05 segment setup. conf: med",
+  "med"
+ ]
+}

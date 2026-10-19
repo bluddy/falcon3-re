@@ -493,3 +493,17 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 9 COMPLETE (finding 80):** 7 named, `named`
+  **1317 -> 1324**, **L9 queue 7 -> 0** (0 truncated). Highlights:
+  farobj_sort_and_step (dyn=55216), stream_event_dispatch_step
+  (cd=11259) + stream_state_init/stream_stop_reload_gate pair,
+  slot3_window_scroll_dispatch (cd=11109), mode_slot_adlib_init,
+  r05_seg_setup_change_gate. All 4 gates green (check 1326,
+  verify_rebuild faithful, verify_idb INTACT, read-back
+  1324/1324+2/2).
+- **Next: Global Level-10** (11 targets) -- global queue 307 across
+  L10..L22 (L10=11, L11=15, ..., L19=206 giant SCC, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.
