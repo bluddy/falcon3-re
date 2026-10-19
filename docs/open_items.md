@@ -552,3 +552,22 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 13 COMPLETE (finding 84):** 15 named, `named`
+  **1361 -> 1376**, **L13 queue 15 -> 0** (9 full-dumped).
+  Highlights: tile_base_opcode_interpreter (dyn=11155, hottest
+  overall), viewobj_5982_scan_all, key_event_gate_check,
+  key_code_pending_drain, irq_state_init_entry,
+  mode_slot_masks_entry, range_key_event_dispatch,
+  view_extent_default_reset, terrain_stream_pos_update,
+  hud_metric_rows_draw, viewobj_batch_project_test,
+  obj_range_slot_init/activate. push-ida key-miss on sub_3470D
+  (live name nullsub_24) fixed by address rename. All 4 gates green
+  (check 1378, verify_rebuild faithful, verify_idb INTACT,
+  read-back 1376/1376+2/2).
+- **Next: Global Level-14** (11 targets) -- global queue 255 across
+  L14..L22 (L14=11, L15=5, L16=4, L17=1, L18=1, L19=206 giant SCC,
+  L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

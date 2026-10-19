@@ -4465,4 +4465,45 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 84 — Global Level-13 COMPLETE: 15 named, L13 queue 15 -> 0
+(`named` 1,361 -> **1,376**)
+
+Single batch, 9 of 15 full-dumped. Highlights: **`tile_base_opcode_interpreter`**
+(dyn=**11,155** -- THE hottest function in the binary: walks the 0x31-entry
+command stream at cs:11C8C, decoding per-entry opcode bits to direct
+tile_base_batch_build or farobj_flag_record_push pair gates -- the core
+per-frame terrain base emit loop), **`viewobj_5982_scan_all`** (16B
+fan-out running the L12 scan100/scan10/scan40 trio), the **key/input
+layer** **`key_event_gate_check`** (54AF:44FEE/44F4E latch pair forward),
+**`key_code_pending_drain`** (4893/4894 deferred latches -> codes 4/3),
+**`irq_state_init_entry`**, **`mode_slot_masks_entry`** and
+**`range_key_event_dispatch`** (2940h ceiling / 64h tight gate with
+half-step attract), the **view/HUD cluster** **`view_extent_default_reset`**
+(zero view state + default 320x199 rect + quad republish),
+**`terrain_stream_pos_update`** (82Ch/41Bh -> ds:674 cursor),
+**`hud_metric_rows_draw`** (4 numeric fields -> fixed panel rects),
+**`viewobj_batch_project_test`** (15-object double angle+range gate,
+fires key 4Dh on match), and the **range-slot pair**
+**`obj_range_slot_init`/`obj_range_slot_activate`** (65A7:0C+(idx-301h)*18h
+records: init seeds clamped angles, activate fires projection or releases
+with the 40h far-object flag).
+
+Note: push-ida key-missed `sub_3470D` (live IDA name was `nullsub_24` for
+the leading `retf` at 0x3470D); renamed by address via `_fix_3470D.py`,
+read-back clean afterwards.
+
+### MILESTONE
+
+**Levels 0–13 are all complete.** `named` = **1,376**; global
+`naming_queue` = **255** across Levels 14..22 (L14=11 next, L19=206
+giant SCC); L13 residue = 0, **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,378** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,376/1,376
+function + 2/2 global**.
+
+---
+
 (append new findings below)
