@@ -4200,4 +4200,30 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 76 — Global Level-5 COMPLETE: 2 batches named all 60
+Level-5 functions (`named` 1,163 -> **1,223**), L5 queue 60 -> 0
+
+Finding 75 closed Level-4 and delivered L5 batch 1 (36). This finding
+finishes Level 5 with batch 2 (24): 7 truncated bodies full-dumped
+(`dump_full.py`).
+
+| batch | named after | L5 queue after | highlights |
+|---|---|---|---|
+| l5a (f75) | 1,199 | 24 | op_dispatch_far_entry (in=30), tail_bridge_overlay_load (in=302, cd=50,839), group_children_release, slot2/slot3 handle subsystem, record_script_exec trio, terrain_attr_scan_draw_a/b, 4 object_*_draw variants, pos_step_chain_engine + pos_move_angle_step |
+| l5b (this) | **1,223** | **0** | **`startup_overlay_init`** (from `start`: DOS>=3 mode, C1F patch scan, block move, preload of every loaded-flag overlay row), **`slot3_tile_record_load`** + **`slot3_record_publish`** / **`op_slot_release`** (the 3052/3054 slot producer-consumer pair), **`farobj_cmd_sweep`** (third member of the sweep family), `handle_release_all` + `handle_query_onetime` + `handle_build_8f/75_block` (handle lifecycle), `r17_menu_event_loop` (5-row menu, 5-module RTLink callers r22-r26) + `r17_router_event_loop` (hands off to r69_ui_event_loop), `hud_value_format_draw` (value/TIME formatter through self-patched draw fn ptrs), `entity_proj_depth_class` (distance bands 0x100/400/800/0), `farobj_height_gate_wrap`, the strip-draw family `rot_segment_strip_draw` / `view_rect_strip_draw` / `sprite_rect_strip_draw` / `cross_strip_draw`, `farobj_flag_record_push`, `op26400_table_scatter`, `classify_fill_patched`, `r06_mode_tick_wrapper`, `scroll_scale_lookup`, `handle_seg_publish` |
+
+### MILESTONE
+
+**Levels 0, 1, 2, 3, 4 AND 5 are all complete.** `named` = **1,223**;
+global `naming_queue` = **408** across Levels 6..21 (L6=60 next, then
+L19=206 giant SCC); L5 residue = **11 orphans, 0 thunks, 0 other**.
+
+### Gates (all green)
+
+`naming.py check` **1,225** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,223/1,223
+function + 2/2 global**.
+
+---
+
 (append new findings below)

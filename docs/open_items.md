@@ -430,3 +430,18 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 5 COMPLETE (finding 76):** 2 batches (36 in f75 + 24
+  here) named all 60 L5 fns, `named` **1163 -> 1223**, **L5 queue 60 ->
+  0** (11 orphans, 0 thunks, 0 other). Highlights: startup_overlay_init
+  (start-callee preload loop), slot3 load/publish/release trio,
+  farobj_cmd_sweep, handle lifecycle, r17_menu/router_event_loop,
+  hud_value_format_draw, entity_proj_depth_class, 4 strip-draw variants.
+  All 4 gates green (check 1225, verify_rebuild faithful, verify_idb
+  INTACT, read-back 1223/1223+2/2).
+- **Next: Global Level-6** (60 targets, top by dyn/cd/in) -- global
+  queue 408 across L6..L21 (L6=60, L7=21, ..., L19=206 giant SCC,
+  L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.
