@@ -1,0 +1,68 @@
+{
+ "sub_270E0": [
+  "viewobj_project_advance",
+  "FAR retf (93B): ds=500Ch; farptr=[ds:ax*4+34h]; di==-1 -> stc retf; ah=[di+27h] bit7 gate, al=([di+26h] rol 2)&3 select (0/3 -> skip/fail, 1 -> inc [di+22] if ah&20h, 2 -> add 1..2 to [di+22] if ah&40h); push di -> view_projection -> clc retf (dx=ds on exit); 6 callers (sub_12B62, sub_2E82D, sub_3A88D, sub_468EF, sub_4691E, sub_4694E)",
+  "93B far, in=6, dyn=62986 (hottest L10 fn), callee view_projection (L9). View-object index projector: resolves the farptr at 500C:[index*4+34], validates the +26/+27 flag pair, advances the record's +22 counter by its select state, then runs view_projection; carry = invalid index. Pair with viewobj_project_advance_mark (same +22 advance, no +24 mark). conf: med-high",
+  "med-high"
+ ],
+ "sub_27079": [
+  "viewobj_project_advance_mark",
+  "FAR retf (103B): same prologue/flag/advance logic as sub_270E0 (farptr 500C:ax*4+34, [di+27] bit7, ([di+26] rol 2)&3, inc/add [di+22]); difference: before view_projection it ORs [di+24] |= 20h, and after the call ANDs [di+24] &= ~20h (mark-in-progress bit around the projection); clc/stc retf; 1 caller (sub_12B62)",
+  "103B far, in=1, dyn=12474, callee view_projection. The flagged variant of viewobj_project_advance: identical index resolve + +22 counter advance, but brackets the projection with bit 20h set/clear in the record's +24 flags (projection-in-progress mark). conf: med",
+  "med"
+ ],
+ "sub_25687": [
+  "view_block4287_entry",
+  "FAR entry bundle (43B, 4 stubs): @0x25687 cs:byte_25485=al; retf (mode byte setter). @0x2568C dx=7B0Eh, ax=4287h; retf (return farptr 7B0E:4287). @0x25697 es=di, di=4287h, cx=6, movsw, pop es; retf (copy 6 words to 7B0E:4287). @0x256A7 ds=di, di=4287h -> view_projection, pop ds; retf (project via block 4287); 4 callers (sub_2FD42, sub_3454C, sub_359B2, sub_66E62)",
+  "43B far, in=4, dyn=10537, callee view_projection. Tiny far stub family around the 7B0E:4287 block: set cs:25485 mode byte, return the block farptr, copy 6 words into it, or run view_projection through it -- one IDA function spanning all four entry points. conf: med",
+  "med"
+ ],
+ "sub_1D19F": [
+  "stream_playback_start",
+  "FAR retf C-frame (150B): if 7894:7981E (SBI) absent AND 7772:77B36 (stream busy) clear: adlib_device_init(0x388, 1), ax!=0 -> return 0 path; else if 77B36 clear: op_onetime_full_write(args 4) -> store farptr dx:ax to 77C9E:77C9C; if 77C9C|77C9E: int8_hook_gated_77ca9(); stream_stop_reload_gate(77C9E:77C9C); return 1; else ds:9A34=0, return 0; retf; 2 callers (mode_slot_masks, sub_1BD64)",
+  "150B far, cd=47, in=2, callees adlib_device_init (L8) + op_onetime_full_write (L6) + int8_hook_gated_77ca9 (L2) + stream_stop_reload_gate (L9). Stream playback start: ensures the ADLIB device when SBI is absent, one-time-writes the file/path farptr into 77C9C:77C9E, hooks INT8 through the 77CA9 gate, then kicks stream_stop_reload_gate -- returns 1 when playback armed. conf: med-high",
+  "med-high"
+ ],
+ "sub_17400": [
+  "sound_device_init_far",
+  "FAR retf C-frame (13B): ax=[bp+arg_0]; push cs; call sound_device_init; nop; pop bp; retf; 3 callers (mode_slot_enter, mode_slot_setup, mode_slot_select)",
+  "13B far, in=3, dyn=11, callee sound_device_init (L9). One-argument far forwarder: passes arg_0 straight to sound_device_init -- the mode-slot trio's (enter/setup/select) uniform sound-init entry. conf: med-high",
+  "med-high"
+ ],
+ "sub_2F257": [
+  "viewvec3_project_track_max",
+  "NEAR retn entry family (260B, 2 parts): @0x2F257 al=8 -> accum_div_ratio; [si]=table4E4[ah*2], [si+2]=ds:8; fixed_vec3_accumulate_b; cx&=3FFF -> [si+4]; fixed_vec3_accumulate_b; ax=cx div ds:0C rem+ds:0Ah -> [si+0Ah]; retn. @0x2F29E copies [si] vec into [di+22/20/0C], [di]=4*[si+6]+2E16A:C, [di+4]=4*[si+8]+2E16E:170, [di+8]=2*[si+0A]; subtracts 2E172:174, abs, tracks running max into cs:loc_2E3B1+1 (self-mod word) per axis; es=54AF, bx=20h -> view_projection; retn; 11 callers (sub_2EFE0, sub_2F043, sub_3DC55, sub_3E552, sub_3EEDB, sub_4227A, sub_425FA, sub_42640, sub_42686, sub_426CC, sub_4F271)",
+  "260B, in=11, callees accum_div_ratio (L6) + fixed_vec3_accumulate_b (L0) + view_projection (L9, via 54AF:20 stack_reset_dispatch VMT). Vector sampler + transformer: part 1 accumulates a scaled/divided point into the si record; part 2 transforms si->di (x4/y4/z2 offsets), diffs vs 2E172:174, keeps a running max abs extent at cs:2E3B1+1, and projects via the 54AF:20 dispatch. conf: med",
+  "med"
+ ],
+ "sub_13A71": [
+  "coord_point_group_project",
+  "NEAR retn (288B, 2 paths by cs:byte_11C88==FFh && byte_11C0B==0): Path A: ds=es, save position 11BD6/BD8/BD2/BD4 -> ds:7EA-7F0; idx=(ax rol 2)&3 -> table 0C37 (10B entries); active_farptr_set([bx+4],[bx+2]); tile_quad_sample_group(); loop cx=10 over bits of ax&3FF: si=word_11BDE+bx -> [si] -> ds:850/85A, coord_delta_dispatch_13bba, bx=0C57/di=7EA -> view_projection. Path B: same frame at ds:810-816, active_farptr_set([bx+4]), ds:832=[bx]; loop over [bx+8] word pairs -> ds:0A24/0A28, di=810/bx=0C57 -> view_projection; 6 callers (sub_13CB0, sub_3421C, sub_34907, sub_36785, sub_3708F, sub_3718D)",
+  "288B, in=6, callees coord_delta_dispatch_13bba (L1) + tile_quad_sample_group (L4) + active_farptr_set (L0) + view_projection (L9). Coordinate point-group projector: selects quad/list data via the 0C37 table, sets the active farptr, then projects up to 10 bitmask-selected points (ax&3FF) per frame in two layout modes -- the group sibling of coord_delta_dispatch_13bba. conf: med",
+  "med"
+ ],
+ "sub_2F535": [
+  "viewmode3_vector_project",
+  "FAR retf (91B): state_word_44d3d_get -> ax!=3 -> retf; ds=es=62D4h; cx=word_52D6A; jcxz done; si=66h; loop cx: di=2Eh; [si]->[di+2], [si+2]->[di+6], [si+4]->[di+0Ah] (3-word vector); es=54AFh, bx=20h -> view_projection; si+=6; retf; 6 callers (sub_2FD42, sub_3C177, sub_3C1BD, sub_3E95E, sub_42553, sub_4F4FE)",
+  "91B far, in=6, callees state_word_44d3d_get (L0) + view_projection (L9, via 54AF:20 dispatch). Mode-gated list projector: only when state_word_44d3d==3, walks the 6-byte vector list at 62D4:66 (count word_52D6A), copies each 3-word vector into the 2E record and projects it through the 54AF:20 VMT. conf: med-high",
+  "med-high"
+ ],
+ "sub_18BC8": [
+  "key_action_execute_sbi",
+  "FAR retf class-C (594B): si=arg_0 key; state_word_77b34_get -> nonzero: state_mode_check(0); event_key_valid_108_jpt(si) gates; per-key table es:[(si&FF)*2+3AA]; held-key logic on 77B56/77A54/77A80/77A82/77799; if state_byte_af90_get: channel_widen_forward_apply(0); if !release: key_action_execute(77B56); 77DCA=arg_6+1, sbi_pit_period_enable; mode slot [77799*2+428] latch -> sbi_mode_slot_store(0,77799); mode==4: sbi_midi_note_seq + sbi_midi_event_write + sbi_note_state_machine else group_register_main; sets 77B56=si/77B54=di on success, sbi_pit_period_disable otherwise; returns di; 3 callers (key_event_process, sub_183BC, key_action_execute)",
+  "594B far class-C, cd=276, in=3, callees 14 (key_action_execute, event_key_valid_100/108_jpt, sbi_pit_period_enable/disable, sbi_mode_slot_store, sbi_midi_note_seq, sbi_midi_event_write, sbi_note_state_machine, group_register_main, channel_widen_forward_apply, state_* getters). SBI-aware key action core: full held/released key state machine over 77B56 and friends, PIT period on/off bracketing, mode-slot latch, then MIDI path (mode 4: note seq + event write + note state machine) or group_register_main -- mutually recursive with key_action_execute. conf: med-high",
+  "med-high"
+ ],
+ "sub_2F590": [
+  "viewlist_project_flagged",
+  "FAR retf (65B): ds=ax; loop cx=16 records of 10h bytes: first word &8000h -> mask -> ds:122h, then lodsw x5 -> ds:102h,104h,106h,108h,10Ah (vector), di=102h, push bx -> view_projection, si+=10h; pop ds; retf; 3 callers (sub_2FD42, sub_3CE92, sub_4F4FE)",
+  "65B far, in=3, callee view_projection (L9, via 54AF:20 dispatch). Flagged-list projector: walks 16 x 16-byte records from segment ax, and for each record whose first word has bit 8000h sets ds:122 and loads the 5-word vector ds:102-10A before projecting it through the 54AF:20 VMT. conf: med",
+  "med"
+ ],
+ "sub_124B4": [
+  "farobj_tile_align_project",
+  "FAR retf (128B): es:[di+22]=ax+80h; si=cs:word_11BBA; position [si],[si+2] + 11BD6:BD8 / 11BD2:BD4 -> es:[di..+6] (64-bit adds); if cs:byte_11C88==FFh && byte_11C0B==0: ax=11BD0, bx=11BCE, cx=[si+2], dx=[si] -> farobj_tile_copy_align(di) else ax=dx=0; es:[di+8/0A]=ax:dx; ds=es, es=cs:11CAC, bx=cs:11CAA -> view_projection; retf; 1 caller (sub_1243B)",
+  "128B far, in=1, callees farobj_tile_copy_align (L3) + view_projection (L9). Farobj record builder: stamps +22=ax+80h, adds the 11BBA-list world offsets into the es:[di] position, optionally runs farobj_tile_copy_align for the aligned tile copy (gated on 11C88/11C0B state), stores the result word at +8/+0A, then projects via 11CAA:11CAC -- sole callee of sub_1243B. conf: med-high",
+  "med-high"
+ ]
+}

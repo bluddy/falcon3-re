@@ -507,3 +507,18 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 10 COMPLETE (finding 81):** 11 named, `named`
+  **1324 -> 1335**, **L10 queue 11 -> 0** (6 full-dumped).
+  Highlights: viewobj_project_advance (dyn=62986) + _mark pair,
+  key_action_execute_sbi (594B cd=276), stream_playback_start +
+  sound_device_init_far, view projection family (viewmode3,
+  viewvec3 track_max, coord_point_group, viewlist_flagged,
+  block4287, farobj_tile_align). All 4 gates green (check 1337,
+  verify_rebuild faithful, verify_idb INTACT, read-back
+  1335/1335+2/2).
+- **Next: Global Level-11** (15 targets) -- global queue 296 across
+  L11..L22 (L11=15, L12=11, ..., L19=206 giant SCC, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

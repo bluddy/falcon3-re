@@ -4362,4 +4362,40 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 81 — Global Level-10 COMPLETE: 11 named, L10 queue 11 -> 0
+(`named` 1,324 -> **1,335**)
+
+Single batch, 6 of 11 full-dumped. Highlights: the **view-object
+index pair** **`viewobj_project_advance`** (dyn=62,986, hottest L10: farptr
+via 500C:[ax*4+34], +22 counter advance, projection; carry=invalid) +
+**`viewobj_project_advance_mark`** (same, brackets projection with
++24 bit20h mark), **`key_action_execute_sbi`** (594B, cd=276 -- the SBI
+key-action core: held/released state machine, PIT period bracketing,
+mode-slot latch, MIDI (mode 4) vs group_register_main paths), the
+**stream pair addition `stream_playback_start`** (ensures ADLIB, one-time
+write path into 77C9C:E, INT8 hook, kicks stream_stop_reload_gate) with
+**`sound_device_init_far`** (13B forwarder from the mode_slot trio),
+**`viewmode3_vector_project`** (state==3 gated 6-byte vector list ->
+54AF:20 VMT), **`viewvec3_project_track_max`** (11 callers: sampler +
+transformer with running max extent at cs:2E3B1+1 self-mod word),
+**`coord_point_group_project`** (up-to-10 bitmask points in quad/list
+modes), **`viewlist_project_flagged`** (16x16B records, bit8000h gate),
+**`view_block4287_entry`** (4 tiny far stubs around block 7B0E:4287), and
+**`farobj_tile_align_project`** (sole callee of sub_1243B: record build +
+tile align copy + projection).
+
+### MILESTONE
+
+**Levels 0–10 are all complete.** `named` = **1,335**; global
+`naming_queue` = **296** across Levels 11..22 (L11=15 next, L19=206
+giant SCC); L10 residue = 0 unnamed, **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,337** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,335/1,335
+function + 2/2 global**.
+
+---
+
 (append new findings below)
