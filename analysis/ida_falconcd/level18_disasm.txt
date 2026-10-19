@@ -1,0 +1,23 @@
+## LEVEL-1 BATCH (top 36 by dyn, caller_dyn, in) -- callees at Level 0
+======================================================================
+#1 sub_3A5D2  ea=0x3A5D2  size=223  class=ASM  in=2  dyn=0  cd=0
+  --- callees (19): ems_init(L1), farobj_rect_ratio_build(L3), tile_base_opcode_interpreter(L13), terrain_pos_delta_11cfc(L2), terrain_pos_grid_build(L3), sbi_stream_stop_load(L3), stub_to_205c3(L1), far_cb_with_args(L0), clip_bounds_save_far_thunk(L1), clip_bounds_restore_far_thunk(L1), lodsw_quad_to_state_25450(L0), rect_arg_store(L1), dispatch_220d4_stub(L0), sub_2C21B(L0), sub_2C243(L1), sub_2C26B(L4), param454_apply_triple(L8), sub_3A6B1(L17), r12_farptr_load_thunk(L0)
+  0x3A5D2: cmp    byte ptr ds:4AC2h, 4
+  0x3A5D7: jz     loc_3A600  ->code ['sub_3A5D2']
+  0x3A5D9: cmp    byte ptr ds:4AC4h, 0
+  0x3A5DE: jz     loc_3A600  ->code ['sub_3A5D2']
+  0x3A5E0: mov    ax, cs:word_2E12A+1
+  0x3A5E4: cmp    ax, 0FFFFh
+  0x3A5E7: jz     loc_3A600  ->code ['sub_3A5D2']
+  0x3A5E9: shr    ax, 1
+  0x3A5EB: shr    ax, 1
+  0x3A5ED: add    ax, 1
+  0x3A5F0: push   es
+  0x3A5F1: call   far ptr r12_farptr_load_thunk  ->code ['param454_apply_triple', 'r12_farptr_load_thunk']
+  0x3A5F6: test   byte ptr es:[di+0Ah], 2
+  0x3A5FB: pop    es
+  0x3A5FC: jnz    loc_3A600  ->code ['sub_3A5D2']
+  0x3A5FE: stc    
+  0x3A5FF: retn   
+  [TERM RETN @ 0x3A5FF]
+  --- callers (2): sub_33443, sub_4A4F6

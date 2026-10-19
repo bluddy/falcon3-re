@@ -1,0 +1,189 @@
+## LEVEL-1 BATCH (top 36 by dyn, caller_dyn, in) -- callees at Level 0
+======================================================================
+#1 sub_395DF  ea=0x395DF  size=248  class=ASM  in=4  dyn=0  cd=0
+  --- callees (5): tile_quad_sample(L3), tile_strip_sample_draw(L4), stub_to_24988(L1), stub_to_249d8(L1), obj_fuel_exhaust_step(L14)
+  0x395DF: cwd    
+  0x395E0: add    [si+4], ax
+  0x395E3: adc    [si+6], dx
+  0x395E6: mov    ax, cx
+  0x395E8: mov    [si+46h], ax
+  0x395EB: cwd    
+  0x395EC: add    [si+8], ax
+  0x395EF: adc    [si+0Ah], dx
+  0x395F2: mov    ax, [si+22h]
+  0x395F5: cmp    ax, 49Eh
+  0x395F8: jle    loc_39600  ->code ['sub_395DF']
+  0x395FA: mov    ax, 49Eh
+  0x395FD: jmp    loc_39608  ->code ['sub_395DF']
+  0x395FF: nop    
+  0x39600: cmp    ax, 0FE3Ah
+  0x39603: jge    loc_39608  ->code ['sub_395DF']
+  0x39605: mov    ax, 0FE3Ah
+  0x39608: mov    [si+22h], ax
+  0x3960B: mov    ax, 0A02h
+  0x3960E: mov    bx, ds:1352h
+  0x39612: imul   bx
+  0x39614: shl    ax, 1
+  0x39616: rcl    dx, 1
+  0x39618: mov    ax, dx
+  0x3961A: mov    bx, ds:1356h
+  0x3961E: imul   bx
+  0x39620: shl    ax, 1
+  0x39622: rcl    dx, 1
+  0x39624: mov    al, dh
+  0x39626: cbw    
+  0x39627: mov    [si+24h], ax
+  0x3962A: mov    ax, word ptr cs:loc_377D4+1
+  0x3962E: add    ax, word ptr cs:locret_377DB
+  0x39633: mov    bx, 1358h
+  0x39636: call   stub_to_249d8  ->code ['tile_strip_sample_draw', 'stub_to_249d8']
+  0x3963B: mov    ax, [si+14h]
+  0x3963E: mov    bx, ds:1358h
+  0x39642: imul   bx
+  0x39644: shl    ax, 1
+  0x39646: rcl    dx, 1
+  0x39648: mov    ax, dx
+  0x3964A: mov    bx, 0BEh
+  0x3964D: imul   bx
+  0x3964F: mov    bx, 168h
+  0x39652: idiv   bx
+  0x39654: add    [si+24h], ax
+  0x39657: cmp    word ptr [si+24h], 63h
+  0x3965B: jle    loc_39664  ->code ['sub_395DF']
+  0x3965D: mov    word ptr [si+24h], 63h
+  0x39662: jmp    loc_3966F  ->code ['sub_395DF']
+  0x39664: cmp    word ptr [si+24h], 0FFCEh
+  0x39668: jge    loc_3966F  ->code ['sub_395DF']
+  0x3966A: mov    word ptr [si+24h], 0FFCEh
+  0x3966F: mov    ax, [si+8]
+  0x39672: mov    dx, [si+0Ah]
+  0x39675: shr    dx, 1
+  0x39677: rcr    ax, 1
+  0x39679: shr    dx, 1
+  0x3967B: rcr    ax, 1
+  0x3967D: shr    dx, 1
+  0x3967F: rcr    ax, 1
+  0x39681: mov    [si+3Eh], ax
+  0x39684: mov    ax, [si+3Eh]
+  0x39687: cwd    
+  0x39688: mov    bx, 298h
+  0x3968B: div    bx
+  0x3968D: neg    ax
+  0x3968F: add    ax, 34Eh
+  0x39692: mov    bx, ax
+  0x39694: mov    ax, [si+14h]
+  0x39697: sub    dx, dx
+  0x39699: mov    dl, ah
+  0x3969B: mov    ah, al
+  0x3969D: sub    al, al
+  0x3969F: sar    dx, 1
+  0x396A1: rcr    ax, 1
+  0x396A3: div    bx
+  0x396A5: mov    [si+12h], ax
+  0x396A8: mov    ax, [si+10h]
+  0x396AB: pop    dx
+  0x396AC: sub    ax, dx
+  0x396AE: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x396B3: mov    [si+5Ch], ax
+  0x396B6: mov    ax, [si+0Eh]
+  0x396B9: pop    dx
+  0x396BA: sub    ax, dx
+  0x396BC: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x396C1: mov    [si+5Ah], ax
+  0x396C4: mov    ax, [si+0Ch]
+  0x396C7: pop    dx
+  0x396C8: sub    ax, dx
+  0x396CA: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x396CF: mov    [si+58h], ax
+  0x396D2: retn   
+  [TERM RETN @ 0x396D2]
+  --- callers (4): sub_2FD42, sub_3BB8F, sub_493C4, sub_49546
+
+======================================================================
+#2 sub_303C4  ea=0x303C4  size=451  class=ASM  in=2  dyn=0  cd=0
+  --- callees (3): key_event_gate_check(L13), key_103_range_step_gate(L14), key_code_pending_drain(L13)
+  0x303C4: xor    ax, ax
+  0x303C6: cmp    ds:byte_44FEE, al
+  0x303CA: jnz    loc_303CD  ->code ['sub_303C4']
+  0x303CC: retn   
+  [TERM RETN @ 0x303CC]
+  --- callers (2): sub_2F6D0, sub_3FFEF
+
+======================================================================
+#3 sub_4697E  ea=0x4697E  size=27  class=ASM  in=2  dyn=0  cd=0
+  --- callees (2): key_103_range_step_gate(L14), far_cb_setup_dispatch(L1)
+  0x4697E: mov    cx, 20h
+  0x46981: mov    ax, 85h
+  0x46984: push   cx
+  0x46985: push   ax
+  0x46986: call   loc_3486B  ->code ['key_103_range_step_gate']
+  0x46989: jnb    near ptr loc_36991+2  ->code ['hud_readout_render']
+  0x4698B: mov    bp, sp
+  0x4698D: mov    bx, [bp+0]
+  0x46990: call   near ptr loc_35470+2  ->code ['far_cb_setup_dispatch']
+  0x46993: pop    ax
+  0x46994: pop    cx
+  0x46995: inc    ax
+  0x46996: loop   loc_36984  ->code ['hud_readout_render']
+  0x46998: retf   
+  [TERM RETF @ 0x46998]
+  --- callers (2): sub_2FEF2, sub_31319
+
+======================================================================
+#4 sub_3489D  ea=0x3489D  size=16  class=LEAF  in=1  dyn=0  cd=0
+  --- callees (2): key_state_machine_tick(L14), state_byte_4fe_set(L0)
+  0x3489D: push   ds
+  0x3489E: mov    ax, 54AFh
+  0x348A1: mov    ds, ax
+  0x348A3: xor    ax, ax
+  0x348A5: call   state_byte_4fe_set  ->code ['state_byte_4fe_set']
+  0x348A8: call   key_state_machine_tick  ->code ['key_state_machine_tick']
+  0x348AB: pop    ds
+  0x348AC: retf   
+  [TERM RETF @ 0x348AC]
+  --- callers (1): sub_2FB4E
+
+======================================================================
+#5 sub_4466E  ea=0x4466E  size=93  class=ASM  in=1  dyn=0  cd=0
+  --- callees (2): farptr_table_get(L0), key_state_machine_tick(L14)
+  0x4466E: mov    ax, 63FDh
+  0x44671: mov    ds, ax
+  0x44673: mov    al, ds:byte_65986
+  0x44676: or     al, al
+  0x44678: jl     loc_346C9  ->code ['key_state_machine_tick']
+  0x4467A: cbw    
+  0x4467B: mov    si, ax
+  0x4467D: add    ax, 85h
+  0x44680: shl    si, 1
+  0x44682: mov    si, [si+1834h]
+  0x44686: test   byte ptr [si+13h], 4
+  0x4468A: jnz    loc_346A0  ->code ['key_state_machine_tick']
+  0x4468C: push   ax
+  0x4468D: mov    ax, cs:word_2E112
+  0x44691: sub    ds:word_6562E, ax
+  0x44695: pop    ax
+  0x44696: jns    loc_346A6  ->code ['key_state_machine_tick']
+  0x44698: mov    ds:word_6562E, 0
+  0x4469E: jmp    loc_346C9  ->code ['key_state_machine_tick']
+  0x446A0: mov    ds:word_6562E, 800h
+  0x446A6: push   word ptr [si+6]
+  0x446A9: push   es
+  0x446AA: push   di
+  0x446AB: call   farptr_table_get  ->code ['farptr_table_get']
+  0x446B0: mov    ax, es
+  0x446B2: mov    ds, ax
+  0x446B4: mov    si, di
+  0x446B6: pop    di
+  0x446B7: pop    es
+  0x446B8: pop    ax
+  0x446B9: cwd    
+  0x446BA: shl    ax, 1
+  0x446BC: shl    ax, 1
+  0x446BE: shl    ax, 1
+  0x446C0: rcl    dx, 1
+  0x446C2: mov    cx, 1Bh
+  0x446C5: div    cx
+  0x446C7: clc    
+  0x446C8: retf   
+  [TERM RETF @ 0x446C8]
+  --- callers (1): sub_329B1

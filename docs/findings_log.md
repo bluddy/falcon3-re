@@ -4538,4 +4538,45 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 86 — Global Levels 15–18 COMPLETE: 11 named, L15..18 queue 11 -> 0
+(`named` 1,387 -> **1,398**)
+
+Single batch, all 11 full-dumped across the four levels. Highlights:
+**`aircraft_motion_step`** (L15, 248B, 4 callers — velocity accumulation
+into the 65A7 record, altitude clamp, 1352/1356-scaled vertical rate,
+depth/scale derivation, three angle deltas, then obj_fuel_exhaust_step)
+paired with **`aircraft_record_load_step`** (L16, 100B — copies the
+12-byte record into 65A7:3CDh, resolves the object farptr, invokes
+aircraft_motion_step). The map/HUD render stack:
+**`map_view_project_pipeline`** (L16, 272B, 5 callers — clipped rect
+projection with shadowed view extents + object projection + farobj
+sort/step + tile-base search), **`hud_map_overlay_frame`** (L17, 192B —
+crosshair + box edges + strip draws + grid dispatches with the map
+pipeline nested inside), **`map_overlay_clip_frame`** (L18, 223B — R12
+farptr gate, clip-save rect pass wrapping hud_map_overlay_frame, clip
+restore). Control input: **`key_range_wheel_handler`** (L15, 451B — full
+102h/103h latch state machine for wheel steps -40/-20/+20/+40),
+**`control_axis_store_step`** (L16, 201B — quantize + store-select range
+key + 2558h table cache), **`range_cb_dispatch_loop`** (L15, 27B — walks
+codes 85h..A4h through the range gate). Key/state leaves:
+**`key_tick_clear_4fe`** (L15, 16B far — clears 54AF:4FE then
+key_state_machine_tick), **`key_tick_set_178`** (L16, 12B far — sets
+cs:2E178 request flag then the clear+tick wrapper), **`obj_timer_farptr_step`**
+(L15, 93B — 6562E countdown per 2E112 rate, on expiry loads the object
+farptr and returns the scaled slot index).
+
+### MILESTONE
+
+**Levels 0–18 are now all complete.** `named` = **1,398**; global
+`naming_queue` = **233** across Levels 19..22 (L19=206 giant SCC next,
+L20=25, L21=2); L15..18 residue = 0, **0 to_name** in L15..18.
+
+### Gates (all green)
+
+`naming.py check` **1,400** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,398/1,398
+function + 2/2 global**.
+
+---
+
 (append new findings below)

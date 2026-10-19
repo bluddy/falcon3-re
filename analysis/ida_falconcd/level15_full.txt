@@ -1,0 +1,258 @@
+======================================================================
+sub_395DF  ea=0x395DF  size=248  L15  in=4
+  --- callees (5): tile_quad_sample(L3), tile_strip_sample_draw(L4), stub_to_24988(L1), stub_to_249d8(L1), obj_fuel_exhaust_step(L14)
+  0x395DF: cwd    
+  0x395E0: add    [si+4], ax
+  0x395E3: adc    [si+6], dx
+  0x395E6: mov    ax, cx
+  0x395E8: mov    [si+46h], ax
+  0x395EB: cwd    
+  0x395EC: add    [si+8], ax
+  0x395EF: adc    [si+0Ah], dx
+  0x395F2: mov    ax, [si+22h]
+  0x395F5: cmp    ax, 49Eh
+  0x395F8: jle    loc_39600  ->code ['sub_395DF']
+  0x395FA: mov    ax, 49Eh
+  0x395FD: jmp    loc_39608  ->code ['sub_395DF']
+  0x395FF: nop    
+  0x39600: cmp    ax, 0FE3Ah
+  0x39603: jge    loc_39608  ->code ['sub_395DF']
+  0x39605: mov    ax, 0FE3Ah
+  0x39608: mov    [si+22h], ax
+  0x3960B: mov    ax, 0A02h
+  0x3960E: mov    bx, ds:1352h
+  0x39612: imul   bx
+  0x39614: shl    ax, 1
+  0x39616: rcl    dx, 1
+  0x39618: mov    ax, dx
+  0x3961A: mov    bx, ds:1356h
+  0x3961E: imul   bx
+  0x39620: shl    ax, 1
+  0x39622: rcl    dx, 1
+  0x39624: mov    al, dh
+  0x39626: cbw    
+  0x39627: mov    [si+24h], ax
+  0x3962A: mov    ax, word ptr cs:loc_377D4+1
+  0x3962E: add    ax, word ptr cs:locret_377DB
+  0x39633: mov    bx, 1358h
+  0x39636: call   stub_to_249d8  ->code ['tile_strip_sample_draw', 'stub_to_249d8']
+  0x3963B: mov    ax, [si+14h]
+  0x3963E: mov    bx, ds:1358h
+  0x39642: imul   bx
+  0x39644: shl    ax, 1
+  0x39646: rcl    dx, 1
+  0x39648: mov    ax, dx
+  0x3964A: mov    bx, 0BEh
+  0x3964D: imul   bx
+  0x3964F: mov    bx, 168h
+  0x39652: idiv   bx
+  0x39654: add    [si+24h], ax
+  0x39657: cmp    word ptr [si+24h], 63h
+  0x3965B: jle    loc_39664  ->code ['sub_395DF']
+  0x3965D: mov    word ptr [si+24h], 63h
+  0x39662: jmp    loc_3966F  ->code ['sub_395DF']
+  0x39664: cmp    word ptr [si+24h], 0FFCEh
+  0x39668: jge    loc_3966F  ->code ['sub_395DF']
+  0x3966A: mov    word ptr [si+24h], 0FFCEh
+  0x3966F: mov    ax, [si+8]
+  0x39672: mov    dx, [si+0Ah]
+  0x39675: shr    dx, 1
+  0x39677: rcr    ax, 1
+  0x39679: shr    dx, 1
+  0x3967B: rcr    ax, 1
+  0x3967D: shr    dx, 1
+  0x3967F: rcr    ax, 1
+  0x39681: mov    [si+3Eh], ax
+  0x39684: mov    ax, [si+3Eh]
+  0x39687: cwd    
+  0x39688: mov    bx, 298h
+  0x3968B: div    bx
+  0x3968D: neg    ax
+  0x3968F: add    ax, 34Eh
+  0x39692: mov    bx, ax
+  0x39694: mov    ax, [si+14h]
+  0x39697: sub    dx, dx
+  0x39699: mov    dl, ah
+  0x3969B: mov    ah, al
+  0x3969D: sub    al, al
+  0x3969F: sar    dx, 1
+  0x396A1: rcr    ax, 1
+  0x396A3: div    bx
+  0x396A5: mov    [si+12h], ax
+  0x396A8: mov    ax, [si+10h]
+  0x396AB: pop    dx
+  0x396AC: sub    ax, dx
+  0x396AE: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x396B3: mov    [si+5Ch], ax
+  0x396B6: mov    ax, [si+0Eh]
+  0x396B9: pop    dx
+  0x396BA: sub    ax, dx
+  0x396BC: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x396C1: mov    [si+5Ah], ax
+  0x396C4: mov    ax, [si+0Ch]
+  0x396C7: pop    dx
+  0x396C8: sub    ax, dx
+  0x396CA: call   stub_to_24988  ->code ['tile_quad_sample', 'stub_to_24988']
+  0x396CF: mov    [si+58h], ax
+  0x396D2: retn   
+  0x396D3: call   obj_fuel_exhaust_step  ->code ['obj_fuel_exhaust_step']
+  0x396D6: retf   
+  --- callers: sub_2FD42, sub_3BB8F, sub_493C4, sub_49546
+
+======================================================================
+sub_303C4  ea=0x303C4  size=451  L15  in=2
+  --- callees (3): key_event_gate_check(L13), key_103_range_step_gate(L14), key_code_pending_drain(L13)
+  0x303C4: xor    ax, ax
+  0x303C6: cmp    ds:byte_44FEE, al
+  0x303CA: jnz    loc_303CD  ->code ['sub_303C4']
+  0x303CC: retn   
+  0x303CD: cmp    ds:byte_44FED, 0
+  0x303D2: jz     loc_303D5  ->code ['sub_303C4']
+  0x303D4: retn   
+  0x303D5: cmp    ds:byte_4531C, 0
+  0x303DA: jnz    loc_30401  ->code ['sub_303C4']
+  0x303DC: mov    si, ds:word_493AA
+  0x303E0: xor    ax, ax
+  0x303E2: test   word ptr [si+0CAh], 20h
+  0x303E8: jnz    loc_30401  ->code ['sub_303C4']
+  0x303EA: mov    bx, ds:word_48F9A
+  0x303EE: cmp    bx, 2
+  0x303F1: ja     loc_30429  ->code ['sub_303C4']
+  0x303F3: cmp    ds:byte_49380, al
+  0x303F7: jz     loc_30429  ->code ['sub_303C4']
+  0x303F9: add    bx, si
+  0x303FB: cmp    [bx+0B0h], al
+  0x303FF: jnz    loc_30429  ->code ['sub_303C4']
+  0x30401: cmp    byte ptr cs:word_2E17A+1, al
+  0x30406: jnz    loc_3041C  ->code ['sub_303C4']
+  0x30408: cmp    byte ptr cs:word_2E17C+1, al
+  0x3040D: jz     locret_30428  ->code ['sub_303C4']
+  0x3040F: mov    byte ptr cs:word_2E17C+1, 0
+  0x30415: mov    ax, 103h
+  0x30418: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x3041B: retn   
+  0x3041C: mov    byte ptr cs:word_2E17A+1, 0
+  0x30422: mov    ax, 102h
+  0x30425: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x30428: retn   
+  0x30429: test   byte ptr cs:word_2E17A+1, 80h
+  0x3042F: jz     loc_3044F  ->code ['sub_303C4']
+  0x30431: and    byte ptr cs:word_2E17A+1, 7Fh
+  0x30437: cmp    byte ptr cs:word_2E17A+1, 2
+  0x3043D: jl     loc_3044F  ->code ['sub_303C4']
+  0x3043F: mov    bx, 0FFD8h
+  0x30442: jg     loc_30447  ->code ['sub_303C4']
+  0x30444: mov    bx, 0FFECh
+  0x30447: mov    ax, 102h
+  0x3044A: push   cs
+  0x3044B: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x3044E: nop    
+  0x3044F: cmp    ds:word_48F9A, 1
+  0x30454: jbe    loc_304B9  ->code ['sub_303C4']
+  0x30456: xor    ax, ax
+  0x30458: cmp    byte ptr cs:word_2E17A+1, al
+  0x3045D: jz     loc_3046F  ->code ['sub_303C4']
+  0x3045F: xchg   al, byte ptr cs:word_2E17A+1
+  0x30464: mov    byte ptr cs:word_2E17C+1, ah
+  0x30469: mov    ax, 102h
+  0x3046C: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x3046F: cmp    ds:word_48F9A, 2
+  0x30474: jnz    loc_304A5  ->code ['sub_303C4']
+  0x30476: cmp    ds:byte_4948E, 0FFh
+  0x3047B: jnz    loc_304A5  ->code ['sub_303C4']
+  0x3047D: cmp    byte ptr cs:word_2E17C+1, 0
+  0x30483: jnz    locret_304B8  ->code ['sub_303C4']
+  0x30485: inc    byte ptr cs:word_2E17C+1
+  0x3048A: mov    ds:byte_49383, 0
+  0x3048F: mov    ds:byte_49384, 0
+  0x30494: mov    ax, 103h
+  0x30497: mov    bx, 3
+  0x3049A: mov    cx, 1
+  0x3049D: xor    dx, dx
+  0x3049F: push   cs
+  0x304A0: call   near ptr key_event_gate_check  ->code ['key_event_gate_check']
+  0x304A3: nop    
+  0x304A4: retn   
+  0x304A5: cmp    byte ptr cs:word_2E17C+1, 0
+  0x304AB: jz     locret_304B8  ->code ['sub_303C4']
+  0x304AD: dec    byte ptr cs:word_2E17C+1
+  0x304B2: mov    ax, 103h
+  0x304B5: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x304B8: retn   
+  0x304B9: cmp    byte ptr cs:word_2E17C+1, 0
+  0x304BF: jz     loc_304CC  ->code ['sub_303C4']
+  0x304C1: dec    byte ptr cs:word_2E17C+1
+  0x304C6: mov    ax, 103h
+  0x304C9: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x304CC: cmp    byte ptr cs:word_2E17A+1, 0
+  0x304D2: jnz    loc_304FA  ->code ['sub_303C4']
+  0x304D4: mov    byte ptr cs:word_2E17A+1, 1
+  0x304DA: mov    ds:byte_4948F, 0
+  0x304DF: mov    ds:byte_49383, 0
+  0x304E4: mov    ds:byte_49384, 0
+  0x304E9: mov    ax, 102h
+  0x304EC: mov    bx, 3
+  0x304EF: mov    cx, 1
+  0x304F2: xor    dx, dx
+  0x304F4: push   cs
+  0x304F5: call   near ptr key_event_gate_check  ->code ['key_event_gate_check']
+  0x304F8: nop    
+  0x304F9: retn   
+  0x304FA: mov    al, ds:byte_4948E
+  0x304FD: mov    ah, al
+  0x304FF: xchg   al, ds:byte_4948F
+  0x30503: cmp    al, ah
+  0x30505: jz     locret_304B8  ->code ['sub_303C4']
+  0x30507: or     al, al
+  0x30509: jz     loc_30537  ->code ['sub_303C4']
+  0x3050B: jg     loc_3055F  ->code ['sub_303C4']
+  0x3050D: or     ah, ah
+  0x3050F: jz     loc_30513  ->code ['sub_303C4']
+  0x30511: jmp    loc_30525  ->code ['sub_303C4']
+  0x30513: mov    ax, 102h
+  0x30516: mov    bx, 0FFD8h
+  0x30519: mov    byte ptr cs:word_2E17A+1, 1
+  0x3051F: push   cs
+  0x30520: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x30523: nop    
+  0x30524: retn   
+  0x30525: mov    bx, 0FFECh
+  0x30528: mov    ax, 102h
+  0x3052B: mov    byte ptr cs:word_2E17A+1, 2
+  0x30531: push   cs
+  0x30532: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x30535: nop    
+  0x30536: retn   
+  0x30537: or     ah, ah
+  0x30539: jg     loc_3054D  ->code ['sub_303C4']
+  0x3053B: mov    bx, 28h
+  0x3053E: mov    ax, 102h
+  0x30541: mov    byte ptr cs:word_2E17A+1, 4
+  0x30547: push   cs
+  0x30548: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x3054B: nop    
+  0x3054C: retn   
+  0x3054D: mov    bx, 14h
+  0x30550: mov    ax, 102h
+  0x30553: mov    byte ptr cs:word_2E17A+1, 2
+  0x30559: push   cs
+  0x3055A: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x3055D: nop    
+  0x3055E: retn   
+  0x3055F: or     ah, ah
+  0x30561: jl     loc_30575  ->code ['sub_303C4']
+  0x30563: mov    bx, 0FFECh
+  0x30566: mov    ax, 102h
+  0x30569: mov    byte ptr cs:word_2E17A+1, 1
+  0x3056F: push   cs
+  0x30570: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x30573: nop    
+  0x30574: retn   
+  0x30575: mov    bx, 14h
+  0x30578: mov    ax, 102h
+  0x3057B: mov    byte ptr cs:word_2E17A+1, 4
+  0x30581: push   cs
+  0x30582: call   near ptr key_103_range_step_gate  ->code ['key_103_range_step_gate']
+  0x30585: nop    
+  0x30586: retn   
+  --- callers: sub_2F6D0, sub_3FFEF

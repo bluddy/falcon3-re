@@ -588,3 +588,19 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVELS 15-18 COMPLETE (finding 86):** 11 named, `named`
+  **1387 -> 1398**, **L15..18 queue 11 -> 0** (all 11 full-dumped).
+  Highlights: aircraft_motion_step + aircraft_record_load_step
+  (65A7 record motion/fuel), map_view_project_pipeline +
+  hud_map_overlay_frame + map_overlay_clip_frame (map/HUD render
+  stack), key_range_wheel_handler (102h/103h latch state machine),
+  control_axis_store_step, range_cb_dispatch_loop,
+  key_tick_clear_4fe, key_tick_set_178, obj_timer_farptr_step.
+  All 4 gates green (check 1400, verify_rebuild faithful,
+  verify_idb INTACT, read-back 1398/1398+2/2).
+- **Next: Global Level 19** (206 unnamed in giant SCC, ~6 batches)
+  -- global queue 233 across L19..L22 (L19=206, L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

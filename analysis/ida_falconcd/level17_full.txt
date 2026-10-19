@@ -1,0 +1,74 @@
+======================================================================
+sub_3A6B1  ea=0x3A6B1  size=192  L17  in=2
+  --- callees (19): ems_init(L1), farobj_rect_ratio_build(L3), terrain_pos_grid_build(L3), stream_long_accumulate(L1), sbi_stream_stop_load(L3), stub_to_205c3(L1), far_cb_with_args(L0), dispatch_220d4_stub(L0), sub_2C1F3(L3), sub_2C1FD(L0), sub_2C211(L3), sub_2C225(L3), sub_2C239(L0), sub_2C257(L0), sub_2C261(L0), hud_crosshair_ratio_draw(L6), box_edge_strip_draw(L5), cross_strip_draw(L5), sub_3A88D(L16)
+  0x3A6B1: mov    si, ds:48BAh
+  0x3A6B5: call   far ptr sub_2C1FD  ->code ['stream_long_accumulate', 'sub_2C1FD']
+  0x3A6BA: jb     locret_3A6BF  ->code ['sub_3A6B1']
+  0x3A6BC: jmp    loc_3A778  ->code ['hud_crosshair_ratio_draw']
+  0x3A6BF: retn   
+  0x3A6C0: call   far ptr sub_2C239  ->code ['sbi_stream_stop_load', 'sub_2C239']
+  0x3A6C5: cmp    byte ptr cs:loc_38568, 0
+  0x3A6CB: jz     loc_3A6CE  ->code ['sub_3A6B1']
+  0x3A6CD: retn   
+  0x3A6CE: mov    cl, 3Dh
+  0x3A6D0: mov    ax, 98h
+  0x3A6D3: mov    bx, 0AAh
+  0x3A6D6: mov    di, 97h
+  0x3A6D9: mov    bp, 9Ch
+  0x3A6DC: call   stub_to_205c3  ->code ['ems_init', 'stub_to_205c3']
+  0x3A6E1: call   far ptr sub_2C257  ->code ['sbi_stream_stop_load', 'sub_2C257']
+  0x3A6E6: call   far ptr sub_2C1F3  ->code ['stream_long_accumulate', 'sub_2C1F3']
+  0x3A6EB: jb     loc_3A714  ->code ['sub_3A6B1']
+  0x3A6ED: mov    di, bx
+  0x3A6EF: mov    bx, ax
+  0x3A6F1: sub    di, 7
+  0x3A6F4: sub    bx, 0Ch
+  0x3A6F7: mov    cx, 0Fh
+  0x3A6FA: mov    bp, 3
+  0x3A6FD: mov    si, 4BDEh
+  0x3A700: push   es
+  0x3A701: push   si
+  0x3A702: mov    si, 2F64h
+  0x3A705: mov    es, si
+  0x3A707: mov    si, 0A462h
+  0x3A70A: mov    es, word ptr es:[si]
+  0x3A70D: pop    si
+  0x3A70E: call   dispatch_220d4_stub  ->code ['terrain_pos_grid_build', 'dispatch_220d4_stub']
+  0x3A713: pop    es
+  0x3A714: call   hud_crosshair_ratio_draw  ->code ['hud_crosshair_ratio_draw']
+  0x3A717: call   far ptr sub_2C261  ->code ['sbi_stream_stop_load', 'sub_2C261']
+  0x3A71C: call   near ptr sub_3A88D  ->code ['sub_3A88D']
+  0x3A71F: call   far ptr sub_2C225  ->code ['sbi_stream_stop_load', 'sub_2C225']
+  0x3A724: push   ax
+  0x3A725: push   bx
+  0x3A726: mov    di, bx
+  0x3A728: mov    bx, ax
+  0x3A72A: call   cross_strip_draw  ->code ['cross_strip_draw']
+  0x3A72D: pop    di
+  0x3A72E: pop    bx
+  0x3A72F: call   box_edge_strip_draw  ->code ['box_edge_strip_draw']
+  0x3A732: mov    cx, 5
+  0x3A735: mov    bp, 2
+  0x3A738: mov    si, 4B11h
+  0x3A73B: mov    bx, 0B4h
+  0x3A73E: mov    di, 73h
+  0x3A741: push   es
+  0x3A742: push   si
+  0x3A743: mov    si, 2F64h
+  0x3A746: mov    es, si
+  0x3A748: mov    si, 0A462h
+  0x3A74B: mov    es, word ptr es:[si]
+  0x3A74E: pop    si
+  0x3A74F: call   dispatch_220d4_stub  ->code ['terrain_pos_grid_build', 'dispatch_220d4_stub']
+  0x3A754: pop    es
+  0x3A755: call   far ptr sub_2C211  ->code ['stream_long_accumulate', 'sub_2C211']
+  0x3A75A: cbw    
+  0x3A75B: mov    si, ax
+  0x3A75D: shl    ax, 1
+  0x3A75F: add    si, ax
+  0x3A761: add    si, 4C17h
+  0x3A765: mov    bx, 0C4h
+  0x3A768: mov    di, 73h
+  0x3A76B: call   far_cb_with_args  ->code ['farobj_rect_ratio_build', 'far_cb_with_args']
+  0x3A770: retn   
+  --- callers: sub_3A5D2, sub_4A4F6

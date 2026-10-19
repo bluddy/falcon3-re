@@ -1,0 +1,57 @@
+[
+ {
+  "rank": 1,
+  "key": "sub_3A5D2",
+  "ea": 239058,
+  "size": 223,
+  "class": "ASM",
+  "in": 2,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "ems_init",
+   "farobj_rect_ratio_build",
+   "tile_base_opcode_interpreter",
+   "terrain_pos_delta_11cfc",
+   "terrain_pos_grid_build",
+   "sbi_stream_stop_load",
+   "stub_to_205c3",
+   "far_cb_with_args",
+   "clip_bounds_save_far_thunk",
+   "clip_bounds_restore_far_thunk",
+   "lodsw_quad_to_state_25450",
+   "rect_arg_store",
+   "dispatch_220d4_stub",
+   "sub_2C21B",
+   "sub_2C243",
+   "sub_2C26B",
+   "param454_apply_triple",
+   "sub_3A6B1",
+   "r12_farptr_load_thunk"
+  ],
+  "callers": [
+   "sub_33443",
+   "sub_4A4F6"
+  ],
+  "body": [
+   "  0x3A5D2: cmp    byte ptr ds:4AC2h, 4",
+   "  0x3A5D7: jz     loc_3A600  ->code ['sub_3A5D2']",
+   "  0x3A5D9: cmp    byte ptr ds:4AC4h, 0",
+   "  0x3A5DE: jz     loc_3A600  ->code ['sub_3A5D2']",
+   "  0x3A5E0: mov    ax, cs:word_2E12A+1",
+   "  0x3A5E4: cmp    ax, 0FFFFh",
+   "  0x3A5E7: jz     loc_3A600  ->code ['sub_3A5D2']",
+   "  0x3A5E9: shr    ax, 1",
+   "  0x3A5EB: shr    ax, 1",
+   "  0x3A5ED: add    ax, 1",
+   "  0x3A5F0: push   es",
+   "  0x3A5F1: call   far ptr r12_farptr_load_thunk  ->code ['param454_apply_triple', 'r12_farptr_load_thunk']",
+   "  0x3A5F6: test   byte ptr es:[di+0Ah], 2",
+   "  0x3A5FB: pop    es",
+   "  0x3A5FC: jnz    loc_3A600  ->code ['sub_3A5D2']",
+   "  0x3A5FE: stc    ",
+   "  0x3A5FF: retn   ",
+   "  [TERM RETN @ 0x3A5FF]"
+  ]
+ }
+]

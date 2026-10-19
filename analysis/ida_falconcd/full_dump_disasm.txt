@@ -1,147 +1,82 @@
 ======================================================================
-sub_153A5  ea=0x153A5  size=113  L14  in=3
-  --- callees (7): terrain_attr_walk_13110(L2), pos_neighbor_norm_scan(L3), record_script_exec_lite(L5), record_script_exec_quad(L5), record_script_exec_main(L5), tile_base_opcode_interpreter(L13), sub_2BEA1(L0)
-  0x153A5: push   ds
-  0x153A6: push   es
-  0x153A7: mov    bx, 71C1h
-  0x153AA: mov    ds, bx
-  0x153AC: mov    es, bx
-  0x153AE: call   pos_neighbor_norm_scan  ->code ['pos_neighbor_norm_scan']
-  0x153B1: cmp    cs:byte_11CF3, 0
-  0x153B7: jnz    loc_153C4  ->code ['sub_153A5']
-  0x153B9: mov    ax, cs:word_11CC8
-  0x153BD: xor    bl, bl
-  0x153BF: call   far ptr sub_2BEA1  ->code ['sub_2BEA1']
-  0x153C4: cmp    cs:byte_11C6A, 0
-  0x153CA: jnz    loc_153DD  ->code ['sub_153A5']
-  0x153CC: cmp    cs:byte_11C88, 0
-  0x153D2: jnz    loc_153D7  ->code ['sub_153A5']
-  0x153D4: call   record_script_exec_lite  ->code ['record_script_exec_lite']
-  0x153D7: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
-  0x153DA: pop    es
-  0x153DB: pop    ds
-  0x153DC: retf   
-  0x153DD: call   record_script_exec_quad  ->code ['record_script_exec_quad']
-  0x153E0: call   record_script_exec_main  ->code ['record_script_exec_main']
-  0x153E3: mov    cs:byte_11C89, 0FFh
-  0x153E9: call   tile_base_opcode_interpreter  ->code ['tile_base_opcode_interpreter']
-  0x153EC: mov    cs:byte_11C89, 0
-  0x153F2: test   cs:byte_11C69, 3
-  0x153F8: jnz    loc_15410  ->code ['sub_153A5']
-  0x153FA: mov    al, cs:byte_11C88
-  0x153FE: push   ax
-  0x153FF: mov    cs:byte_11C88, 0
-  0x15405: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
-  0x15408: pop    ax
-  0x15409: mov    cs:byte_11C88, al
-  0x1540D: pop    es
-  0x1540E: pop    ds
-  0x1540F: retf   
-  0x15410: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
-  0x15413: pop    es
-  0x15414: pop    ds
-  0x15415: retf   
-  --- callers: entity_setup_step, sub_2FD42, sub_31138
-
-======================================================================
-sub_3467D  ea=0x3467D  size=144  L14  in=8
-  --- callees (2): key_code_resolve_entry(L12), key_code_pending_drain(L13)
-  0x3467D: cmp    byte ptr ds:4FDh, 0
-  0x34682: jz     loc_34685  ->code ['sub_3467D']
-  0x34684: retn   
-  0x34685: mov    byte ptr ds:4FDh, 1
-  0x3468A: cmp    byte ptr cs:word_2E17A+1, 0
-  0x34690: jz     loc_346AE  ->code ['sub_3467D']
-  0x34692: mov    byte ptr cs:word_2E17A+1, 0
-  0x34698: cmp    cs:word_2E170+1, 0
-  0x3469E: jnz    loc_346A8  ->code ['sub_3467D']
-  0x346A0: mov    ax, 103h
-  0x346A3: call   key_code_pending_drain  ->code ['key_code_pending_drain']
-  0x346A6: jmp    loc_346AE  ->code ['sub_3467D']
-  0x346A8: mov    ax, 102h
-  0x346AB: call   key_code_pending_drain  ->code ['key_code_pending_drain']
-  0x346AE: cmp    byte ptr cs:word_2E17C+1, 0
-  0x346B4: jz     loc_346C2  ->code ['sub_3467D']
-  0x346B6: mov    byte ptr cs:word_2E17C+1, 0
-  0x346BC: mov    ax, 103h
-  0x346BF: call   key_code_pending_drain  ->code ['key_code_pending_drain']
-  0x346C2: cmp    byte ptr ds:4893h, 0
-  0x346C7: jz     loc_346D6  ->code ['sub_3467D']
-  0x346C9: mov    byte ptr ds:4893h, 0
-  0x346CE: mov    ax, 4
-  0x346D1: call   key_code_resolve_entry  ->code ['key_code_resolve_entry']
-  0x346D6: cmp    byte ptr ds:4894h, 0
-  0x346DB: jz     loc_346EA  ->code ['sub_3467D']
-  0x346DD: mov    byte ptr ds:4894h, 0
-  0x346E2: mov    ax, 3
-  0x346E5: call   key_code_resolve_entry  ->code ['key_code_resolve_entry']
-  0x346EA: cmp    word ptr ds:0, 101h
-  0x346F0: jz     locret_3470C  ->code ['sub_3467D']
-  0x346F2: cmp    byte ptr cs:word_2E17C, 0
-  0x346F8: jz     loc_34706  ->code ['sub_3467D']
-  0x346FA: mov    ax, ds:0
-  0x346FD: call   key_code_pending_drain  ->code ['key_code_pending_drain']
-  0x34700: mov    byte ptr cs:word_2E17C, 0
-  0x34706: mov    word ptr ds:0, 101h
-  0x3470C: retn   
-  --- callers: sub_329B1, sub_32C62, sub_33116, sub_331E4, sub_3327A, sub_33443, sub_3489D, sub_4466E
-
-======================================================================
-sub_30356  ea=0x30356  size=110  L14  in=5
-  --- callees (3): key_event_gated_process(L12), sbi_range_step_far_entry(L5), key_code_pending_drain(L13)
-  0x30356: cmp    ds:byte_44FEE, 0
-  0x3035B: jnz    loc_3035E  ->code ['sub_30356']
-  0x3035D: retn   
-  0x3035E: mov    si, ds:word_493AA
-  0x30362: mov    ax, [si+2Eh]
-  0x30365: mov    bx, ax
-  0x30367: xchg   bx, ds:word_44AF2
-  0x3036B: cmp    byte ptr cs:word_2E17C, 0
-  0x30371: jnz    loc_3039C  ->code ['sub_30356']
-  0x30373: or     ax, ax
-  0x30375: jz     locret_303C3  ->code ['sub_30356']
-  0x30377: push   ax
-  0x30378: mov    ds:byte_49383, 0
-  0x3037D: mov    ds:byte_49384, 0
-  0x30382: mov    ax, ds:word_44AF0
-  0x30385: mov    bx, 3
-  0x30388: mov    cx, 1
-  0x3038B: mov    dx, 0
-  0x3038E: call   key_event_gated_process  ->code ['key_event_gated_process']
-  0x30393: mov    byte ptr cs:word_2E17C, 1
-  0x30399: pop    ax
-  0x3039A: jmp    loc_303A2  ->code ['sub_30356']
-  0x3039C: or     ax, ax
-  0x3039E: jz     loc_303B7  ->code ['sub_30356']
-  0x303A0: sub    ax, bx
-  0x303A2: mov    dx, 64h
-  0x303A5: mov    bx, 131h
-  0x303A8: imul   dx
-  0x303AA: idiv   bx
-  0x303AC: mov    bx, ax
-  0x303AE: mov    ax, ds:word_44AF0
-  0x303B1: call   sbi_range_step_far_entry  ->code ['sbi_range_step_far_entry']
-  0x303B6: retn   
-  0x303B7: mov    ax, ds:word_44AF0
-  0x303BA: call   key_code_pending_drain  ->code ['key_code_pending_drain']
-  0x303BD: mov    byte ptr cs:word_2E17C, 0
-  0x303C3: retn   
-  --- callers: sub_2F6D0, sub_3C1BD, sub_3CE92, sub_3E16B, sub_3F861
-
-======================================================================
-sub_310F9  ea=0x310F9  size=38  L14  in=1
-  --- callees (2): terrain_stream_pos_update(L13), farptr_entry_store_41b(L2)
-  0x310F9: call   terrain_stream_pos_update  ->code ['terrain_stream_pos_update']
-  0x310FC: test   byte ptr ds:41Ah, 40h
-  0x31101: jnz    loc_31104  ->code ['sub_310F9']
-  0x31103: retn   
-  0x31104: mov    bl, ds:41Bh
-  0x31108: or     byte ptr ds:41Ah, 80h
-  0x3110D: sub    bh, bh
-  0x3110F: test   byte ptr ds:41Ah, 1
-  0x31114: jnz    farptr_entry_store_41b  ->code ['farptr_entry_store_41b']
-  0x31116: cmp    bl, 7
-  0x31119: jz     loc_31132  ->code ['farptr_entry_store_41b']
-  0x3111B: inc    bl
-  0x3111D: jmp    loc_31125  ->code ['farptr_entry_store_41b']
-  --- callers: sub_2FEF2
+sub_3A5D2  ea=0x3A5D2  size=223  L18  in=2
+  --- callees (19): ems_init(L1), farobj_rect_ratio_build(L3), tile_base_opcode_interpreter(L13), terrain_pos_delta_11cfc(L2), terrain_pos_grid_build(L3), sbi_stream_stop_load(L3), stub_to_205c3(L1), far_cb_with_args(L0), clip_bounds_save_far_thunk(L1), clip_bounds_restore_far_thunk(L1), lodsw_quad_to_state_25450(L0), rect_arg_store(L1), dispatch_220d4_stub(L0), sub_2C21B(L0), sub_2C243(L1), sub_2C26B(L4), param454_apply_triple(L8), sub_3A6B1(L17), r12_farptr_load_thunk(L0)
+  0x3A5D2: cmp    byte ptr ds:4AC2h, 4
+  0x3A5D7: jz     loc_3A600  ->code ['sub_3A5D2']
+  0x3A5D9: cmp    byte ptr ds:4AC4h, 0
+  0x3A5DE: jz     loc_3A600  ->code ['sub_3A5D2']
+  0x3A5E0: mov    ax, cs:word_2E12A+1
+  0x3A5E4: cmp    ax, 0FFFFh
+  0x3A5E7: jz     loc_3A600  ->code ['sub_3A5D2']
+  0x3A5E9: shr    ax, 1
+  0x3A5EB: shr    ax, 1
+  0x3A5ED: add    ax, 1
+  0x3A5F0: push   es
+  0x3A5F1: call   far ptr r12_farptr_load_thunk  ->code ['param454_apply_triple', 'r12_farptr_load_thunk']
+  0x3A5F6: test   byte ptr es:[di+0Ah], 2
+  0x3A5FB: pop    es
+  0x3A5FC: jnz    loc_3A600  ->code ['sub_3A5D2']
+  0x3A5FE: stc    
+  0x3A5FF: retn   
+  0x3A600: clc    
+  0x3A601: retn   
+  0x3A602: cmp    byte ptr cs:loc_38568, 0
+  0x3A608: jz     loc_3A60B  ->code ['sub_3A5D2']
+  0x3A60A: retn   
+  0x3A60B: mov    cl, 3Dh
+  0x3A60D: mov    ax, 98h
+  0x3A610: mov    bx, 0AAh
+  0x3A613: mov    di, 97h
+  0x3A616: mov    bp, 9Ch
+  0x3A619: call   stub_to_205c3  ->code ['ems_init', 'stub_to_205c3']
+  0x3A61E: call   clip_bounds_save_far_thunk  ->code ['tile_base_opcode_interpreter', 'clip_bounds_save_far_thunk']
+  0x3A623: mov    si, 49C0h
+  0x3A626: call   lodsw_quad_to_state_25450  ->code ['terrain_pos_delta_11cfc', 'lodsw_quad_to_state_25450']
+  0x3A62B: mov    cx, 5
+  0x3A62E: mov    bp, 2
+  0x3A631: mov    si, 4B11h
+  0x3A634: mov    bx, 0B4h
+  0x3A637: mov    di, 73h
+  0x3A63A: push   es
+  0x3A63B: push   si
+  0x3A63C: mov    si, 2F64h
+  0x3A63F: mov    es, si
+  0x3A641: mov    si, 0A462h
+  0x3A644: mov    es, word ptr es:[si]
+  0x3A647: pop    si
+  0x3A648: call   dispatch_220d4_stub  ->code ['terrain_pos_grid_build', 'dispatch_220d4_stub']
+  0x3A64D: pop    es
+  0x3A64E: xor    ax, ax
+  0x3A650: call   far ptr sub_2C21B  ->code ['sbi_stream_stop_load', 'sub_2C21B']
+  0x3A655: jz     loc_3A65A  ->code ['sub_3A5D2']
+  0x3A657: add    ax, 2
+  0x3A65A: mov    si, ax
+  0x3A65C: shl    ax, 1
+  0x3A65E: add    si, ax
+  0x3A660: add    si, 4C17h
+  0x3A664: mov    bx, 0C4h
+  0x3A667: mov    di, 73h
+  0x3A66A: call   far_cb_with_args  ->code ['farobj_rect_ratio_build', 'far_cb_with_args']
+  0x3A66F: mov    al, ds:4ABDh
+  0x3A672: mov    si, ds:48BAh
+  0x3A676: mov    dx, cs:word_2E139
+  0x3A67B: call   far ptr sub_2C26B  ->code ['sbi_stream_stop_load', 'sub_2C26B']
+  0x3A680: call   far ptr sub_2C243  ->code ['sbi_stream_stop_load', 'sub_2C243']
+  0x3A685: pushf  
+  0x3A686: mov    di, bx
+  0x3A688: mov    bx, ax
+  0x3A68A: sub    di, 7
+  0x3A68D: sub    bx, 0Ch
+  0x3A690: mov    cx, 0Fh
+  0x3A693: mov    bp, 3
+  0x3A696: mov    si, 4BDEh
+  0x3A699: push   es
+  0x3A69A: mov    es, word ptr cs:loc_38561+1
+  0x3A69F: call   rect_arg_store  ->code ['terrain_pos_delta_11cfc', 'rect_arg_store']
+  0x3A6A4: pop    es
+  0x3A6A5: popf   
+  0x3A6A6: jb     loc_3A6AB  ->code ['sub_3A5D2']
+  0x3A6A8: call   sub_3A6B1  ->code ['sub_3A6B1']
+  0x3A6AB: call   clip_bounds_restore_far_thunk  ->code ['tile_base_opcode_interpreter', 'clip_bounds_restore_far_thunk']
+  0x3A6B0: retn   
+  --- callers: sub_33443, sub_4A4F6

@@ -1,0 +1,137 @@
+======================================================================
+sub_3A88D  ea=0x3A88D  size=272  L16  in=5
+  --- callees (18): ems_init(L1), joystick_poll(L0), segment_change_debounce_cx(L0), entity_setup_step(L15), tile_base_search_11caa(L2), slot2_map_window_read(L6), tile_strip_sample_draw(L4), sbi_config_081b_opl(L2), view_extent_compute_1f6da(L0), view_extent_shadow_save_far(L4), view_extent_shadow_restore_far(L4), es_ptr_slots_init(L0), farobj_sort_and_step(L9), active_farptr_set(L0), active_farptr_restore(L0), angle_matrix_far_invoke(L2), segment_clip_test(L0), viewobj_project_advance(L10)
+  0x3A88D: push   es
+  0x3A88E: mov    ds:49D8h, ax
+  0x3A891: mov    ds:49DCh, ax
+  0x3A894: mov    word ptr ds:49DAh, 0B9h
+  0x3A89A: mov    word ptr ds:49DEh, 0BFh
+  0x3A8A0: xor    ax, ax
+  0x3A8A2: mov    es, word ptr cs:loc_38561+1
+  0x3A8A7: mov    si, 49D8h
+  0x3A8AA: call   byte_26096+3  ->code ['tile_strip_sample_draw', 'segment_clip_test']
+  0x3A8AF: pop    es
+  0x3A8B0: retn   
+  0x3A8B1: test   bl, 80h
+  0x3A8B4: jz     loc_3A8C2  ->code ['sub_3A88D']
+  0x3A8B6: xchg   ax, dx
+  0x3A8B7: mov    bl, ah
+  0x3A8B9: mov    si, 4816h
+  0x3A8BC: mov    di, 4822h
+  0x3A8BF: jmp    loc_3A930  ->code ['sub_3A88D']
+  0x3A8C1: nop    
+  0x3A8C2: push   ax
+  0x3A8C3: mov    ax, 4C26h
+  0x3A8C6: mov    dx, ds
+  0x3A8C8: call   active_farptr_set  ->code ['entity_setup_step', 'active_farptr_set']
+  0x3A8CD: mov    al, 0FFh
+  0x3A8CF: call   far ptr unk_20313  ->code ['0x10313', '0x20313']
+  0x3A8D4: mov    word ptr ds:49C8h, 0A3h
+  0x3A8DA: mov    word ptr ds:49CAh, 98h
+  0x3A8E0: mov    si, 49C0h
+  0x3A8E3: call   view_extent_shadow_save_far  ->code ['0x10843', 'view_extent_shadow_save_far']
+  0x3A8E8: mov    ax, 555h
+  0x3A8EB: call   view_extent_compute_1f6da  ->code ['ems_init', 'view_extent_compute_1f6da']
+  0x3A8F0: call   loc_22EFE  ->code ['slot2_map_window_read', 'angle_matrix_far_invoke']
+  0x3A8F5: mov    si, 4822h
+  0x3A8F8: call   angle_matrix_far_invoke  ->code ['slot2_map_window_read', 'angle_matrix_far_invoke']
+  0x3A8FD: call   es_ptr_slots_init  ->code ['joystick_poll', 'es_ptr_slots_init']
+  0x3A902: pop    ax
+  0x3A903: mov    bx, 4816h
+  0x3A906: call   viewobj_project_advance  ->code ['sbi_config_081b_opl', 'viewobj_project_advance']
+  0x3A90B: call   farobj_sort_and_step  ->code ['segment_change_debounce_cx', 'farobj_sort_and_step']
+  0x3A910: call   loc_22F15  ->code ['slot2_map_window_read', 'angle_matrix_far_invoke']
+  0x3A915: call   view_extent_shadow_restore_far  ->code ['0x10897', 'view_extent_shadow_restore_far']
+  0x3A91A: xor    al, al
+  0x3A91C: call   far ptr unk_20313  ->code ['0x10313', '0x20313']
+  0x3A921: call   active_farptr_restore  ->code ['entity_setup_step', 'active_farptr_restore']
+  0x3A926: retf   
+  0x3A927: cmp    byte ptr cs:loc_38568, 0
+  0x3A92D: jz     loc_3A930  ->code ['sub_3A88D']
+  0x3A92F: retf   
+  0x3A930: push   di
+  0x3A931: call   tile_base_search_11caa  ->code ['tile_base_search_11caa']
+  0x3A936: pop    di
+  0x3A937: jb     locret_3A92F  ->code ['sub_3A88D']
+  0x3A939: push   ds
+  0x3A93A: push   bx
+  0x3A93B: push   di
+  0x3A93C: call   loc_22EFE  ->code ['slot2_map_window_read', 'angle_matrix_far_invoke']
+  0x3A941: pop    si
+  0x3A942: call   angle_matrix_far_invoke  ->code ['slot2_map_window_read', 'angle_matrix_far_invoke']
+  0x3A947: mov    ax, 54AFh
+  0x3A94A: mov    ds, ax
+  0x3A94C: mov    ax, (offset loc_49714+2 - offset word_44AF0)
+  0x3A94F: mov    dx, ds
+  0x3A951: call   active_farptr_set  ->code ['entity_setup_step', 'active_farptr_set']
+  0x3A956: mov    si, 49A4h
+  0x3A959: call   view_extent_shadow_save_far  ->code ['0x10843', 'view_extent_shadow_save_far']
+  0x3A95E: mov    ax, 555h
+  0x3A961: call   view_extent_compute_1f6da  ->code ['ems_init', 'view_extent_compute_1f6da']
+  0x3A966: mov    al, 0FFh
+  0x3A968: call   far ptr unk_20313  ->code ['0x10313', '0x20313']
+  0x3A96D: call   es_ptr_slots_init  ->code ['joystick_poll', 'es_ptr_slots_init']
+  0x3A972: pop    si
+  0x3A973: call   far ptr loc_12418  ->code ['0x12418']
+  0x3A978: call   farobj_sort_and_step  ->code ['segment_change_debounce_cx', 'farobj_sort_and_step']
+  0x3A97D: call   loc_22F15  ->code ['slot2_map_window_read', 'angle_matrix_far_invoke']
+  0x3A982: call   view_extent_shadow_restore_far  ->code ['0x10897', 'view_extent_shadow_restore_far']
+  0x3A987: mov    ax, 555h
+  0x3A98A: call   view_extent_compute_1f6da  ->code ['ems_init', 'view_extent_compute_1f6da']
+  0x3A98F: xor    al, al
+  0x3A991: call   far ptr unk_20313  ->code ['0x10313', '0x20313']
+  0x3A996: call   active_farptr_restore  ->code ['entity_setup_step', 'active_farptr_restore']
+  0x3A99B: pop    ds
+  0x3A99C: retf   
+  --- callers: sub_3A6B1, sub_47871, sub_4A3EE, sub_4A7E5, sub_4AEC4
+
+======================================================================
+sub_493C4  ea=0x493C4  size=100  L16  in=2
+  --- callees (2): farptr_table_get(L0), sub_395DF(L15)
+  0x493C4: mov    cs:word_2E102, di
+  0x493C9: mov    di, es
+  0x493CB: mov    cs:funcs_4E5C0, di
+  0x493D0: push   ds
+  0x493D1: push   es
+  0x493D2: call   farptr_table_get  ->code ['farptr_table_get']
+  0x493D7: push   es
+  0x493D8: pop    ds
+  0x493D9: mov    si, di
+  0x493DB: mov    ax, 65A7h
+  0x493DE: mov    es, ax
+  0x493E0: mov    di, 3CDh
+  0x493E3: push   cx
+  0x493E4: mov    cx, 6
+  0x493E7: movsw  
+  0x493E9: pop    cx
+  0x493EA: mov    ax, bx
+  0x493EC: call   farptr_table_get  ->code ['farptr_table_get']
+  0x493F1: mov    ax, 65A7h
+  0x493F4: mov    ds, ax
+  0x493F6: call   near ptr loc_39608+2  ->code ['sub_395DF']
+  0x493F9: pop    es
+  0x493FA: pop    ds
+  0x493FB: retf   
+  0x493FC: mov    cs:funcs_4E5C0, ax
+  0x49400: mov    cs:word_2E102, bx
+  0x49405: push   ds
+  0x49406: push   es
+  0x49407: push   es
+  0x49408: push   di
+  0x49409: mov    ax, 65A7h
+  0x4940C: mov    es, ax
+  0x4940E: mov    di, 3CDh
+  0x49411: push   cx
+  0x49412: mov    cx, 6
+  0x49415: movsw  
+  0x49417: pop    cx
+  0x49418: pop    di
+  0x49419: pop    es
+  0x4941A: mov    ax, 65A7h
+  0x4941D: mov    ds, ax
+  0x4941F: mov    bx, 0FFFFh
+  0x49422: call   near ptr loc_39608+2  ->code ['sub_395DF']
+  0x49425: pop    es
+  0x49426: pop    ds
+  0x49427: retf   
+  --- callers: sub_4AD30, sub_4AEC4

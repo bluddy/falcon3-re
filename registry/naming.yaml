@@ -7023,6 +7023,62 @@ symbols:
     sig: "FAR retf (67B): ds=500C; [400C0]=1, [400C2]=10h, [400C4]=11h; dx=state_word_26400_get_zero -> ds=es=dx; si=5DC0h di=0EA70h cx=9C4h movsw; handle_build_75_block; handle_build_8f_block; hw_config_flags_build(si=84D0h); object_farptr_dispatch; pop es/ds; retf; 1 caller (sub_3001E)"
     notes: "67B far, in=1, callees state_word_26400_get_zero (L0) + handle_build_75_block/8f_block (L5) + hw_config_flags_build (L6) + object_farptr_dispatch (L13). One-shot session init: seeds the 500C table slots, copies 2500 words into the state segment, builds the 75h/8Fh handle blocks and config flags, then runs the farptr dispatcher. conf: med"
 
+  - ida: sub_395DF
+    name: aircraft_motion_step
+    kind: function
+    sig: "NEAR retn + FAR tail (248B): accumulate ax:cx into [si+4:6]/[si+8:0A], [si+46]=cx; clamp [si+22] to [49Eh,FE3Ah]; scale via ds:1352/1356 -> [si+24] clamped [FFCEh,63h]; [si+3E]=([si+8:0A]>>3); [si+12]=([si+14]<<8 scaled)/(34Eh-[si+3E]/298h); stub_to_24988 angle diffs -> [si+5C/5A/58]; tail: obj_fuel_exhaust_step; retf; 4 callers (sub_2FD42, sub_3BB8F, sub_493C4, sub_49546)"
+    notes: "248B, in=4, callees stub_to_24988 x3 + stub_to_249d8 + obj_fuel_exhaust_step (L14). Aircraft kinematics: velocity accumulation into the 65A7 record, altitude clamp, 1352/1356-scaled vertical rate, depth/scale derivation at +12/+3E, three angle deltas at +58/+5A/+5C, then the fuel/budget step. conf: med"
+  - ida: sub_493C4
+    name: aircraft_record_load_step
+    kind: function
+    sig: "FAR retf (100B, dual entry): entry1: save di/es to cs:2E102/4E5C0; farptr_table_get -> copy 12 words? (cx=6 movsw) to 65A7:3CDh; farptr_table_get(bx); ds=65A7; near loc_39608+2 (aircraft_motion_step mid); pop; retf. entry2: funcs_4E5C0=ax, word_2E102=bx; copy incoming di/es 12 bytes to 65A7:3CDh; aircraft_motion_step with bx=0FFFFh; retf; 2 callers (sub_4AD30, sub_4AEC4)"
+    notes: "100B far, in=2, callees farptr_table_get (L0) + aircraft_motion_step (L15). Record loader: copies the incoming 12-byte record into 65A7:3CDh, resolves the object farptr, and invokes aircraft_motion_step (entry2 with the FFFFh 'no-store' marker). conf: med-high"
+  - ida: sub_2FC79
+    name: control_axis_store_step
+    kind: function
+    sig: "NEAR retn (201B): si=cs:2E129; control_axis_step_quantize; if ds:105E and [si+C5]==0: entity_timer_dec_2e; else if !([si+CA]&200h): [si+2E]=ax, 2E170=bl; per store step: range_key_event_dispatch(1,3,1,[si+7Ah]) on change, [si+D1]/[si+1E] bookkeeping, ds:12=bx*2, [si+2C]=2558h[bx]; tail: [si+18]=([si+2E]*53F0h)>>16, control_axes_read -> [si+1A]/ds:452 and [si+1C], control_axis_value -> [si+2A]; retn; 3 callers (sub_2F6D0, sub_3DC55, sub_3E552)"
+    notes: "201B, in=3, callees control_axis_step_quantize (L4) + control_axes_read (L3) + control_axis_value (L1) + range_key_event_dispatch (L13) + entity_timer_dec_2e (L0). Control axis/store step: quantizes the control axis, drives the store-select range key on index changes, caches the 2558h store table entry at +2C, and publishes the axis values at +18/+1A/+1C/+2A. conf: med"
+  - ida: sub_3A6B1
+    name: hud_map_overlay_frame
+    kind: function
+    sig: "NEAR retn (192B, dual entry): entry1: si=ds:48BA; far 2C1FD -> CF retn else jmp overlay; entry2: 2C239; if cs:38568 retn; stub_to_205c3 rect (cl=3Dh); 2C257; 2C1F3 -> di/bx; dispatch_220d4_stub (15x3 grid at 4BDEh via 2F64:A462); hud_crosshair_ratio_draw; 2C261; sub_3A88D (map pipeline); 2C225 -> cross_strip_draw + box_edge_strip_draw; 5x2 grid at 4B11h; 2C211 -> si=3*ax+4C17h; far_cb_with_args(0C4h,73h); retn; 2 callers (sub_3A5D2, sub_4A4F6)"
+    notes: "192B, in=2, callees hud_crosshair_ratio_draw (L6) + cross/box_edge strip draws (L5) + map_view_project_pipeline (L16) + dispatch_220d4_stub + far_cb_with_args + 2C2xx stream helpers. HUD/map overlay frame: crosshair, box edges, strip draws, two grid dispatches and a label cb, with the map pipeline nested inside. conf: med"
+  - ida: sub_303C4
+    name: key_range_wheel_handler
+    kind: function
+    sig: "NEAR retn (451B): gates 44FEE/44FED/4531C and [si+CA]&200h; 48F9A mode count branches; 2E17A/2E17C latch state machine with key_code_pending_drain(102h/103h); bit7 of 2E17A -> key_103_range_step_gate with bx=-40h/-14h/+14h/+28h per 4948E/4948F sign pairs; key_event_gate_check(102h/103h, bx=3, cx=1); 49383/49384 clears; 2 callers (sub_2F6D0, sub_3FFEF)"
+    notes: "451B, in=2, callees key_event_gate_check (L13) + key_103_range_step_gate (L14) + key_code_pending_drain (L13). Range wheel/axis handler: the full 102h/103h latch state machine for wheel-style range steps (-40/-20/+20/+40), gated by the 44FEE/44FED/4531C input latches and the 48F9A mode count. conf: med"
+  - ida: sub_3489D
+    name: key_tick_clear_4fe
+    kind: function
+    sig: "FAR retf (16B): ds=54AF; state_byte_4fe_set(0); key_state_machine_tick; pop ds; retf; 1 caller (sub_2FB4E)"
+    notes: "16B far leaf, in=1, callees state_byte_4fe_set (L0) + key_state_machine_tick (L14). Far wrapper: clears the 54AF:4FE state byte then runs one key state machine tick. conf: med-high"
+  - ida: sub_2FB4E
+    name: key_tick_set_178
+    kind: function
+    sig: "FAR retf (12B): cs:2E178=1; push cs; call key_tick_clear_4fe; nop; retf; 2 callers (sub_33443, sub_3EEDB)"
+    notes: "12B far leaf, in=2, callee key_tick_clear_4fe (L15). Sets the cs:2E178 request flag then runs the clear+tick wrapper. conf: med"
+  - ida: sub_3A5D2
+    name: map_overlay_clip_frame
+    kind: function
+    sig: "NEAR retn (223B, dual entry): entry1: if ds:4AC2==4 or ds:4AC4==0 or cs:2E12B==0FFFFh: clc retn; r12_farptr_load_thunk((2E12B>>2)+1); if es:[di+0A]&2: clc retn else stc retn. entry2: if cs:38568 retn; stub_to_205c3 rect; clip_bounds_save_far_thunk; lodsw_quad_to_state_25450(49C0h); 5x2 grid at 4B11h; 2C21B -> si=3*(ax+2)+4C17h; far_cb_with_args(0C4h,73h); 2C26B/2C243 -> di/bx; rect_arg_store (15x3 at 4BDEh); if CF skip else hud_map_overlay_frame; clip_bounds_restore_far_thunk; retn; 2 callers (sub_33443, sub_4A4F6)"
+    notes: "223B, in=2, callees clip_bounds_save/restore_far_thunk + hud_map_overlay_frame (L17) + map helpers + lodsw_quad_to_state_25450. Outer overlay frame: R12 farptr gate entry (4AC2/4AC4/2E12B), then the clip-save rect/grid/label pass wrapping hud_map_overlay_frame, with clip restore. conf: med"
+  - ida: sub_3A88D
+    name: map_view_project_pipeline
+    kind: function
+    sig: "FAR retf (272B, three entries): entry1: rect 49D8/49DC -> segment_clip_test; retf. entry2: if bl&80: swap ax/dx -> shared path; else active_farptr_set(4C26), unk_20313(FFh), rect 49C8=A3h/98h, view_extent_shadow_save_far, view_extent_compute_1f6da(555h), angle_matrix_far_invoke, es_ptr_slots_init, viewobj_project_advance(4816h), farobj_sort_and_step, shadow_restore, unk_20313(0), restore; retf. entry3: if cs:38568 retf; tile_base_search_11caa; angle matrix; 54AF farptr set; shadow save/compute; farptr loc_12418; sort; restore; compute; retf; 5 callers (sub_3A6B1, sub_47871, sub_4A3EE, sub_4A7E5, sub_4AEC4)"
+    notes: "272B far, in=5, callees viewobj_project_advance (L10) + farobj_sort_and_step (L9) + view_extent_shadow_save/restore_far + view_extent_compute_1f6da + angle_matrix_far_invoke + tile_base_search_11caa + segment_clip_test. Map/secondary view pipeline: clipped rect projection with shadowed view extents, object projection + sort/step, and a tile-base search path -- the map window render core. conf: med-high"
+  - ida: sub_4466E
+    name: obj_timer_farptr_step
+    kind: function
+    sig: "FAR retf (93B): ds=63FD; al=65986 (negative -> bail to tick); si=[si+1834]; if [si+13]&4: 6562E=800h; else 6562E-=cs:2E112 (saturate 0, bail); at 0: farptr_table_get([si+6]) -> ds/es=object; ax=((idx+85h)*8)/1Bh; clc; retf; 1 caller (sub_329B1)"
+    notes: "93B far, in=1, callees farptr_table_get (L0) + key_state_machine_tick (L14). Object timer step: decrements the 6562E countdown per the 2E112 rate; on expiry (or the +13 bit4 refill) loads the object's farptr and returns the scaled slot index (idx+85h)*8/27. conf: med"
+  - ida: sub_4697E
+    name: range_cb_dispatch_loop
+    kind: function
+    sig: "FAR retf (27B): cx=20h ax=85h; loop: push cx/ax; call loc_3486B (inside key_103_range_step_gate); jnb skip; bx=[bp+0] -> far_cb_setup_dispatch; pop ax/cx; inc ax; loop; retf; 2 callers (sub_2FEF2, sub_31319)"
+    notes: "27B far, in=2, callees key_103_range_step_gate (L14) + far_cb_setup_dispatch (L1). Loop: walks 32 codes 85h..A4h, probing each through the range gate and dispatching the far cb for accepted ones. conf: med"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table
