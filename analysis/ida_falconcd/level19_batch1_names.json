@@ -1,0 +1,212 @@
+{
+ "sub_683C5": [
+  "ui_loadout_menu_enter",
+  "FAR retn (4169B, in=55, 50 callees): modal menu init+choice loop; far ptr sub_2C3B5; es:7894h record fields dword_79B52/79E60/79E3A; 6DE8h arrays [si+21A/21C/220h]; calls unk_43D52; tail-jumps into sub_66E62 body; callers many (r30_e125, sub_67781, sub_678FA, ...)",
+  "4169B, in=55: the big modal menu state machine. Builds the 7894h slot records, pushes choice callbacks, and re-enters itself via tail-jumps from sub_67BA6/sub_678FA/sub_682D9. conf: low",
+  "low"
+ ],
+ "sub_46D42": [
+  "hud_track_strip_pipeline",
+  "FAR retf (2372B, in=8): callees sprite_rect_strip_draw, hud_terrain_strip_render; 10x1Ah track record array at 63FD:0Ah; callers sub_3001E, sub_33443, sub_3FD89, sub_3FFEF, sub_41646",
+  "2372B far, in=8, callees sprite_rect_strip_draw (L?) + hud_terrain_strip_render. Walks a 10-slot 1Ah-byte track-record array and paints terrain/sprite strips per slot. conf: med",
+  "med"
+ ],
+ "sub_4B68D": [
+  "tile_object_interpreter",
+  "NEAR retn (1855B, in=3): tile data decode -> 29h-byte entity records, class dispatch (rcr-based fixed-point shifts, ds:62h/64h offsets, es:[di+3] type nibble); retn @0x4B870; callers sub_2FEF2, sub_31319",
+  "1855B, in=3: tile-object opcode interpreter. Each tile record yields a 29h-byte entity; per-type dispatch does fixed-point shifts and ds:62/64 offsets. Called from the frame loop. conf: med",
+  "med"
+ ],
+ "sub_6AE59": [
+  "ui_slot_list_mode_enter",
+  "FAR retf (1393B, in=9): 6-slot table at 602E; es:7894:78940==3 branch; slot-list mode entry; callers r30_e125, sub_2C76B, sub_2C7D9, sub_2C7E3, sub_67781",
+  "1393B far, in=9: enters a 6-entry slot-list mode from the 602E table, branching on es:78940 mode 3. Sibling of ui_loadout_menu_enter. conf: low",
+  "low"
+ ],
+ "sub_495DF": [
+  "store_fall_sim_step",
+  "NEAR retn (1165B, in=2): 40 slots x 18h; velocity decay + ground impact; single caller sub_2FD42",
+  "1165B, in=2: 40-slot fall simulation. Per-slot velocity decay, ground-plane impact, and slot teardown. Only caller is the farobj frame step. conf: med",
+  "med"
+ ],
+ "sub_4E520": [
+  "store_cmd_interpreter",
+  "FAR retf (987B, in=1): dispatch via cs:funcs_4E5C0 table; flag_block_* callees; caller sub_32C62",
+  "987B far, in=1: store command interpreter. Dispatches through the 4E5C0 far-function table with flag-block helpers. conf: med",
+  "med"
+ ],
+ "sub_39F1D": [
+  "steerpoint_scan_update",
+  "FAR retf (895B, in=1): 16-object scan; es:4A83/4AC2/4AC3/4AC4 steerpoint state machine; HUD bearing/range clamps; callers sub_2FD42, sub_3267C",
+  "895B far, in=1: steerpoint scan. Walks 16 objects, advances the 4A83/4AC2/4AC3/4AC4 steerpoint state machine, and clamps HUD bearing/range outputs. conf: med-high",
+  "med-high"
+ ],
+ "sub_6B53A": [
+  "ui_slot_count_tally",
+  "FAR retf (744B, in=1): loops si=0..6 over 602Eh 4-byte records type 1/2/3; tallies into cl/[bp-2]/[bp-1]; sets es:byte_7A312/7A319/7A30E=1; callers sub_67AD3, sub_67AE1",
+  "744B far, in=1: counts 602Eh slot-list records by type (1/2/3) and raises the 7A312/7A319/7A30E presence flags. Helper for the menu draw. conf: med",
+  "med"
+ ],
+ "sub_48B05": [
+  "target_cycle_scan",
+  "FAR retf (620B, in=1): target cycle over far_obj list; callers sub_2FEF2, sub_31319",
+  "620B far, in=1: cycles the target index across the far-object list. Sibling of far_obj_visibility_gate (sub_489E2). conf: low-med",
+  "low-med"
+ ],
+ "sub_49AB4": [
+  "entity_spawn_from_tile",
+  "FAR retf (508B, in=1): tile/entity spawn; callers sub_2FEF2",
+  "508B far, in=1: spawns an entity record from a tile descriptor. Sibling of tile_object_interpreter. conf: low-med",
+  "low-med"
+ ],
+ "sub_31CA1": [
+  "view_terrain_frame_step",
+  "NEAR retn (460B, in=2): view/terrain frame step; callees sub_47871 (map_view_entity_project), sub_41E21 (farobj_snapshot_scan); callers sub_31319 (main_frame_update_loop), sub_41E21",
+  "460B, in=2: one view/terrain frame step. Invokes map_view_entity_project and farobj_snapshot_scan. Called from the main loop. conf: med",
+  "med"
+ ],
+ "sub_40F77": [
+  "hud_data_panel_slot_mgr",
+  "NEAR retn (424B, in=1): HUD data panel slot manager; callers sub_31319",
+  "424B, in=1: manages slots of the HUD data panel. Called from main_frame_update_loop. conf: low-med",
+  "low-med"
+ ],
+ "sub_4BDD0": [
+  "tile_object_init_opstream",
+  "FAR retf (394B, in=1): tile object init from op stream; callers sub_4B68D",
+  "394B far, in=1: initializes a tile-object record from the opcode stream. Sub-step of tile_object_interpreter. conf: low-med",
+  "low-med"
+ ],
+ "sub_674A0": [
+  "menu_event_dispatch",
+  "FAR retf (360B, in=2): menu event dispatch; callers sub_66E62, sub_678FA, sub_67BA6",
+  "360B far, in=2: dispatches a menu event to the current menu page handler (sub_683C5 family). conf: low-med",
+  "low-med"
+ ],
+ "sub_67FD4": [
+  "farobj_record_clear_fields",
+  "FAR retf (333B, in=2): farobj record field clear loop; es:7894h writes word_79BDA/79EA2/79E9E/79F14, dword_79BEC x 82h stride, byte+[4]=1; callers r32_e83, sub_162C1E, sub_2C699, sub_2C905, sub_67BAF",
+  "333B far, in=2: clears selected fields of the 7894h far-object records (82h-byte stride). conf: med",
+  "med"
+ ],
+ "sub_16BE48": [
+  "data_farcall_script_blob",
+  "DATA blob (321B, in=3): call far ptr sub_2C58B then raw data bytes (repeating 59h/BAh/26h/68h/6Ah patterns = far-call stubs + args); callers sub_30882, sub_30EBE, sub_32C62",
+  "321B, in=3: NOT real code -- a far-call init script / payload table (embedded call-far sub_2C58B sequences with constant args). Used by the EMS bootstrap path. conf: high (as data)",
+  "high"
+ ],
+ "sub_489E2": [
+  "far_obj_visibility_gate",
+  "FAR retf (291B, in=1): part of sub_386F2 group; far_obj visibility/filter for target selection; [si+0CA]&20h gate, es:[bx+74h]&1, es:[bx+76h]&80h, far_obj_field_call, fixed_abs_div4 distance test vs ds:48BEh, ds:4996h table; returns ax in {-1,0,1}; caller sub_2FEF2",
+  "291B far, in=1, callees far_obj_field_call (L1) + fixed_abs_div4 (L0) + fixed_vec3_accumulate_a (L0). Visibility/filter gate for far-object target selection: mode/state gates, far_obj_field_call type check, fixed-point distance gates. Shares code with sub_386F2 via tail-jumps. conf: med-high",
+  "med-high"
+ ],
+ "sub_483AE": [
+  "entity_bitpack_unpack",
+  "FAR retf (275B, in=2): bit-packed record decoder; five bit-plane passes (10h/40h/48h/30h/20h counts) with movsw/movsb; unpacks into es=63FDh arrays; callers sub_30AA8, sub_682D9",
+  "275B far, in=2: bit-packed entity-record unpacker. Five passes over bit-planes (counts 10/40/48/30/20) copy or zero-fill 63FDh array entries. conf: med-high",
+  "med-high"
+ ],
+ "sub_31319": [
+  "main_frame_update_loop",
+  "NEAR retn (257B, in=2): THE main game loop; ds:23B mode gate; flag_bits_dispatch; ds:41Ch run flag; farobj_sweep_all + farobj_slot_step_spawn + hud_data_panel_draw + vga_dac_palette_upload + tick_rate_compute + dgroup_cycle_step_438 + dgroup_cycle_435_436; si=32h -> state_table_apply_71c1; mov bx,4A7h; call dword ptr [bx]; callers sub_33443, sub_4111F",
+  "257B, in=2, 45 callees (the most of any L19 fn): THE main game frame loop. Mode-gated entry, full sweep/spawn/HUD/palette/tick-rate pass, dgroup cycle, then indirect call through ds:4A7h. conf: high",
+  "high"
+ ],
+ "sub_682D9": [
+  "ui_slot_record_init",
+  "FAR retf (232B, in=6): writes es:[bx]=242h; seg 7894h array es:79F34 x 17h stride via dword_79E6C; sets [bx+12h]=1Eh, [bx+13h]=1Eh, [bx+14h]=1; incs word_79F34 to 6; then calls sub_48292 + sub_483AE (entity_bitpack_unpack); branches on es:word_78940 (0/3) into sub_683C5 / far-ptr sub_2C3B5 paths; callers r30_e77, r32_e108, sub_162C31, sub_2C829, sub_2C8DD, sub_681CC",
+  "232B far, in=6: initializes up to 6 UI slot records in the 7894h segment (17h-byte stride, type bytes 1Eh/1Eh/1), then unpacks entity bitstream data and enters the menu. conf: med-high",
+  "med-high"
+ ],
+ "sub_4F181": [
+  "entity_build_dispatch",
+  "NEAR retn (213B, in=1): entity record table build dispatch; entity_record_table_build + flag_gate_zero_abc + sub_2F043; checks ds:36h bit gates; caller sub_32C62",
+  "213B, in=1, callees entity_record_table_build (L6) + flag_gate_zero_abc (L0). Dispatches entity-record table builds gated by ds:36h bits. conf: med",
+  "med"
+ ],
+ "sub_47871": [
+  "map_view_entity_project",
+  "FAR retf (198B, in=1): map view entity project; entity_step_flags + farobj_tile_copy_resolve + angle_aux_far + angle_xy_far + farptr_table_get + sub_37818 + map_view_project_pipeline (L16); 9-word transform copy to 4816h; caller sub_31CA1 (view_terrain_frame_step)",
+  "198B far, in=1, callees map_view_project_pipeline (L16) + angle_xy_far (L3) + angle_aux_far (L4) + entity_step_flags (L2). Projects one entity into the map view: copies a 9-word transform, resolves tile copy, computes angles, then runs the map pipeline. conf: med-high",
+  "med-high"
+ ],
+ "sub_41E21": [
+  "farobj_snapshot_scan",
+  "FAR retf (186B, in=1): farobj snapshot scan; farobj_index_range_check + farobj_table_snapshot + sub_31CA1 + sub_327BE; self-modifies cs:loc_346EA; picks first active far_obj; caller sub_33443",
+  "186B far, in=1, callees farobj_table_snapshot (L0) + farobj_index_range_check (L0). Scans the far-object table snapshot, picking the first active object and stashing its index into self-modified code. conf: med-high",
+  "med-high"
+ ],
+ "sub_397FB": [
+  "store_impact_step",
+  "NEAR retn (169B, in=2): store impact; ems_state_flags_709f + sub_4EF1C gate; velocity clamp [28h,FFh]; sub_4111F notify; r12_farptr_load_thunk; [di+0Ch]==4 path with sprite_clip_bounds_check + farobj_index_range_check; zeros [si+34/36/38]; scales [si+14] by ds:1356h; callers sub_39748, sub_495DF (store_fall_sim_step)",
+  "169B, in=2, callees ems_state_flags_709f (L2) + sprite_clip_bounds_check (L0) + farobj_index_range_check (L0). Impact/landing step for a falling store: clamps velocity, notifies via 4111F, sprite-clips, clears velocity fields, and scales altitude. conf: med-high",
+  "med-high"
+ ],
+ "sub_49546": [
+  "aircraft_slot_cycle_step",
+  "FAR retf (153B, in=2): aircraft slot cycle; farptr_table_get + sub_38CF3 + aircraft_motion_step (L15) + fixed_matrix_proj_factor (L12); loops 40 slots x 18h from si=0Ch; callers sub_2FEF2, sub_31319",
+  "153B far, in=2, callees aircraft_motion_step (L15) + fixed_matrix_proj_factor (L12). Cycles all 40 aircraft slots (18h stride) invoking motion + projection per slot. conf: med-high",
+  "med-high"
+ ],
+ "sub_37C73": [
+  "ems_terrain_pos_gate",
+  "NEAR retn (135B, in=2): EMS + terrain position gate; ems_init + terrain_pos_delta_11cfc + stub_to_205c3 + farwrap_25a1c + farobj_cfg_gate_85059; gates on ds:106Fh and ds:23Bh mode; toggles ds:106Bh; callers sub_2FD42, sub_47BDE",
+  "135B, in=2, callees terrain_pos_delta_11cfc (L2) + farobj_cfg_gate_85059 (L2). EMS/terrain position gate: mode-gated config gate + terrain delta apply + rect ops (farwrap_25a1c/stub_to_205c3). conf: med",
+  "med"
+ ],
+ "sub_678FA": [
+  "menu_page_draw_step",
+  "FAR retf (122B, in=3): menu page draw; es:7A313 flag from [bx+0Ch]&1; sub_3A29C label draw (7894h:19D3h); branches on es:word_78940 and es:word_4FD52; tail-jumps sub_683C5; callers sub_2C5D1, sub_66E62, sub_674A0",
+  "122B far, in=3, callees sub_3A29C (label/text draw) + sub_683C5 (ui_loadout_menu_enter). Draws one menu page: sets the 7A313 draw-side flag, paints a label, and falls into the menu body. conf: med",
+  "med"
+ ],
+ "sub_2EB65": [
+  "ems_farptr_table_init",
+  "FAR retf (104B, in=5): EMS farptr table init; farptr_7075_copy_30 + sub_2EAA7 + table_dword_set x 0x2F; fills 4E5C0-family cs words (2E102/104/106/108/10A/110) and 6-word -1 table; callers sub_3001E, sub_4236B, sub_4E520, sub_4EAF8, sub_5E97E",
+  "104B far, in=5: initializes the EMS far-pointer table (0x2F dwords via table_dword_set) and the 4E5C0 far-function dispatch words to known -1/default state. conf: med-high",
+  "med-high"
+ ],
+ "sub_30EBE": [
+  "ems_slot_bootstrap_step",
+  "NEAR retn (83B, in=2): EMS slot bootstrap; full EMS install path: state_byte_10218_get_zf, overlay_seg_word_read, state_byte_bx34_set, slot2/slot3 alloc+copy, ems_page_size_alloc_plan, ems_alloc_execute_43h, sub_16BE48 (data blob), mem_unmap_all, ems_state_bootstrap_2e100; callers sub_3001E, sub_40EA8",
+  "83B, in=2, 15 callees: the EMS bootstrap step. Allocates slots 2/3, runs EMS 43h alloc, copies chunks, invokes the data_farcall_script_blob, unmaps, and bootstraps state at 2E100. conf: high",
+  "high"
+ ],
+ "sub_32B39": [
+  "view_mode_bits_step",
+  "NEAR retn (70B, in=2): view mode bits; sub_38CAB flag read, then 4 bit tests: toggles ds:4876h+ds:1075h, calls sub_32B7F, toggles cs:byte_343E9 via sub_356A7, tail-calls sub_33443; callers sub_2F6D0, sub_30CB8",
+  "70B, in=2: bit-flags view/mode toggles (ds:4876/1075, cs:343E9) then refreshes via sub_32B7F and the frame path. conf: med",
+  "med"
+ ],
+ "sub_34923": [
+  "farobj_selection_gate",
+  "NEAR retn (49B, in=1): farobj selection gate; r05_snapshot_gate_449 -> r12_farptr_load_thunk -> [di+0A]&1 test -> ds:544h store; fallback sub_37051 type-2 branch into sub_34954; caller sub_33116",
+  "49B, in=1, callees r05_snapshot_gate_449 (L1) + r12_farptr_load_thunk (L0). Gates a far-object snapshot index and stores the selection into ds:544h. conf: med-high",
+  "med-high"
+ ],
+ "sub_4CCD1": [
+  "farobj_flag_gate_check",
+  "FAR retf (42B, in=3): farobj flag gate; ds=69FFh; sub_3CE92 result test; [di+2]&2 and &8 bit gates; returns -1 on gate fail; callers sub_3E552, sub_3E95E, sub_3FBCC",
+  "42B far, in=3: small far-object flag gate. Loads ds=69FFh, probes sub_3CE92 and two flag bits, returning -1 on failure. conf: med-high",
+  "med-high"
+ ],
+ "sub_321C1": [
+  "mode_state_dispatch",
+  "NEAR retn (28B, in=2): mode state dispatch; gates on ds:23Bh (mode) >6 and !=1Ah; jump table word [bx+392h]; else tail-jumps sub_32393; callers sub_2F6D0, sub_42025",
+  "28B, in=2: tiny mode-state jump-table dispatcher (table at ds:392h, index ds:40Ah). conf: med-high",
+  "med-high"
+ ],
+ "sub_39ADA": [
+  "steerpoint_state_gate",
+  "NEAR retn (20B, in=3): steerpoint state gate; ds:4AC4h gate; returns cs:word_2E12B+1 in bx with clc, else stc; tail-calls sub_39AEE; callers sub_305E4, sub_3267C, sub_3327A",
+  "20B, in=3: one-gate steerpoint state check (ds:4AC4). Returns the 2E12B index with carry clear if active. conf: med-high",
+  "med-high"
+ ],
+ "sub_67BA6": [
+  "menu_choice_tail_dispatch",
+  "FAR (9B, in=4): menu choice tail; [bp+6]==0 -> fall into sub_67BAF else tail-jump sub_683C5 loc_6885E; callers r30_e125, sub_2C60D, sub_66E62, sub_674A0",
+  "9B far, in=4: tiny menu-choice tail dispatcher. Zero arg falls to sub_67BAF; otherwise jumps into ui_loadout_menu_enter's choice handler. conf: med-high",
+  "med-high"
+ ]
+}
