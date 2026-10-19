@@ -4506,4 +4506,36 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 85 — Global Level-14 COMPLETE: 11 named, L14 queue 11 -> 0
+(`named` 1,376 -> **1,387**)
+
+Single batch, 4 of 11 full-dumped. Highlights: **`terrain_frame_update_driver`**
+(dyn=**11,155**, ties tile_base_opcode_interpreter as hottest: the main
+frame update driver -- neighbor norm scan, lite/quad/main script exec,
+bracketed opcode interpreter, conditional 11C88-scrubbed attr walk), the
+**key state machine** **`key_state_machine_tick`** (8 callers: services
+2E17A/2E17C pending latches with 102h/103h, parks ds:0 at 101h) +
+**`key_state_idle_enter`** (parks at 100h) + **`key_input_state_reset`**
+(44FEA/49382-4 zero + irq re-init), **`key_103_range_step_gate`** and
+**`range_scale_step_handler`** (493AA record delta -> key 3 + sbi_range_step),
+**`obj_fuel_exhaust_step`** (flag-scaled 0Ch<<n cost vs record +8 budget,
+fires key 10Ch on 0-crossing), **`terrain_stream_counter_step`** (41Bh
+row counter wrap at 7), **`ui_session_tables_init`** (500C seed + 2500-word
+copy + 75h/8Fh handle blocks), and the **mode trampolines**
+mode_slot_masks_far_enter/far_reset (cx=0 reset variant).
+
+### MILESTONE
+
+**Levels 0–14 are all complete.** `named` = **1,387**; global
+`naming_queue` = **244** across Levels 15..22 (L15=5 next, L19=206
+giant SCC); L14 residue = 0, **0 to_name**.
+
+### Gates (all green)
+
+`naming.py check` **1,389** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,387/1,387
+function + 2/2 global**.
+
+---
+
 (append new findings below)

@@ -571,3 +571,20 @@
 - **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
   92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
   excluded from bottom-up naming.
+
+- **GLOBAL LEVEL 14 COMPLETE (finding 85):** 11 named, `named`
+  **1376 -> 1387**, **L14 queue 11 -> 0** (4 full-dumped).
+  Highlights: terrain_frame_update_driver (dyn=11155, main frame
+  driver), key_state_machine_tick / key_state_idle_enter /
+  key_input_state_reset (100h/101h/102h/103h state machine),
+  key_103_range_step_gate, range_scale_step_handler,
+  obj_fuel_exhaust_step, terrain_stream_counter_step,
+  ui_session_tables_init, mode_slot_masks_far_enter/reset.
+  All 4 gates green (check 1389, verify_rebuild faithful,
+  verify_idb INTACT, read-back 1387/1387+2/2).
+- **Next: Global Levels 15-18** (5+4+1+1 = 11 targets) -- global queue
+  244 across L15..L22 (L15=5, L16=4, L17=1, L18=1, L19=206 giant SCC,
+  L20=25, L21=2).
+- **Follow-ups carried:** class-c undecodable overlay spans (conf:low),
+  92 low-conf DATA fns, 24 trap-only thunks, 397 global orphans
+  excluded from bottom-up naming.

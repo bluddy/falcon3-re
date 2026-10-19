@@ -1,0 +1,147 @@
+======================================================================
+sub_153A5  ea=0x153A5  size=113  L14  in=3
+  --- callees (7): terrain_attr_walk_13110(L2), pos_neighbor_norm_scan(L3), record_script_exec_lite(L5), record_script_exec_quad(L5), record_script_exec_main(L5), tile_base_opcode_interpreter(L13), sub_2BEA1(L0)
+  0x153A5: push   ds
+  0x153A6: push   es
+  0x153A7: mov    bx, 71C1h
+  0x153AA: mov    ds, bx
+  0x153AC: mov    es, bx
+  0x153AE: call   pos_neighbor_norm_scan  ->code ['pos_neighbor_norm_scan']
+  0x153B1: cmp    cs:byte_11CF3, 0
+  0x153B7: jnz    loc_153C4  ->code ['sub_153A5']
+  0x153B9: mov    ax, cs:word_11CC8
+  0x153BD: xor    bl, bl
+  0x153BF: call   far ptr sub_2BEA1  ->code ['sub_2BEA1']
+  0x153C4: cmp    cs:byte_11C6A, 0
+  0x153CA: jnz    loc_153DD  ->code ['sub_153A5']
+  0x153CC: cmp    cs:byte_11C88, 0
+  0x153D2: jnz    loc_153D7  ->code ['sub_153A5']
+  0x153D4: call   record_script_exec_lite  ->code ['record_script_exec_lite']
+  0x153D7: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
+  0x153DA: pop    es
+  0x153DB: pop    ds
+  0x153DC: retf   
+  0x153DD: call   record_script_exec_quad  ->code ['record_script_exec_quad']
+  0x153E0: call   record_script_exec_main  ->code ['record_script_exec_main']
+  0x153E3: mov    cs:byte_11C89, 0FFh
+  0x153E9: call   tile_base_opcode_interpreter  ->code ['tile_base_opcode_interpreter']
+  0x153EC: mov    cs:byte_11C89, 0
+  0x153F2: test   cs:byte_11C69, 3
+  0x153F8: jnz    loc_15410  ->code ['sub_153A5']
+  0x153FA: mov    al, cs:byte_11C88
+  0x153FE: push   ax
+  0x153FF: mov    cs:byte_11C88, 0
+  0x15405: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
+  0x15408: pop    ax
+  0x15409: mov    cs:byte_11C88, al
+  0x1540D: pop    es
+  0x1540E: pop    ds
+  0x1540F: retf   
+  0x15410: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
+  0x15413: pop    es
+  0x15414: pop    ds
+  0x15415: retf   
+  --- callers: entity_setup_step, sub_2FD42, sub_31138
+
+======================================================================
+sub_3467D  ea=0x3467D  size=144  L14  in=8
+  --- callees (2): key_code_resolve_entry(L12), key_code_pending_drain(L13)
+  0x3467D: cmp    byte ptr ds:4FDh, 0
+  0x34682: jz     loc_34685  ->code ['sub_3467D']
+  0x34684: retn   
+  0x34685: mov    byte ptr ds:4FDh, 1
+  0x3468A: cmp    byte ptr cs:word_2E17A+1, 0
+  0x34690: jz     loc_346AE  ->code ['sub_3467D']
+  0x34692: mov    byte ptr cs:word_2E17A+1, 0
+  0x34698: cmp    cs:word_2E170+1, 0
+  0x3469E: jnz    loc_346A8  ->code ['sub_3467D']
+  0x346A0: mov    ax, 103h
+  0x346A3: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x346A6: jmp    loc_346AE  ->code ['sub_3467D']
+  0x346A8: mov    ax, 102h
+  0x346AB: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x346AE: cmp    byte ptr cs:word_2E17C+1, 0
+  0x346B4: jz     loc_346C2  ->code ['sub_3467D']
+  0x346B6: mov    byte ptr cs:word_2E17C+1, 0
+  0x346BC: mov    ax, 103h
+  0x346BF: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x346C2: cmp    byte ptr ds:4893h, 0
+  0x346C7: jz     loc_346D6  ->code ['sub_3467D']
+  0x346C9: mov    byte ptr ds:4893h, 0
+  0x346CE: mov    ax, 4
+  0x346D1: call   key_code_resolve_entry  ->code ['key_code_resolve_entry']
+  0x346D6: cmp    byte ptr ds:4894h, 0
+  0x346DB: jz     loc_346EA  ->code ['sub_3467D']
+  0x346DD: mov    byte ptr ds:4894h, 0
+  0x346E2: mov    ax, 3
+  0x346E5: call   key_code_resolve_entry  ->code ['key_code_resolve_entry']
+  0x346EA: cmp    word ptr ds:0, 101h
+  0x346F0: jz     locret_3470C  ->code ['sub_3467D']
+  0x346F2: cmp    byte ptr cs:word_2E17C, 0
+  0x346F8: jz     loc_34706  ->code ['sub_3467D']
+  0x346FA: mov    ax, ds:0
+  0x346FD: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x34700: mov    byte ptr cs:word_2E17C, 0
+  0x34706: mov    word ptr ds:0, 101h
+  0x3470C: retn   
+  --- callers: sub_329B1, sub_32C62, sub_33116, sub_331E4, sub_3327A, sub_33443, sub_3489D, sub_4466E
+
+======================================================================
+sub_30356  ea=0x30356  size=110  L14  in=5
+  --- callees (3): key_event_gated_process(L12), sbi_range_step_far_entry(L5), key_code_pending_drain(L13)
+  0x30356: cmp    ds:byte_44FEE, 0
+  0x3035B: jnz    loc_3035E  ->code ['sub_30356']
+  0x3035D: retn   
+  0x3035E: mov    si, ds:word_493AA
+  0x30362: mov    ax, [si+2Eh]
+  0x30365: mov    bx, ax
+  0x30367: xchg   bx, ds:word_44AF2
+  0x3036B: cmp    byte ptr cs:word_2E17C, 0
+  0x30371: jnz    loc_3039C  ->code ['sub_30356']
+  0x30373: or     ax, ax
+  0x30375: jz     locret_303C3  ->code ['sub_30356']
+  0x30377: push   ax
+  0x30378: mov    ds:byte_49383, 0
+  0x3037D: mov    ds:byte_49384, 0
+  0x30382: mov    ax, ds:word_44AF0
+  0x30385: mov    bx, 3
+  0x30388: mov    cx, 1
+  0x3038B: mov    dx, 0
+  0x3038E: call   key_event_gated_process  ->code ['key_event_gated_process']
+  0x30393: mov    byte ptr cs:word_2E17C, 1
+  0x30399: pop    ax
+  0x3039A: jmp    loc_303A2  ->code ['sub_30356']
+  0x3039C: or     ax, ax
+  0x3039E: jz     loc_303B7  ->code ['sub_30356']
+  0x303A0: sub    ax, bx
+  0x303A2: mov    dx, 64h
+  0x303A5: mov    bx, 131h
+  0x303A8: imul   dx
+  0x303AA: idiv   bx
+  0x303AC: mov    bx, ax
+  0x303AE: mov    ax, ds:word_44AF0
+  0x303B1: call   sbi_range_step_far_entry  ->code ['sbi_range_step_far_entry']
+  0x303B6: retn   
+  0x303B7: mov    ax, ds:word_44AF0
+  0x303BA: call   key_code_pending_drain  ->code ['key_code_pending_drain']
+  0x303BD: mov    byte ptr cs:word_2E17C, 0
+  0x303C3: retn   
+  --- callers: sub_2F6D0, sub_3C1BD, sub_3CE92, sub_3E16B, sub_3F861
+
+======================================================================
+sub_310F9  ea=0x310F9  size=38  L14  in=1
+  --- callees (2): terrain_stream_pos_update(L13), farptr_entry_store_41b(L2)
+  0x310F9: call   terrain_stream_pos_update  ->code ['terrain_stream_pos_update']
+  0x310FC: test   byte ptr ds:41Ah, 40h
+  0x31101: jnz    loc_31104  ->code ['sub_310F9']
+  0x31103: retn   
+  0x31104: mov    bl, ds:41Bh
+  0x31108: or     byte ptr ds:41Ah, 80h
+  0x3110D: sub    bh, bh
+  0x3110F: test   byte ptr ds:41Ah, 1
+  0x31114: jnz    farptr_entry_store_41b  ->code ['farptr_entry_store_41b']
+  0x31116: cmp    bl, 7
+  0x31119: jz     loc_31132  ->code ['farptr_entry_store_41b']
+  0x3111B: inc    bl
+  0x3111D: jmp    loc_31125  ->code ['farptr_entry_store_41b']
+  --- callers: sub_2FEF2

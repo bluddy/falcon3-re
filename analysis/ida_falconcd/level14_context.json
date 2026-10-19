@@ -1,0 +1,424 @@
+[
+ {
+  "rank": 1,
+  "key": "sub_153A5",
+  "ea": 86949,
+  "size": 113,
+  "class": "ASM",
+  "in": 3,
+  "dyn": 11155,
+  "cd": 972,
+  "callees": [
+   "terrain_attr_walk_13110",
+   "pos_neighbor_norm_scan",
+   "record_script_exec_lite",
+   "record_script_exec_quad",
+   "record_script_exec_main",
+   "tile_base_opcode_interpreter",
+   "sub_2BEA1"
+  ],
+  "callers": [
+   "entity_setup_step",
+   "sub_2FD42",
+   "sub_31138"
+  ],
+  "body": [
+   "  0x153A5: push   ds",
+   "  0x153A6: push   es",
+   "  0x153A7: mov    bx, 71C1h",
+   "  0x153AA: mov    ds, bx",
+   "  0x153AC: mov    es, bx",
+   "  0x153AE: call   pos_neighbor_norm_scan  ->code ['pos_neighbor_norm_scan']",
+   "  0x153B1: cmp    cs:byte_11CF3, 0",
+   "  0x153B7: jnz    loc_153C4  ->code ['sub_153A5']",
+   "  0x153B9: mov    ax, cs:word_11CC8",
+   "  0x153BD: xor    bl, bl",
+   "  0x153BF: call   far ptr sub_2BEA1  ->code ['sub_2BEA1']",
+   "  0x153C4: cmp    cs:byte_11C6A, 0",
+   "  0x153CA: jnz    loc_153DD  ->code ['sub_153A5']",
+   "  0x153CC: cmp    cs:byte_11C88, 0",
+   "  0x153D2: jnz    loc_153D7  ->code ['sub_153A5']",
+   "  0x153D4: call   record_script_exec_lite  ->code ['record_script_exec_lite']",
+   "  0x153D7: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']",
+   "  0x153DA: pop    es",
+   "  0x153DB: pop    ds",
+   "  0x153DC: retf   ",
+   "  [TERM RETF @ 0x153DC]"
+  ]
+ },
+ {
+  "rank": 2,
+  "key": "sub_18062",
+  "ea": 98402,
+  "size": 8,
+  "class": "LEAF",
+  "in": 0,
+  "dyn": 10,
+  "cd": 0,
+  "callees": [
+   "mode_slot_masks_entry"
+  ],
+  "callers": [],
+  "body": [
+   "  0x18062: push   ds",
+   "  0x18063: push   es",
+   "  0x18064: call   mode_slot_masks_entry  ->code ['mode_slot_masks_entry']",
+   "  0x18067: pop    es",
+   "  0x18068: pop    ds",
+   "  0x18069: retf   ",
+   "  [TERM RETF @ 0x18069]"
+  ]
+ },
+ {
+  "rank": 3,
+  "key": "sub_1806A",
+  "ea": 98410,
+  "size": 10,
+  "class": "LEAF",
+  "in": 0,
+  "dyn": 10,
+  "cd": 0,
+  "callees": [
+   "mode_slot_masks_entry"
+  ],
+  "callers": [],
+  "body": [
+   "  0x1806A: push   ds",
+   "  0x1806B: push   es",
+   "  0x1806C: xor    cx, cx",
+   "  0x1806E: call   mode_slot_masks_entry  ->code ['mode_slot_masks_entry']",
+   "  0x18071: pop    es",
+   "  0x18072: pop    ds",
+   "  0x18073: retf   ",
+   "  [TERM RETF @ 0x18073]"
+  ]
+ },
+ {
+  "rank": 4,
+  "key": "sub_3467D",
+  "ea": 214653,
+  "size": 144,
+  "class": "ASM",
+  "in": 8,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "key_code_resolve_entry",
+   "key_code_pending_drain"
+  ],
+  "callers": [
+   "sub_329B1",
+   "sub_32C62",
+   "sub_33116",
+   "sub_331E4",
+   "sub_3327A",
+   "sub_33443",
+   "sub_3489D",
+   "sub_4466E"
+  ],
+  "body": [
+   "  0x3467D: cmp    byte ptr ds:4FDh, 0",
+   "  0x34682: jz     loc_34685  ->code ['sub_3467D']",
+   "  0x34684: retn   ",
+   "  [TERM RETN @ 0x34684]"
+  ]
+ },
+ {
+  "rank": 5,
+  "key": "sub_30356",
+  "ea": 197462,
+  "size": 110,
+  "class": "ASM",
+  "in": 5,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "key_event_gated_process",
+   "sbi_range_step_far_entry",
+   "key_code_pending_drain"
+  ],
+  "callers": [
+   "sub_2F6D0",
+   "sub_3C1BD",
+   "sub_3CE92",
+   "sub_3E16B",
+   "sub_3F861"
+  ],
+  "body": [
+   "  0x30356: cmp    ds:byte_44FEE, 0",
+   "  0x3035B: jnz    loc_3035E  ->code ['sub_30356']",
+   "  0x3035D: retn   ",
+   "  [TERM RETN @ 0x3035D]"
+  ]
+ },
+ {
+  "rank": 6,
+  "key": "sub_396D7",
+  "ea": 235223,
+  "size": 113,
+  "class": "ASM",
+  "in": 4,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "hw_port_bit_test_retn",
+   "farobj_tile_copy_resolve",
+   "flag_byte_get",
+   "fixed_vec3_dot_3820",
+   "range_key_event_dispatch"
+  ],
+  "callers": [
+   "sub_386F2",
+   "sub_38CF3",
+   "sub_395DF",
+   "sub_495DF"
+  ],
+  "body": [
+   "  0x396D7: call   flag_byte_get  ->code ['hw_port_bit_test_retn', 'flag_byte_get']",
+   "  0x396DC: mov    cx, ax",
+   "  0x396DE: mov    ax, 0Ch",
+   "  0x396E1: shl    ax, cl",
+   "  0x396E3: push   ax",
+   "  0x396E4: push   si",
+   "  0x396E5: call   farobj_tile_copy_resolve  ->code ['farobj_tile_copy_resolve']",
+   "  0x396EA: pop    si",
+   "  0x396EB: pop    bx",
+   "  0x396EC: xor    dx, dx",
+   "  0x396EE: cmp    byte ptr [si+32h], 0",
+   "  0x396F2: jz     loc_396F9  ->code ['sub_396D7']",
+   "  0x396F4: add    ax, bx",
+   "  0x396F6: adc    dx, 0",
+   "  0x396F9: mov    bx, ax",
+   "  0x396FB: mov    cx, dx",
+   "  0x396FD: mov    ax, [si+8]",
+   "  0x39700: mov    dx, [si+0Ah]",
+   "  0x39703: sub    ax, bx",
+   "  0x39705: sbb    dx, cx",
+   "  0x39707: cmp    dx, 0",
+   "  0x3970A: jl     loc_39718  ->code ['sub_396D7']",
+   "  0x3970C: jg     loc_39713  ->code ['sub_396D7']",
+   "  0x3970E: test   ax, 8000h",
+   "  0x39711: jz     loc_39720  ->code ['sub_396D7']",
+   "  0x39713: mov    ax, 7FFFh",
+   "  0x39716: jmp    loc_39720  ->code ['sub_396D7']",
+   "  0x39718: mov    [si+8], bx",
+   "  0x3971B: mov    [si+0Ah], cx",
+   "  0x3971E: xor    ax, ax",
+   "  0x39720: mov    bx, [si+56h]",
+   "  0x39723: mov    [si+56h], ax",
+   "  0x39726: or     ax, ax",
+   "  0x39728: jnz    locret_39747  ->code ['sub_396D7']",
+   "  0x3972A: or     bx, bx",
+   "  0x3972C: jz     locret_39747  ->code ['sub_396D7']",
+   "  0x3972E: cmp    byte ptr [si+32h], 0",
+   "  0x39732: jz     locret_39747  ->code ['sub_396D7']",
+   "  0x39734: push   si",
+   "  0x39735: mov    ax, 10Ch",
+   "  0x39738: mov    bx, 2",
+   "  0x3973B: mov    cx, 1",
+   "  0x3973E: mov    dx, [si+7Ah]",
+   "  0x39741: call   range_key_event_dispatch  ->code ['fixed_vec3_dot_3820', 'range_key_event_dispatch']",
+   "  0x39746: pop    si",
+   "  0x39747: retn   ",
+   "  [TERM RETN @ 0x39747]"
+  ]
+ },
+ {
+  "rank": 7,
+  "key": "sub_3460E",
+  "ea": 214542,
+  "size": 54,
+  "class": "ASM",
+  "in": 3,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "irq_state_init_entry",
+   "key_code_pending_drain"
+  ],
+  "callers": [
+   "sub_32C62",
+   "sub_33443",
+   "sub_484C1"
+  ],
+  "body": [
+   "  0x3460E: push   ds",
+   "  0x3460F: mov    ax, 54AFh",
+   "  0x34612: mov    ds, ax",
+   "  0x34614: xor    al, al",
+   "  0x34616: mov    ds:byte_44FEA, al",
+   "  0x34619: mov    ds:byte_49382, al",
+   "  0x3461C: mov    ds:byte_49383, al",
+   "  0x3461F: mov    ds:byte_49384, al",
+   "  0x34622: mov    byte ptr cs:word_2E17C+1, al",
+   "  0x34626: cmp    byte ptr cs:word_2E17C, al",
+   "  0x3462B: jz     loc_34639  ->code ['sub_3460E']",
+   "  0x3462D: mov    ax, ds:word_44AF0",
+   "  0x34630: call   key_code_pending_drain  ->code ['key_code_pending_drain']",
+   "  0x34633: xor    ax, ax",
+   "  0x34635: mov    byte ptr cs:word_2E17C, al",
+   "  0x34639: mov    byte ptr cs:word_2E17A+1, al",
+   "  0x3463D: call   irq_state_init_entry  ->code ['irq_state_init_entry']",
+   "  0x34642: pop    ds",
+   "  0x34643: retn   ",
+   "  [TERM RETN @ 0x34643]"
+  ]
+ },
+ {
+  "rank": 8,
+  "key": "sub_34644",
+  "ea": 214596,
+  "size": 57,
+  "class": "ASM",
+  "in": 3,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "key_code_pending_drain"
+  ],
+  "callers": [
+   "sub_329B1",
+   "sub_32C62",
+   "sub_3327A"
+  ],
+  "body": [
+   "  0x34644: cmp    byte ptr ds:4FDh, 0",
+   "  0x34649: jz     locret_3467C  ->code ['sub_34644']",
+   "  0x3464B: mov    byte ptr ds:4FDh, 0",
+   "  0x34650: mov    byte ptr ds:4894h, 0",
+   "  0x34655: mov    byte ptr ds:4893h, 0",
+   "  0x3465A: cmp    word ptr ds:0, 100h",
+   "  0x34660: jz     locret_3467C  ->code ['sub_34644']",
+   "  0x34662: cmp    byte ptr cs:word_2E17C, 0",
+   "  0x34668: jz     loc_34676  ->code ['sub_34644']",
+   "  0x3466A: mov    ax, ds:0",
+   "  0x3466D: call   key_code_pending_drain  ->code ['key_code_pending_drain']",
+   "  0x34670: mov    byte ptr cs:word_2E17C, 0",
+   "  0x34676: mov    word ptr ds:0, 100h",
+   "  0x3467C: retn   ",
+   "  [TERM RETN @ 0x3467C]"
+  ]
+ },
+ {
+  "rank": 9,
+  "key": "sub_34832",
+  "ea": 215090,
+  "size": 75,
+  "class": "ASM",
+  "in": 2,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "sbi_range_step_far_entry",
+   "key_event_gate_check",
+   "key_code_pending_drain"
+  ],
+  "callers": [
+   "sub_303C4",
+   "sub_4697E"
+  ],
+  "body": [
+   "  0x34832: push   si",
+   "  0x34833: push   ds",
+   "  0x34834: mov    si, 54AFh",
+   "  0x34837: mov    ds, si",
+   "  0x34839: cmp    ds:byte_44F4E, 0",
+   "  0x3483E: jnz    loc_3487A  ->code ['sub_34832']",
+   "  0x34840: or     bx, bx",
+   "  0x34842: jle    loc_34865  ->code ['sub_34832']",
+   "  0x34844: cmp    byte ptr cs:word_2E17A+1, 4",
+   "  0x3484A: jnz    loc_34865  ->code ['sub_34832']",
+   "  0x3484C: cmp    cs:word_2E170+1, 0",
+   "  0x34852: jnz    loc_34865  ->code ['sub_34832']",
+   "  0x34854: mov    ax, 103h",
+   "  0x34857: mov    bx, 3",
+   "  0x3485A: mov    cx, 1",
+   "  0x3485D: xor    dx, dx",
+   "  0x3485F: push   cs",
+   "  0x34860: call   near ptr key_event_gate_check  ->code ['key_event_gate_check']",
+   "  0x34863: jmp    loc_3487A  ->code ['sub_34832']",
+   "  0x34865: cmp    cs:word_2E170+1, 0",
+   "  0x3486B: jnz    loc_34875  ->code ['sub_34832']",
+   "  0x3486D: mov    ax, 103h",
+   "  0x34870: call   key_code_pending_drain  ->code ['key_code_pending_drain']",
+   "  0x34873: jmp    loc_3487A  ->code ['sub_34832']",
+   "  0x34875: call   sbi_range_step_far_entry  ->code ['sbi_range_step_far_entry']",
+   "  0x3487A: pop    ds",
+   "  0x3487B: pop    si",
+   "  0x3487C: retf   ",
+   "  [TERM RETF @ 0x3487C]"
+  ]
+ },
+ {
+  "rank": 10,
+  "key": "sub_310F9",
+  "ea": 200953,
+  "size": 38,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "terrain_stream_pos_update",
+   "farptr_entry_store_41b"
+  ],
+  "callers": [
+   "sub_2FEF2"
+  ],
+  "body": [
+   "  0x310F9: call   terrain_stream_pos_update  ->code ['terrain_stream_pos_update']",
+   "  0x310FC: test   byte ptr ds:41Ah, 40h",
+   "  0x31101: jnz    loc_31104  ->code ['sub_310F9']",
+   "  0x31103: retn   ",
+   "  [TERM RETN @ 0x31103]"
+  ]
+ },
+ {
+  "rank": 11,
+  "key": "sub_32AF6",
+  "ea": 207606,
+  "size": 67,
+  "class": "ASM",
+  "in": 1,
+  "dyn": 0,
+  "cd": 0,
+  "callees": [
+   "event_tone_isr_wrapper",
+   "state_word_26400_get_zero",
+   "handle_build_75_block",
+   "handle_build_8f_block",
+   "object_farptr_dispatch",
+   "hw_config_flags_build"
+  ],
+  "callers": [
+   "sub_3001E"
+  ],
+  "body": [
+   "  0x32AF6: push   ds",
+   "  0x32AF7: push   es",
+   "  0x32AF8: mov    ax, 500Ch",
+   "  0x32AFB: mov    ds, ax",
+   "  0x32AFD: mov    ds:word_400C0, 1",
+   "  0x32B03: mov    ds:word_400C2, 10h",
+   "  0x32B09: mov    ds:word_400C4, 11h",
+   "  0x32B0F: call   state_word_26400_get_zero  ->code ['event_tone_isr_wrapper', 'state_word_26400_get_zero']",
+   "  0x32B14: mov    ds, dx",
+   "  0x32B16: mov    es, dx",
+   "  0x32B18: mov    si, 5DC0h",
+   "  0x32B1B: mov    di, 0EA70h",
+   "  0x32B1E: mov    cx, 9C4h",
+   "  0x32B21: movsw  ",
+   "  0x32B23: call   handle_build_75_block  ->code ['handle_build_75_block']",
+   "  0x32B26: call   near ptr handle_build_8f_block  ->code ['handle_build_8f_block']",
+   "  0x32B29: mov    si, 84D0h",
+   "  0x32B2C: call   far ptr hw_config_flags_build  ->code ['0x2b83a', 'hw_config_flags_build']",
+   "  0x32B31: push   cs",
+   "  0x32B32: call   near ptr object_farptr_dispatch  ->code ['object_farptr_dispatch']",
+   "  0x32B35: nop    ",
+   "  0x32B36: pop    es",
+   "  0x32B37: pop    ds",
+   "  0x32B38: retf   ",
+   "  [TERM RETF @ 0x32B38]"
+  ]
+ }
+]

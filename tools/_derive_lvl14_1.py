@@ -1,0 +1,54 @@
+import sys, json, re, io
+sys.stdout.reconfigure(encoding='utf-8')
+# Finding 85 Level-14 (11, LEVEL COMPLETE)
+analysis = {
+ "sub_18062": ("mode_slot_masks_far_enter",
+   "FAR retf (8B): push ds/es; mode_slot_masks_entry; pop es/ds; retf; 0 static callers (indirect far-call target), dyn=10",
+   "8B far leaf, in=0, callee mode_slot_masks_entry (L13). Far-call trampoline into mode_slot_masks_entry with caller-saved ds/es. conf: med-high", "med-high"),
+ "sub_1806A": ("mode_slot_masks_far_reset",
+   "FAR retf (10B): push ds/es; cx=0; mode_slot_masks_entry; pop es/ds; retf; 0 static callers (indirect far-call target), dyn=10",
+   "10B far leaf, in=0, callee mode_slot_masks_entry (L13). Far-call trampoline with cx=0 -- the reset/clear variant of mode_slot_masks_far_enter. conf: med-high", "med-high"),
+ "sub_153A5": ("terrain_frame_update_driver",
+   "FAR retf (113B): ds=es=71C1; pos_neighbor_norm_scan; if !cs:11CF3: far sub_2BEA1(cs:11CC8, bl=0); if !cs:11C6A: if !11C88: record_script_exec_lite; terrain_attr_walk_13110; retf. Else: record_script_exec_quad; record_script_exec_main; 11C89=FFh; tile_base_opcode_interpreter; 11C89=0; if !(11C69&3): save/clear/restore 11C88 around terrain_attr_walk; else terrain_attr_walk; retf; 3 callers (entity_setup_step, sub_2FD42, sub_31138)",
+   "113B far, in=3, dyn=11155 (ties tile_base_opcode_interpreter as hottest). Main frame update driver: neighbor norm scan, optional 2BEA1, then either lite script + attr walk (fast path) or quad+main script exec with the opcode interpreter bracketed by 11C89 and a conditional 11C88-scrubbed attr walk. conf: high", "high"),
+ "sub_30356": ("range_scale_step_handler",
+   "NEAR retn (110B): gate ds:44FEE; si=[493AA], ax=[si+2E], xchg with [44AF2] (delta); if !cs:2E17C: if ax: clear 49383/49384, key_event_gated_process([44AF0], 3, 1, 0), set 2E17C=1, delta=0; delta=delta*100/131h -> sbi_range_step_far_entry([44AF0], delta); if ax==0: key_code_pending_drain([44AF0]), clear 2E17C; retn; 5 callers (sub_2F6D0, sub_3C1BD, sub_3CE92, sub_3E16B, sub_3F861)",
+   "110B, in=5, callees key_event_gated_process (L12) + sbi_range_step_far_entry (L5) + key_code_pending_drain (L13). Range/scale change handler: reads the +2E delta from the 493AA record, fires key 3 on fresh input, and drives sbi_range_step with the scaled delta (x100/305), draining the pending key when the delta expires. conf: med", "med"),
+ "sub_310F9": ("terrain_stream_counter_step",
+   "NEAR retn (38B): terrain_stream_pos_update; if !(ds:41A&40h) retn; bl=41Bh, 41A|=80h, bh=0; if 41A&1: jmp farptr_entry_store_41b; if bl==7 skip else inc bl -> store at 31125; 1 caller (sub_2FEF2)",
+   "38B, in=1, callees terrain_stream_pos_update (L13) + farptr_entry_store_41b (L2). Stream counter step: updates the stream position, then when 41Ah bit6 is set advances the 41Bh row counter (wrapping at 7) or stores it via the 41B farptr entry. conf: med", "med"),
+ "sub_32AF6": ("ui_session_tables_init",
+   "FAR retf (67B): ds=500C; [400C0]=1, [400C2]=10h, [400C4]=11h; dx=state_word_26400_get_zero -> ds=es=dx; si=5DC0h di=0EA70h cx=9C4h movsw; handle_build_75_block; handle_build_8f_block; hw_config_flags_build(si=84D0h); object_farptr_dispatch; pop es/ds; retf; 1 caller (sub_3001E)",
+   "67B far, in=1, callees state_word_26400_get_zero (L0) + handle_build_75_block/8f_block (L5) + hw_config_flags_build (L6) + object_farptr_dispatch (L13). One-shot session init: seeds the 500C table slots, copies 2500 words into the state segment, builds the 75h/8Fh handle blocks and config flags, then runs the farptr dispatcher. conf: med", "med"),
+ "sub_3460E": ("key_input_state_reset",
+   "NEAR retn (54B): ds=54AF; zero 44FEA, 49382-49384, cs:2E17B (2E17A+1); if cs:2E17C: key_code_pending_drain([44AF0]), clear 2E17C; clear 2E17B; irq_state_init_entry; pop ds; retn; 3 callers (sub_32C62, sub_33443, sub_484C1)",
+   "54B, in=3, callees irq_state_init_entry (L13) + key_code_pending_drain (L13). Input subsystem reset: zeroes the 54AF input-latch cluster (44FEA, 49382-4), drains any pending range key, and re-inits irq state. conf: med-high", "med-high"),
+ "sub_34644": ("key_state_idle_enter",
+   "NEAR retn (57B): if ds:4FD==0 retn; clear 4FD, 4894, 4893; if ds:0==100h retn; if cs:2E17C: key_code_pending_drain(ds:0), clear 2E17C; ds:0=100h; retn; 3 callers (sub_329B1, sub_32C62, sub_3327A)",
+   "57B, in=3, callee key_code_pending_drain (L13). Idle enter: clears the 4FD active latch and the 4893/4894 deferred requests, drains the current key, and parks the ds:0 key slot at 100h (idle code). Pair of key_state_machine_tick (which sets 101h). conf: med-high", "med-high"),
+ "sub_3467D": ("key_state_machine_tick",
+   "NEAR retn (144B): reentrancy gate ds:4FD (set on entry); cs:2E17B -> drain(103h or 102h per cs:2E171); cs:2E17B (2E17C+1) -> drain(103h); ds:4893 -> resolve(4); ds:4894 -> resolve(3); if ds:0!=101h: if cs:2E17C: drain(ds:0), clear; ds:0=101h; retn; 8 callers (sub_329B1, sub_32C62, sub_33116, sub_331E4, sub_3327A, sub_33443, sub_3489D, sub_4466E)",
+   "144B, in=8, callees key_code_resolve_entry (L12) + key_code_pending_drain (L13). Key state machine tick: services the 2E17A/2E17C pending latches with codes 102h/103h, drains the 4893/4894 deferred requests, and parks the ds:0 key slot at 101h. Pair of key_state_idle_enter (which sets 100h). conf: med-high", "med-high"),
+ "sub_34832": ("key_103_range_step_gate",
+   "FAR retf (75B): ds=54AF; if ds:44F4E!=0 skip; if bx>0 and cs:2E17B==4 and cs:2E171==0: key_event_gate_check(ax=103h, bx=3, cx=1, dx=0); elif cs:2E171==0: key_code_pending_drain(103h); else sbi_range_step_far_entry; pop ds/si; retf; 2 callers (sub_303C4, sub_4697E)",
+   "75B far, in=2, callees sbi_range_step_far_entry (L5) + key_event_gate_check (L13) + key_code_pending_drain (L13). Mode-103h range gate: when 44F4E is clear and the 2E17B state is 4 with no 2E171 override, forwards key 103h through the latch gate; otherwise drains it or steps the range. conf: med", "med"),
+ "sub_396D7": ("obj_fuel_exhaust_step",
+   "NEAR retn (113B): cl=flag_byte_get(); cost=0Ch<<cl; farobj_tile_copy_resolve; if [si+32]: accumulate cost into 32-bit bx:cx; [si+8:0A]-=cost; negative -> store back, ax=0; else ax=7FFFh; [si+56]=ax (old in bx); if new==0 and old!=0 and [si+32]: key 10Ch, bx=2, cx=1, dx=[si+7Ah] -> range_key_event_dispatch; retn; 4 callers (sub_386F2, sub_38CF3, sub_395DF, sub_495DF)",
+   "113B, in=4, callees flag_byte_get (L0) + farobj_tile_copy_resolve (L2) + range_key_event_dispatch (L13). Fuel/budget decrement: subtracts the flag-scaled 0Ch<<n cost from the record's 32-bit +8 counter, publishes the remaining clamped value at +56, and fires key 10Ch (exhaustion event, dx=[+7Ah]) on the 0-crossing. conf: med", "med"),
+}
+names=[v[0] for v in analysis.values()]
+assert len(analysis)==11, len(analysis)
+assert len(set(names))==11, "dups: %s"%[n for n in names if names.count(n)>1]
+bad=[n for n in names if not re.match(r'^[a-z_][a-z0-9_]*$',n)]
+assert not bad, bad
+nonascii=[(k,f) for k,v in analysis.items() for f in (v[1],v[2]) for ch in f if ord(ch)>127]
+assert not nonascii, nonascii
+txt=io.open('registry/naming.yaml',encoding='utf-8').read()
+existing=set(re.findall(r'name:\s*([a-z_][a-z0-9_]*)',txt))
+coll=[n for n in names if n in existing]
+print("collisions:", coll)
+print("total:", len(names), "OK:", not coll)
+json.dump(analysis, open('analysis/ida_falconcd/level14_names.json','w'), indent=1)
+print("wrote level14_names.json")
+for k,(n,s,note,c) in sorted(analysis.items(), key=lambda x:x[1][0]):
+    print("  %-34s conf=%s" % (n,c))
