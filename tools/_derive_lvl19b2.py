@@ -1,0 +1,108 @@
+"""Validate and emit L19 Batch 2 names (35 fns) -> level19_batch2_names.json."""
+import json, re, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+NAMING = ROOT / "registry" / "naming.yaml"
+OUT = ROOT / "analysis" / "ida_falconcd" / "level19_batch2_names.json"
+
+NAMES = {
+    "sub_33443": ("far_mode_event_dispatch", "high",
+        "2688B FAR hub, in=19, 137 callees. Multi-entry mode/key event dispatch: many retf handlers keyed by xlat_mask_setbit_47e codes, mouse_buttons_test, flag_block_zero_5762_5c63, module/EMS/hud callees; main game mode switchboard."),
+    "sub_38CF3": ("viewobj_screen_project_step", "high",
+        "2284B, in=15. Object screen-project/scale step: fixed-point imul with ds:1350/1352/1354/1356 scale factors, self-modifying cs:locret_377E1/loc_377DC, farobj_rect_ratio_build, obj_fuel_exhaust_step, tile_quad_sample."),
+    "sub_4CD1D": ("farobj_move_accumulate_step", "high",
+        "1706B, in=2 (sub_2FEF2, main loop). Farobj movement: pos_move_angle_gate, fixed_vec3_accumulate_a, vec_transform_scale, farobj_field2e_zero_dispatch."),
+    "sub_3BB8F": ("farobj_record_ops_exec", "high",
+        "1365B, in=10. Farobj record op-stream exec: op_dispatch, far_obj_field_call, bitmap_clear_6310, farobj_table_snapshot; callers include tile_object_interpreter and main loop."),
+    "sub_48EC7": ("tile_grid_scan_step", "high",
+        "1161B, in=1 (sub_45057). Nested tile-grid scan: tile_pos_store_ccd, entity_step_flags, hw_flag_bit1_22e_extract, vec_transform_scale_far; 3334h tile-size divide loop."),
+    "sub_4EAF8": ("ems_entity_slot_script", "medium",
+        "987B, in=1 (far_mode_event_dispatch). EMS entity slot create script: entity_slot_create, entity_record_table_build, state_word_10219_get, flag1084c_get, int 7Ah EMS ops, sub_2EB65/sub_484C1."),
+    "sub_3E16B": ("farobj_cmd_accum_sweep", "medium",
+        "865B, in=1 (sub_307A5). Farobj cmd/entity accum sweep: farobj_cmd_sweep, farobj_entity_accum_sweep, farobj_entity_accum_copy, sprite_clip_bounds_check, viewobj_5982_scan100."),
+    "sub_4A4F6": ("hud_map_overlay_step", "medium",
+        "718B, in=2 (sub_45057, sub_46D42). HUD/map overlay frame: map_overlay_clip_frame, hud_map_overlay_frame, pos_move_angle_step, obj_range_slot_activate, farobj_record_build_6b58."),
+    "sub_484C1": ("record_script_coord_entry", "medium",
+        "604B, in=3. Record-script coordinate dispatch entries: entity_step_flags, hw_flag_bit2/3_22e_set, key_input_state_reset, record_script_slots_run, record_script_coord_dispatch, farobj_record_build_6b58_ch."),
+    "sub_327BE": ("farobj_rect_state_setup", "high",
+        "499B, in=24. Farobj rect compute/state setup hub: farobj_rect_compute_store, state_farptr_dxax_store, state_word_22e27_set, angle_adjusted_copy, param454_apply_triple; widely called by L19 step fns."),
+    "sub_3327A": ("key_event_mode_gate", "medium",
+        "452B, in=3. Key-event gated mode entry: key_event_gated_process, xlat_mask_setbit_47e, hud_data_panel_draw, key_state_machine_tick, key_event_gate_check, ems_state_flags_709f."),
+    "sub_3141A": ("view_pos_matrix_step", "medium",
+        "418B, in=3. View position/matrix step handlers: fixed_matrix_mul, pos_clamp_40, entity_seg_reset, tile_quad_sample, farobj_rect_ratio_build, farobj_tile_copy_resolve, stream_stop_reload_gate."),
+    "sub_2FD42": ("game_frame_pipeline_step", "high",
+        "387B, in=7. Core per-frame pipeline under main_frame_update_loop: joystick_poll, terrain_frame_update_driver, entity_update_batch, farobj_sort_and_step, viewobj scans, hud_readout_render, aircraft_motion_step."),
+    "sub_487B2": ("viewport_bounds_setup", "low",
+        "356B, in=1 (sub_3001E). Viewport bounds init: writes 800h/6000h/9E7h view constants into 63FD tables, sprite_project_screen_y, sub_4111F draw."),
+    "sub_361FC": ("tile_strip_project_draw", "low",
+        "331B, in=2. Tile strip screen projection: tile_strip_sample_draw, segment_clip_test, 555h center offset, 4..13Bh/4..C3h clip box, ds:4816h-4822h strip coords."),
+    "sub_4CB62": ("farobj_record_flag_ops", "medium",
+        "319B, in=6. Farobj record flag bit ops: test [di+2] flags, shl/shr [di+0Ah]/[di+0Ch] scale fields, sub_3C4F2/sub_3CE92/sub_44352/sub_446CB."),
+    "sub_4DE76": ("ems_opstream_buffer_append", "low",
+        "286B, in=1 (sub_4E90E). EMS op-stream buffer append: ems_map_seg_10231, farobj_slot_sweep, stosb/stosw into cs:word_2E10E with 72E0h bound check."),
+    "sub_47937": ("nav_table_entry_resolve", "low",
+        "270B, in=1 (sub_34954). Nav table entry resolve: entity_step_flags, farobj_tile_copy_resolve, farptr_table_get, table 484Eh/4866h in 54AFh, word_58F9A mode gate."),
+    "sub_41D21": ("hud_object_text_format", "low",
+        "256B, in=1 (far_mode_event_dispatch). Object text format/draw: int32_to_ascii_short for altitude/heading strings with T/S/- literals, farobj_table_snapshot, object_farptr_dispatch."),
+    "sub_32B7F": ("entity_slot_cycle_select", "medium",
+        "227B, in=3. Entity slot cycle select: table 487Eh nibble lookup, [bx+si+0AEh] occupancy test, sub_39AEE audio, sub_45F2C draw, byte_343E9 mode branch."),
+    "sub_33116": ("key_mode_switch_step", "low",
+        "206B, in=1 (sub_3343E). Key-driven mode switch step: key_state_machine_tick, entity_search_63fd, sub_34923, sub_322E5, sub_331E4; ds:40Ah/352h state words."),
+    "sub_4227A": ("hud_track_project_draw", "low",
+        "197B, in=1 (far_mode_event_dispatch). HUD track project+draw: viewvec3_project_track_max, farobj_table_snapshot, hud_data_panel_draw, sub_327BE rect store."),
+    "sub_40EA8": ("farobj_slot_scan_cycle", "medium",
+        "181B, in=4. Farobj slot scan/cycle: farobj_table_snapshot, sub_30EBE, flag_quad_state_clear; loc_33771+4 slot index with 10h wrap."),
+    "sub_4FA8A": ("palette_delta_blend", "low",
+        "169B, in=1 (sub_2F043). Palette delta blend: imul blend of 92h bytes from 0A670h into 0A970h keyed by byte_85061/2/3 hw config; flag_gate_zero_abc."),
+    "sub_385AD": ("menu_list_script_step", "low",
+        "152B, in=3. Menu list frame/script step: farwrap_25a1c list draw, dispatch_220ec_stub, bit_scan_dx_e on [si+0CAh], record_script_slots_run, sub_37818."),
+    "sub_458F4": ("entity_mask_bitstep", "low",
+        "130B, in=1 (sub_2FEF2). Entity mask bit-step: table 1734h farptr scan, ds:4897h phase counter, es:[di+74h] bit tests, sub_2C0EF/sub_2C0F9, sub_35934."),
+    "sub_39AEE": ("mode_audio_state_step", "low",
+        "121B, in=6. Mode audio state step: ds:4AC2h/4AC3h state machine, sbi_stream_stop_load, sub_2C275/sub_2C27F far audio, ds:4ABDh/4ACAh volume."),
+    "sub_2EFE0": ("viewvec_loop_project", "low",
+        "99B, in=4. Viewvec loop project: fixed_vec3_accumulate_b x2, viewvec3_project_track_max, hw_config_copy_85061, ds:8/0Ah/0Ch scale setup."),
+    "sub_31E6D": ("terrain_menu_triple_step", "low",
+        "82B, in=1 (sub_31CA1). Terrain triple-menu step: farwrap_25a1c, far_cb_6 with al=34h/35h/38h, three 4F3h/4ECh/558h slots via sub_31EBF."),
+    "sub_425FA": ("hud_project_gate_draw", "low",
+        "70B, in=1 (far_mode_event_dispatch). Gated HUD project draw: viewvec3_project_track_max, farobj_table_snapshot, sub_327BE rect store, al=6 track mode."),
+    "sub_4BF5A": ("farobj_range_bounds_test", "low",
+        "49B, in=1 (farobj_cmd_accum_sweep). Farobj range bounds test: CF set/clear on 28h window vs 697Bh base words loc_697B3+1/+3."),
+    "sub_4FCBE": ("terrain_vm_sweep_kick", "low",
+        "38B, in=3. Terrain VM sweep kick: terrain_vm_sweep_sample with byte_8504E, sets byte_8505B bit7, copies 168h words 0A556h->0A856h."),
+    "sub_37051": ("mode_byte_dispatch", "low",
+        "27B, in=4. Mode byte dispatch: returns cs:byte_343E9 in AL, tail-call sub_35B43 with current entity."),
+    "sub_67AD3": ("menu_page_jump_stub", "low",
+        "14B, in=1 (menu_page_draw_step). Menu page jump stub: pushes 602Eh/1506h page args into sub_6A5BD, tail-jumps sub_66E62."),
+    "sub_3343E": ("key_mode_switch_tramp", "low",
+        "5B, in=2. Far trampoline: push cs; call key_mode_switch_step; retf."),
+}
+
+def main():
+    keys = list(NAMES)
+    assert len(keys) == 35, len(keys)
+    names = [NAMES[k][0] for k in keys]
+    assert len(set(names)) == 35, "duplicate names"
+    for n in names:
+        assert re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", n), n
+        assert not n.startswith(("sub_", "loc_", "off_", "byte_", "word_", "dword_", "unk_", "seg_")), n
+        assert n.isascii(), n
+    existing = set(re.findall(r"^\s+name: (\S+)", NAMING.read_text(encoding="utf-8"), re.M))
+    coll = [n for n in names if n in existing]
+    if coll:
+        print("COLLISION:", coll)
+        sys.exit(1)
+    out = {}
+    for k in keys:
+        name, conf, notes = NAMES[k]
+        out[k] = [name, notes, notes + " conf: " + conf, conf]
+    OUT.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8", newline="\n")
+    from collections import Counter
+    print("wrote", OUT, len(out))
+    print("confidence:", dict(Counter(v[3] for v in out.values())))
+    for k in keys:
+        print(f"  {k:12s} -> {out[k][0]}")
+
+if __name__ == "__main__":
+    main()

@@ -606,3 +606,4 @@
   excluded from bottom-up naming.
 
 - L19 batches 2-6 (171 fns remaining of the 254-node giant SCC; level19_batch2.txt..batch6.txt ready) -- continue one finding per batch; then L20 (25) + L21 (2) to hit queue 0.
+- L19 batches 3–6 (136 fns remaining of the giant SCC; `level19_batch3.txt`..`batch6.txt` ready) — continue one finding per batch; then L20 (25) + L21 (2) to hit queue 0.

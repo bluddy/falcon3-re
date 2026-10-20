@@ -17531,6 +17531,427 @@ routines:
     notes: "460B, in=2: one view/terrain frame step. Invokes map_view_entity_project and farobj_snapshot_scan. Called from the main loop. conf: med"
     updated: "2026-10-19"
 
+  - ea: 0x4EAF8
+    seg: 0x4EAF
+    ofs: 0x8
+    size: 987
+    far: true
+    class: ASM
+    hypothesis: "ems_entity_slot_script"
+    sig: "987B, in=1 (far_mode_event_dispatch). EMS entity slot create script: entity_slot_create, entity_record_table_build, state_word_10219_get, flag1084c_get, int 7Ah EMS ops, sub_2EB65/sub_484C1."
+    port_status: unported
+    verified: null
+    notes: "987B, in=1 (far_mode_event_dispatch). EMS entity slot create script: entity_slot_create, entity_record_table_build, state_word_10219_get, flag1084c_get, int 7Ah EMS ops, sub_2EB65/sub_484C1. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x4DE76
+    seg: 0x4DE7
+    ofs: 0x6
+    size: 286
+    far: true
+    class: ASM
+    hypothesis: "ems_opstream_buffer_append"
+    sig: "286B, in=1 (sub_4E90E). EMS op-stream buffer append: ems_map_seg_10231, farobj_slot_sweep, stosb/stosw into cs:word_2E10E with 72E0h bound check."
+    port_status: unported
+    verified: null
+    notes: "286B, in=1 (sub_4E90E). EMS op-stream buffer append: ems_map_seg_10231, farobj_slot_sweep, stosb/stosw into cs:word_2E10E with 72E0h bound check. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x458F4
+    seg: 0x458F
+    ofs: 0x4
+    size: 130
+    far: true
+    class: ASM
+    hypothesis: "entity_mask_bitstep"
+    sig: "130B, in=1 (sub_2FEF2). Entity mask bit-step: table 1734h farptr scan, ds:4897h phase counter, es:[di+74h] bit tests, sub_2C0EF/sub_2C0F9, sub_35934."
+    port_status: unported
+    verified: null
+    notes: "130B, in=1 (sub_2FEF2). Entity mask bit-step: table 1734h farptr scan, ds:4897h phase counter, es:[di+74h] bit tests, sub_2C0EF/sub_2C0F9, sub_35934. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x32B7F
+    seg: 0x32B7
+    ofs: 0xF
+    size: 227
+    far: false
+    class: ASM
+    hypothesis: "entity_slot_cycle_select"
+    sig: "227B, in=3. Entity slot cycle select: table 487Eh nibble lookup, [bx+si+0AEh] occupancy test, sub_39AEE audio, sub_45F2C draw, byte_343E9 mode branch."
+    port_status: unported
+    verified: null
+    notes: "227B, in=3. Entity slot cycle select: table 487Eh nibble lookup, [bx+si+0AEh] occupancy test, sub_39AEE audio, sub_45F2C draw, byte_343E9 mode branch. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x33443
+    seg: 0x3344
+    ofs: 0x3
+    size: 2688
+    far: true
+    class: ASM
+    hypothesis: "far_mode_event_dispatch"
+    sig: "2688B FAR hub, in=19, 137 callees. Multi-entry mode/key event dispatch: many retf handlers keyed by xlat_mask_setbit_47e codes, mouse_buttons_test, flag_block_zero_5762_5c63, module/EMS/hud callees; main game mode switchboard."
+    port_status: unported
+    verified: null
+    notes: "2688B FAR hub, in=19, 137 callees. Multi-entry mode/key event dispatch: many retf handlers keyed by xlat_mask_setbit_47e codes, mouse_buttons_test, flag_block_zero_5762_5c63, module/EMS/hud callees; main game mode switchboard. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x3E16B
+    seg: 0x3E16
+    ofs: 0xB
+    size: 865
+    far: true
+    class: ASM
+    hypothesis: "farobj_cmd_accum_sweep"
+    sig: "865B, in=1 (sub_307A5). Farobj cmd/entity accum sweep: farobj_cmd_sweep, farobj_entity_accum_sweep, farobj_entity_accum_copy, sprite_clip_bounds_check, viewobj_5982_scan100."
+    port_status: unported
+    verified: null
+    notes: "865B, in=1 (sub_307A5). Farobj cmd/entity accum sweep: farobj_cmd_sweep, farobj_entity_accum_sweep, farobj_entity_accum_copy, sprite_clip_bounds_check, viewobj_5982_scan100. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x4CD1D
+    seg: 0x4CD1
+    ofs: 0xD
+    size: 1706
+    far: true
+    class: ASM
+    hypothesis: "farobj_move_accumulate_step"
+    sig: "1706B, in=2 (sub_2FEF2, main loop). Farobj movement: pos_move_angle_gate, fixed_vec3_accumulate_a, vec_transform_scale, farobj_field2e_zero_dispatch."
+    port_status: unported
+    verified: null
+    notes: "1706B, in=2 (sub_2FEF2, main loop). Farobj movement: pos_move_angle_gate, fixed_vec3_accumulate_a, vec_transform_scale, farobj_field2e_zero_dispatch. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x4BF5A
+    seg: 0x4BF5
+    ofs: 0xA
+    size: 49
+    far: true
+    class: ASM
+    hypothesis: "farobj_range_bounds_test"
+    sig: "49B, in=1 (farobj_cmd_accum_sweep). Farobj range bounds test: CF set/clear on 28h window vs 697Bh base words loc_697B3+1/+3."
+    port_status: unported
+    verified: null
+    notes: "49B, in=1 (farobj_cmd_accum_sweep). Farobj range bounds test: CF set/clear on 28h window vs 697Bh base words loc_697B3+1/+3. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x4CB62
+    seg: 0x4CB6
+    ofs: 0x2
+    size: 319
+    far: true
+    class: ASM
+    hypothesis: "farobj_record_flag_ops"
+    sig: "319B, in=6. Farobj record flag bit ops: test [di+2] flags, shl/shr [di+0Ah]/[di+0Ch] scale fields, sub_3C4F2/sub_3CE92/sub_44352/sub_446CB."
+    port_status: unported
+    verified: null
+    notes: "319B, in=6. Farobj record flag bit ops: test [di+2] flags, shl/shr [di+0Ah]/[di+0Ch] scale fields, sub_3C4F2/sub_3CE92/sub_44352/sub_446CB. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x3BB8F
+    seg: 0x3BB8
+    ofs: 0xF
+    size: 1365
+    far: false
+    class: ASM
+    hypothesis: "farobj_record_ops_exec"
+    sig: "1365B, in=10. Farobj record op-stream exec: op_dispatch, far_obj_field_call, bitmap_clear_6310, farobj_table_snapshot; callers include tile_object_interpreter and main loop."
+    port_status: unported
+    verified: null
+    notes: "1365B, in=10. Farobj record op-stream exec: op_dispatch, far_obj_field_call, bitmap_clear_6310, farobj_table_snapshot; callers include tile_object_interpreter and main loop. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x327BE
+    seg: 0x327B
+    ofs: 0xE
+    size: 499
+    far: true
+    class: ASM
+    hypothesis: "farobj_rect_state_setup"
+    sig: "499B, in=24. Farobj rect compute/state setup hub: farobj_rect_compute_store, state_farptr_dxax_store, state_word_22e27_set, angle_adjusted_copy, param454_apply_triple; widely called by L19 step fns."
+    port_status: unported
+    verified: null
+    notes: "499B, in=24. Farobj rect compute/state setup hub: farobj_rect_compute_store, state_farptr_dxax_store, state_word_22e27_set, angle_adjusted_copy, param454_apply_triple; widely called by L19 step fns. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x40EA8
+    seg: 0x40EA
+    ofs: 0x8
+    size: 181
+    far: true
+    class: ASM
+    hypothesis: "farobj_slot_scan_cycle"
+    sig: "181B, in=4. Farobj slot scan/cycle: farobj_table_snapshot, sub_30EBE, flag_quad_state_clear; loc_33771+4 slot index with 10h wrap."
+    port_status: unported
+    verified: null
+    notes: "181B, in=4. Farobj slot scan/cycle: farobj_table_snapshot, sub_30EBE, flag_quad_state_clear; loc_33771+4 slot index with 10h wrap. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x2FD42
+    seg: 0x2FD4
+    ofs: 0x2
+    size: 387
+    far: false
+    class: ASM
+    hypothesis: "game_frame_pipeline_step"
+    sig: "387B, in=7. Core per-frame pipeline under main_frame_update_loop: joystick_poll, terrain_frame_update_driver, entity_update_batch, farobj_sort_and_step, viewobj scans, hud_readout_render, aircraft_motion_step."
+    port_status: unported
+    verified: null
+    notes: "387B, in=7. Core per-frame pipeline under main_frame_update_loop: joystick_poll, terrain_frame_update_driver, entity_update_batch, farobj_sort_and_step, viewobj scans, hud_readout_render, aircraft_motion_step. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x4A4F6
+    seg: 0x4A4F
+    ofs: 0x6
+    size: 718
+    far: true
+    class: ASM
+    hypothesis: "hud_map_overlay_step"
+    sig: "718B, in=2 (sub_45057, sub_46D42). HUD/map overlay frame: map_overlay_clip_frame, hud_map_overlay_frame, pos_move_angle_step, obj_range_slot_activate, farobj_record_build_6b58."
+    port_status: unported
+    verified: null
+    notes: "718B, in=2 (sub_45057, sub_46D42). HUD/map overlay frame: map_overlay_clip_frame, hud_map_overlay_frame, pos_move_angle_step, obj_range_slot_activate, farobj_record_build_6b58. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x41D21
+    seg: 0x41D2
+    ofs: 0x1
+    size: 256
+    far: true
+    class: ASM
+    hypothesis: "hud_object_text_format"
+    sig: "256B, in=1 (far_mode_event_dispatch). Object text format/draw: int32_to_ascii_short for altitude/heading strings with T/S/- literals, farobj_table_snapshot, object_farptr_dispatch."
+    port_status: unported
+    verified: null
+    notes: "256B, in=1 (far_mode_event_dispatch). Object text format/draw: int32_to_ascii_short for altitude/heading strings with T/S/- literals, farobj_table_snapshot, object_farptr_dispatch. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x425FA
+    seg: 0x425F
+    ofs: 0xA
+    size: 70
+    far: true
+    class: ASM
+    hypothesis: "hud_project_gate_draw"
+    sig: "70B, in=1 (far_mode_event_dispatch). Gated HUD project draw: viewvec3_project_track_max, farobj_table_snapshot, sub_327BE rect store, al=6 track mode."
+    port_status: unported
+    verified: null
+    notes: "70B, in=1 (far_mode_event_dispatch). Gated HUD project draw: viewvec3_project_track_max, farobj_table_snapshot, sub_327BE rect store, al=6 track mode. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x4227A
+    seg: 0x4227
+    ofs: 0xA
+    size: 197
+    far: true
+    class: ASM
+    hypothesis: "hud_track_project_draw"
+    sig: "197B, in=1 (far_mode_event_dispatch). HUD track project+draw: viewvec3_project_track_max, farobj_table_snapshot, hud_data_panel_draw, sub_327BE rect store."
+    port_status: unported
+    verified: null
+    notes: "197B, in=1 (far_mode_event_dispatch). HUD track project+draw: viewvec3_project_track_max, farobj_table_snapshot, hud_data_panel_draw, sub_327BE rect store. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x3327A
+    seg: 0x3327
+    ofs: 0xA
+    size: 452
+    far: true
+    class: ASM
+    hypothesis: "key_event_mode_gate"
+    sig: "452B, in=3. Key-event gated mode entry: key_event_gated_process, xlat_mask_setbit_47e, hud_data_panel_draw, key_state_machine_tick, key_event_gate_check, ems_state_flags_709f."
+    port_status: unported
+    verified: null
+    notes: "452B, in=3. Key-event gated mode entry: key_event_gated_process, xlat_mask_setbit_47e, hud_data_panel_draw, key_state_machine_tick, key_event_gate_check, ems_state_flags_709f. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x33116
+    seg: 0x3311
+    ofs: 0x6
+    size: 206
+    far: true
+    class: ASM
+    hypothesis: "key_mode_switch_step"
+    sig: "206B, in=1 (sub_3343E). Key-driven mode switch step: key_state_machine_tick, entity_search_63fd, sub_34923, sub_322E5, sub_331E4; ds:40Ah/352h state words."
+    port_status: unported
+    verified: null
+    notes: "206B, in=1 (sub_3343E). Key-driven mode switch step: key_state_machine_tick, entity_search_63fd, sub_34923, sub_322E5, sub_331E4; ds:40Ah/352h state words. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x3343E
+    seg: 0x3343
+    ofs: 0xE
+    size: 5
+    far: true
+    class: ASM
+    hypothesis: "key_mode_switch_tramp"
+    sig: "5B, in=2. Far trampoline: push cs; call key_mode_switch_step; retf."
+    port_status: unported
+    verified: null
+    notes: "5B, in=2. Far trampoline: push cs; call key_mode_switch_step; retf. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x385AD
+    seg: 0x385A
+    ofs: 0xD
+    size: 152
+    far: false
+    class: ASM
+    hypothesis: "menu_list_script_step"
+    sig: "152B, in=3. Menu list frame/script step: farwrap_25a1c list draw, dispatch_220ec_stub, bit_scan_dx_e on [si+0CAh], record_script_slots_run, sub_37818."
+    port_status: unported
+    verified: null
+    notes: "152B, in=3. Menu list frame/script step: farwrap_25a1c list draw, dispatch_220ec_stub, bit_scan_dx_e on [si+0CAh], record_script_slots_run, sub_37818. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x67AD3
+    seg: 0x67AD
+    ofs: 0x3
+    size: 14
+    far: false
+    class: ASM
+    hypothesis: "menu_page_jump_stub"
+    sig: "14B, in=1 (menu_page_draw_step). Menu page jump stub: pushes 602Eh/1506h page args into sub_6A5BD, tail-jumps sub_66E62."
+    port_status: unported
+    verified: null
+    notes: "14B, in=1 (menu_page_draw_step). Menu page jump stub: pushes 602Eh/1506h page args into sub_6A5BD, tail-jumps sub_66E62. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x39AEE
+    seg: 0x39AE
+    ofs: 0xE
+    size: 121
+    far: false
+    class: ASM
+    hypothesis: "mode_audio_state_step"
+    sig: "121B, in=6. Mode audio state step: ds:4AC2h/4AC3h state machine, sbi_stream_stop_load, sub_2C275/sub_2C27F far audio, ds:4ABDh/4ACAh volume."
+    port_status: unported
+    verified: null
+    notes: "121B, in=6. Mode audio state step: ds:4AC2h/4AC3h state machine, sbi_stream_stop_load, sub_2C275/sub_2C27F far audio, ds:4ABDh/4ACAh volume. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x37051
+    seg: 0x3705
+    ofs: 0x1
+    size: 27
+    far: true
+    class: ASM
+    hypothesis: "mode_byte_dispatch"
+    sig: "27B, in=4. Mode byte dispatch: returns cs:byte_343E9 in AL, tail-call sub_35B43 with current entity."
+    port_status: unported
+    verified: null
+    notes: "27B, in=4. Mode byte dispatch: returns cs:byte_343E9 in AL, tail-call sub_35B43 with current entity. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x47937
+    seg: 0x4793
+    ofs: 0x7
+    size: 270
+    far: true
+    class: ASM
+    hypothesis: "nav_table_entry_resolve"
+    sig: "270B, in=1 (sub_34954). Nav table entry resolve: entity_step_flags, farobj_tile_copy_resolve, farptr_table_get, table 484Eh/4866h in 54AFh, word_58F9A mode gate."
+    port_status: unported
+    verified: null
+    notes: "270B, in=1 (sub_34954). Nav table entry resolve: entity_step_flags, farobj_tile_copy_resolve, farptr_table_get, table 484Eh/4866h in 54AFh, word_58F9A mode gate. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x4FA8A
+    seg: 0x4FA8
+    ofs: 0xA
+    size: 169
+    far: true
+    class: ASM
+    hypothesis: "palette_delta_blend"
+    sig: "169B, in=1 (sub_2F043). Palette delta blend: imul blend of 92h bytes from 0A670h into 0A970h keyed by byte_85061/2/3 hw config; flag_gate_zero_abc."
+    port_status: unported
+    verified: null
+    notes: "169B, in=1 (sub_2F043). Palette delta blend: imul blend of 92h bytes from 0A670h into 0A970h keyed by byte_85061/2/3 hw config; flag_gate_zero_abc. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x484C1
+    seg: 0x484C
+    ofs: 0x1
+    size: 604
+    far: true
+    class: ASM
+    hypothesis: "record_script_coord_entry"
+    sig: "604B, in=3. Record-script coordinate dispatch entries: entity_step_flags, hw_flag_bit2/3_22e_set, key_input_state_reset, record_script_slots_run, record_script_coord_dispatch, farobj_record_build_6b58_ch."
+    port_status: unported
+    verified: null
+    notes: "604B, in=3. Record-script coordinate dispatch entries: entity_step_flags, hw_flag_bit2/3_22e_set, key_input_state_reset, record_script_slots_run, record_script_coord_dispatch, farobj_record_build_6b58_ch. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x31E6D
+    seg: 0x31E6
+    ofs: 0xD
+    size: 82
+    far: false
+    class: ASM
+    hypothesis: "terrain_menu_triple_step"
+    sig: "82B, in=1 (sub_31CA1). Terrain triple-menu step: farwrap_25a1c, far_cb_6 with al=34h/35h/38h, three 4F3h/4ECh/558h slots via sub_31EBF."
+    port_status: unported
+    verified: null
+    notes: "82B, in=1 (sub_31CA1). Terrain triple-menu step: farwrap_25a1c, far_cb_6 with al=34h/35h/38h, three 4F3h/4ECh/558h slots via sub_31EBF. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x4FCBE
+    seg: 0x4FCB
+    ofs: 0xE
+    size: 38
+    far: true
+    class: ASM
+    hypothesis: "terrain_vm_sweep_kick"
+    sig: "38B, in=3. Terrain VM sweep kick: terrain_vm_sweep_sample with byte_8504E, sets byte_8505B bit7, copies 168h words 0A556h->0A856h."
+    port_status: unported
+    verified: null
+    notes: "38B, in=3. Terrain VM sweep kick: terrain_vm_sweep_sample with byte_8504E, sets byte_8505B bit7, copies 168h words 0A556h->0A856h. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x48EC7
+    seg: 0x48EC
+    ofs: 0x7
+    size: 1161
+    far: true
+    class: ASM
+    hypothesis: "tile_grid_scan_step"
+    sig: "1161B, in=1 (sub_45057). Nested tile-grid scan: tile_pos_store_ccd, entity_step_flags, hw_flag_bit1_22e_extract, vec_transform_scale_far; 3334h tile-size divide loop."
+    port_status: unported
+    verified: null
+    notes: "1161B, in=1 (sub_45057). Nested tile-grid scan: tile_pos_store_ccd, entity_step_flags, hw_flag_bit1_22e_extract, vec_transform_scale_far; 3334h tile-size divide loop. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x361FC
+    seg: 0x361F
+    ofs: 0xC
+    size: 331
+    far: false
+    class: ASM
+    hypothesis: "tile_strip_project_draw"
+    sig: "331B, in=2. Tile strip screen projection: tile_strip_sample_draw, segment_clip_test, 555h center offset, 4..13Bh/4..C3h clip box, ds:4816h-4822h strip coords."
+    port_status: unported
+    verified: null
+    notes: "331B, in=2. Tile strip screen projection: tile_strip_sample_draw, segment_clip_test, 555h center offset, 4..13Bh/4..C3h clip box, ds:4816h-4822h strip coords. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x3141A
+    seg: 0x3141
+    ofs: 0xA
+    size: 418
+    far: true
+    class: ASM
+    hypothesis: "view_pos_matrix_step"
+    sig: "418B, in=3. View position/matrix step handlers: fixed_matrix_mul, pos_clamp_40, entity_seg_reset, tile_quad_sample, farobj_rect_ratio_build, farobj_tile_copy_resolve, stream_stop_reload_gate."
+    port_status: unported
+    verified: null
+    notes: "418B, in=3. View position/matrix step handlers: fixed_matrix_mul, pos_clamp_40, entity_seg_reset, tile_quad_sample, farobj_rect_ratio_build, farobj_tile_copy_resolve, stream_stop_reload_gate. conf: medium"
+    updated: "2026-10-19"
+  - ea: 0x38CF3
+    seg: 0x38CF
+    ofs: 0x3
+    size: 2284
+    far: true
+    class: ASM
+    hypothesis: "viewobj_screen_project_step"
+    sig: "2284B, in=15. Object screen-project/scale step: fixed-point imul with ds:1350/1352/1354/1356 scale factors, self-modifying cs:locret_377E1/loc_377DC, farobj_rect_ratio_build, obj_fuel_exhaust_step, tile_quad_sample."
+    port_status: unported
+    verified: null
+    notes: "2284B, in=15. Object screen-project/scale step: fixed-point imul with ds:1350/1352/1354/1356 scale factors, self-modifying cs:locret_377E1/loc_377DC, farobj_rect_ratio_build, obj_fuel_exhaust_step, tile_quad_sample. conf: high"
+    updated: "2026-10-19"
+  - ea: 0x487B2
+    seg: 0x487B
+    ofs: 0x2
+    size: 356
+    far: true
+    class: ASM
+    hypothesis: "viewport_bounds_setup"
+    sig: "356B, in=1 (sub_3001E). Viewport bounds init: writes 800h/6000h/9E7h view constants into 63FD tables, sprite_project_screen_y, sub_4111F draw."
+    port_status: unported
+    verified: null
+    notes: "356B, in=1 (sub_3001E). Viewport bounds init: writes 800h/6000h/9E7h view constants into 63FD tables, sprite_project_screen_y, sub_4111F draw. conf: low"
+    updated: "2026-10-19"
+  - ea: 0x2EFE0
+    seg: 0x2EFE
+    ofs: 0x0
+    size: 99
+    far: true
+    class: ASM
+    hypothesis: "viewvec_loop_project"
+    sig: "99B, in=4. Viewvec loop project: fixed_vec3_accumulate_b x2, viewvec3_project_track_max, hw_config_copy_85061, ds:8/0Ah/0Ch scale setup."
+    port_status: unported
+    verified: null
+    notes: "99B, in=4. Viewvec loop project: fixed_vec3_accumulate_b x2, viewvec3_project_track_max, hw_config_copy_85061, ds:8/0Ah/0Ch scale setup. conf: low"
+    updated: "2026-10-19"
+
 counts:
   tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)
