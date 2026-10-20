@@ -4800,4 +4800,50 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 91 - L19 Batch 5 of 6: 34 named, L19 queue 68 -> 34
+(`named` 1,536 -> **1,570**)
+
+Fifth slice of the giant Level-19 SCC. 34 of 68 named from
+`level19_batch5.txt` (6,023 ln). Highlights:
+
+**`farobj_record_bulk_copy`** (sub_30CB8, 518B, **in=25 - the most
+called helper in the batch**): bulk lodsb/lodsw field copy through
+the 500Ch:38h (74h) and 500Ch:4E8h (28h) record-pointer tables;
+callers span far_mode_event_dispatch, farobj_project_transform_write,
+and every farobj hub. **`mode_session_state_reset`** (sub_32C62,
+1204B, in=9): key_input_state_reset + op_bitmap_sweep_clear +
+ems_seg_free_21_49 + farobj_slot_create_ems + ems_gate_10218_run +
+hw_config_copy_22e_3e8, with the far request bodies at
+loc_32FE8/3303A/330B6. **`farobj_slot_project_step`** (sub_3C4F2,
+1983B, in=5): 16-slot 54AF:386Fh walk with selection compare vs
+word_55E50/word_2E104 feeding viewobj_project_select.
+
+**`tile_sample_script_dispatch`** (sub_386F2, in=13): rotates
+ds:816h/818h into ds:804h..80Ah then dispatch_220a4_stub ->
+record_script_exec_main. **`game_config_apply_init`** (sub_2F6D0,
+1123B, **in=16**): global config apply - overlay_seg_word_read,
+int15_joystick_detect, entity_setup_step, terrain_matrix_advance_11d04.
+**`hud_readout_timer_render`** (sub_46999): 0x40-row 63FD:10Eh
+countdown at word_2E112 rate -> hud_readout_render +
+hud_field0c/14_value_draw. **`ui_slot_filter_predicate`** (sub_4289E,
+in=2, ui_menu_panel_init + ui_loadout_menu_enter): the boolean slot
+filters used by menu init.
+
+**Also named:** ems_stream_pointer_step, event_table_name_fill,
+terrain_state_reinit, farobj_entity_attr_setup, farobj_class16_record_ops
++ farobj_flag_dispatch_step (the entity_record_table_ops pair),
+hud_entity_search_select, hud_panel_rect_compute, farobj_slot_table_copy,
+matrix_constants_setup, viewport_rect_state_store, viewport_strip_row_draw,
+mode_request_code_dispatch, mode_quadrant_accum_step, mode_strip_frame_step,
+farobj_fuel_burn_step (one-shot [si+5Ah] bit2 fuel burn), and the two
+phase trampolines mode_phase_apply_state/event.
+
+### Gates (all green)
+
+`naming.py check` **1,572** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,570/1,570
+function + 2/2 global**.
+
+---
+
 (append new findings below)

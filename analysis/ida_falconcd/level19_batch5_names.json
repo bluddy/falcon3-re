@@ -1,0 +1,206 @@
+{
+  "sub_45F2C": [
+    "viewport_strip_row_draw",
+    "2499B, in=2 (entity_slot_cycle_select, farobj_cfg_scan_step). Entry0 zeros 44D2h/487Ah/445Ah/4879h, 445Eh=-1, sets 4798h/479Ch=0A0h+6F8h and 479Ah/479Eh=32h+6FAh draw origins; body walks row table [bx+4866h] with ds:4876h/4464h gates feeding rot_segment_strip_draw; callees farobj_tile_copy_resolve + segment_clip_test + farptr_table_get.",
+    "2499B, in=2 (entity_slot_cycle_select, farobj_cfg_scan_step). Entry0 zeros 44D2h/487Ah/445Ah/4879h, 445Eh=-1, sets 4798h/479Ch=0A0h+6F8h and 479Ah/479Eh=32h+6FAh draw origins; body walks row table [bx+4866h] with ds:4876h/4464h gates feeding rot_segment_strip_draw; callees farobj_tile_copy_resolve + segment_clip_test + farptr_table_get. conf: medium",
+    "medium"
+  ],
+  "sub_3C4F2": [
+    "farobj_slot_project_step",
+    "1983B, in=5 (game_frame_pipeline_step, main_frame_update_loop, farobj_slot_update_driver, farobj_record_flag_ops, ui_menu_page_jump_stub). Self-mod 2EDB8/2EDBB config + flag_gate_zero_abc + 0D7Ah delta; 16-slot 54AF:386Fh walk ([si+0Ah] bit0, [si+8] bit80h, [si] vs word_55E50/cs:word_2E104 selection) with viewobj_project_select + bitmap_clear_6310.",
+    "1983B, in=5 (game_frame_pipeline_step, main_frame_update_loop, farobj_slot_update_driver, farobj_record_flag_ops, ui_menu_page_jump_stub). Self-mod 2EDB8/2EDBB config + flag_gate_zero_abc + 0D7Ah delta; 16-slot 54AF:386Fh walk ([si+0Ah] bit0, [si+8] bit80h, [si] vs word_55E50/cs:word_2E104 selection) with viewobj_project_select + bitmap_clear_6310. conf: high",
+    "high"
+  ],
+  "sub_386F2": [
+    "tile_sample_script_dispatch",
+    "1439B, in=13 (main pipeline, mode_session_state_reset, farobj hubs, terrain_menu_field_setup). Rotates ds:816h/818h (rol/and 7) + si/di into ds:804h..80Ah, then dispatch_220a4_stub -> record_script_exec_main; callees tile_quad_sample + tile_strip_sample_draw + farobj_rect_ratio_build + long_accumulate + fixed_matrix_mul.",
+    "1439B, in=13 (main pipeline, mode_session_state_reset, farobj hubs, terrain_menu_field_setup). Rotates ds:816h/818h (rol/and 7) + si/di into ds:804h..80Ah, then dispatch_220a4_stub -> record_script_exec_main; callees tile_quad_sample + tile_strip_sample_draw + farobj_rect_ratio_build + long_accumulate + fixed_matrix_mul. conf: high",
+    "high"
+  ],
+  "sub_32C62": [
+    "mode_session_state_reset",
+    "1204B, in=9 (key_event_table_dispatch, far_mode_event_dispatch, farobj_rect_state_setup, ui fns, terrain_vm_sweep_kick). Session reset hub: key_input_state_reset + handle_release_all + op_bitmap_sweep_clear + ems_seg_free_21_49 + farobj_slot_create_ems + ems_gate_10218_run + hw_config_copy_22e_3e8; far request bodies at loc_32FE8/3303A/330B6.",
+    "1204B, in=9 (key_event_table_dispatch, far_mode_event_dispatch, farobj_rect_state_setup, ui fns, terrain_vm_sweep_kick). Session reset hub: key_input_state_reset + handle_release_all + op_bitmap_sweep_clear + ems_seg_free_21_49 + farobj_slot_create_ems + ems_gate_10218_run + hw_config_copy_22e_3e8; far request bodies at loc_32FE8/3303A/330B6. conf: high",
+    "high"
+  ],
+  "sub_2F6D0": [
+    "game_config_apply_init",
+    "1123B, in=16 (incl. tail_bridge_2f6d0, farobj hubs, farobj_cfg_scan_step). Global config apply: self-mod 3322E/331CD patches, dword_2E13F store, 1F6Ch:5C79h far-call install, overlay_seg_word_read -> state_word_25499_set_clamp + state_byte_2549e_set, int15_joystick_detect, entity_setup_step, terrain_matrix_advance_11d04, pit_channel0_latch_read.",
+    "1123B, in=16 (incl. tail_bridge_2f6d0, farobj hubs, farobj_cfg_scan_step). Global config apply: self-mod 3322E/331CD patches, dword_2E13F store, 1F6Ch:5C79h far-call install, overlay_seg_word_read -> state_word_25499_set_clamp + state_byte_2549e_set, int15_joystick_detect, entity_setup_step, terrain_matrix_advance_11d04, pit_channel0_latch_read. conf: medium",
+    "medium"
+  ],
+  "sub_46999": [
+    "hud_readout_timer_render",
+    "937B, in=2 (main_frame_update_loop, game_frame_pipeline_step). 0x40-row walk at 63FD:10Eh decrementing [si] by cs:word_2E112 rate (word_2E11A = 40h*rate) and rendering through hud_readout_render + hud_field0c_value_draw + hud_field14_value_draw.",
+    "937B, in=2 (main_frame_update_loop, game_frame_pipeline_step). 0x40-row walk at 63FD:10Eh decrementing [si] by cs:word_2E112 rate (word_2E11A = 40h*rate) and rendering through hud_readout_render + hud_field0c_value_draw + hud_field14_value_draw. conf: high",
+    "high"
+  ],
+  "sub_44352": [
+    "farobj_entity_attr_setup",
+    "760B, in=3 (farobj_queue_drain_dispatch, farobj_record_flag_ops, farobj_move_accumulate_step). Writes [si+12h/13h/6/10h] attrs (bh|=5, [si+27h]=0FFh), bx&0Fh==0Bh -> dx=0FFFFh, cs:dword_2E13F+3 bit0 + cl/ax bit gates setting [si+13h] bit40h; viewobj_batch_project_test + handle_build_8f_block.",
+    "760B, in=3 (farobj_queue_drain_dispatch, farobj_record_flag_ops, farobj_move_accumulate_step). Writes [si+12h/13h/6/10h] attrs (bh|=5, [si+27h]=0FFh), bx&0Fh==0Bh -> dx=0FFFFh, cs:dword_2E13F+3 bit0 + cl/ax bit gates setting [si+13h] bit40h; viewobj_batch_project_test + handle_build_8f_block. conf: medium",
+    "medium"
+  ],
+  "sub_4D544": [
+    "farobj_class16_record_ops",
+    "638B, in=1 (entity_record_table_ops). Wrapper: farobj behavior dispatch (sub_3CE92) then r12_farptr_load_thunk -> [es:di+75h]==16h class check -> farobj_type_gate_test (sub_4BF8B); cs:loc_2ED47+4 bit40h gate; also range_key_event_dispatch + sprite_clip_bounds_check.",
+    "638B, in=1 (entity_record_table_ops). Wrapper: farobj behavior dispatch (sub_3CE92) then r12_farptr_load_thunk -> [es:di+75h]==16h class check -> farobj_type_gate_test (sub_4BF8B); cs:loc_2ED47+4 bit40h gate; also range_key_event_dispatch + sprite_clip_bounds_check. conf: medium",
+    "medium"
+  ],
+  "sub_30CB8": [
+    "farobj_record_bulk_copy",
+    "518B, in=25 - the most-called helper in the batch. Bulk lodsb/lodsw field copy through 500Ch:38h (cx=74h) and 500Ch:4E8h (cx=28h) record-pointer tables: [di+26h]/[di+27h] bytes, [di+22h] word, 9 movsw; callers incl. far_mode_event_dispatch, farobj_project_transform_write, mode_session_state_reset, farobj hubs.",
+    "518B, in=25 - the most-called helper in the batch. Bulk lodsb/lodsw field copy through 500Ch:38h (cx=74h) and 500Ch:4E8h (cx=28h) record-pointer tables: [di+26h]/[di+27h] bytes, [di+22h] word, 9 movsw; callers incl. far_mode_event_dispatch, farobj_project_transform_write, mode_session_state_reset, farobj hubs. conf: medium",
+    "medium"
+  ],
+  "sub_31138": [
+    "terrain_state_reinit",
+    "481B, in=5 (game_config_apply_init, sub_397FB, farobj_cmd_accum_sweep, sub_3FFEF, farobj_class_table_entry). entity_state_load (flag_block_zero_5762_5c63), ds:45Eh=1 + 7-word movsw, flag_byte_get -> 26h<<cl, stub_to_23966 slot3_tile_record_load, ds:20h/24h position add/sub, ds:45Fh gate, terrain_matrix_advance_11d04, ems_init, joystick_poll, farobj_tile_stream_build.",
+    "481B, in=5 (game_config_apply_init, sub_397FB, farobj_cmd_accum_sweep, sub_3FFEF, farobj_class_table_entry). entity_state_load (flag_block_zero_5762_5c63), ds:45Eh=1 + 7-word movsw, flag_byte_get -> 26h<<cl, stub_to_23966 slot3_tile_record_load, ds:20h/24h position add/sub, ds:45Fh gate, terrain_matrix_advance_11d04, ems_init, joystick_poll, farobj_tile_stream_build. conf: medium",
+    "medium"
+  ],
+  "sub_4E14C": [
+    "ems_stream_pointer_step",
+    "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, block_words_fetch, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters.",
+    "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, block_words_fetch, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters. conf: medium",
+    "medium"
+  ],
+  "sub_30AA8": [
+    "event_table_name_fill",
+    "395B, in=9 (farobj hubs, farobj_index_state_swap, ems_opstream_table_flush, ems_table refresh path). op_26400_clear_delay then 0x100-entry walk: es:[di] word +EA70h table, al<=28h name-length copy (lodsb -> es:[bx+3]); second entry copies into 54AFh:3380h; callees event_table_find_name + sbi_note_state_machine + adlib_detect_init + record_script_exec_quad.",
+    "395B, in=9 (farobj hubs, farobj_index_state_swap, ems_opstream_table_flush, ems_table refresh path). op_26400_clear_delay then 0x100-entry walk: es:[di] word +EA70h table, al<=28h name-length copy (lodsb -> es:[bx+3]); second entry copies into 54AFh:3380h; callees event_table_find_name + sbi_note_state_machine + adlib_detect_init + record_script_exec_quad. conf: medium",
+    "medium"
+  ],
+  "sub_4D3C7": [
+    "farobj_flag_dispatch_step",
+    "381B, in=1 (entity_record_table_ops). Self-mod 2F3F1/2F3F4 param install then farobj behavior dispatch; ds:1594h bit100h + 7894h:7A302 byte + [si+6] bit4 gates route to 3D53C body; sibling of farobj_class16_record_ops.",
+    "381B, in=1 (entity_record_table_ops). Self-mod 2F3F1/2F3F4 param install then farobj behavior dispatch; ds:1594h bit100h + 7894h:7A302 byte + [si+6] bit4 gates route to 3D53C body; sibling of farobj_class16_record_ops. conf: low",
+    "low"
+  ],
+  "sub_3252B": [
+    "hud_entity_search_select",
+    "337B, in=6 (farobj_project_transform_write, far_mode_event_dispatch, farobj behavior hub, farobj_cmd_accum_sweep, farobj_matrix_project_copy). hud_data_panel_gate_draw + entity_search_63fd with 0FFFFh fallback through r12_farptr_load_thunk, r05_table_snapshot_55e50 -> writes ds:544h select index; state_farptr_dxax_store 0FF1Fh/0FE3Eh marks.",
+    "337B, in=6 (farobj_project_transform_write, far_mode_event_dispatch, farobj behavior hub, farobj_cmd_accum_sweep, farobj_matrix_project_copy). hud_data_panel_gate_draw + entity_search_63fd with 0FFFFh fallback through r12_farptr_load_thunk, r05_table_snapshot_55e50 -> writes ds:544h select index; state_farptr_dxax_store 0FF1Fh/0FE3Eh marks. conf: medium",
+    "medium"
+  ],
+  "sub_329B1": [
+    "hud_panel_rect_compute",
+    "325B, in=2 (viewport_rect_state_store, mode_session_state_reset). hud_data_panel_gate_draw result gate -> r12_farptr_load_thunk + [di+74h] bit0 sets bx; farobj_rect_compute_store then 27Fh record movsw + 190h offset add + angle_adjusted_copy; byte_2E167=3 branch into farobj_rect_state_setup.",
+    "325B, in=2 (viewport_rect_state_store, mode_session_state_reset). hud_data_panel_gate_draw result gate -> r12_farptr_load_thunk + [di+74h] bit0 sets bx; farobj_rect_compute_store then 27Fh record movsw + 190h offset add + angle_adjusted_copy; byte_2E167=3 branch into farobj_rect_state_setup. conf: medium",
+    "medium"
+  ],
+  "sub_419FC": [
+    "farobj_slot_table_copy",
+    "310B, in=1 (event_table_name_fill). 16-slot 54AF:386Fh/5Ch bulk byte copy: 2Fh + 23h bytes at es:[di+8], then 0C9h bytes into es:[di+6]+14h; trailing stores to 55E4Eh/560A2h and 37D9h/0Ah.",
+    "310B, in=1 (event_table_name_fill). 16-slot 54AF:386Fh/5Ch bulk byte copy: 2Fh + 23h bytes at es:[di+8], then 0C9h bytes into es:[di+6]+14h; trailing stores to 55E4Eh/560A2h and 37D9h/0Ah. conf: medium",
+    "medium"
+  ],
+  "sub_3AB92": [
+    "matrix_constants_setup",
+    "282B, in=5 (game_config_apply_init, mode_record_field_lookup, sub_187E94, sub_4A3EE, r67_e196). ds:23Bh==1Ah -> cs:funcs_4E5C0=24h; matrix_constants_copy_es3852 gate; [si+4]!=0 records run stub_to_205c3 + far_cb_3 with bx=13Fh grid + cs_word_store; callees ems_init + game_state_setup_multi + farobj_rect_ratio_build.",
+    "282B, in=5 (game_config_apply_init, mode_record_field_lookup, sub_187E94, sub_4A3EE, r67_e196). ds:23Bh==1Ah -> cs:funcs_4E5C0=24h; matrix_constants_copy_es3852 gate; [si+4]!=0 records run stub_to_205c3 + far_cb_3 with bx=13Fh grid + cs_word_store; callees ems_init + game_state_setup_multi + farobj_rect_ratio_build. conf: medium",
+    "medium"
+  ],
+  "sub_39E13": [
+    "mode_stream_select_step",
+    "266B, in=1 (far_mode_event_dispatch). ds:4AC2h mode switch: 4 -> retn, 5 -> stream_accumulate_loop, 4A83h>1 + 0/1 -> self-mod patches at loc_3892A+1/loc_3895C+2 then ds:4AABh walk (cx=10h, +4 step vs 40h bound); ds:4AC9h/4AC4h clears.",
+    "266B, in=1 (far_mode_event_dispatch). ds:4AC2h mode switch: 4 -> retn, 5 -> stream_accumulate_loop, 4A83h>1 + 0/1 -> self-mod patches at loc_3892A+1/loc_3895C+2 then ds:4AABh walk (cx=10h, +4 step vs 40h bound); ds:4AC9h/4AC4h clears. conf: medium",
+    "medium"
+  ],
+  "sub_3267C": [
+    "viewport_rect_state_store",
+    "246B, in=7 (dgroup_state_cycle_step, main_frame_update_loop, far_mode_event_dispatch, sub_3DC55, farobj_matrix_project_copy, sub_426CC). Entry0 rect_store_40e from ds:28h/2Ah sar/rcr halves + ds:2Ch; farptr_table_get -> cs:word_2E155/2E153 install + farobj_rect_state_setup with byte_2E167=5; ds:544h -> 1734h table walk.",
+    "246B, in=7 (dgroup_state_cycle_step, main_frame_update_loop, far_mode_event_dispatch, sub_3DC55, farobj_matrix_project_copy, sub_426CC). Entry0 rect_store_40e from ds:28h/2Ah sar/rcr halves + ds:2Ch; farptr_table_get -> cs:word_2E155/2E153 install + farobj_rect_state_setup with byte_2E167=5; ds:544h -> 1734h table walk. conf: medium",
+    "medium"
+  ],
+  "sub_4289E": [
+    "ui_slot_filter_predicate",
+    "215B, in=2 (ui_menu_panel_init, ui_loadout_menu_enter). Boolean slot predicates: [si]-ds:1360h vs ds:3EE7h signed bound + cs:word_2E104 selection + [si+0Ah] bit1 -> ax=1; [si+29h] vs 2E104; ds:135Eh bit40h -> loc_4EF4E entity_record_table_ops check.",
+    "215B, in=2 (ui_menu_panel_init, ui_loadout_menu_enter). Boolean slot predicates: [si]-ds:1360h vs ds:3EE7h signed bound + cs:word_2E104 selection + [si+0Ah] bit1 -> ax=1; [si+29h] vs 2E104; ds:135Eh bit40h -> loc_4EF4E entity_record_table_ops check. conf: high",
+    "high"
+  ],
+  "sub_38405": [
+    "terrain_ratio_wrap_step",
+    "203B, in=3 (game_setup_staged_init, terrain_menu_field_setup, entity_bitpack_unpack). terrain_ratio_select (sub_4E0B9) result routes ax=0/1/other to farwrap_25a1c with fixed si=27h di=8Bh cx=dx=0F8h bx=19h bp=20h ax=1 window args.",
+    "203B, in=3 (game_setup_staged_init, terrain_menu_field_setup, entity_bitpack_unpack). terrain_ratio_select (sub_4E0B9) result routes ax=0/1/other to farwrap_25a1c with fixed si=27h di=8Bh cx=dx=0F8h bx=19h bp=20h ax=1 window args. conf: medium",
+    "medium"
+  ],
+  "sub_2EAA7": [
+    "op_accumulate_dispatch",
+    "190B, in=9 (farobj hubs, sub_2EB65, farobj_cmd_accum_sweep, ems_opstream_table_flush, sub_42025, sub_5E97E). r08_farptr_load_thunk gate picks dx=46h/52h then repeated op_dispatch (cx=2 bx=0Ah dx=18h) storing word_2E116/word_2E118/word_2E144; callees ems_remap_execute + table_dword_set + range_scale_accum_clamp.",
+    "190B, in=9 (farobj hubs, sub_2EB65, farobj_cmd_accum_sweep, ems_opstream_table_flush, sub_42025, sub_5E97E). r08_farptr_load_thunk gate picks dx=46h/52h then repeated op_dispatch (cx=2 bx=0Ah dx=18h) storing word_2E116/word_2E118/word_2E144; callees ems_remap_execute + table_dword_set + range_scale_accum_clamp. conf: medium",
+    "medium"
+  ],
+  "sub_2FB5A": [
+    "mode_request_code_dispatch",
+    "174B, in=3 (game_config_apply_init, farobj_slot_scan_cycle, palette_delta_blend). Swaps 1110h:68h request word, ds:7Ah reentrancy gate; ax=1/2/3/4 -> jumps into mode_session_state_reset bodies (loc_32FE8/3303A/330B6) + flag_532_set_dispatch_4ab (es:532h=2).",
+    "174B, in=3 (game_config_apply_init, farobj_slot_scan_cycle, palette_delta_blend). Swaps 1110h:68h request word, ds:7Ah reentrancy gate; ax=1/2/3/4 -> jumps into mode_session_state_reset bodies (loc_32FE8/3303A/330B6) + flag_532_set_dispatch_4ab (es:532h=2). conf: medium",
+    "medium"
+  ],
+  "sub_41EDB": [
+    "farobj_window_select_alt",
+    "164B, in=1 (far_mode_event_dispatch). Sibling of farobj_window_select_scan (sub_41F7F): same 55E50+/-10h window walk over word_2E104 with [si+0Ah] bit0 gate, but tests [si+30h]==0FCh (vs 3) for the skip branch; self-mod cs:loc_346EA+3/+4/+5 first-active pick.",
+    "164B, in=1 (far_mode_event_dispatch). Sibling of farobj_window_select_scan (sub_41F7F): same 55E50+/-10h window walk over word_2E104 with [si+0Ah] bit0 gate, but tests [si+30h]==0FCh (vs 3) for the skip branch; self-mod cs:loc_346EA+3/+4/+5 first-active pick. conf: medium",
+    "medium"
+  ],
+  "sub_4A3EE": [
+    "mode_strip_frame_step",
+    "141B, in=2 (game_frame_pipeline_step, main_frame_update_loop). 2F64h:37h div 200h accumulator capped at 33h into byte_2EA10+28h/2Ch/2Ah; 65E4h:68h loop cx=word_65EA4 at 3Ah stride calling box_edge_strip_draw with [si+0Ch] bit0 + [si+11h] gates; callees map_view_project_pipeline + floor_copy_4aa3.",
+    "141B, in=2 (game_frame_pipeline_step, main_frame_update_loop). 2F64h:37h div 200h accumulator capped at 33h into byte_2EA10+28h/2Ch/2Ah; 65E4h:68h loop cx=word_65EA4 at 3Ah stride calling box_edge_strip_draw with [si+0Ch] bit0 + [si+11h] gates; callees map_view_project_pipeline + floor_copy_4aa3. conf: medium",
+    "medium"
+  ],
+  "sub_39BD3": [
+    "mode_quadrant_accum_step",
+    "125B, in=5 (mode_session_state_reset, farobj_cmd_interpreter, tile_object_interpreter, angle_fixed_rotate_apply, ui_menu_panel_init). ds:4AC2h/4A83h mode gates; al=(al+ds:4ABDh)&3 quadrant accumulator with xchg ds:4ABDh and ds:4ABEh mirror, tail mode_gate_4a83_4ac2_r.",
+    "125B, in=5 (mode_session_state_reset, farobj_cmd_interpreter, tile_object_interpreter, angle_fixed_rotate_apply, ui_menu_panel_init). ds:4AC2h/4A83h mode gates; al=(al+ds:4ABDh)&3 quadrant accumulator with xchg ds:4ABDh and ds:4ABEh mirror, tail mode_gate_4a83_4ac2_r. conf: medium",
+    "medium"
+  ],
+  "sub_38537": [
+    "terrain_field_sample_step",
+    "118B, in=1 (terrain_menu_field_setup). farwrap_25a1c with si=0 di=64h cx=dx=0F0h bp=20h bx=10h; ds:48BAh+0C5h/0C3h inputs shaped by the 3000h/3FFFh clamp curve, then tile_sample_script_dispatch (sub_386F2) with si=0FFh di=67h cl=63h.",
+    "118B, in=1 (terrain_menu_field_setup). farwrap_25a1c with si=0 di=64h cx=dx=0F0h bp=20h bx=10h; ds:48BAh+0C5h/0C3h inputs shaped by the 3000h/3FFFh clamp curve, then tile_sample_script_dispatch (sub_386F2) with si=0FFh di=67h cl=63h. conf: medium",
+    "medium"
+  ],
+  "sub_42220": [
+    "mode_phase_apply_state",
+    "90B, in=1 (mode_session_state_reset). Phase-apply trampoline: cx=18E3h, dx=2EA8h, bp=41h table args -> sub_321DD; third sibling after mode_phase_apply_stub (sub_421F9) and mode_phase_apply_alt (sub_42206).",
+    "90B, in=1 (mode_session_state_reset). Phase-apply trampoline: cx=18E3h, dx=2EA8h, bp=41h table args -> sub_321DD; third sibling after mode_phase_apply_stub (sub_421F9) and mode_phase_apply_alt (sub_42206). conf: low",
+    "low"
+  ],
+  "sub_4E053": [
+    "ems_opstream_table_refresh",
+    "73B, in=1 (mode_session_state_reset). ems_map_seg_10233_bx0 + sub_3099C zero-fill, sub_2C171/2C15D/2C167 far gates, then ds=cs:funcs_4E5C0 si=0 -> event_table_name_fill copy entry (loc_30AE5) + word_2E10A+2 -> ems_map_seg_10231.",
+    "73B, in=1 (mode_session_state_reset). ems_map_seg_10233_bx0 + sub_3099C zero-fill, sub_2C171/2C15D/2C167 far gates, then ds=cs:funcs_4E5C0 si=0 -> event_table_name_fill copy entry (loc_30AE5) + word_2E10A+2 -> ems_map_seg_10231. conf: medium",
+    "medium"
+  ],
+  "sub_3C177": [
+    "viewmode3_project_copy",
+    "68B, in=1 (farobj_record_ops_exec). viewmode3_vector_project + sprite_project_screen_y -> [si+1Dh]=[di+0Ch], [si+1Fh]=155h, 6-word swap copy, writes es:[di+0Ch]=value with 0Eh/10h zeroed, tail sub_30C23.",
+    "68B, in=1 (farobj_record_ops_exec). viewmode3_vector_project + sprite_project_screen_y -> [si+1Dh]=[di+0Ch], [si+1Fh]=155h, 6-word swap copy, writes es:[di+0Ch]=value with 0Eh/10h zeroed, tail sub_30C23. conf: medium",
+    "medium"
+  ],
+  "sub_4233F": [
+    "farobj_fuel_burn_step",
+    "44B, in=1 (far_mode_event_dispatch). farobj_project_transform_write (sub_32453) then [si+5Ah] bit2 gate: sub [di+5Eh] 12h, sub [di+26h] 217h (sbb [di+28h]), [di+0C2h]=0, xor [si+5Ah] 4 - the one-shot fuel-burn decrement.",
+    "44B, in=1 (far_mode_event_dispatch). farobj_project_transform_write (sub_32453) then [si+5Ah] bit2 gate: sub [di+5Eh] 12h, sub [di+26h] 217h (sbb [di+28h]), [di+0C2h]=0, xor [si+5Ah] 4 - the one-shot fuel-burn decrement. conf: high",
+    "high"
+  ],
+  "sub_4A4D5": [
+    "mode_strip_jump_stub",
+    "33B, in=1 (entity_record_table_ops). Self-mod 2EB21+1/+2 patch then jmp into mode_strip_frame_step body (sub_3A3D6 loc_3A511); second entry: bh>=64h -> bh=al-11h -> far unk_43663.",
+    "33B, in=1 (entity_record_table_ops). Self-mod 2EB21+1/+2 patch then jmp into mode_strip_frame_step body (sub_3A3D6 loc_3A511); second entry: bh>=64h -> bh=al-11h -> far unk_43663. conf: medium",
+    "medium"
+  ],
+  "sub_3A99D": [
+    "mode_sprite_angle_gate",
+    "26B, in=2 (mode_session_state_reset, mode_record_field_lookup). ds:4AC2h==5 -> angle_fixed_rotate_apply (sub_4FEB5); ==4 -> sprite_code_clamp_6cd26 (from sub_3FD89 path); else retn.",
+    "26B, in=2 (mode_session_state_reset, mode_record_field_lookup). ds:4AC2h==5 -> angle_fixed_rotate_apply (sub_4FEB5); ==4 -> sprite_code_clamp_6cd26 (from sub_3FD89 path); else retn. conf: high",
+    "high"
+  ],
+  "sub_42213": [
+    "mode_phase_apply_event",
+    "13B, in=1 (mode_session_state_reset). Phase-apply trampoline: cx=0E71Dh, dx=2E8Ah, bp=42h table args -> sub_321DD; sibling of mode_phase_apply_state.",
+    "13B, in=1 (mode_session_state_reset). Phase-apply trampoline: cx=0E71Dh, dx=2E8Ah, bp=42h table args -> sub_321DD; sibling of mode_phase_apply_state. conf: low",
+    "low"
+  ]
+}

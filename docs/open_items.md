@@ -609,3 +609,4 @@
 - L19 batches 3–6 (136 fns remaining of the giant SCC; `level19_batch3.txt`..`batch6.txt` ready) — continue one finding per batch; then L20 (25) + L21 (2) to hit queue 0.
 - L19 batches 4–6 (102 fns remaining of the giant SCC; `level19_batch4.txt`..`batch6.txt` ready) — continue one finding per batch; then L20 (25) + L21 (2) to hit queue 0.
 - L19 batches 5–6 (68 fns remaining of the giant SCC; `level19_batch5.txt`..`batch6.txt` ready) — continue one finding per batch; then L20 (25) + L21 (2) to hit queue 0.
+- L19 batch 6 (34 fns remaining of the giant SCC; `level19_batch6.txt` ready) — one final finding for the SCC; then L20 (25) + L21 (2) to hit queue 0.
