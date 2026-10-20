@@ -8241,6 +8241,17 @@ symbols:
     sig: "364B, in=1 (sub_162C31). Loadout-menu outer frame: loop si<79B72 clearing record [bx+4]; reads 7894h:79B52 control byte (shr 2 -> [bp-1], and 3 -> [bp-2]); clears 602Eh:60954; 60964 bit40h -> 79BDA=0/1; dispatches via r35_e127; callees ui_menu_transition_step + ui_loadout_menu_enter."
     notes: "364B, in=1 (sub_162C31). Loadout-menu outer frame: loop si<79B72 clearing record [bx+4]; reads 7894h:79B52 control byte (shr 2 -> [bp-1], and 3 -> [bp-2]); clears 602Eh:60954; 60964 bit40h -> 79BDA=0/1; dispatches via r35_e127; callees ui_menu_transition_step + ui_loadout_menu_enter. conf: medium"
 
+  - ida: sub_6E29E
+    name: overlay_ems_farptr_setup
+    kind: function
+    sig: "139B, in=3 (r22_e57, sub_2BF73, sub_2BF7D), class=DATA. 6E segment stub: cs:word_6E2B0=0, cs:word_6E2AE=4A75h, calls loc_4E044 (overlay_teardown_restore_state body), stores returned ax/bx/cx into cs:byte_6E0B0+2/4/6, adds 7FC0h paragraph to cs:word_6E2AE - the EMS far-pointer segment setup stub; callers are far-call dispatch stubs r22_e57/sub_2BF73/sub_2BF7D."
+    notes: "139B, in=3 (r22_e57, sub_2BF73, sub_2BF7D), class=DATA. 6E segment stub: cs:word_6E2B0=0, cs:word_6E2AE=4A75h, calls loc_4E044 (overlay_teardown_restore_state body), stores returned ax/bx/cx into cs:byte_6E0B0+2/4/6, adds 7FC0h paragraph to cs:word_6E2AE - the EMS far-pointer segment setup stub; callers are far-call dispatch stubs r22_e57/sub_2BF73/sub_2BF7D. conf: medium"
+  - ida: sub_186ADC
+    name: r53_script_opcode_interpreter
+    kind: function
+    sig: "2312B, in=1 (r53_e88). The r53 overlay main script interpreter: inits 8-entry local tables (bp-70h/-80h/-90h/-0A0h/-0B0h), walks 42h-stride records at 6894h:dword_69E3A+3Dh copying fields +22h..+25h/+31h/+41h, +41h==0FFh path calls slot2_map_window_load then unk_5CA48 with +25h clamp to 64h; then farobj_store_32075 fetches a script stream and byte&7 dispatches via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/jpt_187150/jpt_1872C8 tables; callees farobj_index_resolve_step + tile_sample_script_dispatch + floor_store_4abb + farobj_index_resolve_step + r53_farobj_pipeline_body."
+    notes: "2312B, in=1 (r53_e88). The r53 overlay main script interpreter: inits 8-entry local tables (bp-70h/-80h/-90h/-0A0h/-0B0h), walks 42h-stride records at 6894h:dword_69E3A+3Dh copying fields +22h..+25h/+31h/+41h, +41h==0FFh path calls slot2_map_window_load then unk_5CA48 with +25h clamp to 64h; then farobj_store_32075 fetches a script stream and byte&7 dispatches via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/jpt_187150/jpt_1872C8 tables; callees farobj_index_resolve_step + tile_sample_script_dispatch + floor_store_4abb + farobj_index_resolve_step + r53_farobj_pipeline_body. conf: medium"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table

@@ -4946,4 +4946,44 @@ Overlay bodies (low conf, mixed data/code in far segments):
 
 ---
 
+## 2026-10-19 94 - Level 21 complete: 2 named. GLOBAL NAMING QUEUE = 0
+(`named` 1,629 -> **1,631**; L21 to_name 2 -> **0**)
+
+The bottom-up naming campaign is **COMPLETE**: every level 0-21
+is fully named, the global naming queue (unnamed - thunks -
+orphans) is **0**, and the final two fns were the deepest SCCs
+(depth 21, 23 and 16 levels past the deepest previously-named
+L19 hub). Final 2 from `level21_full.txt`:
+
+**`r53_script_opcode_interpreter`** (sub_186ADC, 2312B, in=1
+r53_e88): the r53 overlay main script interpreter - 8-slot
+local-table init, 42h-stride record walk bucketing by [bx+41h]
+slot index (0FFh -> slot2_map_window_load + unk_5CA48 random
+tick), then farobj_store_32075 script fetch and byte&7 opcode
+dispatch via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/
+jpt_187150/jpt_1872C8 sub-dispatchers.
+
+**`overlay_ems_farptr_setup`** (sub_6E29E, 139B, class=DATA,
+in=3 r22_e57/sub_2BF73/sub_2BF7D): 6E-segment stub whose real
+trampoline (0x6E2FF) sets cs:word_6E2AE=4A75h, calls
+overlay_teardown_restore_state, stores returned ax/bx/cx into
+cs:byte_6E0B0+2/4/6 far-pointer vector slot, += 7FC0h.
+
+### Campaign totals (Levels 0-21 COMPLETE)
+
+`named` 0 -> **1,631 / 2,237** (72.9% of all fns; 100% of the
+non-orphan, non-thunk queue). Levels 0-19 giant SCCs, L20 (25
+overlay fns + loadout-menu dispatch family), L21 (the final 2
+deepest overlay bodies) - all named bottom-up with callee
+context. Remaining unnamed: 302 thunk slots + 397 orphans
+(excluded by design).
+
+### Gates (all green)
+
+`naming.py check` **1,633** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,631/1,631 function + 2/2 global**.
+
+---
+
 (append new findings below)
