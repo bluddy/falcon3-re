@@ -4757,4 +4757,47 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 90 - L19 Batch 4 of 6: 34 named, L19 queue 102 -> 68
+(`named` 1,502 -> **1,536**)
+
+Fourth slice of the giant Level-19 SCC. 34 of 102 named from
+`level19_batch4.txt` (5,925 ln). Highlights:
+
+**`farobj_queue_drain_dispatch`** (sub_4C19E, 2500B, **in=9 - the
+batch-4 hub**): FAR queue drain. Class-range dispatch on bx (12h/13h,
+33h-37h), pops cs:word_2E10A records at 1Bh stride, inc 2E10E /
+dec 2E10C, tail-jumps into farobj_slot_update_driver bodies.
+**`hud_state_rowtable_step`** (sub_45057, 2142B, in=4 main loop):
+walks 72 (48h) 63FD:0A5h+ entries with entity_step_flags +
+hw_flag_bit2/3_22e ops per row.
+
+**`farobj_class_table_entry`** (sub_4111F, in=12): [si+75h] class
+selects the 263Bh or 2A01h table at 2Ah stride, returns [di+2],
+plus farobj_table_snapshot position read. **`hud_track_label_strip`**
+(sub_3A29C, in=8): copies [si+8Ch/86h/8Ah] -> [si+90h/92h/94h] with
+0AABh thresholds on [si+79h] bit0 + tile_strip_sample_draw at 47D6h
+(called by steerpoint_scan_update + the menu pipeline).
+**`ems_window_load_snapshot`** (sub_30882, in=6): ems_map_seg_10233
+then movsw 1770h words 5DC0h -> 2EE0h + slot2_map_window_load;
+callers span ems_slot_bootstrap_step and three F87-F89 hubs.
+
+**Input/transform core:** **`control_axes_record_write`**
+(sub_307A5, in=8): writes 47Bh x7 words + control_axes_read x2 +
+control_axis_value into the record; **`farobj_project_transform_write`**
+(sub_32453, in=7): fixed_matrix_mul + position add +
+angle_adjusted_copy (the shared project primitive); **`ui_gauge_panel_draw`**
+(sub_32393, in=5): draw_from_struct x2 + far_cb_gated x5 on the
+2A0h..2F5h panel structs; **`coord_window_bounds_test`**
+(sub_31EBF, in=5): idiv 4E06h/3031h then CF set/clear against the
+60h..E4h x 70h..C1h window. **`game_setup_staged_init`**
+(sub_45976, in=1): 6x game_setup_staged_step stage loop.
+
+### Gates (all green)
+
+`naming.py check` **1,538** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,536/1,536
+function + 2/2 global**.
+
+---
+
 (append new findings below)
