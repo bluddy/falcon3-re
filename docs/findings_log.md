@@ -4702,4 +4702,59 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 89 — L19 Batch 3 of 6: 34 named, L19 queue 136 -> 102
+(`named` 1,468 -> **1,502**)
+
+Third slice of the giant Level-19 SCC. 34 of 136 named from
+`level19_batch3.txt` (6,436 ln). Highlights:
+
+**`farobj_behavior_dispatch_step`** (sub_3CE92, 2580B, **in=19 — the
+batch-3 hub**): master farobj entity behavior/AI step. Many entry points;
+3334h tile-wrap on the si+31/32/33/35 grid fields; far_obj_field_call +
+farobj_field_set type-3 distance thresholds selecting the 3013h/304Ch/
+3065h/307Fh/3259h behavior tables; [si+0Bh] multi-bit mode gates (bits
+1/2/3/4/8/10h/40h) routing speed/altitude clamp branches via funcs_4E5C0.
+
+**`ui_menu_page_setup`** (sub_6A5BD, 2204B, in=5) +
+**`ui_menu_panel_init`** (sub_66E62, 1365B, in=17): the two menu
+foundations. Page setup pushes a farobj_arg_thunk arg block (9,35h,0Bh,
+4,19h), clears the 7894h:79B66/79B68 selection fields, and runs
+current_item_check. Panel init writes the 4FC2h:4FD5E/4FD72/4FD46/4FD48
+slot fields and farptr_lds_invoke — ui_loadout_menu_enter (F87) tail-
+jumps into it. Siblings: **`ui_slot_record_fill`** (sub_6798C, 327B —
+fills 7894h:79E60 fields 2BD6h..2BDBh with the E0h/2Eh/1Eh type pattern),
+**`menu_pending_task_step`** (sub_67AE1, 197B — pending_task_run +
+vga_dac_palette_upload), **`ui_slot_scan_step`** (r30_e77, R30 overlay —
+steerpoint_scan_update + ui_slot_record_init).
+
+**View / farobj stack:** **`farobj_view_project_step`** (sub_3EEDB,
+1485B, in=11 — viewvec_loop_project + viewvec3_project_track_max +
+palette_delta_blend; callers include the main loop and
+far_mode_event_dispatch); **`farobj_slot_update_driver`** (sub_3C1BD,
+821B — loads funcs_4E5C0 from 2F64h:37h/39h then walks 16 slots at 386Fh
+stride 5Ch); **`farobj_pos_move_angle_step`** (sub_4AEC4, 1146B);
+**`farobj_range_slot_init`** (sub_41646 — calls hud_track_strip_pipeline
++ obj_range_slot_init); **`record_bitpack_pack`** (sub_48292, 284B — the
+pack half of entity_bitpack_unpack, F87); **`farobj_attr_apply_step`**
+(sub_3FD89 — farobj_attr_table_lookup + fuel/range dec [di+0B0h]/sub
+[di+26h]); **`hud_track_gate_draw`** (sub_42640, 70B — parallel to
+hud_project_gate_draw from F88).
+
+**HUD / terrain:** **`hud_rowlist_timer_step`** (sub_47BDE, 960B — 16
+4-byte timer rows over 63FD:1940h → hud_rowlist_panel_draw);
+**`terrain_angle_time_step`** (sub_37818, 498B — int 21h/2Ch time-of-day
+→ 5A0h wrap angle); **`tile_sprite_strip_project`** (sub_39748, 179B);
+**`terrain_vm_flag_gate`** / **`terrain_vm_blend_apply`** (sub_4F8BC /
+sub_4F7B8 — the 7A32:8505x terrain-VM pair beside F88's
+terrain_vm_sweep_kick); **`angle_fixed_rotate_apply`** (sub_4FEB5 —
+fixed-point sin/cos rotate via ds:0EF5h/0EF7h).
+
+### Gates (all green)
+
+`naming.py check` **1,504** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,502/1,502
+function + 2/2 global**.
+
+---
+
 (append new findings below)
