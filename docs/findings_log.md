@@ -4894,4 +4894,56 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 93 - Level 20 complete: 25 named
+(`named` 1,604 -> **1,629**; L20 to_name 25 -> **0**)
+
+The entire Level-20 level (63 fns incl. overlay bodies, 25
+unnamed) is named in one pass from `level20_full.txt` (3,152 ln).
+Global naming queue 27 -> **2 (L21 only: sub_186ADC, sub_6E29E)**.
+Highlights:
+
+**`ui_loadout_menu_cmd_dispatch`** (r35_e127, in=12): the
+two-level jump-table hub of the 162C family - cs:off_162DAF[bx]
+12-entry table (cmd0..cmd10 + self slots) with nested
+jpt_162D0F/jpt_162D49; cases set 602Eh:60956=0 or 63989=8 then
+call ui_loadout_menu_enter. Named with its eleven case arms as
+**ui_loadout_cmd0_transition** / **cmd1_record_clear** /
+**cmd2_slot_scan** / **cmd3..cmd5_enter** / **cmd6_enter**
+(nested) / **cmd7..cmd10_enter**, plus outer frame
+**`ui_loadout_menu_frame_scan`** (sub_162A94: clears record
+[bx+4] marks, decodes the 79B52 control byte, 60964 bit40h gate
+-> 79BDA).
+
+**`hw_config_apply_chain`** (sub_30307): stores bx/ax:dx into
+word_2E135/dword_2E13F then chains view_block4287_angles +
+hw_cfg_scan_22158 + hw_config_copy_85061 + r37_farptr_store_gate
++ mode_session_state_reset -> jmp game_config_apply_init.
+**`mode_frame_gate_floor_clamp`** (sub_39CAA): ds:4AC2h==4 ->
+mode_frame_step_core; ==2/3 -> retn; else ax+=ds:4AA1h clamped to
+ds:4AB9h via floor_store_4abb. **`mode_session_state_mirror_init`**
+(sub_66ABD, in=9): the 6DE8h state-word mirror chain
+(6E14D->6E119->6E10D->6E129) + 4 flag-byte clears + config block.
+**`display_palette_hud_refresh_step`** (sub_67781): cmd
+interpreter + dword_79E60->79E3A + flag_block_zero +
+terrain_vm_buffer_decay + vga_dac_palette_upload + HUD strips.
+**`overlay_teardown_restore_state`** (sub_4DF9D):
+handle_release_all + op_bitmap_sweep_clear + ems_seg_free_21_49
+exit path + cs:2E118..2E11C -> 2E104..2E120 state restore.
+
+Overlay bodies (low conf, mixed data/code in far segments):
+**r53_record_walk_dispatch** (sub_188DF2, 2272B),
+**r36_loadout_record_copy** (r36_e75, stride-4Eh copy),
+**r53_farobj_pipeline_body** (sub_187E94, mutual SCC with
+**r53_far_call_case_block** = r35_e51), **r53_sbi_stream_dispatch**
+(sub_1820C0), **menu_cmd_store_and_record_scan** (r34_e94),
+**cmd_terrain_decay_step** (r30_e98).
+
+### Gates (all green)
+
+`naming.py check` **1,631** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,629/1,629 function + 2/2 global**.
+
+---
+
 (append new findings below)
