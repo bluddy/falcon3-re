@@ -4846,4 +4846,52 @@ function + 2/2 global**.
 
 ---
 
+## 2026-10-19 92 - L19 Batch 6 of 6: 34 named, L19 COMPLETE
+(`named` 1,570 -> **1,604**; L19 to_name 34 -> **0**)
+
+**The giant Level-19 SCC is fully named (209/209, 292 total fns
+incl. joined sub-nodes).** Final 34 from `level19_batch6.txt`
+(5,600 ln). Global naming queue 61 -> **27** (L20=25, L21=2).
+Highlights:
+
+**`mode_phase_apply_core`** (sub_321DD, in=8): THE target of all
+four mode_phase_apply trampolines (sub_421F9/42206/42213/42220 -
+F89 + F90's stub/alt, F92's event/state). ds:491h!=0FFFFh routes
+to far_mode_event_dispatch body; else stores ds:23Bh mode +
+state_word_22d28_set_ax + the 24Fh..259h view-extent block with
+modes 0Ch/0Eh/0 selecting C7h/96h vs 63h/32h. Its sibling
+**`mode_extent_recompute`** (sub_322E5, in=7) forces full
+view_extent_init_0c + compute + get_quad into ds:78Eh..794h.
+
+**`farobj_altitude_scale_step`** (sub_3DC55, **in=16 - ties the
+batch's caller record**): funcs_4E5C0*(64h-[si+14h])>>5 scale ->
+farobj_record_bulk_copy, [di+60h]->[si+23h]. **`game_frame_update_chain`**
+(sub_2FEF2): the per-frame entity/HUD chain - farobj_slot_update_driver
++ farobj_move_accumulate_step + tile_object_interpreter +
+farobj_slot_step_spawn + farobj_sweep_all + 3 hud_* steps +
+entity_proj_depth_class. **`hud_draw_chain_step`** (sub_35BCE): the
+7-call HUD draw pipeline (heading tape -> field14 -> value format
+-> field0c -> readout -> timer countdown -> sprite trail).
+
+**The burn pair:** **`farobj_thrust_burn_step`** (sub_4236B) -
+[di+0C3h]>>2 fuel sub + [si+5Ah] bits0/1 -> 1Eh/4Ch [di+5Eh] subs
+(two-bit one-shot); sibling of F90's farobj_fuel_burn_step.
+**`terrain_vm_buffer_decay`** (sub_4F3EC, **in=15**): 7A32h
+A754h->ABF8h copy + 46h-byte -2-clamped decay (the VM neighbor).
+**`ui_menu_transition_step`** (sub_67BAF, in=13, menu stub hub),
+**`ui_menu_page_args_setup`**, **`farobj_cfg_code_patch`**
+(self-mod 2FCE8/30C14/30C17/30C19 patcher), **`control_axes_record_store`**
++ **`ems_axes_record_init`**, **`farobj_slot_table_load`** (mirror of
+F91's farobj_slot_table_copy), **`game_state_load_apply`**
+(1770h-word save-state restore), and the small trampolines
+**`mode_reset_far_tail`** / **`r30_vm_flag_set`** / **`farobj_behavior_far_tramp`**.
+
+### Gates (all green)
+
+`naming.py check` **1,606** . `verify_rebuild` **faithful (2,237 ==
+2,237)** . `verify_idb` **INTACT** . `name_readback` **1,604/1,604
+function + 2/2 global**.
+
+---
+
 (append new findings below)

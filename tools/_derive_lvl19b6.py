@@ -1,0 +1,106 @@
+"""Validate and emit L19 Batch 6 names (34 fns) -> level19_batch6_names.json."""
+import json, re, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+NAMING = ROOT / "registry" / "naming.yaml"
+OUT = ROOT / "analysis" / "ida_falconcd" / "level19_batch6_names.json"
+
+NAMES = {
+    "sub_446CB": ("farobj_entity_step_near", "medium",
+        "2444B, in=4 (hud_panel_rect_compute, key_mode_switch_step, farobj_record_flag_ops, farobj_move_accumulate_step). 63FD:byte_65986 entity index -> [si+1834h] pointer, [si+13h] bit2 gate, 6562Eh timer dec at word_2E112 rate, farptr_table_get + [si+0Ch]/[si+0Ah] dispatch; callees farobj_tile_copy_resolve + fixed_vec3_accumulate_a + vec_transform_scale + angle_aux_near/angle_xy_near (the near-angle sibling of the far hubs)."),
+    "sub_34C31": ("mode_axis_state_select", "medium",
+        "1929B, in=6 (game_frame_pipeline_step, main_frame_update_loop, ui_gauge_panel_draw, farobj_entity_step_near, hud_state_rowtable_step, sub_1820C0). ds:666h mode gate + mode_byte_dispatch (sub_37051) al==1/3 -> vec_transform_scale_norm 140h bound or r05_mode_check_58f9a; resets ds:5A0h/5A1h/664h/665h/544h; control_axes_read x2 set 5A1h bit80h; calls mode_entity_select_apply (sub_34954)."),
+    "sub_3E95E": ("farobj_cfg_code_patch", "low",
+        "1397B, in=1 (far_mode_event_dispatch). Config-driven self-mod patcher: [di+0BEh]/[di+0BFh] thresholds select writes to cs:loc_2FCE8+2/+3, loc_30C14+2, loc_30C17+1, loc_30C19+1/+3; [di+0CAh] bits2/20h route to op_accumulate_dispatch / 2EA61; callees entity_slot_create + entity_record_table_build + farobj_cfg_delta_apply + viewmode3_vector_project."),
+    "sub_3DC55": ("farobj_altitude_scale_step", "medium",
+        "1204B, in=16 - second most-called helper in the batch (mode_session_state_reset, far_mode_event_dispatch, farobj_slot_update_driver, farobj_behavior_dispatch_step, farobj_cfg_scan_step, farobj_index_resolve_step, farobj_class_table_entry, terrain paths). cs:loc_2FCE8>=1C00h gate, scale = funcs_4E5C0 * (64h-[si+14h]) >>5 -> farobj_record_bulk_copy, [di+60h]->[si+23h] + viewport_rect_state_store; farobj_sweep_all + viewvec3_project_track_max + control_axis_store_step + ems_window_load_snapshot."),
+    "sub_69C5D": ("ui_menu_page_args_setup", "medium",
+        "1011B, in=9 (menu_event_dispatch stubs, ui_menu_panel_init, ui_menu_frame_enter, ui_loadout_menu_enter, ui_menu_page_setup, r33_e148). r30_mode_set_637fc_c then two farobj_arg_thunk arg blocks (9,35h,0Bh,4,19h) / (43h,35h,0Bh,4,19h) from 6DE8h:6E009h/6E00Bh/6E020h/6E022h; 4FC2h:4FD52h menu-state gates."),
+    "sub_67BAF": ("ui_menu_transition_step", "medium",
+        "937B, in=13 (menu far stubs sub_2C487/2C491/2C4E1/2C545/2C65D/2C6FD/2C883 + r32_e83 + 162A94/162C00). Sets [bp+6]=6 menu transition code, 7894h:78940 check, 4FC2h:4FD52h state machine -> unk_43E0C + unk_43D52 far bodies, store_cmd_interpreter, 602Eh:616DA/616D8=709Fh:2CBh install; callees op_dispatch_far_entry + farobj_field2e_zero_dispatch + ui_slot_fns."),
+    "sub_3001E": ("game_state_load_apply", "medium",
+        "745B, in=9 (game_config_apply_init, farobj_behavior_dispatch_step, farobj_cfg_scan_step, farobj_index_resolve_step, sub_3FFEF, farobj_class_table_entry, farobj_index_state_swap, sub_4236B, angle_fixed_rotate_apply). Save-state apply: cs_word_get_10842 -> word_2E135, int8_hook_gated_77ca9, viewport_bounds_setup, 1770h-word copy 0->5DC0h, lodsb 8994h/8995h/8996h/899Ah config bytes -> mode_toggle_105f + es:44D3D; callees mouse_gate_far_entry + state_word_10844_classify + slot2_map_window_refresh."),
+    "sub_47F9E": ("hud_panel_transform_step", "medium",
+        "621B, in=4 (r48_e191, game_frame_pipeline_step, main_frame_update_loop, ui_menu_transition_step). 63FD:C5Eh 0x30-row walk at 1Ah stride: [bx+15h] countdown dec -> fixed_matrix_mul position add + 40h sub on [bx+0Eh]; callees farobj_tile_copy_resolve + vec_transform_scale_far + angle_aux_far/angle_xy_far + point_in_rect_6e8 + entity_proj_depth_class."),
+    "sub_3A3D6": ("mode_frame_step_core", "medium",
+        "508B, in=12 - the shared mode-frame core (game_config_apply_init, farobj_slot_project_step, game_frame_pipeline_step, farobj_record_bulk_copy, main_frame_update_loop, view_terrain_frame_step, mode_audio_state_step, mode_strip_frame_step, mode_strip_jump_stub). ds:44Ch + [si+0CAh] bit100h gates, stores ds:49A2h/49A3h/706h/49A0h, cs_word_store + dispatch_220d8_via_24bba + far_cb_2 + terrain_pos_grid_build + view_limits_load; ds:4AC2h/4A83h mode gates; stream_accumulate_loop."),
+    "sub_42025": ("farobj_selection_window_step", "medium",
+        "468B, in=1 (far_mode_event_dispatch). farobj_table_snapshot + farobj_record_bulk_copy; [di+4]&0FCh==0 -> [si+0Ah]|=18h; cs:word_2E104+ds:1360h +/-10h selection window walk with [si+0Ah] bit0 + [di+74h] bit2 gates; callees farptr_table_offset_apply + op_accumulate_dispatch + coord_window_bounds_test + hud_metric_rows_draw + mode_phase_apply_core (sub_321DD)."),
+    "sub_426CC": ("hud_track_distance_draw", "high",
+        "428B, in=5 (r29_e06, r32_e83, far_mode_event_dispatch, ui_loadout_menu_enter, ui_menu_page_setup). Distance-tiered gated track label draw: [di+56h] vs 1388h/7D0h selects bx=2F30h/2F38h/2E48h with bp=4Ch/44h/3Ch; self-mod cs:loc_34EC6+2 one-shot flag; farobj_table_snapshot + farobj_rect_state_setup gates + viewvec3_project_track_max (al=9)."),
+    "sub_35BCE": ("hud_draw_chain_step", "high",
+        "395B, in=3 (view_window_state_clamp, sub_35B43, game_setup_staged_init). The full HUD draw chain: state_byte_25487_get + cs_word_store + dispatch_220d8 + far_cb_2 + terrain_pos_grid_build + r05_seg_setup_change_gate, then hud_heading_tape_draw -> hud_field14_value_draw -> hud_value_format_draw -> hud_field0c_value_draw -> hud_readout_render -> hud_timer_countdown_draw -> sprite_trail_strip_draw, plus the ds:105Dh far_cb_6 draw at 0A0h+6F8h."),
+    "sub_4AD30": ("ui_aircraft_slot_step", "medium",
+        "377B, in=3 (ui_slot_record_fill, ui_menu_transition_step, ui_loadout_menu_enter). [si+0Dh] count gate; copies [si+4]:[si+6] 6-word record to ds:16h, pos_step_chain_engine with dx=258h, [si+0Ch] bit1 -> ch=1 second pass with dl=16h/dh=1; callees pos_move_angle_gate + aircraft_record_load_step + farobj_record_build_6b58."),
+    "sub_418AC": ("farobj_slot_table_load", "high",
+        "336B, in=1 (control_axes_record_store). Mirror of farobj_slot_table_copy (sub_419FC): 16-slot 54AF:386Fh/5Ch walk READING 2Fh+23h bytes from [si+8] and 0C9h from [si+6]+14h out to es:[di]; loads 55E4Eh/560A2h + 37D9h/0Ah from the table into es: buffer."),
+    "sub_34954": ("mode_entity_select_apply", "medium",
+        "325B, in=4 (mode_session_state_reset, sub_34923, mode_axis_state_select, farobj_entity_step_near). r05_snapshot_gate_449 (view_pos_matrix_step path) with 0FFFFh fallback, r12_farptr_load_thunk + [di+0Ah] bit0 + [di+8] bit80h gates -> ds:544h select index + ds:666h=0; else mode_byte_dispatch al==1/3 -> vec_transform_scale_norm 140h bound -> ds:666h=0FFh + view_delta_ratio_compute."),
+    "sub_2FEF2": ("game_frame_update_chain", "high",
+        "300B, in=3 (game_config_apply_init, farobj_record_bulk_copy, angle_fixed_rotate_apply). The per-frame entity/HUD update chain: farobj_slot_update_driver + farobj_move_accumulate_step (cx=52h si=44DDh) + entity_timer_row_scan + mode_strip_frame_step + tile_object_interpreter + farobj_tile_key_cache + farobj_slot_step_spawn + farobj_sweep_all + range_cb_dispatch_loop + hud_state_rowtable_step + hud_panel_transform_step + hud_readout_timer_render + entity_timer2e_dec_14 + sprite_project_gate_c5 + entity_proj_depth_class."),
+    "sub_3FBCC": ("farobj_angle_distance_gate", "medium",
+        "280B, in=2 (farobj_thrust_burn_step path sub_322E5, mode_session_state_reset). Stores [si+18h]=ax, angle_aux_far + angle_xy_far vs [si+0Ch]/[si+0Eh], abs-diffs vs cs:loc_323D5+1 threshold, cs:loc_2FCE8+2 tier check, clip_flag_gated_callback."),
+    "sub_321DD": ("mode_phase_apply_core", "high",
+        "264B, in=8 (game_config_apply_init, mode_session_state_reset, far_mode_event_dispatch, op_accumulate_dispatch + all four mode_phase_apply trampolines sub_421F9/42206/42213/42220). THE phase-apply target: ds:491h!=0FFFFh -> far_mode_event_dispatch body; else ds:45Eh=0, ds:23Bh=bx mode store, state_word_22d28_set_ax + view extent block ds:24Fh..259h (13Fh/A0h or C7h/96h for modes 0Ch/0Eh/0 via ds:478h/479h gate)."),
+    "sub_4236B": ("farobj_thrust_burn_step", "high",
+        "240B, in=1 (far_mode_event_dispatch). farobj_project_transform_write then [di+0C3h]>>2 subtracted from [di+26h] (sbb [di+28h]) with [di+0C3h]=0; [si+5Ah] bit0 -> sub [di+5Eh] 1Eh, bit1 -> sub [di+5Eh] 4Ch, then and [si+5Ah] &= ~3 - the two-bit one-shot thrust burn (sibling of farobj_fuel_burn_step)."),
+    "sub_3099C": ("control_axes_record_store", "high",
+        "214B, in=6 (ems_window_load_snapshot, farobj_index_resolve_step, sub_3FFEF, ems_opstream_buffer_append, ems_opstream_table_refresh, ems_axes_record_init). Entry0 returns 54AFh:44F67h; main entry stores cs:word_2E137/2E139 + control_axes_read x2 + control_axis_value + 9-word movsw + 2E127/2E12B + byte_343E9 + off_343EA into the es: record - the control-axes snapshot writer."),
+    "sub_37A0A": ("game_setup_frame_chain", "medium",
+        "198B, in=3 (farobj_slot_project_step, view_terrain_frame_step, mode_axis_state_select). Self-mod loc_362B0; entity_event_0e_dispatch + game_setup_entity_step + game_setup_toggle_step + record_script_tilepos_dispatch + game_setup_staged_step + terrain_menu_field_setup + state_gate_451_dispatch, cs_word_store 63h, hud_rowlist_panel_draw + hud_dualvalue_panel_draw, ds:451h loop of far_cb_6 draws at di=0A6h."),
+    "sub_4F3EC": ("terrain_vm_buffer_decay", "medium",
+        "188B, in=15 - most-called small helper in the batch (r30/r32/r33 overlays, game_config_apply_init, game_state_load_apply, far_mode_event_dispatch, ui_menu_panel_init, ui_menu_page_setup, ui_menu_page_args_setup). 7A32h:0A754h -> ABF8h 1Bh-byte copy; flag_gate_zero_abc bit1 + ds:byte_8504E==3 gates; 46h-byte loop subtracting 2 per byte clamped at 0 (the terrain-VM neighbor decay pass); callees op_dispatch + state_word_44d3d_get."),
+    "sub_322E5": ("mode_extent_recompute", "medium",
+        "174B, in=7 (mode_session_state_reset, key_mode_switch_step, key_mode_state_setup, key_mode_switch_step, far_mode_event_dispatch, hud_track_project_draw, farobj_thrust_burn_step). ds:451h=0FFh + ds:45Eh=1 force; ds:40Ah -> [bx+356h] mode table -> ds:23Bh; view_extent_init_0c + view_extent_compute_1f6da + view_extent_get_quad -> ds:78Eh/790h/792h/794h quad store, farptr_state_set; the extent-recompute sibling of mode_phase_apply_core."),
+    "sub_48E25": ("farobj_project_request_setup", "medium",
+        "162B, in=2 (farobj_index_resolve_step, sub_3FFEF). [si]=0FFFFh; 65A1h request block: 65A1Ah=bp, 65A1C=si, 65A18=cx, 65A10=1, 65A12=0, 65A14=ax, 65A16=bx; 6-word movsw + loc_39078 (viewobj_screen_project_step); cx==0 skip gate."),
+    "sub_35B43": ("view_limits_install_step", "medium",
+        "139B, in=2 (view_terrain_frame_step, mode_byte_dispatch). [si+0CAh] bit400h gate; installs 6E8h..6EEh window constants (6Eh/14h+bx/D2h/5Ah+bx), cs_state_copy_es -> 6FCh, view_limits_load, self-mod far-call vector cs:loc_343E0 = 6D30h:1F6Ch/56F8h, ds:6C4h=0A00h, (6FAh+32h)<<4."),
+    "sub_41784": ("farobj_flag_or_set", "high",
+        "122B, in=8 (mode_stream_select_step, farobj_entity_step_near, record_script_coord_entry, farobj_flag_dispatch_step, ui fns). farobj_table_snapshot then or [di+0Bh] with bl - entry0 gated on [di+0Ah] bit1, entry1 unconditional; the small farobj flag-or helper."),
+    "sub_48DB0": ("farobj_project_request_clear", "medium",
+        "117B, in=6 (farobj_cmd_accum_sweep, hud_state_rowtable_step, hud_track_strip_pipeline, sub_4B36A, farobj_move_accumulate_step, farobj_class16_record_ops). [si]=0 variant of farobj_project_request_setup: identical 65A1h request block + 6-word movsw + loc_39078."),
+    "sub_354B1": ("view_axis_accum_step", "medium",
+        "84B, in=1 (mode_axis_state_select). -ds:546h abs vs 7E9h/F817h bounds -> *1E00h -> cs:loc_3339C+4; ds:548h vs 0A8Ch -> *1E00h+64h -> cs:word_333A2; then view_window_state_clamp + viewvec_half_add_step + game_setup_half_accum."),
+    "sub_38CAB": ("matrix_constants_copy_gate", "medium",
+        "72B, in=9 (key_mode_switch_tramp, mode_session_state_reset, key_mode_state_setup, key_mode_switch_step, far_mode_event_dispatch, matrix_constants_setup, farobj_slot_table_load, farobj_slot_table_copy, farobj_index_state_swap). Tests cs:loc_3746A bit1 (retf with flags) + set/get of loc_3746A+1; copies the 9346h..936Ch constants block cs->ds or ds->cs; xchg cs:word_2E139 + farobj_screen_project_step body."),
+    "sub_4E3D1": ("ems_axes_record_init", "high",
+        "68B, in=1 (control_axes_record_write). cs:word_2E128==1 gate; word_2E104=0, word_2E10E=8, ems_map_seg_10231, control_axes_record_store (loc_309A7) into es:funcs_4E5C0:0, word_2E10A+2 remap, clears word_2E128 - the EMS-side control-axes record initializer."),
+    "sub_4FE02": ("terrain_vm_entry_lookup", "medium",
+        "44B, in=1 (game_config_apply_init). [si+7Ah]-1 -> *5 (shl2+ax) + 0EF0h index into 7894h:EF0h table; bl=[si] vs 0FFFFh -> ax/dx from [si+1]/[si+3], tail-calls game_frame_pipeline_step body (loc_2FDB3)."),
+    "r30_e125": ("r30_vm_flag_set", "medium",
+        "29B, in=3 (sub_2C5EF, sub_2C725, ui_menu_pending_task_step). r30 overlay: calls sub_6AE59 + r30_farobj_proc_d, sets 7894h:7A316=1, jmp sub_67BA6; alt entry r30_push_args_call."),
+    "sub_2FB33": ("mode_reset_far_tail", "high",
+        "22B, in=2 (game_config_apply_init, palette_delta_blend). Calls mode_session_state_reset (sub_32C62), ax=1, si=word_2E128+1, or ah,[si+74h], stc, jmp cs:dword_2E13F - reset-then-far-tail with CF set and [si+74h] flag in ah."),
+    "sub_4CCA1": ("farobj_behavior_far_tramp", "high",
+        "13B, in=1 (farobj_angle_distance_gate). ds=69FFh then tail-calls the farobj_behavior_dispatch_step body (sub_3CE92) with di preserved."),
+}
+
+def main():
+    keys = list(NAMES)
+    assert len(keys) == 34, len(keys)
+    names = [NAMES[k][0] for k in keys]
+    assert len(set(names)) == 34, "duplicate names"
+    for n in names:
+        assert re.fullmatch(r"[A-Za-z_][A-Za-z0-9_]*", n), n
+        assert not n.startswith(("sub_", "loc_", "off_", "byte_", "word_", "dword_", "unk_", "seg_")), n
+        assert n.isascii(), n
+    existing = set(re.findall(r"^\s+name: (\S+)", NAMING.read_text(encoding="utf-8"), re.M))
+    coll = [n for n in names if n in existing]
+    if coll:
+        print("COLLISION:", coll)
+        sys.exit(1)
+    out = {}
+    for k in keys:
+        name, conf, notes = NAMES[k]
+        out[k] = [name, notes, notes + " conf: " + conf, conf]
+    OUT.write_text(json.dumps(out, indent=2) + "\n", encoding="utf-8", newline="\n")
+    from collections import Counter
+    print("wrote", OUT, len(out))
+    print("confidence:", dict(Counter(v[3] for v in out.values())))
+    for k in keys:
+        print(f"  {k:12s} -> {out[k][0]}")
+
+if __name__ == "__main__":
+    main()
