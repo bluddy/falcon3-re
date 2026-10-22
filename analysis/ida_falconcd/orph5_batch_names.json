@@ -1,0 +1,398 @@
+{
+  "r33_e105": [
+    "r33_op_vec3_init_batch",
+    "1415B, ASM, in=0, 18 callees. op_dispatch_far_entry(0Ah/8/0Ch) + op_dispatch_far_wide(0Eh) batch initializing 639Eh:138h..13Ch vec3 pairs via r06_vec3_main_proc, farobj_field_scale_check(602Eh:1450h/63113/6302F, 7894h:156Ah/0F32h/0F5Ah), mode_record_field_lookup(7894h:0F5Ah,[bp+6]); 5x 602Eh:[si+68Ah] zero loop; 7A32h:85067=308h, 8506B=FFh; dump truncated at 300-insn cap mid-body - r33 overlay op vec3 init batch entry.",
+    "1415B, ASM, in=0, 18 callees. op_dispatch_far_entry(0Ah/8/0Ch) + op_dispatch_far_wide(0Eh) batch initializing 639Eh:138h..13Ch vec3 pairs via r06_vec3_main_proc, farobj_field_scale_check(602Eh:1450h/63113/6302F, 7894h:156Ah/0F32h/0F5Ah), mode_record_field_lookup(7894h:0F5Ah,[bp+6]); 5x 602Eh:[si+68Ah] zero loop; 7A32h:85067=308h, 8506B=FFh; dump truncated at 300-insn cap mid-body - r33 overlay op vec3 init batch entry. conf: medium",
+    "medium"
+  ],
+  "r40_e130": [
+    "r40_progress_list_render_entry",
+    "599B, C, in=0, 7 callees. Clamp count (sub_2C53B + word_63912 vs byte_63953), build word list (5s then 2Dh fill, 0FFh end) at far ptr 602Eh:616DC via sub_2C545/sub_2C4E1, sub_2C595; 4x sub_2C4FF draws (slots 0-3, 1C2h wide, heights 6390E+0Ah / 7) each + sub_2C59F; closes r39_farptr_call_gate(0, 0Dh, si) - r40 overlay progress list render entry.",
+    "599B, C, in=0, 7 callees. Clamp count (sub_2C53B + word_63912 vs byte_63953), build word list (5s then 2Dh fill, 0FFh end) at far ptr 602Eh:616DC via sub_2C545/sub_2C4E1, sub_2C595; 4x sub_2C4FF draws (slots 0-3, 1C2h wide, heights 6390E+0Ah / 7) each + sub_2C59F; closes r39_farptr_call_gate(0, 0Dh, si) - r40 overlay progress list render entry. conf: medium",
+    "medium"
+  ],
+  "r56_e174": [
+    "r56_head_fragment",
+    "568B, ASM, in=0, 4 callees (entity_step_flags, slot3_window_scroll_up, mode_frame_gate_floor_clamp, farobj_record_ops_exec). Head misdecodes (or [si-31h],bh / sahf junk), early retn 0BB55h at +12B stops traversal; 556B tail undumped - r56 overlay head fragment.",
+    "568B, ASM, in=0, 4 callees (entity_step_flags, slot3_window_scroll_up, mode_frame_gate_floor_clamp, farobj_record_ops_exec). Head misdecodes (or [si-31h],bh / sahf junk), early retn 0BB55h at +12B stops traversal; 556B tail undumped - r56 overlay head fragment. conf: low",
+    "low"
+  ],
+  "r46_e155": [
+    "r46_rowtable_remap_area",
+    "534B, C, in=0, 1 callee (hud_state_rowtable_step). For each 7894h:79B6E record (stride 4Eh) compute (rec[40h]+2000h)%44h and (rec[42h]+2000h)%52h positions, scan the +/-20-pixel neighborhood clamped to 240x200, remap 79D92 glyph class byte [bx+si+4] by +38h (ranges 90h-C7h/20h-57h) or +70h (58h-8Fh) gated on record[2] parity - r46 overlay rowtable area remap.",
+    "534B, C, in=0, 1 callee (hud_state_rowtable_step). For each 7894h:79B6E record (stride 4Eh) compute (rec[40h]+2000h)%44h and (rec[42h]+2000h)%52h positions, scan the +/-20-pixel neighborhood clamped to 240x200, remap 79D92 glyph class byte [bx+si+4] by +38h (ranges 90h-C7h/20h-57h) or +70h (58h-8Fh) gated on record[2] parity - r46 overlay rowtable area remap. conf: medium",
+    "medium"
+  ],
+  "sub_178BA9": [
+    "overlay_undecoded_body_178ba9",
+    "428B, C, in=0, no callees. enter 2,0 then all triplet-undecodable hex (9Ah far-call stream, leave/retf tail) - overlay body not fully decoded by IDA.",
+    "428B, C, in=0, no callees. enter 2,0 then all triplet-undecodable hex (9Ah far-call stream, leave/retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_165C80": [
+    "overlay_undecoded_body_165c80",
+    "376B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA.",
+    "376B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "r48_e76": [
+    "r48_time_threshold_table_init",
+    "326B, ASM, in=0, no callees. Sets 7894h:79E28 = 7A32h:022Eh far ptr; copies dword_79E5C base + fixed deltas {200h,1388h,1B58h,2710h,2EE0h,36B0h,3E80h,7148h} into far word pairs 79D16/1A/1C, 79E42/44, 79E70/72, 79EDA/DC, 79EDE/E0, 79D96/98, 79B76/78, 79F1C/1E; dump ends mid-sequence (no terminator) - r48 overlay time threshold table init entry.",
+    "326B, ASM, in=0, no callees. Sets 7894h:79E28 = 7A32h:022Eh far ptr; copies dword_79E5C base + fixed deltas {200h,1388h,1B58h,2710h,2EE0h,36B0h,3E80h,7148h} into far word pairs 79D16/1A/1C, 79E42/44, 79E70/72, 79EDA/DC, 79EDE/E0, 79D96/98, 79B76/78, 79F1C/1E; dump ends mid-sequence (no terminator) - r48 overlay time threshold table init entry. conf: medium",
+    "medium"
+  ],
+  "r32_e108": [
+    "r32_ui_init_entry_fragment",
+    "289B, ASM, in=0, 6 callees (sub_2C3F1/2C3FB, terrain_vm_buffer_decay, ui_menu_panel_init, ui_slot_record_init, ui_loadout_menu_enter). Head misdecodes (and [bx-479Ah],bx), early retn 8E4Fh at +4B stops traversal; 285B tail undumped - r32 overlay UI init entry fragment.",
+    "289B, ASM, in=0, 6 callees (sub_2C3F1/2C3FB, terrain_vm_buffer_decay, ui_menu_panel_init, ui_slot_record_init, ui_loadout_menu_enter). Head misdecodes (and [bx-479Ah],bx), early retn 8E4Fh at +4B stops traversal; 285B tail undumped - r32 overlay UI init entry fragment. conf: low",
+    "low"
+  ],
+  "sub_16B650": [
+    "overlay_undecoded_body_16b650",
+    "259B, C, in=0, no callees. enter 6,0 then all triplet-undecodable hex (9Ah far-call stream, leave/retf tail) - overlay body not fully decoded by IDA.",
+    "259B, C, in=0, no callees. enter 6,0 then all triplet-undecodable hex (9Ah far-call stream, leave/retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "r38_e122": [
+    "r38_mode_phase_select_entry",
+    "219B, ASM, in=0, 3 callees. Head misdecodes (add al,0); 3-branch mode setter: (a) 602Eh:63955=0Bh + sub_2C6AD(0), 79B6E:[2C2h] and 4Eh-record[bx+4]=0Bh; (b) 63955=0Dh + sub_2C5EF, same fields=0Dh; (c) sub_2C711, [0E08h]=[66Ah]=16h, record+4 and 63955=16h - r38 overlay mode phase select entry.",
+    "219B, ASM, in=0, 3 callees. Head misdecodes (add al,0); 3-branch mode setter: (a) 602Eh:63955=0Bh + sub_2C6AD(0), 79B6E:[2C2h] and 4Eh-record[bx+4]=0Bh; (b) 63955=0Dh + sub_2C5EF, same fields=0Dh; (c) sub_2C711, [0E08h]=[66Ah]=16h, record+4 and 63955=16h - r38 overlay mode phase select entry. conf: medium",
+    "medium"
+  ],
+  "r33_e85": [
+    "r33_record_pair_status_resolve",
+    "201B, C, in=0, 3 callees. Status resolver returning 0/0FDh/0FEh/0FFh: mode word (79B52>>2) gates r33_record_walk_4e pair lookup vs r06_init_call_43270_c x2 + fixed_vec3_read()&0FFFh%64h<4Bh test; 4Eh-record[2]==1 short-circuits to FEh; pair comparison vs 9 threshold picks FFh/FDh/0 - r33 overlay record pair status resolver.",
+    "201B, C, in=0, 3 callees. Status resolver returning 0/0FDh/0FEh/0FFh: mode word (79B52>>2) gates r33_record_walk_4e pair lookup vs r06_init_call_43270_c x2 + fixed_vec3_read()&0FFFh%64h<4Bh test; 4Eh-record[2]==1 short-circuits to FEh; pair comparison vs 9 threshold picks FFh/FDh/0 - r33 overlay record pair status resolver. conf: medium",
+    "medium"
+  ],
+  "sub_20726": [
+    "view_scroll_quad_update",
+    "183B, ASM, in=0, 4 callees. view_scroll_rotate_apply + angle_wrap_mask_3fff(ds:3888h/3886h) + trig_scroll_project_3452; builds 4-corner quad from projected points with cs:1F6D4/1F6D6 and ds:345Eh/3460h offsets, writes corners ds:238h..246h and min/max mirror 0EE4h..0EF2h, 2x record_queue_select_drain(ds:346Eh/346Dh, cx=4), copies 8 words back - view scroll quad update.",
+    "183B, ASM, in=0, 4 callees. view_scroll_rotate_apply + angle_wrap_mask_3fff(ds:3888h/3886h) + trig_scroll_project_3452; builds 4-corner quad from projected points with cs:1F6D4/1F6D6 and ds:345Eh/3460h offsets, writes corners ds:238h..246h and min/max mirror 0EE4h..0EF2h, 2x record_queue_select_drain(ds:346Eh/346Dh, cx=4), copies 8 words back - view scroll quad update. conf: medium",
+    "medium"
+  ],
+  "sub_6F4A9": [
+    "menu_state_snapshot_load",
+    "161B, ASM, in=0, 5 callees. Loads 9 menu state fields in 6E45h DGROUP: 6E8C3/C7/B9/D6 bytes via r14_stream_read_retf8 + r14_farptr_call_gate2, 6E8C5 word, 6E8E2=farobj_config_state_entry, 6E8E0=state_word_1f6e2_get, 6E8CA=6E8CC=r14_farptr_call_gate(6E404), 6E8C8=r14_farptr_call_gate(6E43B)&7 - menu state snapshot loader.",
+    "161B, ASM, in=0, 5 callees. Loads 9 menu state fields in 6E45h DGROUP: 6E8C3/C7/B9/D6 bytes via r14_stream_read_retf8 + r14_farptr_call_gate2, 6E8C5 word, 6E8E2=farobj_config_state_entry, 6E8E0=state_word_1f6e2_get, 6E8CA=6E8CC=r14_farptr_call_gate(6E404), 6E8C8=r14_farptr_call_gate(6E43B)&7 - menu state snapshot loader. conf: medium",
+    "medium"
+  ],
+  "sub_11071": [
+    "mscdex_drive_string_setup",
+    "144B, ASM, in=0, 3 callees. MSCDEX handshake: int 2Fh ax=1500h (bx=0 -> stc fail), ax=150Dh get list to cs:80Ah, decode each byte +41h into 7B0Eh:3795h string; per char op_dispatch(0,6,826h) validated under flag2224a clear/set gates, failure path DOS print 7075h:247h + key wait + ESC exit (int 21h 4Ch); success op_dispatch(word_1106F,8) - MSCDEX drive string setup.",
+    "144B, ASM, in=0, 3 callees. MSCDEX handshake: int 2Fh ax=1500h (bx=0 -> stc fail), ax=150Dh get list to cs:80Ah, decode each byte +41h into 7B0Eh:3795h string; per char op_dispatch(0,6,826h) validated under flag2224a clear/set gates, failure path DOS print 7075h:247h + key wait + ESC exit (int 21h 4Ch); success op_dispatch(word_1106F,8) - MSCDEX drive string setup. conf: medium",
+    "medium"
+  ],
+  "sub_10633E": [
+    "overlay_undecoded_body_10633e",
+    "133B, ASM, in=0, no callees. push ax then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA.",
+    "133B, ASM, in=0, no callees. push ax then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "r35_e181": [
+    "r35_mode9_menu_select_step",
+    "128B, ASM, in=0, no listed callees (near call 161B10). Sets 4Eh record slot type [bx+4]=9 for indexed + current 79BDA records, near-calls 161B10(602Eh:([bp+0Ch]*27Ah+68Fh), [bp+0Ah], [bp+8]), 79B6E:[932h]=5 / [931h]=4, 7A32h:85067 |= 4 - r35 overlay mode-9 select step.",
+    "128B, ASM, in=0, no listed callees (near call 161B10). Sets 4Eh record slot type [bx+4]=9 for indexed + current 79BDA records, near-calls 161B10(602Eh:([bp+0Ch]*27Ah+68Fh), [bp+0Ah], [bp+8]), 79B6E:[932h]=5 / [931h]=4, 7A32h:85067 |= 4 - r35 overlay mode-9 select step. conf: medium",
+    "medium"
+  ],
+  "r33_e93": [
+    "r33_slot_flag_scan_resolve",
+    "119B, C, in=0, no callees. For si=0..8 slots: if 4Eh-record[slot+28h]==8, read word array rec+30h entry, scan 4 bytes at 7894h:79E28 far table[off..off+3]; return 1 on first byte with 80h clear, else 0 - r33 overlay slot flag scan resolve.",
+    "119B, C, in=0, no callees. For si=0..8 slots: if 4Eh-record[slot+28h]==8, read word array rec+30h entry, scan 4 bytes at 7894h:79E28 far table[off..off+3]; return 1 on first byte with 80h clear, else 0 - r33 overlay slot flag scan resolve. conf: medium",
+    "medium"
+  ],
+  "r08_e46": [
+    "r08_angle_xy_quad_resolve",
+    "104B, ASM, in=0, 2 callees. If 6BE0h:6CD79==FFh or record flag-80h clear -> tail unk_103370; else 32-bit scale ([bx]*0x3334+[bx+6], [bx+1]*0x3334+[bx+8]) into 6CC24h/6CC28h pairs, angle_xy_far + angle_quad_norm_far, div 2940h (10560) -> bx quadrant - r08 overlay angle xy quad resolve.",
+    "104B, ASM, in=0, 2 callees. If 6BE0h:6CD79==FFh or record flag-80h clear -> tail unk_103370; else 32-bit scale ([bx]*0x3334+[bx+6], [bx+1]*0x3334+[bx+8]) into 6CC24h/6CC28h pairs, angle_xy_far + angle_quad_norm_far, div 2940h (10560) -> bx quadrant - r08 overlay angle xy quad resolve. conf: medium",
+    "medium"
+  ],
+  "r35_e193": [
+    "r35_op_dispatch_f32_step",
+    "96B, ASM, in=0, 1 callee. Head misdecodes (2 insns); op_dispatch_far_entry(7894h:0F32h,0,id,6), (602Eh:689h,1,id,0Ch), (602Eh:68Ah,5,id,0Ch), (&id,0,id,8) 4-emission sequence; leave/retf - r35 overlay op dispatch F32 step.",
+    "96B, ASM, in=0, 1 callee. Head misdecodes (2 insns); op_dispatch_far_entry(7894h:0F32h,0,id,6), (602Eh:689h,1,id,0Ch), (602Eh:68Ah,5,id,0Ch), (&id,0,id,8) 4-emission sequence; leave/retf - r35 overlay op dispatch F32 step. conf: medium",
+    "medium"
+  ],
+  "r54_e171": [
+    "r54_flag1_count_resolve_step",
+    "96B, ASM, in=0, 1 callee. Head misdecodes (fsub/add); counts 6894h:69B6E records with [bx+2]==1 into [bp-2], then 2x farobj_index_resolve_step(64h, count / di) -> si; leave/retf - r54 overlay flag-1 count resolve step, head undecodable.",
+    "96B, ASM, in=0, 1 callee. Head misdecodes (fsub/add); counts 6894h:69B6E records with [bx+2]==1 into [bp-2], then 2x farobj_index_resolve_step(64h, count / di) -> si; leave/retf - r54 overlay flag-1 count resolve step, head undecodable. conf: low",
+    "low"
+  ],
+  "r67_e196": [
+    "r67_record_matrix_setup_step",
+    "96B, ASM, in=0, 2 callees. Head + mid garbage insns around 2x farobj_record_proc_si (502Eh:52807 w/ 0B6h,18h; 6894h:0F32h w/ 0B6h,0A0h) + matrix_constants_setup(6894h:0F32h, record[3Eh]); mid misdecode (enter 3FC2h,8Eh); retf - r67 overlay record matrix setup step, garbage regions.",
+    "96B, ASM, in=0, 2 callees. Head + mid garbage insns around 2x farobj_record_proc_si (502Eh:52807 w/ 0B6h,18h; 6894h:0F32h w/ 0B6h,0A0h) + matrix_constants_setup(6894h:0F32h, record[3Eh]); mid misdecode (enter 3FC2h,8Eh); retf - r67 overlay record matrix setup step, garbage regions. conf: low",
+    "low"
+  ],
+  "sub_1BDC0": [
+    "sbi_channel_release_state_get",
+    "91B, ASM, in=0, 1 callee listed (state_mode_check). Visible body: ax = 7772h:unk_77B36; retf at +13B (traversal stops; 78B tail undumped) - SBI channel release-state getter, companion to sbi_channel_release_gate.",
+    "91B, ASM, in=0, 1 callee listed (state_mode_check). Visible body: ax = 7772h:unk_77B36; retf at +13B (traversal stops; 78B tail undumped) - SBI channel release-state getter, companion to sbi_channel_release_gate. conf: medium",
+    "medium"
+  ],
+  "sub_1019C1": [
+    "overlay_undecoded_body_1019c1",
+    "81B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far call, retf tail) - overlay body not fully decoded by IDA.",
+    "81B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far call, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_1179A": [
+    "near_table_slot_copy_advance",
+    "75B, ASM, in=0, no callees. Near fn: slot cx table at es:0F29Eh, init [di+0Eh]=es:[di] once, movsb copy ([si+5]+5) bytes to slot buffer, advance es:[di] +100h with 0CFA0h/500h mod wrap correction, store next-ptr es:[bx-0D62h]; retn - near table slot copy/advance helper.",
+    "75B, ASM, in=0, no callees. Near fn: slot cx table at es:0F29Eh, init [di+0Eh]=es:[di] once, movsb copy ([si+5]+5) bytes to slot buffer, advance es:[di] +100h with 0CFA0h/500h mod wrap correction, store next-ptr es:[bx-0D62h]; retn - near table slot copy/advance helper. conf: medium",
+    "medium"
+  ],
+  "r12_e42": [
+    "r12_farptr_d_poll_b_send",
+    "69B, ASM, in=0, 2 callees. Poll r12_farptr_helper_d until ax==0; then 709Fh:70BC1={6,2}, 70BC3=byte_70A2A, 70BC5=cx record, near calls unk_106457 bracket r12_farptr_helper_b(cx=2) send - r12 overlay farptr helper-d poll/send entry.",
+    "69B, ASM, in=0, 2 callees. Poll r12_farptr_helper_d until ax==0; then 709Fh:70BC1={6,2}, 70BC3=byte_70A2A, 70BC5=cx record, near calls unk_106457 bracket r12_farptr_helper_b(cx=2) send - r12 overlay farptr helper-d poll/send entry. conf: medium",
+    "medium"
+  ],
+  "r12_e33": [
+    "r12_fd0ac_record_entry",
+    "61B, ASM, in=0, 2 callees. ds=es=709Fh, di=1D1h: record FD0Ah (or FD0Ch when ax>=word_71B8E) + 09h + state_farptr_get word + dx/cl/bx/ax fields; r12_farptr_helper; retf - r12 overlay FD0Ah/FD0Ch record entry.",
+    "61B, ASM, in=0, 2 callees. ds=es=709Fh, di=1D1h: record FD0Ah (or FD0Ch when ax>=word_71B8E) + 09h + state_farptr_get word + dx/cl/bx/ax fields; r12_farptr_helper; retf - r12 overlay FD0Ah/FD0Ch record entry. conf: medium",
+    "medium"
+  ],
+  "r53_e82": [
+    "r53_head_garbage_fragment",
+    "59B, ASM, in=0, 2 callees (mode_record_field_lookup, farobj_field_scale_check). Head misdecodes (xchg ax,sp; push 5A68h) then <undecodable 0x0F>; dump ends at +8B, 51B tail undumped - r53 overlay head garbage fragment.",
+    "59B, ASM, in=0, 2 callees (mode_record_field_lookup, farobj_field_scale_check). Head misdecodes (xchg ax,sp; push 5A68h) then <undecodable 0x0F>; dump ends at +8B, 51B tail undumped - r53 overlay head garbage fragment. conf: low",
+    "low"
+  ],
+  "sub_240E5": [
+    "fixed_axis_sign_crosscheck",
+    "58B, ASM, in=0, no callees. For 3 axes: if ds:0F32h/0F34h/0F36h is 0 or -1, XOR with companion ds:0F2Ch/0F2Eh/0F30h and reject if sign bit set (js loc_2411D beyond dump); all pass -> clc, retn - 3-axis fixed sign crosscheck gate.",
+    "58B, ASM, in=0, no callees. For 3 axes: if ds:0F32h/0F34h/0F36h is 0 or -1, XOR with companion ds:0F2Ch/0F2Eh/0F30h and reject if sign bit set (js loc_2411D beyond dump); all pass -> clc, retn - 3-axis fixed sign crosscheck gate. conf: medium",
+    "medium"
+  ],
+  "r32_e73": [
+    "r32_hud_phase_reset_entry_b",
+    "51B, C, in=0, no listed callees (near call 43E0C). 7894h:79B60=0, 79E86=0, call unk_43E0C(4FC2h:4FD52); dump ends mid-body (no terminator) - r32 overlay HUD phase reset entry (variant B of r32_hud_phase_reset_entry).",
+    "51B, C, in=0, no listed callees (near call 43E0C). 7894h:79B60=0, 79E86=0, call unk_43E0C(4FC2h:4FD52); dump ends mid-body (no terminator) - r32 overlay HUD phase reset entry (variant B of r32_hud_phase_reset_entry). conf: medium",
+    "medium"
+  ],
+  "r12_e21": [
+    "r12_tag0a_record_entry",
+    "50B, ASM, in=0, no listed callees (near call 106AD0). ds=es=709Fh, di=1D1h: record tag 0Ah + old-di byte + words from bp/bx/dx + (si:cl) word, near call unk_106AD0; retf - r12 overlay 0Ah-tag record entry.",
+    "50B, ASM, in=0, no listed callees (near call 106AD0). ds=es=709Fh, di=1D1h: record tag 0Ah + old-di byte + words from bp/bx/dx + (si:cl) word, near call unk_106AD0; retf - r12 overlay 0Ah-tag record entry. conf: medium",
+    "medium"
+  ],
+  "sub_10C83": [
+    "mem_free_probe_flags",
+    "50B, ASM, in=0, no callees. int 21h AH=48h BX=FFFFh largest-block probe; cs:byte_1084D = 0, |1 (free < 154Eh paras), |3 (< 11E3h), |80h (< 0F72h) stepwise - DOS free-memory probe flag setter.",
+    "50B, ASM, in=0, no callees. int 21h AH=48h BX=FFFFh largest-block probe; cs:byte_1084D = 0, |1 (free < 154Eh paras), |3 (< 11E3h), |80h (< 0F72h) stepwise - DOS free-memory probe flag setter. conf: medium",
+    "medium"
+  ],
+  "r15_e37": [
+    "r15_garbage_retn_fragment",
+    "45B, ASM, in=0, no callees. Fully garbage decode (xchg/cmp/pop junk, loope $+2, retn) - overlay body not decoded as code.",
+    "45B, ASM, in=0, no callees. Fully garbage decode (xchg/cmp/pop junk, loope $+2, retn) - overlay body not decoded as code. conf: low",
+    "low"
+  ],
+  "sub_186E6": [
+    "kb_field24_action_gate",
+    "43B, ASM, in=0, 3 callees. si = kb_field_get_24(arg_2, arg_0); 0 -> no-op, 1 -> kb_record_slots_release, else -> state_7894_all_far_thunk - kb field 24h action gate.",
+    "43B, ASM, in=0, 3 callees. si = kb_field_get_24(arg_2, arg_0); 0 -> no-op, 1 -> kb_record_slots_release, else -> state_7894_all_far_thunk - kb field 24h action gate. conf: medium",
+    "medium"
+  ],
+  "sub_103054": [
+    "overlay_undecoded_body_103054",
+    "40B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA.",
+    "40B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_10231A": [
+    "overlay_undecoded_body_10231a",
+    "33B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far call, retf tail) - overlay body not fully decoded by IDA.",
+    "33B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far call, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_2B47E": [
+    "near_string_pair_split",
+    "29B, ASM, in=0, no callees. ds=cs: saves word_2B46E=bx (string start), advances past NUL, word_2B470=bx+1 (next string), bx=0A3Eh, les si,cs:off_2B49B; retn - near double-NUL string pair splitter.",
+    "29B, ASM, in=0, no callees. ds=cs: saves word_2B46E=bx (string start), advances past NUL, word_2B470=bx+1 (next string), bx=0A3Eh, les si,cs:off_2B49B; retn - near double-NUL string pair splitter. conf: medium",
+    "medium"
+  ],
+  "sub_10A070": [
+    "overlay_undecoded_body_10a070",
+    "26B, ASM, in=0, no callees. push cx then all triplet-undecodable hex (3x 9Ah far calls, retf tail) - overlay body not fully decoded by IDA.",
+    "26B, ASM, in=0, no callees. push cx then all triplet-undecodable hex (3x 9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_2394A": [
+    "table_iterate_far_wrapper",
+    "24B, ASM, in=0, 1 callee. ax/cx from args, lds si,[bp+arg_4], lds di,[bp+arg_8], call table_iterate_loop; retf - table iterate far wrapper.",
+    "24B, ASM, in=0, 1 callee. ax/cx from args, lds si,[bp+arg_4], lds di,[bp+arg_8], call table_iterate_loop; retf - table iterate far wrapper. conf: medium",
+    "medium"
+  ],
+  "r29_e63": [
+    "r29_draw_from_struct_far_wrapper",
+    "22B, ASM, in=0, 2 callees (farobj_single_build_project, draw_from_struct). si=[bp+6], ds=[bp+8], call draw_from_struct, epilogue - r29 overlay draw-from-struct far wrapper.",
+    "22B, ASM, in=0, 2 callees (farobj_single_build_project, draw_from_struct). si=[bp+6], ds=[bp+8], call draw_from_struct, epilogue - r29 overlay draw-from-struct far wrapper. conf: medium",
+    "medium"
+  ],
+  "sub_27940": [
+    "cs_vector_22194_invoke",
+    "22B, ASM, in=0, no callees. cx=arg_4, lds si,[bp+arg_0], call cs:dword_22194 vector; retf - cs:22194h vector invoke wrapper.",
+    "22B, ASM, in=0, no callees. cx=arg_4, lds si,[bp+arg_0], call cs:dword_22194 vector; retf - cs:22194h vector invoke wrapper. conf: medium",
+    "medium"
+  ],
+  "sub_10F1E": [
+    "kb_record_load_seg_wrapper",
+    "20B, ASM, in=0, 1 callee. ds = cs:word_10842 segment, push dx/ax, call kb_record_load_far; retn - kb record load segment wrapper.",
+    "20B, ASM, in=0, 1 callee. ds = cs:word_10842 segment, push dx/ax, call kb_record_load_far; retn - kb record load segment wrapper. conf: medium",
+    "medium"
+  ],
+  "r15_e38": [
+    "r15_flag_body_far_wrapper",
+    "16B, LEAF, in=0, 1 callee. call unk_802E2 (external target), 3-insn misdecode region (sbb/add/cmp junk), call r15_flag_107762_body; retf - r15 flag body far wrapper, partial decode.",
+    "16B, LEAF, in=0, 1 callee. call unk_802E2 (external target), 3-insn misdecode region (sbb/add/cmp junk), call r15_flag_107762_body; retf - r15 flag body far wrapper, partial decode. conf: low",
+    "low"
+  ],
+  "sub_1746F": [
+    "interrupt_enable_gate",
+    "16B, ASM, in=0, no callees. arg_0==0 -> cli else sti (1 triplet pad byte); retf - interrupt enable/disable gate.",
+    "16B, ASM, in=0, no callees. arg_0==0 -> cli else sti (1 triplet pad byte); retf - interrupt enable/disable gate. conf: medium",
+    "medium"
+  ],
+  "sub_24B3C": [
+    "trig_bsearch_8364_far_wrapper",
+    "15B, ASM, in=0, 1 callee. ax=[bp+arg_0], call trig_value_bsearch_8364; retf - trig bsearch 8364h far wrapper.",
+    "15B, ASM, in=0, 1 callee. ax=[bp+arg_0], call trig_value_bsearch_8364; retf - trig bsearch 8364h far wrapper. conf: medium",
+    "medium"
+  ],
+  "sub_109FB0": [
+    "overlay_undecoded_body_109fb0",
+    "13B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far call, retf tail) - overlay body not fully decoded by IDA.",
+    "13B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far call, retf tail) - overlay body not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_18503": [
+    "frame_preserve_true_gate",
+    "13B, ASM, in=0, 1 callee. call frame_preserve_nop; ax=1; retf - frame preserve always-true gate.",
+    "13B, ASM, in=0, 1 callee. call frame_preserve_nop; ax=1; retf - frame preserve always-true gate. conf: medium",
+    "medium"
+  ],
+  "r28_e65": [
+    "r28_farptr_helper_far_wrapper",
+    "12B, ASM, in=0, 1 callee. ax=[bp+6], push cs, call r28_farptr_helper; retf - r28 farptr helper far wrapper.",
+    "12B, ASM, in=0, 1 callee. ax=[bp+6], push cs, call r28_farptr_helper; retf - r28 farptr helper far wrapper. conf: medium",
+    "medium"
+  ],
+  "sub_10307C": [
+    "overlay_undecoded_body_10307c",
+    "11B, LEAF, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far call, retf tail) - overlay stub not fully decoded by IDA.",
+    "11B, LEAF, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far call, retf tail) - overlay stub not fully decoded by IDA. conf: low",
+    "low"
+  ],
+  "sub_2C095": [
+    "tail_bridge_to_r05_dgroup_save_reg",
+    "10B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r05_dgroup_save_reg (3 pad bytes) - tail-bridge stub into r05_dgroup_save_reg.",
+    "10B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r05_dgroup_save_reg (3 pad bytes) - tail-bridge stub into r05_dgroup_save_reg. conf: medium",
+    "medium"
+  ],
+  "sub_2BDD9": [
+    "tail_bridge_to_hw_config_apply_chain",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp hw_config_apply_chain - tail-bridge stub into hw_config_apply_chain.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp hw_config_apply_chain - tail-bridge stub into hw_config_apply_chain. conf: medium",
+    "medium"
+  ],
+  "sub_2C0D1": [
+    "tail_bridge_to_r69_ui_event_loop",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r69_ui_event_loop (loc_6EF09+2) - tail-bridge stub into r69_ui_event_loop.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r69_ui_event_loop (loc_6EF09+2) - tail-bridge stub into r69_ui_event_loop. conf: medium",
+    "medium"
+  ],
+  "sub_2C419": [
+    "tail_bridge_to_r06_state_proc_6de8",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r06_state_proc_6de8 - tail-bridge stub into r06_state_proc_6de8.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r06_state_proc_6de8 - tail-bridge stub into r06_state_proc_6de8. conf: medium",
+    "medium"
+  ],
+  "sub_2C469": [
+    "tail_bridge_to_ui_menu_page_setup",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_page_setup (loc_6A669+4) - tail-bridge stub into ui_menu_page_setup.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_page_setup (loc_6A669+4) - tail-bridge stub into ui_menu_page_setup. conf: medium",
+    "medium"
+  ],
+  "sub_2C4D7": [
+    "tail_bridge_to_r30_state_init_all_j",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant J) - tail-bridge stub into r30_state_init_all.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant J) - tail-bridge stub into r30_state_init_all. conf: medium",
+    "medium"
+  ],
+  "sub_2C5B3": [
+    "tail_bridge_to_r30_state_init_all_k",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant K) - tail-bridge stub into r30_state_init_all.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant K) - tail-bridge stub into r30_state_init_all. conf: medium",
+    "medium"
+  ],
+  "sub_2C617": [
+    "tail_bridge_to_r30_mode_set_637fc",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_mode_set_637fc (loc_6A4CE+1) - tail-bridge stub into r30_mode_set_637fc.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_mode_set_637fc (loc_6A4CE+1) - tail-bridge stub into r30_mode_set_637fc. conf: medium",
+    "medium"
+  ],
+  "sub_2C653": [
+    "tail_bridge_to_r30_entry_record_walk",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_entry_record_walk - tail-bridge stub into r30_entry_record_walk.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_entry_record_walk - tail-bridge stub into r30_entry_record_walk. conf: medium",
+    "medium"
+  ],
+  "sub_2C68F": [
+    "tail_bridge_to_r30_entry_partial_c",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_entry_partial_c - tail-bridge stub into r30_entry_partial_c.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_entry_partial_c - tail-bridge stub into r30_entry_partial_c. conf: medium",
+    "medium"
+  ],
+  "sub_2C6DF": [
+    "tail_bridge_to_ui_menu_page_args_setup_b",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_page_args_setup (loc_69EDA+2) - tail-bridge stub into ui_menu_page_args_setup (variant B).",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_page_args_setup (loc_69EDA+2) - tail-bridge stub into ui_menu_page_args_setup (variant B). conf: medium",
+    "medium"
+  ],
+  "sub_2C739": [
+    "tail_bridge_to_ui_menu_frame_enter_b",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_frame_enter (loc_676CC+4) - tail-bridge stub into ui_menu_frame_enter (variant B).",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_frame_enter (loc_676CC+4) - tail-bridge stub into ui_menu_frame_enter (variant B). conf: medium",
+    "medium"
+  ],
+  "sub_2C7F7": [
+    "tail_bridge_to_r30_entry_partial_b",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_entry_partial_b - tail-bridge stub into r30_entry_partial_b.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_entry_partial_b - tail-bridge stub into r30_entry_partial_b. conf: medium",
+    "medium"
+  ],
+  "sub_2C85B": [
+    "tail_bridge_to_r30_state_init_all_l",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant L) - tail-bridge stub into r30_state_init_all.",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant L) - tail-bridge stub into r30_state_init_all. conf: medium",
+    "medium"
+  ],
+  "sub_2C897": [
+    "tail_bridge_to_ui_loadout_menu_enter_g",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_6903A) - tail-bridge stub into ui_loadout_menu_enter (variant G).",
+    "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_6903A) - tail-bridge stub into ui_loadout_menu_enter (variant G). conf: medium",
+    "medium"
+  ],
+  "r64_e188": [
+    "r64_aaa_fragment",
+    "6B, LEAF, in=0, no callees. aaa; add [bx+5Eh],bl misdecode; leave; retf - r64 overlay fragment stub.",
+    "6B, LEAF, in=0, no callees. aaa; add [bx+5Eh],bl misdecode; leave; retf - r64 overlay fragment stub. conf: low",
+    "low"
+  ],
+  "sub_681BA": [
+    "es_word_79f34_load",
+    "6B, DATA, in=0, no callees. mov es,ax; mov ax,es:word_79F34 - 2-insn data fragment, not a full function.",
+    "6B, DATA, in=0, no callees. mov es,ax; mov ax,es:word_79F34 - 2-insn data fragment, not a full function. conf: low",
+    "low"
+  ],
+  "r38_e149": [
+    "r38_retn19_stub",
+    "4B, LEAF, in=0, no callees. retn 19h - r38 overlay stack-ret 19h stub.",
+    "4B, LEAF, in=0, no callees. retn 19h - r38 overlay stack-ret 19h stub. conf: medium",
+    "medium"
+  ]
+}

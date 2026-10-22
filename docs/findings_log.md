@@ -5149,4 +5149,50 @@ state_init_all h/i, farobj_proc_c, panel_init_c).
 
 ---
 
+## 2026-10-22 99 - Orphan batch 5 complete: 66 named
+(`named` 1,896 -> **1,962**; orphans 132 -> **66**)
+
+Batch 5 of the 397-orphan sweep named 66 (47 medium / 19 low
+conf). Headlines:
+
+**`r33_op_vec3_init_batch`** (r33_e105, 1415B): the largest
+batch-5 function - vec3 op-batch state init across the overlay
+dispatch family.
+
+**`r40_progress_list_render_entry`** (r40_e130, 599B C) and
+**`r46_rowtable_remap_area`** (r46_e155, 534B C) - the two
+class-C render/remap entries of the batch.
+
+**`r48_time_threshold_table_init`** (r48_e76, 326B, no TERM),
+**`r38_mode_phase_select_entry`** (219B),
+**`r33_record_pair_status_resolve`** (201B C),
+**`view_scroll_quad_update`** (183B),
+**`menu_state_snapshot_load`** (161B), and
+**`mscdex_drive_string_setup`** (144B - MSCDEX drive-letter
+buffer setup).
+
+Also: `r33_slot_flag_scan_resolve`, `r35_mode9_menu_select_step`
+/ `r35_op_dispatch_f32_step`, `r08_angle_xy_quad_resolve`, the
+r12 record trio (FD0Ah/FD05h/tag 0Ah), KB pair
+(**`kb_field24_action_gate`** / **`kb_record_load_seg_wrapper`**),
+**`fixed_axis_sign_crosscheck`**, **`mem_free_probe_flags`**,
+string helpers (**`near_string_pair_split`** /
+**`near_table_slot_copy_advance`**), **`sbi_channel_release_state_get`**, **`table_iterate_far_wrapper`**, and the
+interrupt/flag gates (**`interrupt_enable_gate`** cli/sti,
+**`frame_preserve_true_gate`**, **`trig_bsearch_8364_far_wrapper`**).
+
+Low-conf tail: 10 `overlay_undecoded_body_*` markers + 7
+fragments (r15/r32/r53/r54/r56/r64/r67) + `r15_flag_body_far_wrapper` partial + `es_word_79f34_load` data fragment;
+15 medium-conf `tail_bridge_to_*` 8-byte stubs (incl.
+state_init_all j/k/l, loadout_enter g, entry_partial b/c,
+mode_set_637fc).
+
+### Gates (all green)
+
+`naming.py check` **1,964** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,962/1,962 function + 2/2 global**.
+
+---
+
 (append new findings below)

@@ -613,4 +613,4 @@
 - L20 (25 fns) + L21 (2 fns) — the final two global levels; one finding each hits naming queue 0.
 - L21 (2 fns: sub_186ADC, sub_6E29E) — the final two; one finding hits the global naming queue 0.
 - Global naming queue = 0 -- bottom-up naming campaign COMPLETE (Levels 0-21, 1,631/2,237 fns named). Remaining unnamed are 302 thunk slots + 397 orphans (excluded by design).
-- Orphan batches 5-6 (132 orphans remaining of the 397; orphan_batches.json has 6 batches) -- continue one finding per batch; 2 batches x ~66 fns each.
+- Orphan batch 6 (66 orphans remaining of the 397; orphan_batches.json has 6 batches) -- final batch of the orphan sweep (Finding 100, 1 batch x 66 fns).
