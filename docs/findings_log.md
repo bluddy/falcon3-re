@@ -5067,4 +5067,43 @@ fragment (r38_e131 -> `r38_data_fragment`); 15 medium-conf
 
 ---
 
+## 2026-10-22 97 - Orphan batch 3 complete: 66 named
+(`named` 1,764 -> **1,830**; orphans 264 -> **198**)
+
+Batch 3 of the 397-orphan sweep named 66 (48 medium / 18 low
+conf). Headlines:
+
+**`r32_track_menu_step_entry`** (r32_e83, 1572B, 10 callees):
+the largest batch-3 function - jpt_156DD4 jump table over
+7894h mode words, 300-unit threshold gates on 79E80, scroll
+counters, hud_track_distance_draw + ui_menu_transition_step.
+
+**`r37_hud_strip_render_entry`** (r37_e137, 788B, 9 callees):
+8x box_edge_strip_draw + 5x hud_track_label_strip HUD panel
+renderer.
+
+**`r23_menu_key_dispatch_loop`** (r23_e61, 570B C): 6E45h
+DGROUP modal loop - dispatch_22100, key scan at cs:23Ah ->
+10-way jmp table, pane state 6E8D6.
+
+**`record_span_build_and_dispatch`** (sub_29917),
+**`r29_yesno_confirm_loop`** (r29_e06, 166B),
+**`ems_sample_stream_tick`** (sub_16CE5 - EMS + AdLib 388h
+sample tick), **`r36_slot_char_flag_scan`**, **`r15_op_init_`
+`sequence`**, and the r39 three-render family (`r39_four_slot_`
+`render_entry` / `r39_angular_slot_render_entry` /
+`r39_queue_slot_render_entry`).
+
+Low-conf tail: 10 `overlay_undecoded_body_*` markers + 8
+fragments (r33/r35/r52/r54/r59/r60/r64 x2); 15 medium-conf
+`tail_bridge_to_*` 8-byte stubs.
+
+### Gates (all green)
+
+`naming.py check` **1,832** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,830/1,830 function + 2/2 global**.
+
+---
+
 (append new findings below)
