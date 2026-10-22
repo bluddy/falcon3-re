@@ -8252,6 +8252,342 @@ symbols:
     sig: "2312B, in=1 (r53_e88). The r53 overlay main script interpreter: inits 8-entry local tables (bp-70h/-80h/-90h/-0A0h/-0B0h), walks 42h-stride records at 6894h:dword_69E3A+3Dh copying fields +22h..+25h/+31h/+41h, +41h==0FFh path calls slot2_map_window_load then unk_5CA48 with +25h clamp to 64h; then farobj_store_32075 fetches a script stream and byte&7 dispatches via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/jpt_187150/jpt_1872C8 tables; callees farobj_index_resolve_step + tile_sample_script_dispatch + floor_store_4abb + farobj_index_resolve_step + r53_farobj_pipeline_body."
     notes: "2312B, in=1 (r53_e88). The r53 overlay main script interpreter: inits 8-entry local tables (bp-70h/-80h/-90h/-0A0h/-0B0h), walks 42h-stride records at 6894h:dword_69E3A+3Dh copying fields +22h..+25h/+31h/+41h, +41h==0FFh path calls slot2_map_window_load then unk_5CA48 with +25h clamp to 64h; then farobj_store_32075 fetches a script stream and byte&7 dispatches via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/jpt_187150/jpt_1872C8 tables; callees farobj_index_resolve_step + tile_sample_script_dispatch + floor_store_4abb + farobj_index_resolve_step + r53_farobj_pipeline_body. conf: medium"
 
+  - ida: sub_23AA1
+    name: angle_quad_norm_far_wrapper
+    kind: function
+    sig: "22B, in=0, 1 callee. Far wrapper: lds si,[bp+arg_0]; les di,[bp+arg_4]; call angle_quad_norm_scale; pop; retf."
+    notes: "22B, in=0, 1 callee. Far wrapper: lds si,[bp+arg_0]; les di,[bp+arg_4]; call angle_quad_norm_scale; pop; retf. conf: medium"
+  - ida: sub_24E8C
+    name: bda_417_far_wrapper
+    kind: function
+    sig: "13B, in=0, 1 callee. push bp; mov bp,sp; mov ax,[bp+arg_0]; push cs; call bda_417_or_al; nop; pop bp; retf - far wrapper for bda_417_or_al."
+    notes: "13B, in=0, 1 callee. push bp; mov bp,sp; mov ax,[bp+arg_0]; push cs; call bda_417_or_al; nop; pop bp; retf - far wrapper for bda_417_or_al. conf: medium"
+  - ida: r53_e133
+    name: data_pad_r53e133
+    kind: function
+    sig: "5B, LEAF, in=0. Garbage decode (adc al,83h; retn 893Dh) - data pad, low conf."
+    notes: "5B, LEAF, in=0. Garbage decode (adc al,83h; retn 893Dh) - data pad, low conf. conf: low"
+  - ida: sub_6DD12
+    name: distance_tier_classify_entry
+    kind: function
+    sig: "369B, in=0, 4 callees. Computes abs dx/dy between es:[si+8/Ah] and ds:48BAh record; if abs diff <= 0BB8h tier=45h else 54h (neg) / 4Eh (pos); calls far_cb_2(bp) and dispatch_220d4_stub(bp); then 5-slot far-ptr walk via 2F64h:A462h table - distance-tier classifier."
+    notes: "369B, in=0, 4 callees. Computes abs dx/dy between es:[si+8/Ah] and ds:48BAh record; if abs diff <= 0BB8h tier=45h else 54h (neg) / 4Eh (pos); calls far_cb_2(bp) and dispatch_220d4_stub(bp); then 5-slot far-ptr walk via 2F64h:A462h table - distance-tier classifier. conf: medium"
+  - ida: sub_2CB4D
+    name: far_callback_vector_walk
+    kind: function
+    sig: "33B, in=0. Walks 6-byte vector table at cs:14Ch; per entry: if far ptr zero stop; if [bx+4]&al mask match, pushf; call dword ptr cs:[bx]; add bx,6 loop - far-callback vector walk."
+    notes: "33B, in=0. Walks 6-byte vector table at cs:14Ch; per entry: if far ptr zero stop; if [bx+4]&al mask match, pushf; call dword ptr cs:[bx]; add bx,6 loop - far-callback vector walk. conf: medium"
+  - ida: sub_27877
+    name: far_cb_vector_invoke_entry
+    kind: function
+    sig: "66B, in=0. Loads 4 args from frame, call cs:dword_2217C, sets cs:word_27474=4; retf - far-callback vector invoke."
+    notes: "66B, in=0. Loads 4 args from frame, call cs:dword_2217C, sets cs:word_27474=4; retf - far-callback vector invoke. conf: medium"
+  - ida: sub_26667
+    name: fixed_cross_product_sign_test
+    kind: function
+    sig: "41B, in=0. 2D cross-product: (si[4]-si[0])*(si[Ah]-si[6]) - (si[8]-si[4])*(si[6]-si[2]); js -> stc/retn - triangle winding / orientation sign test."
+    notes: "41B, in=0. 2D cross-product: (si[4]-si[0])*(si[Ah]-si[6]) - (si[8]-si[4])*(si[6]-si[2]); js -> stc/retn - triangle winding / orientation sign test. conf: medium"
+  - ida: sub_216B8
+    name: fixed_long_sign_clamp
+    kind: function
+    sig: "59B, in=0, 3 callees (fixed_long_div_64, vec2_normalize_seq, trig_value_bsearch_8364). Head: or dx,dx; jns; mov ax,1000h; retn - clamps negative fixed-long to 0x1000; further body continues with div/normalize/trig path."
+    notes: "59B, in=0, 3 callees (fixed_long_div_64, vec2_normalize_seq, trig_value_bsearch_8364). Head: or dx,dx; jns; mov ax,1000h; retn - clamps negative fixed-long to 0x1000; further body continues with div/normalize/trig path. conf: medium"
+  - ida: sub_3FFEF
+    name: game_frame_far_entry
+    kind: function
+    sig: "3685B, in=0, 42 callees. Far-entry thunk: pop ax; cmp ax,0FFFFh; jz game_state_load_apply. Huge multi-purpose body calling farobj_table_snapshot, farobj_rect_state_setup, farobj_record_bulk_copy, terrain_state_reinit, view_terrain_frame_step, far_mode_event_dispatch, hud_track_strip_pipeline, r32_hud_phase_dispatch, entity_record_table_ops, game_config_apply_init - main game-frame far entry reached via vector."
+    notes: "3685B, in=0, 42 callees. Far-entry thunk: pop ax; cmp ax,0FFFFh; jz game_state_load_apply. Huge multi-purpose body calling farobj_table_snapshot, farobj_rect_state_setup, farobj_record_bulk_copy, terrain_state_reinit, view_terrain_frame_step, far_mode_event_dispatch, hud_track_strip_pipeline, r32_hud_phase_dispatch, entity_record_table_ops, game_config_apply_init - main game-frame far entry reached via vector. conf: medium"
+  - ida: sub_11842
+    name: int7a_bx3_dispatch
+    kind: function
+    sig: "12B, LEAF, in=0. push ds/es/pusha; mov bx,3; int 7Ah; popa; pop; retn - DOS int 7Ah call with bx=3."
+    notes: "12B, LEAF, in=0. push ds/es/pusha; mov bx,3; int 7Ah; popa; pop; retn - DOS int 7Ah call with bx=3. conf: medium"
+  - ida: nullsub_19
+    name: near_null_return
+    kind: function
+    sig: "2B, LEAF, in=0. retn - null near return."
+    notes: "2B, LEAF, in=0. retn - null near return. conf: medium"
+  - ida: sub_101677
+    name: overlay_data_table_1016
+    kind: function
+    sig: "49B, DATA, in=0. push ds then pure repeating hex-dump data - overlay data table, low conf."
+    notes: "49B, DATA, in=0. push ds then pure repeating hex-dump data - overlay data table, low conf. conf: low"
+  - ida: sub_18B689
+    name: overlay_data_table_18b6
+    kind: function
+    sig: "96B, DATA, in=0. pushf then pure repeating hex-dump data - overlay data table, low conf."
+    notes: "96B, DATA, in=0. pushf then pure repeating hex-dump data - overlay data table, low conf. conf: low"
+  - ida: sub_2B135
+    name: overlay_ems_stack_segment_load
+    kind: function
+    sig: "103B, in=0, 1 callee. pushf/sub sp,4 frame; pops segment descriptor from 6-byte stack at word_2B4A0/2B4A2/seg_2B4A4 (sub si,6; jb fail) - EMS/segment stack pop."
+    notes: "103B, in=0, 1 callee. pushf/sub sp,4 frame; pops segment descriptor from 6-byte stack at word_2B4A0/2B4A2/seg_2B4A4 (sub si,6; jb fail) - EMS/segment stack pop. conf: medium"
+  - ida: sub_10F46
+    name: overlay_slot_mode_enter
+    kind: function
+    sig: "26B, in=0, 2 callees. overlay_seg_word_read(bx=24h), push ax, ds=cs:byte_10842, mode_slot_enter, add sp,2; retf - overlay slot mode enter."
+    notes: "26B, in=0, 2 callees. overlay_seg_word_read(bx=24h), push ax, ds=cs:byte_10842, mode_slot_enter, add sp,2; retf - overlay slot mode enter. conf: medium"
+  - ida: sub_4FD20
+    name: overlay_string_copy_retf
+    kind: function
+    sig: "24B, in=0. mov di,0A754h; mov cx,1Bh; movsb; pop es; pop ds; retf - copies 27 bytes then far return."
+    notes: "24B, in=0. mov di,0A754h; mov cx,1Bh; movsb; pop es; pop ds; retf - copies 27 bytes then far return. conf: medium"
+  - ida: sub_10CA51
+    name: overlay_undecoded_body_10ca
+    kind: function
+    sig: "527B, C, in=0, 0 callees. enter 4,0 then undecodable hex dump - low-conf overlay body marker."
+    notes: "527B, C, in=0, 0 callees. enter 4,0 then undecodable hex dump - low-conf overlay body marker. conf: low"
+  - ida: sub_165E18
+    name: overlay_undecoded_body_165e
+    kind: function
+    sig: "585B, C, in=0, 0 callees. enter 8,0 then undecodable hex dump (overlay not decoded by IDA) - low-conf overlay body marker."
+    notes: "585B, C, in=0, 0 callees. enter 8,0 then undecodable hex dump (overlay not decoded by IDA) - low-conf overlay body marker. conf: low"
+  - ida: sub_16CECA
+    name: overlay_undecoded_body_16ce
+    kind: function
+    sig: "423B, C, in=0, 0 callees. enter 10h,0 then undecodable hex dump - low-conf overlay body marker."
+    notes: "423B, C, in=0, 0 callees. enter 10h,0 then undecodable hex dump - low-conf overlay body marker. conf: low"
+  - ida: sub_16F6D5
+    name: overlay_undecoded_body_16f6
+    kind: function
+    sig: "173B, in=0, 0 callees. push bp then undecodable hex dump - low-conf overlay body marker."
+    notes: "173B, in=0, 0 callees. push bp then undecodable hex dump - low-conf overlay body marker. conf: low"
+  - ida: sub_1033F8
+    name: overlay_undecoded_stub_1033
+    kind: function
+    sig: "16B, LEAF, in=0. push es then undecodable hex dump - low-conf overlay stub."
+    notes: "16B, LEAF, in=0. push es then undecodable hex dump - low-conf overlay stub. conf: low"
+  - ida: sub_109FD0
+    name: overlay_undecoded_stub_109f
+    kind: function
+    sig: "13B, in=0. push bp then undecodable hex dump - low-conf overlay stub."
+    notes: "13B, in=0. push bp then undecodable hex dump - low-conf overlay stub. conf: low"
+  - ida: r07_e44
+    name: r07_state_flag_set
+    kind: function
+    sig: "15B, LEAF, in=0. push ds/ax; ds=6BE0h; mov byte_6CD53,1; pop; retf - sets r07 state flag byte."
+    notes: "15B, LEAF, in=0. push ds/ax; ds=6BE0h; mov byte_6CD53,1; pop; retf - sets r07 state flag byte. conf: medium"
+  - ida: r08_e30
+    name: r08_farptr_load_entry
+    kind: function
+    sig: "9B, LEAF, in=0, 1 callee. call r08_farptr_load_thunk; jnz; stc; retf - r08 farptr load entry."
+    notes: "9B, LEAF, in=0, 1 callee. call r08_farptr_load_thunk; jnz; stc; retf - r08 farptr load entry. conf: medium"
+  - ida: r10_e67
+    name: r10_flag_bits_entry
+    kind: function
+    sig: "242B, in=0, 3 callees. r10 overlay entry: flag_bits_dispatch(0,1Ch,cs), lodsw copy ds:0C2h->ds:5Ch 5 words, cb_args_invoke(al=0Eh,cx=3), clears ds:35h/31h/33h/2Dh/2Fh; then cmp ds:31h,0FFFFh path with stosw - flag-bits event entry."
+    notes: "242B, in=0, 3 callees. r10 overlay entry: flag_bits_dispatch(0,1Ch,cs), lodsw copy ds:0C2h->ds:5Ch 5 words, cb_args_invoke(al=0Eh,cx=3), clears ds:35h/31h/33h/2Dh/2Fh; then cmp ds:31h,0FFFFh path with stosw - flag-bits event entry. conf: medium"
+  - ida: r12_e25
+    name: r12_bank_switch_stub
+    kind: function
+    sig: "21B, in=0. push ds/es/pusha; ds=es=709Fh; al=7; call unk_1065D1; popa; pop; retf - r12 bank-switch stub (al=7)."
+    notes: "21B, in=0. push ds/es/pusha; ds=es=709Fh; al=7; call unk_1065D1; popa; pop; retf - r12 bank-switch stub (al=7). conf: medium"
+  - ida: r12_e27
+    name: r12_event_record_write
+    kind: function
+    sig: "36B, in=0. Writes FD08h marker + 3/1-byte args to 709Fh:1D1h via stosw/stosb, call unk_106AD0 - r12 event record write."
+    notes: "36B, in=0. Writes FD08h marker + 3/1-byte args to 709Fh:1D1h via stosw/stosb, call unk_106AD0 - r12 event record write. conf: medium"
+  - ida: r12_e35
+    name: r12_state36_reset_stub
+    kind: function
+    sig: "78B, in=0. Garbage head; mov word ptr ds:36h, 0FFFFh; retf - resets state word ds:36h to 0FFFFh."
+    notes: "78B, in=0. Garbage head; mov word ptr ds:36h, 0FFFFh; retf - resets state word ds:36h to 0FFFFh. conf: medium"
+  - ida: r33_e79
+    name: r33_farcb_seq_entry
+    kind: function
+    sig: "72B, in=0, 2 callees (r30_farcb_seq, r33_farptr_gate_c). Garbage-decoded head; callees indicate far-cb sequence entry - low conf."
+    notes: "72B, in=0, 2 callees (r30_farcb_seq, r33_farptr_gate_c). Garbage-decoded head; callees indicate far-cb sequence entry - low conf. conf: low"
+  - ida: r33_e148
+    name: r33_menu_args_farobj_entry
+    kind: function
+    sig: "109B, in=0, 3 callees. r33 overlay entry: di/=2, ui_menu_page_args_setup, fixed_vec3_read, and ax,0Fh; idiv 7, r33_farobj_proc - menu args + farobj entry."
+    notes: "109B, in=0, 3 callees. r33 overlay entry: di/=2, ui_menu_page_args_setup, fixed_vec3_read, and ax,0Fh; idiv 7, r33_farobj_proc - menu args + farobj entry. conf: medium"
+  - ida: r33_e86
+    name: r33_record_alloc_scan
+    kind: function
+    sig: "124B, in=0, 1 callee. r33 overlay entry: checks es:[bx+1A0h] (11h-stride at 639Eh:0), calls r33_record_scan_4e, on success loops si=0.. - r33 record alloc/free scan."
+    notes: "124B, in=0, 1 callee. r33 overlay entry: checks es:[bx+1A0h] (11h-stride at 639Eh:0), calls r33_record_scan_4e, on success loops si=0.. - r33 record alloc/free scan. conf: medium"
+  - ida: r35_e103
+    name: r35_loadout_menu_enter_entry
+    kind: function
+    sig: "51B, in=0, 1 callee. or es:676h,20h; ui_loadout_menu_enter(0,3,0,79BDA); or es:60956,40h; leave; retf - r35 loadout menu enter."
+    notes: "51B, in=0, 1 callee. or es:676h,20h; ui_loadout_menu_enter(0,3,0,79BDA); or es:60956,40h; leave; retf - r35 loadout menu enter. conf: medium"
+  - ida: r36_e99
+    name: r36_record_compare_entry
+    kind: function
+    sig: "281B, C, in=0, 2 callees. r36 overlay entry: reads fields +40h/+42h from two 4Eh-stride records at 7894h:dword_79B6E via [bp+6]/[bp+8] indices, farobj_queue_drain_dispatch, hw_flag8505_set, 32-bit sum, call unk_4327A, idiv 35h - record compare/sort key."
+    notes: "281B, C, in=0, 2 callees. r36 overlay entry: reads fields +40h/+42h from two 4Eh-stride records at 7894h:dword_79B6E via [bp+6]/[bp+8] indices, farobj_queue_drain_dispatch, hw_flag8505_set, 32-bit sum, call unk_4327A, idiv 35h - record compare/sort key. conf: medium"
+  - ida: r36_e115
+    name: r36_record_type_scatter
+    kind: function
+    sig: "213B, C, in=0. r36 overlay entry: loops si over caller-provided table; for each 27h-stride record reads type [bx+0Ah]*39h into 602Eh:106Dh table, scatters [bp+21h]+2*di entries into 7894h:dword_79E28 array - record-type scatter/copy."
+    notes: "213B, C, in=0. r36 overlay entry: loops si over caller-provided table; for each 27h-stride record reads type [bx+0Ah]*39h into 602Eh:106Dh table, scatters [bp+21h]+2*di entries into 7894h:dword_79E28 array - record-type scatter/copy. conf: medium"
+  - ida: r39_e147
+    name: r39_queue_drain_entry
+    kind: function
+    sig: "566B, C, in=0, 6 callees. r39 overlay entry: loads far ptr from 602Eh:byte_616DC, sub_2C4F5(0), farobj_queue_drain_dispatch, sub_2C58B resolve, then 8x sub_2C4FF far-call (opcodes 1-8) with sub_2C59F cleanup, final r39_farptr_call_gate(1,4,0) - queue-drain event entry."
+    notes: "566B, C, in=0, 6 callees. r39 overlay entry: loads far ptr from 602Eh:byte_616DC, sub_2C4F5(0), farobj_queue_drain_dispatch, sub_2C58B resolve, then 8x sub_2C4FF far-call (opcodes 1-8) with sub_2C59F cleanup, final r39_farptr_call_gate(1,4,0) - queue-drain event entry. conf: medium"
+  - ida: r39_e81
+    name: r39_vec3_frame_entry
+    kind: function
+    sig: "160B, in=0, 5 callees. r39 overlay entry: calls r06_vec3_main_proc, reads es:3646h, sub_2C58B resolve, idiv 168h, sub_2C4FF far-call (opcodes 3-5) with sub_2C59F cleanup, final r39_farptr_call_gate - vec3-driven frame entry."
+    notes: "160B, in=0, 5 callees. r39 overlay entry: calls r06_vec3_main_proc, reads es:3646h, sub_2C58B resolve, idiv 168h, sub_2C4FF far-call (opcodes 3-5) with sub_2C59F cleanup, final r39_farptr_call_gate - vec3-driven frame entry. conf: medium"
+  - ida: r48_e159
+    name: r48_arg_forward_stub
+    kind: function
+    sig: "14B, C, in=0. enter 2,0; push si; push 7894h; push 0F5Ah; push [bp+6] - forwards arg to mode-record-lookup-style callee (truncated body)."
+    notes: "14B, C, in=0. enter 2,0; push si; push 7894h; push 0F5Ah; push [bp+6] - forwards arg to mode-record-lookup-style callee (truncated body). conf: medium"
+  - ida: r48_e97
+    name: r48_mouse_event_entry
+    kind: function
+    sig: "931B, C, in=0. r48 overlay event entry: mode_record_field_lookup on 7894h:0F5Ah, two farobj_field_scale_check calls, mouse_gate_far_entry, then 30+ op_dispatch_far_entry (opcode 0Ch/8/4) invocations over 602Eh/7894h record slots - mouse/UI event pipeline."
+    notes: "931B, C, in=0. r48 overlay event entry: mode_record_field_lookup on 7894h:0F5Ah, two farobj_field_scale_check calls, mouse_gate_far_entry, then 30+ op_dispatch_far_entry (opcode 0Ch/8/4) invocations over 602Eh/7894h record slots - mouse/UI event pipeline. conf: medium"
+  - ida: r53_e47
+    name: r53_opcode_flag_combine
+    kind: function
+    sig: "50B, in=0. Reads [bx] byte&7; if 4 set si=1; if 7 set di=1; combine di/si into +/-1 or 0 return - r53 opcode flag combine."
+    notes: "50B, in=0. Reads [bx] byte&7; if 4 set si=1; if 7 set di=1; combine di/si into +/-1 or 0 return - r53 opcode flag combine. conf: medium"
+  - ida: r54_e162
+    name: r54_record_loop_step
+    kind: function
+    sig: "132B, DATA, in=0. Sets es:1534h=11h; loops si over 4Eh-stride records at 6894h:dword_69B6E, xlat on [bx], checks [bx+2] - r54 record scan (DATA class)."
+    notes: "132B, DATA, in=0. Sets es:1534h=11h; loops si over 4Eh-stride records at 6894h:dword_69B6E, xlat on [bx], checks [bx+2] - r54 record scan (DATA class). conf: medium"
+  - ida: r54_e117
+    name: r54_vector_result_store
+    kind: function
+    sig: "96B, in=0. push 0C28Eh; les bx, es:12ACh; add bx,ax; pop ax; mov es:[bx],ax; mov ax,si; retf 82h - vector-call result store + large-stack far return."
+    notes: "96B, in=0. push 0C28Eh; les bx, es:12ACh; add bx,ax; pop ax; mov es:[bx],ax; mov ax,si; retf 82h - vector-call result store + large-stack far return. conf: medium"
+  - ida: r55_e175
+    name: r55_far_vector_stub
+    kind: function
+    sig: "10B, DATA, in=0. or ds:569Fh,si; jmp unk_19580C - r55 far vector stub (DATA, low conf)."
+    notes: "10B, DATA, in=0. or ds:569Fh,si; jmp unk_19580C - r55 far vector stub (DATA, low conf). conf: low"
+  - ida: r58_e180
+    name: r58_line_table_entry
+    kind: function
+    sig: "96B, in=0, 2 callees. Undecodable head, then overlay_segment_load + line_table_build_dispatch - r58 line-table build entry."
+    notes: "96B, in=0, 2 callees. Undecodable head, then overlay_segment_load + line_table_build_dispatch - r58 line-table build entry. conf: medium"
+  - ida: r58_e178
+    name: r58_record_index_read
+    kind: function
+    sig: "27B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_69BEC - r58 record index read (DATA, low conf)."
+    notes: "27B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_69BEC - r58 record index read (DATA, low conf). conf: low"
+  - ida: r59_e160
+    name: r59_record_index_read
+    kind: function
+    sig: "18B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_79BEC - r59 record index read (DATA, low conf)."
+    notes: "18B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_79BEC - r59 record index read (DATA, low conf). conf: low"
+  - ida: r64_e190
+    name: r64_table_entry_reset
+    kind: function
+    sig: "61B, in=0. Zeroes es:[bx+15h] (17h-stride at 6894h:dword_6AE6C); loops si=0..8 setting es:[2*si+15E0h]=1000h; retf - r64 table entry reset."
+    notes: "61B, in=0. Zeroes es:[bx+15h] (17h-stride at 6894h:dword_6AE6C); loops si=0..8 setting es:[2*si+15E0h]=1000h; retf - r64 table entry reset. conf: medium"
+  - ida: r64_e184
+    name: r64_vector_field_select
+    kind: function
+    sig: "56B, in=0. 3-way vector field select: [1510h]->es:[bx+1Ah] / 6894h:dword_69E50->[bx+0Eh] / 7894h:dword_79E50->[bx+22h]; retf - r64 vector field select."
+    notes: "56B, in=0. 3-way vector field select: [1510h]->es:[bx+1Ah] / 6894h:dword_69E50->[bx+0Eh] / 7894h:dword_79E50->[bx+22h]; retf - r64 vector field select. conf: medium"
+  - ida: sub_109FDD
+    name: state_byte_2549f_far_tail
+    kind: function
+    sig: "6B, LEAF, in=0, 1 callee. call state_byte_2549f_get; retf - far tail for state-byte getter."
+    notes: "6B, LEAF, in=0, 1 callee. call state_byte_2549f_get; retf - far tail for state-byte getter. conf: medium"
+  - ida: sub_6CF63
+    name: state_counter_increment_gate
+    kind: function
+    sig: "45B, in=0. cmp di,1; jnz; cmp ds:4A87h,cl; jnz skip; inc ds:4A87h; mov ds:4A89h,200h; clc; retn - state counter increment gate."
+    notes: "45B, in=0. cmp di,1; jnz; cmp ds:4A87h,cl; jnz skip; inc ds:4A87h; mov ds:4A89h,200h; clc; retn - state counter increment gate. conf: medium"
+  - ida: sub_21ABE
+    name: state_nibble_gate_step
+    kind: function
+    sig: "142B, in=0. test byte ds:0F73h,0Fh; jnz continue; retn - gates on state nibble (low nibble of ds:0F73h) before further work."
+    notes: "142B, in=0. test byte ds:0F73h,0Fh; jnz continue; retn - gates on state nibble (low nibble of ds:0F73h) before further work. conf: medium"
+  - ida: sub_4FDAD
+    name: state_word_0f0e_store
+    kind: function
+    sig: "85B, in=0. mov ds:0F0Eh, ah; pop ds; retf - stores ah into state word ds:0F0Eh."
+    notes: "85B, in=0. mov ds:0F0Eh, ah; pop ds; retf - stores ah into state word ds:0F0Eh. conf: medium"
+  - ida: sub_2BE1F
+    name: tail_bridge_to_6fd06
+    kind: function
+    sig: "8B, in=0. call tail_bridge_overlay_load; jmp far 6E8Fh:1416h (0x6fd06) - tail bridge."
+    notes: "8B, in=0. call tail_bridge_overlay_load; jmp far 6E8Fh:1416h (0x6fd06) - tail bridge. conf: medium"
+  - ida: sub_2C56D
+    name: tail_bridge_to_loadout_menu_a
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x68D56) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x68D56) - tail bridge. conf: medium"
+  - ida: sub_2C62B
+    name: tail_bridge_to_loadout_menu_b
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x68517) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x68517) - tail bridge. conf: medium"
+  - ida: sub_2C6B7
+    name: tail_bridge_to_loadout_menu_c
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x6916F) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x6916F) - tail bridge. conf: medium"
+  - ida: sub_2C8B5
+    name: tail_bridge_to_loadout_menu_d
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x68675) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_loadout_menu_enter (0x68675) - tail bridge. conf: medium"
+  - ida: sub_2C667
+    name: tail_bridge_to_menu_panel_init
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_menu_panel_init (0x6721D) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_menu_panel_init (0x6721D) - tail bridge. conf: medium"
+  - ida: sub_2C5DB
+    name: tail_bridge_to_r30_entry_partial
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_entry_partial_a - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_entry_partial_a - tail bridge. conf: medium"
+  - ida: sub_2C437
+    name: tail_bridge_to_r30_farobj_proc
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_farobj_proc_c (0x6A361) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_farobj_proc_c (0x6A361) - tail bridge. conf: medium"
+  - ida: sub_2C6F3
+    name: tail_bridge_to_r30_mode_set
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp r30_mode_set_637fc_c - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp r30_mode_set_637fc_c - tail bridge. conf: medium"
+  - ida: sub_2C31F
+    name: tail_bridge_to_r30_state_init
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_state_init_all - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_state_init_all - tail bridge. conf: medium"
+  - ida: sub_2C86F
+    name: tail_bridge_to_r30_state_init_b
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_state_init_all - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far r30_state_init_all - tail bridge. conf: medium"
+  - ida: sub_2C76B
+    name: tail_bridge_to_slot_list_mode
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_slot_list_mode_enter (0x6B0E9) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_slot_list_mode_enter (0x6B0E9) - tail bridge. conf: medium"
+  - ida: sub_2C829
+    name: tail_bridge_to_slot_record_init
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_slot_record_init (0x68382) - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far ui_slot_record_init (0x68382) - tail bridge. conf: medium"
+  - ida: sub_2C4A5
+    name: tail_bridge_to_terrain_decay
+    kind: function
+    sig: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far cmd_terrain_decay_step - tail bridge."
+    notes: "8B, in=0, 1 callee. call tail_bridge_overlay_load; jmp far cmd_terrain_decay_step - tail bridge. conf: medium"
+  - ida: sub_26281
+    name: trig_clip_project_entry
+    kind: function
+    sig: "316B, in=0, 3 callees. Far wrapper: loads 4 args, push cs; call inner body at 0x2629A; retf. Inner body calls trig_table_lookup, segment_clip_test, far_cb_2 - trig/clip projection entry."
+    notes: "316B, in=0, 3 callees. Far wrapper: loads 4 args, push cs; call inner body at 0x2629A; retf. Inner body calls trig_table_lookup, segment_clip_test, far_cb_2 - trig/clip projection entry. conf: medium"
+  - ida: sub_2A248
+    name: ui_bounds_clip_entry
+    kind: function
+    sig: "198B, in=0, 1 callee. Copies cx 10h-stride records from [si] to es:7B0Eh:2796Eh buffer; per-record x/y bounds-check vs cs:word_1F6CC/1F6D0/1F6CE/1F6D2 setting clip bits 80h/100h/20h/40h in [di+6]; accumulates AND/OR masks in word_27968/2796A; calls uibounds_top_bottom_dispatch - UI bounds clip."
+    notes: "198B, in=0, 1 callee. Copies cx 10h-stride records from [si] to es:7B0Eh:2796Eh buffer; per-record x/y bounds-check vs cs:word_1F6CC/1F6D0/1F6CE/1F6D2 setting clip bits 80h/100h/20h/40h in [di+6]; accumulates AND/OR masks in word_27968/2796A; calls uibounds_top_bottom_dispatch - UI bounds clip. conf: medium"
+
   # --- globals: add entries as hypotheses form, e.g.
   - ida: off_22060
     name: op_dispatch_table

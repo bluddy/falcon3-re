@@ -1,0 +1,151 @@
+--- #35 r12_e27  ea=0x106FA6  size=36  class=ASM  in=0  dyn=0  cd=0 ---
+  0x106FA6: push   ds
+  0x106FA7: push   es
+  0x106FA8: mov    si, ax
+  0x106FAA: mov    di, 709Fh
+  0x106FAD: mov    ds, di
+  0x106FAF: mov    es, di
+  0x106FB1: mov    di, 1D1h
+  0x106FB4: mov    ax, 0FD08h
+  0x106FB7: stosw  
+  0x106FB8: mov    al, 3
+  0x106FBA: stosb  
+  0x106FBB: mov    ax, cx
+  0x106FBD: stosw  
+  0x106FBE: mov    ax, bx
+  0x106FC0: stosb  
+  0x106FC1: mov    ax, si
+  0x106FC3: stosw  
+  0x106FC4: call   near ptr unk_106AD0  ->code ['0x106ad0']
+
+--- #36 sub_2CB4D  ea=0x2CB4D  size=33  class=ASM  in=0  dyn=0  cd=0 ---
+  0x2CB4D: push   bx
+  0x2CB4E: push   dx
+  0x2CB4F: mov    bx, 14Ch
+  0x2CB52: mov    dx, cs:[bx]
+  0x2CB55: or     dx, cs:[bx+2]
+  0x2CB59: jz     loc_2CB6B  ->code ['sub_2CB4D']
+  0x2CB5B: test   cs:[bx+4], al
+  0x2CB5F: jz     loc_2CB66  ->code ['sub_2CB4D']
+  0x2CB61: pushf  
+  0x2CB62: call   dword ptr cs:[bx]
+  0x2CB65: popf   
+  0x2CB66: add    bx, 6
+  0x2CB69: jmp    loc_2CB52  ->code ['sub_2CB4D']
+  0x2CB6B: pop    dx
+  0x2CB6C: pop    bx
+  0x2CB6D: retn   
+  [TERM RETN @ 0x2CB6D]
+
+--- #37 r58_e178  ea=0x193F18  size=27  class=DATA  in=0  dyn=0  cd=0 ---
+  0x193F18: adc    di, di
+  0x193F1A: add    [bx+si+6894h], bh
+  0x193F1E: mov    es, ax
+  0x193F20: mov    ax, es:2222h
+  0x193F24: mov    dx, 82h
+  0x193F27: imul   dx
+  0x193F29: mov    dx, 6894h
+  0x193F2C: mov    es, dx
+  0x193F2E: les    dx, es:dword_69BEC
+
+--- #38 sub_10F46  ea=0x10F46  size=26  class=ASM  in=0  dyn=0  cd=0 ---
+  0x10F46: push   ds
+  0x10F47: push   es
+  0x10F48: mov    bx, 24h
+  0x10F4B: push   cs
+  0x10F4C: call   near ptr overlay_seg_word_read  ->code ['overlay_seg_word_read']
+  0x10F4F: push   ax
+  0x10F50: mov    ds, word ptr cs:byte_10842
+  0x10F55: call   mode_slot_enter  ->code ['mode_slot_enter']
+  0x10F5A: add    sp, 2
+  0x10F5D: pop    es
+  0x10F5E: pop    ds
+  0x10F5F: retf   
+  [TERM RETF @ 0x10F5F]
+
+--- #39 sub_4FD20  ea=0x4FD20  size=24  class=ASM  in=0  dyn=0  cd=0 ---
+  0x4FD20: mov    di, 0A754h
+  0x4FD23: mov    cx, 1Bh
+  0x4FD26: movsb  
+  0x4FD28: pop    es
+  0x4FD29: pop    ds
+  0x4FD2A: retf   
+  [TERM RETF @ 0x4FD2A]
+
+--- #40 sub_23AA1  ea=0x23AA1  size=22  class=ASM  in=0  dyn=0  cd=0 ---
+  0x23AA1: push   bp
+  0x23AA2: mov    bp, sp
+  0x23AA4: push   ds
+  0x23AA5: push   es
+  0x23AA6: push   si
+  0x23AA7: push   di
+  0x23AA8: lds    si, [bp+arg_0]
+  0x23AAB: les    di, [bp+arg_4]
+  0x23AAE: call   angle_quad_norm_scale  ->code ['angle_quad_norm_scale']
+  0x23AB1: pop    di
+  0x23AB2: pop    si
+  0x23AB3: pop    es
+  0x23AB4: pop    ds
+  0x23AB5: pop    bp
+  0x23AB6: retf   
+  [TERM RETF @ 0x23AB6]
+
+--- #41 r12_e25  ea=0x106CBC  size=21  class=ASM  in=0  dyn=0  cd=0 ---
+  0x106CBC: push   ds
+  0x106CBD: push   es
+  0x106CBE: pusha  
+  0x106CBF: mov    cx, ax
+  0x106CC1: mov    ax, 709Fh
+  0x106CC4: mov    ds, ax
+  0x106CC6: mov    es, ax
+  0x106CC8: mov    al, 7
+  0x106CCA: call   near ptr unk_1065D1  ->code ['0x1065d1']
+  0x106CCD: popa   
+  0x106CCE: pop    es
+  0x106CCF: pop    ds
+  0x106CD0: retf   
+  [TERM RETF @ 0x106CD0]
+
+--- #42 r59_e160  ea=0x19B439  size=18  class=DATA  in=0  dyn=0  cd=0 ---
+  0x19B439: mov    ax, ds:1222h
+  0x19B43C: mov    dx, 82h
+  0x19B43F: imul   dx
+  0x19B441: mov    dx, 7894h
+  0x19B444: mov    es, dx
+  0x19B446: les    bx, es:dword_79BEC
+
+--- #43 sub_1033F8  ea=0x1033F8  size=16  class=LEAF  in=0  dyn=0  cd=0 ---
+  0x1033F8: push   es
+  0x1033F9:        0BBh, 0BBh, 0BBh
+  0x1033FC:        8Eh, 8Eh, 8Eh
+  0x1033FE:        26h, 26h, 26h
+  0x103404:        75h, 75h, 75h
+  0x103406:        7, 7, 7
+  0x103407:        0CBh, 0CBh, 0CBh
+
+--- #44 r07_e44  ea=0x103152  size=15  class=LEAF  in=0  dyn=0  cd=0 ---
+  0x103152: push   ds
+  0x103153: push   ax
+  0x103154: mov    ax, 6BE0h
+  0x103157: mov    ds, ax
+  0x103159: mov    ds:byte_6CD53, 1
+  0x10315E: pop    ax
+  0x10315F: pop    ds
+  0x103160: retf   
+  [TERM RETF @ 0x103160]
+
+--- #45 r48_e159  ea=0x176B0E  size=14  class=C  in=0  dyn=0  cd=0 ---
+  0x176B0E: enter  2, 0
+  0x176B12: push   si
+  0x176B13: push   7894h
+  0x176B16: push   0F5Ah
+  0x176B19: push   word ptr [bp+6]
+
+--- #46 sub_109FD0  ea=0x109FD0  size=13  class=ASM  in=0  dyn=0  cd=0 ---
+  0x109FD0: push   bp
+  0x109FD1:        8Bh, 8Bh, 8Bh
+  0x109FD3:        8Bh, 8Bh, 8Bh
+  0x109FD6:        9Ah, 9Ah, 9Ah
+  0x109FDB:        5Dh, 5Dh, 5Dh
+  0x109FDC:        0CBh, 0CBh, 0CBh
+

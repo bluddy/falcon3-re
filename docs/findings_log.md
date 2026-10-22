@@ -4986,4 +4986,46 @@ context. Remaining unnamed: 302 thunk slots + 397 orphans
 
 ---
 
+## 2026-10-19 95 - Orphan batch 1 complete: 67 named
+(`named` 1,631 -> **1,698**; orphans 397 -> **330**)
+
+After the global queue hit 0 (F94), the remaining unnamed set is
+**397 orphans** (`dyn==0 AND in==0`, no static callers - reached
+via far-jump/vector, excluded from the queue by design). Batch 1
+named 67 of them (54 medium / 13 low conf):
+
+**`game_frame_far_entry`** (sub_3FFEF, 3685B, in=0, 42 callees):
+the multi-purpose game-frame far-entry thunk (pop ax; cmp
+ax,0FFFFh) dispatching farobj_table_snapshot, farobj_rect_state_
+setup, game_config_apply_init, game_state_load_apply, view_
+terrain_frame_step, far_mode_event_dispatch, hud_track_strip_
+pipeline, r32_hud_phase_dispatch, entity_record_table_ops - the
+main game far-entry dispatcher reached via vector.
+
+**`r48_mouse_event_entry`** (r48_e97, 931B, C): the r48 overlay
+mouse/event pipeline - mode_record_field_lookup + 30+ op_dispatch_
+far_entry calls across 602Eh/7894h record slots.
+
+**`r39_queue_drain_entry`** (r39_e147, 566B, C): farobj queue
+drain + 8x r39_farptr_call_gate batch (opcodes 1-8).
+
+**`distance_tier_classify_entry`** (sub_6DD12, 369B): abs dx/dy
+diff vs 0BB8h (3000) selects tier 45h/54h/4Eh for far_cb_2.
+
+**`ui_bounds_clip_entry`** (sub_2A248, 198B): copies 10h-stride
+rects, bounds-checks vs 4 cs:1F6xx words, ORs clip flags, calls
+uibounds_top_bottom_dispatch.
+
+Remaining 13 low-conf = `overlay_undecoded_body_*` markers (IDA
+cannot decode the body); 13 `tail_bridge_to_*` 8-byte stubs
+(call tail_bridge_overlay_load + jmp far named target).
+
+### Gates (all green)
+
+`naming.py check` **1,700** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,698/1,698 function + 2/2 global**.
+
+---
+
 (append new findings below)
