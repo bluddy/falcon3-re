@@ -5195,4 +5195,53 @@ mode_set_637fc).
 
 ---
 
+## 2026-10-22 100 - Orphan sweep COMPLETE: batch 6 named 66
+(`named` 1,962 -> **2,028**; orphans 66 -> **0**)
+
+Final batch of the 397-orphan sweep named 66 (48 medium / 18 low
+conf). All 397 orphans (67/66/66/66/66/66 across six batches) are
+now named. Headlines:
+
+**`r22_slot_select_modal_loop`** (r22_e57, 936B C): the largest
+batch-6 function - the 6E45h DGROUP modal slot-select loop with
+its 11-way event jump table.
+
+The **r39 render quartet**: **`r39_rotational_render_entry`**
+(595B C) + **`r39_rotational_render_entry_b`** (566B C) +
+**`r39_dual_index_render_entry`** (423B C) +
+**`r39_variant_switch_render_entry`** (321B C) - each an
+unrolled sub_2C4FF draw chain closed by a distinct
+`r39_farptr_call_gate` arity.
+
+**`record_pool_admit_demote`** (218B - admit-by-demote quota
+allocator), **`r35_field_scale_op_step`** (181B),
+**`r36_record_grids_clear`** (160B), **`r35_mode8_state_init`**
+(132B - sets the r35_e100 guard byte),
+**`r36_slot_max_flag_pick`** (112B).
+
+Also: **`startup_entry_stack_swap`** (the `start` entry),
+**`fixed_vec3_cross`** (16:16 cross product),
+**`cs_bitfield_byte_extract`**, **`cs_byte_2e12b_store`**,
+`r07_angle_xy_norm_pair` / `r07_list_heads_init` /
+`r07_state_byte_skip_gate` / `r07_state_byte_toggle`, r12 stubs,
+`r33_record_field_range_check` / `r33_vec3_lowbyte_avg`, and
+eight `*_far_wrapper` 6-24B bridges (trig_table_lookup_83a5,
+far_cb_with_args, bda_417_mask_clear, state_byte_2549e,
+overlay_seg_word_set2_if3).
+
+Low-conf tail: 11 `overlay_undecoded_body_*` markers + 4
+garbage fragments (r33/r58/r61/r67) + `farobj_ems_behavior_init`
+(callees-only body) + `r52_indexed_pair_step` +
+`data_fragment_6ec14`; 14 medium-conf tail-bridge stubs (incl.
+loadout_enter h/i/j, state_init_all m/n, `tail_bridge_2d63a` raw
+target).
+
+### Gates (all green)
+
+`naming.py check` **2,030** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**2,028/2,028 function + 2/2 global**.
+
+---
+
 (append new findings below)
