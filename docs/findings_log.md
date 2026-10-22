@@ -5028,4 +5028,43 @@ cannot decode the body); 13 `tail_bridge_to_*` 8-byte stubs
 
 ---
 
+## 2026-10-22 96 - Orphan batch 2 complete: 66 named
+(`named` 1,698 -> **1,764**; orphans 330 -> **264**)
+
+Batch 2 of the 397-orphan sweep named 66 (47 medium / 19 low
+conf). Headlines:
+
+**`r53_opcode_decode_apply`** (r53_e88, 2736B, 10 callees): the
+largest batch-2 function - r53 overlay stream/opcode decode
+dispatching sbi_stream_dispatch, r53_script_opcode_interpreter,
+r53_record_walk_dispatch, key_event_mode_gate.
+
+**`sprite_step_clip_project_body`** (sub_4B36A, 459B, 8
+callees): sprite step + clip projection body.
+
+**`fixed_vec3_magnitude_gate`** (sub_2385D, 237B): abs /
+componentwise-max magnitude + range gate - copies 12 bytes or
+jumps to the neighbouring loc_238B9 path.
+
+**`stream_playback_resume_gate`** (sub_1BD64, 78B),
+**`cell_delta_key_search`** (sub_13276, 124B),
+**`kb_record_field22_clear_all`** (sub_1B631, 83B C, 6
+callees), **`device_port_cmd_poll`** (sub_17263),
+**`menu_index_step_dispatch`** (sub_67480),
+**`pending_session_step_chain`** (sub_6E558, 4 callees),
+**`r25_four_slot_menu_step`** / **`r26_two_view_menu_step`**,
+**`r27_coord_pair_select_entry`**, **`r64_record_field_read`**.
+
+Low-conf tail: 18 `overlay_undecoded_body_*` markers + 1 data
+fragment (r38_e131 -> `r38_data_fragment`); 15 medium-conf
+`tail_bridge_to_*` 8-byte stubs.
+
+### Gates (all green)
+
+`naming.py check` **1,766** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,764/1,764 function + 2/2 global**.
+
+---
+
 (append new findings below)
