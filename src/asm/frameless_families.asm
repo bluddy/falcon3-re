@@ -59,7 +59,7 @@ CS-RELATIVE NEAR-DATA ACCESSORS (classification: 'CS-relative data access')
 ; Evidence: findings 14.  NOT C-portable as written (port as ASM).
 
 
-; r15_e34  ea=1084F6  size=12
+; r15_state_byte_set  ea=1084F6  size=12
     1084F6  2ea24004       mov      byte ptr cs:[0x440], al
     1084FA  cb             retf     
     1084FB  2ec606410401   mov      byte ptr cs:[0x441], 1

@@ -22305,6 +22305,799 @@ routines:
     notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp far ui_menu_transition_step (loc_67C5A+1) - tail-bridge stub into ui_menu_transition_step (variant B). conf: medium"
     updated: "2026-10-22"
 
+  - ea: 0x278C6
+    seg: 0x278C
+    ofs: 0x6
+    size: 25
+    far: true
+    class: ASM
+    hypothesis: "cs_vector_22184_invoke_c"
+    sig: "25B, ASM, in=0, no callees. di=[bp+arg_0], ax=[bp+arg_2], call cs:dword_22184 vector; cs:27474=0Ch; retf - cs:22184h vector invoke with mode-0Ch set."
+    port_status: unported
+    verified: null
+    notes: "25B, ASM, in=0, no callees. di=[bp+arg_0], ax=[bp+arg_2], call cs:dword_22184 vector; cs:27474=0Ch; retf - cs:22184h vector invoke with mode-0Ch set. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x27924
+    seg: 0x2792
+    ofs: 0x4
+    size: 22
+    far: true
+    class: ASM
+    hypothesis: "cs_vector_22190_invoke"
+    sig: "22B, ASM, in=0, no callees. cx=arg_4, lds si,[bp+arg_0], call cs:dword_22190 vector; retf - cs:22190h vector invoke wrapper."
+    port_status: unported
+    verified: null
+    notes: "22B, ASM, in=0, no callees. cx=arg_4, lds si,[bp+arg_0], call cs:dword_22190 vector; retf - cs:22190h vector invoke wrapper. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x254FF
+    seg: 0x254F
+    ofs: 0xF
+    size: 23
+    far: true
+    class: ASM
+    hypothesis: "dispatch_22158_far_wrapper"
+    sig: "23B, ASM, in=0, 1 callee. les di=[bp+arg_0], cx=arg_4, bx=arg_6, push cs, call dispatch_22158_stub; retf - dispatch_22158 far wrapper entry."
+    port_status: unported
+    verified: null
+    notes: "23B, ASM, in=0, 1 callee. les di=[bp+arg_0], cx=arg_4, bx=arg_6, push cs, call dispatch_22158_stub; retf - dispatch_22158 far wrapper entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x27415
+    seg: 0x2741
+    ofs: 0x5
+    size: 30
+    far: false
+    class: ASM
+    hypothesis: "fixed_dot3_product"
+    sig: "30B, ASM, in=0, no callees. 3-term fixed dot product: lodsw [si..+4] * [di],[di+2],[di+4] accumulating bx:bp, result ax:dx; js loc_2742F (beyond dump) else retn - 3-component fixed dot product."
+    port_status: unported
+    verified: null
+    notes: "30B, ASM, in=0, no callees. 3-term fixed dot product: lodsw [si..+4] * [di],[di+2],[di+4] accumulating bx:bp, result ax:dx; js loc_2742F (beyond dump) else retn - 3-component fixed dot product. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x10A05F
+    seg: 0x10A05
+    ofs: 0xF
+    size: 6
+    far: false
+    class: LEAF
+    hypothesis: "flag_byte_get_far_wrapper"
+    sig: "6B, LEAF, in=0, 2 callees (hw_port_bit_test_retn, flag_byte_get). call resolving to flag_byte_get; retf (0CBh triplet) - flag byte get far wrapper stub."
+    port_status: unported
+    verified: null
+    notes: "6B, LEAF, in=0, 2 callees (hw_port_bit_test_retn, flag_byte_get). call resolving to flag_byte_get; retf (0CBh triplet) - flag byte get far wrapper stub. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x183BC
+    seg: 0x183B
+    ofs: 0xC
+    size: 60
+    far: true
+    class: ASM
+    hypothesis: "key_action_101_range_gate"
+    sig: "60B, ASM, in=0, 2 callees. Validates arg_2 in 0..5 and arg_0==101h else return 0; key_action_execute(101h) + key_action_execute_sbi(101h, si, 0, 0); return 1 - key action 101h range gate wrapper."
+    port_status: unported
+    verified: null
+    notes: "60B, ASM, in=0, 2 callees. Validates arg_2 in 0..5 and arg_0==101h else return 0; key_action_execute(101h) + key_action_execute_sbi(101h, si, 0, 0); return 1 - key action 101h range gate wrapper. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x6E4EF
+    seg: 0x6E4E
+    ofs: 0xF
+    size: 105
+    far: true
+    class: ASM
+    hypothesis: "menu_mod_patch_row_set"
+    sig: "105B, ASM, in=0, no callees. Self-modifying: byte cs:6E148=0, cs:6E146=1 operand patches; index=(dx-33h)/7; if index < cs:6E106 store cs:6E104=index; retf - menu DGROUP row index set with operand patch."
+    port_status: unported
+    verified: null
+    notes: "105B, ASM, in=0, no callees. Self-modifying: byte cs:6E148=0, cs:6E146=1 operand patches; index=(dx-33h)/7; if index < cs:6E106 store cs:6E104=index; retf - menu DGROUP row index set with operand patch. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x69ACB
+    seg: 0x69AC
+    ofs: 0xB
+    size: 402
+    far: true
+    class: ASM
+    hypothesis: "op_emit_far_state_step"
+    sig: "402B, ASM, in=0, 1 callee. Stores ax:dx -> 6DE8h:6E007/6E005; op_dispatch_far_entry opcode-6 allocs -> si, opcode-0Ah sets (64h/63AFh values), opcode-8 queries ([bp-4/-6]); far-ptr +43ADh / +0A0h end calc stored at 6DF27+18h/1Ah/1Ch/1Eh; mid-body triplet-undecodable region + near call unk_72A4C; leave/retf - far state op emit step."
+    port_status: unported
+    verified: null
+    notes: "402B, ASM, in=0, 1 callee. Stores ax:dx -> 6DE8h:6E007/6E005; op_dispatch_far_entry opcode-6 allocs -> si, opcode-0Ah sets (64h/63AFh values), opcode-8 queries ([bp-4/-6]); far-ptr +43ADh / +0A0h end calc stored at 6DF27+18h/1Ah/1Ch/1Eh; mid-body triplet-undecodable region + near call unk_72A4C; leave/retf - far state op emit step. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x101743
+    seg: 0x10174
+    ofs: 0x3
+    size: 26
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_101743"
+    sig: "26B, ASM, in=0, no callees. push es then all triplet-undecodable hex (push 9Ah call stream, retf tail) - overlay stub not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "26B, ASM, in=0, no callees. push es then all triplet-undecodable hex (push 9Ah call stream, retf tail) - overlay stub not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x1018A0
+    seg: 0x1018A
+    ofs: 0x0
+    size: 15
+    far: false
+    class: LEAF
+    hypothesis: "overlay_undecoded_body_1018a0"
+    sig: "15B, LEAF, in=0, no callees. push ds then all triplet-undecodable hex (mov es/mov byte, retf tail) - overlay stub not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "15B, LEAF, in=0, no callees. push ds then all triplet-undecodable hex (mov es/mov byte, retf tail) - overlay stub not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x1020C9
+    seg: 0x1020C
+    ofs: 0x9
+    size: 91
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_1020c9"
+    sig: "91B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "91B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x103040
+    seg: 0x10304
+    ofs: 0x0
+    size: 20
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_103040"
+    sig: "20B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (mov es/mov byte stream, retf tail) - overlay stub not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "20B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (mov es/mov byte stream, retf tail) - overlay stub not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x1065A6
+    seg: 0x1065A
+    ofs: 0x6
+    size: 43
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_1065a6"
+    sig: "43B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (mov es/call 9Ah, retf tail) - overlay body not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "43B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (mov es/call 9Ah, retf tail) - overlay body not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x107231
+    seg: 0x10723
+    ofs: 0x1
+    size: 62
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_107231"
+    sig: "62B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "62B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x10A052
+    seg: 0x10A05
+    ofs: 0x2
+    size: 13
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_10a052"
+    sig: "13B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (mov/call 9Ah, retf tail) - overlay stub not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "13B, ASM, in=0, no callees. push bp then all triplet-undecodable hex (mov/call 9Ah, retf tail) - overlay stub not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x10A0DB
+    seg: 0x10A0D
+    ofs: 0xB
+    size: 16
+    far: false
+    class: LEAF
+    hypothesis: "overlay_undecoded_body_10a0db"
+    sig: "16B, LEAF, in=0, no callees. push cx then all triplet-undecodable hex (9Ah far call, retf tail) - overlay stub not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "16B, LEAF, in=0, no callees. push cx then all triplet-undecodable hex (9Ah far call, retf tail) - overlay stub not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x12BD16
+    seg: 0x12BD1
+    ofs: 0x6
+    size: 204
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_12bd16"
+    sig: "204B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "204B, ASM, in=0, no callees. push ds then all triplet-undecodable hex (9Ah far calls, retf tail) - overlay body not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x16472B
+    seg: 0x16472
+    ofs: 0xB
+    size: 135
+    far: false
+    class: C
+    hypothesis: "overlay_undecoded_body_16472b"
+    sig: "135B, C, in=0, no callees. enter 2,0 then all triplet-undecodable hex (mov es/call 9Ah stream, leave/retf tail) - overlay body not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "135B, C, in=0, no callees. enter 2,0 then all triplet-undecodable hex (mov es/call 9Ah stream, leave/retf tail) - overlay body not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x17785B
+    seg: 0x17785
+    ofs: 0xB
+    size: 331
+    far: false
+    class: C
+    hypothesis: "overlay_undecoded_body_17785b"
+    sig: "331B, C, in=0, no callees. enter 8,0 then all triplet-undecodable hex (far 9Ah stream, leave/retf tail) - overlay body not fully decoded by IDA."
+    port_status: unported
+    verified: null
+    notes: "331B, C, in=0, no callees. enter 8,0 then all triplet-undecodable hex (far 9Ah stream, leave/retf tail) - overlay body not fully decoded by IDA. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x5711D
+    seg: 0x5711
+    ofs: 0xD
+    size: 149
+    far: false
+    class: ASM
+    hypothesis: "overlay_undecoded_body_5711d"
+    sig: "149B, ASM, in=0, no callees. Fully garbage decode (and/loop junk referencing hud_heading_tape_draw locs, retn 0CE01h) - overlay body not decoded as code."
+    port_status: unported
+    verified: null
+    notes: "149B, ASM, in=0, no callees. Fully garbage decode (and/loop junk referencing hud_heading_tape_draw locs, retn 0CE01h) - overlay body not decoded as code. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x5E210
+    seg: 0x5E21
+    ofs: 0x0
+    size: 131
+    far: true
+    class: C
+    hypothesis: "overlay_undecoded_body_5e210"
+    sig: "131B, C, in=0, no callees. enter 0,10h; setalc then garbage (add stream, <undecodable 0x00>) - overlay body not decoded as code."
+    port_status: unported
+    verified: null
+    notes: "131B, C, in=0, no callees. enter 0,10h; setalc then garbage (add stream, <undecodable 0x00>) - overlay body not decoded as code. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x6D7F3
+    seg: 0x6D7F
+    ofs: 0x3
+    size: 12
+    far: true
+    class: LEAF
+    hypothesis: "r06_mode_state_seed_set"
+    sig: "12B, LEAF, in=0, no callees. ds:4AC0h=1, ds:4A99h=082Eh; retf - r06 mode state seed setter stub."
+    port_status: unported
+    verified: null
+    notes: "12B, LEAF, in=0, no callees. ds:4AC0h=1, ds:4A99h=082Eh; retf - r06 mode state seed setter stub. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x10328F
+    seg: 0x10328
+    ofs: 0xF
+    size: 51
+    far: true
+    class: ASM
+    hypothesis: "r08_flag80_xy_return"
+    sig: "51B, ASM, in=0, no callees. ds=6BE0h: byte_6CD79==FFh -> loc_1032B9 continuation (undumped); si=word_6CD66, test [si+3],80h set -> ax=[si+0Ah], bx=[si+0Ch], clc, retf (both fallbacks land in undumped +12B tail) - r08 overlay flag-80h xy return entry."
+    port_status: unported
+    verified: null
+    notes: "51B, ASM, in=0, no callees. ds=6BE0h: byte_6CD79==FFh -> loc_1032B9 continuation (undumped); si=word_6CD66, test [si+3],80h set -> ax=[si+0Ah], bx=[si+0Ch], clc, retf (both fallbacks land in undumped +12B tail) - r08 overlay flag-80h xy return entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x107015
+    seg: 0x10701
+    ofs: 0x5
+    size: 45
+    far: false
+    class: ASM
+    hypothesis: "r12_ah0c_far_call_entry"
+    sig: "45B, ASM, in=0, no callees. push ax; ah=0Ch; call loc_10701D (in-function tail undumped, +30B beyond early retf); pop ax; retf - r12 overlay ah=0Ch sub-call entry."
+    port_status: unported
+    verified: null
+    notes: "45B, ASM, in=0, no callees. push ax; ah=0Ch; call loc_10701D (in-function tail undumped, +30B beyond early retf); pop ax; retf - r12 overlay ah=0Ch sub-call entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x106E66
+    seg: 0x106E6
+    ofs: 0x6
+    size: 40
+    far: false
+    class: ASM
+    hypothesis: "r12_farptr_helper_c_record_wrap"
+    sig: "40B, ASM, in=0, 1 callee. ds=es=709Fh, di=11CDh, al=byte_71BB9, jmp r12_farptr_helper_c (unk_106E32); second block copies 7 words 11CAh->1D1h then near call unk_106AD0; retn - r12 overlay farptr helper-c record wrap entry."
+    port_status: unported
+    verified: null
+    notes: "40B, ASM, in=0, 1 callee. ds=es=709Fh, di=11CDh, al=byte_71BB9, jmp r12_farptr_helper_c (unk_106E32); second block copies 7 words 11CAh->1D1h then near call unk_106AD0; retn - r12 overlay farptr helper-c record wrap entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x106E8E
+    seg: 0x106E8
+    ofs: 0xE
+    size: 34
+    far: true
+    class: ASM
+    hypothesis: "r12_fd05d_record_entry"
+    sig: "34B, ASM, in=0, no listed callees (near call unk_106AD0). ds=es=709Fh, di=1D1h: record FD05h + 0Dh byte + byte_71BB8 word + byte_70A2A, then call unk_106AD0; retf - r12 overlay FD05h/0Dh record entry."
+    port_status: unported
+    verified: null
+    notes: "34B, ASM, in=0, no listed callees (near call unk_106AD0). ds=es=709Fh, di=1D1h: record FD05h + 0Dh byte + byte_71BB8 word + byte_70A2A, then call unk_106AD0; retf - r12 overlay FD05h/0Dh record entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x10714F
+    seg: 0x10714
+    ofs: 0xF
+    size: 58
+    far: true
+    class: ASM
+    hypothesis: "r12_fd08_state_record_entry"
+    sig: "58B, ASM, in=0, 2 callees. ds=es=709Fh, di=1D1h: record FD08h (or FD0Ah when ax>=word_71B8E) + 08h byte; high branch adds state_farptr_get word; stores cl, bx, ax fields; r12_farptr_helper; retf - r12 overlay FD08h/FD0Ah state record entry."
+    port_status: unported
+    verified: null
+    notes: "58B, ASM, in=0, 2 callees. ds=es=709Fh, di=1D1h: record FD08h (or FD0Ah when ax>=word_71B8E) + 08h byte; high branch adds state_farptr_get word; stores cl, bx, ax fields; r12_farptr_helper; retf - r12 overlay FD08h/FD0Ah state record entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x107F1E
+    seg: 0x107F1
+    ofs: 0xE
+    size: 16
+    far: true
+    class: LEAF
+    hypothesis: "r15_state_107650_far_wrapper"
+    sig: "16B, LEAF, in=0, 1 callee. ds=es=cs, push cs, call r15_state_107650_set, retf - r15 state 107650h far wrapper entry."
+    port_status: unported
+    verified: null
+    notes: "16B, LEAF, in=0, 1 callee. ds=es=cs, push cs, call r15_state_107650_set, retf - r15 state 107650h far wrapper entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x1084F6
+    seg: 0x1084F
+    ofs: 0x6
+    size: 12
+    far: false
+    class: ASM
+    hypothesis: "r15_state_byte_set"
+    sig: "12B, ASM, in=0, no callees. cs:byte_107A90=al; retf - r15 overlay state byte set stub."
+    port_status: unported
+    verified: null
+    notes: "12B, ASM, in=0, no callees. cs:byte_107A90=al; retf - r15 overlay state byte set stub. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x10C130
+    seg: 0x10C13
+    ofs: 0x0
+    size: 569
+    far: true
+    class: C
+    hypothesis: "r24_pane_toggle_menu_loop"
+    sig: "569B, C, in=0, 6 callees. 6E45h DGROUP modal loop: mouse_gate_far_entry, dispatch_22100, 3x unk_6DFF0 rect draws toggled by word_6E8CC (200h/0 -> 2 or 1), dispatch_220f4, bda_kb_flag_10000_get, word_6E8B7=4; key loop flag_table_pop_far_thunk -> 6E8D2 masked FF00h/DFh, r17_menu_event_loop, 10-way scan cs:239h -> jmp word cs:[bx+14h], 6E8CC pane flips via call 6E1EA; exit 6E8B7=0 - r24 overlay pane toggle menu loop."
+    port_status: unported
+    verified: null
+    notes: "569B, C, in=0, 6 callees. 6E45h DGROUP modal loop: mouse_gate_far_entry, dispatch_22100, 3x unk_6DFF0 rect draws toggled by word_6E8CC (200h/0 -> 2 or 1), dispatch_220f4, bda_kb_flag_10000_get, word_6E8B7=4; key loop flag_table_pop_far_thunk -> 6E8D2 masked FF00h/DFh, r17_menu_event_loop, 10-way scan cs:239h -> jmp word cs:[bx+14h], 6E8CC pane flips via call 6E1EA; exit 6E8B7=0 - r24 overlay pane toggle menu loop. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x10CFA6
+    seg: 0x10CFA
+    ofs: 0x6
+    size: 70
+    far: true
+    class: ASM
+    hypothesis: "r27_table_copy_far_entry"
+    sig: "70B, ASM, in=0, no callees. Head misdecodes (1 insn); si=ds:0CA2h; loop until 31F0h:32BA4 <= si: ax=7A32h:[si*2-5108h] -> [7A32h:0AE96h far ptr + si*2], then ax=7A32h:0AF5Ah; retf - r27 overlay table copy to far pointer entry."
+    port_status: unported
+    verified: null
+    notes: "70B, ASM, in=0, no callees. Head misdecodes (1 insn); si=ds:0CA2h; loop until 31F0h:32BA4 <= si: ax=7A32h:[si*2-5108h] -> [7A32h:0AE96h far ptr + si*2], then ax=7A32h:0AF5Ah; retf - r27 overlay table copy to far pointer entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x156021
+    seg: 0x15602
+    ofs: 0x1
+    size: 122
+    far: false
+    class: ASM
+    hypothesis: "r31_score_max_update"
+    sig: "122B, ASM, in=0, no callees. Gate bl>=ds:20h else skip; score=(cs:byte[bx+89Dh]/53h+1)*([bp+9]+1)/([bp+4]+1)*(1+([bp+7]<3?[bp+7]:0)); index bl=[bp+6]*2; keep max into cs:word[bx+11D5h] - r31 overlay score max update."
+    port_status: unported
+    verified: null
+    notes: "122B, ASM, in=0, no callees. Gate bl>=ds:20h else skip; score=(cs:byte[bx+89Dh]/53h+1)*([bp+9]+1)/([bp+4]+1)*(1+([bp+7]<3?[bp+7]:0)); index bl=[bp+6]*2; keep max into cs:word[bx+11D5h] - r31 overlay score max update. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x1582CE
+    seg: 0x1582C
+    ofs: 0xE
+    size: 75
+    far: true
+    class: ASM
+    hypothesis: "r32_hud_phase_reset_entry"
+    sig: "75B, ASM, in=0, 3 callees. flag_block_zero_5762_5c63 + r32_farptr_gate + unk_4335A + r32_hud_phase_dispatch sequence; if 4FC2h:4FD52 != FFFFh call unk_43D52(word); zero 7894h:79B60 and 79E86; retf - r32 overlay HUD phase reset entry."
+    port_status: unported
+    verified: null
+    notes: "75B, ASM, in=0, 3 callees. flag_block_zero_5762_5c63 + r32_farptr_gate + unk_4335A + r32_hud_phase_dispatch sequence; if 4FC2h:4FD52 != FFFFh call unk_43D52(word); zero 7894h:79B60 and 79E86; retf - r32 overlay HUD phase reset entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x158688
+    seg: 0x15868
+    ofs: 0x8
+    size: 81
+    far: true
+    class: ASM
+    hypothesis: "r32_scale_op_dispatch_step"
+    sig: "81B, ASM, in=0, 2 callees. Head misdecodes (6B); then les bx,es:50524 far ptr, ax=[bx]*[bx+2] product, op_dispatch_far_entry(prod, si, 0Ah), op_dispatch_far_entry(ds:0A3A4h, 0, si, 8), dispatch_220ec_invoke(7894h:79E64, 5, 10h); retf - r32 overlay scale op dispatch step."
+    port_status: unported
+    verified: null
+    notes: "81B, ASM, in=0, 2 callees. Head misdecodes (6B); then les bx,es:50524 far ptr, ax=[bx]*[bx+2] product, op_dispatch_far_entry(prod, si, 0Ah), op_dispatch_far_entry(ds:0A3A4h, 0, si, 8), dispatch_220ec_invoke(7894h:79E64, 5, 10h); retf - r32 overlay scale op dispatch step. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x15AB29
+    seg: 0x15AB2
+    ofs: 0x9
+    size: 13
+    far: false
+    class: ASM
+    hypothesis: "r33_args3_far_tail"
+    sig: "13B, ASM, in=0, no callees. Head misdecodes (2 insns); push 1, 0, 0Fh; jmp loc_15AAFA (far tail beyond entry) - r33 overlay 3-arg far tail jump entry."
+    port_status: unported
+    verified: null
+    notes: "13B, ASM, in=0, no callees. Head misdecodes (2 insns); push 1, 0, 0Fh; jmp loc_15AAFA (far tail beyond entry) - r33 overlay 3-arg far tail jump entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x15CC16
+    seg: 0x15CC1
+    ofs: 0x6
+    size: 4
+    far: false
+    class: LEAF
+    hypothesis: "r33_tail_epilogue_stub"
+    sig: "4B, LEAF, in=0, no callees. pop di; pop si; leave; retf - r33 overlay tail epilogue stub."
+    port_status: unported
+    verified: null
+    notes: "4B, LEAF, in=0, no callees. pop di; pop si; leave; retf - r33 overlay tail epilogue stub. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x16381F
+    seg: 0x16381
+    ofs: 0xF
+    size: 6
+    far: false
+    class: LEAF
+    hypothesis: "r35_loop_fragment"
+    sig: "6B, LEAF, in=0, no callees. loop unk_1637A4; les cx,[bx+si] misdecode; leave; retf - r35 overlay loop fragment stub."
+    port_status: unported
+    verified: null
+    notes: "6B, LEAF, in=0, no callees. loop unk_1637A4; les cx,[bx+si] misdecode; leave; retf - r35 overlay loop fragment stub. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x166061
+    seg: 0x16606
+    ofs: 0x1
+    size: 164
+    far: true
+    class: ASM
+    hypothesis: "r36_mod_slot_index_entry"
+    sig: "164B, ASM, in=0, 1 callee. If 602Eh:byte_63954==0 set to 1; fixed_vec3_read() result & 0Fh mod byte_63954, returns remainder+2 - r36 overlay modulo slot index entry."
+    port_status: unported
+    verified: null
+    notes: "164B, ASM, in=0, 1 callee. If 602Eh:byte_63954==0 set to 1; fixed_vec3_read() result & 0Fh mod byte_63954, returns remainder+2 - r36 overlay modulo slot index entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x164B17
+    seg: 0x164B1
+    ofs: 0x7
+    size: 224
+    far: false
+    class: DATA
+    hypothesis: "r36_record_copy_fragment"
+    sig: "224B, DATA, in=0, 1 callee. Garbage head (add ax,14h decode) with plausible core: 4Eh-stride 79B6E record [bx+40h/42h] words -> 7894h:79D6C struct +0Ah/+0Ch/+0Eh, bytes [0..2]=1, jmp loc_16586F (r36_loadout_record_copy) - r36 overlay record copy fragment, not decoded as code."
+    port_status: unported
+    verified: null
+    notes: "224B, DATA, in=0, 1 callee. Garbage head (add ax,14h decode) with plausible core: 4Eh-stride 79B6E record [bx+40h/42h] words -> 7894h:79D6C struct +0Ah/+0Ch/+0Eh, bytes [0..2]=1, jmp loc_16586F (r36_loadout_record_copy) - r36 overlay record copy fragment, not decoded as code. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x16620D
+    seg: 0x16620
+    ofs: 0xD
+    size: 262
+    far: true
+    class: ASM
+    hypothesis: "r36_slot_type_priority_scan"
+    sig: "262B, ASM, in=0, 1 callee. 7894h:byte_7A311=FFh; loops si over count=rec[1] (27h-stride records at [bp+6]); priority test byte [rec+0Ah] in order 0,2,1,3,4: when r36_farptr_helper(si)==0 store that code to byte_7A311 and exit - r36 overlay slot type priority scan."
+    port_status: unported
+    verified: null
+    notes: "262B, ASM, in=0, 1 callee. 7894h:byte_7A311=FFh; loops si over count=rec[1] (27h-stride records at [bp+6]); priority test byte [rec+0Ah] in order 0,2,1,3,4: when r36_farptr_helper(si)==0 store that code to byte_7A311 and exit - r36 overlay slot type priority scan. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x167B01
+    seg: 0x167B0
+    ofs: 0x1
+    size: 8
+    far: false
+    class: LEAF
+    hypothesis: "r38_popf_fragment"
+    sig: "8B, LEAF, in=0, no callees. push es; popf; mid misdecode (add ss:[bx+5Eh],bl); leave; retf - r38 overlay popf fragment stub, partial decode."
+    port_status: unported
+    verified: null
+    notes: "8B, LEAF, in=0, no callees. push es; popf; mid misdecode (add ss:[bx+5Eh],bl); leave; retf - r38 overlay popf fragment stub, partial decode. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x169C50
+    seg: 0x169C5
+    ofs: 0x0
+    size: 306
+    far: true
+    class: C
+    hypothesis: "r39_column_bar_render_entry"
+    sig: "306B, C, in=0, 5 callees. sub_2C58B(1Ch,79BDA)->word_6390A=[bp-6]; far ptr 602Eh:616DC; 4x sub_2C4FF draws (slots 1,3 type7 19h-high, slot2 96h-high with 6390E, slot4 wide row 0Ah/32h) each + sub_2C59F; closes r39_farptr_call_gate(1,0,si) - r39 overlay column bar render entry."
+    port_status: unported
+    verified: null
+    notes: "306B, C, in=0, 5 callees. sub_2C58B(1Ch,79BDA)->word_6390A=[bp-6]; far ptr 602Eh:616DC; 4x sub_2C4FF draws (slots 1,3 type7 19h-high, slot2 96h-high with 6390E, slot4 wide row 0Ah/32h) each + sub_2C59F; closes r39_farptr_call_gate(1,0,si) - r39 overlay column bar render entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x16A0CF
+    seg: 0x16A0C
+    ofs: 0xF
+    size: 686
+    far: true
+    class: C
+    hypothesis: "r39_ring_slot_render_entry"
+    sig: "686B, C, in=0, 5 callees. Height by 602Eh:63955 (6->64h, 7->96h, else 32h), [bp-6]=1C2h (450); far ptr 602Eh:616DC; sub_2C4F5(si); sub_2C58B(byte_63926,79BDA)->di; 8x sub_2C4FF draws with x=(di+{180,0,90,180,270,240,120,240}) mod 360 (slots 1-7 typed 7/8 + slot 8 wide 12Ch/15h) each + sub_2C59F; closes r39_farptr_call_gate(1, 5/6 by 63955, si) - r39 overlay ring slot render entry."
+    port_status: unported
+    verified: null
+    notes: "686B, C, in=0, 5 callees. Height by 602Eh:63955 (6->64h, 7->96h, else 32h), [bp-6]=1C2h (450); far ptr 602Eh:616DC; sub_2C4F5(si); sub_2C58B(byte_63926,79BDA)->di; 8x sub_2C4FF draws with x=(di+{180,0,90,180,270,240,120,240}) mod 360 (slots 1-7 typed 7/8 + slot 8 wide 12Ch/15h) each + sub_2C59F; closes r39_farptr_call_gate(1, 5/6 by 63955, si) - r39 overlay ring slot render entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x176C25
+    seg: 0x176C2
+    ofs: 0x5
+    size: 1470
+    far: true
+    class: ASM
+    hypothesis: "r48_op_dispatch_batch_entry"
+    sig: "1470B, ASM, in=0, 4 callees. ~30x op_dispatch_far_entry(dst seg:off, val, [bp-2], 0Ah) state-init emissions over 7894h/602Eh/7A32h/639Eh fields (opcode-2/6/1 variants); zeroes 79B62/79D6A/79BD6; clamps 79F14 from dword_79E50[30h] when word_78940==0; opcode-8 out-ptr queries, flag2224a_set, farobj_field_scale_check(7894h:0F32,...); dump truncated at 300-insn cap mid-body - r48 overlay op dispatch batch entry."
+    port_status: unported
+    verified: null
+    notes: "1470B, ASM, in=0, 4 callees. ~30x op_dispatch_far_entry(dst seg:off, val, [bp-2], 0Ah) state-init emissions over 7894h/602Eh/7A32h/639Eh fields (opcode-2/6/1 variants); zeroes 79B62/79D6A/79BD6; clamps 79F14 from dword_79E50[30h] when word_78940==0; opcode-8 out-ptr queries, flag2224a_set, farobj_field_scale_check(7894h:0F32,...); dump truncated at 300-insn cap mid-body - r48 overlay op dispatch batch entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x18AC5D
+    seg: 0x18AC5
+    ofs: 0xD
+    size: 97
+    far: false
+    class: DATA
+    hypothesis: "r54_farwrap_norm_fragment"
+    sig: "97B, DATA, in=0, 1 callee. Partial: 64-bit neg of [bp-6:ax] -> [bp+0Ch], farwrap_24aef normalization -> si, +2000h/+4000h sign corrections, si idiv 2Eh; mid/tail undecodable (fcmovne) - r54 overlay farwrap normalization fragment."
+    port_status: unported
+    verified: null
+    notes: "97B, DATA, in=0, 1 callee. Partial: 64-bit neg of [bp-6:ax] -> [bp+0Ch], farwrap_24aef normalization -> si, +2000h/+4000h sign corrections, si idiv 2Eh; mid/tail undecodable (fcmovne) - r54 overlay farwrap normalization fragment. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x18A172
+    seg: 0x18A17
+    ofs: 0x2
+    size: 96
+    far: true
+    class: ASM
+    hypothesis: "r54_index_resolve_step_entry"
+    sig: "96B, ASM, in=0, 1 callee. Head misdecodes (fsub/add junk); scans si over 4Eh-stride records until 6894h:69B72, then 2x farobj_index_resolve_step (74h,[bp-2] -> dx:ax out; di,[bp+0Ch],[bp-6]) -> si; leave/retf - r54 overlay index resolve step entry, head undecodable."
+    port_status: unported
+    verified: null
+    notes: "96B, ASM, in=0, 1 callee. Head misdecodes (fsub/add junk); scans si over 4Eh-stride records until 6894h:69B72, then 2x farobj_index_resolve_step (74h,[bp-2] -> dx:ax out; di,[bp+0Ch],[bp-6]) -> si; leave/retf - r54 overlay index resolve step entry, head undecodable. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x1A3D50
+    seg: 0x1A3D5
+    ofs: 0x0
+    size: 50
+    far: true
+    class: ASM
+    hypothesis: "r64_counter_decrement_entry"
+    sig: "50B, ASM, in=0, no callees. Head misdecodes (3 insns); 6894h:69E50 far struct [bx+26h]+=1Eh (30); index=ss:15F4h*17h stride into ss:152Ch far ptr, dec byte es:[bx+13h]; retf - r64 overlay counter decrement entry, head undecodable."
+    port_status: unported
+    verified: null
+    notes: "50B, ASM, in=0, no callees. Head misdecodes (3 insns); 6894h:69E50 far struct [bx+26h]+=1Eh (30); index=ss:15F4h*17h stride into ss:152Ch far ptr, dec byte es:[bx+13h]; retf - r64 overlay counter decrement entry, head undecodable. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x1A8A14
+    seg: 0x1A8A1
+    ofs: 0x4
+    size: 96
+    far: true
+    class: ASM
+    hypothesis: "r67_entity_step_pair_entry"
+    sig: "96B, ASM, in=0, 1 callee. Two entity_step_flags invocations (arg 1Eh=30; second out-ptr &bp-2), mid-body undecodable (insb/jnb garbage), stores 30h to ss:1524h words and 6894h:69E64 struct; retf - r67 overlay entity step pair entry, garbage region."
+    port_status: unported
+    verified: null
+    notes: "96B, ASM, in=0, 1 callee. Two entity_step_flags invocations (arg 1Eh=30; second out-ptr &bp-2), mid-body undecodable (insb/jnb garbage), stores 30h to ss:1524h words and 6894h:69E64 struct; retf - r67 overlay entity step pair entry, garbage region. conf: low"
+    updated: "2026-10-22"
+  - ea: 0x299D5
+    seg: 0x299D
+    ofs: 0x5
+    size: 429
+    far: false
+    class: ASM
+    hypothesis: "record_span_mask_rebuild"
+    sig: "429B, ASM, in=0, 1 callee. cs:27968=FFFFh, 2796A=0, es:43BEh=cs:2796E; if !(cs:27966 & 1): loop cx iters copying 8 words from 441Eh table into es:43BEh and AND/OR-accumulating [si+6] masks into 27968/2796A; early retn before undumped loc_29A2D tail - record span mask rebuild sibling of record_span_build_and_dispatch."
+    port_status: unported
+    verified: null
+    notes: "429B, ASM, in=0, 1 callee. cs:27968=FFFFh, 2796A=0, es:43BEh=cs:2796E; if !(cs:27966 & 1): loop cx iters copying 8 words from 441Eh table into es:43BEh and AND/OR-accumulating [si+6] masks into 27968/2796A; early retn before undumped loc_29A2D tail - record span mask rebuild sibling of record_span_build_and_dispatch. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x1BA1C
+    seg: 0x1BA1
+    ofs: 0xC
+    size: 186
+    far: true
+    class: ASM
+    hypothesis: "sbi_channel_flags_init"
+    sig: "186B, ASM, in=0, 4 callees. Head: 16x 7772h:0516h[si]=FFh channel flags, early retf at +31B (traversal stops; 155B tail undumped, callee set sbi_data_write/sbi_command_wait/channel_volume_store/channel_program_fetch_write) - SBI channel flags init entry."
+    port_status: unported
+    verified: null
+    notes: "186B, ASM, in=0, 4 callees. Head: 16x 7772h:0516h[si]=FFh channel flags, early retf at +31B (traversal stops; 155B tail undumped, callee set sbi_data_write/sbi_command_wait/channel_volume_store/channel_program_fetch_write) - SBI channel flags init entry. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x1BD31
+    seg: 0x1BD3
+    ofs: 0x1
+    size: 51
+    far: true
+    class: ASM
+    hypothesis: "sbi_channel_release_gate"
+    sig: "51B, ASM, in=0, 1 callee. If 7772h:unk_77B46 in {2,3,4} set word_77B36=1 and call sbi_channel_release_close; returns 1 - SBI channel release gate."
+    port_status: unported
+    verified: null
+    notes: "51B, ASM, in=0, 1 callee. If 7772h:unk_77B46 in {2,3,4} set word_77B36=1 and call sbi_channel_release_close; returns 1 - SBI channel release gate. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C88D
+    seg: 0x2C88
+    ofs: 0xD
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_display_palette_hud_refresh_step"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp display_palette_hud_refresh_step (loc_67877+1) - tail-bridge stub into display_palette_hud_refresh_step."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp display_palette_hud_refresh_step (loc_67877+1) - tail-bridge stub into display_palette_hud_refresh_step. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C60D
+    seg: 0x2C60
+    ofs: 0xD
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_menu_choice_tail_dispatch"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp menu_choice_tail_dispatch (loc_67BAA) - tail-bridge stub into menu_choice_tail_dispatch."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp menu_choice_tail_dispatch (loc_67BAA) - tail-bridge stub into menu_choice_tail_dispatch. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C7ED
+    seg: 0x2C7E
+    ofs: 0xD
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_menu_pending_task_step"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp menu_pending_task_step (loc_67B40+1) - tail-bridge stub into menu_pending_task_step."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp menu_pending_task_step (loc_67B40+1) - tail-bridge stub into menu_pending_task_step. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C0A9
+    seg: 0x2C0A
+    ofs: 0x9
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_r05_flag_xor_45e4e"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r05_flag_xor_45e4e (3 pad bytes) - tail-bridge stub into r05_flag_xor_45e4e."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r05_flag_xor_45e4e (3 pad bytes) - tail-bridge stub into r05_flag_xor_45e4e. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C649
+    seg: 0x2C64
+    ofs: 0x9
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_r30_farobj_proc_c"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_farobj_proc (unk_6A260) - tail-bridge stub into r30_farobj_proc (variant C)."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_farobj_proc (unk_6A260) - tail-bridge stub into r30_farobj_proc (variant C). conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C4CD
+    seg: 0x2C4C
+    ofs: 0xD
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_r30_state_init_all_h"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant H) - tail-bridge stub into r30_state_init_all."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant H) - tail-bridge stub into r30_state_init_all. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C847
+    seg: 0x2C84
+    ofs: 0x7
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_r30_state_init_all_i"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant I) - tail-bridge stub into r30_state_init_all."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp r30_state_init_all (variant I) - tail-bridge stub into r30_state_init_all. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C5A9
+    seg: 0x2C5A
+    ofs: 0x9
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_ui_loadout_menu_enter_d"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_68792+1) - tail-bridge stub into ui_loadout_menu_enter (variant D)."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_68792+1) - tail-bridge stub into ui_loadout_menu_enter (variant D). conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C685
+    seg: 0x2C68
+    ofs: 0x5
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_ui_loadout_menu_enter_e"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_684BA) - tail-bridge stub into ui_loadout_menu_enter (variant E)."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_684BA) - tail-bridge stub into ui_loadout_menu_enter (variant E). conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C71B
+    seg: 0x2C71
+    ofs: 0xB
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_ui_loadout_menu_enter_f"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_68926+3) - tail-bridge stub into ui_loadout_menu_enter (variant F)."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_loadout_menu_enter (loc_68926+3) - tail-bridge stub into ui_loadout_menu_enter (variant F). conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C6D5
+    seg: 0x2C6D
+    ofs: 0x5
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_ui_menu_page_args_setup"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_page_args_setup (loc_69CA4+2) - tail-bridge stub into ui_menu_page_args_setup."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_page_args_setup (loc_69CA4+2) - tail-bridge stub into ui_menu_page_args_setup. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C3DD
+    seg: 0x2C3D
+    ofs: 0xD
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_ui_menu_panel_init_c"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_panel_init (loc_66E65+1) - tail-bridge stub into ui_menu_panel_init (variant C)."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_menu_panel_init (loc_66E65+1) - tail-bridge stub into ui_menu_panel_init (variant C). conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2C45F
+    seg: 0x2C45
+    ofs: 0xF
+    size: 8
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_ui_slot_count_tally"
+    sig: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_slot_count_tally (loc_6B6F6+2) - tail-bridge stub into ui_slot_count_tally."
+    port_status: unported
+    verified: null
+    notes: "8B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp ui_slot_count_tally (loc_6B6F6+2) - tail-bridge stub into ui_slot_count_tally. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x2BFF5
+    seg: 0x2BFF
+    ofs: 0x5
+    size: 10
+    far: false
+    class: ASM
+    hypothesis: "tail_bridge_to_viewvec_loop_project"
+    sig: "10B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp viewvec_loop_project (3 pad bytes) - tail-bridge stub into viewvec_loop_project."
+    port_status: unported
+    verified: null
+    notes: "10B, ASM, in=0, 2 callees. call tail_bridge_overlay_load; jmp viewvec_loop_project (3 pad bytes) - tail-bridge stub into viewvec_loop_project. conf: medium"
+    updated: "2026-10-22"
+  - ea: 0x4DC16
+    seg: 0x4DC1
+    ofs: 0x6
+    size: 551
+    far: false
+    class: ASM
+    hypothesis: "view_wrap_projection_entry"
+    sig: "551B, ASM, in=0, 6 callees. Head: two-component wrap probe [si+1]-=cs:word_2E108 and [si+3]-=cs:word_2E10A with 8000h carry test setting cx=1, early retn at +78B (traversal stops; 474B tail undumped; callee set view_projection/fixed_vec3_accumulate_b/vec_transform_scale_far/fixed_matrix_mul/farobj_altitude_scale_step/active_farptr_set) - camera view wrap/projection step entry."
+    port_status: unported
+    verified: null
+    notes: "551B, ASM, in=0, 6 callees. Head: two-component wrap probe [si+1]-=cs:word_2E108 and [si+3]-=cs:word_2E10A with 8000h carry test setting cx=1, early retn at +78B (traversal stops; 474B tail undumped; callee set view_projection/fixed_vec3_accumulate_b/vec_transform_scale_far/fixed_matrix_mul/farobj_altitude_scale_step/active_farptr_set) - camera view wrap/projection step entry. conf: medium"
+    updated: "2026-10-22"
+
 counts:
   tracked: 266
   verified: 43                    # 43 MATCH + 1 known-diff MISMATCH (19C4C) + 1 ASM null (10340)

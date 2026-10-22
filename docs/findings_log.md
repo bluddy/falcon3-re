@@ -5106,4 +5106,47 @@ fragments (r33/r35/r52/r54/r59/r60/r64 x2); 15 medium-conf
 
 ---
 
+## 2026-10-22 98 - Orphan batch 4 complete: 66 named
+(`named` 1,830 -> **1,896**; orphans 198 -> **132**)
+
+Batch 4 of the 397-orphan sweep named 66 (46 medium / 20 low
+conf). Headlines:
+
+**`r48_op_dispatch_batch_entry`** (r48_e191, 1470B, 4 callees):
+the largest batch-4 function - ~30x op_dispatch_far_entry
+state-init emissions (opcode 0Ah with 2/6/1 variants) over
+7894h/602Eh/7A32h/639Eh, clamps + farobj_field_scale_check.
+
+**`r39_ring_slot_render_entry`** (r39_e145, 686B C): 8 angular
+draws with x = base + {180,0,90,180,270,240,120,240} mod 360,
+height by 63955, closes r39_farptr_call_gate; sister
+**`r39_column_bar_render_entry`** (r39_e129, 306B C).
+
+**`r24_pane_toggle_menu_loop`** (r24_e60, 569B C): 6E45h
+DGROUP modal loop - word_6E8CC pane flips, 10-way key scan
+cs:239h jmp table, r17_menu_event_loop.
+
+**`view_wrap_projection_entry`** (sub_4DC16, 551B, 6 callees -
+camera wrap probe vs cs:2E108/2E10A, early retn leaves 474B
+tail undumped), **`record_span_mask_rebuild`** (sub_299D5),
+**`op_emit_far_state_step`** (sub_69ACB, 402B),
+**`r36_slot_type_priority_scan`**, **`r31_score_max_update`**,
+**`menu_mod_patch_row_set`** (self-modifying cs:6E146/6E148),
+**`key_action_101_range_gate`**, SBI pair
+(**`sbi_channel_flags_init`** / **`sbi_channel_release_gate`**),
+and the r12 record family (FD08h/FD05h/ah=0Ch variants).
+
+Low-conf tail: 13 `overlay_undecoded_body_*` markers + 7
+fragments (r35/r36/r38/r54 x2/r64/r67); 14 medium-conf
+`tail_bridge_to_*` 8-byte stubs (incl. loadout_enter d/e/f,
+state_init_all h/i, farobj_proc_c, panel_init_c).
+
+### Gates (all green)
+
+`naming.py check` **1,898** . `verify_rebuild` **faithful (2,237
+== 2,237)** . `verify_idb` **INTACT** . `name_readback`
+**1,896/1,896 function + 2/2 global**.
+
+---
+
 (append new findings below)
