@@ -17,7 +17,7 @@ The GS2000 workflow converges on ground truth via two mutually-checking tracks:
 | Track 2 batch driver | ⚠️ `portcheck_falcon.py` verifies one routine at a time | Add batch driver + pass/fail convergence metric |
 | Registry with per-routine hypotheses | ⚠️ Schema + first entries exist (`registry/routines.yaml`); 3/839 tracked | Keep filling on classify/verify; renames land there + in C files |
 | `mzdiff` verification | ✅ **Reusable, not game-specific** — WSL binary exists (see below) | Only `.map` files are per-EXE (`mzmap` makes them, can ingest IDA `.lst`) |
-| Ghidra decompile → draft C | ❌ Not wired in (Ghidra installed; gunship has `ghidra_dump_to_lst_final.py`) | Add dump script, human-verify via portcheck |
+| Ghidra decompile → draft C | ❌ **Never adopted — no Ghidra-decompiled C exists in this project** (a GS2000-era option only) | Draft-C path = **Track D: masm2c over the IDA `.lst`** (pipeline.md) |
 | Coverage ground truth | ⚠️ Resident **proven** (815/815 = raw+relocs, finding 15); **overlay IDB layout wrong** (finding 16) | Rebuild overlay placement from primary anchors (plan 1.2b) |
 
 ### Track 1 without RTLink: splice-in-place

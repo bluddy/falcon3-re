@@ -1,5 +1,12 @@
 # Falcon3 Toolchain & Build Evidence
 
+## Two toolchains — read this first
+
+| Track | Compiler(s) | Role |
+|-------|-------------|------|
+| **D (ADOPTED — forward path)** | **Modern C++ only**: g++ (`-std=gnu++11 -m32` in CI/MinGW test builds) and **MSVC 14.39 (VS2022, x64)** when building inside dosbox | masm2c-generated C++ + m2c runtime linked into **libdosbox** custom profiles (pipeline.md Track D). **No era compiler, no Ghidra.** |
+| B (verification — historical) | Borland C++ 2.0 / MSC 5.1 (sections below) | Byte-for-byte port verification only (`portcheck`, `.cod` compares) — never builds the forward path |
+
 ## Compiler — REVISED 2026-10-11 (finding 22): **Borland C++ 2.0**
 
 **C functions: Borland C++ 2.0** (`dos_compilers/bcc2.0`), exact recipe:

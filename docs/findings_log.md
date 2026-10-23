@@ -5244,4 +5244,59 @@ target).
 
 ---
 
+## 2026-10-23 101 - Track D adopted (masm2c + libdosbox); eov0007 blocker is FORK-level, not instrumentation
+
+Status: CONFIRMED (control split) + directive (Track D)
+
+**Directive**: forward path = **Track D: IDA `.lst` -> masm2c -> modern C++
+(g++ `-std=gnu++11 -m32` CI / MSVC 14.39 x64 inside dosbox) -> libdosbox custom
+profile**. No era compiler (BC 2.0 / MSC 5.1 = Track B byte-verification only);
+no Ghidra-decompiled C (never existed in this project). Docs realigned:
+pipeline.md Track D section + overview, toolchain.md two-toolchains table,
+harness_plan.md banner (manual `src/port/` loop demoted to design input),
+workflow convergence row, current_state rows, time_log.
+
+**Blocker eov0007**: FALCONCD dies ~4 ms after exec with the game's own
+RTLink/Plus overlay-manager fatal (string at FALCONCD.EXE file 0x1E65D, the
+finding-02 eov family): `Fatal Error eov0007: Commit error - section 0047H
+intersects committed section 0005H` (exit 1; `memdump/screen_lib_shot.png`).
+
+Control split (same game dir + conf for all):
+
+| Build | Result |
+|---|---|
+| libdosbox CMake instrument (`DOSBOX_CUSTOM=1`) | FAIL eov0007 |
+| libdosbox vanilla MSBuild (**no custom layer**) | FAIL eov0007 identically |
+| harvester `src/dosbox-staging` `falcon3-trace-hooks` | BOOT (Spectrum HoloByte splash) |
+| installed `c:\tools\dosbox-staging-v0.83.0` | BOOT (game fullscreen) |
+| DOSBox-0.74-3 | capture inconclusive (console window captured) |
+
+=> instrumentation **exonerated**; failure = pre-existing delta between the
+libdosbox fork and current staging (user: falcon3 runs on regular DOSBox).
+
+**Fork geometry**: `merge-base(libdosbox, staging)` = **e2c66a872** "Extend the
+glshader config setting's description"; staging-side **3,433** commits to harvester
+HEAD (v0.82.2-era base + dev-latest), libdosbox-side **332** own commits
+(asound / json2idc / custom instrumentation / CMake / GDB-server). Worktree
+`src/dosbox-staging-forkbase` @ e2c66a872 created for the pre-fork control build
+(`vs/dosbox.sln` MSBuild; first attempt reached vcpkg configure, manually aborted).
+
+**EMS deprioritized** (user: game recommends but does not require EMS): only 3
+functional post-0.82.2 `ems.cpp` commits — `9ddffaa70` partial-page-map record
+6B -> 4B (EMM386 format), `71d9cc218` Set Handle Name reads DS:SI not ES:DI,
+`dfa3fc339` size clamp for large memsize. No-EMS probe was invalid: runtime flag
+is `--set <setting>=<value>` (main.cpp:174), not `-set` (mine leaked `ems=false`
+to the shell). Full v0.82.2..HEAD dos/ints/cpu commit list saved:
+`memdump/staging_dos_commits.txt` (571 commits).
+
+**Side bugs logged**: `-c config -set cpu core=normal` gets mangled by
+Start-Process argument splitting -> bare `config` usage print + config.COM hang
+(both builds; omit the line). Harvester writes nothing to stderr at verbosity 0.
+
+Artifacts: `memdump/screen_{lib,vanilla,harv,v083,d074}_shot.png`,
+`memdump/shot_*_{err,out}.txt`, `memdump/smoke_20261023_*`,
+`memdump/staging_dos_commits.txt`.
+
+---
+
 (append new findings below)
