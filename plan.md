@@ -5,6 +5,159 @@
 > keep per-routine state in `registry/routines.yaml`,
 > byte-level formats in `docs/structures.md`, renames+comments in `src/` files.
 
+---
+
+# Track E Plan (ADOPTED 2026-10-24) — native 64-bit rebuild in OCaml
+
+North star: **a proper 64-bit OCaml application that behaves like Falcon 3.0** —
+flat memory (no segments/far pointers/overlays/EMS), behavioural fidelity, **no
+byte-parity goal**. Knowledge extraction and the rebuild proceed together: every
+slice of the program gets *understood → written into the text sinks → re-implemented
+→ checked against the original*.
+
+Rules (from `docs/pipeline.md` Track E):
+1. **Text-first, IDB-second** — IDB is the human observation window; committed
+   files are canonical.
+2. **Per-unit convergence**: struct `confirmed` in `registry/structs.yaml` →
+   system write-up → re-implementation → behaviour check vs the original.
+3. Knowledge Capture Protocol on every step (findings / registries / time log).
+4. Tracks B/C stay as an optional byte-fidelity side check; Track D (parked)
+   supplies the oracle machinery (harvester traces/memdumps).
+
+Current foundation (why this is tractable now): **2,030 semantic names** across
+all call-graph levels (0–21 complete), 2,237-function ground truth, traces +
+12 memdumps as reference behaviour, manual extracted into
+`registry/game_knowledge.yaml`, `naming.py check`/gates green.
+
+## E0 — Scaffold (first days)
+
+- [ ] OCaml toolchain on Windows: opam (native Windows) + dune; verify
+      `dune build && dune test` on a hello lib.
+- [ ] Create **`rebuild/`** (top-level, this repo): `dune-project`, `lib/`,
+      `test/`, short `README` stating conventions:
+      - module/function names follow the semantic names from `registry/naming.yaml`
+        (that ledger is the map ida ↔ rebuild);
+      - integer types preserve 16/32-bit wraparound semantics (no silent
+        widening) — fidelity means matching the original's arithmetic, not
+        "improving" it;
+      - where struct types live and how they cross-link to `structs.yaml`.
+- [ ] Decide test-data policy: `game/` is **gitignored**, so tests reading real
+      files must skip gracefully when absent (document the requirement); commit
+      tiny synthetic fixtures for format edge cases.
+- [ ] Wire gates: `naming.py check` stays green; note in pipeline.md that Track E
+      adds `dune test` to the gate list.
+
+## E1 — Milestone ME1: first file-format parser
+
+Chosen (2026-10-24): **a file-format parser** — verifiable against bytes on disk,
+no oracle needed.
+
+- [ ] **Pick the format** (shortlist, best-first):
+      1. **DAT+IDX pairs** — dozens exist (`ACMI`, `IA`, `PEOPLE`, `TACTS`,
+         `MADFONT`, menus, patches…): the tiny IDX is an offset/count table, so
+         the format is *self-checking* (IDX offsets must tile DAT exactly) even
+         before the EXE parser is found.
+      2. **Weapon `.BIN` tables** — 33 files at exactly **8,452 B** = one fixed
+         record struct validated 33×.
+      3. `ARMSDATA\` (308 files) or `REPORT.DAT` (539 KB) — bigger, later.
+- [ ] **Find the parser in the EXE**: filename string xref (headless IDA export
+      or the IDB browse window) → open/read loop through `op_dispatch` (DOS
+      service shim, finding 48) → the read/parse routine.
+- [ ] **Document**: format + fields → `registry/structs.yaml` (`confirmed`,
+      offset/size/type per field + witness ea) and `docs/structures.md`
+      (narrative: header, index, record, invariants).
+- [ ] **Implement** in `rebuild/`: parser + `dune test` running against the real
+      file (parse → assert invariants → round-trip or field spot-checks).
+- [ ] Findings entry + time log.
+- **Done =** `dune test` green on the real files + struct `confirmed` + write-up.
+
+## E2 — Foundations (parallel with E1/E3)
+
+- [ ] **Fixed-point math module** — collect every `fixed_*` routine from the
+      ledger (sign/shift/mul/div/normalize family), write `docs/fixed_point.md`
+      (Q-format per routine, overflow/shift conventions), implement OCaml
+      `Fixed` with exact integer semantics. Everything numeric (dynamics,
+      projection, HUD) depends on this.
+- [ ] **Memory-semantics write-up** — farptr / handle / slot / EMS subsystems
+      documented as *expected semantics* ("what the game assumes happens when
+      …"), because Track E replaces the mechanism but must preserve behaviour.
+- [ ] **Struct backlog** — promote `structs.yaml` hypothesis → `confirmed`
+      (targets: farobj record, kb record, slot2/slot3 window records, entity/
+      mission/save). 5 structs today.
+- [ ] **Domain write-ups** (one `docs/` section each, cross-referenced to the
+      named routines): file processing → flight dynamics → drawing → enemy AI →
+      UI/menus → sound. Reuses the completed naming campaign as the index.
+
+## E3 — Oracle harness (before large-scale implementation)
+
+- [ ] Define comparison granularity: **numeric state vectors per frame/step**
+      (positions, angles, HUD values) rather than pixels, initially.
+- [ ] Capture golden traces from the original: the **harvester**
+      (`src/dosbox-staging/build/falcon`, `FALCON_TRACE`) already boots the game
+      — record input sequences → state dumps for chosen scenarios.
+- [ ] OCaml test harness: replay the same inputs, diff against golden, report
+      per-value mismatches with routine/ea attribution.
+- [ ] Keep Track D parked: no libdosbox/masm2c work needed for this — the
+      existing staging harvester + memdumps suffice; revisit only if granularity
+      is insufficient.
+
+## E4 — Subsystems, in dependency order
+
+| # | Subsystem | Depends on | Oracle |
+|---|-----------|-----------|--------|
+| 1 | Fixed-point math | — | unit (spec) |
+| 2 | Data records/entities (structs) | 1 | file bytes |
+| 3 | File I/O + formats | 2 | file bytes |
+| 4 | **Flight dynamics** (`aircraft_motion_step`, `pos_*`) | 1–3 | golden traces |
+| 5 | Game loop / input / events (`main_frame_update_loop`, `key_*`) | 4 | traces |
+| 6 | Enemy AI / behaviour (`farobj_behavior_dispatch_step`, scripts) | 4–5 | traces |
+| 7 | Rendering (draw algorithms, HUD, 3D view) | 1–6 | frame/VRAM compare — **last, hardest** |
+| 8 | Sound (AdLib/SB, `FALCON3.SMP`) | 5 | port-level later |
+| 9 | Menus/UI (R17/R32 families) | 5 | interaction traces |
+
+Each subsystem passes the convergence criteria before moving on (struct
+`confirmed` + write-up + implemented + behaviour-checked).
+
+## E5 — Assembly & running
+
+- [ ] **Headless core first**: mission tick-loop with rendering stubbed —
+      compare long traces (cheapest meaningful "it runs").
+- [ ] SDL3 front end (rendering/audio/input) once E4-7 lands.
+- [ ] Original assets used as-is (parsers from E1/E2-3 read `game/` directly).
+
+## Milestones
+
+| Milestone | Target | Deliverable |
+|-----------|--------|-------------|
+| ME1 | ~1 week | `rebuild/` scaffolded + first DAT/IDX (or weapon BIN) parser green in `dune test`, struct `confirmed` |
+| ME2 | ~2–3 weeks | `Fixed` module + fixed-point spec; memory-semantics write-up; structs.yaml backlog promoted; oracle harness v1 (golden trace captured + replay diff) |
+| ME3 | ~1–2 months | Flight-dynamics slice reproduces original numeric trajectories from golden traces |
+| ME4 | — | Headless core loop running long traces clean (loop/input/AI/dynamics) |
+| ME5 | — | Rendering + sound + UI: game visibly playable |
+
+## Risks & Mitigations
+
+| Risk | Mitigation |
+|------|------------|
+| OCaml/Windows tooling friction | opam native Windows is mature; keep `dune test` trivial so toolchain breakage is obvious early |
+| Oracle coverage gaps (traces only cover seen scenarios/segments) | start unit-level (file bytes, math spec) where possible; widen scenarios as needed — harvester already proven |
+| Formats not yet decoded (e.g. tail compression, finding 31) | E1 picks *self-verifying on-disk* formats; unknown formats don't block |
+| Behaviour divergence drift | golden traces pinned per subsystem; every slice re-runs prior diffs |
+| Rendering fidelity is subjective | deliberately last; VRAM/frame compare via memdumps instead of eyeballing |
+| Knowledge loss to the IDB | canonical-text rule enforced; `naming.py check` in gates |
+
+---
+
+---
+
+# Legacy plan (Phases 0–5: the Tracks A–D era — retained as history)
+
+> **Mostly historical.** Phases 0–2 = Track A/B foundations (still valid, largely
+> done). **Phase 3 (subsystem RE & registry) still feeds Track E** — it is now
+> E2's backlog. **Phase 4 (C porting & splice) is superseded by Track E** as the
+> rebuild goal; Track C remains an optional byte-fidelity side check, and its
+> Ghidra items were never adopted (see `docs/pipeline.md`).
+
 ## Phase 0: Foundation (DONE ✅)
 - [x] Fresh IDA Pro 9.1 headless snapshot of FALCONCD.EXE
 - [x] RTLink 18-byte directory parsed, 9 overlay groups mapped with 16-bit segment bases
