@@ -4,7 +4,8 @@
 
 | Track | Compiler(s) | Role |
 |-------|-------------|------|
-| **D (ADOPTED — forward path)** | **Modern C++ only**: g++ (`-std=gnu++11 -m32` in CI/MinGW test builds) and **MSVC 14.39 (VS2022, x64)** when building inside dosbox | masm2c-generated C++ + m2c runtime linked into **libdosbox** custom profiles (pipeline.md Track D). **No era compiler, no Ghidra.** |
+| **E (ADOPTED 2026-10-24 — forward path)** | **OCaml** (decided; Rust fallback) — a modern **64-bit** HLL | Knowledge-driven native rebuild of the game (algorithms / drawing / file formats / AI / flight dynamics / structs), flat memory, **no byte parity**; code in `rebuild/` (pipeline.md Track E) |
+| D (parked 2026-10-24) | **Modern C++ only**: g++ (`-std=gnu++11 -m32` in CI/MinGW test builds) and **MSVC 14.39 (VS2022, x64)** when building inside dosbox | masm2c-generated C++ + m2c runtime linked into **libdosbox** custom profiles (pipeline.md Track D). Linux-centric tooling; retained as harness/parity option. **No era compiler, no Ghidra.** |
 | B (verification — historical) | Borland C++ 2.0 / MSC 5.1 (sections below) | Byte-for-byte port verification only (`portcheck`, `.cod` compares) — never builds the forward path |
 
 ## Compiler — REVISED 2026-10-11 (finding 22): **Borland C++ 2.0**

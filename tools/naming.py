@@ -106,19 +106,45 @@ def apply_text(text, word_pairs, forward=True):
 
 
 def _iter_text_files(roots):
-    # PRUNE large/third-party trees: src/ holds full DOSBox checkouts
-    # (dosbox-staging, dosbox-x -> ~4.7k .c/.h/.asm files, 70 MB) which made
-    # `check` scan 70 MB x 68 patterns and appear to hang. Our own C/asm lives
-    # in src/ root, src/asm/, and the falcon3 port dirs only.
+    # PRUNE large/third-party trees: src/ holds full checkouts (dosbox-staging,
+    # dosbox-x, libdosbox, masm2c -> thousands of .c/.h/.asm files) which made
+    # `check` scan them x ledger-pairs and appear to hang (1508 files at 2030
+    # pairs ~= 6M re.search calls; and `apply` word-replacing foreign code would
+    # be actively dangerous). Our own C/asm lives in src/ root, src/asm/, and the
+    # falcon3 port dirs only. If our own code ever lands inside a pruned tree
+    # (e.g. src/libdosbox/src/custom/src_falcon), add that dir to SRC_ROOTS.
+    THIRD_PARTY = {"build", "__pycache__", "node_modules", "vcpkg",
+                   "masm2c", "libdosbox", "venv"}
+
     def skip(d):
-        return (d.startswith("dosbox") or d in
-                {"build", ".git", "__pycache__", "node_modules", "vcpkg"})
+        return (d.startswith("dosbox") or d.startswith(".") or d in THIRD_PARTY)
     for root in roots:
         for dirpath, dirs, files in os.walk(root):
             dirs[:] = [d for d in dirs if not skip(d)]
             for fn in files:
                 if fn.endswith(TEXT_EXTS):
                     yield os.path.join(dirpath, fn)
+
+
+# Names are C/IDA identifiers; `\w+` runs give exactly the same membership as
+# `\b<name>\b` for word-only names (a name inside a longer run is not bounded).
+_WORD_RE = re.compile(r"\w+")
+_WORD_ONLY_RE = re.compile(r"^\w+$")
+
+
+def _read_text(path):
+    """File text for scanning, or None if unreadable (flaky/reparse files)."""
+    try:
+        with open(path, encoding="utf-8", errors="surrogateescape") as f:
+            return f.read()
+    except OSError:
+        return None
+
+
+def _name_present(name, text, tokens):
+    if _WORD_ONLY_RE.match(name):
+        return name in tokens
+    return re.search(r"\b%s\b" % re.escape(name), text) is not None
 
 
 # ---------------------------------------------------------------- apply
@@ -160,7 +186,9 @@ def apply(doc=None, dry_run=False, fb_path=FUNCTION_BYTES, ds_path=DATA_SYMBOLS,
 
     # 2) text files
     for path in _iter_text_files(roots):
-        text = open(path, encoding="utf-8", errors="surrogateescape").read()
+        text = _read_text(path)
+        if text is None:
+            continue
         new, k = apply_text(text, fw, forward=True)
         if k:
             summary["text_files"] += 1
@@ -202,7 +230,9 @@ def revert(ida_name, doc=None, dry_run=False, fb_path=FUNCTION_BYTES,
         if not dry_run:
             json.dump(ds, open(ds_path, "w", encoding="utf-8"), indent=1)
     for path in _iter_text_files(roots):
-        text = open(path, encoding="utf-8", errors="surrogateescape").read()
+        text = _read_text(path)
+        if text is None:
+            continue
         new, k = apply_text(text, fw, forward=False)
         if k:
             hits += k
@@ -280,15 +310,23 @@ def check(doc=None, fb_path=FUNCTION_BYTES, ds_path=DATA_SYMBOLS, roots=None,
                 problems.append("data_symbols[%s].name != %r (run apply)" % (ida, sem))
 
     # stale text: source file mentions ida name but not semantic (or vice versa)
+    # Perf: tokenize each file ONCE and test membership, instead of 2 re.search
+    # per pair per file (2030 pairs x files ~= millions of calls => appeared to
+    # hang). Word-only names are exact; anything exotic falls back to the regex.
     fw = pairs(doc, forward=True)
     for path in _iter_text_files(roots):
-        text = open(path, encoding="utf-8", errors="surrogateescape").read()
+        text = _read_text(path)
+        if text is None:
+            continue
+        tokens = set(_WORD_RE.findall(text))
         for ida, sem, _k in fw:
-            has_ida = re.search(r"\b%s\b" % re.escape(ida), text) is not None
-            has_sem = re.search(r"\b%s\b" % re.escape(sem), text) is not None
-            if has_ida and not has_sem:
+            has_ida = _name_present(ida, text, tokens)
+            if not has_ida:
+                continue
+            has_sem = _name_present(sem, text, tokens)
+            if not has_sem:
                 problems.append("%s: still uses %s (run apply)" % (os.path.relpath(path, ROOT), ida))
-            if has_sem and has_ida:
+            else:
                 # both present = mixed; allowed only in comments? flag as warning-level problem
                 problems.append("%s: mixed %s + %s (check comments)" % (
                     os.path.relpath(path, ROOT), ida, sem))

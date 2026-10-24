@@ -3,6 +3,7 @@
 
 | Metric | Value | Source |
 |---|---|---|
+| Forward track | **Track E adopted 2026-10-24** — knowledge extraction → native 64-bit rebuild in **OCaml** (Rust fallback), code in `rebuild/`, no byte parity, first slice = file-format parser; Track D (masm2c) **parked** (Linux-centric tooling) | `docs/pipeline.md` |
 | Functions in ground truth | **1,215** (888 resident + 192 overlay + 59 gap-sweep + **135 trace-verified**, finding 33) | `function_bytes.json` |
 | Classification | ASM 855 / C 108 / DATA 152 / LEAF 90 / NEARTHUNK 10 | `classification.json` |
 | Boundary verification | far-call targets EXACT 204→**340**; 3 iterations, 135 fns recovered; 87 UNKNOWN remain | `tools/verify_boundaries.py` → `analysis/traces/boundary_report.json` |
@@ -14,7 +15,7 @@
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–100 (append-only) | `docs/findings_log.md` |
+| Findings logged | 1–102 (append-only) | `docs/findings_log.md` |
 | Segment classification | 116–119 segs/run, **multi-kind** (`kinds[]`+`kind`); DGROUP 27687 HYPOTHESIS, resident base 0x1F5 PROVEN; 0 heap blocks (hook postdates traces) | `tools/classify_segments.py` → `analysis/traces/segment_classification.json` |
 | Thunk states | **66/66 record ids stable across 12 dumps** (303 thunks/dump); live targets resolved, load-base normalized | `tools/merge_thunk_states.py` → `analysis/traces/thunk_states.json` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |

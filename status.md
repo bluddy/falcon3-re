@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-10-18 (session 18 — see Time Log; always bump + append row)
+**Last updated**: 2026-10-24 (session 53 — see Time Log; always bump + append row)
 **Branch**: master (HEAD `6fb6902` at time of writing)
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1, headless only)
 **IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at

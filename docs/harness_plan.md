@@ -1,12 +1,14 @@
 # Falcon 3.0 — C++20 Native Recompilation & Shadow-Verify Harness Plan
 
-> **STATUS 2026-10-23 — reframed:** the adopted implementation path is **Track D:
-> masm2c → libdosbox** (see `docs/pipeline.md`): whole-program translation built with
-> a modern C++ compiler (g++/MSVC) and verified inside the instrumented dosbox runtime.
-> This plan remains the **design input** for that path — its topological port order,
-> arena mapping, RTLink prologue fingerprints and thunk-table interception directly
-> inform the masm2c RTLink enhancement — but the manual `src/port/` C++20 port +
-> shadow-verify loop is no longer the primary route.
+> **STATUS 2026-10-24 — Track E adopted:** the forward path is now **Track E:
+> knowledge extraction → native 64-bit rebuild in a modern HLL (OCaml preferred;
+> Rust considered)** (see `docs/pipeline.md`). **Track D (masm2c → libdosbox) is
+> parked** — it came closest to parity but its tooling is Linux-centric. This plan
+> remains **design input for both**: its topological port order, arena/layout
+> analysis, RTLink prologue fingerprints and thunk-table interception describe the
+> original's structure — which Track E must understand even where it does not
+> reproduce it (flat 64-bit memory replaces the arena/segment machinery). The manual
+> `src/port/` C++20 port + shadow-verify loop is not the primary route.
 
 ## Objective
 Transition *Falcon 3.0* from a 16-bit DOS real-mode + `.RTLink` overlay binary into a clean, flat-memory **64-bit C++20** codebase (`src/port/`), verified function-by-function against the live 16-bit execution state inside our instrumented DOSBox runner before replacing the emulated CPU loop entirely with SDL3.

@@ -5300,3 +5300,95 @@ Artifacts: `memdump/screen_{lib,vanilla,harv,v083,d074}_shot.png`,
 ---
 
 (append new findings below)
+
+## 2026-10-24 102 - Track E adopted: knowledge extraction → native 64-bit HLL rebuild; Track D parked
+Status: DIRECTIVE (user, 2026-10-24)
+
+**Directive**: the forward path is now **Track E** — rebuild Falcon 3.0 as a
+*proper 64-bit application* in a modern high-level language (**OCaml** preferred,
+Rust also considered). It does **not** chase byte parity with the 1992 binary
+(that was always the hard/impossible part): instead it extracts *all* the game's
+knowledge into the committed text sinks — algorithms, drawing/rendering, file
+processing, enemy AI, flight dynamics, **every struct** — and re-implements it
+semantically, **discarding the segmented memory system entirely** (no far
+pointers, DGROUP, RTLink overlays/thunks, EMS shuffling; flat 64-bit address
+space + ordinary allocation). The memory system is still *documented* — that is
+what tells us the semantics the game expects — but nothing is rebuilt in kind.
+
+**Track D parked** (was adopted 2026-10-23): it came closest to parity, but its
+tooling is **Linux-centric** (WSL venvs/test-suite, `g++ -m32` CI), problematic
+on this Windows-first machine. Not thrown away — the harness/trace work
+(harvester, memdumps) is Track E's behavioural oracle and D can resume if
+byte-parallel verification is wanted or the tooling is ported. `eov0007`
+fork-bisect left unfinished.
+
+**Canonical-text rule reaffirmed (critical)**: every fact about the game lives
+in committed text (`registry/`, `docs/`, `src/`, this log). The IDB is **a human
+observation window only** — it exists so accumulating knowledge can be browsed
+and reasoned about *visibly* instead of in the abstract; it is regenerable,
+binary, never committed, and may be wiped at any time. Flow is always
+*text first, IDB mirror second* (`naming.py push-ida` is the model). The original
+Track E draft's "push to ida db" wording was corrected accordingly.
+
+**Docs aligned** (protocol sinks): `pipeline.md` (Track E table row moved *into*
+the overview table — the draft row floated after a paragraph and never rendered —
+plus goal/method/status rewrite, new Track E section with knowledge scope +
+discard list + convergence criteria, "canonical-text rule" section under Ground
+Truth, Track D heading → PARKED, next-steps reordered E-first, version note);
+`toolchain.md` (two-toolchains table: E=forward, D=parked);
+`harness_plan.md` (status banner); `workflow/convergence_model_*` (Ghidra row);
+`current_state.md` (forward-track row). Convergence per unit: struct `confirmed`
+in `structs.yaml`, system write-up sufficient to re-implement, rebuilt subsystem
+checked against the original under DOSBox.
+
+## 2026-10-24 103 - Track E decisions: OCaml, `rebuild/` dir, first slice = file-format parser
+Status: DIRECTIVE (user, 2026-10-24)
+
+Follow-up decisions from the Track E adoption (finding 102), chosen by the user:
+
+1. **Language: OCaml** (Rust the fallback if some subsystem doesn't fit).
+2. **Layout: new top-level dir `rebuild/` in this repo** — keeps code and the
+   knowledge sinks (registry/docs/findings) in one loop; no separate repository.
+3. **First milestone: a file-format parser** — decode a real on-disk file
+   (ARMSDATA `*.DAT` / `REPORT.DAT` / save / mission), locate the EXE parser by
+   string xref, pin the struct `confirmed` in `registry/structs.yaml` +
+   narrative in `docs/structures.md`, and parse that same file in `rebuild/`.
+   Chosen because it is fully verifiable against bytes on disk (no oracle needed).
+
+Recorded in `pipeline.md` (Track E aim/layout + next steps), `toolchain.md`,
+`current_state.md`. Time log session 53b.
+
+## 2026-10-24 104 - `naming.py check` was hanging: O(files x pairs) regex scan + unpruned third-party trees
+Status: CONFIRMED (fix applied, verified)
+
+**Symptom**: `naming.py check` produced no output for >5 min (twice), breaking the
+"run check in CI/pre-commit" gate; `list` (same ledger load) took 1.4 s, so the
+ledger itself was fine.
+
+**Cause (two compounding defects)**:
+1. **Algorithm**: `check`'s stale-text pass ran **2 `re.search` calls per ledger
+   pair per file** — written when the ledger had 16 entries, now 2,030 pairs ×
+   1,508 files ≈ **6.1M searches with per-call pattern (re)compilation**.
+   `apply`/`revert` share the same file loop (regex per pair per file).
+2. **Prune drift**: `_iter_text_files` pruned `dosbox*` but the Track D pins
+   added `src/libdosbox` (**978 .c/.h/.asm**) and `src/masm2c` (**517**) —
+   1,495 of 1,508 scanned files were third-party; only **13** are ours
+   (12 in `src/` root + 1 in `src/asm/`). Unpruned `apply` could also
+   word-replace foreign code if a ledger name ever collided.
+
+**Fix** (`tools/naming.py`):
+- Tokenize each file **once** (`\w+` → set) and test membership — exact for
+  word-only names (`\bX\b` ⟺ `X` is a maximal `\w+` run); any name with non-word
+  chars falls back to the original regex (`_name_present`).
+- Prune set extended: `masm2c`, `libdosbox`, `venv`, any dot-dir (`.venv`,
+  `.test-work`), alongside `dosbox*`/`build`/… — comment notes our own code must
+  live outside those trees (a future `src/libdosbox/src/custom/src_falcon` would
+  be added to `SRC_ROOTS`).
+- `_read_text()` guards `OSError` (a flaky reparse file
+  `src\masm2c\asmTests\.test-work\cmpscs\addsub.asm` made enumeration/getsize
+  throw intermittently) — unreadable files are skipped in check/apply/revert.
+
+**Verification**: old-regex logic vs new token logic on all 13 scanned files ×
+2,030 pairs = **identical problem lists**; `unittest discover -s tests` **21 OK**;
+`check` now **4.2 s, exit 0** ("check OK (2030 ledger entries, structs valid)");
+`apply --dry-run` 3.2 s.
