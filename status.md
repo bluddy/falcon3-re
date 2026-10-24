@@ -57,7 +57,9 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 
 4. ~~**Re-check port-queue C candidates** against new boundaries~~ ✅ DONE (session 17c): **108 C candidates, zero defects** (no overlap/missing/size-mismatch, all `ENTER` prologue); C boundary EXACT **8→33** vs comprehensive trace; 4 clean reloc-free port targets. The 87 UNKNOWN decomposed = **67 thunk entries + 13 data labels + 4 real code** (confirms "not functions"). Bonus: **19 missed functions registered** (fn count 1,215→1,234) including `0x22AFF` (174,766 calls, IRET handler) and `0x1018F` (132,401 calls). Boundary EXACT 340→466. Tools: `add_trace_functions.py`, `fix_trace_functions.py`.
 
-## All four immediate next steps are complete. Next session should re-plan from [Open Items](docs/open_items.md) and `docs/advice.md`.
+5. ~~**ISLDAT per-theater vector format** (Track E knowledge extraction)~~ ✅ DONE (session 53d, finding 105): full decode of `game\ISLDAT.*` (8 theaters) — header, fine/coarse quadrant grids, t1/t2 tables (fixed-point extent), packed feature records (i32 XYZ), points, op-stream → sub-records → closed rings. **Validated 8/8** by `tools/parse_isldat.py` (ALL OK). Canonical: `docs/structures.md` §ISLDAT + 5 `Isldat*` structs in `registry/structs.yaml` (`naming.py check` OK). Open: loader fn, point transform, attr/opcode semantics. Next Track E step: parser in `rebuild/`.
+
+## All five immediate next steps are complete. Next session should re-plan from [Open Items](docs/open_items.md) and `docs/advice.md`.
 
 ## Partial Call Graph (bottom-up method, session 17d)
 

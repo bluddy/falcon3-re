@@ -201,6 +201,140 @@ Not yet fully decoded: record headers, fixup format, segment grouping logic for 
 
 DS can be set to any paragraph; EMS (INT 67h) and XMS (INT 2Fh multiplex) used for extended memory.
 
+## ISLDAT (Per-Theater Coastline/Water-Body Vectors) — finding 105
+
+8 files in `game\`: BOS 7875, HOK 7983, IRQ 7645, ISR 6787, KOR 7601, NEL 2037,
+PAK 1297, PAN 7885 bytes. Filename chosen by theater manifest (`game\ISRAEL.MFF/MFI/MFM`);
+loader function NOT yet located. Fully decoded from file bytes + resident asm consumers;
+**validated 8/8 theaters by `tools/parse_isldat.py` (ALL OK, zero errors/warnings)**.
+
+### Header (9 bytes)
+
+```
++00 u16 body_len      (= file_size - 9)
++02 u16 const_0
++04 u16 t1_base       (always 0x500)
++06 u16 t2_base       (0x504..0x7CA, first list starts right after t2 table)
++08 u8  swap_flag     (1 for HOK/KOR/PAN; byteswaps ONLY the state_table_apply
+                        3-byte records at body+0x56 — grids/lists/records stay LE)
+```
+
+### Body layout (loaded at seg:0000; walk base `word_11C16` = 0)
+
+```
+0x0000  gridB (fine)   4 quadrant blocks x 256B (16x16 cells/quadrant)
+0x0400  gridA (coarse) 4 quadrant blocks x  64B ( 8x8 cells/quadrant)
+then    t1 table, t2 table, then all record lists (FFFF-terminated), then
+        feature records packed back-to-back (header + points + op-stream +
+        sub-records inline; each sub ends exactly at the next record / list end)
+```
+
+Grid walk (asm `pos_neighbor_norm_scan` 0x14B17; X,Y = 5-bit quadrant-local cell
+coords; physical scale pending matrix decode):
+
+```
+q     = ((pos + 0x800) & 0x3FFF) rol 4 & 3        ; word_11C24/11C26 = view pos
+gridB = body[0x000 + q*0x100 + (X&~1)*8 + (Y>>1)] -> byte = t1 list index
+gridA = body[0x400 + q*0x40  + (X&~3)*2 + (Y>>2)] -> byte = t2 list index
+word_11CC4 = q<<8 (gridB base), word_11CC6 = q*64+0x400 (gridA base)
+```
+
+### Tables (t1, t2) — extent by FIXED POINT (correction: NOT FFFF-scan)
+
+Each table is K u16 entries. **K = the unique value where
+`min(u16[base .. base+2K-2]) == base + 2K`** — i.e. the first list word sits
+immediately after the table, so the table's own extent is the fixed point of
+"first list ptr". A naive "scan to first FFFF" is WRONG (HOK t1 would yield
+82→86, PAN 85→..., because FFFF list terminators in list space fake a larger
+table). Invariant (all 8 files): `grid_max < K` for both grids.
+
+Each entry is a pointer to an **FFFF-terminated list** of feature-record offsets
+(body-relative). t1 lists → fine pool (pool B, from gridB); t2 lists → coarse
+pool (pool A, from gridA); pools are disjoint (no shared records). Entry order
+in the table is NOT monotonic (HOK/PAN shuffled). Value 0 grids (PAK) → all
+lists empty.
+
+### Feature record (header 0x36 + points + op-stream)
+
+```
++00 i32 x            ; 16.16 nm fixed (world wrap 512 nm); asm reads dword at +0/+4/+8
++04 i32 y            ; (CORRECTION: earlier session misread +00 as u16 flags)
++08 i32 z            ; ~ -50 LSB (0xFFFFFFCE) = sea marker on all observed records
++0C i32 const_0
++10 12B zero padding
++1E u16 const_FFFF
++20 u16 attr         ; 0x14 always; also 0x32 (HOK/IRQ/ISR/PAN), 0x64 (BOS/HOK/KOR),
+                     ;   0xC8 (BOS/HOK) — semantics unknown
++22 u16 self+0x26    ; engine self-relative ptr (-> the FFFF at +26)
++24 u16 const_000B
++26 u16 const_FFFF
++28 u16 const_0
++2A u16 self+0x2E    ; engine self-relative ptr (-> point_count)
++2C u16 const_4
++2E u16 point_count
++30 u16 self+0x38    ; points ptr (absolute body offset)
++32 u16 points+6*count ; op-stream ptr (absolute)
++34 u16 const_0
++38 points: count x { i16 p0, i16 mid=0 (always), i16 p2 }   ; 6B/point
+then   op-stream: u16 sub-record offsets, FFFF-terminated
+then   sub-records inline (each ends at next sub/record boundary)
+```
+
+### Sub-record
+
+```
++00 u16 flags   ; 0x1000/0x1002 = node chain; 0x0000/0x0002 = SINGLE node
++02 u16 opcode  ; 0x0000/0x0001/0x0002 observed (0x0001 dominant) — semantics unknown
+then nodes:
+  flags & 0x1000 : nodes until u16 FFFF
+  flags & 0x1000 = 0 : EXACTLY ONE node, NO terminator (record boundary follows)
+```
+
+Node = closed ring of line-table entries (built at runtime at `es:441E`, stride 0x10):
+
+```
+u16 count
+(count+1) x u16 line-table offset   ; all multiples of 0x10, last == first (closed)
+```
+
+**196/196 sub-records across all 8 theaters validate** under the flags rule.
+
+### Runtime consumers (resident asm)
+
+```
+pos_neighbor_norm_scan (0x14B17)  grid walk -> record offsets (word_11BEA=0x71C1 body seg)
+pos_diff_norm          (0x28874)  reads record XYZ dwords at +0/+4/+8
+line_draw_441e         (0x28B08)  record points -> es:441E line-table entries (stride 0x10)
+loc_2978E / line_from_points (0x29F20)   entry chain build (flags bits 8/4/2/1)
+line_table_build_dispatch (0x29B82), record_span_build_and_dispatch (0x29917),
+record_span_mask_rebuild (0x299D5)   node payload = count x (offset+0x441E)
+state_table_apply_71c1 (0x1303A)  ALTERNATE view of grid-B q0 bytes (NOT the coastline
+    walk): byte @ 0x65+n, 3-byte record @ 0x56+3n (b0/b1 byteswapped if swap_flag),
+    fallback record @ 0x53; copies 0x46B from 7A32h:0xD2*n+0x7D0; semantics open
+```
+
+### Per-theater stats (from `tools/parse_isldat.py`)
+
+```
+file  size  swap t1(K) t2(K) gridA<= gridB<=  recs(fine/coarse) subs nodes
+BOS   7875   0   58    35     34      57      14/ 7           21   159
+HOK   7983   1   82    15     14      81      24/ 5           30   138
+IRQ   7645   0   56    19     18      55      21/ 7           38    95
+ISR   6787   0   67    37     36      63      21/11           35    75
+KOR   7601   1   77    35     34      76      21/ 8           29   104
+NEL   2037   0    4     1      0       3       2/ 0            2    18
+PAK   1297   0    1     1      0       0       0/ 0            0     0
+PAN   7885   1   85    25     24      84      22/ 9           41   107
+```
+
+### Open questions
+
+- Loader function (file open + header parse into `word_11C18/11C1A`, `byte_11C0A`)
+- Point coordinate transform (matrix via `pos_diff_norm`/`line_draw_441e`) — point
+  geometry does not yet reconstruct as absolute nm coordinates
+- `attr` / `opcode` / `flags` low bits / `const_000B` / `const_4` semantics
+- Geographic silhouette check vs `game\israel.ipl` / `analysis/map_ISRAEL.svg`
+
 ## Other Files
 
 - `HORNETCD.EXE`: same structure, CS:IP=0x1A99:0x076C

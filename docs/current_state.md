@@ -9,13 +9,13 @@
 | Boundary verification | far-call targets EXACT 204→**340**; 3 iterations, 135 fns recovered; 87 UNKNOWN remain | `tools/verify_boundaries.py` → `analysis/traces/boundary_report.json` |
 | Verified routines | **43 / 2,282 bytes** | `registry/routines.yaml` (`verified: MATCH`) |
 | Rename ledger | **2,030** entries (2,028 fns named — F100 campaign complete, orphans 0/397), all renamed + pushed to IDB | `registry/naming.yaml` |
-| Struct definitions | 5 (4 confirmed, 1 hypothesis) | `registry/structs.yaml` |
+| Struct definitions | 10 (5 confirmed RTLink/MZ + **5 ISLDAT confirmed, finding 105**, 1 hypothesis) | `registry/structs.yaml` |
 | Globals inventoried | **1,968** (name=null until renamed) | `data_symbols.json` |
 | Tests | **21 green** (`python -m unittest discover -s tests`) | `tests/test_naming.py` |
 | Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–102 (append-only) | `docs/findings_log.md` |
+| Findings logged | 1–105 (append-only) | `docs/findings_log.md` |
 | Segment classification | 116–119 segs/run, **multi-kind** (`kinds[]`+`kind`); DGROUP 27687 HYPOTHESIS, resident base 0x1F5 PROVEN; 0 heap blocks (hook postdates traces) | `tools/classify_segments.py` → `analysis/traces/segment_classification.json` |
 | Thunk states | **66/66 record ids stable across 12 dumps** (303 thunks/dump); live targets resolved, load-base normalized | `tools/merge_thunk_states.py` → `analysis/traces/thunk_states.json` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |

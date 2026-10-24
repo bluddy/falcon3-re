@@ -5392,3 +5392,59 @@ ledger itself was fine.
 2,030 pairs = **identical problem lists**; `unittest discover -s tests` **21 OK**;
 `check` now **4.2 s, exit 0** ("check OK (2030 ledger entries, structs valid)");
 `apply --dry-run` 3.2 s.
+
+## 2026-10-24 105 - ISLDAT format fully decoded (8/8 theaters validated)
+
+Status: CONFIRMED (all 8 files parse clean; format canonical in docs/structures.md §ISLDAT)
+
+The per-theater coastline/water-body vector files (`game\ISLDAT.*`, 8 files,
+1.3-8 KB each) are now fully decoded from file bytes + resident asm consumers
+(`pos_neighbor_norm_scan` 0x14B17, `pos_diff_norm` 0x28874, `line_draw_441e`
+0x28B08, `loc_2978E`/`line_from_points`, `record_span_*` 0x29917/0x299D5,
+`line_table_build_dispatch` 0x29B82, `state_table_apply_71c1` 0x1303A).
+Canonical spec: `docs/structures.md` §ISLDAT; structs: `registry/structs.yaml`
+(IsldatHeader/Record/Point/SubRecord/Node); validator: `tools/parse_isldat.py`
+(**ALL OK**, zero errors/warnings across 8 files).
+
+**Format (summary)**:
+- 9B header: body_len, 0, t1_base(=0x500), t2_base, swap_flag.
+- body: gridB fine 4x256B (byte -> t1 list idx), gridA coarse 4x64B (byte ->
+  t2 list idx), t1/t2 tables of u16 list ptrs, FFFF-terminated record-offset
+  lists (fine pool vs coarse pool, disjoint), packed feature records.
+- record: i32 XYZ at +0/+4/+8 (16.16 nm; z = -50 LSB = sea), attr, self-ptrs
+  at +22(self+0x26)/+2A(self+0x2E), point_count, points_ptr(self+0x38),
+  opstream_ptr(points+6*count); points = count x {i16, i16=0, i16}.
+- op-stream: u16 sub-rec offsets, FFFF-terminated; sub = flags, opcode, nodes:
+  **flags&0x1000 -> nodes until FFFF; else exactly one node, no terminator**
+  (196/196 subs); node = count + (count+1) u16 line-table offsets (stride 0x10,
+  last==first = closed ring).
+
+**Corrections/lessons (this session)**:
+1. Table extent: naive first-FFFF scan is WRONG (HOK t1: 86 vs real 82; PAN
+   reads past — FFFF list terminators fake a larger table). Real rule = fixed
+   point `K where min(entry[0..K-1]) == base+2K` (unique; validates all 8
+   files; invariant grid_max < K).
+2. Record header earlier notes called +00 a u16 flags word; asm `pos_diff_norm`
+   reads i32 XYZ at +0/+4/+8 (word at +0 = X low — e.g. ISR 0x8E8 = 0x001402F8
+   = 20.0 nm).
+3. Record +2A = self+0x2E (not self+0x2C as first asserted).
+4. Sub flags=0x0000/0x0002 exist and are VALID (single-node, no FFFF) — treating
+   flags!=0x1000 as an error failed 7/8 files; the flags rule above passes 8/8.
+5. Byte-signature hunting remains unreliable (`terrain_state_reinit` 0x31138
+   was a false positive for the loader); file bytes + consumer asm are ground truth.
+6. `state_table_apply_71c1` reads the SAME grid-B q0 bytes via a different view
+   (byte @0x65+n, 3-byte record @0x56+3n, swap_flag applies only here) — its
+   semantics (incl. callers worldmap_state_apply etc.) remain open; it is NOT
+   the coastline walk path.
+
+**Per-theater stats** (K1/K2 = t1/t2 table extents; recs = fine/coarse):
+BOS 58/35 14+7, HOK 82/15 24+5, IRQ 56/19 21+7, ISR 67/37 21+11,
+KOR 77/35 21+8, NEL 4/1 2+0, PAK 1/1 0+0 (all-zero grids), PAN 85/25 22+9.
+
+**Open**: loader function (writes word_11C18/11C1A, byte_11C0A, word_11C16);
+point transform to absolute nm (matrix via pos_diff_norm/line_draw_441e —
+point plots not yet geographically coherent); attr/opcode/flags-low-bits/
+const_000B/const_4 semantics; geographic silhouette vs game\israel.ipl.
+
+**Next (Track E)**: implement the parser in `rebuild/` (first milestone =
+file-format parser).

@@ -77,3 +77,63 @@ structs:
     source: "findings 26 (code evidence: stride 14, base link 0x22; exact field map TBD)"
     fields:
       - {offset: 0, size: 14, name: raw, type: bytes, comment: "field layout unknown - see kb_field_get/set_* hypotheses in registry/naming.yaml"}
+
+  - name: IsldatHeader               # 9-byte header of game\ISLDAT.* theater files
+    size: 9
+    status: confirmed
+    source: docs/structures.md §ISLDAT + finding 105 (validated 8/8 by tools/parse_isldat.py)
+    fields:
+      - {offset: 0x00, size: 2, name: body_len,   type: uint16, comment: "file_size - 9"}
+      - {offset: 0x02, size: 2, name: const_0,    type: uint16}
+      - {offset: 0x04, size: 2, name: t1_base,    type: uint16, comment: "always 0x500; fine-pool table (gridB)"}
+      - {offset: 0x06, size: 2, name: t2_base,    type: uint16, comment: "0x504..0x7CA; coarse-pool table (gridA)"}
+      - {offset: 0x08, size: 1, name: swap_flag,  type: uint8,  comment: "1=HOK/KOR/PAN; byteswaps only state_table_apply 3-byte records"}
+
+  - name: IsldatRecord               # feature record header (then points + op-stream follow)
+    size: 54                         # 0x36; variable tail at +0x38 (see comment)
+    status: confirmed
+    source: docs/structures.md §ISLDAT + finding 105
+    fields:
+      - {offset: 0x00, size: 4, name: x,           type: int32, comment: "16.16 nm fixed (world wrap 512)"}
+      - {offset: 0x04, size: 4, name: y,           type: int32, comment: "16.16 nm fixed"}
+      - {offset: 0x08, size: 4, name: z,           type: int32, comment: "~-50 LSB (0xFFFFFFCE) sea marker"}
+      - {offset: 0x0C, size: 4, name: const_0,     type: int32}
+      - {offset: 0x10, size: 12, name: zero_pad,   type: bytes}
+      - {offset: 0x1E, size: 2, name: const_FFFF_a,type: uint16}
+      - {offset: 0x20, size: 2, name: attr,        type: uint16, comment: "0x14 always; 0x32/0x64/0xC8 also seen; semantics unknown"}
+      - {offset: 0x22, size: 2, name: ptr_to_26,   type: uint16, comment: "= self+0x26 (engine self-relative)"}
+      - {offset: 0x24, size: 2, name: const_000B,  type: uint16}
+      - {offset: 0x26, size: 2, name: const_FFFF_b,type: uint16}
+      - {offset: 0x28, size: 2, name: const_0_b,   type: uint16}
+      - {offset: 0x2A, size: 2, name: ptr_to_2E,   type: uint16, comment: "= self+0x2E (engine self-relative)"}
+      - {offset: 0x2C, size: 2, name: const_4,     type: uint16}
+      - {offset: 0x2E, size: 2, name: point_count, type: uint16}
+      - {offset: 0x30, size: 2, name: points_ptr,  type: uint16, comment: "= self+0x38 (body-absolute)"}
+      - {offset: 0x32, size: 2, name: opstream_ptr,type: uint16, comment: "= points + 6*point_count"}
+      - {offset: 0x34, size: 2, name: const_0_c,   type: uint16}
+      # tail: +0x38 point_count x IsldatPoint, then FFFF-terminated u16
+      # sub-record offsets, then sub-records inline
+
+  - name: IsldatPoint                # one polyline point (6 bytes)
+    size: 6
+    status: confirmed
+    source: docs/structures.md §ISLDAT + finding 105
+    fields:
+      - {offset: 0, size: 2, name: p0,  type: int16, comment: "coordinate component"}
+      - {offset: 2, size: 2, name: mid, type: int16, comment: "always 0 in all 8 files"}
+      - {offset: 4, size: 2, name: p2,  type: int16, comment: "coordinate component"}
+
+  - name: IsldatSubRecord             # sub-record header (nodes follow)
+    size: 4
+    status: confirmed
+    source: docs/structures.md §ISLDAT + finding 105 (196/196 subs validated)
+    fields:
+      - {offset: 0, size: 2, name: flags,  type: uint16, comment: "0x1000/0x1002 = node chain until FFFF; 0x0000/0x0002 = exactly one node, no terminator"}
+      - {offset: 2, size: 2, name: opcode, type: uint16, comment: "0/1/2 observed (1 dominant); semantics unknown"}
+
+  - name: IsldatNode                  # closed ring of runtime line-table entries
+    size: 2                           # variable: 2 + 2*(count+1) bytes (count field only fits schema)
+    status: confirmed
+    source: docs/structures.md §ISLDAT + finding 105
+    fields:
+      - {offset: 0, size: 2, name: count, type: uint16, comment: "payload follows: (count+1) x uint16 offsets into line table (stride 0x10), last==first (closed)"}
