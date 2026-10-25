@@ -1221,7 +1221,7 @@ symbols:
     name: line_from_points
     kind: function
     sig: "SI = cs:2796E + CX*0x10, copy 8 words; bit-3 test on ds:43BA/43BC; cross-product form (ax=[si+2]*[bx+4] - [bx+2]*[si+4]) then idiv with saturating clamp to 0x8001/0x7FFF; [DI+2]=quot, [DI+4]=-2*quot; sub_279A4"
-    notes: "405B, dyn=0, 2 callers (sub_29B82, self); two-point line/segment fit with overflow clamping. conf: low-med"
+    notes: "405B, dyn=0, 2 callers (sub_29B82, self); two-point line/segment fit with overflow clamping. Entry: SI = cs:2796E + CX*0x10, copies 8 words. Reads [si+2]*[bx+4] - [bx+2]*[si+4] (cross product), idiv with saturating clamp to 0x8001/0x7FFF. Stores quotient at [DI+2], -2*quotient at [DI+4]. Calls slope_flag_test_bc + fixed_scale_clamp_or40. Accumulates AND/OR masks into word_27968/2796A from [DI+6]. Finding 105/106: builds 0x441E line-table entries from ISLDAT record points (6B {i16,i16=0,i16}) and sub-record node offsets. conf: low-med"
   - ida: sub_225F4
     name: dos_mem_alloc
     kind: function
@@ -4203,7 +4203,7 @@ symbols:
     name: line_draw_441e
     kind: function
     sig: "void far; DI=0x441E (buffer), cs:27966=0, then (409B pad-heavy line-draw body); 2 callers (pos_diff_norm, sub_2FD42)"
-    notes: "409B span, caller_dyn=17,961, callee fixed_scale_clamp_or40. Line-drawing routine over the 0x441E buffer (paired with farobj_di_441e_init). Finding 105: consumes ISLDAT 6B points {i16, i16=0, i16}. conf: low"
+    notes: "409B span, caller_dyn=17,961, callee fixed_scale_clamp_or40. Line-drawing routine over the 0x441E buffer (DI=0x441E, stride 0x10). Entry format: 8 words [x0,y0,x1,y1,quot,-2*quot,flags,?]. Iterates CX entries from record points, computes fixed-point slope via cross-product/idiv, saturates to 0x7FFF/0x8001, stores quotient/-2*quot, accumulates AND/OR masks into word_27968/2796A from entry flags (word 6). Called by pos_diff_norm (record points -> lines) and game_frame_pipeline_step. Finding 105: consumes ISLDAT 6B points {i16,i16=0,i16}. conf: low"
   - ida: sub_27FC7
     name: line_table_build_2796e
     kind: function
@@ -4958,7 +4958,7 @@ symbols:
     name: line_table_build_dispatch
     kind: function
     sig: "NEAR retn fn; edge bits cs:2796A: .3 -> line_from_points (CX>=3 guards), .4 -> line_table_entry_clone_slope, other -> line_table_entry_clone / line_table_entry_clone_b (108B); 2 callers (r58_e180, record_queue_push)"
-    notes: "108B retn, cd=70,789, callees line_table_entry_clone + line_table_entry_clone_b + line_from_points + line_table_entry_clone_slope. The line-table builder dispatcher: selects among the 4 line-construction variants on edge bits 3/4. conf: high"
+    notes: "108B retn, cd=70,789, callees line_table_entry_clone + line_table_entry_clone_b + line_from_points + line_table_entry_clone_slope. The line-table builder dispatcher: reads word_2796A (OR mask of entry flags) and dispatches on edge bits: bit 3 -> line_from_points (requires CX>=3), bit 4 -> line_table_entry_clone_slope, bits 1/2 -> line_table_entry_clone / line_table_entry_clone_b. Guards: CX>=3 for line_from_points, word_27968==0 for clone variants. Finding 105/106: downstream of ISLDAT record node payload = closed rings of 0x10-stride line-table offsets. conf: high"
   - ida: sub_2514B
     name: mouse_button_gate_5762
     kind: function
@@ -9168,7 +9168,7 @@ symbols:
     name: record_span_build_and_dispatch
     kind: function
     sig: "190B, ASM, in=0, 9 callees. Copies cx+1 [si+8/+0Ah] word pairs (10h stride) into 6360h and updates cs:word_2796E; flag gates cs:byte_1F72E/1F739/1F741/1F73F/1F72D with a cs:off_1F708 table call (param6_append_cursor_a/avg_b/3w_c/scale_d/joystick_gate_counter) and (1<<cl)*3 calc; then record_span_init_eba + record_op_dispatch_220b0, farobj_batch_dispatch_loop, rect_edge_dispatch_a; retn - record span build and dispatch."
-    notes: "190B, ASM, in=0, 9 callees. Copies cx+1 [si+8/+0Ah] word pairs (10h stride) into 6360h and updates cs:word_2796E; flag gates cs:byte_1F72E/1F739/1F741/1F73F/1F72D with a cs:off_1F708 table call (param6_append_cursor_a/avg_b/3w_c/scale_d/joystick_gate_counter) and (1<<cl)*3 calc; then record_span_init_eba + record_op_dispatch_220b0, farobj_batch_dispatch_loop, rect_edge_dispatch_a; retn - record span build and dispatch. conf: medium"
+    notes: "190B, ASM, in=0, 9 callees. Copies cx+1 [si+8/+0Ah] word pairs (0x10 stride) into 6360h and updates cs:word_2796E (record queue cursor); flag gates cs:byte_1F72E/1F739/1F741/1F73F/1F72D with off_1F708 table dispatch (param6_append_*). Then dispatches to rect_edge_dispatch_a, farobj_batch_dispatch_loop, record_op_dispatch_220b0. Reads node offsets from ISLDAT sub-records at [si+8]/[si+0Ah] (stride 0x10). Finding 105: downstream of ISLDAT record node payload = closed rings of 0x10-stride line-table offsets. conf: medium"
   - ida: sub_260B3
     name: table_rec_load_scaled_far_wrapper
     kind: function
@@ -9494,7 +9494,7 @@ symbols:
     name: record_span_mask_rebuild
     kind: function
     sig: "429B, ASM, in=0, 1 callee. cs:27968=FFFFh, 2796A=0, es:43BEh=cs:2796E; if !(cs:27966 & 1): loop cx iters copying 8 words from 441Eh table into es:43BEh and AND/OR-accumulating [si+6] masks into 27968/2796A; early retn before undumped loc_29A2D tail - record span mask rebuild sibling of record_span_build_and_dispatch."
-    notes: "429B, ASM, in=0, 1 callee. cs:27968=FFFFh, 2796A=0, es:43BEh=cs:2796E; if !(cs:27966 & 1): loop cx iters copying 8 words from 441Eh table into es:43BEh and AND/OR-accumulating [si+6] masks into 27968/2796A; early retn before undumped loc_29A2D tail - record span mask rebuild sibling of record_span_build_and_dispatch. conf: medium"
+    notes: "429B, ASM, in=0, 1 callee (fixed_scale_clamp_or40). Initializes word_27968=0xFFFF, word_2796A=0; es:43BEh=cs:2796E (record queue cursor). If !(word_27966&1): loops CX iters copying 8 words from 0x441E line table into es:43BEh and AND/OR-accumulating [si+6] (entry flags) into word_27968 (AND) / word_2796A (OR). Alternate path at loc_29A2D does slope math (cross-product/idiv) on entry coordinates, computes intersection flags. Finding 105/106: payload = ISLDAT sub-record nodes = closed rings of 0x10-stride line-table offsets; this function walks the rings and accumulates edge masks for dispatch. conf: medium"
   - ida: sub_1BA1C
     name: sbi_channel_flags_init
     kind: function
@@ -10309,6 +10309,106 @@ symbols:
     kind: global
     sig: "u16 current entry pointer (0x10 stride) in the record/line queue; segment 7B0E"
     notes: "Init 0x5D1E / limit 0x603E by record_queue_push; advanced by record_span_build_and_dispatch; entry addr = cur+CX*0x10 in line_from_points + sub_29BEE; aliased es:43BEh by record_span_mask_rebuild (finding 105/106). conf: med-high"
+  - ida: word_27966
+    name: line_table_flags
+    kind: global
+    sig: "u16 flags for line table processing"
+    notes: "Tested at 0x28C8B (and with entry flags), 0x29F41 (test bit 0 = skip), 0x28C90 (or with entry flags). Bit 0 used as 'skip this entry' in line_from_points. conf: med"
+  - ida: word_27968
+    name: line_table_and_mask
+    kind: global
+    sig: "u16 AND-accumulator for entry flags (init 0xFFFF)"
+    notes: "AND-accumulates entry flags from [di+6] across processed entries (0x28C8B, 0x29A1D, 0x29A6C, 0x29B38, 0x29B64, 0x29F84, 0x2A05F, 0x2A086). Used for dispatch gating. conf: high"
+  - ida: word_2796A
+    name: line_table_or_mask
+    kind: global
+    sig: "u16 OR-accumulator for entry flags (init 0)"
+    notes: "OR-accumulates entry flags from [di+6] (0x28C90, 0x29A22, 0x29A71, 0x29B3D, 0x29B69, 0x29F89, 0x2A05F, 0x2A08B). Drives line_table_build_dispatch: bit 8=line_from_points, bit 4=clone_slope, bit 2=clone, bit 1=clone_b. conf: high"
+  - ida: word_2796C
+    name: line_table_count
+    kind: global
+    sig: "u16 entry counter / state"
+    notes: "Set to 0 at 0x298D2, 0x29F4A; incremented per entry (inc bp at 0x29A76/29A90/29B6E/29F8E/2A090); tested at 0x29947, 0x298FF, 0x29B91, 0x29B99, 0x29BA7, 0x29BB2, 0x29BC7, 0x29BCF, 0x29BDD, 0x29BE2. conf: med"
+  - ida: word_27970
+    name: line_table_limit
+    kind: global
+    sig: "u16 queue limit (0x603E)"
+    notes: "Set to 0x603E by record_queue_push (sub_27EE6); compared against word_2796E at 0x29F3C. End of record queue buffer at 7B0E:603E. conf: high"
+  - ida: word_27960
+    name: slope_temp_ax
+    kind: global
+    sig: "temp for slope math (idiv intermediate)"
+    notes: "Used at 0x29AB6, 0x29ADD, 0x2A026, 0x2A02A to hold idiv quotient/remainder temporaries. conf: med"
+  - ida: word_27962
+    name: slope_temp_dx
+    kind: global
+    sig: "temp for slope math (idiv high word)"
+    notes: "Paired with slope_temp_ax for 32-bit idiv operations. conf: med"
+  - ida: word_27964
+    name: slope_temp_cx
+    kind: global
+    sig: "temp for slope math / entry flags"
+    notes: "Used at 0x28C8B (and with entry flags), 0x29A0C (holds [si+6]). conf: med"
+  - ida: byte_1F72A
+    name: state_byte_1f72a
+    kind: global
+    sig: "state byte (record_queue_push flag)"
+    notes: "Tested at 0x27EEF (bit 0x1E/0x60 gates to sub_29B82/sub_2A340), 0x29951 (dispatch gate), 0x29979 (index into off_1F708). conf: med"
+  - ida: byte_1F72C
+    name: state_byte_1f72c
+    kind: global
+    sig: "state byte (farobj_batch_dispatch_loop gate)"
+    notes: "Tested at 0x299BD. conf: med"
+  - ida: byte_1F72D
+    name: state_byte_1f72d
+    kind: global
+    sig: "state byte (rect_edge_dispatch_a gate)"
+    notes: "Tested at 0x299B5. conf: med"
+  - ida: byte_1F72E
+    name: state_byte_1f72e
+    kind: global
+    sig: "state byte (record_span_build dispatch gate)"
+    notes: "Tested at 0x29951 (jnz skip), 0x299F1 (jnz skip mask_rebuild alt path). conf: med"
+  - ida: byte_1F72F
+    name: state_byte_1f72f
+    kind: global
+    sig: "state byte (loc_2978E gate)"
+    notes: "Tested at 0x29791 (jnz to 0x2979C), 0x2980F (jnz skip). conf: med"
+  - ida: byte_1F737
+    name: state_byte_1f737
+    kind: global
+    sig: "state byte (loc_2978E flag set)"
+    notes: "Set to 1 at 0x2981A. conf: low"
+  - ida: byte_1F739
+    name: state_byte_1f739
+    kind: global
+    sig: "state byte (record_span_build flag)"
+    notes: "Read at 0x29958 (or ax,ax / jz skip). conf: med"
+  - ida: byte_1F73A
+    name: state_byte_1f73a
+    kind: global
+    sig: "state byte (loc_2978E gate)"
+    notes: "Tested at 0x29791 (jnz). conf: low"
+  - ida: byte_1F73F
+    name: state_byte_1f73f
+    kind: global
+    sig: "state byte (rect_edge_dispatch_a gate)"
+    notes: "Tested at 0x299A0. conf: med"
+  - ida: byte_1F741
+    name: state_byte_1f741
+    kind: global
+    sig: "state byte (record_span_build gate)"
+    notes: "Tested at 0x29998. conf: med"
+  - ida: off_1F708
+    name: param6_dispatch_table
+    kind: global
+    sig: "5 near pointers (2B each), index = byte_1F72A-2"
+    notes: "Dispatches to param6_append_cursor_a/avg_b/3w_c/scale_d/joystick_gate_counter (sub_29983). conf: high"
+  - ida: word_22D20
+    name: word_22d20
+    kind: global
+    sig: "compared to 0x7FFF at 0x29820"
+    notes: "Used in loc_2978E slope math branch. conf: low"
   # - ida: word_12345
   #   name: kbd_head_index
   #   kind: global
