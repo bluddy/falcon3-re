@@ -5523,3 +5523,67 @@ Status: CONFIRMED (validated by pos_diff_norm disasm, all 8 theaters consistent)
 - pos_diff_norm notes updated (Finding 107)
 
 **Still open**: opcode handlers (dynamic table), flags 0x0002, point transform, quadrant AX source.
+
+
+## 2026-10-24 108 - ISLDAT opcode dispatch table documented
+
+Status: PARTIAL (dispatch mechanism documented; handler bodies in overlays not dumped)
+
+**Mechanism**: Sub-record opcode dispatch via runtime-populated function pointer table.
+
+**Flow**:
+1. 
+ecord_span_build_and_dispatch (0x29917) processes sub-records, calls 
+ecord_op_dispatch_220b0
+2. 
+ecord_op_dispatch_220b0 (sub_2061B) loads globals: opcode_dispatch_farptr (off_1F710), opcode_index (byte_1F73B), state_byte_1f72a (byte_1F72A), word_1f700, word_1f6fe
+3. Calls dispatch_220b0_near (sub_2063B) which does call cs:dword_220B0
+4. dword_220B0 = opcode_handler_table (6 far pointers at 220B0/B8/BC/C0/C4/CC) - populated at runtime
+
+**Observed opcodes** (sub-record +0x02):
+- 0: dominant (all theaters with sub-records)
+- 1: HOK, IRQ, ISR, PAN
+- 2: IRQ, ISR, PAN, NEL
+
+**Sub-record structure** (per finding 105):
+- +0x00: flags (0x1000 = node chain, 0x0000 = single node, 0x0002 = ?)
+- +0x02: opcode (0/1/2)
+- +0x04: nodes (line-table offsets, FFFF-terminated if flags&0x1000)
+
+**Handler bodies**: In overlays not fully dumped (r53 script interpreter, tile_base_opcode_interpreter, etc.). Table populated at runtime (game startup or first record processing).
+
+**Globals** (registry/naming.yaml):
+- opcode_dispatch_farptr (off_1F710) - base of handler table
+- opcode_index (byte_1F73B) - current opcode
+- state_byte_1f72a (byte_1F72A) - dispatch state flag
+- word_1f700, word_1f6fe - state words
+- opcode_handler_table (dword_220B0) + 5 entries (opcode_handler_1..5)
+
+**Still open**: Handler bodies, opcode semantics, flags 0x0002, point transform, quadrant AX source.
+
+
+## 2026-10-24 109 - ISLDAT sub-record flags: 0x1000 = node chain flag
+
+Status: CONFIRMED (validated in pos_diff_norm disasm)
+
+**Discovery**: In pos_diff_norm (0x28874), the sub-record flags field (+0x00) is tested:
+
+```
+0x28A5C: lodsw          ; load flags from sub-record +0x00
+0x28A5F: and   bx, 1000h  ; test bit 0x1000
+0x28A63: mov   cs:byte_1F73E, bh  ; store result (0x10 or 0x00)
+...
+0x28A81: cmp   cs:byte_1F73E, 0
+0x28A87: jz     single_node_path   ; flags & 0x1000 == 0
+; else: node chain path (FFFF-terminated list)
+```
+
+**Semantics**:
+- flags & 0x1000 == 1 -> node chain (FFFF-terminated list of line-table offsets)
+- flags & 0x1000 == 0 -> single node (exactly one line-table offset, no terminator)
+
+**Correction to Finding 105**: Previously noted "flags & 0x1000 -> chain until FFFF, else exactly one node no terminator" - CONFIRMED correct.
+
+**Flag 0x0002**: Appears in combination (0x1002, 0x0002) in IRQ, ISR, PAN, HOK, NEL. Not tested in pos_diff_norm node walker. Semantics still OPEN (possibly used in opcode handlers).
+
+**Registry updates**: byte_1F73E (temp flag for 0x1000 test) already in ledger.
