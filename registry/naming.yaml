@@ -314,7 +314,7 @@ symbols:
     name: pos_diff_norm
     kind: function
     sig: "[di]-es:[bx] 32b delta, / (1<<cs:1F6E6); stores to cs:1F6EC/1F6F2/1F745/1F747; recursive (self-caller)"
-    notes: "563B, 18K calls; signed 32b divide with power-of-2 scale. Finding 105: [di] = ISLDAT record XYZ (i32 16.16nm at +0/+4/+8), es:[bx] = reference point at body+0xC57. conf: med"
+    notes: "563B, 18K calls; signed 32b divide with power-of-2 scale. Finding 105: [di] = ISLDAT record XYZ (i32 16.16nm at +0/+4/+8), es:[bx] = reference point at body+0xC57. **Finding 107: attr (record +0x20) read into SI, shifted by attr_scale_shift (word_1F6E6), used as divisor in fixed-point division for X/Y/Z deltas — attr = coordinate scale factor per feature type (0x14=base, 0x32, 0x64, 0xC8).** conf: med"
 
   # --- init / interrupt leaves
   - ida: sub_1BCFA
@@ -10409,7 +10409,11 @@ symbols:
     kind: global
     sig: "compared to 0x7FFF at 0x29820"
     notes: "Used in loc_2978E slope math branch. conf: low"
-  # - ida: word_12345
+  # - ida: word_1F6E6
+    name: attr_scale_shift
+    kind: global
+    sig: "u16 shift count for attr scaling in pos_diff_norm"
+    notes: "Shift count for attr scale factor in pos_diff_norm (0x28876). attr from record +0x20 is shifted left by this amount, then used as divisor in fixed-point division for X/Y/Z deltas. conf: high"
   #   name: kbd_head_index
   #   kind: global
   #   notes: "DGROUP:0x20 keyboard ring index (finding 26 hypothesis)"

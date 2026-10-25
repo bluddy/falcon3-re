@@ -5492,3 +5492,34 @@ record_queue_cur (word_2796E, init 0x5D1E/limit 0x603E).
 Next: first Track E milestone -- ISLDAT parser in ebuild/\ (oracle:
 tools/parse_isldat.py). Still open: point transform, attr/opcode/flags,
 AX source for q.
+
+
+## 2026-10-24 107 - ISLDAT attr field = coordinate scale factor
+
+Status: CONFIRMED (validated by pos_diff_norm disasm, all 8 theaters consistent)
+
+**Discovery**: The record ttr field (header +0x20) is NOT a feature type tag but a **coordinate scale factor** for the position delta computation in pos_diff_norm (0x28874).
+
+**Mechanism** (pos_diff_norm 0x28874):
+- mov si, [di+20h] — reads attr from record +0x20
+- shl si, cl — shifts by ttr_scale_shift (word_1F6E6)
+- div si — uses shifted attr as divisor in fixed-point division for X, Y, Z deltas
+
+**Values** (per theater):
+- 0x14 = base coastline scale (all theaters)
+- 0x32 = river scale (HOK, IRQ, ISR, PAN)
+- 0x64 = lake scale (BOS, HOK, KOR)
+- 0xC8 = border/large feature scale (BOS, HOK)
+
+**Corrections**:
+- Previously documented as semantics unknown / feature type tag
+- Actually a **per-feature coordinate scale factor** for fixed-point delta computation
+- Explains per-theater attr distribution perfectly
+
+**Registry updates**:
+- word_1F6E6 -> ttr_scale_shift (shift count for attr scaling)
+- word_22D20 -> ttr_scale_shift (alias, duplicate removed)
+- IsldatRecord.attr comment updated in structs.yaml
+- pos_diff_norm notes updated (Finding 107)
+
+**Still open**: opcode handlers (dynamic table), flags 0x0002, point transform, quadrant AX source.

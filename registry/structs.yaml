@@ -100,7 +100,7 @@ structs:
       - {offset: 0x0C, size: 4, name: const_0,     type: int32}
       - {offset: 0x10, size: 12, name: zero_pad,   type: bytes}
       - {offset: 0x1E, size: 2, name: const_FFFF_a,type: uint16}
-      - {offset: 0x20, size: 2, name: attr,        type: uint16, comment: "0x14 always; 0x32/0x64/0xC8 also seen; semantics unknown"}
+      - {offset: 0x20, size: 2, name: attr,        type: uint16, comment: "coordinate scale factor: 0x14=base coastline, 0x32=river, 0x64=lake, 0xC8=border; read by pos_diff_norm (shifted by attr_scale_shift, used as divisor for X/Y/Z deltas)"}
       - {offset: 0x22, size: 2, name: ptr_to_26,   type: uint16, comment: "= self+0x26 (engine self-relative)"}
       - {offset: 0x24, size: 2, name: const_000B,  type: uint16}
       - {offset: 0x26, size: 2, name: const_FFFF_b,type: uint16}
