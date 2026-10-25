@@ -205,21 +205,23 @@ DS can be set to any paragraph; EMS (INT 67h) and XMS (INT 2Fh multiplex) used f
 
 8 files in `game\`: BOS 7875, HOK 7983, IRQ 7645, ISR 6787, KOR 7601, NEL 2037,
 PAK 1297, PAN 7885 bytes. Filename chosen by theater manifest (`game\ISRAEL.MFF/MFI/MFM`);
-loader function NOT yet located. Fully decoded from file bytes + resident asm consumers;
+loader = `isldat_state_load` (sub_12FC4, finding 106): reads block id 0x27 (farptr table
+7075:id*4 = 0x9C) via `op_dispatch`, 9B header → `word_11C16/11C18/11C1A/byte_11C0A`,
+body → `state_seg` (71C1:0000). Fully decoded from file bytes + resident asm consumers;
 **validated 8/8 theaters by `tools/parse_isldat.py` (ALL OK, zero errors/warnings)**.
 
 ### Header (9 bytes)
 
 ```
 +00 u16 body_len      (= file_size - 9)
-+02 u16 const_0
++02 u16 grid_base     (0 in all 8; written to word_11C16, added to grid indices by walk)
 +04 u16 t1_base       (always 0x500)
 +06 u16 t2_base       (0x504..0x7CA, first list starts right after t2 table)
 +08 u8  swap_flag     (1 for HOK/KOR/PAN; byteswaps ONLY the state_table_apply
                         3-byte records at body+0x56 — grids/lists/records stay LE)
 ```
 
-### Body layout (loaded at seg:0000; walk base `word_11C16` = 0)
+### Body layout (loaded at `state_seg`:0000 = 71C1:0000 by `isldat_state_load`; grid base `word_11C16` = 0)
 
 ```
 0x0000  gridB (fine)   4 quadrant blocks x 256B (16x16 cells/quadrant)
@@ -229,14 +231,15 @@ then    t1 table, t2 table, then all record lists (FFFF-terminated), then
         sub-records inline; each sub ends exactly at the next record / list end)
 ```
 
-Grid walk (asm `pos_neighbor_norm_scan` 0x14B17; X,Y = 5-bit quadrant-local cell
+Grid walk (asm `pos_neighbor_norm_scan` 0x14B17; X,Y = quadrant-local cell
 coords; physical scale pending matrix decode):
 
 ```
-q     = ((pos + 0x800) & 0x3FFF) rol 4 & 3        ; word_11C24/11C26 = view pos
-gridB = body[0x000 + q*0x100 + (X&~1)*8 + (Y>>1)] -> byte = t1 list index
-gridA = body[0x400 + q*0x40  + (X&~3)*2 + (Y>>2)] -> byte = t2 list index
+q     = ((AX + 0x800) & 0x3FFF) rol 4 & 3        ; AX = caller arg (source OPEN)
+gridB = body[0x000 + q*0x100 + (Y&~1)*8 + (X>>1)] -> byte = t1 list index
+gridA = body[0x400 + q*0x40  + (Y&~3)*2 + (X>>2)] -> byte = t2 list index
 word_11CC4 = q<<8 (gridB base), word_11CC6 = q*64+0x400 (gridA base)
+; X,Y: X=word_11C24 (col), Y=word_11C26 (row)
 ```
 
 ### Tables (t1, t2) — extent by FIXED POINT (correction: NOT FFFF-scan)
@@ -302,7 +305,8 @@ u16 count
 ### Runtime consumers (resident asm)
 
 ```
-pos_neighbor_norm_scan (0x14B17)  grid walk -> record offsets (word_11BEA=0x71C1 body seg)
+isldat_state_load      (0x12FC4)  block 0x27 -> 9B header + body -> state_seg 71C1:0
+pos_neighbor_norm_scan (0x14B17)  grid walk -> record offsets (state_seg=71C1 body seg)
 pos_diff_norm          (0x28874)  reads record XYZ dwords at +0/+4/+8
 line_draw_441e         (0x28B08)  record points -> es:441E line-table entries (stride 0x10)
 loc_2978E / line_from_points (0x29F20)   entry chain build (flags bits 8/4/2/1)

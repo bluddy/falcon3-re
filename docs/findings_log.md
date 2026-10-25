@@ -5448,3 +5448,47 @@ const_000B/const_4 semantics; geographic silhouette vs game\israel.ipl.
 
 **Next (Track E)**: implement the parser in `rebuild/` (first milestone =
 file-format parser).
+
+
+## 2026-10-24 106 - ISLDAT loader identified + 11 ISLDAT globals named
+
+Status: CONFIRMED (loader: header mapping 4/4 vs file bytes; naming.py check OK)
+
+**Loader found** (open item of finding 105 resolved): \sub_12FC4\, renamed
+\lock_words_fetch\ -> \isldat_state_load\. It:
+- \op_dispatch(ax=2, bx=6, dx=0x27)\ picks **block id 0x27** from the farptr
+  table at Ǉ5:0000\ (entry offset = id*4 -> 0x9C; \arptr_7075_const_9c  = same constant; sibling \slot2_handle_alloc\ uses id 0x41 -> 0x104).
+- \state_word_26400_get_zero\ -> DX = **state segment** -> \word_11BEA  (observed 0x71C1; callers of \pos_neighbor_norm_scan\ also hardcode
+  ds/es=71C1h).
+- reads 9B header at seg:0 -> \word_11C16\=[+2], \word_11C18\=[+4] (t1_base),
+  \word_11C1A\=[+6] (t2_base), \yte_11C0A\=[+8] (swap_flag) -- **4/4 match** the
+  on-disk header; \cx=[+0]\=body_len; second read streams the body into
+  seg:0 (overwrites the header scratch); close; \slot2_map_window_load\.
+- callers: worldmap_state_apply, game_frame_pipeline_step,
+  dgroup_state_cycle_step, terrain_state_reinit, param454_* (5),
+  mode_extent_recompute, hud_entity_search_select, mode_session_state_reset,
+  ems_stream_pointer_step (13).
+
+**11 globals named** (registry/naming.yaml, kind=global; applied to
+data_symbols.json): isldat_grid_base (word_11C16), isldat_t1_base
+(word_11C18), isldat_t2_base (word_11C1A), isldat_swap_flag (byte_11C0A),
+state_seg (word_11BEA), isldat_gridb_quad_off (word_11CC4 = q<<8),
+isldat_grida_quad_off (word_11CC6 = 0x400+q*64), map_pos_x (word_11C24),
+map_pos_y (word_11C26), state_byte_table_off (word_11BE6 = 0x62),
+record_queue_cur (word_2796E, init 0x5D1E/limit 0x603E).
+
+**Corrections** (docs/structures.md + registry/structs.yaml):
+- header +02 \const_0\ -> \grid_base\: not a dead const -- walk adds it
+  (\word_11C16\) to grid indices (0 in all 8 files -> grids at body start).
+- grid-walk X/Y labels swapped: asm binds (11C26&~n)<<... to the row-stride term;
+  slot2/slot3 treat 11C26 as Y (row, <<5 in map-window) and 11C24 as X (col).
+  Formulas now: gridB=(Y&~1)*8+(X>>1), gridA=(Y&~3)*2+(X>>2).
+- \pos_neighbor_norm_scan\ sig: quadrant q comes from caller **AX** (not from
+  \word_11BE6\ as previously noted -- 11BE6 is the state-byte-table offset
+  passed to \ctive_farptr_set\). AX source still OPEN.
+- \	errain_state_reinit\ re-confirmed NOT the loader (byte-sig false positive;
+  it merely calls \isldat_state_load\).
+
+Next: first Track E milestone -- ISLDAT parser in ebuild/\ (oracle:
+tools/parse_isldat.py). Still open: point transform, attr/opcode/flags,
+AX source for q.

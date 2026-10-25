@@ -59,7 +59,9 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 
 5. ~~**ISLDAT per-theater vector format** (Track E knowledge extraction)~~ ✅ DONE (session 53d, finding 105): full decode of `game\ISLDAT.*` (8 theaters) — header, fine/coarse quadrant grids, t1/t2 tables (fixed-point extent), packed feature records (i32 XYZ), points, op-stream → sub-records → closed rings. **Validated 8/8** by `tools/parse_isldat.py` (ALL OK). Canonical: `docs/structures.md` §ISLDAT + 5 `Isldat*` structs in `registry/structs.yaml` (`naming.py check` OK). Open: loader fn, point transform, attr/opcode semantics. Next Track E step: parser in `rebuild/`.
 
-## All five immediate next steps are complete. Next session should re-plan from [Open Items](docs/open_items.md) and `docs/advice.md`.
+6. **Track E first milestone: ISLDAT parser in `rebuild/`** (next, session 53e+): OCaml scaffold per `docs/pipeline.md`, parse `game\ISLDAT.*` byte-on-disk, oracle = `tools/parse_isldat.py` (8/8 ALL OK). Prerequisites now in place — loader found + 11 globals named (finding 106). Remaining knowledge gaps: point transform, attr/opcode/flags, quadrant-AX source.
+
+## Items 1–5 complete; item 6 (Track E parser) is next. Re-plan each session from [Open Items](docs/open_items.md) and `docs/advice.md`.
 
 ## Partial Call Graph (bottom-up method, session 17d)
 

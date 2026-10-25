@@ -314,7 +314,7 @@ symbols:
     name: pos_diff_norm
     kind: function
     sig: "[di]-es:[bx] 32b delta, / (1<<cs:1F6E6); stores to cs:1F6EC/1F6F2/1F745/1F747; recursive (self-caller)"
-    notes: "563B, 18K calls; signed 32b divide with power-of-2 scale. conf: med"
+    notes: "563B, 18K calls; signed 32b divide with power-of-2 scale. Finding 105: [di] = ISLDAT record XYZ (i32 16.16nm at +0/+4/+8), es:[bx] = reference point at body+0xC57. conf: med"
 
   # --- init / interrupt leaves
   - ida: sub_1BCFA
@@ -933,10 +933,10 @@ symbols:
     sig: "AX: SI=key id; gates on es:77A54+2Ah, es:778C8+186h, es:7753C+25Dh, si<0x16 -> remap via es:7753C+3F0h table; mode 1 => key_mapper(SI); high byte set => sub_18E1A else sub_19402(SI,arg2). returns AX"
     notes: "191B, dyn=83, 4 callers (irq_state_init, sub_1BAD6); core key-id translator. conf: med"
   - ida: sub_12FC4
-    name: block_words_fetch
+    name: isldat_state_load
     kind: function
-    sig: "far: DS=7075h; op_dispatch(ax=2,bx=6) -> AX=seg; sub_26CA7 -> DX; read 9 words [0..8] into cs:11C16/11C18/11C1A/11C0A; op_dispatch(bx=0Ah/8) x2; call sub_12BEA"
-    notes: "118B, dyn=74, 1 caller (sub_130D5); op_dispatch-heavy block fetch. conf: low"
+    sig: "far; THE ISLDAT loader (finding 106): DS=7075h; op_dispatch(ax=2,bx=6,dx=27h) picks block id 0x27 (farptr table 7075:id*4 = 0x9C); state_word_26400_get_zero -> DX = state seg -> word_11BEA; read 9B header at seg:0 -> word_11C16=[+2], word_11C18=[+4 t1_base], word_11C1A=[+6 t2_base], byte_11C0A=[+8 swap_flag]; cx=[+0]=body_len; op_dispatch(bx=0Ah) streams body into seg:0 (overwrites header scratch); op_dispatch(bx=8); slot2_map_window_load"
+    notes: "118B, dyn=74, 13 callers (worldmap_state_apply, game_frame_pipeline_step, dgroup_state_cycle_step, terrain_state_reinit, param454_* x5, mode_extent_recompute, hud_entity_search_select, mode_session_state_reset, ems_stream_pointer_step). Header mapping 4/4 vs file bytes (finding 106); renamed isldat_state_load -> isldat_state_load. conf: high"
   - ida: sub_25546
     name: farptr_lds_bx_invoke
     kind: function
@@ -4203,7 +4203,7 @@ symbols:
     name: line_draw_441e
     kind: function
     sig: "void far; DI=0x441E (buffer), cs:27966=0, then (409B pad-heavy line-draw body); 2 callers (pos_diff_norm, sub_2FD42)"
-    notes: "409B span, caller_dyn=17,961, callee fixed_scale_clamp_or40. Line-drawing routine over the 0x441E buffer (paired with farobj_di_441e_init). conf: low"
+    notes: "409B span, caller_dyn=17,961, callee fixed_scale_clamp_or40. Line-drawing routine over the 0x441E buffer (paired with farobj_di_441e_init). Finding 105: consumes ISLDAT 6B points {i16, i16=0, i16}. conf: low"
   - ida: sub_27FC7
     name: line_table_build_2796e
     kind: function
@@ -4469,7 +4469,7 @@ symbols:
     name: state_table_apply_71c1
     kind: function
     sig: "void far; DS=71C1h, cs:11BEE=AX (index); AL=cs:[bx+0x65] -> state_byte_7e54e_set; bx=index*3+0x56, call state_word_2222a_get; then (155B) applies table state incl far_cb_9; 7 callers"
-    notes: "155B, caller_dyn=8, callees state_byte_7e54e_set + state_byte_7e54d_set + state_word_2222a_get + far_cb_9. Applies an indexed state record from the 71C1 table (index in AX, cs:11BEE). conf: med"
+    notes: "155B, caller_dyn=8, callees state_byte_7e54e_set + state_byte_7e54d_set + state_word_2222a_get + far_cb_9. Applies an indexed state record from the 71C1 table (index in AX, cs:11BEE). Finding 105/106: those tables are ISLDAT body bytes at state_seg 71C1 (body+0x53/+0x56/+0x65 = gridB q0 region); byte_11C0A = ISLDAT header+8 swap_flag xchg al/ah (HOK/KOR/PAN only). conf: med"
   - ida: sub_1C0E4
     name: stream_accumulate_loop
     kind: function
@@ -5450,8 +5450,8 @@ symbols:
   - ida: sub_14B17
     name: pos_neighbor_norm_scan
     kind: function
-    sig: "NEAR retn; ds=word_11BEA; quadrant phase from word_11BE6 -> word_11CC4 (quad<<8) + word_11CC6 (0x400+quad*64); active_farptr_set(word_11BE6, cs); pass1: si=f(11C26,11C24,11C16,11CC6) lodsb -> table word_11C1A walk until -1, each entry pos_diff_norm(di, bx=0xC57); pass2: si=f(..,11CC4) walk table word_11C18 same; active_farptr_restore (192B); 4 callers (state_farptr_get, sub_153A5, sub_2F400, sub_2FEF2)"
-    notes: "192B, cd=26,999, in=4, callees active_farptr_set + active_farptr_restore + pos_diff_norm. Rotation-indexed neighbor walk: two list walks (tables 11C1A/11C18) selected by the quadrant phase, computing normalized position deltas via pos_diff_norm. conf: med"
+    sig: "NEAR retn; ds=word_11BEA (state seg, 71C1); q=((AX+0x800)&0x3FFF) rol4&3 from CALLER AX (source OPEN) -> word_11CC4=q<<8 (gridB quad), word_11CC6=0x400+q*64 (gridA quad); active_farptr_set(word_11BE6, cs); pass1 gridA: si=(11C26&~3)*2+(11C24>>2)+11C16+11CC6 lodsb -> idx*2+word_11C1A (t2) walk until -1, pos_diff_norm(di, bx=0xC57); pass2 gridB: si=(11C26&~1)*8+(11C24>>1)+11C16+11CC4 -> idx*2+word_11C18 (t1); active_farptr_restore (192B); 4 callers (state_farptr_get, sub_153A5, sub_2F400, sub_2FEF2)"
+    notes: "192B, cd=26,999, in=4, callees active_farptr_set + active_farptr_restore + pos_diff_norm. ISLDAT grid walk (finding 105): two list walks (tables 11C1A=header t2_base / 11C18=header t1_base) selected by grid quadrant; grid terms use X=word_11C24 (col), Y=word_11C26 (row); normalized deltas via pos_diff_norm. Correction (finding 106): q comes from caller AX, NOT word_11BE6. conf: med"
   - ida: sub_6D68D
     name: r06_mode_state_update
     kind: function
@@ -6346,7 +6346,7 @@ symbols:
   - ida: sub_12BEA
     name: slot2_map_window_load
     kind: function
-    sig: "NEAR retn (200B): ds/es=state_word_26400; if cs:byte_11BB8 (EMS path): state_word_10219_get, ems_page_move_alt(bx=0), rep movsw 0x800 -> 4040h + 0x400 -> 3840h; else (op path): slot2_handle_alloc, op_dispatch(11C14, bx=0x0A, cx=0x1000, dx=0x4040) + op_dispatch(cx=0x800, dx=0x3840) bank reads; 11C0E=11C24, 11C10=11C26, 11C12=(11C26<<5); bx=(((11C26<<5)+11C24-0x42)*2)+0x3840; 5x5 window loop: slot2_handle_read([bx]&0x1FF, dx=0x1F40+, ch=5) dx+=0x100/bx+=2 then bx+=0x36 (row stride 0x40) -> 25x 0x100-byte records into 1F40..; byte_11C0C/11C0D=0; slot2_handle_release; retn; 10 callers (r53_e166, r53_e88, block_words_fetch, sub_186ADC, sub_188DF2, sub_2F6D0, sub_30882, sub_30CB8, sub_39F1D, sub_3A3D6)"
+    sig: "NEAR retn (200B): ds/es=state_word_26400; if cs:byte_11BB8 (EMS path): state_word_10219_get, ems_page_move_alt(bx=0), rep movsw 0x800 -> 4040h + 0x400 -> 3840h; else (op path): slot2_handle_alloc, op_dispatch(11C14, bx=0x0A, cx=0x1000, dx=0x4040) + op_dispatch(cx=0x800, dx=0x3840) bank reads; 11C0E=11C24, 11C10=11C26, 11C12=(11C26<<5); bx=(((11C26<<5)+11C24-0x42)*2)+0x3840; 5x5 window loop: slot2_handle_read([bx]&0x1FF, dx=0x1F40+, ch=5) dx+=0x100/bx+=2 then bx+=0x36 (row stride 0x40) -> 25x 0x100-byte records into 1F40..; byte_11C0C/11C0D=0; slot2_handle_release; retn; 10 callers (r53_e166, r53_e88, isldat_state_load, sub_186ADC, sub_188DF2, sub_2F6D0, sub_30882, sub_30CB8, sub_39F1D, sub_3A3D6)"
     notes: "200B, cd=74, in=10, callees slot2_handle_alloc/read/release + op_dispatch + ems_page_move_alt + state_word_10219_get. Map window loader: fetches the id-bank (0x1000+0x800 bytes to 4040/3840, or EMS copy) then reads the 5x5 cell window centered at (11C24,11C26) (-0x42 = -2 cols-2 rows of the 32-wide 3840 grid) as 0x100-byte records into 1F40..37FF. conf: med"
   - ida: sub_12EA7
     name: slot2_map_window_read
@@ -6624,28 +6624,28 @@ symbols:
   - ida: sub_318DD
     name: param454_apply_double
     kind: function
-    sig: "NEAR retn (341B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah/ch=0 set + write; TWO si=0/ch=1 field pairs; publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=4/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); block_words_fetch; 2 callers (sub_30AA8, sub_32C62)"
+    sig: "NEAR retn (341B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah/ch=0 set + write; TWO si=0/ch=1 field pairs; publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=4/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); isldat_state_load; 2 callers (sub_30AA8, sub_32C62)"
     notes: "341B, cd=0, in=2, param454_apply family: TWO ch=1 field-set pairs, post-publish field index si=4 (=2x2) -- the double-pair variant. conf: med"
   - ida: sub_317AF
     name: param454_apply_single
     kind: function
-    sig: "NEAR retn (302B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch,dx=0); si=0Ah/ch=0 set + op(0A,cx=2); ONE si=0/ch=1 field pair (op(0E) set + op(0A,cx=2)); publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=2/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); block_words_fetch; 3 callers (sub_3099C, sub_32C62, sub_3706C)"
+    sig: "NEAR retn (302B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch,dx=0); si=0Ah/ch=0 set + op(0A,cx=2); ONE si=0/ch=1 field pair (op(0E) set + op(0A,cx=2)); publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=2/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); isldat_state_load; 3 callers (sub_3099C, sub_32C62, sub_3706C)"
     notes: "302B, cd=0, in=3, member of the five-variant param454_apply family: exactly ONE ch=1 field-set pair and post-publish field index si=2 (=2x1) -- the single-pair variant dispatched by sub_32C62. conf: med"
   - ida: sub_316B6
     name: param454_apply_tableinit
     kind: function
-    sig: "NEAR retn (249B): gate ds:478h&1 == 0 -> param_table_init; state_word_26400_get_zero -> 2E12F, ds=dx; op_dispatch(6,2,454h) open -> 2E12D; op(0A,cx=0Ch,dx=0); gate es:478h&1 -> SKIP publish; else full publish block (far_cb_8(1), si=0Ah/ch=0 set+write cx=0Ch dx=0Ch, 2747a(bx=0Ch)/27476 sets, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8(0)); post: si=0/ch=0 set + op(0A,cx=2,dx=0); si=0 -> 5DC0h->2E131; op(8) close; block_words_fetch; 4 callers (sub_2F6D0, sub_32C62, sub_39F1D, sub_41646)"
+    sig: "NEAR retn (249B): gate ds:478h&1 == 0 -> param_table_init; state_word_26400_get_zero -> 2E12F, ds=dx; op_dispatch(6,2,454h) open -> 2E12D; op(0A,cx=0Ch,dx=0); gate es:478h&1 -> SKIP publish; else full publish block (far_cb_8(1), si=0Ah/ch=0 set+write cx=0Ch dx=0Ch, 2747a(bx=0Ch)/27476 sets, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8(0)); post: si=0/ch=0 set + op(0A,cx=2,dx=0); si=0 -> 5DC0h->2E131; op(8) close; isldat_state_load; 4 callers (sub_2F6D0, sub_32C62, sub_39F1D, sub_41646)"
     notes: "249B, cd=0, in=4, param454_apply family member: unique param_table_init prologue on ds:478h-bit0==0 and a publish skip on es:478h-bit1, post-publish field index si=0 -- the table-initialized variant dispatched by sub_32C62 alongside the single/double/triple/threshold variants. conf: med"
   - ida: sub_315BC
     name: param454_apply_thresholds
     kind: function
-    sig: "NEAR retn (250B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ah,dx=0); si=0/ch=0 set + op(0A,cx=2,dx=0Ah); si=0Ah -> dx=5DC0h written (2E131=5DC0); si=6 set + write; si=0 -> dx=9088h written; si=8 set + write; si=0 -> dx=0C738h written; op(8) close; block_words_fetch; NO publish block; 6 callers (sub_30587, sub_32C62, sub_33443, sub_3EEDB, sub_4111F, sub_41646)"
+    sig: "NEAR retn (250B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ah,dx=0); si=0/ch=0 set + op(0A,cx=2,dx=0Ah); si=0Ah -> dx=5DC0h written (2E131=5DC0); si=6 set + write; si=0 -> dx=9088h written; si=8 set + write; si=0 -> dx=0C738h written; op(8) close; isldat_state_load; NO publish block; 6 callers (sub_30587, sub_32C62, sub_33443, sub_3EEDB, sub_4111F, sub_41646)"
     notes: "250B, cd=0, in=6, same callee family as the other param454_apply_*. ds:454h apply variant that writes three escalating constants 0x5DC0 (24000), 0x9088 (37000), 0xC738 (51000) into fields at si=0/6/8 (no channel publish block) -- the thresholds/limits writer of the five, dispatched alongside the others by sub_32C62. conf: med (constant semantics inferred from the literal values)."
   - ida: sub_31A32
     name: param454_apply_triple
     kind: function
-    sig: "NEAR retn (391B): op_dispatch(6,2,454h) open -> cs:2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah set+write; THREE repeated field pairs (si=0, cl=0/ch=1 -> op(0E) set, op(0A,cx=2)) ; publish block (far_cb_8(1), 2747a/27476 state sets, dispatch_22180_then_27474_8, farptr_table_invoke(4), dispatch_22174_stub, far_cb_8(0)); si=6 set+write; si=0 -> dx=5DC0h written to cs:2E131; op_dispatch(8) close; block_words_fetch; gate es:478h&4 skips the middle; 10+ callers (sub_3252B, sub_327BE, sub_329B1, sub_32C62, sub_33443, sub_34923, sub_34954, sub_34C31, sub_3706C, sub_397FB)"
-    notes: "391B, cd=0, in=11 (hottest caller fan-in of the five), callees op_dispatch + state_word_26400_get_zero + state_2747a/27476 setters + far_cb_8 + dispatch_22174/22180 + farptr_table_invoke + block_words_fetch. Third of five ds:454h param-block apply variants (sub_32C62 dispatches all five): three ch=1 field-set pairs, field index si=6, 478h-bit2 gate, channel/clip publish block, shared 5DC0h->2E131 tail write. conf: med"
+    sig: "NEAR retn (391B): op_dispatch(6,2,454h) open -> cs:2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah set+write; THREE repeated field pairs (si=0, cl=0/ch=1 -> op(0E) set, op(0A,cx=2)) ; publish block (far_cb_8(1), 2747a/27476 state sets, dispatch_22180_then_27474_8, farptr_table_invoke(4), dispatch_22174_stub, far_cb_8(0)); si=6 set+write; si=0 -> dx=5DC0h written to cs:2E131; op_dispatch(8) close; isldat_state_load; gate es:478h&4 skips the middle; 10+ callers (sub_3252B, sub_327BE, sub_329B1, sub_32C62, sub_33443, sub_34923, sub_34954, sub_34C31, sub_3706C, sub_397FB)"
+    notes: "391B, cd=0, in=11 (hottest caller fan-in of the five), callees op_dispatch + state_word_26400_get_zero + state_2747a/27476 setters + far_cb_8 + dispatch_22174/22180 + farptr_table_invoke + isldat_state_load. Third of five ds:454h param-block apply variants (sub_32C62 dispatches all five): three ch=1 field-set pairs, field index si=6, 478h-bit2 gate, channel/clip publish block, shared 5DC0h->2E131 tail write. conf: med"
   - ida: sub_13578
     name: slot3_window_scroll_up
     kind: function
@@ -6664,8 +6664,8 @@ symbols:
   - ida: sub_130D5
     name: worldmap_state_apply
     kind: function
-    sig: "FAR retf (59B): cs:11BEE=ax (mode); ds=es=7075h->71C1h; handle_onetime_op; block_words_fetch; state_table_apply_71c1(cs:11BEE); slot2_map_window_read; slot3_tile3x3_load; if cs:byte_11CF3==0: far sub_2BEB5(ax=11BEE); retf; 2 callers (entity_setup_step, sub_3001E)"
-    notes: "59B far, cd=972, in=2, callees handle_onetime_op + block_words_fetch + state_table_apply_71c1 + slot2_map_window_read + slot3_tile3x3_load + far sub_2BEB5. World-map state applier: applies the 71C1 state table for the saved mode, then re-reads the slot2 map window and reloads the slot3 3x3 tiles (optionally pinging 2BEB5) -- the full world-view refresh behind entity_setup_step. conf: med-high"
+    sig: "FAR retf (59B): cs:11BEE=ax (mode); ds=es=7075h->71C1h; handle_onetime_op; isldat_state_load; state_table_apply_71c1(cs:11BEE); slot2_map_window_read; slot3_tile3x3_load; if cs:byte_11CF3==0: far sub_2BEB5(ax=11BEE); retf; 2 callers (entity_setup_step, sub_3001E)"
+    notes: "59B far, cd=972, in=2, callees handle_onetime_op + isldat_state_load + state_table_apply_71c1 + slot2_map_window_read + slot3_tile3x3_load + far sub_2BEB5. World-map state applier: applies the 71C1 state table for the saved mode, then re-reads the slot2 map window and reloads the slot3 3x3 tiles (optionally pinging 2BEB5) -- the full world-view refresh behind entity_setup_step. conf: med-high"
 
   - ida: sub_2131C
     name: farobj_sort_and_step
@@ -7781,8 +7781,8 @@ symbols:
   - ida: sub_4E14C
     name: ems_stream_pointer_step
     kind: function
-    sig: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, block_words_fetch, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters."
-    notes: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, block_words_fetch, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters. conf: medium"
+    sig: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, isldat_state_load, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters."
+    notes: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, isldat_state_load, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters. conf: medium"
   - ida: sub_30AA8
     name: event_table_name_fill
     kind: function
@@ -7917,7 +7917,7 @@ symbols:
     name: terrain_state_reinit
     kind: function
     sig: "481B, in=5 (game_config_apply_init, sub_397FB, farobj_cmd_accum_sweep, sub_3FFEF, farobj_class_table_entry). entity_state_load (flag_block_zero_5762_5c63), ds:45Eh=1 + 7-word movsw, flag_byte_get -> 26h<<cl, stub_to_23966 slot3_tile_record_load, ds:20h/24h position add/sub, ds:45Fh gate, terrain_matrix_advance_11d04, ems_init, joystick_poll, farobj_tile_stream_build."
-    notes: "481B, in=5 (game_config_apply_init, sub_397FB, farobj_cmd_accum_sweep, sub_3FFEF, farobj_class_table_entry). entity_state_load (flag_block_zero_5762_5c63), ds:45Eh=1 + 7-word movsw, flag_byte_get -> 26h<<cl, stub_to_23966 slot3_tile_record_load, ds:20h/24h position add/sub, ds:45Fh gate, terrain_matrix_advance_11d04, ems_init, joystick_poll, farobj_tile_stream_build. conf: medium"
+    notes: "481B, in=5 (game_config_apply_init, sub_397FB, farobj_cmd_accum_sweep, sub_3FFEF, farobj_class_table_entry). entity_state_load (flag_block_zero_5762_5c63), ds:45Eh=1 + 7-word movsw, flag_byte_get -> 26h<<cl, stub_to_23966 slot3_tile_record_load, ds:20h/24h position add/sub, ds:45Fh gate, terrain_matrix_advance_11d04, ems_init, joystick_poll, farobj_tile_stream_build. NOT the ISLDAT loader — byte-sig false positive (finding 105); it calls isldat_state_load (finding 106). conf: medium"
   - ida: sub_386F2
     name: tile_sample_script_dispatch
     kind: function
@@ -10254,6 +10254,61 @@ symbols:
     kind: global
     sig: "15 near pointers, 2 bytes each, index = BX/2; read by fn_table_dispatch with BX = cs:word_22D28"
     notes: "30B at 0x22D2A; view/projection opcode table. conf: high"
+  - ida: word_11C16
+    name: isldat_grid_base
+    kind: global
+    sig: "u16 = ISLDAT header word +2; written by isldat_state_load"
+    notes: "Body-relative grid base; added to grid index in both pos_neighbor_norm_scan passes (0 in all 8 files -> grids at body start). Formerly spec field const_0 (finding 106). conf: high"
+  - ida: word_11C18
+    name: isldat_t1_base
+    kind: global
+    sig: "u16 = ISLDAT header word +4 (t1_base=0x500); written by isldat_state_load"
+    notes: "Base of fine-pool (gridB) u16 list table; walk pass2 does idx*2+11C18 then walks to -1 (finding 105/106). conf: high"
+  - ida: word_11C1A
+    name: isldat_t2_base
+    kind: global
+    sig: "u16 = ISLDAT header word +6 (t2_base); written by isldat_state_load"
+    notes: "Base of coarse-pool (gridA) u16 list table; walk pass1 does idx*2+11C1A then walks to -1 (finding 105/106). conf: high"
+  - ida: byte_11C0A
+    name: isldat_swap_flag
+    kind: global
+    sig: "u8 = ISLDAT header byte +8; written by isldat_state_load"
+    notes: "1 for HOK/KOR/PAN; only state_table_apply_71c1 xchgs al/ah on its 3-byte records - grids/lists/records stay LE (finding 105/106). conf: high"
+  - ida: word_11BEA
+    name: state_seg
+    kind: global
+    sig: "u16 segment; written by isldat_state_load from state_word_26400_get_zero"
+    notes: "Segment of the terrain/map state block = ISLDAT body at :0000 (observed 0x71C1; pos_neighbor_norm_scan callers also hardcode ds/es=71C1h); walk loads ds from it, sub_14152 loads es (finding 106). conf: high (value 0x71C1), med (scope)"
+  - ida: word_11CC4
+    name: isldat_gridb_quad_off
+    kind: global
+    sig: "u16 quadrant offset into gridB (fine); computed per walk"
+    notes: "= q<<8 where q=((AX+0x800)&0x3FFF) rol4&3 (AX = caller arg, source OPEN); set by pos_neighbor_norm_scan, added to gridB index (finding 105/106). conf: high"
+  - ida: word_11CC6
+    name: isldat_grida_quad_off
+    kind: global
+    sig: "u16 quadrant offset into gridA (coarse); computed per walk"
+    notes: "= 0x400+q*64 (same q); set by pos_neighbor_norm_scan, added to gridA index (finding 105/106). conf: high"
+  - ida: word_11C24
+    name: map_pos_x
+    kind: global
+    sig: "u16 current map/tile position, X (col)"
+    notes: "Col coordinate: slot2_map_window row-major ((word_11C26<<5)+word_11C24-0x42); ISLDAT grid terms X>>1/X>>2 (finding 105/106); slot3 delta reload vs 11BC2 (sub_13406). conf: high"
+  - ida: word_11C26
+    name: map_pos_y
+    kind: global
+    sig: "u16 current map/tile position, Y (row)"
+    notes: "Row coordinate: map-window stride <<5, grid terms (Y&~1)*8/(Y&~3)*2 (finding 105/106), tile_base_set_11c26 subtracts it, scroll dy vs 11BC4 (sub_13406). conf: high"
+  - ida: word_11BE6
+    name: state_byte_table_off
+    kind: global
+    sig: "u16 near offset in resident CS of the state byte table; written by state_table_apply_71c1 (0x62)"
+    notes: "Base for indexed_byte_get (498 calls, al=cs:[off]); passed to active_farptr_set by pos_neighbor_norm_scan. NOT the walk quadrant (correction, finding 106). conf: med"
+  - ida: word_2796E
+    name: record_queue_cur
+    kind: global
+    sig: "u16 current entry pointer (0x10 stride) in the record/line queue; segment 7B0E"
+    notes: "Init 0x5D1E / limit 0x603E by record_queue_push; advanced by record_span_build_and_dispatch; entry addr = cur+CX*0x10 in line_from_points + sub_29BEE; aliased es:43BEh by record_span_mask_rebuild (finding 105/106). conf: med-high"
   # - ida: word_12345
   #   name: kbd_head_index
   #   kind: global

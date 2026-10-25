@@ -2395,7 +2395,7 @@ routines:
     size: 118
     far: true
     class: ASM
-    hypothesis: "block_words_fetch"
+    hypothesis: "isldat_state_load"
     sig: "far: DS=7075h; op_dispatch(ax=2,bx=6) -> AX=seg; sub_26CA7 -> DX; read 9 words [0..8] into cs:11C16/11C18/11C1A/11C0A; op_dispatch(bx=0Ah/8) x2; call sub_12BEA"
     port_status: unported
     verified: null
@@ -15366,7 +15366,7 @@ routines:
     far: false
     class: ASM
     hypothesis: "slot2_map_window_load"
-    sig: "NEAR retn (200B): ds/es=state_word_26400; if cs:byte_11BB8 (EMS path): state_word_10219_get, ems_page_move_alt(bx=0), rep movsw 0x800 -> 4040h + 0x400 -> 3840h; else (op path): slot2_handle_alloc, op_dispatch(11C14, bx=0x0A, cx=0x1000, dx=0x4040) + op_dispatch(cx=0x800, dx=0x3840) bank reads; 11C0E=11C24, 11C10=11C26, 11C12=(11C26<<5); bx=(((11C26<<5)+11C24-0x42)*2)+0x3840; 5x5 window loop: slot2_handle_read([bx]&0x1FF, dx=0x1F40+, ch=5) dx+=0x100/bx+=2 then bx+=0x36 (row stride 0x40) -> 25x 0x100-byte records into 1F40..; byte_11C0C/11C0D=0; slot2_handle_release; retn; 10 callers (r53_e166, r53_e88, block_words_fetch, sub_186ADC, sub_188DF2, sub_2F6D0, sub_30882, sub_30CB8, sub_39F1D, sub_3A3D6)"
+    sig: "NEAR retn (200B): ds/es=state_word_26400; if cs:byte_11BB8 (EMS path): state_word_10219_get, ems_page_move_alt(bx=0), rep movsw 0x800 -> 4040h + 0x400 -> 3840h; else (op path): slot2_handle_alloc, op_dispatch(11C14, bx=0x0A, cx=0x1000, dx=0x4040) + op_dispatch(cx=0x800, dx=0x3840) bank reads; 11C0E=11C24, 11C10=11C26, 11C12=(11C26<<5); bx=(((11C26<<5)+11C24-0x42)*2)+0x3840; 5x5 window loop: slot2_handle_read([bx]&0x1FF, dx=0x1F40+, ch=5) dx+=0x100/bx+=2 then bx+=0x36 (row stride 0x40) -> 25x 0x100-byte records into 1F40..; byte_11C0C/11C0D=0; slot2_handle_release; retn; 10 callers (r53_e166, r53_e88, isldat_state_load, sub_186ADC, sub_188DF2, sub_2F6D0, sub_30882, sub_30CB8, sub_39F1D, sub_3A3D6)"
     port_status: unported
     verified: null
     notes: "200B, cd=74, in=10, callees slot2_handle_alloc/read/release + op_dispatch + ems_page_move_alt + state_word_10219_get. Map window loader: fetches the id-bank (0x1000+0x800 bytes to 4040/3840, or EMS copy) then reads the 5x5 cell window centered at (11C24,11C26) (-0x42 = -2 cols-2 rows of the 32-wide 3840 grid) as 0x100-byte records into 1F40..37FF. conf: med"
@@ -16029,7 +16029,7 @@ routines:
     far: false
     class: ASM
     hypothesis: "param454_apply_double"
-    sig: "NEAR retn (341B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah/ch=0 set + write; TWO si=0/ch=1 field pairs; publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=4/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); block_words_fetch; 2 callers (sub_30AA8, sub_32C62)"
+    sig: "NEAR retn (341B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah/ch=0 set + write; TWO si=0/ch=1 field pairs; publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=4/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); isldat_state_load; 2 callers (sub_30AA8, sub_32C62)"
     port_status: unported
     verified: null
     notes: "341B, cd=0, in=2, param454_apply family: TWO ch=1 field-set pairs, post-publish field index si=4 (=2x2) -- the double-pair variant. conf: med"
@@ -16041,7 +16041,7 @@ routines:
     far: false
     class: ASM
     hypothesis: "param454_apply_single"
-    sig: "NEAR retn (302B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch,dx=0); si=0Ah/ch=0 set + op(0A,cx=2); ONE si=0/ch=1 field pair (op(0E) set + op(0A,cx=2)); publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=2/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); block_words_fetch; 3 callers (sub_3099C, sub_32C62, sub_3706C)"
+    sig: "NEAR retn (302B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch,dx=0); si=0Ah/ch=0 set + op(0A,cx=2); ONE si=0/ch=1 field pair (op(0E) set + op(0A,cx=2)); publish block (far_cb_8, 2747a/27476, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8); post: op(0E cx=0Ch), si=2/ch=0 set + write, si=0 -> 5DC0h->2E131; op(8); isldat_state_load; 3 callers (sub_3099C, sub_32C62, sub_3706C)"
     port_status: unported
     verified: null
     notes: "302B, cd=0, in=3, member of the five-variant param454_apply family: exactly ONE ch=1 field-set pair and post-publish field index si=2 (=2x1) -- the single-pair variant dispatched by sub_32C62. conf: med"
@@ -16053,7 +16053,7 @@ routines:
     far: false
     class: ASM
     hypothesis: "param454_apply_tableinit"
-    sig: "NEAR retn (249B): gate ds:478h&1 == 0 -> param_table_init; state_word_26400_get_zero -> 2E12F, ds=dx; op_dispatch(6,2,454h) open -> 2E12D; op(0A,cx=0Ch,dx=0); gate es:478h&1 -> SKIP publish; else full publish block (far_cb_8(1), si=0Ah/ch=0 set+write cx=0Ch dx=0Ch, 2747a(bx=0Ch)/27476 sets, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8(0)); post: si=0/ch=0 set + op(0A,cx=2,dx=0); si=0 -> 5DC0h->2E131; op(8) close; block_words_fetch; 4 callers (sub_2F6D0, sub_32C62, sub_39F1D, sub_41646)"
+    sig: "NEAR retn (249B): gate ds:478h&1 == 0 -> param_table_init; state_word_26400_get_zero -> 2E12F, ds=dx; op_dispatch(6,2,454h) open -> 2E12D; op(0A,cx=0Ch,dx=0); gate es:478h&1 -> SKIP publish; else full publish block (far_cb_8(1), si=0Ah/ch=0 set+write cx=0Ch dx=0Ch, 2747a(bx=0Ch)/27476 sets, dispatch_22180, farptr_table_invoke(4), dispatch_22174, far_cb_8(0)); post: si=0/ch=0 set + op(0A,cx=2,dx=0); si=0 -> 5DC0h->2E131; op(8) close; isldat_state_load; 4 callers (sub_2F6D0, sub_32C62, sub_39F1D, sub_41646)"
     port_status: unported
     verified: null
     notes: "249B, cd=0, in=4, param454_apply family member: unique param_table_init prologue on ds:478h-bit0==0 and a publish skip on es:478h-bit1, post-publish field index si=0 -- the table-initialized variant dispatched by sub_32C62 alongside the single/double/triple/threshold variants. conf: med"
@@ -16065,7 +16065,7 @@ routines:
     far: false
     class: ASM
     hypothesis: "param454_apply_thresholds"
-    sig: "NEAR retn (250B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ah,dx=0); si=0/ch=0 set + op(0A,cx=2,dx=0Ah); si=0Ah -> dx=5DC0h written (2E131=5DC0); si=6 set + write; si=0 -> dx=9088h written; si=8 set + write; si=0 -> dx=0C738h written; op(8) close; block_words_fetch; NO publish block; 6 callers (sub_30587, sub_32C62, sub_33443, sub_3EEDB, sub_4111F, sub_41646)"
+    sig: "NEAR retn (250B): op_dispatch(6,2,454h) open -> 2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ah,dx=0); si=0/ch=0 set + op(0A,cx=2,dx=0Ah); si=0Ah -> dx=5DC0h written (2E131=5DC0); si=6 set + write; si=0 -> dx=9088h written; si=8 set + write; si=0 -> dx=0C738h written; op(8) close; isldat_state_load; NO publish block; 6 callers (sub_30587, sub_32C62, sub_33443, sub_3EEDB, sub_4111F, sub_41646)"
     port_status: unported
     verified: null
     notes: "250B, cd=0, in=6, same callee family as the other param454_apply_*. ds:454h apply variant that writes three escalating constants 0x5DC0 (24000), 0x9088 (37000), 0xC738 (51000) into fields at si=0/6/8 (no channel publish block) -- the thresholds/limits writer of the five, dispatched alongside the others by sub_32C62. conf: med (constant semantics inferred from the literal values)."
@@ -16077,10 +16077,10 @@ routines:
     far: false
     class: ASM
     hypothesis: "param454_apply_triple"
-    sig: "NEAR retn (391B): op_dispatch(6,2,454h) open -> cs:2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah set+write; THREE repeated field pairs (si=0, cl=0/ch=1 -> op(0E) set, op(0A,cx=2)) ; publish block (far_cb_8(1), 2747a/27476 state sets, dispatch_22180_then_27474_8, farptr_table_invoke(4), dispatch_22174_stub, far_cb_8(0)); si=6 set+write; si=0 -> dx=5DC0h written to cs:2E131; op_dispatch(8) close; block_words_fetch; gate es:478h&4 skips the middle; 10+ callers (sub_3252B, sub_327BE, sub_329B1, sub_32C62, sub_33443, sub_34923, sub_34954, sub_34C31, sub_3706C, sub_397FB)"
+    sig: "NEAR retn (391B): op_dispatch(6,2,454h) open -> cs:2E12D; state_word_26400_get_zero -> ds; op(0A,cx=0Ch); si=0Ah set+write; THREE repeated field pairs (si=0, cl=0/ch=1 -> op(0E) set, op(0A,cx=2)) ; publish block (far_cb_8(1), 2747a/27476 state sets, dispatch_22180_then_27474_8, farptr_table_invoke(4), dispatch_22174_stub, far_cb_8(0)); si=6 set+write; si=0 -> dx=5DC0h written to cs:2E131; op_dispatch(8) close; isldat_state_load; gate es:478h&4 skips the middle; 10+ callers (sub_3252B, sub_327BE, sub_329B1, sub_32C62, sub_33443, sub_34923, sub_34954, sub_34C31, sub_3706C, sub_397FB)"
     port_status: unported
     verified: null
-    notes: "391B, cd=0, in=11 (hottest caller fan-in of the five), callees op_dispatch + state_word_26400_get_zero + state_2747a/27476 setters + far_cb_8 + dispatch_22174/22180 + farptr_table_invoke + block_words_fetch. Third of five ds:454h param-block apply variants (sub_32C62 dispatches all five): three ch=1 field-set pairs, field index si=6, 478h-bit2 gate, channel/clip publish block, shared 5DC0h->2E131 tail write. conf: med"
+    notes: "391B, cd=0, in=11 (hottest caller fan-in of the five), callees op_dispatch + state_word_26400_get_zero + state_2747a/27476 setters + far_cb_8 + dispatch_22174/22180 + farptr_table_invoke + isldat_state_load. Third of five ds:454h param-block apply variants (sub_32C62 dispatches all five): three ch=1 field-set pairs, field index si=6, 478h-bit2 gate, channel/clip publish block, shared 5DC0h->2E131 tail write. conf: med"
     updated: "2026-10-19"
   - ea: 0x13578
     seg: 0x1357
@@ -16125,10 +16125,10 @@ routines:
     far: true
     class: ASM
     hypothesis: "worldmap_state_apply"
-    sig: "FAR retf (59B): cs:11BEE=ax (mode); ds=es=7075h->71C1h; handle_onetime_op; block_words_fetch; state_table_apply_71c1(cs:11BEE); slot2_map_window_read; slot3_tile3x3_load; if cs:byte_11CF3==0: far sub_2BEB5(ax=11BEE); retf; 2 callers (entity_setup_step, sub_3001E)"
+    sig: "FAR retf (59B): cs:11BEE=ax (mode); ds=es=7075h->71C1h; handle_onetime_op; isldat_state_load; state_table_apply_71c1(cs:11BEE); slot2_map_window_read; slot3_tile3x3_load; if cs:byte_11CF3==0: far sub_2BEB5(ax=11BEE); retf; 2 callers (entity_setup_step, sub_3001E)"
     port_status: unported
     verified: null
-    notes: "59B far, cd=972, in=2, callees handle_onetime_op + block_words_fetch + state_table_apply_71c1 + slot2_map_window_read + slot3_tile3x3_load + far sub_2BEB5. World-map state applier: applies the 71C1 state table for the saved mode, then re-reads the slot2 map window and reloads the slot3 3x3 tiles (optionally pinging 2BEB5) -- the full world-view refresh behind entity_setup_step. conf: med-high"
+    notes: "59B far, cd=972, in=2, callees handle_onetime_op + isldat_state_load + state_table_apply_71c1 + slot2_map_window_read + slot3_tile3x3_load + far sub_2BEB5. World-map state applier: applies the 71C1 state table for the saved mode, then re-reads the slot2 map window and reloads the slot3 3x3 tiles (optionally pinging 2BEB5) -- the full world-view refresh behind entity_setup_step. conf: med-high"
     updated: "2026-10-19"
 
   - ea: 0x2131C
@@ -18789,10 +18789,10 @@ routines:
     far: true
     class: ASM
     hypothesis: "ems_stream_pointer_step"
-    sig: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, block_words_fetch, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters."
+    sig: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, isldat_state_load, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters."
     port_status: unported
     verified: null
-    notes: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, block_words_fetch, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters. conf: medium"
+    notes: "433B, in=1 (far_mode_event_dispatch). EMS stream pointer step: gates cs:word_2E124/2E126+1, word_2E110=word_2E106+1 stored at 2EF3h via ems_map_seg_10233, isldat_state_load, word_2E10A+2 -> ems_map_seg_10231; same function also serves 2E106/2E11A/2E11C/2E122 getters and 2E112/2E114/2E118/2E122 setters. conf: medium"
     updated: "2026-10-19"
   - ea: 0x30AA8
     seg: 0x30AA

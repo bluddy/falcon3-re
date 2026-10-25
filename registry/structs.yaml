@@ -84,7 +84,7 @@ structs:
     source: docs/structures.md §ISLDAT + finding 105 (validated 8/8 by tools/parse_isldat.py)
     fields:
       - {offset: 0x00, size: 2, name: body_len,   type: uint16, comment: "file_size - 9"}
-      - {offset: 0x02, size: 2, name: const_0,    type: uint16}
+      - {offset: 0x02, size: 2, name: grid_base,  type: uint16, comment: "0 in all 8 files; word_11C16 = grid walk base (finding 106)"}
       - {offset: 0x04, size: 2, name: t1_base,    type: uint16, comment: "always 0x500; fine-pool table (gridB)"}
       - {offset: 0x06, size: 2, name: t2_base,    type: uint16, comment: "0x504..0x7CA; coarse-pool table (gridA)"}
       - {offset: 0x08, size: 1, name: swap_flag,  type: uint8,  comment: "1=HOK/KOR/PAN; byteswaps only state_table_apply 3-byte records"}
