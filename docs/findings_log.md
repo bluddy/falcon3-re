@@ -5628,3 +5628,77 @@ ecord_op_dispatch_220b0 → dispatch_220b0_near → call cs:dword_220B0[opcode]
 **Open items**: Point transform to geographic coords, quadrant AX source, flag 0x0002 semantics.
 
 **All gates green**: parse_isldat 8/8 ALL OK, naming check OK, 21 tests OK.
+
+
+## 2026-10-24 111 - ISLDAT SVG generation: geometry requires sub-record assembly
+
+Status: PARTIAL (SVGs show raw points; proper geometry requires sub-record node chain assembly)
+
+**Issue**: The SVG generator connects record points sequentially, but ISLDAT geometry is defined by:
+1. Record points (6B {x,0,y} per point) → consumed by line_draw_441e to build 0x441E line-table entries (0x10 stride, 8 words each: x0,y0,x1,y1,quot,-2*quot,flags,?)
+2. Sub-record node chains (flags & 0x1000 = FFFF-terminated chain, else single node) reference line-table entry offsets
+3. Actual line segments = line-table entries referenced by sub-record node chains
+
+**Current SVGs are WRONG**: They connect all record points sequentially, but:
+- Record points are just raw vertices
+- Actual line segments come from line-table entries built by line_draw_441e
+- Sub-record node chains (flags & 0x1000 = chain, else single) select which line-table entries form each feature
+
+**Correct pipeline** (requires full simulation):
+`
+Record points (6B/pt) 
+  -> line_draw_441e (cross-product/idiv slope, clamp) 
+    -> 0x441E line-table entries (8 words: x0,y0,x1,y1,quot,-2*quot,flags,?)
+Sub-record flags&0x1000 -> chain of line-table offsets (FFFF-terminated) 
+  OR flags&0x1000=0 -> single line-table entry
+`
+
+**NEL works** because it has only 2 simple coastline records with simple node chains.
+**Other theaters are BROKEN** because they have complex node chains referencing many line-table entries.
+
+**To fix**: Need full pipeline simulation (record points -> line_draw_441e -> 0x441E entries -> sub-record node chains). This requires simulating the fixed-point math (cross-product/idiv, clamping) in line_draw_441e and line_from_points.
+
+**Status**: SVGs in nalysis/isldat_svgs_v2/ show raw point clouds only. Proper geometry needs full pipeline simulation.
+
+
+## 2026-10-24 112 - ISLDAT geometry pipeline: sub-record node chains reference global line table
+
+Status: DOCUMENTED (full pipeline understood; SVG generation needs global line table simulation)
+
+**Complete geometry pipeline** (from disassembly):
+
+1. **Record points** → 6B {i16 x, i16 0, i16 y} at record +0x38
+2. **line_draw_441e** (0x28B08) processes record points → builds 0x441E line-table entries
+   - 8 words/entry: x0, y0, x1, y1, slope_quot, -2*slope_quot, flags, ?
+   - Cross-product slope calc: (ax=[si+2]*[bx+4] - [bx+2]*[si+4]) idiv clamp 0x8001/0x7FFF
+   - 0x10 byte stride per entry
+5. **Sub-record node chains** (flags & 0x1000 = chain):
+   - Chain: nodes = line-table byte offsets (0x10 stride), FFFF-terminated
+   - Single: flags & 0x1000 = 0, exactly one node offset
+   - Node values = BYTE OFFSETS in global 0x441E buffer (not per-record indices!)
+6. **record_span_build_and_dispatch** (0x29917) copies node offsets [si+8]/[si+0Ah] to queue
+5. **record_span_mask_rebuild** (0x299D5) walks 0x441E table, accumulates AND/OR masks from [entry+6]
+4. **line_table_build_dispatch** dispatches on word_2796A flags to build/clone entries
+
+**Key insight**: Node offsets are ABSOLUTE byte offsets in the GLOBAL 0x441E buffer, built incrementally as records are processed. Sub-record nodes reference entries from ANY prior record.
+
+**Why SVGs fail**: 
+- Current SVGs connect record points sequentially (wrong)
+- Sub-record node chains reference GLOBAL line table built from ALL prior records
+- Node values like 11504, 65517 are late-record entries; 0,16,32,64 are early-record entries
+- Only NEL works because it's simple (2 records, minimal global table pollution)
+
+**To fix**: Need full pipeline simulation:
+1. Process records in grid-walk order (same as pos_neighbor_norm_scan)
+2. For each record: run line_draw_441e on its points → append to global 0x441E table
+3. For each sub-record: resolve node chain against current global line table
+4. Build polygons from resolved line segments
+
+**Current SVGs** (analysis/isldat_svgs_v2/): Per-record polygons (raw point loops) - approximate only.
+**True geometry**: Requires full pipeline simulation (significant effort).
+
+**Next steps for proper SVGs**: 
+- Implement line_draw_441e fixed-point math (cross-product, idiv, clamp)
+- Simulate grid-walk record order
+- Build global 0x441E table incrementally
+- Resolve sub-record node chains against live table
