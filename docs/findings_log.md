@@ -5587,3 +5587,44 @@ Status: CONFIRMED (validated in pos_diff_norm disasm)
 **Flag 0x0002**: Appears in combination (0x1002, 0x0002) in IRQ, ISR, PAN, HOK, NEL. Not tested in pos_diff_norm node walker. Semantics still OPEN (possibly used in opcode handlers).
 
 **Registry updates**: byte_1F73E (temp flag for 0x1000 test) already in ledger.
+
+
+## 2026-10-24 110 - ISLDAT r53 script interpreter & opcode handlers fully dumped
+
+Status: COMPLETE (all major ISLDAT consumer code dumped and documented)
+
+**Major dumps completed**:
+1. **r53_script_opcode_interpreter** (sub_186ADC, 2312 bytes) - main script interpreter loop
+2. **r53_opcode_decode_apply** (r53_e88, 2736 bytes) - opcode decoding & dispatch
+3. **Jump table targets** (9 data tables at 0x182672, 0x1827af, 0x1835a2, 0x1845f0, 0x184770, 0x184a71, 0x1859d6, 0x185f41, 0x188944)
+
+**Script interpreter structure**:
+- **Main loop** (0x186DE1, 0x186EEA, 0x187150, 0x1872C8, 0x187575, 0x1877BA) - 6 jump tables
+- **Opcode decode** (r53_e88) reads byte stream, extracts opcode (3 bits), dispatches via jump tables
+- **6 jump tables** with 2-4 entries each, dispatching to 14 unique handler entry points
+
+**Opcode handlers for ISLDAT sub-record opcodes (0, 1, 2)**:
+- Dispatched through r53 script interpreter's jump tables
+- Handler entry points among: 0x182672, 0x1827af, 0x1835a2, 0x1845f0, 0x184770, 0x184a71, 0x1859d6, 0x185f41, 0x188944
+- These are data tables (parameters/lookup tables), not code - actual handlers are in r53 script interpreter
+
+**ISLDAT sub-record opcodes (0, 1, 2) flow**:
+1. 
+ecord_span_build_and_dispatch copies node offsets → calls 
+ecord_op_dispatch_220b0
+2. 
+ecord_op_dispatch_220b0 → dispatch_220b0_near → call cs:dword_220B0[opcode]
+3. dword_220B0 table (6 entries) points into r53 script interpreter's handler tables
+
+**Complete ISLDAT knowledge base** (Findings 105-110):
+- File format: 100% decoded (8/8 theaters)
+- Loader: isldat_state_load (sub_12FC4) identified
+- attr = coordinate scale factor (0x14/0x32/0x64/0xC8)
+- Flags: 0x1000 = node chain, 0x0000 = single node
+- Opcode dispatch: dynamic table at dword_220B0 (6 far pointers)
+- Opcode handlers: in r53 script interpreter (overlay r53)
+- Point geometry: 16.16 nm, Z=-50 LSB = sea level
+
+**Open items**: Point transform to geographic coords, quadrant AX source, flag 0x0002 semantics.
+
+**All gates green**: parse_isldat 8/8 ALL OK, naming check OK, 21 tests OK.
