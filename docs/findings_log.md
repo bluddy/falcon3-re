@@ -5814,3 +5814,82 @@ Status: COMPLETE (VGA drawing functions identified and analyzed)
 5. Called from terrain_attr_scan_draw_a/b -> entity_state_load -> main_frame_update_loop
 
 **Complete ISLDAT rendering pipeline documented** (Findings 105-115).
+
+
+## 2026-10-24 117 - ISLDAT format and rendering pipeline complete
+
+Status: COMPLETE (all file formats and rendering pipeline documented in canonical text sinks)
+
+**Complete ISLDAT specification** (Findings 105-116):
+
+### File Format (Finding 105)
+- 9-byte header: body_len, 0, t1_base=0x500, t2_base, swap_flag
+- Fine gridB: 4×256 bytes @ 0x000 → t1 list indices (0x500 base)
+- Coarse gridA: 4×64 bytes @ 0x400 → t2 list indices (t2_base)
+- t1/t2 tables: fixed-point extent K where min(entry[:K]) == base + 2K
+- FFFF-terminated lists → disjoint fine/coarse record pools
+- Feature records: 0x36 header + points + opstream + sub-records
+- Record header (0x36): XYZ i32 (16.16nm) at +0/+4/+8, attr u16, sub-record chain
+- Points: 6B {i16 x, i16=0, i16 y} 16.16nm fixed-point
+- Sub-records: flags/opcode/nodes; flags&0x1000 → chain until FFFF, else single node
+- 196/196 sub-records validated across 8 theaters
+- attr semantics: 0x14=coastline, 0x32=river, 0x64=lake, 0xC8=border/large
+- swap_flag: 1=HOK/KOR/PAN (byteswaps state_table 3-byte records only)
+
+### Loader (Finding 106)
+- isldat_state_load (sub_12FC4, was lock_words_fetch)
+- Reads block 0x27 from farptr table 7075:id*4 (0x9C = 0x27*4)
+- 9B header → word_11C16(grid_base), word_11C18(t1_base), word_11C1A(t2_base), byte_11C0A(swap)
+- Body streamed to state_seg 71C1:0000; 13 callers
+
+### attr = scale factor (Finding 107)
+- pos_diff_norm reads record attr (+0x20), shifts by attr_scale_shift (word_1F6E6)
+- attr values: 0x14=coast, 0x32=river, 0x64=lake, 0xC8=border
+- attr used as divisor in fixed-point delta computation for X/Y/Z
+
+### Opcode dispatch (Finding 108)
+- record_op_dispatch_220b0 → dispatch_220b0_near → call cs:dword_220B0
+- dword_220B0 = 6 far function pointers (opcodes 0/1/2 observed)
+- Opcode 0/1/2 dispatched to handlers in r53 script interpreter
+
+### Sub-record flags (Finding 109)
+- flags & 0x1000 → node chain (FFFF-terminated)
+- flags & 0x1000 = 0 → exactly one node
+- 196/196 sub-records validated
+
+### r53 script interpreter (Finding 110)
+- 2312B interpreter + 2736B opcode decoder
+- 6 jump tables dispatching to 14 handler entry points
+- 9 data tables at 0x182672..0x188944
+
+### Geometry pipeline (Finding 115)
+1. Grid-walk (pos_neighbor_norm_scan) finds records via quadrant/grid indices
+2. line_draw_441e builds 0x441E line table (8 words: x0,y0,x1,y1,q,-2q,flags,?)
+3. Sub-record node chains = absolute byte offsets in 0x441E buffer
+4. terrain_attr_scan_draw_a/b call tile_clip_draw_14200/1426a
+5. tile_clip_draw_14200/1426a write to ES:DI (VGA A000:)
+
+### VGA drawing (Finding 116)
+- tile_clip_draw_14200 (0x14200) / tile_clip_draw_1426a (0x1426A)
+- Write to ES:DI (VGA A000:), 7x7 loop
+- segment_bitfield_decode reads tile data from ES:BX (ES=word_11BEA=0x71C1)
+- param4_compare_flags compares 4 params, writes pixel to [di]
+
+### Grid walk (pos_neighbor_norm_scan)
+- AX = view position → q = ((AX+0x800)&0x3FFF) rol4 & 3
+- word_11CC4 = q<<8 (gridB quad base), word_11CC6 = 0x400+q*64
+- word_11BE6 passed to active_farptr_set (0x62 constant)
+- Two passes: gridA (coarse) → t2 table; gridB (fine) → t1 table
+
+### Canonical text sinks (complete)
+- docs/structures.md §ISLDAT — full format spec
+- registry/structs.yaml — 10 structs (5 ISLDAT confirmed)
+- registry/naming.yaml — 2072 entries (ISLDAT globals, functions, line-table globals)
+- docs/findings_log.md — Findings 105-116 (append-only)
+- docs/time_log.yaml — Sessions 53a-53o
+- registry/naming.yaml — 2072 entries, validated
+- docs/current_state.md — Findings 1-116
+
+**Gates**: parse_isldat 8/8 ALL OK, naming.py check OK (2072), 21 tests OK.
+
+**Open for Track E**: Point transform (16.16nm → geographic), flag 0x0002 semantics, quadrant AX source, opcode handlers.
