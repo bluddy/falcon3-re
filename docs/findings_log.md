@@ -5702,3 +5702,63 @@ Status: DOCUMENTED (full pipeline understood; SVG generation needs global line t
 - Simulate grid-walk record order
 - Build global 0x441E table incrementally
 - Resolve sub-record node chains against live table
+
+
+## 2026-10-24 113 - ISLDAT SVG generation: per-record polygons with documented limitation
+
+Status: BEST EFFORT (per-record polygons generated; full geometry requires grid-walk order simulation)
+
+**Current SVGs** (nalysis/isldat_svgs_v5/): Per-record polygons using each record's own line table entries.
+- **Limitation**: Sub-record node offsets are ABSOLUTE byte offsets in the GLOBAL 0x441E line table buffer.
+- Current implementation uses each record's own line table (indices 0..N-1) to resolve node offsets.
+- **Problem**: Sub-record node offsets are ABSOLUTE byte offsets in the GLOBAL 0x441E buffer (built incrementally from ALL records in grid-walk order).
+- Example: node offset 2452 = byte 2452 = entry index 153; node offset 11 = entry 0.
+- Current per-record approach only works for NEL (simple, 2 records) and records where node offsets happen to fall within the record's own line table range.
+
+**Correct algorithm** (requires grid-walk order simulation):
+`
+1. Determine grid-walk record visitation order (from pos_neighbor_norm_scan logic)
+2. For each record in visitation order:
+   a. Run line_draw_441e on record points → append entries to global 0x441E line table
+   b. For each sub-record: resolve node chain against CURRENT global line table
+3. Build polygons from resolved line segments
+`
+
+**Grid walk order depends on**:
+- View position (word_11C24/11C26 = map X/Y)
+- Quadrant calculation: q = ((pos + 0x800) & 0x3FFF) rol 4 & 3
+- GridA/gridB indexing with quadrant offsets
+
+**Current SVGs** (nalysis/isldat_svgs_v5/): Per-record polygons using each record's own line table.
+- Works for NEL (2 records, simple node chains)
+- Shows general shapes but with duplicate segments for complex theaters
+- Full geometry requires implementing grid-walk order + line_draw_441e simulation
+
+**Next step for proper SVGs**: Implement grid-walk order simulation + line_draw_441e fixed-point math.
+
+
+## 2026-10-24 114 - ISLDAT rendering code in undumped overlay
+
+Status: DOCUMENTED (rendering code not in dumped disassembly)
+
+**Finding**: The ISLDAT coastline rendering code is in an overlay that was NOT dumped in our IDA disassembly.
+
+**Evidence**:
+- line_draw_441e (0x28B08) builds the 0x441E line table buffer (WRITES to it)
+- 
+ecord_span_*, line_table_build_dispatch, line_from_points process sub-record node chains
+- BUT: No code in dumped disassembly READS from 0x441E buffer and writes to VGA memory (A000:)
+- The 	ile_clip_draw_14200/1426a functions draw terrain tiles to VGA (ES:DI = A000:), but use different data sources
+- ISLDAT sub-record node chains reference 0x441E entries by absolute byte offset
+- No code in dumped disassembly reads 0x441E and writes to VGA (A000:)
+
+**Conclusion**: The ISLDAT coastline rendering code (reads 0x441E line table → draws to VGA) is in an overlay that was not dumped. Likely candidates: overlays loaded during terrain rendering or specific ISLDAT rendering overlay.
+
+**Implication for Track E**: Rebuild must implement the rendering pipeline from scratch based on:
+1. File format spec (complete)
+2. Line table format (complete: 8 words/entry at 0x441E)
+3. Sub-record node chain semantics (complete: absolute byte offsets in 0x441E)
+4. line_draw_441e fixed-point math (documented from disassembly)
+4. Need to implement: grid-walk order → line_draw_441e simulation → sub-record node chain resolution → line rasterization
+
+**Next step for proper SVGs**: Implement the full pipeline simulation in Python (not OCaml yet) to generate correct SVGs before Track E.
