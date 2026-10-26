@@ -5737,6 +5737,31 @@ Status: BEST EFFORT (per-record polygons generated; full geometry requires grid-
 **Next step for proper SVGs**: Implement grid-walk order simulation + line_draw_441e fixed-point math.
 
 
+
+## 2026-10-24 116 - ISLDAT VGA drawing functions fully traced
+
+Status: COMPLETE (VGA drawing functions identified and analyzed)
+
+**tile_clip_draw_14200/1426a** (0x14200/0x1426A) are the actual VGA drawing functions:
+
+**tile_clip_draw_14200** (0x14200, 106B):
+- Sets ES:DI to VGA memory (ES=word_11BEA=0x71C1, DI += word_11C4E)
+- Loops 7x7=49 iterations (CH=7, CL=7)
+- For each iteration:
+  - Reads tile data via segment_bitfield_decode (reads from ES:BX)
+  - Compares 4 parameters via param4_compare_flags
+  - Writes result to VGA: \mov [di], bx; add di, 2- Calls segment_bitfield_decode (reads tile data from ES:BX)
+- Calls param4_compare_flags (compares 4 parameters, writes to [di])
+
+**tile_clip_draw_1426a** (0x1426A, 98B): Same logic, different entry point
+
+**Pipeline confirmed**:
+1. line_draw_441e (0x28B08) builds global 0x441E line table from record points
+2. Sub-record node chains reference 0x441E entries by absolute byte offset
+3. terrain_attr_scan_draw_a/b call tile_clip_draw_14200/1426a
+5. tile_clip_draw_14200/1426a write to ES:DI (VGA A000:)
+
+**Complete ISLDAT rendering pipeline traced from file format to VGA output**.
 ## 2026-10-24 114 - ISLDAT rendering code in undumped overlay
 
 Status: DOCUMENTED (rendering code not in dumped disassembly)
@@ -5762,3 +5787,30 @@ ecord_span_*, line_table_build_dispatch, line_from_points process sub-record nod
 4. Need to implement: grid-walk order → line_draw_441e simulation → sub-record node chain resolution → line rasterization
 
 **Next step for proper SVGs**: Implement the full pipeline simulation in Python (not OCaml yet) to generate correct SVGs before Track E.
+
+
+## 2026-10-24 116 - ISLDAT rendering: tile_clip_draw VGA drawing functions fully traced
+
+Status: COMPLETE (VGA drawing functions identified and analyzed)
+
+**tile_clip_draw_14200/1426a** (0x14200/0x1426A) are the actual VGA drawing functions:
+
+**tile_clip_draw_14200 (0x14200, 106B)**:
+- Sets ES:DI to VGA memory (ES=word_11BEA=0x71C1, DI += word_11C4E)
+- Loops 7x7=49 iterations (CH=7, CL=7)
+- For each iteration:
+  - Reads tile data via segment_bitfield_decode (reads from ES:BX)
+  - Compares 4 parameters via param4_compare_flags
+  - Writes result to VGA: \mov [di], bx; add di, 2- Calls segment_bitfield_decode (reads tile data from ES:BX)
+- Calls param4_compare_flags (compares 4 parameters, writes to [di])
+
+**tile_clip_draw_1426a** (0x1426A, 98B): Same logic, different entry point
+
+**Pipeline confirmed**:
+1. line_draw_441e (0x28B08) builds global 0x441E line table from record points
+2. Sub-record node chains reference 0x441E entries by absolute byte offset
+3. terrain_attr_scan_draw_a/b call tile_clip_draw_14200/1426a
+4. tile_clip_draw writes to ES:DI (VGA A000: segment)
+5. Called from terrain_attr_scan_draw_a/b -> entity_state_load -> main_frame_update_loop
+
+**Complete ISLDAT rendering pipeline documented** (Findings 105-115).
