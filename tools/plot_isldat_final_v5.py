@@ -112,10 +112,14 @@ def generate_svg(records, theater_name, output_dir='analysis/isldat_svgs_final')
             if len(pts) < 3:
                 continue
             path = f'M {tx(pts[0][0])} {ty(pts[0][1])}'
-            for px, py in pts[1:]:
+            for i, (px, py) in enumerate(pts[1:], 1):
                 path += f' L {tx(px)} {ty(py)}'
             path += ' Z'
             svg.append(f'<path d="{path}" fill="none" stroke="{ATTR_COLORS.get(attr, "#888")}" stroke-width="1.5" opacity="0.7"/>')
+            # Add point labels with global indices
+            for i, (px, py) in enumerate(pts):
+                global_idx = sum(len(r[2]) for r in records[:records.index((r_off, attr_r, pts))]) + i
+                svg.append(f'<text x="{tx(px)}" y="{ty(py)}" font-family="monospace" font-size="8" fill="black" text-anchor="middle" dominant-baseline="middle">{global_idx}</text>')
     
     svg.append('</svg>')
     with open(f'{output_dir}/{theater_name}_coastline.svg', 'w') as f:
