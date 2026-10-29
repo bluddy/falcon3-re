@@ -84,7 +84,7 @@ for i, (wx, wy, coast_off, row, col, px, py) in enumerate(deduped):
     sx = tx(wx)
     sy = ty(wy)
     svg.append(f'<circle cx="{sx:.2f}" cy="{sy:.2f}" r="2" fill="#0066cc" opacity="0.8"/>')
-    svg.append(f'<text x="{sx:.2f}" y="{sy:.2f}-4" font-family="monospace" font-size="7" fill="black" text-anchor="middle">{i}</text>')
+    svg.append(f'<text x="{sx:.2f}" y="{sy - 4:.2f}" font-family="monospace" font-size="7" fill="black" text-anchor="middle">{i}</text>')
 
 # Draw connected path
 if deduped:

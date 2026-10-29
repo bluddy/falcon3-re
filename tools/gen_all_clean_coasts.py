@@ -98,12 +98,12 @@ for p in glob.glob('game/ISLDAT.*'):
         for i, (coast_off, (wx, wy, row, col, west_pt)) in enumerate(tiles):
             sx, sy = tx(wx), ty(wy)
             svg.append('<circle cx="{:.2f}" cy="{:.2f}" r="4" fill="#ff0000" opacity="0.8"/>'.format(sx, sy))
-            svg.append('<text x="{:.2f}" y="{:.2f}-6" font-family="monospace" font-size="10" fill="black" text-anchor="middle">{}</text>'.format(sx, sy, i))
-            svg.append('<text x="{:.2f}" y="{:.2f}+14" font-family="monospace" font-size="8" fill="#666" text-anchor="middle">{:#06x}</text>'.format(sx, sy, coast_off))
+            svg.append('<text x="{:.2f}" y="{:.2f}" font-family="monospace" font-size="10" fill="black" text-anchor="middle">{}</text>'.format(sx, sy - 6, i))
+            svg.append('<text x="{:.2f}" y="{:.2f}" font-family="monospace" font-size="8" fill="#666" text-anchor="middle">{:#06x}</text>'.format(sx, sy + 14, coast_off))
         
         # Legend
         svg.append('<text x="20" y="50" font-family="monospace" font-size="10" fill="#0066cc">Clean coast (west endpoints, south-to-north)</text>')
-        svg.append('<text x="20" y="65" font-family="monospace" font-size="10" fill="#666">{} tiles'.format(len(tiles)))
+        svg.append('<text x="20" y="65" font-family="monospace" font-size="10" fill="#666">{} tiles</text>'.format(len(tiles)))
         
         svg.append('</svg>')
         

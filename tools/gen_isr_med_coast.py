@@ -102,7 +102,7 @@ for coast_off, (wx, wy, row, col, west_pt) in sorted_tiles:
     svg.append(f'<line x1="{sx1:.2f}" y1="{sy1:.2f}" x2="{sx2:.2f}" y2="{sy2:.2f}" stroke="#0066cc" stroke-width="3" opacity="0.7"/>')
     # Mark west endpoint
     svg.append(f'<circle cx="{sx1:.2f}" cy="{sy1:.2f}" r="4" fill="#ff0000" opacity="0.8"/>')
-    svg.append(f'<text x="{sx1:.2f}" y="{sy1:.2f}-8" font-family="monospace" font-size="8" fill="black" text-anchor="middle">{coast_off:#06x}</text>')
+    svg.append(f'<text x="{sx1:.2f}" y="{sy1 - 8:.2f}" font-family="monospace" font-size="8" fill="black" text-anchor="middle">{coast_off:#06x}</text>')
 
 # Draw connected path through west endpoints (clean coast)
 west_pts = [(tx(wx), ty(wy)) for coast_off, (wx, wy, _, _, _) in sorted_tiles]

@@ -95,7 +95,7 @@ for coast_off, row, col, wx, wy, px, py in all_world_pts:
     color = '#0066cc' if wx < -5 else '#666666'
     svg.append(f'<circle cx="{sx:.2f}" cy="{sy:.2f}" r="1.5" fill="{color}" opacity="0.7"/>')
     # Label with coast offset
-    svg.append(f'<text x="{sx:.2f}" y="{sy:.2f}-3" font-family="monospace" font-size="6" fill="black" text-anchor="middle">{coast_off:#06x}</text>')
+    svg.append(f'<text x="{sx:.2f}" y="{sy - 3:.2f}" font-family="monospace" font-size="6" fill="black" text-anchor="middle">{coast_off:#06x}</text>')
 
 # Draw western coast as connected path (sorted by Y)
 if west_pts:
