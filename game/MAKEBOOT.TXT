@@ -1,0 +1,130 @@
+============================================================================
+
+                HOW TO MAKE A BOOT DISK FOR FALCON 3.0
+
+============================================================================
+
+     Falcon 3.0 is unlike any other simulator ever created for a personal
+computer.  Because of all of its extensive features, it demands more free
+memory than an ordinary simulation.  This is a tutorial on how to optimize
+your system to run Falcon 3.0 in all its glory.
+
+     If you can't free up enough memory on your computer, you will want to
+make a boot disk.  The purpose of a boot disk is to temporarily reconfigure
+your computer so Falcon 3.0 can run on it.  Most users have their CONFIG.SYS
+and AUTOEXEC.BAT files on their hard disk arranged to their liking.  Unfor-
+tunately, those files often load device drivers and TSRs that eat up memory
+which interferes with Falcon 3.0.  By creating a boot disk with a separate
+AUTOEXEC.BAT and CONFIG.SYS, you can run Falcon 3.0 without changing your
+system's current setup.
+
+     First, insert a blank, unformatted 1.2MB 5.25" or 1.44MB 3.5" disk into
+drive A and type this command at the DOS prompt:
+
+		FORMAT A: /S
+
+Be sure that the disk is empty because the DOS Format commmand will wipe
+out any information on it.
+
+     When the disk is finished formatting, change your directory to the
+one where Falcon 3.0 is stored on your hard disk and type:
+
+		DIR *.BAT
+
+You should see a list of five files, all with the .BAT extension.  These are
+called batch files.  These batch files will create brand-new CONFIG.SYS
+and AUTOEXEC.BAT files on the disk you've just formatted.  In order for these
+files to work properly, you must have DOS 5.0 or later installed on your
+hard disk at C:\DOS.  To activate the batch file, type:
+
+		BOOT		 or
+		BOOTEMM		 or
+		BOOTMICE	 or
+		BOOTNET		 or
+		BOOTQEMM
+
+
+============================================================================
+BOOT.BAT     - simply configures your system to the most memory possible. If
+               your system has only 1MB of RAM, you should run this batch
+               file.
+
+BOOTEMM.BAT  - will activate EMM386.EXE and allocate 1MB of expanded
+	       memory.  This gives you slightly less conventional memory to
+	       run Falcon 3.0.  However, Falcon 3.0 will now take advantage
+	       of the extra 1MB of expanded memory.  You will need 2MB
+	       or more of RAM to use this batch file.
+
+BOOTMICE.BAT - is similar to BOOTEMM.BAT.  The main difference is a mouse
+	       driver will be loaded as well.  The mouse driver will be
+	       installed into high memory and will not interfere with
+               Falcon 3.0.  You will be asked to copy the mouse driver
+               that is on your hard drive to the boot disk.  Find where
+	       your mouse driver is on your hard disk and change your 
+               directory to there.  Now type:
+
+			COPY MOUSE.COM A:
+
+	       MOUSE.COM is the name of most mouse drivers.  If your mouse
+	       driver is not named MOUSE.COM, then replace it with the name
+               of your mouse driver on your boot disk's AUTOEXEC.BAT file.
+	       If you use MOUSE.SYS instead of MOUSE.COM, then you will need
+               to manually edit the CONFIG.SYS file to load the mouse.
+
+BOOTPS2.BAT  - will create a boot disk especially for PS/2 owners.  Because
+               high memory of PS/2s are  configured differently from other
+               machines, it requires it own boot batch file.
+
+BOOTNET.BAT  - will load IPX.COM and NET5.COM into high memory and provide
+	       1MB of expanded memory.  This will allow Falcon 3.0 to 
+	       work with a Novell network in communications mode.  You need
+               to copy both IPX.COM and NET5.COM from your hard drive to the
+               boot disk.  Find where your network drivers are on your hard
+               disk and change your directory to there.  Now type:
+
+			COPY IPX.COM A:
+			COPY NET5.COM A:
+
+	       If you want to run a mouse driver along with your network
+               driver, you will need to modify the AUTOEXEC.BAT file that
+               was created on your boot disk.  First copy your MOUSE.COM to
+	       your boot disk as described in th paragraph above.  Next, use
+	       a text editor and remove the three letters "REM" from line
+               five of the file.  The AUTOEXEC.BAT file will now try to load
+	       the two network drivers and a mouse driver into high memory.
+               However, this setup varies from machine to machine and may eat
+               up too much memory to run Falcon 3.0.  If this is the case, go
+               back and reinsert the letters "REM" in line five of the
+               AUTOEXEC.BAT.
+
+BOOTQEMM.BAT - is provided for owners of Quarterdeck's QEMM386 memory
+	       manager.	 QEMM does an excellent job of installing itself
+	       onto a hard disk, but this batch file is provided for
+	       your convenience.  BOOTQEMM.BAT requires QEMM to be
+	       on your hard disk at C:\QEMM.  To load mouse and network
+	       drivers high, add the appropriate lines to the CONFIG.SYS
+               and AUTOEXEC.BAT that load the drivers. Now run OPTIMIZE
+               which comes with QEMM386.  OPTIMIZE will configure your
+               system to load everything it can find into high memory.
+
+
+USING A BOOT DISK
+-----------------
+After the boot disk is created, insert this disk into drive A and restart
+your computer.  (The boot disk will only work if your computer will boot 
+from a floppy disk in drive A.)  Now change to the Falcon 3.0 directory on
+your hard drive.  Type "FALCON3" to run the program.  To run your normal
+computer setup, remove the boot disk and boot your hard drive.
+
+If you use a real-time software compression driver on your hard disk such
+as STACKER and DOUBLE DISK, you must make modifications after using these
+batch files.  Edit the CONFIG.SYS file on the boot disk to include the
+device driver.  If possible, load that driver high with the DEVICEHIGH
+command so it will not interfere with Falcon 3.0.
+
+To increase the amount of EMS you are using, you can use a text editor to
+modify the CONFIG.SYS file on the boot disk.  Simply increase the number
+"1024" in the CONFIG.SYS file to the amount of EMS desired.  One unit will
+equal 1K of expanded memory, so replacing 1024 with 2048 provides
+2MB of EMS, 3072 provides 3MB, etc.  Remember, in order to get more
+than 1MB of EMS, you will need over 2MB of total RAM.

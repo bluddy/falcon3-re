@@ -1,0 +1,312 @@
+FILE	mouse,ems,mainmenu,joystick,commints,serdata
+FILE	condata
+FILE    newmap
+
+FILE	sndinit
+FILE	outchip
+FILE	digi
+FILE	ibm
+FILE	adlib
+FILE	blaster
+FILE	mt32
+FILE	mpuasm
+FILE	xadlibsn
+FILE	detect
+FILE	timer
+FILE	setfreq
+FILE	xadlibpch
+FILE	xmusicli
+FILE	xmidipla
+FILE	music
+FILE	soundata
+FILE	xbeepers
+FILE	initsnd
+FILE	xfmlib
+FILE	xmapmgr
+FILE	xsndload
+FILE	xfmadlib
+FILE	xfmmt32
+FILE	xbeeps
+FILE	xsoundli
+#LIB    voxlow.obj
+
+LIB	LIB3D
+
+IGNORECASE
+#VERBOSE        2
+MAP		S,N,A,L,V
+OUTPUT		..\EXE\MIG29
+#CODEVIEW
+#CVVERSION      2
+#CVRELOAD       512
+
+#WORKFILE        d:\swap
+RELOAD		FAR	50
+
+#---------------------------------------------------------------------------
+BEGINAREA
+#---------------------------------------------------------------------------
+
+	BEGINAREA
+		SECTION
+		FILE	capture
+	        FILE    newvga
+		FILE	startup
+		FILE	cpucheck
+		FILE	generror
+
+		SECTION
+		CLASS	DATA (wdefaultdata)
+		FILE	armsdflt
+
+		SECTION
+		FILE	needle
+		FILE	line,faceplat
+		FILE	theflag
+		FILE	messages
+		FILE	palcode
+
+		SECTION
+		CLASS	CODE (JOYSTICKCALSEG)
+
+		SECTION
+		FILE	implode\implode
+		CLASS	CODE (PK_TEXT)
+	ENDAREA
+
+	BEGINAREA
+		SECTION
+		CLASS	data (hitlistdata)
+		CLASS	data (infantrydata)
+		CLASS	data (airdefensedata)
+		CLASS	data (flarechaffsegment)
+		CLASS	data (expimagedata)
+		CLASS	data (explodedata)
+		CLASS	data (weapondataseg)
+		CLASS	data (objectsegment)
+		CLASS	data (object3ddata)
+		CLASS	data (falcondata)
+		CLASS	data (cratterdata)
+		CLASS	data (tankdata)
+                CLASS   data (AMOdata)
+		CLASS	data (burndata)
+		CLASS	data (clouddata)
+                CLASS   data (stardata)
+		CLASS	data (flatgrounddata)
+                CLASS   data (instrdata)
+                CLASS   data (needledata)        
+		CLASS	data (mssg_data)
+
+		FILE	data,explosns
+		FILE	objcode,objdata
+		FILE	clouds
+                FILE    stars
+		FILE	cratter
+		FILE	main,padlock
+		FILE	hud,panelins,los
+		FILE	adi-hsi
+		FILE	flight,enemy
+		FILE	weapon,hudlogic
+                FILE    hitlist,soldiers,tank,AMOSys
+		FILE	AirDfnse,Burning,dumbobjs,flatgrnd
+		FILE	recorder
+		FILE	serlrcv
+                FILE    radar
+
+#---------------------------------------------------------------------------
+		BEGINAREA
+#---------------------------------------------------------------------------
+
+                        SECTION
+			FILE	cheat
+                        SECTION
+			FILE	trnsport
+                        SECTION
+                        CLASS   data    (openingdata)
+                        FILE    opening
+			SECTION
+			FILE	serial,serlan
+			SECTION
+			FILE	vcrextra
+			BEGINAREA
+				SECTION
+				FILE	vcrfile
+				SECTION
+				FILE	vcrrtn, tacts
+			ENDAREA
+			SECTION
+			CLASS	far_data (pmenudata)
+			FILE	ppmenu1,menuutil,pmenudat
+			BEGINAREA
+				SECTION
+				FILE	ppmenu2
+				SECTION
+				FILE	ppmenu3
+			ENDAREA
+#---------------------------------------------------------------------------
+		ENDAREA
+
+#---------------------------------------------------------------------------
+#               SECTION
+#		LIB		APILIB_L
+#		LIB		c:\c600\lib\llibc7
+#		FILE		dvoxsetp
+
+#---------------------------------------------------------------------------
+                SECTION
+		CLASS   FAR_DATA (configFARDATA)
+		FILE    econfig, cdata
+#---------------------------------------------------------------------------
+		SECTION
+		FILE	info
+		FILE	zanim, animmain
+#---------------------------------------------------------------------------
+		SECTION
+		CLASS   FAR_DATA        (globaldata)
+                CLASS   far_data        (warglobaldata)
+                CLASS   far_data        (stringdata)
+                CLASS   far_data        (interdata)
+                CLASS   data            (fontsegment)
+                FILE    newglob
+                FILE    rreadmis
+                FILE    ddraw1,ddraw2,ddraw3,draw4
+
+                FILE    bglobal
+
+                FILE    dcontrol,darrow
+                FILE    asmdata
+                FILE    agensquad
+                FILE    dutil1,dutil2,dutil3
+		FILE    menutil2
+		FILE	longmath
+                FILE    fonts
+                FILE    acamcomm,sermik,commin,f30link
+
+#---------------------------------------------------------------------------
+                BEGINAREA
+                        SECTION
+                        CLASS   far_data (gendata)
+                        FILE    ageneral
+                        FILE    dgenanim
+                        FILE    gendata
+#---------------------------------------------------------------------------
+                        SECTION
+                        FILE    highscor
+#---------------------------------------------------------------------------
+                        SECTION
+                        CLASS far_data (readydata)
+                        CLASS data (sierradata)
+                        FILE   aready
+                        FILE   rdydata
+                        FILE   sfonts
+#---------------------------------------------------------------------------
+                        SECTION
+                        FILE   awar
+
+                        SECTION
+                        FILE    agetmiss
+
+                        SECTION
+                        FILE   ajapmiss
+
+                        SECTION
+                        FILE    amisutil
+
+
+                        SECTION
+                        FILE    anewmiss
+
+                        SECTION
+                        FILE    aroutes
+
+                        SECTION
+                        FILE    aeroutes
+
+                        SECTION
+                        FILE    amisscon        
+
+
+                        SECTION
+                        LIB    adebug.obj
+
+                        SECTION
+                        LIB    adebug2.obj
+
+
+#---------------------------------------------------------------------------
+                        SECTION
+		  	FILE	setpal
+#---------------------------------------------------------------------------
+                        SECTION
+                        FILE    arecon
+                        SECTION
+                        FILE    atrace
+#---------------------------------------------------------------------------
+                        SECTION
+                        FILE areport1
+                        SECTION
+                        FILE areport2
+#---------------------------------------------------------------------------
+                        SECTION
+                        FILE    acamp1
+
+
+                        SECTION
+                        FILE    acamp2
+
+                        SECTION
+                        LIB     anode.obj
+
+                        SECTION
+                        FILE    acamp3
+                        SECTION
+                        FILE    acamp4
+                        SECTION
+                        FILE    acamp5
+                        SECTION
+			CLASS	far_data (camp6DataSeg)
+                        FILE    acamp6,camp6dat
+                        FILE    areason
+                        FILE    dawards, devaluat
+                        SECTION
+                        FILE    acamp7
+
+                        SECTION
+                        FILE    dflight        
+
+#---------------------------------------------------------------------------
+			SECTION
+			FILE	cflag1
+              	        SECTION
+                      	FILE    cflag2
+                      	SECTION
+                      	FILE    cflag3
+                      	SECTION
+                      	FILE    cflag4
+      	                SECTION
+                      	FILE    cflag5
+                      	SECTION
+                        FILE    cflag6
+                        SECTION
+                        FILE    cflag7
+      	                SECTION
+              	        FILE    cflag8,util
+#---------------------------------------------------------------------------
+			SECTION
+		  	FILE	aweapon1
+                        SECTION
+                        FILE    aweapon2
+                        SECTION
+                        FILE    cweapon3
+#---------------------------------------------------------------------------
+                         SECTION
+                         FILE    apilot1
+                         SECTION
+                         FILE    apilot2
+#---------------------------------------------------------------------------
+                ENDAREA
+#---------------------------------------------------------------------------
+	ENDAREA
+#---------------------------------------------------------------------------
+ENDAREA
+

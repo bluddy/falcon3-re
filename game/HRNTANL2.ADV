@@ -1,0 +1,55 @@
+REM Hornet from Spectrum HoloByte - Using ANALOG throttle control.
+REM Use the file HRNTDIG2.ADV for DIGITAL throttle control in Falcon 3.0.
+REM Set BLACK mode switch to DIGITAL and RED mode switch to ANALOG.
+REM Select JOYSTICK as control from CONFIGS - SYSTEM SETUP.
+REM Enter cockpit and hit escape to recalibrate. Select CONTROLS - JOYSTICK -
+REM RECALIBRATE from menus at the top of the screen.  Follow the prompts.
+REM While calibrating be sure to press TRIGGER on FCS(PFCS) when told to
+REM press a button - the routine is looking for an ANALOG button.
+REM When finished with last step of calibration - select "S" to (S)ave it and
+REM "E" to (E)xit, then select "F" (F)ile and then "R" (R)eturn to game.
+REM Select JOYSTICK as control from CONFIGS - SYSTEM SETUP.
+REM HAPPY THRUSTMASTERING !  8)
+REM ATTENTION: TO SET THE TAIL HOOK CYCLE - UPON FIRST ENTERING THE COCKPIT
+REM IF YOU ARE ON THE RUNWAY OR CARRIER, PUT THE ROCKER SWITCH ON THE HANDLE
+REM IN THE DOWN POSITION AND PRESS BTN LB ON THE FCS(PFCS) THREE TIMES!!!!!
+GAME 0 90 rem Analog Throttle Type 0, rate 90 ms character pacing.
+BTN UB /U ENT             rem Cycle A-A weapons
+       /M ENT             rem Cycle A-A weapons
+       /D BSP             rem Cycle A-G weapons
+BTN MB F8                 rem Radar Range Cycle
+BTN LB /U SCRLCK          rem Cockpit up/down
+       /M /T /P /N k      rem Lwr Instrument Panel - 1st press & hold
+             /R 3         rem Return to fwd view - 1st release
+          /T /P /N SCRLCK rem Cockpit up/down - 2nd press & hold
+             /R /N SCRLCK rem Cockpit up/down - 2nd release
+       /D /T h            rem Tail Hook up/down - 1st press
+          /T g            rem Gear up/down - 2nd press
+BTN HU /U /T 8            rem Padlock - 1st press
+          /T 3            rem Forward HUD view - 2nd press
+       /M /T 8            rem Padlock - 1st press
+          /T 3            rem Forward HUD view - 2nd press
+       /D KP8             rem Trim Nose down
+BTN HR "                  rem Right DDI Cycle
+BTN HL :                  rem Left DDI Cycle
+BTN HD /U F9 F10          rem Azimuth Scan & Antenna Elevation
+       /M F9 F10          rem Azimuth Scan & Antenna Elevation
+       /D KP2             rem Trim nose up
+BTN 1 INS DEL INS DEL INS DEL  rem Chaff/Flares (3 X 3)
+BTN 2 O                   rem AOA Limiter on/off
+BTN 3 /U t                rem Target Select
+      /M t                rem Target Select
+      /D ALT h            rem Invoke LSO Messages
+BTN 4 x                   rem Break Radar Lock
+BTN 5 z n                 rem Tgt lock & IFF
+BTN 6 b w                 rem speed brakes (air) Wheel Brakes (ground)
+RKR UP /P F6              rem Rocker up ACM radar
+       /R F5              rem Rocker middle NAM radar
+RKR DN /P F7              rem Rocker down - GM Radar
+       /R F5              rem Rocker middle - NAM radar
+rem NOTE: THIS FILE IS TO BE USED WITH THE NEW CHIP AND MICROCODE FOR THE
+rem MARK II WCS ONLY.  IF YOU DO NOT HAVE THIS CHIP, THEN CONTACT THRUSTMASTER
+rem TO INQUIRE ABOUT UPGRADING TO THE NEW CHIP AND MICROCODE!!!!
+rem How can you tell if you have the new chip and microcode?  At the C:\MARKII
+rem Dos prompt type DIR MK2LOAD.EXE and hit enter.  If it says "File not found
+rem then you have the old microcode version that uses DOWNLOAD.EXE instead.
