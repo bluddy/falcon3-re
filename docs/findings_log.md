@@ -5936,3 +5936,63 @@ box; unshared edges on the box are seams and are dropped. Lakes keep all
 unshared edges. `tools/extract_isldat_coast_edges.py` →
 `analysis/isldat_coast_edges/`. Local→world transform still open (endpoint
 stitching across neighbour tiles finds no consistent scale/orientation).
+
+
+## 2026-11-08 119 - Cluster-B IDB rebuild, overlay jump/thunk xref repair, and R53 script interpreter jump tables re-derived
+
+Status: COMPLETE (all gates green: `verify_idb` INTACT, `verify_rebuild` faithful, `naming.py check` OK, 21/21 unit tests OK)
+
+### 1. Cluster-B Segment Rebuild & Function Registration (`R50_569Fs`..`R68_569Fs`, `R69_606E`)
+
+Executed the headless IDA 9.1 rebuild of rows 50–69 from `game/FALCONCD.EXE` at the corrected `window = 0x100000 + w2*16` base (Finding 118):
+- Rewrote `R50_569Fs`..`R68_569Fs` (`0x17C650..0x1AAF10`, 16-bit code segments) and `R69_606E` (`0x706E0..0x85067`, 84,359 B initialized DGROUP data segment containing `israel.mfi`, `falcon3.def`, `falcon3.smp`, startup strings).
+- Applied all **12,128** Cluster-B fixups across rows 50–69 with **0** mismatches (`apply_overlay_fixups.py`: `12,128 applied, 25,196 already present, 0 mismatch`).
+- Swept and registered the complete function and jump-table anatomy across all 19 Cluster-B code overlays (`R50_569Fs`..`R68_569Fs`, 188,368 B total) under `registry/overlays_register_expected.json`:
+  - **213 functions** total across Cluster-B (`32` kept entry points expanded to full 16-bit spans + `181` newly registered functions; `17` obsolete `-0x60`-shifted entries retired in `registry/bitness_fix_expected.json`).
+  - **80 CS-relative switch jump tables** (`2E FF A7 disp16`) formatted as `dw` arrays with explicit `fl_JN` code refs and `dr_O` data refs.
+  - Coverage across `R50_569Fs`..`R68_569Fs` is **99.5%–100.0%** per segment (remaining bytes are the 3 string holes in `R53_569Fs`, the `STORES.BIN` data block in `R63_569Fs`, and trailing paragraph-alignment `00` padding).
+
+### 2. Overlay Jump & Cross-Reference Repair in IDA
+
+Fixed three classes of cross-reference disconnects in `FALCONCD.EXE.i64` without altering any instruction bytes:
+1. **RTLink Thunk Jumps (`0x2BD9D..0x2C973`)**: In IDA's flat linear address space, `jmp far seg:off` at `thunk_ea + 3` automatically resolved to the real-arena overlay (`R30_569F`, `R05_1E10`, etc.) instead of the synthetic overlay specified by `dw wid` at `thunk_ea + 8`. Replaced **260** wrong automatic crefs with **266** `XREF_USER` `fl_JF` code refs to the true target overlay `entry_ea`.
+2. **Intra-Overlay Far Calls/Jumps (`9A`/`EA`) in Synthetic Overlays (`R03_1CF6s`..`R68_569Fs`)**: Relocated segment words (`seg + 0x1000`) inside synthetic `s`-suffix overlays resolved in IDA to the real-arena segment (`0x669F0`, `0x2E100`, etc.) instead of the containing synthetic overlay's sub-block `lo + (unreloc_seg - w0) * 16 + off`. Replaced **475** wrong automatic crefs with **471** `XREF_USER` `fl_CF`/`fl_JF` intra-overlay code refs.
+3. **Cluster-B Switch Jump Tables**: Added `XREF_USER` `fl_JN` case crefs and `dr_O` table drefs for all **80** Cluster-B switch jump tables (`618` case edges).
+
+### 3. Re-derived `R53_569Fs` Sub-Blocks & `r53_e166` Script Interpreter Jump Tables (Updates Findings 108 & 110)
+
+`R53_569Fs` (`0x1820B0..0x189F10`, 32,352 B, `w0 = 0x569F`) comprises **5 RTLink paragraph sub-blocks** (verified by fixup anchor paragraphs and `CS`-relative offset resolution):
+
+| Sub-block `seg` | Offset `(seg - w0)*16` | IDA Base EA | Span | Contents |
+|---|---|---|---|---|
+| `0x569F` | `+0x0000` | `0x1820B0` | `0x1820B0..0x186440` | 15 functions (`sub_1820B0`..`sub_186258`) + string hole `0x186416..0x186430` (`c:\ed.out`) |
+| `0x5AD8` | `+0x4390` | `0x186440` | `0x186440..0x186550` | 1 function (`sub_186440`, 270 B) |
+| `0x5AE9` | `+0x44A0` | `0x186550` | `0x186550..0x188220` | 5 functions (`sub_186550`, `r53_e166` @ `0x186A7C..0x187E34`, `sub_188103`, `sub_188108`, `sub_188197`) + jump tables `0x187E34..0x187EA8` + string hole `0x187EA8..0x188103` (`Read error on TEMP.OUT`, debriefing strings) |
+| `0x5CB6` | `+0x6170` | `0x188220` | `0x188220..0x1898A0` | 21 functions (`sub_188220`..`sub_1897B9`) + string hole `0x189779..0x1897B9` (`%3i%%`, `NONE`) |
+| `0x5E1E` | `+0x77F0` | `0x1898A0` | `0x1898A0..0x189F10` | 1 function (`sub_1898A0`, 1,648 B) |
+
+Within sub-block `0x5AE9` (base `0x186550`), `r53_e166` (`r53_script_opcode_interpreter`, `0x186A7C..0x187E34`, 5,048 B — merging the old `-0x60`-shifted `0x186ADC` + `r53_e88` split) contains **6 CS-relative switch dispatches** (`2E FF A7 disp16`) indexing into the 58-word jump table region `0x187E34..0x187EA8` (each word `w` resolves to `0x186550 + w`):
+
+| Switch Insn EA | Table Disp (`CS:disp16`) | Table EA | Cases | Target Case Handler EAs (`0x186550 + word`) |
+|---|---|---|---|---|
+| `0x186D81` | `CS:0x1948` | `0x187E98` | 8 | `0x186D86`, `0x186D8F`, `0x186DCA`, `0x1871F1`, `0x18738D`, `0x1874D5`, `0x186D51` (default/exit), `0x1875C3` |
+| `0x186E8A` | `CS:0x193C` | `0x187E8C` | 6 | `0x186E8F`, `0x186EEE`, `0x186F4D`, `0x186FAC`, `0x18700B`, `0x187068` |
+| `0x1870F0` | `CS:0x1930` | `0x187E80` | 6 | `0x1870F5` (×2), `0x187115` (×4) |
+| `0x187268` | `CS:0x190C` | `0x187E5C` | 18 | `0x18726D` (×11), `0x1872B2` (×7) |
+| `0x187515` | `CS:0x1904` | `0x187E54` | 4 | `0x18751A`, `0x18753A`, `0x187554`, `0x187572` |
+| `0x18775A` | `CS:0x18E4` | `0x187E34` | 16 | `0x18775F` (×1), `0x1879BC` (×1), `0x187AA2` (×1), `0x187B49` (×12), `0x187AEE` (×1) |
+
+### 4. Measured Effect on Ground Truth & Callgraph
+
+| Metric | Before (f117/f118) | After (f119) |
+|---|---|---|
+| Total functions (`function_bytes.json`) | 2,237 | **2,401** (`+181` added, `17` `-0x60` retired) |
+| Cluster-B functions (`R50`..`R68`) | 49 (shifted `-0x60`) | **213** (at `0x100000 + w2*16`) |
+| Static callgraph edges | 5,919 | **6,740 (`+821`)** |
+| Static unresolved refs | 1,004 | **637 (`-367`)** |
+| Union callgraph edges | 5,938 | **6,761 (`+823`)** |
+| Global zero-indegree orphans | 6 | **5** |
+| `naming.py check` | 2,072 entries | **2,068 entries (OK, structs valid)** |
+| `verify_idb.py` | — | **INTACT (2,401 fns, 0 missing, 0 span, 0 name, 0 hole problems)** |
+| `verify_rebuild.py` | — | **faithful (0 LOST, 0 CHANGED, 134 REGISTER, 49 RECODE)** |
+

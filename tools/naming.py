@@ -357,8 +357,10 @@ IDB = {idb!r}
 pairs = {pairs!r}
 log = []
 try:
-    for ida_name_str, new, _kind in pairs:
+    for ida_name_str, new, _kind, fb_ea in pairs:
         ea = ida_name.get_name_ea(idaapi.BADADDR, ida_name_str)
+        if ea == idaapi.BADADDR and fb_ea is not None:
+            ea = fb_ea
         if ea == idaapi.BADADDR:
             log.append("MISSING " + ida_name_str)
             continue
@@ -375,14 +377,17 @@ idaapi.qexit(0)
 '''
 
 
-def push_ida(doc=None):
+def push_ida(doc=None, fb_path=FUNCTION_BYTES):
     doc = doc if doc is not None else load_ledger()
     fw = pairs(doc, forward=True)
     if not fw:
         print("no renames to push")
         return 0
+    fb = json.load(open(fb_path, encoding="utf-8")) if os.path.exists(fb_path) else {}
+    fw_with_ea = [(ida, sem, kind, fb.get(ida, {}).get("ea") if kind == "function" else None)
+                  for ida, sem, kind in fw]
     logf = os.path.join(tempfile.gettempdir(), "falcon3_pushnames.log")
-    script = _PUSH_TMPL.format(idb=IDB, pairs=fw, logf=logf)
+    script = _PUSH_TMPL.format(idb=IDB, pairs=fw_with_ea, logf=logf)
     sp = os.path.join(tempfile.gettempdir(), "falcon3_pushnames.py")
     open(sp, "w", encoding="utf-8").write(script)
     r = subprocess.run([IDA, "-A", "-S" + sp, IDB], capture_output=True, text=True,

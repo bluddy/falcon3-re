@@ -149,10 +149,13 @@ def load_dynamic(cls, starts, ivs):
         return None
 
     for path in sorted(DUMP.glob("*_fileio.jsonl")):
-        for line in path.open():
+        for line in path.open(encoding="utf-8", errors="replace"):
             if '"indirect_far"' not in line:
                 continue
-            r = json.loads(line)
+            try:
+                r = json.loads(line)
+            except Exception:
+                continue
             n_events += 1
             try:
                 ccs, cip = (int(x, 16) for x in r["caller"].split(":"))

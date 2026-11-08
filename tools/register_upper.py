@@ -158,6 +158,7 @@ def main():
                     and sha(idc.get_bytes(ea, n)) == h["sha256"]):
                 n_holes += 1
                 continue                     # already converted
+            ida_bytes.del_items(ea, ida_bytes.DELIT_EXPAND, n)
             ida_bytes.del_items(ea, ida_bytes.DELIT_SIMPLE, n)
             made = False
             try:
@@ -165,6 +166,15 @@ def main():
                                              idaapi.BADNODE)
             except Exception as ex:
                 log.append("  create_data(0x%X,%d) raised %r" % (ea, n, ex))
+            if not made or not ida_bytes.is_data(ida_bytes.get_flags(ea)):
+                ok_each = True
+                for a in range(ea, ea + n):
+                    ida_bytes.del_items(a, ida_bytes.DELIT_SIMPLE, 1)
+                    if not ida_bytes.create_data(a, ida_bytes.FF_BYTE, 1,
+                                                 idaapi.BADNODE):
+                        ok_each = False
+                        break
+                made = ok_each and ida_bytes.is_data(ida_bytes.get_flags(ea))
             if not made or not ida_bytes.is_data(ida_bytes.get_flags(ea)):
                 raise SystemExit("FATAL: could not turn hole 0x%X..%d into data"
                                  % (ea, n))

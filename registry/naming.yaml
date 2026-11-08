@@ -5345,13 +5345,6 @@ symbols:
   sig: void far; push ds ... (96B partial, far calls); 1 caller (r53_e88)
   notes: '96B span, 0 dyn, cd=0, 1 caller, partial, called by r53_e88. R53 overlay
     far-ptr procedure. conf: low'
-- ida: sub_1896D7
-  name: r53_record_walk_82
-  kind: function
-  sig: 'void far (DATA-class partial): AX=SI*0x82 index into es:6894 dword_69BEC far-ptr
-    table (record walk, 0x82 stride); 1 caller (r53_e12)'
-  notes: '19B span, 0 dyn, cd=0, 1 caller, DATA/partial head. R53 record walk: SI*0x82
-    index through the 6894:69BEC far-ptr table. conf: low'
 - ida: r06_e53
   name: state_word_4ab1_zero
   kind: function
@@ -6133,14 +6126,15 @@ symbols:
     far_cb_0/1 + sub_2BFC3 + r06_table_zero_30b (1089B); 2 callers (r33_e85, sub_66E62)'
   notes: '1089B C-class, callees far_cb_0 + far_cb_1 + sub_2BFC3 + r06_table_zero_30b.
     R06 initializer variant C (third twin of r06_init_call_43270). conf: med'
-- ida: r53_e12
+- ida: sub_189657
   name: r53_record_walk_main
   kind: function
   sig: 'void far; AL=es:[BX+0x15] cbw -> [bp-8]; loop: SI*0x82 index into es:6894:dword_69BEC
     walk + sub_1896D2 (L1 peer) + r53_record_walk_82 (303B); 2 callers (sub_188DF2,
     sub_1896D2)'
-  notes: '303B, callees sub_1896D2 (L1 SCC peer, still unnamed at this batch) + r53_record_walk_82.
-    R53 main record walker (mutually recursive with sub_1896D2). conf: med'
+  notes: '[Finding 118 remapped r53_e12 -> sub_189657] 303B, callees sub_1896D2 (L1
+    SCC peer, still unnamed at this batch) + r53_record_walk_82. R53 main record walker
+    (mutually recursive with sub_1896D2). conf: med'
 - ida: sub_16F7B
   name: sbi_config_triple_06ea
   kind: function
@@ -6485,21 +6479,13 @@ symbols:
     + far-call sequence (47B, pad-heavy); 1 caller (sub_2C149)
   notes: '47B span, callee dispatch_2211c_invoke_2arg. R17 dispatch sequence: 2-arg
     dispatch then argument-pushed far-call chain. conf: low'
-- ida: sub_1896D2
-  name: r53_record_walk_entry
-  kind: function
-  sig: void far; SI=0; tail-jmp r53_record_walk_main (loop-entry alias -- the SCC
-    partner; mutual recursion with r53_record_walk_main); 1 caller
-  notes: '5B, callee r53_record_walk_main (L1 SCC peer). Loop-entry trampoline: clears
-    SI then joins the record walk (condenses with its caller into one SCC). conf:
-    high'
-- ida: sub_196E63
+- ida: sub_196D40
   name: slope_far_call_driver
   kind: function
   sig: void far; far-call slope_flag_test_bx, then (304B pad-heavy) far-call dispatch
     sequence; 1 caller (r59_e177)
-  notes: '304B span, callee slope_flag_test_bx. Far-call driver around the slope test
-    with a long callback sequence. conf: low'
+  notes: '[Finding 118 remapped sub_196E63 -> sub_196D40] 304B span, callee slope_flag_test_bx.
+    Far-call driver around the slope test with a long callback sequence. conf: low'
 - ida: sub_23A73
   name: angle_delta_quadrant
   kind: function
@@ -13372,49 +13358,49 @@ symbols:
   notes: '1839B, in=1 (r36_e72). r36 overlay: stride-4Eh loop over 7894h:dword_79B6E
     table (count word_79B72), copies fields +40h/+42h to dword_79D6C +1C/+1E/+20 (+14h
     add); callees fixed_vec3_read + ui_loadout_menu_enter. conf: medium'
-- ida: r53_e51
+- ida: sub_188228
   name: r53_far_call_case_block
   kind: function
   sig: '451B, in=1 (sub_187E94). r53 overlay far-call case block: pushes args then
     far-calls unk_5CFEF/5D144/5D4B4/5D5AB/5D680/5D620/5DF97, neg/sbb flag returns;
     jmp def_1882E6 into sub_187E94 - mutual SCC.'
-  notes: '451B, in=1 (sub_187E94). r53 overlay far-call case block: pushes args then
-    far-calls unk_5CFEF/5D144/5D4B4/5D5AB/5D680/5D620/5DF97, neg/sbb flag returns;
-    jmp def_1882E6 into sub_187E94 - mutual SCC. conf: low'
-- ida: sub_187E94
+  notes: '[Finding 118 remapped r53_e51 -> sub_188228] 451B, in=1 (sub_187E94). r53
+    overlay far-call case block: pushes args then far-calls unk_5CFEF/5D144/5D4B4/5D5AB/5D680/5D620/5DF97,
+    neg/sbb flag returns; jmp def_1882E6 into sub_187E94 - mutual SCC. conf: low'
+- ida: sub_187EA8
   name: r53_farobj_pipeline_body
   kind: function
   sig: 1483B, in=2 (r53_e51, sub_186ADC). r53 overlay mixed data/code body, mutual
     SCC with r53_e51; real callees farobj_record_ops_exec + farobj_index_resolve_step
     + mode_record_field_lookup + viewvec_half_add_step + terrain_angle_time_step +
     matrix_constants_setup + dgroup_save_reg_dxbp + stream_reset_gate_4a83.
-  notes: '1483B, in=2 (r53_e51, sub_186ADC). r53 overlay mixed data/code body, mutual
-    SCC with r53_e51; real callees farobj_record_ops_exec + farobj_index_resolve_step
-    + mode_record_field_lookup + viewvec_half_add_step + terrain_angle_time_step +
-    matrix_constants_setup + dgroup_save_reg_dxbp + stream_reset_gate_4a83. conf:
-    low'
-- ida: sub_188DF2
+  notes: '[Finding 118 remapped sub_187E94 -> sub_187EA8] 1483B, in=2 (r53_e51, sub_186ADC).
+    r53 overlay mixed data/code body, mutual SCC with r53_e51; real callees farobj_record_ops_exec
+    + farobj_index_resolve_step + mode_record_field_lookup + viewvec_half_add_step
+    + terrain_angle_time_step + matrix_constants_setup + dgroup_save_reg_dxbp + stream_reset_gate_4a83.
+    conf: low'
+- ida: sub_188D92
   name: r53_record_walk_dispatch
   kind: function
   sig: '2272B, in=1 (r53_e88). r53 overlay record-walk driver: walks a byte stream
     counting entries with code>=20h and high-bits in 1..2, jpt on code 27h..2Bh to
     0x184F68/0x186739; callees r53_record_walk_main + slot2_map_window_load + terrain_angle_time_step
     + dgroup_save_reg_dxbp + farobj_store_32075 + farobj_index_resolve_step + farobj_field_scale_check.'
-  notes: '2272B, in=1 (r53_e88). r53 overlay record-walk driver: walks a byte stream
-    counting entries with code>=20h and high-bits in 1..2, jpt on code 27h..2Bh to
-    0x184F68/0x186739; callees r53_record_walk_main + slot2_map_window_load + terrain_angle_time_step
-    + dgroup_save_reg_dxbp + farobj_store_32075 + farobj_index_resolve_step + farobj_field_scale_check.
-    conf: medium'
-- ida: sub_1820C0
+  notes: '[Finding 118 remapped sub_188DF2 -> sub_188D92] 2272B, in=1 (r53_e88). r53
+    overlay record-walk driver: walks a byte stream counting entries with code>=20h
+    and high-bits in 1..2, jpt on code 27h..2Bh to 0x184F68/0x186739; callees r53_record_walk_main
+    + slot2_map_window_load + terrain_angle_time_step + dgroup_save_reg_dxbp + farobj_store_32075
+    + farobj_index_resolve_step + farobj_field_scale_check. conf: medium'
+- ida: sub_1820B0
   name: r53_sbi_stream_dispatch
   kind: function
   sig: '616B, in=1 (r53_e88). r53 overlay: mostly an embedded data table (cmp/pop/xor
     decode pattern) with real code sections; callees stream_state_init + sbi_command_flush_clear
     + sbi_channel_event_dispatch + line_table_scan_slope + mode_axis_state_select.'
-  notes: '616B, in=1 (r53_e88). r53 overlay: mostly an embedded data table (cmp/pop/xor
-    decode pattern) with real code sections; callees stream_state_init + sbi_command_flush_clear
-    + sbi_channel_event_dispatch + line_table_scan_slope + mode_axis_state_select.
-    conf: low'
+  notes: '[Finding 118 remapped sub_1820C0 -> sub_1820B0] 616B, in=1 (r53_e88). r53
+    overlay: mostly an embedded data table (cmp/pop/xor decode pattern) with real
+    code sections; callees stream_state_init + sbi_command_flush_clear + sbi_channel_event_dispatch
+    + line_table_scan_slope + mode_axis_state_select. conf: low'
 - ida: sub_162C00
   name: ui_loadout_cmd0_transition
   kind: function
@@ -13530,8 +13516,8 @@ symbols:
     body), stores returned ax/bx/cx into cs:byte_6E0B0+2/4/6, adds 7FC0h paragraph
     to cs:word_6E2AE - the EMS far-pointer segment setup stub; callers are far-call
     dispatch stubs r22_e57/sub_2BF73/sub_2BF7D. conf: medium'
-- ida: sub_186ADC
-  name: r53_script_opcode_interpreter
+- ida: sub_186550
+  name: r53_map_window_quota_step
   kind: function
   sig: '2312B, in=1 (r53_e88). The r53 overlay main script interpreter: inits 8-entry
     local tables (bp-70h/-80h/-90h/-0A0h/-0B0h), walks 42h-stride records at 6894h:dword_69E3A+3Dh
@@ -13540,13 +13526,8 @@ symbols:
     stream and byte&7 dispatches via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/jpt_187150/jpt_1872C8
     tables; callees farobj_index_resolve_step + tile_sample_script_dispatch + floor_store_4abb
     + farobj_index_resolve_step + r53_farobj_pipeline_body.'
-  notes: '2312B, in=1 (r53_e88). The r53 overlay main script interpreter: inits 8-entry
-    local tables (bp-70h/-80h/-90h/-0A0h/-0B0h), walks 42h-stride records at 6894h:dword_69E3A+3Dh
-    copying fields +22h..+25h/+31h/+41h, +41h==0FFh path calls slot2_map_window_load
-    then unk_5CA48 with +25h clamp to 64h; then farobj_store_32075 fetches a script
-    stream and byte&7 dispatches via jpt_186DE1 (8 opcodes) with nested jpt_186EEA/jpt_187150/jpt_1872C8
-    tables; callees farobj_index_resolve_step + tile_sample_script_dispatch + floor_store_4abb
-    + farobj_index_resolve_step + r53_farobj_pipeline_body. conf: medium'
+  notes: 1324B C function at 0x186550..0x186A7C (sub-block CS=0x5AE9). Pre-f118 0x186A7C
+    landed 96B before its end; remapped after Finding 118.
 - ida: sub_23AA1
   name: angle_quad_norm_far_wrapper
   kind: function
@@ -13561,12 +13542,6 @@ symbols:
     nop; pop bp; retf - far wrapper for bda_417_or_al.
   notes: '13B, in=0, 1 callee. push bp; mov bp,sp; mov ax,[bp+arg_0]; push cs; call
     bda_417_or_al; nop; pop bp; retf - far wrapper for bda_417_or_al. conf: medium'
-- ida: r53_e133
-  name: data_pad_r53e133
-  kind: function
-  sig: 5B, LEAF, in=0. Garbage decode (adc al,83h; retn 893Dh) - data pad, low conf.
-  notes: '5B, LEAF, in=0. Garbage decode (adc al,83h; retn 893Dh) - data pad, low
-    conf. conf: low'
 - ida: sub_6DD12
   name: distance_tier_classify_entry
   kind: function
@@ -13844,13 +13819,14 @@ symbols:
     two farobj_field_scale_check calls, mouse_gate_far_entry, then 30+ op_dispatch_far_entry
     (opcode 0Ch/8/4) invocations over 602Eh/7894h record slots - mouse/UI event pipeline.
     conf: medium'
-- ida: r53_e47
+- ida: sub_188D40
   name: r53_opcode_flag_combine
   kind: function
   sig: 50B, in=0. Reads [bx] byte&7; if 4 set si=1; if 7 set di=1; combine di/si into
     +/-1 or 0 return - r53 opcode flag combine.
-  notes: '50B, in=0. Reads [bx] byte&7; if 4 set si=1; if 7 set di=1; combine di/si
-    into +/-1 or 0 return - r53 opcode flag combine. conf: medium'
+  notes: '[Finding 118 remapped r53_e47 -> sub_188D40] 50B, in=0. Reads [bx] byte&7;
+    if 4 set si=1; if 7 set di=1; combine di/si into +/-1 or 0 return - r53 opcode
+    flag combine. conf: medium'
 - ida: r54_e162
   name: r54_record_loop_step
   kind: function
@@ -13881,20 +13857,22 @@ symbols:
     - r58 line-table build entry.
   notes: '96B, in=0, 2 callees. Undecodable head, then overlay_segment_load + line_table_build_dispatch
     - r58 line-table build entry. conf: medium'
-- ida: r58_e178
+- ida: sub_19C778
   name: r58_record_index_read
   kind: function
   sig: 27B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_69BEC - r58
     record index read (DATA, low conf).
-  notes: '27B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_69BEC -
-    r58 record index read (DATA, low conf). conf: low'
-- ida: r59_e160
+  notes: '[Finding 118 remapped r58_e178 -> sub_19C778] 27B, DATA, in=0. Reads 82h-stride
+    record index from 7894h:dword_69BEC - r58 record index read (DATA, low conf).
+    conf: low'
+- ida: sub_19AD4E
   name: r59_record_index_read
   kind: function
   sig: 18B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_79BEC - r59
     record index read (DATA, low conf).
-  notes: '18B, DATA, in=0. Reads 82h-stride record index from 7894h:dword_79BEC -
-    r59 record index read (DATA, low conf). conf: low'
+  notes: '[Finding 118 remapped r59_e160 -> sub_19AD4E] 18B, DATA, in=0. Reads 82h-stride
+    record index from 7894h:dword_79BEC - r59 record index read (DATA, low conf).
+    conf: low'
 - ida: r64_e190
   name: r64_table_entry_reset
   kind: function
@@ -14390,18 +14368,6 @@ symbols:
     sub_2C4F5(0), then 5x sub_2C4FF far-call batches (opcodes 1,2,3,4,5 with 1C2h/46h/7
     args) each followed by sub_2C59F; closes r39_farptr_call_gate(1,1,0) - r39 overlay
     farobj batch entry. conf: medium'
-- ida: r53_e88
-  name: r53_opcode_decode_apply
-  kind: function
-  sig: 2736B, ASM, in=0, 10 callees. Byte-stream opcode decode (es:[bp-4Ch] cursor;
-    si=(b>>3)&7, flags=b>>6) feeding jump table cs:jpt_187575 over r53_script_opcode_interpreter/r53_record_walk_dispatch;
-    42h-stride record field increments at 7894h/6894h, floor_store_4abb + farobj_index_resolve_step
-    scaling, sbi_channel_event_dispatch - r53 overlay script-opcode decode/apply body.
-  notes: '2736B, ASM, in=0, 10 callees. Byte-stream opcode decode (es:[bp-4Ch] cursor;
-    si=(b>>3)&7, flags=b>>6) feeding jump table cs:jpt_187575 over r53_script_opcode_interpreter/r53_record_walk_dispatch;
-    42h-stride record field increments at 7894h/6894h, floor_store_4abb + farobj_index_resolve_step
-    scaling, sbi_channel_event_dispatch - r53 overlay script-opcode decode/apply body.
-    conf: medium'
 - ida: r54_e118
   name: r54_far_tail_jump
   kind: function
@@ -14411,15 +14377,16 @@ symbols:
   notes: '96B, ASM, in=0. Entry decodes as misdecode tail (dec si; add bh,dh) then
     a real far tail jmp to 8E68h:94BAh; remainder is a retn 0C426h misdecode - r54
     overlay far tail-jump stub. conf: medium'
-- ida: r59_e177
+- ida: sub_19EBFB
   name: r59_slope_slot_update_entry
   kind: function
   sig: 281B, ASM, in=0, 3 callees (slope_far_call_driver, fixed_vec3_dot_es, farobj_slot_update_driver).
     Entry bytes decode as retn 0C426h (misdecode tail) so the body is only partly
     readable - r59 overlay slope/slot update entry.
-  notes: '281B, ASM, in=0, 3 callees (slope_far_call_driver, fixed_vec3_dot_es, farobj_slot_update_driver).
-    Entry bytes decode as retn 0C426h (misdecode tail) so the body is only partly
-    readable - r59 overlay slope/slot update entry. conf: medium'
+  notes: '[Finding 118 remapped r59_e177 -> sub_19EBFB] 281B, ASM, in=0, 3 callees
+    (slope_far_call_driver, fixed_vec3_dot_es, farobj_slot_update_driver). Entry bytes
+    decode as retn 0C426h (misdecode tail) so the body is only partly readable - r59
+    overlay slope/slot update entry. conf: medium'
 - ida: r64_e185
   name: r64_far_tail_jump
   kind: function
@@ -16684,28 +16651,29 @@ symbols:
   notes: '50B, ASM, in=0, 2 callees. Head misdecodes (or al,9Ah / fsubr dword ds:1F6Ch)
     then add sp,0Ah, op_dispatch_far_wide(2, 0, 0, si, 0Eh), op_dispatch_far_entry(ss:&[bp-28h],
     0, [bp-28h], 8), epilogue - r48 op wide/entry step. conf: medium'
-- ida: r52_e167
+- ida: sub_18B071
   name: r52_indexed_pair_step
   kind: function
   sig: 61B, DATA, in=0, 1 callee. Head undecodable (cli / adc al,3 / fsub dword ds:578Ah
     junk) then index=al<<2 pushes 602Eh:[bx+1AE8h] and [bx+2AD6h] pair into dgroup_save_reg_dxbp,
     then push 6894h:1F32h + 14h-stride 69D3E index - dump ends mid-les - r52 indexed
     pair step fragment.
-  notes: '61B, DATA, in=0, 1 callee. Head undecodable (cli / adc al,3 / fsub dword
-    ds:578Ah junk) then index=al<<2 pushes 602Eh:[bx+1AE8h] and [bx+2AD6h] pair into
-    dgroup_save_reg_dxbp, then push 6894h:1F32h + 14h-stride 69D3E index - dump ends
-    mid-les - r52 indexed pair step fragment. conf: low'
+  notes: '[Finding 118 remapped r52_e167 -> sub_18B071] 61B, DATA, in=0, 1 callee.
+    Head undecodable (cli / adc al,3 / fsub dword ds:578Ah junk) then index=al<<2
+    pushes 602Eh:[bx+1AE8h] and [bx+2AD6h] pair into dgroup_save_reg_dxbp, then push
+    6894h:1F32h + 14h-stride 69D3E index - dump ends mid-les - r52 indexed pair step
+    fragment. conf: low'
 - ida: r53_e166
-  name: r53_map_window_quota_step
+  name: r53_script_opcode_interpreter
   kind: function
   sig: 96B, ASM, in=0, 1 callee. Incs es:[517DA]+1Fh; loop resets 6894h:69E3A+1Dh
     counter to 0, and when 6AE3A+1Dh > 200 uses slot2_map_window_load()&7FFF%200+200
     as new quota di for 69E3A+1Dh, incrementing 69E3A+21h when its old count > di
     - r53 map window quota step.
-  notes: '96B, ASM, in=0, 1 callee. Incs es:[517DA]+1Fh; loop resets 6894h:69E3A+1Dh
-    counter to 0, and when 6AE3A+1Dh > 200 uses slot2_map_window_load()&7FFF%200+200
-    as new quota di for 69E3A+1Dh, incrementing 69E3A+21h when its old count > di
-    - r53 map window quota step. conf: medium'
+  notes: 5048B C function at 0x186A7C..0x187E34 (sub-block CS=0x5AE9, base 0x186550).
+    Unified R53 script opcode interpreter after Finding 118 (+0x60 Cluster-B base
+    fix), merging pre-f118 r53_e166 + sub_186ADC + r53_e88; dispatches 6 CS-relative
+    switch tables at 0x187E34..0x187EA8.
 - ida: r55_e78
   name: r55_entity_flags_op_step
   kind: function
@@ -16742,18 +16710,18 @@ symbols:
     mid-tail (add sp,0Ah; 1x entity_step_flags ss:&[bp-2] op 8) then decodes to garbage
     (aam 1Eh / adc al,26h / <undecodable 0xC7>), remainder undumped - r67 fragment.
     conf: low'
-- ida: sub_189819
+- ida: sub_1897B9
   name: record_pool_admit_demote
   kind: function
   sig: '218B, C, in=0, no callees. Walks 66B records at 6894h:69E3A (stride 42h, count
     at 6AE3A far ptr +0A8Dh): counts +63h==0 (di) and ==1 (cx); returns 1 when di
     >= [bp+6], 0 when arg <= cx, else demotes: prio=[bp-2] from 64h down to 1Dh, records
     with +62h==prio get +63h=0 (di++) until quota met - record pool admit-by-demote.'
-  notes: '218B, C, in=0, no callees. Walks 66B records at 6894h:69E3A (stride 42h,
-    count at 6AE3A far ptr +0A8Dh): counts +63h==0 (di) and ==1 (cx); returns 1 when
-    di >= [bp+6], 0 when arg <= cx, else demotes: prio=[bp-2] from 64h down to 1Dh,
-    records with +62h==prio get +63h=0 (di++) until quota met - record pool admit-by-demote.
-    conf: medium'
+  notes: '[Finding 118 remapped sub_189819 -> sub_1897B9] 218B, C, in=0, no callees.
+    Walks 66B records at 6894h:69E3A (stride 42h, count at 6AE3A far ptr +0A8Dh):
+    counts +63h==0 (di) and ==1 (cx); returns 1 when di >= [bp+6], 0 when arg <= cx,
+    else demotes: prio=[bp-2] from 64h down to 1Dh, records with +62h==prio get +63h=0
+    (di++) until quota met - record pool admit-by-demote. conf: medium'
 - ida: start
   name: startup_entry_stack_swap
   kind: function

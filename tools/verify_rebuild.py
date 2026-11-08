@@ -49,6 +49,14 @@ def load_expected():
             for e in m.get("overlay_recode", [])}
 
 
+def load_retired():
+    if not EXPECTED.exists():
+        return set()
+    m = json.loads(EXPECTED.read_text())
+    return {(e["key"], e["ea"], e["old_size"])
+            for e in m.get("cluster_b_retired", [])}
+
+
 def load_patches():
     """{(key, ea, size): (old_sha256, new_sha256)} for the allowlisted byte patches."""
     if not SUBBLOCK.exists():
@@ -109,6 +117,7 @@ def main():
     head = head_json()
     now = json.loads(FB.read_text())
     expected = load_expected()
+    retired = load_retired()
     patches = load_patches()
     split_man = load_splits()
     reg_man = load_registers()
@@ -238,6 +247,11 @@ def main():
     # a manifest parent may legitimately retire outright (its key disappears
     # because every byte moved into a planned child)
     for k in list(lost):
+        a = head[k]
+        if (k, a.get("ea"), a.get("size")) in retired:
+            lost.remove(k)
+            recodes.append((k, "%s dB retired (Cluster-B +0x60 base fix)" % a.get("size")))
+            continue
         if k not in split_man:
             continue
         ok, why = validate_split(k, head[k], None)
