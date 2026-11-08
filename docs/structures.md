@@ -108,16 +108,17 @@ struct rtlink_rec {          // 70 entries at file 0x1E24F (ids 2..71 = index+2)
   uint16_t w1;               // filename ptr (constant 0x12ED region)
   uint16_t w2;               // file para of fixup table (file_off = w2*16);
                              //   chain rows 0..49: direct; cluster-B rows 50..69:
-                             //   window = 0xFFFA0 + w2*16 (finding 20; row69 code-first,
-                             //   fixup table at window+0x60, data = w8*16)
+                             //   window = 0x100000 + w2*16, fixups-first like every
+                             //   other row (finding 118; finding 20's 0xFFFA0 was 0x60
+                             //   early, and row69's "code-first" was that same error)
   uint16_t w3;               // low: 0x0400; HIGH BYTE = flags: 0x04 transient, 0x01 startup
   uint16_t w4;               // allocated span (PARAS)
   uint16_t w5;               // fixup count in DWORDS  => fixup bytes = w5*4
   uint16_t w6;               // 0xFFFF
   uint16_t w7;               // id (2..71); loader indexes table by 0-based idx: ax*18+0xC1F
-  uint16_t w8;               // data size in paras (== w4 for most; row69 uses w8*16 for data)
+  uint16_t w8;               // data size in paras (== w4 for most; row69 w8 < w4 = BSS tail)
 };
-// record layout: [fixup table w5 dwords][align16][data]   (row69: code-first)
+// record layout: [fixup table w5 dwords][align16][data]   (ALL rows, incl. 69)
 // data_start = w2*16 + align16(w5*4)
 ```
 Runtime placement (finding 18, CONFIRMED):
@@ -302,6 +303,31 @@ u16 count
 
 **196/196 sub-records across all 8 theaters validate** under the flags rule.
 
+### Geometry: convex decomposition + clipped tiles (finding 118)
+
+Line-table entry index == point index (offset/0x10), so a ring is a closed
+polygon over the record's own points. **Every ring is convex** (ISR 75/75; the
+handful of non-convex hits elsewhere are collinear/degenerate). A record's rings
+are a convex decomposition of one area: interior edges are shared by exactly
+two rings, so
+
+```
+outline = edges used by exactly one ring
+```
+
+- **Lakes (0x64)** are self-contained: the outline is the closed shore.
+- **Coast (0x14) and river/border records are TILES** clipped to a local box
+  (ISR x ±4388, z ±5109; IRQ ±5502). The clip appears as unshared,
+  axis-aligned edges lying on the record's bounding box — tile seams, not
+  shoreline. Drop them; what remains is the coastline (open runs from box side
+  to box side). Example ISR 0x1542: (4388,327)→(851,2947)→(-3340,1506)→(-4388,1703).
+- Tiles step on a regular world grid (ISR column X=-23.18 nm, Y spaced 5.12 nm).
+
+Extractor: `tools/extract_isldat_coast_edges.py` → `analysis/isldat_coast_edges/<T>.{json,svg}`
+(record-local units). **Open:** the local→world scale/orientation — brute-force
+endpoint stitching across neighbouring tiles finds no consistent fit, so take it
+from the live `es:441E` table in an in-flight memdump.
+
 ### Runtime consumers (resident asm)
 
 ```
@@ -334,8 +360,8 @@ PAN   7885   1   85    25     24      84      22/ 9           41   107
 ### Open questions
 
 - Loader function (file open + header parse into `word_11C18/11C1A`, `byte_11C0A`)
-- Point coordinate transform (matrix via `pos_diff_norm`/`line_draw_441e`) — point
-  geometry does not yet reconstruct as absolute nm coordinates
+- Point coordinate transform (matrix via `pos_diff_norm`/`line_draw_441e`) — the
+  per-record shape is solved (convex tiles, above); the local→world transform is not
 - `attr` / `opcode` / `flags` low bits / `const_000B` / `const_4` semantics
 - Geographic silhouette check vs `game\israel.ipl` / `analysis/map_ISRAEL.svg`
 

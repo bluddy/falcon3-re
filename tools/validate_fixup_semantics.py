@@ -42,15 +42,13 @@ for i in range(70):
 placements = {p['idx']: p for p in json.load(open('analysis/ida_falconcd/overlay_placement.json'))}
 located = {e['idx']: e for e in json.load(open('analysis/ida_falconcd/record_fixup_located.json'))}
 
-CLUSTER_B0 = 0xFFFA0
+CLUSTER_B0 = 0x100000   # finding 118 (was 0xFFFA0, 0x60 early)
 SPECIAL = {0x1D0D, 0x1D31}
 
 
 def table_pos(r):
-    if 50 <= r['idx'] <= 68:
+    if 50 <= r['idx'] <= 69:
         return CLUSTER_B0 + (r['w2'] << 4)
-    if r['idx'] == 69:
-        return CLUSTER_B0 + (r['w2'] << 4) + 0x60
     e = located.get(r['idx'])
     if r['fixups'] and r['w2'] >= 0x1000:
         ov = set(range(r['w0'], r['w0'] + max(1, r['span']))) | SPECIAL

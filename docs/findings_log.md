@@ -5893,3 +5893,46 @@ Status: COMPLETE (all file formats and rendering pipeline documented in canonica
 **Gates**: parse_isldat 8/8 ALL OK, naming.py check OK (2072), 21 tests OK.
 
 **Open for Track E**: Point transform (16.16nm → geographic), flag 0x0002 semantics, quadrant AX source, opcode handlers.
+
+
+## 2026-11-08 118 - Cluster-B base is 0x100000, not 0xFFFA0; ISLDAT coasts are clipped convex tiles
+
+Status: CONFIRMED (host-side); IDB regeneration PENDING (needs idat on IDA Pro)
+
+### Cluster-B base (corrects finding 20)
+
+Finding 20's `B0 = 0xFFFA0` put every cluster-B record (rows 50–69) **0x60 bytes
+too early**. Correct: `window = 0x100000 + w2*16`, fixups-first for ALL of 50–69
+(table at window, data at window + align16(w5*4)).
+
+- Fixup-table seg fraction at the new base: **1.000 for every row 50–69**
+  (was 0.79–0.99 at 0xFFFA0 — the old table read started 0x60 early and
+  swallowed 24 garbage pairs, which is why each of rows 50–68 lost exactly 24
+  real pairs; row 53 lost 434).
+- Row 69 is NOT code-first: its table is at 0x13AC00 (frac 1.000), data at
+  0x13AC60. Fixup targets there hold paragraphs (0x6772 ×22, 0x6B0E, 0x6A32);
+  at the old data base 0x13ABA0 every target word is 0000. The "code at window"
+  that finding 20 saw was the previous record's tail.
+- Symptom in the IDB: fixups applied 0x60 off land inside opcodes, e.g.
+  `26 C7 06 20 12 28 00` → `26 C7 16 …` ⇒ IDA "undecodable 0x26/0xC7". At the
+  corrected base thunk entries land on prologues (`C8 xx 00 00` / `55 8B EC`) and
+  CS-relative jump tables decode (e.g. R53 `jpt_186DE1` → 186DE6, 186DEF, 186E2A,
+  187251, 1873ED, 187535, 186DB1, 187623). Findings 108/110's r53 table/handler
+  EAs were read from the shifted bytes and must be re-derived after the rebuild.
+- `tools/prep_overlay_placement.py`, `tools/validate_fixup_semantics.py` patched;
+  regenerated `overlay_placement.json` (rows 50–68: data_file/fixup_pos +0x60;
+  row 69: data 0x13ABA0→0x13AC60, len 0x14990→0x14987, order fixups-first),
+  `overlay_entries.json` (unchanged, 301), `fixups_to_apply.json`
+  (37,324 pairs; rows 50–68 gain 24 each, row 53 +195; all 25,222 pass-1
+  offsets for these rows are still in the corrected tables).
+- Diagnostic one-offs still hard-code 0xFFFA0 (`map_sub2e2f0.py`, `_hyp56.py`,
+  `_join55.py`, `_segrel56.py`, `_size57.py`) — historical, not re-run.
+
+### ISLDAT geometry
+
+Every ring is convex; a record's rings are a convex decomposition. Outline =
+edges used by exactly one ring. Coast/river records are tiles clipped to a local
+box; unshared edges on the box are seams and are dropped. Lakes keep all
+unshared edges. `tools/extract_isldat_coast_edges.py` →
+`analysis/isldat_coast_edges/`. Local→world transform still open (endpoint
+stitching across neighbour tiles finds no consistent scale/orientation).

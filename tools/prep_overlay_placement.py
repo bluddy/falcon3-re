@@ -39,10 +39,13 @@ if lf.exists():
         located[e['idx']] = e
 
 # --- split chain rows (monotonic non-decreasing w2: rows0..49) vs cluster B
-# (w2 wraps at row50 -> tails 0x6D..0x39B0). Cluster-B base found 2026-10-11:
-# B0 = 0xFFFA0 (window = B0 + w2*16; fixups-first for 50..68; row69 special:
-# code-first with fixup table at window+0x60, data len = w8*16)  [finding 20]
-CLUSTER_B0 = 0xFFFA0
+# (w2 wraps at row50 -> tails 0x6D..0x3AC0). Cluster-B base corrected
+# 2026-11-08: B0 = 0x100000 (window = B0 + w2*16), and ALL of rows 50..69 are
+# fixups-first: table at window, data at window + align16(fixups*4), data len
+# = w8*16. Finding 20's B0 = 0xFFFA0 put every record 0x60 early, so fixups
+# were applied 0x60 off and corrupted opcodes; row 69's "code-first with the
+# table at window+0x60" was the same 0x60 error.  [finding 118]
+CLUSTER_B0 = 0x100000
 chain_idx, cluster_b = [], []
 prev = -1
 for r in rows:
@@ -72,18 +75,12 @@ for r in rows:
         later = [CLUSTER_B0 + (rows[i]['w2'] << 4)
                  for i in cluster_b if rows[i]['w2'] > r['w2']]
         nxt = min(later) if later else len(EXE)
-        if r['idx'] == 69:
-            # startup record: code-first; fixup table at window+0x60; data = w8*16
-            data_file = window
-            fixup_pos = window + 0x60
-            length = min(r['dsize'] * 16 if 'dsize' in r else r['span'] * 16,
-                         len(EXE) - window)
-            order = 'code-first(startup)'
-        else:
-            fixup_pos = window
-            data_file = window + ((r['fixups'] * 4 + 15) // 16) * 16
-            length = min(r['span'] * 16, max(0, nxt - data_file))
-            order = 'clusterB-fixups-first'
+        fixup_pos = window
+        data_file = window + ((r['fixups'] * 4 + 15) // 16) * 16
+        # w8 = data paras: == span for 50..68; row 69 (606E) carries BSS
+        # beyond it (span 0x153E > w8 0x1499) and is clipped at EOF
+        length = min(r['dsize'] * 16, max(0, nxt - data_file))
+        order = 'clusterB-fixups-first'
         placements.append(dict(idx=r['idx'], w0=r['w0'], flags=r['flags'],
                                real_ea=((0x1000 + r['w0']) << 4),
                                data_file=data_file, length=length,
