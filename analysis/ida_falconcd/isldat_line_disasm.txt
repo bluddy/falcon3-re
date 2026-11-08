@@ -1,0 +1,612 @@
+======================================================================
+sub_12E6A  ea=0x12E6A  size=61  L6  in=1  slot2_window_col_read
+  --- callees (1): slot2_handle_read(L5)
+  0x12E6A: sub    ah, ah
+  0x12E6C: mov    cl, cs:byte_11C0D
+  0x12E71: sub    ch, ch
+  0x12E73: mov    dx, cx
+  0x12E75: shl    cx, 1
+  0x12E77: shl    cx, 1
+  0x12E79: add    dx, cx
+  0x12E7B: add    dx, ax
+  0x12E7D: mov    dh, dl
+  0x12E7F: sub    dl, dl
+  0x12E81: mov    cx, 5
+  0x12E84: push   cx
+  0x12E85: push   dx
+  0x12E86: push   di
+  0x12E87: mov    ax, [di]
+  0x12E89: and    ax, 1FFh
+  0x12E8C: add    dx, 1F40h
+  0x12E90: call   slot2_handle_read  ->code ['slot2_handle_read']
+  0x12E93: pop    di
+  0x12E94: pop    dx
+  0x12E95: pop    cx
+  0x12E96: add    di, 40h
+  0x12E99: add    dh, 5
+  0x12E9C: cmp    dh, 19h
+  0x12E9F: jb     loc_12EA4  ->code ['slot2_window_col_read']
+  0x12EA1: sub    dh, 19h
+  0x12EA4: loop   loc_12E84  ->code ['slot2_window_col_read']
+  0x12EA6: retn   
+  --- callers: slot2_map_window_update
+
+======================================================================
+sub_29917  ea=0x29917  size=190  L2  in=0  record_span_build_and_dispatch
+  --- callees (9): rect_edge_dispatch_a(L1), farobj_batch_dispatch_loop(L0), record_op_dispatch_220b0(L1), param6_append_cursor_a(L1), param6_append_avg_b(L1), param6_append_3w_c(L1), param6_append_scale_d(L1), record_span_init_eba(L1), joystick_gate_counter(L1)
+  0x29917: mov    bx, cx
+  0x29919: mov    di, 6360h
+  0x2991C: mov    si, cs:word_2796E
+  0x29921: mov    dx, 10h
+  0x29924: mov    ax, [si+8]
+  0x29927: stosw  
+  0x29928: mov    ax, [si+0Ah]
+  0x2992B: stosw  
+  0x2992C: add    si, dx
+  0x2992E: loop   loc_29924  ->code ['record_span_build_and_dispatch']
+  0x29930: mov    si, cs:word_2796E
+  0x29935: mov    ax, [si+8]
+  0x29938: stosw  
+  0x29939: mov    ax, [si+0Ah]
+  0x2993C: stosw  
+  0x2993D: mov    cx, bx
+  0x2993F: mov    si, 6360h
+  0x29942: mov    cs:word_2796E, si
+  0x29947: cmp    cs:word_2796C, 0
+  0x2994D: jnz    loc_29993  ->code ['record_span_build_and_dispatch']
+  0x2994F: sub    ah, ah
+  0x29951: cmp    cs:byte_1F72E, ah
+  0x29956: jz     loc_29993  ->code ['record_span_build_and_dispatch']
+  0x29958: mov    al, cs:byte_1F739
+  0x2995C: or     ax, ax
+  0x2995E: jz     loc_29993  ->code ['record_span_build_and_dispatch']
+  0x29960: sub    si, 2
+  0x29963: mov    [si], ax
+  0x29965: mov    cx, ax
+  0x29967: mov    ax, 1
+  0x2996A: shl    ax, cl
+  0x2996C: mov    cx, ax
+  0x2996E: shl    ax, 1
+  0x29970: add    ax, cx
+  0x29972: mov    bx, 6748h
+  0x29975: mov    ds:0F66h, bx
+  0x29979: mov    bl, cs:byte_1F72E
+  0x2997E: sub    bh, bh
+  0x29980: sub    bx, 2
+  0x29983: call   cs:off_1F708[bx]  ->code ['param6_append_cursor_a', 'param6_append_avg_b', 'param6_append_3w_c', 'param6_append_scale_d', 'joystick_gate_counter']
+  0x29988: mov    si, 674Ah
+  0x2998B: mov    cs:word_2796E, si
+  0x29990: mov    cx, [si-2]
+  0x29993: mov    ah, cs:byte_1F72A
+  0x29998: cmp    cs:byte_1F741, 0
+  0x2999E: jnz    loc_299C2  ->code ['record_span_build_and_dispatch']
+  0x299A0: cmp    cs:byte_1F73F, 0
+  0x299A6: jnz    loc_299C2  ->code ['record_span_build_and_dispatch']
+  0x299A8: push   cx
+  0x299A9: mov    si, cs:word_2796E
+  0x299AE: call   record_span_init_eba  ->code ['record_span_init_eba']
+  0x299B1: call   record_op_dispatch_220b0  ->code ['record_op_dispatch_220b0']
+  0x299B4: pop    cx
+  0x299B5: cmp    cs:byte_1F72D, 0
+  0x299BB: jz     loc_299CC  ->code ['record_span_build_and_dispatch']
+  0x299BD: mov    ah, cs:byte_1F72C
+  0x299C2: push   cx
+  0x299C3: mov    si, cs:word_2796E
+  0x299C8: call   farobj_batch_dispatch_loop  ->code ['farobj_batch_dispatch_loop']
+  0x299CB: pop    cx
+  0x299CC: mov    si, cs:word_2796E
+  0x299D1: call   rect_edge_dispatch_a  ->code ['rect_edge_dispatch_a']
+  0x299D4: retn   
+  --- callers: 
+
+======================================================================
+sub_299D5  ea=0x299D5  size=429  L1  in=0  record_span_mask_rebuild
+  --- callees (1): fixed_scale_clamp_or40(L0)
+  0x299D5: mov    cs:word_27968, 0FFFFh
+  0x299DC: mov    cs:word_2796A, 0
+  0x299E3: sub    bp, bp
+  0x299E5: mov    ax, cs:word_2796E
+  0x299E9: mov    es:43BEh, ax
+  0x299ED: mov    ax, cs:word_27966
+  0x299F1: test   ax, 1
+  0x299F4: jnz    loc_29A2D  ->code ['record_span_mask_rebuild']
+  0x299F6: push   cx
+  0x299F7: mov    bx, si
+  0x299F9: mov    dx, cx
+  0x299FB: mov    di, es:43BEh
+  0x29A00: mov    bp, 441Eh
+  0x29A03: push   ds
+  0x29A04: mov    si, bx
+  0x29A06: lodsw  
+  0x29A07: mov    bx, si
+  0x29A09: add    ax, bp
+  0x29A0B: mov    si, ax
+  0x29A0D: mov    cx, 8
+  0x29A10: mov    ax, es
+  0x29A12: mov    ds, ax
+  0x29A14: mov    ax, di
+  0x29A16: movsw  
+  0x29A18: mov    si, ax
+  0x29A1A: mov    ax, [si+6]
+  0x29A1D: and    cs:word_27968, ax
+  0x29A22: or     cs:word_2796A, ax
+  0x29A27: pop    ds
+  0x29A28: dec    dx
+  0x29A29: jg     loc_29A03  ->code ['record_span_mask_rebuild']
+  0x29A2B: pop    cx
+  0x29A2C: retn   
+  0x29A2D: lodsw  
+  0x29A2E: add    ax, 441Eh
+  0x29A31: mov    bx, ax
+  0x29A33: mov    ax, es:[bx+6]
+  0x29A37: mov    es:43BAh, ax
+  0x29A3B: push   cx
+  0x29A3C: lodsw  
+  0x29A3D: push   si
+  0x29A3E: push   ds
+  0x29A3F: mov    cx, es
+  0x29A41: mov    ds, cx
+  0x29A43: add    ax, 441Eh
+  0x29A46: push   ax
+  0x29A47: mov    si, ax
+  0x29A49: mov    dx, [si+6]
+  0x29A4C: mov    ds:43BCh, dx
+  0x29A50: mov    cx, ds:43BAh
+  0x29A54: or     cx, dx
+  0x29A56: test   cx, 1
+  0x29A5A: jnz    loc_29A7A  ->code ['record_span_mask_rebuild']
+  0x29A5C: mov    di, ds:43BEh
+  0x29A60: mov    cx, 8
+  0x29A63: movsw  
+  0x29A65: xchg   di, ds:43BEh
+  0x29A69: mov    ax, [di+6]
+  0x29A6C: and    cs:word_27968, ax
+  0x29A71: or     cs:word_2796A, ax
+  0x29A76: inc    bp
+  0x29A77: jmp    loc_29B6F  ->code ['record_span_mask_rebuild']
+  0x29A7A: mov    cs:word_2796C, 1
+  0x29A81: mov    cx, ds:43BAh
+  0x29A85: xor    cx, dx
+  0x29A87: test   cx, 1
+  0x29A8B: jnz    loc_29A90  ->code ['record_span_mask_rebuild']
+  0x29A8D: jmp    loc_29B6F  ->code ['record_span_mask_rebuild']
+  0x29A90: push   bp
+  0x29A91: push   si
+  0x29A92: mov    ax, [si+4]
+  0x29A95: cmp    ax, [bx+4]
+  0x29A98: jge    loc_29A9C  ->code ['record_span_mask_rebuild']
+  0x29A9A: xchg   bx, si
+  0x29A9C: mov    di, ds:43BEh
+  0x29AA0: mov    cx, [si+4]
+  0x29AA3: mov    ax, [bx+4]
+  0x29AA6: sub    cx, ax
+  0x29AA8: mov    bp, 2
+  0x29AAB: mov    [di+4], bp
+  0x29AAE: sub    bp, ax
+  0x29AB0: mov    ax, [si]
+  0x29AB2: sub    ax, [bx]
+  0x29AB4: imul   bp
+  0x29AB6: mov    cs:word_27960, ax
+  0x29ABA: mov    cs:word_27962, dx
+  0x29ABF: mov    ax, [bx]
+  0x29AC1: imul   cx
+  0x29AC3: add    ax, cs:word_27960
+  0x29AC8: adc    dx, cs:word_27962
+  0x29ACD: idiv   cx
+  0x29ACF: mov    [di], ax
+  0x29AD1: mov    ax, [si+2]
+  0x29AD4: sub    ax, [bx+2]
+  0x29AD7: imul   bp
+  0x29AD9: mov    cs:word_27960, ax
+  0x29ADD: mov    cs:word_27962, dx
+  0x29AE2: mov    ax, [bx+2]
+  0x29AE5: imul   cx
+  0x29AE7: add    ax, cs:word_27960
+  0x29AEC: adc    dx, cs:word_27962
+  0x29AF1: idiv   cx
+  0x29AF3: mov    [di+2], ax
+  0x29AF6: mov    ax, [bx+0Ch]
+  0x29AF9: mov    [di+0Ch], ax
+  0x29AFC: sub    ax, ax
+  0x29AFE: mov    cx, [di]
+  0x29B00: mov    si, [di+2]
+  0x29B03: mov    bx, [di+4]
+  0x29B06: mov    bp, bx
+  0x29B08: shr    bx, 1
+  0x29B0A: mov    dx, bx
+  0x29B0C: neg    dx
+  0x29B0E: cmp    bx, cx
+  0x29B10: jge    loc_29B17  ->code ['record_span_mask_rebuild']
+  0x29B12: or     ax, 4
+  0x29B15: jmp    loc_29B1E  ->code ['record_span_mask_rebuild']
+  0x29B17: cmp    dx, cx
+  0x29B19: jle    loc_29B1E  ->code ['record_span_mask_rebuild']
+  0x29B1B: or     ax, 2
+  0x29B1E: cmp    bx, si
+  0x29B20: jge    loc_29B27  ->code ['record_span_mask_rebuild']
+  0x29B22: or     ax, 10h
+  0x29B25: jmp    loc_29B2E  ->code ['record_span_mask_rebuild']
+  0x29B27: cmp    dx, si
+  0x29B29: jle    loc_29B2E  ->code ['record_span_mask_rebuild']
+  0x29B2B: or     ax, 8
+  0x29B2E: or     ax, ax
+  0x29B30: jnz    loc_29B35  ->code ['record_span_mask_rebuild']
+  0x29B32: call   fixed_scale_clamp_or40  ->code ['fixed_scale_clamp_or40']
+  0x29B35: mov    [di+6], ax
+  0x29B38: and    cs:word_27968, ax
+  0x29B3D: or     cs:word_2796A, ax
+  0x29B42: add    di, 10h
+  0x29B45: mov    ds:43BEh, di
+  0x29B49: pop    si
+  0x29B4A: pop    bp
+  0x29B4B: inc    bp
+  0x29B4C: mov    ax, ds:43BAh
+  0x29B4F: test   ax, 1
+  0x29B52: jz     loc_29B6F  ->code ['record_span_mask_rebuild']
+  0x29B54: mov    di, ds:43BEh
+  0x29B58: mov    cx, 8
+  0x29B5B: movsw  
+  0x29B5D: xchg   di, ds:43BEh
+  0x29B61: mov    ax, [di+6]
+  0x29B64: and    cs:word_27968, ax
+  0x29B69: or     cs:word_2796A, ax
+  0x29B6E: inc    bp
+  0x29B6F: mov    ax, ds:43BCh
+  0x29B72: mov    ds:43BAh, ax
+  0x29B75: pop    bx
+  0x29B76: pop    ds
+  0x29B77: pop    si
+  0x29B78: pop    cx
+  0x29B79: dec    cx
+  0x29B7A: jle    loc_29B7F  ->code ['record_span_mask_rebuild']
+  0x29B7C: jmp    loc_29A3B  ->code ['record_span_mask_rebuild']
+  0x29B7F: mov    cx, bp
+  0x29B81: retn   
+  --- callers: 
+
+======================================================================
+sub_29B82  ea=0x29B82  size=108  L2  in=2  line_table_build_dispatch
+  --- callees (4): line_table_entry_clone(L1), line_table_entry_clone_b(L1), line_from_points(L1), line_table_entry_clone_slope(L1)
+  0x29B82: mov    ax, cs:word_2796A
+  0x29B86: test   ax, 8
+  0x29B89: jz     loc_29B9F  ->code ['line_table_build_dispatch']
+  0x29B8B: call   line_from_points  ->code ['line_from_points']
+  0x29B8E: cmp    cx, 3
+  0x29B91: jl     loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29B93: cmp    cs:word_27968, 0
+  0x29B99: jnz    loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29B9B: mov    ax, cs:word_2796A
+  0x29B9F: test   ax, 10h
+  0x29BA2: jz     loc_29BB8  ->code ['line_table_build_dispatch']
+  0x29BA4: call   line_table_entry_clone_slope  ->code ['line_table_entry_clone_slope']
+  0x29BA7: cmp    cx, 3
+  0x29BAA: jl     loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29BAC: cmp    cs:word_27968, 0
+  0x29BB2: jnz    loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29BB4: mov    ax, cs:word_2796A
+  0x29BB8: mov    ax, cs:word_2796A
+  0x29BBC: test   ax, 2
+  0x29BBF: jz     loc_29BD5  ->code ['line_table_build_dispatch']
+  0x29BC1: call   line_table_entry_clone  ->code ['line_table_entry_clone']
+  0x29BC4: cmp    cx, 3
+  0x29BC7: jl     loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29BC9: cmp    cs:word_27968, 0
+  0x29BCF: jnz    loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29BD1: mov    ax, cs:word_2796A
+  0x29BD5: test   ax, 4
+  0x29BD8: jz     locret_29BEA  ->code ['line_table_build_dispatch']
+  0x29BDA: call   line_table_entry_clone_b  ->code ['line_table_entry_clone_b']
+  0x29BDD: cmp    cx, 3
+  0x29BE0: jl     loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29BE2: cmp    cs:word_27968, 0
+  0x29BE8: jnz    loc_29BEB  ->code ['line_table_build_dispatch']
+  0x29BEA: retn   
+  0x29BEB: sub    cx, cx
+  0x29BED: retn   
+  --- callers: r58_line_table_entry, record_queue_push
+
+======================================================================
+sub_29F20  ea=0x29F20  size=405  L1  in=1  line_from_points
+  --- callees (2): slope_flag_test_bc(L0), fixed_scale_clamp_or40(L0)
+  0x29F20: mov    si, cs:word_2796E
+  0x29F25: mov    ax, 10h
+  0x29F28: mul    cx
+  0x29F2A: add    ax, si
+  0x29F2C: mov    di, ax
+  0x29F2E: mov    ax, cx
+  0x29F30: mov    cx, 8
+  0x29F33: movsw  
+  0x29F35: mov    cx, ax
+  0x29F37: mov    si, cs:word_2796E
+  0x29F3C: mov    ax, cs:word_27970
+  0x29F40: mov    ds:43BEh, ax
+  0x29F43: mov    cs:word_27968, 0FFFFh
+  0x29F4A: mov    cs:word_2796A, 0
+  0x29F51: sub    bp, bp
+  0x29F53: mov    bx, si
+  0x29F55: mov    ax, [bx+6]
+  0x29F58: mov    ds:43BAh, ax
+  0x29F5B: push   cx
+  0x29F5C: add    si, 10h
+  0x29F5F: push   si
+  0x29F60: push   si
+  0x29F61: mov    dx, [si+6]
+  0x29F64: mov    ds:43BCh, dx
+  0x29F68: mov    cx, ds:43BAh
+  0x29F6C: or     cx, dx
+  0x29F6E: test   cx, 8
+  0x29F72: jnz    loc_29F92  ->code ['line_from_points']
+  0x29F74: mov    di, ds:43BEh
+  0x29F78: mov    cx, 8
+  0x29F7B: movsw  
+  0x29F7D: xchg   di, ds:43BEh
+  0x29F81: mov    ax, [di+6]
+  0x29F84: and    cs:word_27968, ax
+  0x29F89: or     cs:word_2796A, ax
+  0x29F8E: inc    bp
+  0x29F8F: jmp    loc_2A091  ->code ['line_from_points']
+  0x29F92: mov    cx, ds:43BAh
+  0x29F96: xor    cx, dx
+  0x29F98: test   cx, 8
+  0x29F9C: jnz    loc_29FA1  ->code ['line_from_points']
+  0x29F9E: jmp    loc_2A091  ->code ['line_from_points']
+  0x29FA1: push   bp
+  0x29FA2: push   si
+  0x29FA3: mov    ax, [si+2]
+  0x29FA6: cmp    ax, [bx+2]
+  0x29FA9: jge    loc_29FAD  ->code ['line_from_points']
+  0x29FAB: xchg   bx, si
+  0x29FAD: mov    di, ds:43BEh
+  0x29FB1: mov    ax, [si+2]
+  0x29FB4: mov    dx, [bx+4]
+  0x29FB7: imul   dx
+  0x29FB9: mov    cx, ax
+  0x29FBB: mov    bp, dx
+  0x29FBD: mov    ax, [bx+2]
+  0x29FC0: mov    dx, [si+4]
+  0x29FC3: imul   dx
+  0x29FC5: sub    ax, cx
+  0x29FC7: sbb    dx, bp
+  0x29FC9: mov    cx, [si+4]
+  0x29FCC: sub    cx, [bx+4]
+  0x29FCF: mov    bp, [si+2]
+  0x29FD2: sub    bp, [bx+2]
+  0x29FD5: add    cx, bp
+  0x29FD7: add    cx, bp
+  0x29FD9: jno    loc_29FE5  ->code ['line_from_points']
+  0x29FDB: js     loc_29FE2  ->code ['line_from_points']
+  0x29FDD: mov    cx, 8001h
+  0x29FE0: jmp    loc_29FE5  ->code ['line_from_points']
+  0x29FE2: mov    cx, 7FFFh
+  0x29FE5: idiv   cx
+  0x29FE7: mov    [di+2], ax
+  0x29FEA: add    ax, ax
+  0x29FEC: neg    ax
+  0x29FEE: mov    [di+4], ax
+  0x29FF1: mov    ax, [si+4]
+  0x29FF4: sub    ax, [bx+4]
+  0x29FF7: cwd    
+  0x29FF8: xor    ax, dx
+  0x29FFA: sub    ax, dx
+  0x29FFC: xchg   ax, bp
+  0x29FFD: cwd    
+  0x29FFE: xor    ax, dx
+  0x2A000: sub    ax, dx
+  0x2A002: cmp    ax, bp
+  0x2A004: jge    loc_2A014  ->code ['line_from_points']
+  0x2A006: mov    cx, [di+4]
+  0x2A009: sub    cx, [bx+4]
+  0x2A00C: mov    bp, [si+4]
+  0x2A00F: sub    bp, [bx+4]
+  0x2A012: jmp    loc_2A020  ->code ['line_from_points']
+  0x2A014: mov    cx, [di+2]
+  0x2A017: sub    cx, [bx+2]
+  0x2A01A: mov    bp, [si+2]
+  0x2A01D: sub    bp, [bx+2]
+  0x2A020: mov    ax, [si]
+  0x2A022: sub    ax, [bx]
+  0x2A024: imul   cx
+  0x2A026: mov    cs:word_27960, ax
+  0x2A02A: mov    cs:word_27962, dx
+  0x2A02F: mov    ax, [bx]
+  0x2A031: imul   bp
+  0x2A033: add    ax, cs:word_27960
+  0x2A038: adc    dx, cs:word_27962
+  0x2A03D: idiv   bp
+  0x2A03F: mov    [di], ax
+  0x2A041: mov    ax, [bx+0Ch]
+  0x2A044: mov    [di+0Ch], ax
+  0x2A047: mov    cx, [di]
+  0x2A049: mov    si, [di+2]
+  0x2A04C: mov    bp, [di+4]
+  0x2A04F: call   slope_flag_test_bc  ->code ['slope_flag_test_bc']
+  0x2A052: jnz    loc_2A057  ->code ['line_from_points']
+  0x2A054: call   fixed_scale_clamp_or40  ->code ['fixed_scale_clamp_or40']
+  0x2A057: mov    [di+6], ax
+  0x2A05A: and    cs:word_27968, ax
+  0x2A05F: or     cs:word_2796A, ax
+  0x2A064: add    di, 10h
+  0x2A067: mov    ds:43BEh, di
+  0x2A06B: pop    si
+  0x2A06C: pop    bp
+  0x2A06D: inc    bp
+  0x2A06E: mov    ax, ds:43BAh
+  0x2A071: test   ax, 8
+  0x2A074: jz     loc_2A091  ->code ['line_from_points']
+  0x2A076: mov    di, ds:43BEh
+  0x2A07A: mov    cx, 8
+  0x2A07D: movsw  
+  0x2A07F: xchg   di, ds:43BEh
+  0x2A083: mov    ax, [di+6]
+  0x2A086: and    cs:word_27968, ax
+  0x2A08B: or     cs:word_2796A, ax
+  0x2A090: inc    bp
+  0x2A091: mov    ax, ds:43BCh
+  0x2A094: mov    ds:43BAh, ax
+  0x2A097: pop    bx
+  0x2A098: pop    si
+  0x2A099: pop    cx
+  0x2A09A: dec    cx
+  0x2A09B: jle    loc_2A0A0  ->code ['line_from_points']
+  0x2A09D: jmp    loc_29F5B  ->code ['line_from_points']
+  0x2A0A0: mov    ax, cs:word_2796E
+  0x2A0A4: mov    bx, cs:word_27970
+  0x2A0A9: mov    cs:word_2796E, bx
+  0x2A0AE: mov    cs:word_27970, ax
+  0x2A0B2: mov    cx, bp
+  0x2A0B4: retn   
+  --- callers: line_table_build_dispatch
+
+======================================================================
+sub_31138  ea=0x31138  size=481  L19  in=5  terrain_state_reinit
+  --- callees (35): ems_init(L1), joystick_poll(L0), segment_change_debounce_cx(L0), hw_port_bit_test_retn(L0), param_table_init(L5), terrain_matrix_advance_11d04(L1), block_words_fetch(L7), farobj_tile_stream_build(L12), slot3_tile_record_load(L5), entity_state_load(L6), terrain_frame_update_driver(L14), terrain_pos_delta_11cfc(L2), entity_update_batch(L10), view_extent_get_quad(L0), view_extent_compute_1f6da(L0), es_word_zero(L0), view_extent_init_0c(L2), es_ptr_slots_init(L0), farobj_sort_and_step(L9), flag_byte_get(L0), state_dispatch_cb(L1), int32_to_ascii(L1), near_fnptr_invoke(L0), state_word_22d28_set_ax(L0), fn_table_dispatch(L6), stub_to_23966(L1), mouse_buttons_test(L2), flag_block_zero_5762_5c63(L0), lodsw_quad_to_state_25450(L0), sub_2C4EB(L0), farobj_slot_project_step(L19), farobj_view_project_step(L19), farobj_field_scale_check2(L0), vga_dac_palette_upload(L11), view_pos_cache_update(L19)
+  0x31138: call   flag_block_zero_5762_5c63  ->code ['entity_state_load', 'flag_block_zero_5762_5c63']
+  0x3113D: mov    byte ptr ds:45Eh, 1
+  0x31142: mov    si, cs:word_2E128+1
+  0x31147: mov    di, 20h
+  0x3114A: mov    cx, 7
+  0x3114D: movsw  
+  0x3114F: call   flag_byte_get  ->code ['hw_port_bit_test_retn', 'flag_byte_get']
+  0x31154: mov    cx, ax
+  0x31156: mov    ax, 26h
+  0x31159: shl    ax, cl
+  0x3115B: mov    si, 4C1h
+  0x3115E: mov    [si], ax
+  0x31160: mov    di, 4C5h
+  0x31163: mov    ax, ds:2Ch
+  0x31166: mov    cx, 1
+  0x31169: call   far ptr stub_to_23966  ->code ['slot3_tile_record_load', 'stub_to_23966']
+  0x3116E: mov    ax, ds:4C5h
+  0x31171: cwd    
+  0x31172: add    ds:20h, ax
+  0x31176: adc    ds:22h, dx
+  0x3117A: mov    ax, ds:4C7h
+  0x3117D: cwd    
+  0x3117E: sub    ds:24h, ax
+  0x31182: sbb    ds:26h, dx
+  0x31186: cmp    byte ptr ds:45Fh, 0
+  0x3118B: jnz    loc_31199  ->code ['terrain_state_reinit']
+  0x3118D: mov    word ptr ds:28h, 0
+  0x31193: mov    word ptr ds:2Ah, 8
+  0x31199: mov    word ptr ds:2Eh, 0F000h
+  0x3119F: mov    word ptr ds:30h, 0
+  0x311A5: mov    ax, 0
+  0x311A8: call   state_word_22d28_set_ax  ->code ['farobj_tile_stream_build', 'state_word_22d28_set_ax']
+  0x311AD: sub    ax, ax
+  0x311AF: mov    ds:24Fh, ax
+  0x311B2: mov    ds:251h, ax
+  0x311B5: mov    word ptr ds:253h, 13Fh
+  0x311BB: mov    word ptr ds:255h, 0C7h
+  0x311C1: mov    word ptr ds:257h, 0A0h
+  0x311C7: mov    word ptr ds:259h, 64h
+  0x311CD: mov    si, 24Fh
+  0x311D0: call   view_extent_init_0c  ->code ['stack_reset_dispatch', 'view_extent_init_0c']
+  0x311D5: mov    ax, 555h
+  0x311D8: call   view_extent_compute_1f6da  ->code ['ems_init', 'view_extent_compute_1f6da']
+  0x311DD: call   view_extent_get_quad  ->code ['ems_init', 'view_extent_get_quad']
+  0x311E2: mov    ds:78Eh, ax
+  0x311E5: mov    ds:790h, bx
+  0x311E9: mov    ds:792h, cx
+  0x311ED: mov    ds:794h, dx
+  0x311F1: mov    si, 25Bh
+  0x311F4: call   lodsw_quad_to_state_25450  ->code ['terrain_pos_delta_11cfc', 'lodsw_quad_to_state_25450']
+  0x311F9: mov    ax, ds:28h
+  0x311FC: mov    dx, ds:2Ah
+  0x31200: call   view_pos_cache_update  ->code ['farobj_field_scale_check2', 'view_pos_cache_update']
+  0x31205: mov    si, 2Ch
+  0x31208: mov    di, 20h
+  0x3120B: call   fn_table_dispatch  ->code ['farobj_tile_stream_build', 'fn_table_dispatch']
+  0x31210: call   near_fnptr_invoke  ->code ['block_words_fetch', 'near_fnptr_invoke']
+  0x31215: mov    si, 20h
+  0x31218: call   entity_update_batch  ->code ['entity_update_batch']
+  0x3121D: mov    bx, 2Ch
+  0x31220: mov    si, 20h
+  0x31223: call   entity_state_load  ->code ['entity_state_load']
+  0x31228: call   es_word_zero  ->code ['stack_reset_dispatch', 'es_word_zero']
+  0x3122D: mov    ax, ds:2Ch
+  0x31230: mov    bx, 20h
+  0x31233: call   terrain_frame_update_driver  ->code ['terrain_frame_update_driver']
+  0x31238: call   es_ptr_slots_init  ->code ['joystick_poll', 'es_ptr_slots_init']
+  0x3123D: mov    al, 7
+  0x3123F: call   farobj_slot_project_step  ->code ['sub_2C4EB', 'farobj_slot_project_step']
+  0x31244: call   farobj_sort_and_step  ->code ['segment_change_debounce_cx', 'farobj_sort_and_step']
+  0x31249: sub    ax, ax
+  0x3124B: call   state_dispatch_cb  ->code ['param_table_init', 'state_dispatch_cb']
+  0x31250: call   loc_2295C  ->code ['terrain_matrix_advance_11d04', 'int32_to_ascii']
+  0x31255: call   vga_dac_palette_upload  ->code ['farobj_view_project_step', 'vga_dac_palette_upload']
+  0x3125A: cmp    byte ptr ds:45Fh, 0
+  0x3125F: jz     loc_312A7  ->code ['terrain_state_reinit']
+  0x31261: sub    ax, ax
+  0x31263: mov    dx, 2
+  0x31266: sub    ax, ds:28h
+  0x3126A: sbb    dx, ds:2Ah
+  0x3126E: jge    loc_31273  ->code ['terrain_state_reinit']
+  0x31270: jmp    loc_31313  ->code ['terrain_state_reinit']
+  0x31273: shr    dx, 1
+  0x31275: rcr    ax, 1
+  0x31277: shr    dx, 1
+  0x31279: rcr    ax, 1
+  0x3127B: shr    dx, 1
+  0x3127D: rcr    ax, 1
+  0x3127F: shr    dx, 1
+  0x31281: rcr    ax, 1
+  0x31283: shr    dx, 1
+  0x31285: rcr    ax, 1
+  0x31287: or     dx, dx
+  0x31289: jnz    loc_31293  ->code ['terrain_state_reinit']
+  0x3128B: cmp    ax, 64h
+  0x3128E: jnb    loc_31293  ->code ['terrain_state_reinit']
+  0x31290: mov    ax, 64h
+  0x31293: mov    bx, ds:28h
+  0x31297: mov    cx, ds:2Ah
+  0x3129B: add    bx, ax
+  0x3129D: adc    cx, dx
+  0x3129F: cmp    cx, 2
+  0x312A2: jl     loc_31301  ->code ['terrain_state_reinit']
+  0x312A4: jmp    loc_31313  ->code ['terrain_state_reinit']
+  0x312A6: nop    
+  0x312A7: mov    si, cs:word_2E128+1
+  0x312AC: mov    ax, ds:28h
+  0x312AF: mov    dx, ds:2Ah
+  0x312B3: sub    ax, [si+8]
+  0x312B6: sbb    dx, [si+0Ah]
+  0x312B9: jl     loc_31313  ->code ['terrain_state_reinit']
+  0x312BB: shr    dx, 1
+  0x312BD: rcr    ax, 1
+  0x312BF: shr    dx, 1
+  0x312C1: rcr    ax, 1
+  0x312C3: shr    dx, 1
+  0x312C5: rcr    ax, 1
+  0x312C7: or     dx, dx
+  0x312C9: jnz    loc_312D3  ->code ['terrain_state_reinit']
+  0x312CB: cmp    ax, 64h
+  0x312CE: jnb    loc_312D3  ->code ['terrain_state_reinit']
+  0x312D0: mov    ax, 64h
+  0x312D3: push   ax
+  0x312D4: push   dx
+  0x312D5: push   si
+  0x312D6: mov    ax, ds:28h
+  0x312D9: mov    dx, ds:2Ah
+  0x312DD: call   view_pos_cache_update  ->code ['farobj_field_scale_check2', 'view_pos_cache_update']
+  0x312E2: pop    si
+  0x312E3: pop    dx
+  0x312E4: pop    ax
+  0x312E5: mov    bx, ds:28h
+  0x312E9: mov    cx, ds:2Ah
+  0x312ED: sub    bx, ax
+  0x312EF: sbb    cx, dx
+  0x312F1: mov    ax, [si+8]
+  0x312F4: mov    dx, [si+0Ah]
+  0x312F7: cmp    cx, dx
+  0x312F9: jl     loc_31313  ->code ['terrain_state_reinit']
+  0x312FB: jg     loc_31301  ->code ['terrain_state_reinit']
+  0x312FD: cmp    bx, ax
+  0x312FF: jb     loc_31313  ->code ['terrain_state_reinit']
+  0x31301: mov    ds:28h, bx
+  0x31305: mov    ds:2Ah, cx
+  0x31309: call   mouse_buttons_test  ->code ['entity_state_load', 'mouse_buttons_test']
+  0x3130E: jb     loc_31313  ->code ['terrain_state_reinit']
+  0x31310: jmp    loc_31205  ->code ['terrain_state_reinit']
+  0x31313: call   flag_block_zero_5762_5c63  ->code ['entity_state_load', 'flag_block_zero_5762_5c63']
+  0x31318: retn   
+  --- callers: game_config_apply_init, store_impact_step, farobj_cmd_accum_sweep, game_frame_far_entry, farobj_class_table_entry

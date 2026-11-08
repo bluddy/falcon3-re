@@ -1,0 +1,44 @@
+======================================================================
+sub_153A5  ea=0x153A5  size=113  L14  in=3  terrain_frame_update_driver
+  --- callees (7): terrain_attr_walk_13110(L2), pos_neighbor_norm_scan(L3), record_script_exec_lite(L5), record_script_exec_quad(L5), record_script_exec_main(L5), tile_base_opcode_interpreter(L13), sub_2BEA1(L0)
+  0x153A5: push   ds
+  0x153A6: push   es
+  0x153A7: mov    bx, 71C1h
+  0x153AA: mov    ds, bx
+  0x153AC: mov    es, bx
+  0x153AE: call   pos_neighbor_norm_scan  ->code ['pos_neighbor_norm_scan']
+  0x153B1: cmp    cs:byte_11CF3, 0
+  0x153B7: jnz    loc_153C4  ->code ['terrain_frame_update_driver']
+  0x153B9: mov    ax, cs:word_11CC8
+  0x153BD: xor    bl, bl
+  0x153BF: call   far ptr sub_2BEA1  ->code ['sub_2BEA1']
+  0x153C4: cmp    cs:byte_11C6A, 0
+  0x153CA: jnz    loc_153DD  ->code ['terrain_frame_update_driver']
+  0x153CC: cmp    cs:byte_11C88, 0
+  0x153D2: jnz    loc_153D7  ->code ['terrain_frame_update_driver']
+  0x153D4: call   record_script_exec_lite  ->code ['record_script_exec_lite']
+  0x153D7: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
+  0x153DA: pop    es
+  0x153DB: pop    ds
+  0x153DC: retf   
+  0x153DD: call   record_script_exec_quad  ->code ['record_script_exec_quad']
+  0x153E0: call   record_script_exec_main  ->code ['record_script_exec_main']
+  0x153E3: mov    cs:byte_11C89, 0FFh
+  0x153E9: call   tile_base_opcode_interpreter  ->code ['tile_base_opcode_interpreter']
+  0x153EC: mov    cs:byte_11C89, 0
+  0x153F2: test   cs:byte_11C69, 3
+  0x153F8: jnz    loc_15410  ->code ['terrain_frame_update_driver']
+  0x153FA: mov    al, cs:byte_11C88
+  0x153FE: push   ax
+  0x153FF: mov    cs:byte_11C88, 0
+  0x15405: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
+  0x15408: pop    ax
+  0x15409: mov    cs:byte_11C88, al
+  0x1540D: pop    es
+  0x1540E: pop    ds
+  0x1540F: retf   
+  0x15410: call   terrain_attr_walk_13110  ->code ['terrain_attr_walk_13110']
+  0x15413: pop    es
+  0x15414: pop    ds
+  0x15415: retf   
+  --- callers: entity_setup_step, game_frame_pipeline_step, terrain_state_reinit

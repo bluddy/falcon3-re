@@ -1,0 +1,50 @@
+======================================================================
+sub_16060  ea=0x16060  size=126  L4  in=23  tile_strip_sample_draw
+  --- callees (2): tile_clip_draw_14200(L1), tile_quad_sample(L3)
+  0x16060: mov    ax, cs:word_11C2A
+  0x16064:        2Eh, 2Eh, 2Eh
+  0x16069: mov    cs:word_1608E, ax
+  0x1606D: mov    ax, cs:word_11C28
+  0x16071: sub    ax, cs:word_11C44
+  0x16076: mov    cs:word_1609D, ax
+  0x1607A: jmp    $+2  ->code ['tile_strip_sample_draw']
+  0x1607C: mov    di, 46E9h
+  0x1607F: mov    bp, 47E9h
+  0x16082: mov    cx, 40h
+  0x16085: sub    dx, dx
+  0x16087: mov    si, ds:46E7h
+  0x1608B: mov    ax, [si]
+  0x1608D:        5, 5, 5
+  0x16090:        25h, 25h, 25h
+  0x1609D:        0ABCDh, 0ABCDh, 0ABCDh
+  0x1609F: and    ax, 7FFh
+  0x160A2: mov    ds:[bp+2], ax
+  0x160A6: push   cx
+  0x160A7: push   dx
+  0x160A8: push   si
+  0x160A9: push   di
+  0x160AA: call   tile_quad_sample  ->code ['tile_quad_sample']
+  0x160AD: pop    di
+  0x160AE: pop    si
+  0x160AF: pop    dx
+  0x160B0: pop    cx
+  0x160B1: cmp    al, 5Fh
+  0x160B3: jbe    loc_160B6  ->code ['tile_strip_sample_draw']
+  0x160B5: inc    dx
+  0x160B6: mov    [di], al
+  0x160B8: mov    [di+40h], ah
+  0x160BB: inc    di
+  0x160BC: add    si, 4
+  0x160BF: add    bp, 4
+  0x160C2: loop   loc_1608B  ->code ['tile_strip_sample_draw']
+  0x160C4: cmp    dx, 40h
+  0x160C7: jnb    locret_160DD  ->code ['tile_strip_sample_draw']
+  0x160C9: push   dx
+  0x160CA: mov    bx, 47E9h
+  0x160CD: mov    si, 46E9h
+  0x160D0: mov    di, 4AE9h
+  0x160D3: mov    cs:byte_11CAF, 1
+  0x160D9: call   tile_clip_draw_14200  ->code ['tile_clip_draw_14200']
+  0x160DC: pop    dx
+  0x160DD: retn   
+  --- callers: entity_state_load, scroll_scale_lookup, hud_draw_chain_step, rot_segment_strip_draw, terrain_attr_scan_clamp, tile_strip_project_draw, view_rect_strip_draw, mode_draw_dispatch, sprite_trail_strip_draw, sprite_rect_strip_draw, hud_terrain_strip_render, terrain_angle_time_step, record_script_tilepos_dispatch, record_script_coord_dispatch

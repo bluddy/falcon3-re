@@ -1,0 +1,55 @@
+======================================================================
+sub_14956  ea=0x14956  size=114  L3  in=19  tile_quad_sample
+  --- callees (2): avg_pair_dispatch_149d2(L2), tile_index_resolve(L1)
+  0x14956: push   es
+  0x14957: mov    di, ax
+  0x14959: and    di, 3
+  0x1495C: mov    dx, bx
+  0x1495E: sub    dx, 7FFh
+  0x14962: neg    dx
+  0x14964: and    dx, 3
+  0x14967: shl    dx, 1
+  0x14969: shl    dx, 1
+  0x1496B: add    dx, di
+  0x1496D: shl    dx, 1
+  0x1496F: mov    cs:word_11C74, dx
+  0x14974: shr    ax, 1
+  0x14976: shr    ax, 1
+  0x14978: shr    bx, 1
+  0x1497A: shr    bx, 1
+  0x1497C: mov    si, ax
+  0x1497E: mov    di, bx
+  0x14980: call   tile_index_resolve  ->code ['tile_index_resolve']
+  0x14983: cmp    al, 5Fh
+  0x14985: ja     loc_14997  ->code ['tile_quad_sample']
+  0x14987: mov    cs:byte_11C61, al
+  0x1498B: mov    ax, si
+  0x1498D: mov    bx, di
+  0x1498F: inc    ax
+  0x14990: call   tile_index_resolve  ->code ['tile_index_resolve']
+  0x14993: cmp    al, 5Fh
+  0x14995: jbe    loc_1499C  ->code ['tile_quad_sample']
+  0x14997: mov    ax, 80h
+  0x1499A: pop    es
+  0x1499B: retn   
+  0x1499C: mov    cs:byte_11C60, al
+  0x149A0: mov    ax, si
+  0x149A2: mov    bx, di
+  0x149A4: inc    ax
+  0x149A5: dec    bx
+  0x149A6: call   tile_index_resolve  ->code ['tile_index_resolve']
+  0x149A9: cmp    al, 5Fh
+  0x149AB: ja     loc_14997  ->code ['tile_quad_sample']
+  0x149AD: mov    cs:byte_11C5F, al
+  0x149B1: mov    ax, si
+  0x149B3: mov    bx, di
+  0x149B5: dec    bx
+  0x149B6: call   tile_index_resolve  ->code ['tile_index_resolve']
+  0x149B9: cmp    al, 5Fh
+  0x149BB: ja     loc_14997  ->code ['tile_quad_sample']
+  0x149BD: mov    cs:byte_11C5E, al
+  0x149C1: call   avg_pair_dispatch_149d2  ->code ['avg_pair_dispatch_149d2']
+  0x149C4: xchg   ah, al
+  0x149C6: pop    es
+  0x149C7: retn   
+  --- callers: tile_quad_sample_group, tile_strip_sample_draw, terrain_vm_sweep_sample, view_pos_matrix_step, ui_gauge_panel_draw, viewobj_batch_project_test, scroll_decay_limit, mode_axis_state_select, view_axis_accum_step, game_setup_scroll_half_accum, view_delta_ratio_compute, scroll_scale_lookup, hud_terrain_strip_render, tile_sample_script_dispatch

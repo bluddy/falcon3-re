@@ -1,0 +1,45 @@
+======================================================================
+sub_21EB0  ea=0x21EB0  size=138  L1  in=3  record_span_init_eba
+  --- callees (1): rect_span_min_track(L0)
+  0x21EB0: mov    word ptr es:0EBAh, 0B9Ah
+  0x21EB7: cmp    cx, 3
+  0x21EBA: jge    loc_21EBD  ->code ['record_span_init_eba']
+  0x21EBC: retn   
+  0x21EBD: mov    ax, [si+2]
+  0x21EC0: mov    cs:word_1F6FE, ax
+  0x21EC4: mov    cs:word_1F700, ax
+  0x21EC8: mov    cs:word_1F722, 7FFFh
+  0x21ECF: mov    cs:word_1F724, 8000h
+  0x21ED6: mov    cs:byte_1F740, 0
+  0x21EDC: push   cx
+  0x21EDD: push   si
+  0x21EDE: call   rect_span_min_track  ->code ['rect_span_min_track']
+  0x21EE1: pop    si
+  0x21EE2: pop    cx
+  0x21EE3: mov    ax, [si+2]
+  0x21EE6: cmp    ax, cs:word_1F6FE
+  0x21EEB: jge    loc_21EF1  ->code ['record_span_init_eba']
+  0x21EED: mov    cs:word_1F6FE, ax
+  0x21EF1: cmp    ax, cs:word_1F700
+  0x21EF6: jle    loc_21EFC  ->code ['record_span_init_eba']
+  0x21EF8: mov    cs:word_1F700, ax
+  0x21EFC: add    si, 4
+  0x21EFF: loop   loc_21EDC  ->code ['record_span_init_eba']
+  0x21F01: test   cs:byte_1F740, 1
+  0x21F07: jz     loc_21F17  ->code ['record_span_init_eba']
+  0x21F09: mov    ax, cs:word_1F700
+  0x21F0D: sub    ax, cs:word_1F6FE
+  0x21F12: mov    cs:word_1F700, ax
+  0x21F16: retn   
+  0x21F17: mov    cs:word_1F700, 1
+  0x21F1E: mov    di, [si-2]
+  0x21F21: mov    cs:word_1F6FE, di
+  0x21F26: shl    di, 1
+  0x21F28: shl    di, 1
+  0x21F2A: add    di, es:0EBAh
+  0x21F2F: mov    ax, cs:word_1F722
+  0x21F33: stosw  
+  0x21F34: mov    ax, cs:word_1F724
+  0x21F38: stosw  
+  0x21F39: retn   
+  --- callers: record_queue_swap_drain, record_queue_push, record_span_build_and_dispatch

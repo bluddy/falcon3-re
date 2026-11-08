@@ -1,0 +1,272 @@
+======================================================================
+sub_28B08  ea=0x28B08  size=409  L1  in=2  line_draw_441e
+  --- callees (1): fixed_scale_clamp_or40(L0)
+  0x28B08: mov    di, 441Eh
+  0x28B0B:        2Eh, 2Eh, 2Eh
+  0x28B12: mov    cs:word_27966, 0
+  0x28B19: push   cx
+  0x28B1A:        0B9h, 0B9h, 0B9h
+  0x28B1D:        0ADh, 0ADh, 0ADh
+  0x28B20:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28B22:        81h, 81h, 81h
+  0x28B26:        0E3h, 0E3h, 0E3h
+  0x28B4F:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28B51:        81h, 81h, 81h
+  0x28B55:        0E3h, 0E3h, 0E3h
+  0x28B8D:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28B8F:        81h, 81h, 81h
+  0x28B93:        0E3h, 0E3h, 0E3h
+  0x28BBC:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28BBE:        0F7h, 0F7h, 0F7h
+  0x28BC5:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28BC7:        0F7h, 0F7h, 0F7h
+  0x28BCE:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28BD0:        0F7h, 0F7h, 0F7h
+  0x28BE8:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28BEA:        0F7h, 0F7h, 0F7h
+  0x28BF1:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28BF3:        0F7h, 0F7h, 0F7h
+  0x28BFA:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28BFC:        0F7h, 0F7h, 0F7h
+  0x28C14:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28C16:        0F7h, 0F7h, 0F7h
+  0x28C1D:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28C1F:        0F7h, 0F7h, 0F7h
+  0x28C26:        0ABCDh, 0ABCDh, 0ABCDh
+  0x28C28: imul   cx
+  0x28C2A: add    ax, si
+  0x28C2C: adc    dx, di
+  0x28C2E: shl    ax, 1
+  0x28C30: rcl    dx, 1
+  0x28C32: jno    loc_28C3E  ->code ['line_draw_441e']
+  0x28C34: js     loc_28C3B  ->code ['line_draw_441e']
+  0x28C36: mov    dx, 8001h
+  0x28C39: jmp    loc_28C3E  ->code ['line_draw_441e']
+  0x28C3B: mov    dx, 7FFFh
+  0x28C3E: pop    si
+  0x28C3F: pop    cx
+  0x28C40: pop    di
+  0x28C41: mov    es:[di], cx
+  0x28C44: mov    es:[di+2], si
+  0x28C48: mov    es:[di+4], dx
+  0x28C4C: mov    bx, dx
+  0x28C4E: mov    bp, dx
+  0x28C50: mov    ax, 1
+  0x28C53: cmp    bx, 2
+  0x28C56: jl     loc_28C87  ->code ['line_draw_441e']
+  0x28C58: sub    ax, ax
+  0x28C5A: shr    bx, 1
+  0x28C5C: mov    dx, bx
+  0x28C5E: neg    dx
+  0x28C60: cmp    bx, cx
+  0x28C62: jge    loc_28C69  ->code ['line_draw_441e']
+  0x28C64: or     ax, 4
+  0x28C67: jmp    loc_28C70  ->code ['line_draw_441e']
+  0x28C69: cmp    dx, cx
+  0x28C6B: jle    loc_28C70  ->code ['line_draw_441e']
+  0x28C6D: or     ax, 2
+  0x28C70: cmp    bx, si
+  0x28C72: jge    loc_28C79  ->code ['line_draw_441e']
+  0x28C74: or     ax, 10h
+  0x28C77: jmp    loc_28C80  ->code ['line_draw_441e']
+  0x28C79: cmp    dx, si
+  0x28C7B: jle    loc_28C80  ->code ['line_draw_441e']
+  0x28C7D: or     ax, 8
+  0x28C80: or     ax, ax
+  0x28C82: jnz    loc_28C87  ->code ['line_draw_441e']
+  0x28C84: call   fixed_scale_clamp_or40  ->code ['fixed_scale_clamp_or40']
+  0x28C87: mov    es:[di+6], ax
+  0x28C8B: and    cs:word_27964, ax
+  0x28C90: or     cs:word_27966, ax
+  0x28C95: pop    si
+  0x28C96: pop    cx
+  0x28C97: add    di, 10h
+  0x28C9A: dec    cx
+  0x28C9B: jle    locret_28CA0  ->code ['line_draw_441e']
+  0x28C9D: jmp    loc_28B19  ->code ['line_draw_441e']
+  0x28CA0: retn   
+  --- callers: pos_diff_norm, game_frame_pipeline_step
+
+======================================================================
+ea:0x2978E:512  ea=0x2978E  size=512  L-1  in=0  ea:0x2978E:512
+  0x2978E: lodsw  
+  0x2978F: mov    cx, ax
+  0x29791: cmp    cs:byte_1F73A, 0
+  0x29797: jnz    loc_2979C  ->code ['0x2979c']
+  0x29799: jmp    loc_298C4  ->code ['0x298c4']
+  0x2979C: push   ds
+  0x2979D: push   cx
+  0x2979E: push   si
+  0x2979F: mov    bp, 441Eh
+  0x297A2: lodsw  
+  0x297A3: add    ax, bp
+  0x297A5: mov    di, ax
+  0x297A7: lodsw  
+  0x297A8: add    ax, bp
+  0x297AA: mov    cx, ax
+  0x297AC: lodsw  
+  0x297AD: add    bp, ax
+  0x297AF: mov    ax, 7B0Eh
+  0x297B2: mov    ds, ax
+  0x297B4: mov    si, cx
+  0x297B6: lodsw  
+  0x297B7: mov    bx, ax
+  0x297B9: mov    word ptr ds:unk_7BFF4, ax
+  0x297BC: sub    bx, [di]
+  0x297BE: mov    word ptr ds:unk_7C000, bx
+  0x297C2: lodsw  
+  0x297C3: mov    bx, ax
+  0x297C5: mov    word ptr ds:unk_7BFF6, ax
+  0x297C8: sub    bx, [di+2]
+  0x297CB: mov    word ptr ds:unk_7C002, bx
+  0x297CF: lodsw  
+  0x297D0: mov    bx, ax
+  0x297D2: mov    word ptr ds:unk_7BFF8, ax
+  0x297D5: sub    bx, [di+4]
+  0x297D8: mov    word ptr ds:unk_7C004, bx
+  0x297DC: mov    si, bp
+  0x297DE: mov    di, cx
+  0x297E0: lodsw  
+  0x297E1: sub    ax, [di]
+  0x297E3: mov    word ptr ds:unk_7C006, ax
+  0x297E6: lodsw  
+  0x297E7: sub    ax, [di+2]
+  0x297EA: mov    word ptr ds:unk_7C008, ax
+  0x297ED: lodsw  
+  0x297EE: sub    ax, [di+4]
+  0x297F1: mov    word ptr ds:unk_7C00A, ax
+  0x297F4: mov    bx, 0F20h
+  0x297F7: mov    si, 0F26h
+  0x297FA: mov    di, 0F2Ch
+  0x297FD: call   fixed_vec3_cross  ->code ['fixed_vec3_cross']
+  0x29800: mov    si, 0F14h
+  0x29803: mov    di, 0F2Ch
+  0x29806: call   vec3_dot  ->code ['vec3_dot']
+  0x29809: jns    loc_2980F  ->code ['0x2980f']
+  0x2980B: pop    si
+  0x2980C: pop    cx
+  0x2980D: pop    ds
+  0x2980E: retn   
+  0x2980F: cmp    cs:byte_1F72F, 0
+  0x29815: jnz    loc_2981A  ->code ['0x2981a']
+  0x29817: jmp    loc_298C1  ->code ['0x298c1']
+  0x2981A: mov    cs:byte_1F737, 1
+  0x29820: cmp    cs:word_22D20, 7FFFh
+  0x29827: jz     loc_29865  ->code ['0x29865']
+  0x29829: mov    si, 0F14h
+  0x2982C:        0B9h, 0B9h, 0B9h
+  0x2982F:        0BBh, 0BBh, 0BBh
+  0x29832:        0ADh, 0ADh, 0ADh
+  0x29842:        0ABCDh, 0ABCDh, 0ABCDh
+  0x29844:        0ADh, 0ADh, 0ADh
+  0x29854:        0ABCDh, 0ABCDh, 0ABCDh
+  0x29856: lodsw  
+  0x29857: sub    ax, bx
+  0x29859: imul   cx
+  0x2985B: shl    ax, 1
+  0x2985D: rcl    dx, 1
+  0x2985F: add    dx, bx
+  0x29861: mov    ds:0F18h, dx
+  0x29865: mov    si, 0F14h
+  0x29868: mov    cx, ds:3050h
+  0x2986C: jcxz   loc_29876  ->code ['0x29876']
+  0x2986E: sar    word ptr [si], cl
+  0x29870: sar    word ptr [si+2], cl
+  0x29873: sar    word ptr [si+4], cl
+  0x29876: lodsw  
+  0x29877: cwd    
+  0x29878:        2Dh, 2Dh, 2Dh
+  0x2987B:        81h, 81h, 81h
+  0x2987F:        0A3h, 0A3h, 0A3h
+  0x29889:        0ABCDh, 0ABCDh, 0ABCDh
+  0x2988B:        81h, 81h, 81h
+  0x2988F:        0A3h, 0A3h, 0A3h
+  0x29899:        0ABCDh, 0ABCDh, 0ABCDh
+  0x2989B:        81h, 81h, 81h
+  0x2989F: mov    ds:0F58h, ax
+  0x298A2: mov    ds:0F5Ah, dx
+  0x298A6: mov    si, 0F50h
+  0x298A9: mov    di, 0F38h
+  0x298AC: call   fixed_vec3_magnitude_gate  ->code ['fixed_vec3_magnitude_gate']
+  0x298AF: mov    si, 0F38h
+  0x298B2: mov    di, 0F2Ch
+  0x298B5: call   vec3_dot  ->code ['vec3_dot']
+  0x298B8: mov    si, 0F38h
+  0x298BB: mov    di, 0F2Ch
+  0x298BE: call   fixed_long_sign_clamp  ->code ['fixed_long_sign_clamp']
+  0x298C1: pop    si
+  0x298C2: pop    cx
+  0x298C3: pop    ds
+  0x298C4: mov    ax, 5D1Eh
+  0x298C7: mov    cs:word_2796E, ax
+  0x298CB: mov    ax, 603Eh
+  0x298CE: mov    cs:word_27970, ax
+  0x298D2: mov    cs:word_2796C, 0
+  0x298D9: call   record_span_mask_rebuild  ->code ['record_span_mask_rebuild']
+  0x298DC: push   ds
+  0x298DD: push   es
+  0x298DE: pop    ds
+  0x298DF: cmp    cx, 3
+  0x298E2: jl     loc_29915  ->code ['0x29915']
+  0x298E4: cmp    cs:word_27968, 0
+  0x298EA: jnz    loc_29915  ->code ['0x29915']
+  0x298EC: mov    ax, cs:word_2796A
+  0x298F0: or     ax, ax
+  0x298F2: jz     loc_29912  ->code ['0x29912']
+  0x298F4: test   ax, 1Eh
+  0x298F7: jz     loc_2990A  ->code ['0x2990a']
+  0x298F9: call   line_table_build_dispatch  ->code ['line_table_build_dispatch']
+  0x298FC: cmp    cx, 3
+  0x298FF: jl     loc_29915  ->code ['0x29915']
+  0x29901: mov    ax, cs:word_2796A
+  0x29905: test   ax, 60h
+  0x29908: jz     loc_29912  ->code ['0x29912']
+  0x2990A: call   uibounds_left_right_dispatch  ->code ['uibounds_left_right_dispatch']
+  0x2990D: cmp    cx, 3
+  0x29910: jl     loc_29915  ->code ['0x29915']
+  0x29912: call   record_span_build_and_dispatch  ->code ['record_span_build_and_dispatch']
+  0x29915: pop    ds
+  0x29916: retn   
+  0x29917: mov    bx, cx
+  0x29919: mov    di, 6360h
+  0x2991C: mov    si, cs:word_2796E
+  0x29921: mov    dx, 10h
+  0x29924: mov    ax, [si+8]
+  0x29927: stosw  
+  0x29928: mov    ax, [si+0Ah]
+  0x2992B: stosw  
+  0x2992C: add    si, dx
+  0x2992E: loop   loc_29924  ->code ['record_span_build_and_dispatch']
+  0x29930: mov    si, cs:word_2796E
+  0x29935: mov    ax, [si+8]
+  0x29938: stosw  
+  0x29939: mov    ax, [si+0Ah]
+  0x2993C: stosw  
+  0x2993D: mov    cx, bx
+  0x2993F: mov    si, 6360h
+  0x29942: mov    cs:word_2796E, si
+  0x29947: cmp    cs:word_2796C, 0
+  0x2994D: jnz    loc_29993  ->code ['record_span_build_and_dispatch']
+  0x2994F: sub    ah, ah
+  0x29951: cmp    cs:byte_1F72E, ah
+  0x29956: jz     loc_29993  ->code ['record_span_build_and_dispatch']
+  0x29958: mov    al, cs:byte_1F739
+  0x2995C: or     ax, ax
+  0x2995E: jz     loc_29993  ->code ['record_span_build_and_dispatch']
+  0x29960: sub    si, 2
+  0x29963: mov    [si], ax
+  0x29965: mov    cx, ax
+  0x29967: mov    ax, 1
+  0x2996A: shl    ax, cl
+  0x2996C: mov    cx, ax
+  0x2996E: shl    ax, 1
+  0x29970: add    ax, cx
+  0x29972: mov    bx, 6748h
+  0x29975: mov    ds:0F66h, bx
+  0x29979: mov    bl, cs:byte_1F72E
+  0x2997E: sub    bh, bh
+  0x29980: sub    bx, 2
+  0x29983: call   cs:off_1F708[bx]  ->code ['param6_append_cursor_a', 'param6_append_avg_b', 'param6_append_3w_c', 'param6_append_scale_d', 'joystick_gate_counter']
+  0x29988: mov    si, 674Ah
+  0x2998B: mov    cs:word_2796E, si
+  --- callers: 

@@ -1,0 +1,1803 @@
+======================================================================
+sub_186ADC  ea=0x186ADC  size=2312  L21  in=1  r53_script_opcode_interpreter
+  --- callees (6): slot2_map_window_load(L6), r53_farobj_pipeline_body(L20), tile_sample_script_dispatch(L19), floor_store_4abb(L0), farobj_store_32075(L0), farobj_index_resolve_step(L19)
+  0x186ADC: enter  0B0h, 0
+  0x186AE0: push   si
+  0x186AE1: push   di
+  0x186AE2: mov    word ptr [bp-2Ch], 0
+  0x186AE7: call   far ptr loc_12C28  ->code ['slot2_map_window_load']
+  0x186AEC: call   far ptr loc_3F894+2  ->code ['farobj_index_resolve_step']
+  0x186AF1: call   loc_38B1B+2  ->code ['tile_sample_script_dispatch']
+  0x186AF6: xor    di, di
+  0x186AF8: jmp    loc_186B50  ->code ['r53_script_opcode_interpreter']
+  0x186AFA: mov    bx, di
+  0x186AFC: shl    bx, 1
+  0x186AFE: lea    ax, [bp-70h]
+  0x186B01: adc    bx, ax
+  0x186B03: mov    word ptr ss:[bx], 0FFFFh
+  0x186B08: mov    byte ptr [bp+di-20h], 0
+  0x186B0C: mov    bx, di
+  0x186B0E: shl    bx, 1
+  0x186B10: lea    ax, [bp-80h]
+  0x186B13: add    bx, ax
+  0x186B15: mov    word ptr ss:[bx], 10h
+  0x186B1A: mov    bx, di
+  0x186B1C: shl    bx, 1
+  0x186B1E: lea    ax, [bp-90h]
+  0x186B22: add    bx, ax
+  0x186B24: mov    word ptr ss:[bx], 0
+  0x186B29: mov    bx, di
+  0x186B2B: shl    bx, 1
+  0x186B2D: lea    ax, [bp-0A0h]
+  0x186B31: add    bx, ax
+  0x186B33: mov    word ptr ss:[bx], 0
+  0x186B38: mov    bx, di
+  0x186B3A: shl    bx, 1
+  0x186B3C: lea    ax, [bp-0B0h]
+  0x186B40: add    bx, ax
+  0x186B42: mov    word ptr ss:[bx], 0
+  0x186B47: mov    byte ptr [bp+di-38h], 0
+  0x186B4B: mov    byte ptr [bp+di-40h], 0
+  0x186B4F: inc    di
+  0x186B50: cmp    di, 8
+  0x186B53: jl     loc_186AFA  ->code ['r53_script_opcode_interpreter']
+  0x186B55: mov    word ptr [bp-8], 0
+  0x186B5A: mov    word ptr [bp-30h], 0
+  0x186B5F: mov    ax, 6894h
+  0x186B62: mov    es, ax
+  0x186B64: mov    ax, word ptr es:dword_69E3A+2
+  0x186B68: mov    dx, word ptr es:dword_69E3A
+  0x186B6D: add    dx, 3Dh
+  0x186B70: mov    [bp-42h], ax
+  0x186B73: mov    [bp-44h], dx
+  0x186B76: mov    ax, 6894h
+  0x186B79: mov    es, ax
+  0x186B7B: cmp    es:word_68940, 0
+  0x186B81: jz     loc_186B95  ->code ['r53_script_opcode_interpreter']
+  0x186B83: mov    ax, 6894h
+  0x186B86: mov    es, ax
+  0x186B88: cmp    es:byte_6A302, 0
+  0x186B8E: jz     loc_186B95  ->code ['r53_script_opcode_interpreter']
+  0x186B90: call   far ptr unk_5CAD7  ->code ['0x5cad7']
+  0x186B95: xor    di, di
+  0x186B97: jmp    loc_186D40  ->code ['r53_script_opcode_interpreter']
+  0x186B9A: mov    ax, di
+  0x186B9C: mov    dx, 42h
+  0x186B9F: imul   dx
+  0x186BA1: les    bx, [bp-44h]
+  0x186BA4: add    bx, ax
+  0x186BA6: cmp    byte ptr es:[bx+41h], 0FFh
+  0x186BAB: jnz    loc_186BB0  ->code ['r53_script_opcode_interpreter']
+  0x186BAD: jmp    loc_186CD8  ->code ['r53_script_opcode_interpreter']
+  0x186BB0: mov    ax, di
+  0x186BB2: mov    dx, 42h
+  0x186BB5: imul   dx
+  0x186BB7: mov    bx, [bp-44h]
+  0x186BBA: add    bx, ax
+  0x186BBC: mov    al, es:[bx+41h]
+  0x186BC0: cbw    
+  0x186BC1: shl    ax, 1
+  0x186BC3: lea    dx, [bp-70h]
+  0x186BC6: add    ax, dx
+  0x186BC8: mov    bx, ax
+  0x186BCA: mov    ss:[bx], di
+  0x186BCD: mov    ax, di
+  0x186BCF: mov    dx, 42h
+  0x186BD2: imul   dx
+  0x186BD4: mov    bx, [bp-44h]
+  0x186BD7: add    bx, ax
+  0x186BD9: mov    al, es:[bx+41h]
+  0x186BDD: cbw    
+  0x186BDE: shl    ax, 1
+  0x186BE0: lea    dx, [bp-0B0h]
+  0x186BE4: add    ax, dx
+  0x186BE6: push   ax
+  0x186BE7: mov    ax, di
+  0x186BE9: mov    dx, 42h
+  0x186BEC: imul   dx
+  0x186BEE: mov    bx, [bp-44h]
+  0x186BF1: add    bx, ax
+  0x186BF3: mov    al, es:[bx+24h]
+  0x186BF7: mov    ah, 0
+  0x186BF9: shl    ax, 8
+  0x186BFC: pop    bx
+  0x186BFD: mov    ss:[bx], ax
+  0x186C00: mov    ax, di
+  0x186C02: mov    dx, 42h
+  0x186C05: imul   dx
+  0x186C07: mov    bx, [bp-44h]
+  0x186C0A: add    bx, ax
+  0x186C0C: mov    al, es:[bx+41h]
+  0x186C10: cbw    
+  0x186C11: shl    ax, 1
+  0x186C13: lea    dx, [bp-80h]
+  0x186C16: add    ax, dx
+  0x186C18: push   ax
+  0x186C19: mov    ax, di
+  0x186C1B: mov    dx, 42h
+  0x186C1E: imul   dx
+  0x186C20: mov    bx, [bp-44h]
+  0x186C23: add    bx, ax
+  0x186C25: mov    al, es:[bx+25h]
+  0x186C29: mov    ah, 0
+  0x186C2B: shl    ax, 8
+  0x186C2E: pop    bx
+  0x186C2F: mov    ss:[bx], ax
+  0x186C32: mov    ax, di
+  0x186C34: mov    dx, 42h
+  0x186C37: imul   dx
+  0x186C39: mov    bx, [bp-44h]
+  0x186C3C: add    bx, ax
+  0x186C3E: mov    al, es:[bx+41h]
+  0x186C42: cbw    
+  0x186C43: shl    ax, 1
+  0x186C45: lea    dx, [bp-90h]
+  0x186C49: add    ax, dx
+  0x186C4B: push   ax
+  0x186C4C: mov    ax, di
+  0x186C4E: mov    dx, 42h
+  0x186C51: imul   dx
+  0x186C53: mov    bx, [bp-44h]
+  0x186C56: add    bx, ax
+  0x186C58: mov    al, es:[bx+23h]
+  0x186C5C: mov    ah, 0
+  0x186C5E: shl    ax, 8
+  0x186C61: pop    bx
+  0x186C62: mov    ss:[bx], ax
+  0x186C65: mov    ax, di
+  0x186C67: mov    dx, 42h
+  0x186C6A: imul   dx
+  0x186C6C: mov    bx, [bp-44h]
+  0x186C6F: add    bx, ax
+  0x186C71: mov    al, es:[bx+41h]
+  0x186C75: cbw    
+  0x186C76: shl    ax, 1
+  0x186C78: lea    dx, [bp-0A0h]
+  0x186C7C: adc    ax, dx
+  0x186C7E: push   ax
+  0x186C7F: mov    ax, di
+  0x186C81: mov    dx, 42h
+  0x186C84: imul   dx
+  0x186C86: mov    bx, [bp-44h]
+  0x186C89: add    bx, ax
+  0x186C8B: mov    al, es:[bx+22h]
+  0x186C8F: mov    ah, 0
+  0x186C91: shl    ax, 8
+  0x186C94: pop    bx
+  0x186C95: mov    ss:[bx], ax
+  0x186C98: mov    ax, di
+  0x186C9A: mov    dx, 42h
+  0x186C9D: imul   dx
+  0x186C9F: mov    bx, [bp-44h]
+  0x186CA2: add    bx, ax
+  0x186CA4: mov    al, es:[bx+31h]
+  0x186CA8: push   ax
+  0x186CA9: mov    ax, di
+  0x186CAB: mov    dx, 42h
+  0x186CAE: imul   dx
+  0x186CB0: mov    bx, [bp-44h]
+  0x186CB3: add    bx, ax
+  0x186CB5: mov    dl, es:[bx+41h]
+  0x186CB9: cbw    
+  0x186CBA: lea    dx, [bp-28h]
+  0x186CBD: add    ax, dx
+  0x186CBF: mov    bx, ax
+  0x186CC1: pop    ax
+  0x186CC2: mov    ss:[bx], al
+  0x186CC5: mov    ax, di
+  0x186CC7: mov    dx, 42h
+  0x186CCA: imul   dx
+  0x186CCC: mov    bx, [bp-44h]
+  0x186CCF: add    bx, ax
+  0x186CD1: mov    byte ptr es:[bx+30h], 0
+  0x186CD6: jmp    loc_186D3F  ->code ['r53_script_opcode_interpreter']
+  0x186CD8: call   far ptr loc_12C89  ->code ['slot2_map_window_load']
+  0x186CDD: and    ax, 7FFFh
+  0x186CE0: mov    bx, 101Eh
+  0x186CE3: cwd    
+  0x186CE4: idiv   bx
+  0x186CE6: mov    ax, di
+  0x186CE8: mov    bx, 42h
+  0x186CEB: push   dx
+  0x186CEC: imul   bx
+  0x186CEE: les    bx, [bp-44h]
+  0x186CF1: add    bx, ax
+  0x186CF3: mov    al, es:[bx+25h]
+  0x186CF7: pop    dx
+  0x186CF8: add    al, dl
+  0x186CFA: push   ax
+  0x186CFB: mov    ax, di
+  0x186CFD: mov    dx, 42h
+  0x186D00: imul   dx
+  0x186D02: mov    bx, [bp-44h]
+  0x186D05: add    bx, ax
+  0x186D07: pop    ax
+  0x186D08: mov    es:[bx+25h], al
+  0x186D0C: push   di
+  0x186D0D: push   word ptr [bp-42h]
+  0x186D10: push   word ptr [bp-44h]
+  0x186D13: call   far ptr byte_5CA26+22h  ->code ['0x5ca48']
+  0x186D18: add    sp, 6
+  0x186D1B: mov    ax, di
+  0x186D1D: mov    dx, 42h
+  0x186D20: imul   dx
+  0x186D22: les    bx, [bp-44h]
+  0x186D25: add    bx, ax
+  0x186D27: cmp    byte ptr es:[bx+25h], 64h
+  0x186D2C: jbe    loc_186D4F  ->code ['r53_script_opcode_interpreter']
+  0x186D2E: mov    ax, di
+  0x186D30: mov    dx, 42h
+  0x186D33: imul   dx
+  0x186D35: mov    bx, [bp-44h]
+  0x186D38: add    bx, ax
+  0x186D3A: mov    byte ptr es:[bx+25h], 64h
+  0x186D3F: inc    di
+  0x186D40: mov    ax, 6894h
+  0x186D43: mov    es, ax
+  0x186D45: les    bx, es:dword_69E3A
+  0x186D4A: cmp    es:[bx+0A8Dh], di
+  0x186D4F: jbe    loc_186D54  ->code ['r53_script_opcode_interpreter']
+  0x186D51: jmp    loc_186B9A  ->code ['r53_script_opcode_interpreter']
+  0x186D54: xor    di, di
+  0x186D56: jmp    loc_186DA8  ->code ['r53_script_opcode_interpreter']
+  0x186D58: mov    bx, di
+  0x186D5A: shl    bx, 1
+  0x186D5C: lea    ax, [bp-70h]
+  0x186D5F: add    bx, ax
+  0x186D61: cmp    word ptr ss:[bx], 0FFFFh
+  0x186D65: jz     loc_186DA7  ->code ['r53_script_opcode_interpreter']
+  0x186D67: mov    bx, di
+  0x186D69: shl    bx, 1
+  0x186D6B: add    bx, ax
+  0x186D6D: mov    ax, ss:[bx]
+  0x186D70: mov    dx, 42h
+  0x186D73: imul   dx
+  0x186D75: les    bx, [bp-44h]
+  0x186D78: add    bx, ax
+  0x186D7A: inc    byte ptr es:[bx+27h]
+  0x186D7E: mov    ax, 6894h
+  0x186D81: mov    es, ax
+  0x186D83: cmp    es:word_68940, 0
+  0x186D89: jz     loc_186DA7  ->code ['r53_script_opcode_interpreter']
+  0x186D8B: mov    ax, 6894h
+  0x186D8E: mov    es, ax
+  0x186D90: les    bx, es:dword_69E3A
+  0x186D95: inc    word ptr es:[bx+0Fh]
+  0x186D99: mov    ax, 6894h
+  0x186D9C: mov    es, ax
+  0x186D9E: les    bx, es:dword_69B52
+  0x186DA3: inc    word ptr es:[bx+0Ch]
+  0x186DA7: inc    di
+  0x186DA8: cmp    di, 8
+  0x186DAB: jl     loc_186D58  ->code ['r53_script_opcode_interpreter']
+  0x186DAD: mov    byte ptr [bp-10h], 0
+  0x186DB1: mov    ax, 6894h
+  0x186DB4: mov    es, ax
+  0x186DB6: push   es:word_69E72
+  0x186DBB: push   es:word_69E70
+  0x186DC0: call   far ptr unk_3F810  ->code ['farobj_store_32075']
+  0x186DC5: pop    cx
+  0x186DC6: pop    cx
+  0x186DC7: mov    [bp-4Ah], dx
+  0x186DCA: mov    [bp-4Ch], ax
+  0x186DCD: les    bx, [bp-4Ch]
+  0x186DD0: mov    al, es:[bx]
+  0x186DD3: mov    ah, 0
+  0x186DD5: and    ax, 7
+  0x186DD8: mov    bx, ax
+  0x186DDA: cmp    bx, 7
+  0x186DDD: ja     def_187575  ->code ['r53_script_opcode_interpreter']
+  0x186DDF: shl    bx, 1
+  0x186DE1: jmp    cs:jpt_186DE1[bx]  ->code ['0x1827af', '0x1835a2', '0x184770', '0x188944']
+  0x186DE6: add    word ptr [bp-4Ch], 5
+  0x186DEA: inc    word ptr [bp-2Ch]
+  0x186DED: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x186DEF: les    bx, [bp-4Ch]
+  0x186DF2: mov    al, es:[bx]
+  0x186DF5: mov    ah, 0
+  0x186DF7: mov    si, ax
+  0x186DF9: sar    si, 3
+  0x186DFC: and    si, 7
+  0x186E00: inc    word ptr [bp-4Ch]
+  0x186E03: les    bx, [bp-4Ch]
+  0x186E06: mov    al, es:[bx]
+  0x186E09: mov    ah, 0
+  0x186E0B: mov    [bp-16h], ax
+  0x186E0E: and    word ptr [bp-16h], 0Fh
+  0x186E13: cmp    word ptr [bp-16h], 0Ch
+  0x186E17: jnz    loc_186E20  ->code ['r53_script_opcode_interpreter']
+  0x186E19: mov    word ptr [bp-2Eh], 1
+  0x186E1E: jmp    loc_186E25  ->code ['r53_script_opcode_interpreter']
+  0x186E20: mov    word ptr [bp-2Eh], 0
+  0x186E25: inc    word ptr [bp-4Ch]
+  0x186E28: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x186E2A: les    bx, [bp-4Ch]
+  0x186E2D: mov    al, es:[bx]
+  0x186E30: mov    ah, 0
+  0x186E32: mov    si, ax
+  0x186E34: sar    si, 3
+  0x186E37: and    si, 7
+  0x186E3B: mov    al, es:[bx]
+  0x186E3E: mov    [bp-0Fh], al
+  0x186E41: sar    byte ptr [bp-0Fh], 6
+  0x186E45: and    byte ptr [bp-0Fh], 3
+  0x186E49: inc    word ptr [bp-4Ch]
+  0x186E4C: les    bx, [bp-4Ch]
+  0x186E4F: mov    al, es:[bx]
+  0x186E52: mov    ah, 0
+  0x186E54: mov    [bp-12h], ax
+  0x186E57: and    word ptr [bp-12h], 1Fh
+  0x186E5C: mov    al, es:[bx]
+  0x186E5F: mov    ah, 0
+  0x186E61: mov    [bp-14h], ax
+  0x186E64: sar    word ptr [bp-14h], 4
+  0x186E68: and    word ptr [bp-14h], 0Fh
+  0x186E6D: inc    word ptr [bp-4Ch]
+  0x186E70: les    bx, [bp-4Ch]
+  0x186E73: mov    al, es:[bx]
+  0x186E76: mov    ah, 0
+  0x186E78: mov    [bp-16h], ax
+  0x186E7B: inc    word ptr [bp-4Ch]
+  0x186E7E: les    bx, [bp-4Ch]
+  0x186E81: mov    al, es:[bx]
+  0x186E84: mov    ah, 0
+  0x186E86: mov    [bp-2Ah], ax
+  0x186E89: inc    word ptr [bp-4Ch]
+  0x186E8C: les    bx, [bp-4Ch]
+  0x186E8F: mov    dl, es:[bx]
+  0x186E92: mov    ah, 0
+  0x186E94: mov    [bp-30h], ax
+  0x186E97: and    word ptr [bp-30h], 3Fh
+  0x186E9C: mov    ax, 502Eh
+  0x186E9F: mov    es, ax
+  0x186EA1: les    bx, es:dword_53882
+  0x186EA6: add    bx, [bp-30h]
+  0x186EA9: inc    byte ptr es:[bx]
+  0x186EAC: inc    word ptr [bp-4Ch]
+  0x186EAF: cmp    word ptr [bp-16h], 20h
+  0x186EB3: jge    loc_186EB8  ->code ['r53_script_opcode_interpreter']
+  0x186EB5: jmp    loc_1871C8  ->code ['r53_script_opcode_interpreter']
+  0x186EB8: mov    ax, 6894h
+  0x186EBB: mov    es, ax
+  0x186EBD: mov    ax, word ptr es:loc_69D96+2
+  0x186EC1: mov    dx, word ptr ss:loc_69D96
+  0x186EC6: mov    [bp-46h], ax
+  0x186EC9: mov    [bp-48h], dx
+  0x186ECC: add    word ptr [bp-48h], 14h
+  0x186ED0: mov    ax, [bp-16h]
+  0x186ED3: add    [bp-48h], ax
+  0x186ED6: les    bx, [bp-48h]
+  0x186ED9: mov    al, es:[bx]
+  0x186EDC: mov    ah, 0
+  0x186EDE: mov    bx, ax
+  0x186EE0: cmp    bx, 5
+  0x186EE3: jbe    loc_186EE8  ->code ['r53_script_opcode_interpreter']
+  0x186EE5: jmp    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x186EE8: shl    bx, 1
+  0x186EEA: jmp    cs:jpt_186EEA[bx]  ->code ['0x182672', '0x1859d6']
+  0x186EEF: mov    ax, 503Eh
+  0x186EF2: mov    es, ax
+  0x186EF4: les    bx, es:dword_53982
+  0x186EF9: add    bx, [bp-30h]
+  0x186EFC: cmp    byte ptr es:[bx], 2
+  0x186F00: jl     loc_186F05  ->code ['r53_script_opcode_interpreter']
+  0x186F02: jmp    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x186F05: mov    bx, si
+  0x186F07: shl    bx, 1
+  0x186F09: lea    ax, [bp-70h]
+  0x186F0C: add    bx, ax
+  0x186F0E: mov    ax, ss:[bx]
+  0x186F11: mov    dx, 42h
+  0x186F14: imul   dx
+  0x186F16: les    bx, [bp-44h]
+  0x186F19: add    bx, ax
+  0x186F1B: inc    byte ptr es:[bx+28h]
+  0x186F1F: mov    ax, 6894h
+  0x186F22: mov    es, ax
+  0x186F24: les    bx, es:dword_69E3A
+  0x186F29: inc    word ptr es:[bx+11h]
+  0x186F2D: mov    ax, 6894h
+  0x186F30: mov    es, ax
+  0x186F32: cmp    es:word_69B56, 2
+  0x186F38: jnz    loc_186F4B  ->code ['r53_script_opcode_interpreter']
+  0x186F3A: mov    ax, 6894h
+  0x186F3D: mov    es, ax
+  0x186F3F: les    bx, es:dword_69B52
+  0x186F44: inc    word ptr es:[bx+1Ah]
+  0x186F48: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x186F4B: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x186F4E: mov    ax, 503Eh
+  0x186F51: mov    es, ax
+  0x186F53: les    bx, es:dword_53982
+  0x186F58: add    bx, [bp-30h]
+  0x186F5B: cmp    byte ptr es:[bx], 2
+  0x186F5F: jl     loc_186F64  ->code ['r53_script_opcode_interpreter']
+  0x186F61: jmp    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x186F64: mov    bx, si
+  0x186F66: shl    bx, 1
+  0x186F68: lea    ax, [bp-70h]
+  0x186F6B: add    bx, ax
+  0x186F6D: mov    ax, ss:[bx]
+  0x186F70: mov    dx, 42h
+  0x186F73: imul   dx
+  0x186F75: les    bx, [bp-44h]
+  0x186F78: add    bx, ax
+  0x186F7A: inc    byte ptr es:[bx+29h]
+  0x186F7E: mov    ax, 6894h
+  0x186F81: mov    es, ax
+  0x186F83: les    bx, es:dword_69E3A
+  0x186F88: inc    word ptr es:[bx+13h]
+  0x186F8C: mov    ax, 6894h
+  0x186F8F: mov    es, ax
+  0x186F91: cmp    es:word_69B56, 2
+  0x186F97: jnz    loc_186FAA  ->code ['r53_script_opcode_interpreter']
+  0x186F99: mov    ax, 6894h
+  0x186F9C: mov    es, ax
+  0x186F9E: les    bx, es:dword_69B52
+  0x186FA3: inc    word ptr es:[bx+1Ch]
+  0x186FA7: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x186FAA: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x186FAD: mov    ax, 503Eh
+  0x186FB0: mov    es, ax
+  0x186FB2: les    bx, es:dword_53982
+  0x186FB7: add    bx, [bp-30h]
+  0x186FBA: cmp    byte ptr es:[bx], 2
+  0x186FBE: jl     loc_186FC3  ->code ['r53_script_opcode_interpreter']
+  0x186FC0: jmp    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x186FC3: mov    bx, si
+  0x186FC5: shl    bx, 1
+  0x186FC7: lea    ax, [bp-70h]
+  0x186FCA: add    bx, ax
+  0x186FCC: mov    ax, ss:[bx]
+  0x186FCF: mov    dx, 42h
+  0x186FD2: imul   dx
+  0x186FD4: les    bx, [bp-44h]
+  0x186FD7: add    bx, ax
+  0x186FD9: inc    byte ptr es:[bx+2Ah]
+  0x186FDD: mov    ax, 6894h
+  0x186FE0: mov    es, ax
+  0x186FE2: les    bx, es:dword_69E3A
+  0x186FE7: inc    word ptr es:[bx+15h]
+  0x186FEB: mov    ax, 6894h
+  0x186FEE: mov    es, ax
+  0x186FF0: cmp    es:word_69B56, 2
+  0x186FF6: jnz    loc_187009  ->code ['r53_script_opcode_interpreter']
+  0x186FF8: mov    ax, 6894h
+  0x186FFB: mov    es, ax
+  0x186FFD: les    bx, es:dword_69B52
+  0x187002: inc    word ptr es:[bx+1Eh]
+  0x187006: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x187009: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x18700C: mov    ax, 503Eh
+  0x18700F: mov    es, ax
+  0x187011: les    bx, es:dword_53982
+  0x187016: add    bx, [bp-30h]
+  0x187019: cmp    byte ptr es:[bx], 2
+  0x18701D: jl     loc_187022  ->code ['r53_script_opcode_interpreter']
+  0x18701F: jmp    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x187022: mov    bx, si
+  0x187024: shl    bx, 1
+  0x187026: lea    ax, [bp-70h]
+  0x187029: add    bx, ax
+  0x18702B: mov    ax, ss:[bx]
+  0x18702E: mov    dx, 42h
+  0x187031: imul   dx
+  0x187033: les    bx, [bp-44h]
+  0x187036: add    bx, ax
+  0x187038: inc    byte ptr es:[bx+2Bh]
+  0x18703C: mov    ax, 6894h
+  0x18703F: mov    es, ax
+  0x187041: les    bx, es:dword_69E3A
+  0x187046: inc    word ptr es:[bx+17h]
+  0x18704A: mov    ax, 6894h
+  0x18704D: mov    es, ax
+  0x18704F: cmp    es:word_69B56, 2
+  0x187055: jnz    loc_187068  ->code ['r53_script_opcode_interpreter']
+  0x187057: mov    ax, 6894h
+  0x18705A: mov    es, ax
+  0x18705C: les    bx, es:dword_69B52
+  0x187061: inc    word ptr es:[bx+20h]
+  0x187065: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x187068: jmp    near ptr loc_18811C+2  ->code ['r53_farobj_pipeline_body']
+  0x18706B: mov    ax, 502Eh
+  0x18706E: mov    es, ax
+  0x187070: les    bx, es:dword_53882
+  0x187075: add    bx, [bp-30h]
+  0x187078: cmp    byte ptr es:[bx], 2
+  0x18707C: jl     loc_187081  ->code ['r53_script_opcode_interpreter']
+  0x18707E: jmp    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x187081: mov    bx, si
+  0x187083: shl    bx, 1
+  0x187085: lea    ax, [bp-70h]
+  0x187088: add    bx, ax
+  0x18708A: mov    ax, ss:[bx]
+  0x18708D: mov    dx, 42h
+  0x187090: imul   dx
+  0x187092: les    bx, [bp-44h]
+  0x187095: add    bx, ax
+  0x187097: inc    byte ptr ss:[bx+2Dh]
+  0x18709B: mov    ax, 6894h
+  0x18709E: mov    es, ax
+  0x1870A0: les    bx, es:dword_69E3A
+  0x1870A5: inc    word ptr ss:[bx+19h]
+  0x1870A9: mov    ax, 6894h
+  0x1870AC: mov    es, ax
+  0x1870AE: cmp    word ptr es:loc_6AB55+1, 2
+  0x1870B4: jnz    loc_1870C6  ->code ['r53_script_opcode_interpreter']
+  0x1870B6: mov    ax, 6894h
+  0x1870B9: mov    es, ax
+  0x1870BB: les    bx, es:dword_69B52
+  0x1870C0: inc    word ptr es:[bx+24h]
+  0x1870C4: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x1870C6: jmp    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x1870C8: mov    ax, 502Eh
+  0x1870CB: mov    es, ax
+  0x1870CD: les    bx, es:dword_53882
+  0x1870D2: add    bx, [bp-30h]
+  0x1870D5: cmp    byte ptr es:[bx], 2
+  0x1870D9: jge    def_186EEA  ->code ['r53_script_opcode_interpreter']
+  0x1870DB: mov    bx, si
+  0x1870DD: shl    bx, 1
+  0x1870DF: lea    ax, [bp-70h]
+  0x1870E2: add    bx, ax
+  0x1870E4: mov    ax, ss:[bx]
+  0x1870E7: mov    dx, 42h
+  0x1870EA: imul   dx
+  0x1870EC: les    bx, [bp-44h]
+  0x1870EF: add    bx, ax
+  0x1870F1: inc    byte ptr es:[bx+2Ch]
+  0x1870F5: mov    ax, 6894h
+  0x1870F8: mov    es, ax
+  0x1870FA: les    bp, es:dword_69E3A
+  0x1870FF: inc    word ptr es:[bx+1Bh]
+  0x187103: mov    ax, 6894h
+  0x187106: mov    es, ax
+  0x187108: cmp    es:word_69B56, 2
+  0x18710E: jnz    loc_18711E  ->code ['r53_script_opcode_interpreter']
+  0x187110: mov    ax, 6894h
+  0x187113: mov    es, ax
+  0x187115: les    bx, es:dword_69B52
+  0x18711A: call   word ptr es:[bx+22h]
+  0x18711E: les    bx, [bp-48h]
+  0x187121: mov    al, es:[bx]
+  0x187124: mov    ah, 0
+  0x187126: lea    dx, [bp-40h]
+  0x187129: add    ax, dx
+  0x18712B: mov    bx, ax
+  0x18712D: inc    byte ptr ss:[bx]
+  0x187130: cmp    byte ptr [bp-0Fh], 2
+  0x187134: jz     loc_18713F  ->code ['r53_script_opcode_interpreter']
+  0x187136: cmp    byte ptr [bp-0Fh], 3
+  0x18713A: jz     loc_18713F  ->code ['r53_script_opcode_interpreter']
+  0x18713C: jmp    loc_1871C8  ->code ['r53_script_opcode_interpreter']
+  0x18713F: les    bx, [bp-48h]
+  0x187142: mov    al, es:[bx]
+  0x187145: mov    ah, 0
+  0x187147: mov    bx, ax
+  0x187149: cmp    bx, 5
+  0x18714C: ja     def_187150  ->code ['r53_script_opcode_interpreter']
+  0x18714E: shl    bx, 1
+  0x187150: jmp    cs:jpt_187150[bx]  ->code ['0x188944']
+  0x187155: push   word ptr [bp-30h]
+  0x187158: call   loc_38B3B+1  ->code ['tile_sample_script_dispatch']
+  0x18715D: pop    cx
+  0x18715E: or     ax, ax
+  0x187160: jz     loc_18716E  ->code ['r53_script_opcode_interpreter']
+  0x187162: mov    word ptr [bp-2], 5
+  0x187167: mov    word ptr [bp-4], 3
+  0x18716C: jmp    loc_187198  ->code ['r53_script_opcode_interpreter']
+  0x18716E: mov    word ptr [bp-2], 3
+  0x187173: jmp    loc_187193  ->code ['r53_script_opcode_interpreter']
+  0x187175: push   word ptr [bp-30h]
+  0x187178: call   loc_38B3B+1  ->code ['tile_sample_script_dispatch']
+  0x18717D: pop    cx
+  0x18717E: or     ax, ax
+  0x187180: jz     loc_18718E  ->code ['r53_script_opcode_interpreter']
+  0x187182: mov    word ptr [bp-2], 2
+  0x187187: mov    word ptr [bp-4], 2
+  0x18718C: jmp    loc_187198  ->code ['r53_script_opcode_interpreter']
+  0x18718E: mov    word ptr [bp-2], 1
+  0x187193: mov    word ptr [bp-4], 1
+  0x187198: mov    word ptr [bp-6], 1
+  0x18719D: mov    dx, [bp-14h]
+  0x1871A0: inc    dx
+  0x1871A1: mov    ax, [bp-2]
+  0x1871A4: imul   dx
+  0x1871A6: mov    [bp-2], ax
+  0x1871A9: cmp    word ptr [bp-12h], 0
+  0x1871AD: jz     loc_1871B6  ->code ['r53_script_opcode_interpreter']
+  0x1871AF: cwd    
+  0x1871B0: idiv   word ptr [bp-12h]
+  0x1871B3: mov    [bp-2], ax
+  0x1871B6: mov    al, [bp-2]
+  0x1871B9: add    [bp+si-20h], al
+  0x1871BC: mov    al, [bp-4]
+  0x1871BF: add    [bp+si-28h], al
+  0x1871C2: mov    ax, [bp-6]
+  0x1871C5: add    [bp-8], ax
+  0x1871C8: cmp    word ptr [bp-16h], 20h
+  0x1871CC: jl     loc_187211  ->code ['r53_script_opcode_interpreter']
+  0x1871CE: mov    bx, si
+  0x1871D0: shl    bx, 1
+  0x1871D2: lea    ax, [bp-0A0h]
+  0x1871D6: add    bx, ax
+  0x1871D8: mov    ax, ss:[bx]
+  0x1871DB: mov    dx, [bp-14h]
+  0x1871DE: inc    dx
+  0x1871DF: shl    dx, 7
+  0x1871E2: add    ax, dx
+  0x1871E4: or     ax, ax
+  0x1871E6: jbe    loc_187241  ->code ['r53_script_opcode_interpreter']
+  0x1871E8: mov    bx, si
+  0x1871EA: shl    bx, 1
+  0x1871EC: lea    ax, [bp-0A0h]
+  0x1871F0: add    bx, ax
+  0x1871F2: mov    ax, [bp-14h]
+  0x1871F5: inc    ax
+  0x1871F6: shl    ax, 7
+  0x1871F9: add    ss:[bx], ax
+  0x1871FC: mov    bx, si
+  0x1871FE: shl    bx, 1
+  0x187200: lea    ax, [bp-0A0h]
+  0x187204: add    bx, ax
+  0x187206: mov    ax, [bp-12h]
+  0x187209: shl    ax, 5
+  0x18720C: sub    ss:[bx], ax
+  0x18720F: jmp    loc_187241  ->code ['r53_script_opcode_interpreter']
+  0x187211: mov    bx, si
+  0x187213: shl    bx, 1
+  0x187215: lea    ax, [bp-0A0h]
+  0x187219: add    bx, ax
+  0x18721B: sub    word ptr ss:[bx], 200h
+  0x187220: cmp    byte ptr [bp-0Fh], 0
+  0x187224: jz     loc_187241  ->code ['r53_script_opcode_interpreter']
+  0x187226: mov    bx, si
+  0x187228: shl    bx, 1
+  0x18722A: lea    ax, [bp-70h]
+  0x18722D: add    bx, ax
+  0x18722F: mov    ax, ss:[bx]
+  0x187232: mov    dx, 42h
+  0x187235: imul   dx
+  0x187237: les    bx, [bp-44h]
+  0x18723A: add    bx, ax
+  0x18723C: mov    byte ptr es:[bx+26h], 46h
+  0x187241: mov    bx, si
+  0x187243: shl    bx, 1
+  0x187245: lea    ax, [bp-80h]
+  0x187248: add    bx, ax
+  0x18724A: sub    word ptr ss:[bx], 40h
+  0x18724E: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x187251: les    bx, [bp-4Ch]
+  0x187254: mov    al, es:[bx]
+  0x187257: mov    ah, 0
+  0x187259: mov    si, ax
+  0x18725B: sar    si, 3
+  0x18725E: and    si, 7
+  0x187262: inc    word ptr [bp-4Ch]
+  0x187265: les    bx, [bp-4Ch]
+  0x187268: mov    al, es:[bx]
+  0x18726B: mov    ah, 0
+  0x18726D: and    ax, 0Fh
+  0x187270: mov    [bp-12h], ax
+  0x187273: mov    al, es:[bx]
+  0x187276: mov    ah, 0
+  0x187278: sar    ax, 4
+  0x18727B: and    ax, 0Fh
+  0x18727E: mov    [bp-14h], ax
+  0x187281: inc    word ptr [bp-4Ch]
+  0x187284: les    bx, [bp-4Ch]
+  0x187287: mov    dl, es:[bx]
+  0x18728A: mov    ah, 0
+  0x18728C: mov    [bp-16h], ax
+  0x18728F: and    word ptr [bp-16h], 3Fh
+  0x187294: inc    word ptr [bp-4Ch]
+  0x187297: mov    ax, [bp-14h]
+  0x18729A: shl    ax, 1
+  0x18729C: mov    [bp-2], ax
+  0x18729F: cmp    word ptr [bp-12h], 0
+  0x1872A3: jz     near ptr loc_1872BB+1  ->code ['r53_script_opcode_interpreter']
+  0x1872A5: cwd    
+  0x1872A6: idiv   word ptr [bp-12h]
+  0x1872A9: mov    [bp-2], ax
+  0x1872AC: mov    al, [bp-2]
+  0x1872AF: add    [bp+si-20h], al
+  0x1872B2: inc    byte ptr [bp+si-28h]
+  0x1872B5: inc    word ptr [bp-8]
+  0x1872B8: mov    bx, [bp-16h]
+  0x1872BB: sub    bx, 20h
+  0x1872BE: cmp    bx, 11h
+  0x1872C1: jbe    loc_1872C6  ->code ['r53_script_opcode_interpreter']
+  0x1872C3: jmp    def_1872C8  ->code ['r53_script_opcode_interpreter']
+  0x1872C6: shl    bx, 1
+  0x1872C8: jmp    cs:jpt_1872C8[bx]  ->code ['0x1845f0', '0x185f41']
+  0x1872CD: mov    bx, si
+  0x1872CF: shl    bx, 1
+  0x1872D1: lea    ax, [bp-70h]
+  0x1872D4: add    bx, ax
+  0x1872D6: mov    ax, ss:[bx]
+  0x1872D9: mov    dx, 42h
+  0x1872DC: imul   dx
+  0x1872DE: les    bx, [bp-44h]
+  0x1872E1: add    bx, ax
+  0x1872E3: inc    byte ptr es:[bx+3Dh]
+  0x1872E7: mov    ax, 7894h
+  0x1872EA: mov    es, ax
+  0x1872EC: les    bx, es:dword_79E3A
+  0x1872F1: inc    word ptr es:[bx+35h]
+  0x1872F5: mov    ax, 6894h
+  0x1872F8: mov    es, ax
+  0x1872FA: cmp    es:word_69B56, 2
+  0x187300: jnz    def_1872C8  ->code ['r53_script_opcode_interpreter']
+  0x187302: mov    ax, 6894h
+  0x187305: mov    es, ax
+  0x187307: les    bx, es:dword_69B52
+  0x18730C: inc    word ptr es:[bx+2Eh]
+  0x187310: jmp    def_1872C8  ->code ['r53_script_opcode_interpreter']
+  0x187312: mov    bx, si
+  0x187314: shl    bx, 1
+  0x187316: lea    ax, [bp-70h]
+  0x187319: add    bx, ax
+  0x18731B: mov    ax, ss:[bx]
+  0x18731E: mov    dx, 42h
+  0x187321: imul   dx
+  0x187323: les    bx, [bp-44h]
+  0x187326: add    bx, ax
+  0x187328: inc    byte ptr es:[bx+3Eh]
+  0x18732C: mov    ax, 6894h
+  0x18732F: mov    es, ax
+  0x187331: les    bx, es:dword_69E3A
+  0x187336: inc    word ptr es:[bx+37h]
+  0x18733A: mov    ax, 6894h
+  0x18733D: mov    es, ax
+  0x18733F: cmp    es:word_69B56, 2
+  0x187345: jnz    def_1872C8  ->code ['r53_script_opcode_interpreter']
+  0x187347: mov    ax, 6894h
+  0x18734A: mov    es, ax
+  0x18734C: les    bx, es:dword_69B52
+  0x187351: inc    word ptr es:[bx+30h]
+  0x187355: cmp    word ptr [bp-16h], 20h
+  0x187359: jl     loc_187395  ->code ['r53_script_opcode_interpreter']
+  0x18735B: mov    ax, [bp-14h]
+  0x18735E: inc    ax
+  0x18735F: shl    ax, 6
+  0x187362: mov    dx, [bp-12h]
+  0x187365: shl    dx, 4
+  0x187368: sub    ax, dx
+  0x18736A: jle    loc_1873DD  ->code ['r53_script_opcode_interpreter']
+  0x18736C: mov    bx, si
+  0x18736E: shl    bx, 1
+  0x187370: lea    ax, [bp-90h]
+  0x187374: add    bx, ax
+  0x187376: mov    ax, [bp-14h]
+  0x187379: inc    ax
+  0x18737A: shl    ax, 6
+  0x18737D: add    ss:[bx], ax
+  0x187380: mov    bx, si
+  0x187382: shl    bx, 1
+  0x187384: lea    ax, [bp-90h]
+  0x187388: add    bx, ax
+  0x18738A: mov    ax, [bp-12h]
+  0x18738D: shl    ax, 4
+  0x187390: sub    ss:[bx], ax
+  0x187393: jmp    loc_1873DD  ->code ['r53_script_opcode_interpreter']
+  0x187395: mov    bx, si
+  0x187397: shl    bx, 1
+  0x187399: lea    ax, [bp-90h]
+  0x18739D: add    bx, ax
+  0x18739F: sub    word ptr ss:[bx], 80h
+  0x1873A4: inc    byte ptr [bp+si-38h]
+  0x1873A7: cmp    byte ptr [bp+si-38h], 3
+  0x1873AB: jle    loc_1873DD  ->code ['r53_script_opcode_interpreter']
+  0x1873AD: mov    bx, si
+  0x1873AF: shl    bx, 1
+  0x1873B1: lea    ax, [bp-70h]
+  0x1873B4: add    bx, ax
+  0x1873B6: mov    ax, ss:[bx]
+  0x1873B9: mov    dx, 42h
+  0x1873BC: imul   dx
+  0x1873BE: les    bx, [bp-44h]
+  0x1873C1: add    bx, ax
+  0x1873C3: mov    byte ptr es:[bx+26h], 26h
+  0x1873C8: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x1873CD: cmp    ax, si
+  0x1873CF: jnz    loc_1873DD  ->code ['r53_script_opcode_interpreter']
+  0x1873D1: mov    ax, 6894h
+  0x1873D4: mov    es, ax
+  0x1873D6: mov    es:word_69E30, 200h
+  0x1873DD: mov    bx, si
+  0x1873DF: shl    bx, 1
+  0x1873E1: lea    ax, [bp-80h]
+  --- callers: r53_opcode_decode_apply
+
+======================================================================
+r53_e88  ea=0x1873E4  size=2736  L22  in=0  r53_opcode_decode_apply
+  --- callees (10): slot2_map_window_load(L6), r53_sbi_stream_dispatch(L20), r53_farptr_proc(L0), r53_script_opcode_interpreter(L21), r53_record_walk_dispatch(L20), sbi_channel_event_dispatch(L6), key_event_mode_gate(L19), floor_store_4abb(L0), dgroup_save_reg_dxbp(L0), farobj_index_resolve_step(L19)
+  0x1873E4: add    bx, ax
+  0x1873E6: sub    word ptr ss:[bx], 20h
+  0x1873EA: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x1873ED: les    bx, [bp-4Ch]
+  0x1873F0: mov    al, es:[bx]
+  0x1873F3: mov    ah, 0
+  0x1873F5: mov    si, ax
+  0x1873F7: sar    si, 3
+  0x1873FA: and    si, 7
+  0x1873FE: mov    al, es:[bx]
+  0x187401: mov    [bp-0Fh], al
+  0x187404: sar    byte ptr [bp-0Fh], 6
+  0x187408: and    byte ptr [bp-0Fh], 1
+  0x18740C: inc    word ptr [bp-4Ch]
+  0x18740F: les    bx, [bp-4Ch]
+  0x187412: mov    al, es:[bx]
+  0x187415: mov    ah, 10h
+  0x187417: and    ax, 0Fh
+  0x18741A: mov    [bp-12h], ax
+  0x18741D: mov    al, es:[bx]
+  0x187420: mov    ah, 0
+  0x187422: sar    ax, 14h
+  0x187425: and    ax, 0Fh
+  0x187428: mov    [bp-14h], ax
+  0x18742B: inc    word ptr [bp-4Ch]
+  0x18742E: cmp    byte ptr [bp-0Fh], 10h
+  0x187432: jnz    loc_187445  ->code ['r53_opcode_decode_apply']
+  0x187434: mov    word ptr [bp-2], 2
+  0x187439: mov    word ptr [bp-4], 1
+  0x18743E: mov    word ptr [bp-6], 2
+  0x187443: jmp    loc_187454  ->code ['r53_opcode_decode_apply']
+  0x187445: mov    word ptr [bp-2], 3
+  0x18744A: mov    word ptr [bp-4], 2
+  0x18744F: mov    word ptr [bp-6], 5
+  0x187454: cmp    word ptr [bp-2Eh], 1
+  0x187458: jnz    loc_18749F  ->code ['r53_opcode_decode_apply']
+  0x18745A: mov    bx, si
+  0x18745C: shl    bx, 1
+  0x18745E: lea    ax, [bp-70h]
+  0x187461: add    bx, ax
+  0x187463: mov    ax, ss:[bx]
+  0x187466: mov    dx, 42h
+  0x187469: imul   dx
+  0x18746B: les    bx, [bp-44h]
+  0x18746E: add    bx, ax
+  0x187470: inc    byte ptr es:[bx+3Ch]
+  0x187474: mov    ax, 7894h
+  0x187477: mov    es, ax
+  0x187479: les    bx, es:dword_69E3A
+  0x18747E: inc    word ptr es:[bx+33h]
+  0x187482: mov    ax, 6894h
+  0x187485: mov    es, ax
+  0x187487: cmp    es:word_69B56, 2
+  0x18748D: jnz    loc_1874E2  ->code ['r53_opcode_decode_apply']
+  0x18748F: mov    ax, 6894h
+  0x187492: mov    es, ax
+  0x187494: les    bx, es:dword_69B52
+  0x187499: inc    word ptr es:[bx+2Ch]
+  0x18749D: jmp    loc_1874E2  ->code ['r53_opcode_decode_apply']
+  0x18749F: mov    bx, si
+  0x1874A1: shl    bx, 1
+  0x1874A3: lea    ax, [bp-70h]
+  0x1874A6: add    bx, ax
+  0x1874A8: mov    ax, ss:[bx]
+  0x1874AB: mov    dx, 42h
+  0x1874AE: imul   dx
+  0x1874B0: les    bx, [bp-44h]
+  0x1874B3: add    bx, ax
+  0x1874B5: inc    byte ptr es:[bx+3Bh]
+  0x1874B9: mov    ax, 6894h
+  0x1874BC: mov    es, ax
+  0x1874BE: les    bx, es:dword_69E3A
+  0x1874C3: inc    word ptr es:[bx+31h]
+  0x1874C7: mov    ax, 6894h
+  0x1874CA: mov    es, ax
+  0x1874CC: cmp    es:word_69B56, 2
+  0x1874D2: jnz    loc_1874E2  ->code ['r53_opcode_decode_apply']
+  0x1874D4: mov    ax, 6894h
+  0x1874D7: mov    es, ax
+  0x1874D9: les    bx, es:dword_69B52
+  0x1874DE: inc    word ptr es:[bx+2Ah]
+  0x1874E2: mov    dx, [bp-14h]
+  0x1874E5: inc    dx
+  0x1874E6: mov    ax, [bp-2]
+  0x1874E9: imul   dx
+  0x1874EB: mov    [bp-2], ax
+  0x1874EE: cmp    word ptr [bp-12h], 0
+  0x1874F2: jz     loc_1874FB  ->code ['r53_opcode_decode_apply']
+  0x1874F4: cwd    
+  0x1874F5: idiv   word ptr [bp-12h]
+  0x1874F8: mov    [bp-2], ax
+  0x1874FB: mov    al, [bp-2]
+  0x1874FE: add    [bp+si-20h], al
+  0x187501: mov    al, [bp-4]
+  0x187504: add    [bp+si-28h], al
+  0x187507: mov    ax, [bp-6]
+  0x18750A: add    [bp-8], ax
+  0x18750D: mov    bx, si
+  0x18750F: shl    bx, 1
+  0x187511: lea    ax, [bp-90h]
+  0x187515: add    bx, ax
+  0x187517: mov    ax, ss:[bx]
+  0x18751A: add    ax, 40h
+  0x18751D: or     ax, ax
+  0x18751F: ja     loc_187524  ->code ['r53_opcode_decode_apply']
+  0x187521: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x187524: mov    bx, si
+  0x187526: shl    bx, 1
+  0x187528: lea    ax, [bp-90h]
+  0x18752C: add    bx, ax
+  0x18752E: add    word ptr ss:[bx], 40h
+  0x187532: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x187535: les    bx, [bp-4Ch]
+  0x187538: mov    al, es:[bx]
+  0x18753B: mov    ah, 0
+  0x18753D: mov    si, ax
+  0x18753F: sar    si, 3
+  0x187542: and    si, 7
+  0x187546: mov    al, es:[bx]
+  0x187549: mov    [bp-0Fh], al
+  0x18754C: sar    byte ptr [bp-0Fh], 6
+  0x187550: and    byte ptr [bp-0Fh], 3
+  0x187554: inc    word ptr [bp-4Ch]
+  0x187557: les    bp, [bp-4Ch]
+  0x18755A: mov    al, es:[bx]
+  0x18755D: mov    ah, 0
+  0x18755F: mov    [bp-16h], ax
+  0x187562: inc    word ptr [bp-4Ch]
+  0x187565: mov    al, [bp-0Fh]
+  0x187568: cbw    
+  0x187569: mov    bx, ax
+  0x18756B: cmp    bx, 3
+  0x18756E: jbe    loc_187573  ->code ['r53_opcode_decode_apply']
+  0x187570: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x187573: shl    bx, 1
+  0x187575: jmp    cs:jpt_187575[bx]  ->code ['0x184770', 'r53_record_walk_dispatch']
+  0x18757A: mov    bx, si
+  0x18757C: shl    bx, 1
+  0x18757E: lea    ax, [bp-80h]
+  0x187581: add    bx, ax
+  0x187583: sub    word ptr ss:[bx], 208h
+  0x187588: mov    word ptr [bp-2], 1
+  0x18758D: mov    word ptr [bp-4], 1
+  0x187592: mov    word ptr [bp-6], 0
+  0x187597: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x18759A: call   far ptr loc_12C89  ->code ['slot2_map_window_load']
+  0x18759F: add    ax, 400h
+  0x1875A2: and    ax, 3FFh
+  0x1875A5: mov    bx, si
+  0x1875A7: shl    bx, 1
+  0x1875A9: lea    dx, [bp-80h]
+  0x1875AC: add    bx, dx
+  0x1875AE: sub    ss:[bx], ax
+  0x1875B1: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x1875B4: call   far ptr loc_12C89  ->code ['slot2_map_window_load']
+  0x1875B9: test   ax, 0
+  0x1875BC: jnz    loc_1875C1  ->code ['r53_opcode_decode_apply']
+  0x1875BE: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x1875C1: mov    bx, si
+  0x1875C3: shl    bx, 1
+  0x1875C5: lea    ax, [bp-80h]
+  0x1875C8: add    bx, ax
+  0x1875CA: sub    word ptr ss:[bx], 400h
+  0x1875CF: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x1875D2: mov    ax, 6894h
+  0x1875D5: mov    es, ax
+  0x1875D7: cmp    es:word_68940, 0
+  0x1875DD: jz     loc_1875E2  ->code ['r53_opcode_decode_apply']
+  0x1875DF: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x1875E2: mov    bx, si
+  0x1875E4: shl    bx, 1
+  0x1875E6: lea    ax, [bp-80h]
+  0x1875E9: add    bx, ax
+  0x1875EB: mov    word ptr ss:[bx], 0
+  0x1875F0: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x1875F5: cmp    ax, si
+  0x1875F7: jnz    loc_187605  ->code ['r53_opcode_decode_apply']
+  0x1875F9: mov    ax, 6894h
+  0x1875FC: mov    es, ax
+  0x1875FE: mov    es:word_69E30, 8
+  0x187605: mov    bx, si
+  0x187607: shl    bx, 1
+  0x187609: lea    ax, [bp-70h]
+  0x18760C: add    bx, ax
+  0x18760E: mov    ax, ss:[bx]
+  0x187611: mov    dx, 42h
+  0x187614: imul   dx
+  0x187616: les    bx, [bp-44h]
+  0x187619: add    bx, ax
+  0x18761B: mov    byte ptr ss:[bx+26h], 3
+  0x187620: jmp    def_187575  ->code ['r53_script_opcode_interpreter']
+  0x187623: call   far ptr loc_3F894+2  ->code ['farobj_index_resolve_step']
+  0x187628: xor    si, si
+  0x18762A: jmp    loc_187E77  ->code ['r53_opcode_decode_apply']
+  0x18762D: mov    bx, si
+  0x18762F: shl    bx, 1
+  0x187631: lea    dx, [bp-70h]
+  0x187634: add    bx, ax
+  0x187636: cmp    word ptr ss:[bx], 0FFFFh
+  0x18763A: jnz    loc_18763F  ->code ['r53_opcode_decode_apply']
+  0x18763C: jmp    loc_187E76  ->code ['r53_opcode_decode_apply']
+  0x18763F: mov    ax, 6894h
+  0x187642: mov    es, ax
+  0x187644: mov    ax, es:word_69E72
+  0x187648: mov    dx, es:word_69E70
+  0x18764D: mov    [bp-4Ah], ax
+  0x187650: mov    [bp-4Ch], dx
+  0x187653: mov    ax, si
+  0x187655: mov    dx, 1Fh
+  0x187658: imul   dx
+  0x18765A: add    [bp-4Ch], ax
+  0x18765D: mov    ax, [bp-4Ah]
+  0x187660: mov    dx, [bp-4Ch]
+  0x187663: mov    [bp-4Eh], ax
+  0x187666: mov    [bp-50h], dx
+  0x187669: les    bx, [bp-50h]
+  0x18766C: mov    ax, es:[bx]
+  0x18766F: mov    [bp-0Eh], ax
+  0x187672: push   0FFC0h
+  0x187674: cwd    
+  0x187675: push   dx
+  0x187676: push   ax
+  0x187677: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x18767C: add    sp, 6
+  0x18767F: mov    [bp-56h], dx
+  0x187682: mov    [bp-58h], ax
+  0x187685: push   0CDh
+  0x187688: push   word ptr [bp-56h]
+  0x18768B: push   word ptr [bp-58h]
+  0x18768E: call   far ptr loc_3FAC1+2  ->code ['farobj_index_resolve_step']
+  0x187693: add    sp, 6
+  0x187696: mov    [bp-0Eh], ax
+  0x187699: add    word ptr [bp-50h], 2
+  0x18769D: les    bx, [bp-50h]
+  0x1876A0: mov    ax, es:[bx]
+  0x1876A3: mov    [bp-0Ch], ax
+  0x1876A6: push   40h
+  0x1876A8: cwd    
+  0x1876A9: push   dx
+  0x1876AA: push   ax
+  0x1876AB: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x1876B0: add    sp, 6
+  0x1876B3: mov    [bp-56h], dx
+  0x1876B6: mov    [bp-58h], ax
+  0x1876B9: push   0CDh
+  0x1876BC: push   word ptr [bp-56h]
+  0x1876BF: push   word ptr [bp-58h]
+  0x1876C2: call   far ptr loc_3FAC1+2  ->code ['farobj_index_resolve_step']
+  0x1876C7: add    sp, 6
+  0x1876CA: mov    [bp-0Ch], ax
+  0x1876CD: add    word ptr [bp-50h], 2
+  0x1876D1: les    bx, [bp-50h]
+  0x1876D4: mov    ax, es:[bx]
+  0x1876D7: mov    [bp-5Eh], ax
+  0x1876DA: shr    ax, 0Eh
+  0x1876DD: mov    [bp-2Ah], ax
+  0x1876E0: and    word ptr [bp-5Eh], 3FFFh
+  0x1876E5: add    word ptr [bp-50h], 2
+  0x1876E9: les    bx, [bp-50h]
+  0x1876EC: mov    ax, es:[bx]
+  0x1876EF: mov    [bp-0Ah], ax
+  0x1876F2: add    word ptr [bp-50h], 2
+  0x1876F6: add    word ptr [bp-50h], 2
+  0x1876FA: mov    ax, [bp-4Eh]
+  0x1876FD: mov    dx, [bp-50h]
+  0x187700: mov    [bp-4Ah], ax
+  0x187703: mov    [bp-4Ch], dx
+  0x187706: add    word ptr [bp-4Ch], 13h
+  0x18770A: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x18770F: cmp    ax, si
+  0x187711: jnz    loc_187724  ->code ['r53_opcode_decode_apply']
+  0x187713: les    bx, [bp-4Ch]
+  0x187716: and    byte ptr es:[bx], 0FBh
+  0x18771A: test   byte ptr es:[bx], 40h
+  0x18771E: jz     loc_187724  ->code ['r53_opcode_decode_apply']
+  0x187720: or     byte ptr es:[bx], 4
+  0x187724: les    bx, [bp-4Ch]
+  0x187727: mov    al, es:[bx]
+  0x18772A: mov    [bp-0Fh], al
+  0x18772D: inc    word ptr [bp-4Ch]
+  0x187730: les    bx, [bp-4Ch]
+  0x187733: mov    al, es:[bx]
+  0x187736: mov    [bp-5Fh], al
+  0x187739: mov    bx, si
+  0x18773B: shl    bx, 1
+  0x18773D: lea    ax, [bp-70h]
+  0x187740: add    bx, ax
+  0x187742: cmp    word ptr ss:[bx], 0FFFFh
+  0x187746: jz     loc_1877A4  ->code ['r53_opcode_decode_apply']
+  0x187748: push   word ptr [bp-0Eh]
+  0x18774B: push   word ptr [bp-0Ch]
+  0x18774E: call   loc_1C812+3  ->code ['sbi_channel_event_dispatch']
+  0x187753: pop    cx
+  0x187754: pop    cx
+  0x187755: mov    [bp-18h], ax
+  0x187758: mov    bx, si
+  0x18775A: shl    bx, 1
+  0x18775C: lea    ax, [bp-70h]
+  0x18775F: add    bx, ax
+  0x187761: mov    ax, ss:[bx]
+  0x187764: mov    dx, 42h
+  0x187767: imul   dx
+  0x187769: les    bp, [bp-44h]
+  0x18776C: add    bx, ax
+  0x18776E: cmp    byte ptr es:[bx+26h], 3
+  0x187773: jge    loc_1877A4  ->code ['r53_opcode_decode_apply']
+  0x187775: cmp    word ptr [bp-2Ah], 10h
+  0x187779: jle    loc_1877A4  ->code ['r53_opcode_decode_apply']
+  0x18777B: mov    bx, si
+  0x18777D: shl    bx, 1
+  0x18777F: lea    ax, [bp-70h]
+  0x187782: add    bx, ax
+  0x187784: mov    ax, ss:[bx]
+  0x187787: mov    dx, 42h
+  0x18778A: imul   dx
+  0x18778C: mov    bx, [bp-44h]
+  0x18778F: add    bx, ax
+  0x187791: mov    byte ptr es:[bx+26h], 2
+  0x187796: mov    bx, si
+  0x187798: shl    bx, 1
+  0x18779A: lea    ax, [bp-80h]
+  0x18779D: add    bx, ax
+  0x18779F: mov    word ptr ss:[bx], 1E00h
+  0x1877A4: mov    al, [bp-0Fh]
+  0x1877A7: cbw    
+  0x1877A8: and    ax, 3Ch
+  0x1877AB: sar    ax, 2
+  0x1877AE: mov    bx, ax
+  0x1877B0: cmp    bx, 0Fh
+  0x1877B3: jbe    loc_1877B8  ->code ['r53_opcode_decode_apply']
+  0x1877B5: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x1877B8: shl    bx, 1
+  0x1877BA: jmp    cs:jpt_1877BA[bx]  ->code ['r53_sbi_stream_dispatch', '0x184a71', 'r53_farptr_proc', 'r53_opcode_decode_apply']
+  0x1877BF: cmp    byte ptr [bp-10h], 0
+  0x1877C3: jz     loc_1877C8  ->code ['r53_opcode_decode_apply']
+  0x1877C5: jmp    loc_187929  ->code ['r53_opcode_decode_apply']
+  0x1877C8: mov    ax, 6894h
+  0x1877CB: mov    es, ax
+  0x1877CD: mov    ax, es:word_6AEA2
+  0x1877D1: mov    dx, 4Eh
+  0x1877D4: imul   dx
+  0x1877D6: mov    dx, 6894h
+  0x1877D9: mov    es, dx
+  0x1877DB: les    bx, es:dword_69B6E
+  0x1877E0: add    bx, ax
+  0x1877E2: mov    ax, [bp-0Ch]
+  0x1877E5: sub    ax, es:[bx+40h]
+  0x1877E9: mov    [bp-0Ch], dx
+  0x1877EC: mov    ax, 6894h
+  0x1877EF: mov    es, ax
+  0x1877F1: mov    ax, es:word_69EA2
+  0x1877F5: mov    dx, 5Eh
+  0x1877F8: imul   dx
+  0x1877FA: mov    dx, 6894h
+  0x1877FD: mov    es, dx
+  0x1877FF: les    bx, es:dword_69B6E
+  0x187804: adc    bx, ax
+  0x187806: mov    ax, [bp-0Eh]
+  0x187809: sub    ax, es:[bx+42h]
+  0x18780D: mov    [bp-0Eh], ax
+  0x187810: push   word ptr [bp-0Ch]
+  0x187813: mov    dx, [bp-0Ch]
+  0x187816: cwd    
+  0x187817: push   dx
+  0x187818: push   ax
+  0x187819: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x18781E: add    sp, 6
+  0x187821: push   ax
+  0x187822: push   dx
+  0x187823: push   word ptr [bp-0Eh]
+  0x187826: mov    ax, [bp-0Eh]
+  0x187829: cwd    
+  0x18782A: push   dx
+  0x18782B: push   ax
+  0x18782C: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x187831: add    sp, 6
+  0x187834: pop    bx
+  0x187835: pop    cx
+  0x187836: add    cx, ax
+  0x187838: adc    bx, dx
+  0x18783A: mov    [bp-56h], bx
+  0x18783D: mov    [bp-58h], cx
+  0x187840: push   word ptr [bp-56h]
+  0x187843: push   word ptr [bp-58h]
+  0x187846: call   key_event_mode_gate  ->code ['key_event_mode_gate']
+  0x18784B: pop    cx
+  0x18784C: pop    cx
+  0x18784D: cwd    
+  0x18784E: mov    [bp-56h], dx
+  0x187851: mov    [bp-58h], ax
+  0x187854: mov    ax, 6894h
+  0x187857: mov    es, ax
+  0x187859: mov    ax, es:word_69BDA
+  0x18785D: mov    dx, 4Eh
+  0x187860: imul   dx
+  0x187862: mov    dx, 7894h
+  0x187865: mov    es, dx
+  0x187867: les    bx, es:dword_69B6E
+  0x18786C: add    bx, ax
+  0x18786E: mov    ax, es:[bx+40h]
+  0x187872: mov    dx, 6894h
+  0x187875: mov    es, dx
+  0x187877: push   ax
+  0x187878: mov    ax, es:word_69EA2
+  0x18787C: mov    dx, 4Eh
+  0x18787F: imul   dx
+  0x187881: mov    dx, 7894h
+  0x187884: mov    es, dx
+  0x187886: les    bx, es:dword_69B6E
+  0x18788B: add    bx, ax
+  0x18788D: pop    ax
+  0x18788E: sub    ax, es:[bx+40h]
+  0x187892: mov    [bp-0Ch], ax
+  0x187895: mov    ax, 6894h
+  0x187898: mov    es, ax
+  0x18789A: mov    ax, es:word_69BDA
+  0x18789E: mov    dx, 4Eh
+  0x1878A1: imul   dx
+  0x1878A3: mov    dx, 6894h
+  0x1878A6: mov    es, dx
+  0x1878A8: les    bx, es:dword_69B6E
+  0x1878AD: add    bx, ax
+  0x1878AF: mov    ax, es:[bx+42h]
+  0x1878B3: mov    dx, 6894h
+  0x1878B6: mov    es, dx
+  0x1878B8: push   ax
+  0x1878B9: mov    ax, es:word_69EA2
+  0x1878BD: mov    dx, 4Eh
+  0x1878C0: imul   dx
+  0x1878C2: mov    dx, 6894h
+  0x1878C5: mov    es, dx
+  0x1878C7: les    bx, es:dword_6AB6E
+  0x1878CC: add    bx, ax
+  0x1878CE: pop    ax
+  0x1878CF: sub    ax, es:[bx+42h]
+  0x1878D3: mov    [bp-0Eh], ax
+  0x1878D6: push   word ptr [bp-52h]
+  0x1878D9: mov    ax, [bp-52h]
+  0x1878DC: cwd    
+  0x1878DD: push   dx
+  0x1878DE: push   ax
+  0x1878DF: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x1878E4: add    sp, 6
+  0x1878E7: push   ax
+  0x1878E8: push   dx
+  0x1878E9: push   word ptr [bp-54h]
+  0x1878EC: mov    ax, [bp-54h]
+  0x1878EF: cwd    
+  0x1878F0: push   dx
+  0x1878F1: push   ax
+  0x1878F2: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x1878F7: add    sp, 6
+  0x1878FA: pop    bx
+  0x1878FB: pop    cx
+  0x1878FC: add    cx, ax
+  0x1878FE: adc    bx, dx
+  0x187900: mov    [bp-5Ah], bx
+  0x187903: mov    [bp-5Ch], cx
+  0x187906: push   word ptr [bp-5Ah]
+  0x187909: push   word ptr [bp-5Ch]
+  0x18790C: call   key_event_mode_gate  ->code ['key_event_mode_gate']
+  0x187911: pop    cx
+  0x187912: pop    cx
+  0x187913: cwd    
+  0x187914: mov    [bp-5Ah], dx
+  0x187917: mov    [bp-5Ch], ax
+  0x18791A: mov    ax, [bp-5Ah]
+  0x18791D: mov    sp, [bp-5Ch]
+  0x187920: add    [bp-58h], dx
+  0x187923: adc    [bp-56h], ax
+  0x187926: jmp    loc_1879B5  ->code ['r53_opcode_decode_apply']
+  0x187929: mov    ax, 6894h
+  0x18792C: mov    es, ax
+  0x18792E: mov    ax, es:word_6ABDA
+  0x187932: mov    dx, 4Eh
+  0x187935: imul   dx
+  0x187937: mov    dx, 6894h
+  0x18793A: mov    es, dx
+  0x18793C: les    bx, es:dword_69B6E
+  0x187941: add    bx, ax
+  0x187943: mov    ax, [bp-0Ch]
+  0x187946: sub    ax, es:[bx+40h]
+  0x18794A: mov    [bp-0Ch], dx
+  0x18794D: mov    ax, 6894h
+  0x187950: mov    es, ax
+  0x187952: mov    ax, es:word_69BDA
+  0x187956: mov    dx, 4Eh
+  0x187959: imul   dx
+  0x18795B: mov    dx, 6894h
+  0x18795E: mov    es, dx
+  0x187960: les    bx, es:dword_69B6E
+  0x187965: add    bx, ax
+  0x187967: mov    ax, [bp-0Eh]
+  0x18796A: sub    ax, es:[bx+42h]
+  0x18796E: mov    [bp-0Eh], ax
+  0x187971: push   word ptr [bp-52h]
+  0x187974: mov    dx, [bp-52h]
+  0x187977: cwd    
+  0x187978: push   dx
+  0x187979: push   ax
+  0x18797A: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x18797F: add    sp, 6
+  0x187982: push   ax
+  0x187983: push   dx
+  0x187984: push   word ptr [bp-54h]
+  0x187987: mov    ax, [bp-54h]
+  0x18798A: cwd    
+  0x18798B: push   dx
+  0x18798C: push   ax
+  0x18798D: call   far ptr loc_3FA7F+1  ->code ['farobj_index_resolve_step']
+  0x187992: add    sp, 6
+  0x187995: pop    bx
+  0x187996: pop    cx
+  0x187997: add    cx, ax
+  0x187999: adc    bx, dx
+  0x18799B: mov    [bp-56h], bx
+  0x18799E: mov    [bp-58h], cx
+  0x1879A1: push   word ptr [bp-56h]
+  0x1879A4: push   word ptr [bp-58h]
+  0x1879A7: call   key_event_mode_gate  ->code ['key_event_mode_gate']
+  0x1879AC: pop    cx
+  0x1879AD: pop    cx
+  0x1879AE: cwd    
+  0x1879AF: mov    [bp-56h], dx
+  0x1879B2: mov    [bp-58h], ax
+  0x1879B5: mov    ax, [bp-0Ah]
+  0x1879B8: mov    bx, 0Ah
+  0x1879BB: cwd    
+  0x1879BC: idiv   bx
+  0x1879BE: cwd    
+  0x1879BF: cmp    dx, [bp-56h]
+  0x1879C2: jle    loc_1879C7  ->code ['r53_opcode_decode_apply']
+  0x1879C4: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x1879C7: jl     loc_1879D1  ->code ['r53_opcode_decode_apply']
+  0x1879C9: cmp    ax, [bp-58h]
+  0x1879CC: jb     loc_1879D1  ->code ['r53_opcode_decode_apply']
+  0x1879CE: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x1879D1: call   far ptr loc_12C89  ->code ['slot2_map_window_load']
+  0x1879D6: test   ax, 0
+  0x1879D9: jnz    loc_1879DE  ->code ['r53_opcode_decode_apply']
+  0x1879DB: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x1879DE: mov    bx, si
+  0x1879E0: shl    bx, 1
+  0x1879E2: lea    ax, [bp-70h]
+  0x1879E5: add    bx, ax
+  0x1879E7: mov    ax, ss:[bx]
+  0x1879EA: mov    dx, 42h
+  0x1879ED: imul   dx
+  0x1879EF: les    bx, [bp-44h]
+  0x1879F2: add    bx, ax
+  0x1879F4: cmp    byte ptr es:[bx+26h], 3
+  0x1879F9: jl     loc_1879FE  ->code ['r53_opcode_decode_apply']
+  0x1879FB: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x1879FE: mov    bx, si
+  0x187A00: shl    bx, 1
+  0x187A02: lea    ax, [bp-70h]
+  0x187A05: add    bx, ax
+  0x187A07: mov    ax, ss:[bx]
+  0x187A0A: mov    dx, 42h
+  0x187A0D: imul   dx
+  0x187A0F: mov    bp, [bp-44h]
+  0x187A12: add    bx, ax
+  0x187A14: mov    byte ptr es:[bx+26h], 66h
+  0x187A19: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187A1C: mov    ax, [bp-18h]
+  0x187A1F: dec    bp
+  0x187A22: jz     loc_187A2C  ->code ['r53_opcode_decode_apply']
+  0x187A24: cmp    ax, 2
+  0x187A27: jz     loc_187A6E  ->code ['r53_opcode_decode_apply']
+  0x187A29: jmp    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187A2C: mov    ax, 6894h
+  0x187A2F: mov    es, ax
+  0x187A31: cmp    es:word_68940, 0
+  0x187A37: jz     loc_187A3C  ->code ['r53_opcode_decode_apply']
+  0x187A39: jmp    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187A3C: mov    bx, si
+  0x187A3E: shl    bx, 1
+  0x187A40: lea    ax, [bp-70h]
+  0x187A43: add    bx, ax
+  0x187A45: mov    dx, ss:[bx]
+  0x187A48: mov    dx, 42h
+  0x187A4B: imul   dx
+  0x187A4D: les    bx, [bp-44h]
+  0x187A50: add    bx, ax
+  0x187A52: mov    byte ptr ss:[bx+26h], 4
+  0x187A57: call   loc_3ACD2+1  ->code ['floor_store_4abb', 'dgroup_save_reg_dxbp']
+  0x187A5C: cmp    ax, si
+  0x187A5E: jnz    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187A60: mov    ax, 6894h
+  0x187A63: mov    es, ax
+  0x187A65: mov    es:word_69E30, 20h
+  0x187A6C: jmp    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187A6E: mov    ax, 6894h
+  0x187A71: mov    es, ax
+  0x187A73: cmp    es:word_68940, 0
+  0x187A79: jnz    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187A7B: call   far ptr loc_12C89  ->code ['slot2_map_window_load']
+  0x187A80: and    ax, 7FFFh
+  0x187A83: cmp    ax, 4000h
+  0x187A86: jge    loc_187AAE  ->code ['r53_opcode_decode_apply']
+  0x187A88: mov    bx, si
+  0x187A8A: shl    bx, 1
+  0x187A8C: lea    ax, [bp-70h]
+  0x187A8F: add    bx, ax
+  0x187A91: mov    ax, ss:[bx]
+  0x187A94: mov    dx, 52h
+  0x187A97: imul   dx
+  0x187A99: les    bx, [bp-44h]
+  0x187A9C: add    bx, ax
+  0x187A9E: mov    byte ptr es:[bx+26h], 4
+  0x187AA3: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x187AA8: cmp    ax, si
+  0x187AAA: jnz    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187AAC: jmp    loc_187A60  ->code ['r53_opcode_decode_apply']
+  0x187AAE: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x187AB3: cmp    ax, si
+  0x187AB5: jnz    loc_187AC3  ->code ['r53_opcode_decode_apply']
+  0x187AB7: mov    ax, 6894h
+  0x187ABA: mov    es, ax
+  0x187ABC: mov    es:word_69E30, 10h
+  0x187AC3: cmp    word ptr [bp-5Eh], 0
+  0x187AC7: jz     loc_187ACC  ->code ['r53_opcode_decode_apply']
+  0x187AC9: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187ACC: mov    bx, si
+  0x187ACE: shl    bx, 1
+  0x187AD0: lea    ax, [bp-70h]
+  0x187AD3: add    bx, ax
+  0x187AD5: mov    ax, ss:[bx]
+  0x187AD8: mov    dx, 42h
+  0x187ADB: imul   dx
+  0x187ADD: les    bx, [bp-44h]
+  0x187AE0: add    bx, ax
+  0x187AE2: mov    byte ptr ss:[bx+26h], 66h
+  0x187AE7: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x187AEC: cmp    ax, si
+  0x187AEE: jz     loc_187AF3  ->code ['r53_opcode_decode_apply']
+  0x187AF0: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187AF3: mov    ax, 6894h
+  0x187AF6: mov    es, ax
+  0x187AF8: mov    es:word_69E30, 200h
+  0x187AFF: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187B02: mov    ax, 6894h
+  0x187B05: mov    es, ax
+  0x187B07: cmp    es:word_68940, 0
+  0x187B0D: jz     loc_187B12  ->code ['r53_opcode_decode_apply']
+  0x187B0F: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187B12: cmp    word ptr [bp-5Eh], 3FFFh
+  0x187B17: jz     loc_187B1C  ->code ['r53_opcode_decode_apply']
+  0x187B19: jmp    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187B1C: mov    bx, si
+  0x187B1E: shl    bx, 1
+  0x187B20: lea    ax, [bp-70h]
+  0x187B23: add    bx, ax
+  0x187B25: mov    ax, ss:[bx]
+  0x187B28: mov    dx, 42h
+  0x187B2B: imul   dx
+  0x187B2D: les    bx, [bp-44h]
+  0x187B30: add    bx, ax
+  0x187B32: mov    byte ptr es:[bx+26h], 3
+  0x187B37: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x187B3C: cmp    ax, si
+  0x187B3E: jnz    loc_187BB9  ->code ['r53_opcode_decode_apply', 'r53_opcode_decode_apply']
+  0x187B40: mov    ax, 6894h
+  0x187B43: mov    es, ax
+  0x187B45: mov    es:word_69E30, 8
+  0x187B4C: jmp    loc_187BB9  ->code ['r53_opcode_decode_apply', 'r53_opcode_decode_apply']
+  0x187B4E: mov    bx, si
+  0x187B50: shl    bx, 1
+  0x187B52: lea    ax, [bp-70h]
+  0x187B55: add    bx, ax
+  0x187B57: mov    ax, ss:[bx]
+  0x187B5A: mov    dx, 42h
+  0x187B5D: imul   dx
+  0x187B5F: les    bx, [bp-44h]
+  0x187B62: add    bx, ax
+  0x187B64: cmp    byte ptr es:[bx+26h], 3
+  0x187B69: jge    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187B6B: mov    bx, si
+  0x187B6D: shl    bx, 1
+  0x187B6F: lea    ax, [bp-70h]
+  0x187B72: add    bx, ax
+  0x187B74: mov    ax, ss:[bx]
+  0x187B77: mov    dx, 42h
+  0x187B7A: imul   dx
+  0x187B7C: mov    bx, [bp-44h]
+  0x187B7F: add    bx, ax
+  0x187B81: mov    byte ptr es:[bx+26h], 2
+  0x187B86: mov    bx, si
+  0x187B88: shl    bx, 1
+  0x187B8A: lea    ax, [bp-80h]
+  0x187B8D: add    bx, ax
+  0x187B8F: inc    si
+  0x187B94: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x187B99: cmp    ax, si
+  0x187B9B: jnz    def_1877BA  ->code ['r53_opcode_decode_apply']
+  0x187B9D: mov    ax, 6894h
+  0x187BA0: mov    es, ax
+  0x187BA2: mov    es:word_69E30, 10h
+  0x187BA9: call   far ptr loc_12C89  ->code ['slot2_map_window_load']
+  0x187BAE: and    ax, 7FFFh
+  0x187BB1: mov    bx, 64h
+  0x187BB4: cwd    
+  0x187BB5: idiv   bx
+  0x187BB7: mov    di, dx
+  0x187BB9: mov    al, [bp-5Fh]
+  0x187BBC: mov    ah, 0
+  0x187BBE: mov    dx, 64h
+  0x187BC1: sub    dx, ax
+  0x187BC3: cmp    dx, di
+  0x187BC5: jge    loc_187C14  ->code ['r53_opcode_decode_apply']
+  0x187BC7: mov    bx, si
+  0x187BC9: shl    bx, 1
+  0x187BCB: lea    ax, [bp-70h]
+  0x187BCE: add    bx, ax
+  0x187BD0: mov    ax, ss:[bx]
+  0x187BD3: mov    dx, 42h
+  0x187BD6: imul   dx
+  0x187BD8: les    bx, [bp-44h]
+  0x187BDB: add    bx, ax
+  0x187BDD: cmp    byte ptr es:[bx+26h], 3
+  0x187BE2: jge    loc_187C14  ->code ['r53_opcode_decode_apply']
+  0x187BE4: call   far ptr floor_store_4abb  ->code ['floor_store_4abb']
+  0x187BE9: cmp    ax, si
+  0x187BEB: jnz    loc_187BF9  ->code ['r53_opcode_decode_apply']
+  0x187BED: mov    ax, 6894h
+  0x187BF0: mov    es, ax
+  0x187BF2: mov    es:word_69E30, 200h
+  0x187BF9: mov    bx, si
+  0x187BFB: shl    bx, 1
+  0x187BFD: lea    ax, [bp-70h]
+  0x187C00: add    bx, ax
+  0x187C02: mov    ax, ss:[bx]
+  0x187C05: mov    dx, 42h
+  0x187C08: imul   dx
+  0x187C0A: les    bx, [bp-44h]
+  0x187C0D: add    bx, ax
+  0x187C0F: mov    byte ptr es:[bx+26h], 86h
+  0x187C14: mov    al, [bp+si-20h]
+  0x187C17: mov    ah, 0
+  0x187C19: shl    ax, 1
+  0x187C1B: or     ax, ax
+  0x187C1D: jle    loc_187C5C  ->code ['r53_opcode_decode_apply']
+  0x187C1F: mov    bx, si
+  0x187C21: shl    bx, 1
+  0x187C23: lea    ax, [bp-70h]
+  0x187C26: add    bx, ax
+  0x187C28: mov    ax, ss:[bx]
+  0x187C2B: mov    dx, 42h
+  0x187C2E: imul   dx
+  0x187C30: les    bx, [bp-44h]
+  0x187C33: add    bx, ax
+  0x187C35: mov    al, es:[bx+30h]
+  0x187C39: mov    dl, [bp+si-20h]
+  0x187C3C: shl    dl, 1
+  0x187C3E: add    al, dl
+  0x187C40: mov    bx, si
+  0x187C42: shl    bx, 1
+  0x187C44: lea    dx, [bp-70h]
+  0x187C47: add    bx, dx
+  0x187C49: push   ax
+  0x187C4A: mov    ax, ss:[bx]
+  0x187C4D: mov    dx, 42h
+  0x187C50: imul   dx
+  0x187C52: mov    bx, [bp-44h]
+  0x187C55: add    bx, ax
+  0x187C57: pop    ax
+  0x187C58: mov    es:[bx+30h], al
+  0x187C5C: mov    bx, si
+  0x187C5E: shl    bx, 1
+  0x187C60: lea    ax, [bp-70h]
+  0x187C63: add    bx, ax
+  0x187C65: mov    ax, ss:[bx]
+  0x187C68: mov    dx, 42h
+  0x187C6B: imul   dx
+  0x187C6D: les    bx, [bp-44h]
+  0x187C70: add    bx, ax
+  0x187C72: cmp    byte ptr es:[bx+30h], 0
+  0x187C77: ja     loc_187C94  ->code ['r53_opcode_decode_apply']
+  0x187C79: mov    bx, si
+  0x187C7B: shl    bx, 1
+  0x187C7D: lea    ax, [bp-70h]
+  0x187C80: add    bx, ax
+  0x187C82: mov    ax, ss:[bx]
+  0x187C85: mov    dx, 42h
+  0x187C88: imul   dx
+  0x187C8A: mov    bx, [bp-44h]
+  0x187C8D: add    bx, ax
+  0x187C8F: mov    byte ptr es:[bx+30h], 0
+  0x187C94: mov    al, [bp+si-28h]
+  0x187C97: mov    ah, 0
+  0x187C99: shl    ax, 1
+  0x187C9B: or     ax, ax
+  0x187C9D: jle    loc_187CDC  ->code ['r53_opcode_decode_apply']
+  0x187C9F: mov    bx, si
+  0x187CA1: shl    bx, 1
+  0x187CA3: lea    ax, [bp-70h]
+  0x187CA6: add    bx, ax
+  0x187CA8: mov    ax, ss:[bx]
+  0x187CAB: mov    dx, 42h
+  0x187CAE: imul   dx
+  0x187CB0: les    bx, [bp-44h]
+  0x187CB3: add    bx, ax
+  0x187CB5: mov    al, es:[bx+31h]
+  0x187CB9: mov    dl, [bp+si-28h]
+  0x187CBC: shl    dl, 1
+  0x187CBE: add    al, dl
+  0x187CC0: mov    bx, si
+  0x187CC2: shl    bx, 1
+  0x187CC4: lea    dx, [bp-70h]
+  0x187CC7: add    bx, dx
+  0x187CC9: push   ax
+  0x187CCA: mov    ax, ss:[bx]
+  0x187CCD: mov    dx, 42h
+  0x187CD0: imul   dx
+  0x187CD2: mov    bx, [bp-44h]
+  0x187CD5: add    bx, ax
+  0x187CD7: pop    ax
+  0x187CD8: mov    es:[bx+31h], al
+  0x187CDC: mov    bx, si
+  0x187CDE: shl    bx, 1
+  0x187CE0: lea    ax, [bp-70h]
+  0x187CE3: add    bx, ax
+  0x187CE5: mov    ax, ss:[bx]
+  0x187CE8: mov    dx, 42h
+  0x187CEB: imul   dx
+  0x187CED: les    bx, [bp-44h]
+  0x187CF0: add    bx, ax
+  0x187CF2: cmp    byte ptr es:[bx+31h], 0
+  0x187CF7: ja     loc_187D14  ->code ['r53_opcode_decode_apply']
+  0x187CF9: mov    bx, si
+  0x187CFB: shl    bx, 1
+  0x187CFD: lea    ax, [bp-70h]
+  0x187D00: add    bx, ax
+  0x187D02: mov    ax, ss:[bx]
+  0x187D05: mov    dx, 42h
+  0x187D08: imul   dx
+  0x187D0A: mov    bx, [bp-44h]
+  0x187D0D: add    bx, ax
+  0x187D0F: mov    byte ptr es:[bx+31h], 0
+  0x187D14: mov    bx, si
+  0x187D16: shl    bx, 1
+  0x187D18: lea    ax, [bp-0B0h]
+  0x187D1C: add    bx, ax
+  0x187D1E: cmp    word ptr ss:[bx], 6400h
+  0x187D23: jbe    loc_187D30  ->code ['r53_opcode_decode_apply']
+  0x187D25: mov    bx, si
+  0x187D27: shl    bx, 1
+  0x187D29: add    bx, ax
+  0x187D2B: mov    word ptr ss:[bx], 6400h
+  0x187D30: mov    bx, si
+  0x187D32: shl    bx, 1
+  0x187D34: lea    ax, [bp-0B0h]
+  0x187D38: add    bx, ax
+  0x187D3A: mov    ax, ss:[bx]
+  0x187D3D: shr    ax, 8
+  0x187D40: mov    bx, si
+  0x187D42: shl    bx, 1
+  0x187D44: lea    dx, [bp-70h]
+  0x187D47: add    bx, dx
+  0x187D49: push   ax
+  0x187D4A: mov    ax, ss:[bx]
+  0x187D4D: mov    dx, 42h
+  0x187D50: imul   dx
+  0x187D52: les    bx, [bp-44h]
+  0x187D55: add    bx, ax
+  0x187D57: pop    ax
+  0x187D58: mov    es:[bx+24h], al
+  0x187D5C: mov    bx, si
+  0x187D5E: shl    bx, 1
+  0x187D60: lea    ax, [bp-80h]
+  0x187D63: add    bx, ax
+  0x187D65: cmp    word ptr ss:[bx], 6400h
+  0x187D6A: jbe    loc_187D77  ->code ['r53_opcode_decode_apply']
+  0x187D6C: mov    bx, si
+  0x187D6E: shl    bx, 1
+  0x187D70: add    bx, ax
+  0x187D72: mov    word ptr ss:[bx], 6400h
+  0x187D77: mov    ax, 6894h
+  0x187D7A: mov    es, ax
+  0x187D7C: cmp    es:word_68940, 0
+  0x187D82: test   [di], bl  ->code ['r53_opcode_decode_apply']
+  0x187D84: mov    bx, si
+  0x187D86: shl    bx, 1
+  0x187D88: lea    ax, [bp-70h]
+  0x187D8B: add    bx, ax
+  0x187D8D: mov    ax, ss:[bx]
+  0x187D90: mov    dx, 42h
+  0x187D93: imul   dx
+  0x187D95: les    bx, [bp-44h]
+  0x187D98: add    bx, ax
+  0x187D9A: mov    byte ptr es:[bx+26h], 0
+  0x187D9F: jmp    loc_187DCC  ->code ['r53_opcode_decode_apply']
+  0x187DA1: mov    bx, si
+  0x187DA3: shl    bx, 1
+  0x187DA5: lea    ax, [bp-80h]
+  0x187DA8: add    bx, ax
+  0x187DAA: mov    ax, ss:[bx]
+  0x187DAD: shr    ax, 8
+  0x187DB0: mov    bx, si
+  0x187DB2: shl    bx, 1
+  0x187DB4: lea    dx, [bp-70h]
+  0x187DB7: add    bx, dx
+  0x187DB9: push   ax
+  0x187DBA: mov    ax, ss:[bx]
+  0x187DBD: mov    dx, 42h
+  0x187DC0: imul   dx
+  0x187DC2: les    bx, [bp-44h]
+  0x187DC5: add    bx, ax
+  0x187DC7: pop    ax
+  0x187DC8: mov    es:[bx+25h], al
+  0x187DCC: mov    bx, si
+  0x187DCE: shl    bx, 1
+  0x187DD0: lea    ax, [bp-70h]
+  0x187DD3: add    bx, ax
+  0x187DD5: push   word ptr ss:[bx]
+  0x187DD8: push   word ptr [bp-42h]
+  0x187DDB: push   word ptr [bp-44h]
+  0x187DDE: call   far ptr byte_5CA26+22h  ->code ['0x5ca48']
+  0x187DE3: add    sp, 6
+  0x187DE6: mov    bx, si
+  0x187DE8: shl    bx, 1
+  0x187DEA: lea    ax, [bp-90h]
+  0x187DEE: add    bx, ax
+  0x187DF0: cmp    word ptr ss:[bx], 6400h
+  0x187DF5: jbe    loc_187E02  ->code ['r53_opcode_decode_apply']
+  0x187DF7: mov    bx, si
+  0x187DF9: shl    bx, 1
+  0x187DFB: add    bx, ax
+  0x187DFD: mov    word ptr ss:[bx], 6400h
+  0x187E02: mov    bx, si
+  0x187E04: shl    bx, 1
+  0x187E06: lea    ax, [bp-90h]
+  0x187E0A: add    bx, ax
+  0x187E0C: mov    ax, ss:[bx]
+  0x187E0F: shr    ax, 8
+  0x187E12: mov    bx, si
+  0x187E14: shl    bx, 1
+  0x187E16: lea    dx, [bp-70h]
+  0x187E19: add    bx, dx
+  0x187E1B: push   ax
+  0x187E1C: mov    ax, ss:[bx]
+  0x187E1F: mov    dx, 1042h
+  0x187E22: imul   dx
+  0x187E24: les    bx, [bp-44h]
+  0x187E27: add    bx, ax
+  0x187E29: pop    ax
+  0x187E2A: mov    es:[bx+23h], al
+  0x187E2E: mov    bx, si
+  0x187E30: shl    bx, 1
+  0x187E32: lea    ax, [bp-0A0h]
+  0x187E36: add    bx, ax
+  0x187E38: cmp    word ptr ss:[bx], 6400h
+  0x187E3D: jbe    loc_187E4A  ->code ['r53_opcode_decode_apply']
+  0x187E3F: mov    bx, si
+  0x187E41: shl    bx, 1
+  0x187E43: add    bx, ax
+  0x187E45: mov    word ptr ss:[bx], 6400h
+  0x187E4A: mov    bx, si
+  0x187E4C: shl    bx, 1
+  0x187E4E: lea    ax, [bp-0A0h]
+  0x187E52: add    bx, ax
+  0x187E54: mov    ax, ss:[bx]
+  0x187E57: shr    ax, 8
+  0x187E5A: mov    bx, si
+  0x187E5C: shl    bx, 1
+  0x187E5E: lea    dx, [bp-70h]
+  0x187E61: add    bx, dx
+  0x187E63: push   ax
+  0x187E64: mov    ax, ss:[bx]
+  0x187E67: mov    dx, 42h
+  0x187E6A: imul   dx
+  0x187E6C: les    bx, [bp-44h]
+  0x187E6F: add    bx, ax
+  0x187E71: pop    ax
+  0x187E72: mov    es:[bx+22h], al
+  0x187E76: inc    si
+  0x187E77: cmp    si, 8
+  0x187E7A: jge    loc_187E7F  ->code ['r53_opcode_decode_apply']
+  0x187E7C: jmp    loc_18762D  ->code ['r53_opcode_decode_apply']
+  0x187E7F: mov    ax, 6894h
+  0x187E82: mov    es, ax
+  0x187E84: les    bx, es:dword_69E3A
+  0x187E89: mov    ax, [bp-8]
+  0x187E8C: add    es:[bx+1Dh], ax
+  0x187E90: pop    di
+  0x187E91: pop    si
+  0x187E92: leave  
+  0x187E93: retf   
+  --- callers: 

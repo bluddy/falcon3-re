@@ -1,0 +1,161 @@
+======================================================================
+sub_1575E  ea=0x1575E  size=421  L13  in=3  tile_base_opcode_interpreter
+  --- callees (2): tile_base_batch_build(L12), farobj_flag_record_push(L5)
+  0x1575E: test   cs:byte_11C69, 1
+  0x15764: jnz    loc_15767  ->code ['tile_base_opcode_interpreter']
+  0x15766: retn   
+  0x15767: mov    bx, 4AE9h
+  0x1576A: mov    dx, 46E9h
+  0x1576D: call   loc_1617C  ->code ['0x1617c']
+  0x15770: mov    word ptr ds:0C63h, 1C65h
+  0x15776: mov    ax, 4553h
+  0x15779: add    ax, ds:4551h
+  0x1577D: mov    ds:5869h, ax
+  0x15780: mov    ax, 47E9h
+  0x15783: mov    ds:586Bh, ax
+  0x15786: mov    si, cs:word_11C8C
+  0x1578B: mov    cx, 31h
+  0x1578E: lodsb  
+  0x1578F: mov    ah, al
+  0x15791: shl    al, 1
+  0x15793: mov    ds:5ACBh, al
+  0x15796: shl    al, 1
+  0x15798: add    al, ah
+  0x1579A: sub    ah, ah
+  0x1579C: add    ax, 32C0h
+  0x1579F: push   si
+  0x157A0: mov    si, ax
+  0x157A2: lodsb  
+  0x157A3: mov    cs:byte_11C7C, al
+  0x157A7: mov    al, cs:byte_11C7C
+  0x157AB: test   al, 80h
+  0x157AD: jz     loc_157DA  ->code ['tile_base_opcode_interpreter']
+  0x157AF: mov    cs:byte_11C0B, 1
+  0x157B5: push   cx
+  0x157B6: push   si
+  0x157B7: sub    bh, bh
+  0x157B9: mov    bl, ds:5ACBh
+  0x157BD: add    bx, ds:5869h
+  0x157C1: mov    bx, [bx]
+  0x157C3: add    bx, 47E9h
+  0x157C7: mov    ax, [bx]
+  0x157C9: mov    bx, [bx+2]
+  0x157CC: call   tile_base_batch_build  ->code ['tile_base_batch_build']
+  0x157CF: pop    si
+  0x157D0: pop    cx
+  0x157D1: mov    cs:byte_11C0B, 0
+  0x157D7: jmp    loc_158FB  ->code ['tile_base_opcode_interpreter']
+  0x157DA: mov    ah, [si]
+  0x157DC: mov    cs:byte_11C6D, ah
+  0x157E1: mov    ah, [si+1]
+  0x157E4: mov    cs:byte_11C6C, ah
+  0x157E9: push   cx
+  0x157EA: push   si
+  0x157EB: mov    si, [si+2]
+  0x157EE: mov    cs:word_11D14, si
+  0x157F3: mov    al, cs:byte_11C7C
+  0x157F7: test   al, 4
+  0x157F9: jz     loc_157FE  ->code ['tile_base_opcode_interpreter']
+  0x157FB: jmp    loc_158D4  ->code ['tile_base_opcode_interpreter']
+  0x157FE: add    si, 0ABCDh
+  0x15802: cmp    cs:byte_11C7B, 0
+  0x15808: jnz    loc_1580E  ->code ['tile_base_opcode_interpreter']
+  0x1580A: test   al, 2
+  0x1580C: jz     loc_15811  ->code ['tile_base_opcode_interpreter']
+  0x1580E: jmp    loc_1589A  ->code ['tile_base_opcode_interpreter']
+  0x15811: test   al, 1
+  0x15813: jz     loc_15818  ->code ['tile_base_opcode_interpreter']
+  0x15815: jmp    loc_15853  ->code ['tile_base_opcode_interpreter']
+  0x15817:        2, 2, 2
+  0x15818: push   si
+  0x15819: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x1581C: rcl    ax, 1
+  0x1581E: pop    si
+  0x1581F: add    si, 0Ah
+  0x15822: push   ax
+  0x15823: mov    al, cs:byte_11C6C
+  0x15827: mov    cs:byte_11C6D, al
+  0x1582B: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x1582E: rcl    ax, 1
+  0x15830: pop    bx
+  0x15831: and    ax, bx
+  0x15833: test   ax, 1
+  0x15836: jnz    loc_15850  ->code ['tile_base_opcode_interpreter']
+  0x15838: sub    bh, bh
+  0x1583A: mov    bl, ds:5ACBh
+  0x1583E: add    bx, ds:5869h
+  0x15842: mov    bx, [bx]
+  0x15844: add    bx, 47E9h
+  0x15848: mov    ax, [bx]
+  0x1584A: mov    bx, [bx+2]
+  0x1584D: call   tile_base_batch_build  ->code ['tile_base_batch_build']
+  0x15850: jmp    loc_158F9  ->code ['tile_base_opcode_interpreter']
+  0x15853: mov    al, cs:byte_11C6C
+  0x15857: xchg   al, cs:byte_11C6D
+  0x1585C: mov    cs:byte_11C6C, al
+  0x15860: push   si
+  0x15861: add    si, 0Ah
+  0x15864: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x15867: rcl    ax, 1
+  0x15869: pop    si
+  0x1586A: push   ax
+  0x1586B: mov    al, cs:byte_11C6C
+  0x1586F: mov    cs:byte_11C6D, al
+  0x15873: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x15876: rcl    ax, 1
+  0x15878: pop    bx
+  0x15879: and    ax, bx
+  0x1587B: test   ax, 1
+  0x1587E: jnz    loc_15898  ->code ['tile_base_opcode_interpreter']
+  0x15880: sub    bh, bh
+  0x15882: mov    bl, ds:5ACBh
+  0x15886: add    bx, ds:5869h
+  0x1588A: mov    bx, [bx]
+  0x1588C: add    bx, 47E9h
+  0x15890: mov    ax, [bx]
+  0x15892: mov    bx, [bx+2]
+  0x15895: call   tile_base_batch_build  ->code ['tile_base_batch_build']
+  0x15898: jmp    loc_158F9  ->code ['tile_base_opcode_interpreter']
+  0x1589A: push   si
+  0x1589B: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x1589E: rcl    ax, 1
+  0x158A0: pop    si
+  0x158A1: add    si, 0Ah
+  0x158A4: push   ax
+  0x158A5: mov    al, cs:byte_11C6C
+  0x158A9: mov    cs:byte_11C6D, al
+  0x158AD: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x158B0: rcl    ax, 1
+  0x158B2: pop    bx
+  0x158B3: and    ax, bx
+  0x158B5: test   ax, 1
+  0x158B8: jnz    loc_158D2  ->code ['tile_base_opcode_interpreter']
+  0x158BA: sub    bh, bh
+  0x158BC: mov    bl, ds:5ACBh
+  0x158C0: add    bx, ds:5869h
+  0x158C4: mov    bx, [bx]
+  0x158C6: add    bx, 47E9h
+  0x158CA: mov    ax, [bx]
+  0x158CC: mov    bx, [bx+2]
+  0x158CF: call   tile_base_batch_build  ->code ['tile_base_batch_build']
+  0x158D2: jmp    loc_158F9  ->code ['tile_base_opcode_interpreter']
+  0x158D4: mov    al, cs:byte_11C6C
+  0x158D8: mov    cs:byte_11C6D, al
+  0x158DC: call   farobj_flag_record_push  ->code ['farobj_flag_record_push']
+  0x158DF: jb     loc_158F9  ->code ['tile_base_opcode_interpreter']
+  0x158E1: sub    bh, bh
+  0x158E3: mov    bl, ds:5ACBh
+  0x158E7: add    bx, ds:5869h
+  0x158EB: mov    bx, [bx]
+  0x158ED: add    bx, 47E9h
+  0x158F1: mov    ax, [bx]
+  0x158F3: mov    bx, [bx+2]
+  0x158F6: call   tile_base_batch_build  ->code ['tile_base_batch_build']
+  0x158F9: pop    si
+  0x158FA: pop    cx
+  0x158FB: pop    si
+  0x158FC: dec    cx
+  0x158FD: jle    locret_15902  ->code ['tile_base_opcode_interpreter']
+  0x158FF: jmp    loc_1578E  ->code ['tile_base_opcode_interpreter']
+  0x15902: retn   
+  --- callers: terrain_frame_update_driver, view_window_state_clamp, map_overlay_clip_frame
