@@ -58,7 +58,8 @@ def main():
             log.append("  SKIP idx%d: segment already at 0x%X" % (p["idx"], ea))
             skipped += 1
             continue
-        ok = ida_segment.add_segm(ea >> 4, ea, ea + ln, p["seg_name"], "CODE", 0)
+        sclass = "DATA" if p["idx"] == 69 else "CODE"
+        ok = ida_segment.add_segm(ea >> 4, ea, ea + ln, p["seg_name"], sclass, 0)
         # finding 52: add_segm does NOT inherit the loader's 16-bit bitness.
         # New segments default to 32-bit, which decodes real-mode overlay code
         # as `push eax`/`stosd`/`mov ebx,imm32` and corrupts every overlay

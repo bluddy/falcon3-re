@@ -43,6 +43,39 @@ Creates `FALCONCD.EXE.i64` + `survey.json`/`functions.tsv`/`overlays.json`,
 adding RTLink record groups as segments. Saves explicitly (finding 40).
 *(If the `.i64` already exists you may pass the `.i64` path instead.)*
 
+## Fast Path — Deterministic Rebuild from Committed Ground Truth (Finding 119)
+
+Because all 2,401 function boundaries (`function_bytes.json`), all 70 data holes (`data_holes.json`), all 68 overlay placements (`overlay_placement.json`), and all 37,324 RTLink fixups (`fixups_to_apply.json`) are committed in git, a fresh clone or wiped `.i64` can be rebuilt deterministically in 6 headless passes without re-running historical discovery scripts:
+
+```powershell
+# 1. Create initial .i64 from bare FALCONCD.EXE (applies 2,717 MZ relocations)
+& "C:\Program Files\IDA Professional 9.1\idat.exe" -A -S"tools\ida_snapshot.py" analysis\ida_falconcd\FALCONCD.EXE
+
+# 2. Create all 68 overlay segments (including Cluster B at 0x100000 + w2*16 and R69_606E DATA)
+cmd /c "tools\run_idat.bat tools\rebuild_overlay_segments.py"
+
+# 3. Apply all 37,324 RTLink fixups across resident + overlay segments
+cmd /c "tools\run_idat.bat tools\apply_overlay_fixups.py"
+
+# 4. Patch RTLink thunk table at 0x2BD9D
+cmd /c "tools\run_idat.bat tools\patch_thunks_ida.py"
+
+# 5. Enforce all 70 data holes and 2,401 function spans + semantic names from ground truth
+cmd /c "tools\run_idat.bat tools\sync_idb_to_ground_truth.py"
+
+# 6. Repair RTLink thunk crefs, synthetic intra-overlay far crefs, and Cluster-B switch jump tables
+cmd /c "tools\run_idat.bat tools\fix_overlay_jumps_ida.py"
+
+# 7. Verify IDB integrity (expect VERDICT: INTACT)
+cmd /c "tools\run_idat.bat tools\verify_idb.py"
+```
+
+---
+
+## Historical Discovery Sequence (Steps 2–5)
+
+If you are re-running the incremental function-discovery passes from scratch instead of `sync_idb_to_ground_truth.py`:
+
 ## Step 2 — IDA: structure, entries, fixups
 
 ```
