@@ -66,6 +66,10 @@ cmd /c "tools\run_idat.bat tools\sync_idb_to_ground_truth.py"
 # 6. Repair RTLink thunk crefs, synthetic intra-overlay far crefs, and Cluster-B switch jump tables
 cmd /c "tools\run_idat.bat tools\fix_overlay_jumps_ida.py"
 
+# 6b. Split R05_1E10 / R29_1E10s into their RTLink object segments (finding 120)
+#     (manifest registry/segsplit_expected.json; DRYRUN=1 env regenerates it)
+cmd /c "tools\run_idat.bat tools\split_overlay_segments.py"
+
 # 7. Verify IDB integrity (expect VERDICT: INTACT)
 cmd /c "tools\run_idat.bat tools\verify_idb.py"
 ```

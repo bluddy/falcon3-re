@@ -12,11 +12,11 @@
 | Struct definitions | 10 (5 confirmed RTLink/MZ + **5 ISLDAT confirmed, finding 105**, 1 hypothesis) | `registry/structs.yaml` |
 | Globals inventoried | **1,968** (name=null until renamed) | `data_symbols.json` |
 | Tests | **21 green** (`python -m unittest discover -s tests`) | `tests/test_naming.py` |
-| Overlay IDB | 68 segments / 1,053,376 B (9 real + 59 synthetic, 2 skipped) | `overlay_placement.json` |
+| Overlay IDB | 68 records / 1,053,376 B (9 real + 59 synthetic, 2 skipped); **R05/R29 split into 47 CS-true object segments (finding 120)** | `overlay_placement.json`, `registry/segsplit_expected.json` |
 | Overlay fixups applied | 25,222 × +0x1000 (byte-guarded) | finding 21 |
 | IDB regen cost | ~6 headless IDA runs (runbook below) | pipeline.md |
-| Findings logged | 1–118 (append-only) | `docs/findings_log.md` |
-| Segment classification | 116–119 segs/run, **multi-kind** (`kinds[]`+`kind`); DGROUP 27687 HYPOTHESIS, resident base 0x1F5 PROVEN; 0 heap blocks (hook postdates traces) | `tools/classify_segments.py` → `analysis/traces/segment_classification.json` |
+| Findings logged | 1–121 (append-only) | `docs/findings_log.md` |
+| Segment classification | 116–119 segs/run, **multi-kind** (`kinds[]`+`kind`); DGROUP **PROVEN** link 0x6A32 = IDA 0x7A32 = runtime 27687/0x6C27 (finding 121), SS=DS=DGROUP; resident base 0x1F5 PROVEN; 0 heap blocks (hook postdates traces) | `tools/classify_segments.py` → `analysis/traces/segment_classification.json` |
 | Thunk states | **66/66 record ids stable across 12 dumps** (303 thunks/dump); live targets resolved, load-base normalized | `tools/merge_thunk_states.py` → `analysis/traces/thunk_states.json` |
 | Game knowledge | 379-line manual extraction | `registry/game_knowledge.yaml` |
 | Dynamic dumps | **12 × 1 MB** conventional-RAM dumps committed: 9 from instrumented build (provenance PROVEN, menu→flight) + 3 legacy (UNKNOWN); first-pass inventory DONE | `./memdump` → `docs/memdump.md`, `analysis/memdump/inventory.json` |

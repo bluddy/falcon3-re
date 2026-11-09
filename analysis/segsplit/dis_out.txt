@@ -1,0 +1,27 @@
+==== 434A4
+0434A4 [434A2..434B1] 33 C2                                   xor     ax, dx
+0434A6 [434A2..434B1] 2B C2                                   sub     ax, dx
+0434A8 [434A2..434B1] 3D 8B 0C                                cmp     ax, 0C8Bh
+0434AB [434A2..434B1] 7F 05                                   jg      short locret_334B2
+0434AD [434A2..434B1] B3 00                                   mov     bl, 0
+0434AF [434A2..434B1] EB 49                                   jmp     short near ptr loc_334F8+2
+==== 13DB52
+13DB52 [13DAD0..13DB55] 6C 1F                                   call    flag2224a_set
+13DB54 [13DAD0..13DB55] CB                                      retf
+13DB55 [13DB55..13DB5D] 90                       sub_13DB55     nop
+13DB56 [13DB55..13DB5D] 2E C6 06 FA 00 FF                       mov     byte ptr cs:loc_11C4B8+2, 0FFh
+13DB5C [13DB55..13DB5D] CB                                      retf
+13DB5D [13DB5D..13DB74] 90                       sub_13DB5D     nop
+==== 13DBCF
+13DBCF [13DB74..13DBD7] 00                                      mov     bx, 8
+13DBD0 [13DB74..13DBD7] 9A BB 2E 6C 1F                          call    op_dispatch
+13DBD5 [13DB74..13DBD7] EB 31                                   jmp     short near ptr loc_11DC06+2
+13DBD7 [13DBD7..13DC09] 90                       sub_13DBD7     nop
+13DBD8 [13DBD7..13DC09] 2E C6 06 00 01 2D                       mov     byte ptr cs:loc_11C4BD+3, 2Dh ; '-'
+13DBDE [13DBD7..13DC09] 2E C6 06 01 01 31                       mov     byte ptr cs:loc_11C4BD+4, 31h ; '1'
+==== 13DC01
+13DC01 [13DBD7..13DC09] 00                                      mov     word ptr cs:loc_11C4B6, dx
+13DC02 [13DBD7..13DC09] 2E 8C 1E F8 00                          mov     word ptr cs:loc_11C4B8, ds
+13DC07 [13DBD7..13DC09] 1F                                      pop     ds
+13DC08 [13DBD7..13DC09] C3                                      retn
+13DC09 [13DC09..13DC29] 90                       sub_13DC09     nop
