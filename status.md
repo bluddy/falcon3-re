@@ -162,7 +162,9 @@ DBFL_KILL).
    - **S1c-4 ✅ (finding 126): call-reached orphan code.**
      - 6 code runs that are called but belonged to no function registered; functions 3,541 -> 3,547.
      - No existing function changed; integrity INTACT; backup `.bak_orphan`. Manifest `registry/orphan_funcs_expected.json`.
-     - Left open (finding 126): 8 refused call targets, jmp-reached R20/R21 entries, fl_F continuations, no-xref runs.
+     - **S1c-4b (finding 127):** the two jmp-reached R20/R21 menu bodies 0x10B380 / 0x10B720 registered
+       (their damaged `call far` re-decoded, all 6 key handlers decoded); functions 3,547 -> 3,549; backup `.bak_menus`.
+     - Left open (findings 126/127): 8 refused call targets, fl_F continuations, jmp-reached tails, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
      - commit S1c-4;

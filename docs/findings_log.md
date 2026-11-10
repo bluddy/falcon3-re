@@ -6452,3 +6452,30 @@ need review first (0x129F7, 0x6DFF0 a 1-byte popf with an RTFIX comment, 0x6E16E
 - fl_F continuations: 0x10CC8E..0x10CE05 (375 B), 0x105DA9..0x105EB5 (268 B, likely misdecode), 0x215FE, 0x2D353 (int 21h quit), 0x6EC17, 0x6EF1F, 0x2E1E8, 0x167449, 0x22C8B, 0x25220, 0x67F77, 0x69720;
 - jmp-reached tails 0x12C532..0x12C66A, 0x3F6C7, 0x100DED, 0x4334E, 0x1093A6;
 - 34 free no-xref runs (0x12A2F 227 B, 0x100D0E 222 B, 0x100505 153 B ...) and 110 adjacent no-xref runs (likely padding or misdecode).
+
+## 2026-11-10 127 - R20/R21 menu bodies registered as functions (S1c-4b)
+
+**What they are.** 0x10B380 and 0x10B720 are entered only by a jmp from the RTLink thunks 0x2C2A0 / 0x2C2E6
+(`enter 2,0`, `mouse_gate_far_entry`, four `call far loc_6DFF0` button draws, then a keyboard dispatch).  They
+were orphan code in two pieces each, joined by a loop-back `jmp` and a damaged `call far`:
+
+- the `call far flag_table_pop_far_thunk` at 0x10B4E8 / 0x10B888 was three `db` bytes plus an `insb` (the fixup
+  bytes 9Ah, 03h, 5Bh were decoded off by one); re-decoding it as a 5-byte call joins the loop-back to the
+  tail 0x10B4EB / 0x10B88B;
+- the key dispatch is `mov cx,n; mov bx,tab; cmp ax,[bp-2]; loop; jmp word ptr cs:[bx+16h]`: an n-entry key
+  table (n = 11 for R20, 12 for R21) followed by n handler offsets relative to the body base.  Each distinct
+  handler (5 per body) was undecoded bytes; decoding them by recursive descent leaves no data inside the body.
+
+**Applied.** `tools/apply_orphan_funcs.py` now also carries `MENUS`: plan mode derives the handler seeds from the
+table, the manifest records `redecode` and `seeds`, replay re-decodes, decodes the seeds, `add_func(base, end)`,
+and requires one chunk, only code heads, and no change to any existing function.  0x10B380..0x10B6DF (863 B) and
+0x10B720..0x10BA7B (859 B) are now functions; 3,547 -> 3,549.  Integrity INTACT, `verify_rebuild` faithful
+(ADDED 2), `naming.py check` OK.  Backup `FALCONCD.EXE.i64.bak_menus`.
+
+**Why the other refused targets stay open.** Walking the flow without changing the IDB showed that most of
+them are not clean function bodies: 0x106EE2 / 0x108430 start 10 / 13 bytes before an existing function
+(0x106EEC `r12_state36_reset_stub`, 0x10843D `r15_op_init_sequence`) around a stray `db 0BAh` (the entry
+bytes are inside a `db 0BAh` / `mov dx,imm` operand, so the existing start looks like a mid-instruction entry); 0x109445 is a self-modified `mov ax,0ABCDh`
+block whose flow reaches the existing 0x109519; 0x10CE30 is 373 B ending right before the existing 0x10CFA6.  These need the
+existing function moved or its start re-decoded (a rebase), not an add.  0x129F7 and 0x10931E are the
+candidates for a later round.
