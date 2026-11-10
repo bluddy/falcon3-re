@@ -46,7 +46,7 @@ adding RTLink record groups as segments. Saves explicitly (finding 40).
 
 ## Fast Path — Deterministic Rebuild from Committed Ground Truth (Finding 119)
 
-Because all 3,541 function boundaries (`function_bytes.json`, re-baselined on the repaired live IDB by finding 124), all 68 data holes (`data_holes.json`), all 68 overlay placements (`overlay_placement.json`), and all 37,324 RTLink fixups (`fixups_to_apply.json`) are committed in git, a fresh clone or wiped `.i64` can be rebuilt deterministically in 6 headless passes without re-running historical discovery scripts:
+Because all 3,547 function boundaries (`function_bytes.json`, re-baselined on the repaired live IDB by finding 124), all 68 data holes (`data_holes.json`), all 68 overlay placements (`overlay_placement.json`), and all 37,324 RTLink fixups (`fixups_to_apply.json`) are committed in git, a fresh clone or wiped `.i64` can be rebuilt deterministically in 6 headless passes without re-running historical discovery scripts:
 
 ```powershell
 # 1. Create initial .i64 from bare FALCONCD.EXE (applies 2,717 MZ relocations)
@@ -61,7 +61,7 @@ cmd /c "tools\run_idat.bat tools\apply_overlay_fixups.py"
 # 4. Patch RTLink thunk table at 0x2BD9D
 cmd /c "tools\run_idat.bat tools\patch_thunks_ida.py"
 
-# 5. Enforce all 68 data holes and 3,541 function spans + semantic names from ground truth
+# 5. Enforce all 68 data holes and 3,547 function spans + semantic names from ground truth
 cmd /c "tools\run_idat.bat tools\sync_idb_to_ground_truth.py"
 
 # 6. Repair RTLink thunk crefs, synthetic intra-overlay far crefs, and Cluster-B switch jump tables
@@ -90,6 +90,10 @@ set RBMAN=registry\rebase_fixes2_expected.json & cmd /c "tools\run_idat.bat tool
 # 6f. S1c-3 call-flow repair after the no-return flags (finding 125)
 #     (manifest registry/flow_fixes_expected.json; FFMODE=plan on a COPY regenerates it, FFDRY=1 checks without saving)
 cmd /c "tools\run_idat.bat tools\apply_flow_fixes.py"
+
+# 6g. S1c-4 call-reached orphan code registered as functions (finding 126)
+#     (manifest registry/orphan_funcs_expected.json; OFMODE=plan on a COPY regenerates it, OFDRY=1 checks without saving)
+cmd /c "tools\run_idat.bat tools\apply_orphan_funcs.py"
 
 # 7. Verify IDB integrity (expect VERDICT: INTACT)
 cmd /c "tools\run_idat.bat tools\verify_idb.py"

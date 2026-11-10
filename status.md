@@ -159,9 +159,13 @@ DBFL_KILL).
      - 22 more functions that return were flagged no-return; flags cleared.
      - 41 call sites re-flowed and 5 holes in callers re-decoded as code.
      - Function table unchanged; integrity INTACT; backup `.bak_flow`.
+   - **S1c-4 ✅ (finding 126): call-reached orphan code.**
+     - 6 code runs that are called but belonged to no function registered; functions 3,541 -> 3,547.
+     - No existing function changed; integrity INTACT; backup `.bak_orphan`. Manifest `registry/orphan_funcs_expected.json`.
+     - Left open (finding 126): 8 refused call targets, jmp-reached R20/R21 entries, fl_F continuations, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-3;
+     - commit S1c-4;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;
