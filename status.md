@@ -164,7 +164,10 @@ DBFL_KILL).
      - No existing function changed; integrity INTACT; backup `.bak_orphan`. Manifest `registry/orphan_funcs_expected.json`.
      - **S1c-4b (finding 127):** the two jmp-reached R20/R21 menu bodies 0x10B380 / 0x10B720 registered
        (their damaged `call far` re-decoded, all 6 key handlers decoded); functions 3,547 -> 3,549; backup `.bak_menus`.
-     - Left open (findings 126/127): 8 refused call targets, fl_F continuations, jmp-reached tails, no-xref runs.
+     - **S1c-4c (finding 128):** the 0x12C5xx cluster: sub_12C518 and sub_12C7C6 extended over their jcc/jmp
+       continuations, 0x12C683 / 0x12C951 / 0x12CCE9 added; functions 3,549 -> 3,552; backup `.bak_cluster`.
+       `verify_rebuild.py` gained an EXTEND category (exact appended-bytes sha256).
+     - Left open (findings 126-128): 6 refused call targets, fl_F continuations, remaining jmp-reached tails, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
      - commit S1c-4;

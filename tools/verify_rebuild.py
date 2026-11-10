@@ -57,6 +57,26 @@ def load_retired():
             for e in m.get("cluster_b_retired", [])}
 
 
+def load_extends():
+    """{ea: entry} of registry/orphan_funcs_expected.json "extend_funcs" (finding 128): a function whose end moved
+    up over orphan code.  Allowlisted only when the old bytes are a prefix of the new and the appended bytes
+    hash as recorded."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return {}
+    return {e["ea"]: e for e in json.loads(p.read_text()).get("extend_funcs", [])}
+
+
+def is_expected_extend(extends, a, b):
+    x = extends.get(a.get("ea"))
+    if not x or a.get("ea") != b.get("ea"):
+        return False
+    if (a.get("size"), b.get("size")) != (x["before_end"] - x["ea"], x["end"] - x["ea"]):
+        return False
+    ab, bb = a.get("bytes") or "", b.get("bytes") or ""
+    return bb.startswith(ab) and _sha(bb[len(ab):]) == x["sha256"]
+
+
 def load_patches():
     """{(key, ea, size): (old_sha256, new_sha256)} for the allowlisted byte patches."""
     if not SUBBLOCK.exists():
@@ -119,6 +139,8 @@ def main():
     expected = load_expected()
     retired = load_retired()
     patches = load_patches()
+    extends = load_extends()
+    extended = []
     split_man = load_splits()
     reg_man = load_registers()
     hole_live = load_holes()
@@ -218,6 +240,9 @@ def main():
             # hashes exactly as recorded -- counts as intentional, not drift
             if is_expected_patch(k, a, b):
                 bytepatches.append((k, "bytes patched in place (sub-block fixups)"))
+                continue
+            if is_expected_extend(extends, a, b):
+                extended.append((k, "end extended %dB -> %dB over orphan code" % (a["size"], b["size"])))
                 continue
             # shrank + the old range is now tiled by new fns = intended split
             if b.get("size", 0) < a.get("size", 0):
@@ -337,7 +362,11 @@ def main():
     print("  RECODE  : %d  (intentional: bitness fix, allowlisted in manifest)" % len(recodes))
     print("  PATCH   : %d  (intentional: sub-block fixup words, exact sha match)"
           % len(bytepatches))
+    print("  EXTEND  : %d  (intentional: end moved over orphan code, appended bytes sha256-pinned)"
+          % len(extended))
     print("  CHANGED : %d" % len(changed))
+    for k, why in extended:
+        print("   %-16s %s" % (k, why))
     if bytepatches:
         print("\n-- PATCH (allowlisted byte patch; verify the manifest is committed) --")
         for k, why in bytepatches[:10]:

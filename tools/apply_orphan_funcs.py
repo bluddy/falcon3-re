@@ -36,7 +36,10 @@ PLAN = os.environ.get("OFMODE") == "plan"
 RETS = {"retn", "retf", "iret", "iretw", "retnw", "retfw"}
 # (ea, end): chosen from analysis/s1/orphan_t1*.json; every end is the address after a terminator
 ADD = [(0x1617C, 0x162DF), (0x162DF, 0x163AD), (0x16284E, 0x162878), (0x12C970, 0x12C9D0),
-       (0x12CA0D, 0x12CAEF), (0x12CAEF, 0x12CB27)]
+       (0x12CA0D, 0x12CAEF), (0x12CAEF, 0x12CB27), (0x12C683, 0x12C7C6), (0x12C951, 0x12C970),
+       (0x12CCE9, 0x12CE9D)]
+# (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
+EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
 # jmp-reached menu bodies (R20/R21): (base, damaged `call far` head, end).  The key table is `mov bx, tab` with
 # `mov cx, n` before the lookup loop; the handler table follows the keys, offsets relative to base.
 MENUS = [(0x10B380, 0x10B4E8, 0x10B6DF), (0x10B720, 0x10B888, 0x10BA7B)]
@@ -145,8 +148,26 @@ def state(item):
     return "mismatch"
 
 
-def add_all(items):
+def ext_state(x):
+    f = ida_funcs.get_func(x["ea"])
+    if not f or f.start_ea != x["ea"]:
+        return "mismatch"
+    if f.end_ea == x["end"]:
+        return "applied"
+    if (f.end_ea == x["before_end"] and chunks(x["ea"]) == [[x["ea"], x["before_end"]]]
+            and not any(ida_funcs.get_func(a) for a in range(x["before_end"], x["end"]))
+            and sha(x["before_end"], x["end"]) == x["sha256"]):
+        return "fresh"
+    return "mismatch"
+
+
+def add_all(items, exts=()):
     before = snapshot()
+    for x in exts:
+        if ext_state(x) == "applied":
+            continue
+        must(ida_funcs.set_func_end(x["ea"], x["end"]), "set_func_end 0x%X -> 0x%X" % (x["ea"], x["end"]))
+        must(ext_state(x) == "applied" and chunks(x["ea"]) == [[x["ea"], x["end"]]], "extend 0x%X" % x["ea"])
     for it in items:
         if state(it) == "applied":
             continue
@@ -164,10 +185,13 @@ def add_all(items):
     after = snapshot()
     new = {it["ea"] for it in items}
     changed = sorted(ea for ea in set(before) if before[ea] != after.get(ea))
-    must(not changed, "existing functions changed %s" % [hex(c) for c in changed[:10]])
+    must(set(changed) <= {x["ea"] for x in exts}, "unplanned existing functions changed %s" % [hex(c) for c in changed[:10]])
+    for x in exts:
+        must(after[x["ea"]][0] == before[x["ea"]][0], "name of 0x%X changed" % x["ea"])
     must(set(after) - set(before) <= new, "unplanned new functions %s" % [hex(c) for c in sorted(set(after) - set(before) - new)][:10])
-    log.append("functions added: %s; table %d -> %d, existing functions unchanged" % (
-        ["0x%X..0x%X" % (it["ea"], it["end"]) for it in items], len(before), len(after)))
+    log.append("functions added: %s; extended: %s; table %d -> %d, other existing functions unchanged" % (
+        ["0x%X..0x%X" % (it["ea"], it["end"]) for it in items],
+        ["0x%X -> 0x%X" % (x["ea"], x["end"]) for x in exts], len(before), len(after)))
 
 
 def main():
@@ -183,20 +207,34 @@ def main():
             items.append({"ea": ea, "end": end, "last": idc.generate_disasm_line(idc.prev_head(end, ea), 0),
                           "callers": callers(ea), "sha256": sha(ea, end)})
         for base, cf, end in MENUS:
+            if state({"ea": base, "end": end, "sha256": ""}) == "applied" and base in old:
+                items.append(old[base])
+                continue
             must(not any(ida_funcs.get_func(a) for a in range(base, end)), "0x%X..0x%X already owned" % (base, end))
             must(terminated(base, end), "0x%X..0x%X does not end in a terminator" % (base, end))
             items.append({"ea": base, "end": end, "last": idc.generate_disasm_line(idc.prev_head(end, base), 0),
                           "callers": sorted(x.frm for x in idautils.XrefsTo(base, 0) if x.iscode),
                           "redecode": cf, "seeds": menu_seeds(base, cf), "sha256": sha(base, end)})
-        add_all(items)
-        MANIFEST.write_text(json.dumps({"finding": 126, "step": "S1c-4 call-reached orphan code registered",
-                                        "add_funcs": items}, indent=1).replace("\n", "\r\n"))
+        oldx = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("extend_funcs", [])} if MANIFEST.exists() else {}
+        exts = []
+        for ea, end in EXTEND:
+            f = ida_funcs.get_func(ea)
+            must(f and f.start_ea == ea, "0x%X is not a function start" % ea)
+            if f.end_ea == end and ea in oldx:
+                exts.append(oldx[ea])
+                continue
+            must(terminated(f.end_ea, end), "0x%X..0x%X does not end in a terminator" % (f.end_ea, end))
+            exts.append({"ea": ea, "before_end": f.end_ea, "end": end, "sha256": sha(f.end_ea, end)})
+        add_all(items, exts)
+        MANIFEST.write_text(json.dumps({"finding": 126, "step": "S1c-4 orphan code registered as functions (findings 126-128)",
+                                        "extend_funcs": exts, "add_funcs": items}, indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
         return
     doc = json.loads(MANIFEST.read_text())
-    states = [state(it) for it in doc["add_funcs"]]
-    log.append("manifest: %d functions; live: %d fresh, %d applied, %d mismatched" % (
+    exts = doc.get("extend_funcs", [])
+    states = [state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts]
+    log.append("manifest: %d entries (add + extend); live: %d fresh, %d applied, %d mismatched" % (
         len(states), states.count("fresh"), states.count("applied"), states.count("mismatch")))
     if all(s == "applied" for s in states):
         log.append("already applied: nothing to do")
@@ -206,7 +244,7 @@ def main():
         log.append("ABORT: live IDB does not match the manifest; nothing changed")
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         return
-    add_all(doc["add_funcs"])
+    add_all(doc["add_funcs"], exts)
     if os.environ.get("OFDRY"):
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("dry run (OFDRY): not saved")
