@@ -21,8 +21,9 @@ loses no knowledge. **The check that a rebuild is faithful is step V.**
 | committed analysis JSONs | `analysis/ida_falconcd/*.json`, `analysis/traces/*.json` | ✅ git |
 | committed traces (for step 8/10) | `memdump/*_{fileio,fartrans}.jsonl` | ✅ git |
 
-**Never open Falcon in interactive IDA** (it holds the Gunship DB). Always
-`idat.exe` headless.
+**On the machine that holds the Gunship DB, never open Falcon in interactive
+IDA**; use `idat.exe` headless there. Other machines may use interactive IDA.
+All scripted mutations still go through idat and their manifests.
 
 ---
 
@@ -45,7 +46,7 @@ adding RTLink record groups as segments. Saves explicitly (finding 40).
 
 ## Fast Path — Deterministic Rebuild from Committed Ground Truth (Finding 119)
 
-Because all 2,401 function boundaries (`function_bytes.json`), all 70 data holes (`data_holes.json`), all 68 overlay placements (`overlay_placement.json`), and all 37,324 RTLink fixups (`fixups_to_apply.json`) are committed in git, a fresh clone or wiped `.i64` can be rebuilt deterministically in 6 headless passes without re-running historical discovery scripts:
+Because all 3,541 function boundaries (`function_bytes.json`, re-baselined on the repaired live IDB by finding 124), all 68 data holes (`data_holes.json`), all 68 overlay placements (`overlay_placement.json`), and all 37,324 RTLink fixups (`fixups_to_apply.json`) are committed in git, a fresh clone or wiped `.i64` can be rebuilt deterministically in 6 headless passes without re-running historical discovery scripts:
 
 ```powershell
 # 1. Create initial .i64 from bare FALCONCD.EXE (applies 2,717 MZ relocations)
@@ -60,7 +61,7 @@ cmd /c "tools\run_idat.bat tools\apply_overlay_fixups.py"
 # 4. Patch RTLink thunk table at 0x2BD9D
 cmd /c "tools\run_idat.bat tools\patch_thunks_ida.py"
 
-# 5. Enforce all 70 data holes and 2,401 function spans + semantic names from ground truth
+# 5. Enforce all 68 data holes and 3,541 function spans + semantic names from ground truth
 cmd /c "tools\run_idat.bat tools\sync_idb_to_ground_truth.py"
 
 # 6. Repair RTLink thunk crefs, synthetic intra-overlay far crefs, and Cluster-B switch jump tables
@@ -74,6 +75,17 @@ cmd /c "tools\run_idat.bat tools\split_overlay_segments.py"
 #     (manifest registry/ds_expected.json; regenerate: export_ds_facts.py on a COPY,
 #      then python tools\plan_default_ds.py; the apply never runs auto_wait)
 cmd /c "tools\run_idat.bat tools\apply_default_ds.py"
+
+# 6d. S1a variant selector repair + S1b exposed R29 entries (finding 123)
+#     (manifests registry/variant_sel_expected.json, registry/r29_register_expected.json)
+cmd /c "tools\run_idat.bat tools\apply_variant_selectors.py"
+cmd /c "tools\run_idat.bat tools\register_r29_entries.py"
+
+# 6e. S1c function-table repairs (finding 124), in order; each is idempotent, and the first
+#     accepts a function a later manifest ("follows") moved on.  RBMAN selects the manifest.
+#     (manifests registry/rebase_fixes_expected.json, registry/rebase_fixes2_expected.json)
+cmd /c "tools\run_idat.bat tools\apply_rebase_fixes.py"
+set RBMAN=registry\rebase_fixes2_expected.json & cmd /c "tools\run_idat.bat tools\apply_rebase_fixes.py"
 
 # 7. Verify IDB integrity (expect VERDICT: INTACT)
 cmd /c "tools\run_idat.bat tools\verify_idb.py"
@@ -137,7 +149,12 @@ idat -A -S tools\restore_level0.py           analysis\ida_falconcd\FALCONCD.EXE.
 ```
 idat -A -S tools\extract_ida_bytes.py         analysis\ida_falconcd\FALCONCD.EXE.i64
 ```
-Preserves stable keys + `name` fields from the previous extract.
+Keys are stable: a function keeps the previous extract's key for the same ea,
+and a new one gets `sub_%X`. The `name` fields come from the **live IDB**:
+the function's user name, or null for a dummy name. Since finding 124 the
+repaired live IDB is canonical; `registry/naming.yaml` must agree with it
+(`naming.py check`). `FBOUT` / `FBPREV` override the output and previous-key
+paths, so you can extract from a copy into `analysis/s1/` first.
 
 ## Step 7 — IDA: export last instructions, then host: classify
 
@@ -188,6 +205,25 @@ precedent for silent drift. If you deliberately change more, regenerate the
 manifest with `tools\make_subblock_manifest.py` and commit it in the same
 change.
 
+**Re-baseline (finding 124).** When the live IDB has been repaired on purpose
+and the committed ground truth is what was wrong, don't push the IDB back
+towards HEAD. Re-derive the committed inputs from the IDB instead:
+
+1. Extract (step 6).
+2. Run `python tools\rebaseline.py plan`. It writes
+   `registry/rebaseline_expected.json`, which records every LOST / CHANGED /
+   SPLIT entry against HEAD, with the live functions that now cover it and
+   the old and new sha256. It also re-derives the register ranges the live
+   IDB contradicts and records each range's before / after, the retired
+   holes, and the untiled gaps.
+3. Run `verify_idb.py` to refresh the hole export.
+4. Run `python tools\rebaseline.py ledger`. The ledger and `routines.yaml`
+   then follow the live names.
+
+`verify_rebuild.py` keeps reporting the recorded LOST / CHANGED entries until
+the re-baseline is committed. Each one must appear in
+`rebaseline_expected.json`, and nothing else may differ.
+
 ```
 venv\Scripts\python tools\naming.py check       # ledger/routines/structs consistency
 venv\Scripts\python tools\naming.py push-ida    # re-sync semantic names into the IDB
@@ -235,13 +271,17 @@ Regenerate the committed JSONs first, then re-run steps 1–V:
    persisted a destructive diagnostic change (finding 39) and several scripts
    once depended on it (finding 40).
 2. **Any IDB-mutating step → re-run step 6 + 7 and commit both**, plus
-   `verify_rebuild.py` green.
+   `verify_rebuild.py` green, or every difference recorded by a re-baseline
+   (finding 124).
 3. **Diagnostics must never `del_items` existing functions** — read existing
    item heads instead (`tools/dump_level0.py` is the pattern).
 4. **Text-scan tools must prune `dosbox*` under `src/`** (two full DOSBox
    trees live there, 70 MB).
 5. **The IDB is never the only copy** of a name/comment/hypothesis — canonical
-   text belongs in `src/`, `registry/`, or `docs/`.
+   text belongs in `src/`, `registry/`, or `docs/`. Since finding 124 the
+   repaired IDB's function table and user names are canonical. The committed
+   copies (`function_bytes.json`, `naming.yaml`) follow it and must agree with
+   it.
 6. **Back up the `.i64` before any high-consequence mutation** (deleting or
    subdividing an existing function, bulk re-analysis): copy it to
    `<IDB>.bak_<reason>` first. The IDB is not in git, and idat *may* persist a

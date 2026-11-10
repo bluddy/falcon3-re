@@ -6,7 +6,9 @@ functions/globals/structs/fields. Renames are applied to:
   - src/**.c, src/asm/**.asm          (word-boundary text replace, both directions)
   - function_bytes.json / data_symbols.json  ("name" fields only; keys stay ida)
   - the IDB                            (optional: push-ida, sets names via idat)
-The IDB is never the source of truth (binary, fragile, uncommitted).
+Since finding 124 the repaired live IDB is canonical for names: function_bytes.json carries the
+IDB's user names (tools/extract_ida_bytes.py) and the ledger must agree with them (check).  New
+names still go into the ledger first and reach the IDB via push-ida; the IDB is never the ONLY copy.
 
 Usage:
   python tools/naming.py list

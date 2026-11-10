@@ -1,0 +1,115 @@
+{
+ "finding": 124,
+ "step": "S1c-2 live-IDB repairs found by the re-baseline review: function ends cut short of their own ret, wrong no-return flags",
+ "follows": "rebase_fixes_expected.json",
+ "remove_tails": [],
+ "del_funcs": [],
+ "set_ends": [
+  {
+   "ea": 88829,
+   "end": 90208,
+   "why": "switch body continues past the self-modified mov si,0ABCDh at 0x15EC2 to its retn at 0x1605F (HEAD's sub_15E42 game_state_setup_multi tail)",
+   "before_end": 89794
+  },
+  {
+   "ea": 159807,
+   "end": 159825,
+   "why": "body runs to its retf at 0x27050 (HEAD: 18 B)",
+   "before_end": 159810
+  },
+  {
+   "ea": 205541,
+   "end": 205715,
+   "why": "body runs on by flow to its retn at 0x32392 (HEAD: 174 B)",
+   "before_end": 205704
+  },
+  {
+   "ea": 195906,
+   "end": 196293,
+   "why": "cut after a call into terrain_vm_blend_gate, wrongly no-return; body ends call+retn at 0x2FEC4 (HEAD: 387 B)",
+   "before_end": 196289
+  },
+  {
+   "ea": 259840,
+   "end": 259864,
+   "why": "body runs on by flow to its retn at 0x3F717",
+   "before_end": 259863
+  }
+ ],
+ "append_tails": [],
+ "add_funcs": [],
+ "to_data": [],
+ "crefs": [],
+ "clear_noret": [
+  195906,
+  205541,
+  259840,
+  232593,
+  325560
+ ],
+ "clear_noret_why": "each contains ret/retf (38C91: retf at 0x38CAA; 4F7B8: 8 rets) or ends in one after its set_end; callers whose flow IDA cut after these calls are left for the no-return review",
+ "funcs_before": {
+  "15AFD": [
+   [
+    88829,
+    89794
+   ]
+  ],
+  "2703F": [
+   [
+    159807,
+    159810
+   ]
+  ],
+  "322E5": [
+   [
+    205541,
+    205704
+   ]
+  ],
+  "2FD42": [
+   [
+    195906,
+    196289
+   ]
+  ],
+  "3F700": [
+   [
+    259840,
+    259863
+   ]
+  ]
+ },
+ "funcs_after": {
+  "15AFD": [
+   [
+    88829,
+    90208
+   ]
+  ],
+  "2703F": [
+   [
+    159807,
+    159825
+   ]
+  ],
+  "322E5": [
+   [
+    205541,
+    205715
+   ]
+  ],
+  "2FD42": [
+   [
+    195906,
+    196293
+   ]
+  ],
+  "3F700": [
+   [
+    259840,
+    259864
+   ]
+  ]
+ }
+}

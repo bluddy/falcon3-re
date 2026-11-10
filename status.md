@@ -76,8 +76,9 @@ DBFL_KILL).
      misdecode or a wrong caller.
    - About 120 are fall-in secondary entries.
    - 52 runtime far-call targets are mid-body (287K events).
-   - The integrity gate is **DAMAGED** against the committed ground truth: 3 missing functions,
-     91 span, 49 name and 5 data-hole problems.
+   - ~~The integrity gate is **DAMAGED** against the committed ground truth: 3 missing
+     functions, 91 span, 49 name and 5 data-hole problems.~~ It has been INTACT since the
+     finding 124 re-baseline.
    - Some of the 1,994 existing names predate findings 120–122 and rest on the old wrong xrefs.
 2. **VGRAPH is missing from the IDB.** At runtime about 1.0M far calls (about 9.4% of the
    ~10.7M traced) go to CS `0x77A3`, a 12 KB heap block. Its content is `game\VGRAPH`, a
@@ -145,9 +146,19 @@ DBFL_KILL).
      - 179 functions / 68 KB registered; functions 3,354 -> 3,533.
      - Every runtime R29 target is now a function start.
      - Backup `.bak_s1b`.
+   - **S1c ✅ (finding 124): function-table repairs and re-baseline.**
+     - Repairs: 31 tail removals, 9 functions added, 8 ends extended and 5 wrong no-return
+       flags cleared.
+     - **The repaired live IDB is canonical.** The committed ground truth was re-derived from
+       it: 3,541 functions, 68 data holes, 21 register ranges rewritten, ledger 2,068 -> 2,038
+       names.
+     - Integrity is **INTACT**. Every HEAD difference is recorded in
+       `registry/rebaseline_expected.json`.
+     - Backups: `.bak_rebase`, `.bak_rebase2`. Not committed yet.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - re-baseline the integrity damage (3/91/49/5): live IDB or GT function_bytes as canonical?
+     - commit the re-baseline;
+     - review the remaining orphan code runs and suspect no-return flags (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;
      - 47 fall-in entries;

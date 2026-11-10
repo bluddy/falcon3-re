@@ -1928,13 +1928,6 @@ symbols:
     9 callers
   notes: '146B, in=9, retn. Fixed-point 3x3 matrix transform (es:[bx] matrix, [si]
     vec -> [di]). Near twin of fixed_vec3_transform_7e900. conf: high'
-- ida: sub_15E42
-  name: game_state_setup_multi
-  kind: function
-  sig: 'void far; large state-setup: sets cs:11C8C/16181/162E4/16184/162E7 far-ptr
-    words + ds:5ACC byte, branches on dx (-3/-5/-1); many mov-immediates; 33 callers'
-  notes: '542B, in=33. Multi-path state/pointer initialization (scene/config setup).
-    Span has undecodable gaps (mid-data). conf: low'
 - ida: r05_e18
   name: r05_dgroup_save_reg
   kind: function
@@ -2673,13 +2666,6 @@ symbols:
     [SI+22E]=AL; retf
   notes: '32B, in=4, cd=55. Merges a hw-flag byte at ds:7A32:SI+22E (OR of rotated
     AL + masked AH). conf: med'
-- ida: sub_28CA8
-  name: matrix_constants_copy_es3852
-  kind: function
-  sig: void far; cs:28D21=AX; copy 12 words es:3852..3866 -> cs:28D4D/28D79/28D2A/28D56/28D82/28D33/28D5F/28D8B/28DA7/28DB1/28DBC
-    (matrix const scatter); jmp $+2
-  notes: '94B span, in=6, near-twin of matrix_constants_copy_3820 (DGROUP source vs
-    es:3852 source). Copies 12 matrix words. conf: med'
 - ida: sub_10DE2
   name: overlay_seg_word_read
   kind: function
@@ -2813,12 +2799,13 @@ symbols:
   notes: '138B span (body to first retf@0x107B1), 10 dyn, 2 callers. Gate on state
     byte cs:10218 to run EMS setup. conf: med'
 - ida: sub_1035B
-  name: ems_map_seg_10231
+  name: ems_map
   kind: function
   sig: void far; DX=cs:10231, cs:1021F=BX, AX:AH=0/1 int 67h (EMS map 2 pages); preserves
     dx/ax
   notes: '30B, 8 dyn, cd=12, 5 callers. EMS page-map (INT 67h AH=44h) using seg at
-    cs:10231. conf: med'
+    cs:10231. conf: med Previous ledger name ems_map_seg_10231; the live IDB name
+    wins (finding 124).'
 - ida: sub_10395
   name: ems_map_seg_10233
   kind: function
@@ -3512,14 +3499,6 @@ symbols:
     AH=6, AL=1, CX=0; jmp cs:off_2C9BA (table dispatch)
   notes: '43B, 0 dyn, cd=5, 1 caller (sub_2CA64). Loads a call frame then tail-dispatches
     through the near-pointer table at cs:2C9BA (DOS-ish service, AH=6). conf: med'
-- ida: sub_10422
-  name: ems_remap_execute
-  kind: function
-  sig: 'void far; if cs:1023F: DX=cs:10229, AH=4402h int 67h (map); if cs:10240: DX=cs:1022B,
-    AL=3, AH=44h int 67h; cs:10249=0; retf'
-  notes: '52B, 0 dyn, cd=0, 4 callers (sub_2EAA7..sub_2EF12). Applies the pending
-    EMS page maps (gated by alloc flags 1023F/10240), clears done-flag 10249. conf:
-    med'
 - ida: sub_1A662
   name: event_table_find_name
   kind: function
@@ -3534,13 +3513,6 @@ symbols:
   sig: void far; AX = 1; retf (constant true result)
   notes: '8B, 0 dyn, cd=1, 1 caller (sub_1852E). Returns constant AX=1 (far twin of
     always_true). conf: high'
-- ida: sub_28CA1
-  name: farobj_di_441e_init
-  kind: function
-  sig: void far; mov DI, 0x441E (then span truncated -- DATA class, no terminator
-    in 3B); 3 callers (sub_26B2E, sub_27A20, sub_28774)
-  notes: '3B span, 0 dyn, cd=0, 3 callers, DATA/truncated. Sets DI=0x441E (buffer
-    offset) at function entry; body continues past span. conf: low'
 - ida: sub_27051
   name: farobj_field_mask_24_26
   kind: function
@@ -3794,13 +3766,6 @@ symbols:
     sub_2F35B)
   notes: '170B span, 0 dyn, cd=0, 3 callers, called by R29/R67 overlay entries. Far-object
     record processor keyed off [SI+2]. conf: low'
-- ida: sub_3F7B8
-  name: farobj_store_32075
-  kind: function
-  sig: void far; cs:32075 = AL then (body continues 169B); 3 callers (sub_186ADC C,
-    sub_188DF2 C, sub_38C91)
-  notes: '169B span, 0 dyn, cd=0, 3 callers. Stores AL to cs:32075 then continues
-    (farobj state write). conf: low'
 - ida: sub_4C0E4
   name: farobj_table_init_69ff
   kind: function
@@ -4044,12 +4009,6 @@ symbols:
   notes: '39B, 0 dyn, cd=0, 2 callers (sub_45057, sub_484C1). Builds a far-object
     record at [DI] with flag byte + CH in [DI+3] (twin of farobj_record_build_6b58
     which stores 0xFF). conf: med'
-- ida: sub_3FE57
-  name: farobj_store_32633_body
-  kind: function
-  sig: void far; cs:32633 = BX then (body continues 408B); 2 callers (sub_33443, sub_3A99D)
-  notes: '408B span, 0 dyn, cd=0, 2 callers. Stores BX to cs:32633 then continues
-    (large farobj body). conf: low'
 - ida: sub_2859E
   name: fixed_expand_0f3e
   kind: function
@@ -4263,12 +4222,6 @@ symbols:
     retn (second coord-delta variant)
   notes: '24B retn, 0 dyn, cd=0, 1 caller (sub_13B91). Coordinate delta between cs:11C5A/5B
     and cs:11C5C/5D pairs (BP=[SI]). conf: med'
-- ida: sub_102DB
-  name: dgroup_word_21_get_dx
-  kind: function
-  sig: void far; DX = ds:21h then (body 38B); 1 caller (sub_34C31)
-  notes: '38B span, 0 dyn, cd=0, 1 caller. Reads DGROUP word 0x21 into DX then continues.
-    conf: med'
 - ida: sub_10379
   name: ems_map_seg_10233_bx0
   kind: function
@@ -4649,13 +4602,6 @@ symbols:
     of two fields)'
   notes: '132B span (body to retn@0x2024C), 0 dyn, cd=0, 1 caller (sub_1FE76). Classifies
     the sign pair ([BX+4],[BX+0A]) -> BP=1 when both non-positive. conf: med'
-- ida: sub_2835D
-  name: slope_flag_test_bx
-  kind: function
-  sig: 'NEAR retn fn; DX=-BX; if BX<CX: AX|=4 else ... (slope flag test, near-twin
-    of slope_flag_test_bc); 1 caller (sub_196E63)'
-  notes: '13B retn, 0 dyn, cd=0, 1 caller. Slope/aspect flag test comparing BX vs
-    CX into AX bit 4 (near-twin of slope_flag_test_bc at 279A4). conf: med'
 - ida: sub_26EFF
   name: sprite_stride_lookup_26408
   kind: function
@@ -4829,12 +4775,6 @@ symbols:
     else falls into body); 1 caller (sub_2BFEB)'
   notes: '30B span (body to retf@0x2F1F4), 0 dyn, cd=0, 1 caller. Gate: returns early
     when cs:2E100.0 is set (the flag_gate_zero_abc flag). conf: med'
-- ida: sub_3FD82
-  name: index_inc_bx
-  kind: function
-  sig: void far; inc bx (7B, continues); 1 caller (sub_2F400)
-  notes: '7B LEAF span, 0 dyn, cd=0, 1 caller. Increments the index register BX then
-    continues. conf: med'
 - ida: sub_29468
   name: line_table_scan_20
   kind: function
@@ -5721,14 +5661,6 @@ symbols:
     font_glyph_lookup; (62B); 1 caller (cb_args_invoke)
   notes: '62B retn, caller_dyn=5, callees font_glyph_lookup + far_cb_gated. Text renderer:
     computes glyph advance into cs:11860 and fetches the glyph. conf: med'
-- ida: sub_15CCB
-  name: game_setup_variant_5169
-  kind: function
-  sig: void far; cs:162E7=DX, BP=0x5169, DX=2, ds:5ACC=0xFE; tail-jmp game_state_setup_multi
-    (variant parameterization); 4 callers (sub_35505, sub_356A7, sub_37B1E, sub_3825F)
-  notes: '19B, caller_dyn=0 in=4, callee game_state_setup_multi. Game-state setup
-    variant: seeds cs:162E7 + ds:5ACC=0xFE then tail-jumps into game_state_setup_multi
-    with BP=0x5169. conf: high'
 - ida: sub_4F3D7
   name: hw_cfg_scan_22158
   kind: function
@@ -10663,18 +10595,6 @@ symbols:
     10-byte record stream (each optionally group-projected first), fills its 2Ah slot
     in the es table with position + aligned tile copy + projection, then farobj_sort_and_step
     -- the bulk sibling of farobj_single_build_project. conf: med-high'
-- ida: sub_1243B
-  name: farobj_single_build_project
-  kind: function
-  sig: 'FAR retf (121B): position deltas 11BD2:BD4 = (ax-cx)*bp stored (11BD8=dx entry);
-    bx=cs:11BBA single record; slot di=([bx+9]&7)*2Ah; hw_flag_bit1_22e_extract state
-    select + same index-adjust logic as sub_13CB0; al==FFh -> pop es/ds retf (skip);
-    else tail-jump farobj_tile_align_project (build+align+project); 9 callers (r29_e63,
-    sub_2FC79, sub_307A5, sub_3099C, sub_30AA8, sub_30CB8, sub_32393, sub_33443, sub_34C31)'
-  notes: '121B far, in=9, callees farobj_tile_align_project (L10) + hw_flag_bit1_22e_extract
-    (L0). Single-record farobj builder: computes the deltas, resolves the 2Ah slot
-    + state-dependent index from the 11BBA record (same flag logic as the batch loop),
-    then tail-calls farobj_tile_align_project or bails on the FF sentinel. conf: med-high'
 - ida: sub_3708F
   name: hud_heading_tape_draw
   kind: function
@@ -13401,86 +13321,6 @@ symbols:
     overlay: mostly an embedded data table (cmp/pop/xor decode pattern) with real
     code sections; callees stream_state_init + sbi_command_flush_clear + sbi_channel_event_dispatch
     + line_table_scan_slope + mode_axis_state_select. conf: low'
-- ida: sub_162C00
-  name: ui_loadout_cmd0_transition
-  kind: function
-  sig: '30B, in=2 (r35_e127, sub_162A94). Loadout cmd table case 0: 602Eh:60956=0,
-    63989=8, ui_menu_transition_step, jmp def_162D0F.'
-  notes: '30B, in=2 (r35_e127, sub_162A94). Loadout cmd table case 0: 602Eh:60956=0,
-    63989=8, ui_menu_transition_step, jmp def_162D0F. conf: high'
-- ida: sub_162CB9
-  name: ui_loadout_cmd10_enter
-  kind: function
-  sig: '15B, in=3 (r35_e127, sub_162A94, sub_162C78). Loadout cmd table case 10: ui_loadout_menu_enter
-    (loc_686CE), jmp def_162D0F.'
-  notes: '15B, in=3 (r35_e127, sub_162A94, sub_162C78). Loadout cmd table case 10:
-    ui_loadout_menu_enter (loc_686CE), jmp def_162D0F. conf: high'
-- ida: sub_162C1E
-  name: ui_loadout_cmd1_record_clear
-  kind: function
-  sig: '19B, in=2 (r35_e127, sub_162A94). Loadout cmd table case 1: 602Eh:63989=8,
-    farobj_record_clear_fields, jmp def_162D0F.'
-  notes: '19B, in=2 (r35_e127, sub_162A94). Loadout cmd table case 1: 602Eh:63989=8,
-    farobj_record_clear_fields, jmp def_162D0F. conf: high'
-- ida: sub_162C31
-  name: ui_loadout_cmd2_slot_scan
-  kind: function
-  sig: '36B, in=2 (r35_e127, sub_162A94). Loadout cmd table case 2: ui_slot_scan_step
-    + ui_slot_record_init then jmp loc_162BC7 frame tail; nested [bp-2] jpt_162C50
-    -> cmd3..cmd6.'
-  notes: '36B, in=2 (r35_e127, sub_162A94). Loadout cmd table case 2: ui_slot_scan_step
-    + ui_slot_record_init then jmp loc_162BC7 frame tail; nested [bp-2] jpt_162C50
-    -> cmd3..cmd6. conf: high'
-- ida: sub_162C55
-  name: ui_loadout_cmd3_enter
-  kind: function
-  sig: '19B, in=2 (r35_e127, sub_162C31). Loadout cmd table case 3: 602Eh:60956=0,
-    ui_loadout_menu_enter (loc_6845B), jmp def_162D0F.'
-  notes: '19B, in=2 (r35_e127, sub_162C31). Loadout cmd table case 3: 602Eh:60956=0,
-    ui_loadout_menu_enter (loc_6845B), jmp def_162D0F. conf: high'
-- ida: sub_162C68
-  name: ui_loadout_cmd4_enter
-  kind: function
-  sig: '8B, in=2 (r35_e127, sub_162C31). Loadout cmd table case 4: ui_loadout_menu_enter
-    (loc_684C9+3), jmp def_162D0F.'
-  notes: '8B, in=2 (r35_e127, sub_162C31). Loadout cmd table case 4: ui_loadout_menu_enter
-    (loc_684C9+3), jmp def_162D0F. conf: high'
-- ida: sub_162C70
-  name: ui_loadout_cmd5_enter
-  kind: function
-  sig: '8B, in=2 (r35_e127, sub_162C31). Loadout cmd table case 5: ui_loadout_menu_enter
-    (loc_68554), jmp def_162D0F.'
-  notes: '8B, in=2 (r35_e127, sub_162C31). Loadout cmd table case 5: ui_loadout_menu_enter
-    (loc_68554), jmp def_162D0F. conf: high'
-- ida: sub_162C78
-  name: ui_loadout_cmd6_enter
-  kind: function
-  sig: '30B, in=3 (r35_e127, sub_162A94, sub_162C31). Loadout cmd table case 6: ui_loadout_menu_enter
-    (loc_685E3+1); nested [bp-2] jpt_162C91 -> cmd7..cmd10.'
-  notes: '30B, in=3 (r35_e127, sub_162A94, sub_162C31). Loadout cmd table case 6:
-    ui_loadout_menu_enter (loc_685E3+1); nested [bp-2] jpt_162C91 -> cmd7..cmd10.
-    conf: high'
-- ida: sub_162C96
-  name: ui_loadout_cmd7_enter
-  kind: function
-  sig: '19B, in=2 (r35_e127, sub_162C78). Loadout cmd table case 7: 602Eh:60956=0,
-    ui_loadout_menu_enter (loc_68608), jmp def_162D0F.'
-  notes: '19B, in=2 (r35_e127, sub_162C78). Loadout cmd table case 7: 602Eh:60956=0,
-    ui_loadout_menu_enter (loc_68608), jmp def_162D0F. conf: high'
-- ida: sub_162CA9
-  name: ui_loadout_cmd8_enter
-  kind: function
-  sig: '8B, in=2 (r35_e127, sub_162C78). Loadout cmd table case 8: ui_loadout_menu_enter
-    (loc_68645+1), jmp def_162D0F.'
-  notes: '8B, in=2 (r35_e127, sub_162C78). Loadout cmd table case 8: ui_loadout_menu_enter
-    (loc_68645+1), jmp def_162D0F. conf: high'
-- ida: sub_162CB1
-  name: ui_loadout_cmd9_enter
-  kind: function
-  sig: '8B, in=2 (r35_e127, sub_162C78). Loadout cmd table case 9: ui_loadout_menu_enter
-    (loc_6867A), jmp def_162D0F.'
-  notes: '8B, in=2 (r35_e127, sub_162C78). Loadout cmd table case 9: ui_loadout_menu_enter
-    (loc_6867A), jmp def_162D0F. conf: high'
 - ida: r35_e127
   name: ui_loadout_menu_cmd_dispatch
   kind: function
@@ -13599,17 +13439,13 @@ symbols:
     hud_track_strip_pipeline, r32_hud_phase_dispatch, entity_record_table_ops, game_config_apply_init
     - main game-frame far entry reached via vector. conf: medium'
 - ida: sub_11842
-  name: int7a_bx3_dispatch
+  name: network_stuff_1
   kind: function
   sig: 12B, LEAF, in=0. push ds/es/pusha; mov bx,3; int 7Ah; popa; pop; retn - DOS
     int 7Ah call with bx=3.
   notes: '12B, LEAF, in=0. push ds/es/pusha; mov bx,3; int 7Ah; popa; pop; retn -
-    DOS int 7Ah call with bx=3. conf: medium'
-- ida: nullsub_19
-  name: near_null_return
-  kind: function
-  sig: 2B, LEAF, in=0. retn - null near return.
-  notes: '2B, LEAF, in=0. retn - null near return. conf: medium'
+    DOS int 7Ah call with bx=3. conf: medium Previous ledger name int7a_bx3_dispatch;
+    the live IDB name wins (finding 124).'
 - ida: sub_101677
   name: overlay_data_table_1016
   kind: function
@@ -13754,13 +13590,6 @@ symbols:
   notes: '124B, in=0, 1 callee. r33 overlay entry: checks es:[bx+1A0h] (11h-stride
     at 639Eh:0), calls r33_record_scan_4e, on success loops si=0.. - r33 record alloc/free
     scan. conf: medium'
-- ida: r35_e103
-  name: r35_loadout_menu_enter_entry
-  kind: function
-  sig: 51B, in=0, 1 callee. or es:676h,20h; ui_loadout_menu_enter(0,3,0,79BDA); or
-    es:60956,40h; leave; retf - r35 loadout menu enter.
-  notes: '51B, in=0, 1 callee. or es:676h,20h; ui_loadout_menu_enter(0,3,0,79BDA);
-    or es:60956,40h; leave; retf - r35 loadout menu enter. conf: medium'
 - ida: r36_e99
   name: r36_record_compare_entry
   kind: function
@@ -14669,13 +14498,6 @@ symbols:
     bytes, retf tail) - overlay body not fully decoded by IDA.
   notes: '310B, C, in=0, no callees. enter 54h,0 then undecodable hex dump (loop/jcc
     bytes, retf tail) - overlay body not fully decoded by IDA. conf: low'
-- ida: sub_161945
-  name: overlay_undecoded_body_161945
-  kind: function
-  sig: 51B, ASM, in=0, no callees. push bp then undecodable hex dump (loop/jcc bytes,
-    retf tail) - overlay body not fully decoded by IDA.
-  notes: '51B, ASM, in=0, no callees. push bp then undecodable hex dump (loop/jcc
-    bytes, retf tail) - overlay body not fully decoded by IDA. conf: low'
 - ida: sub_1659A2
   name: overlay_undecoded_body_1659a2
   kind: function
@@ -14823,85 +14645,6 @@ symbols:
   notes: '46B, ASM, in=0, 1 callee. es=7A32h: word 0AF68h=0, farptr 0AF40h/0AF3Eh
     = 7A32h:0AF96h; state_word_26400_get_zero(); dump ends mid-body before terminator
     - r27 overlay state buffer init entry. conf: medium'
-- ida: r29_e06
-  name: r29_yesno_confirm_loop
-  kind: function
-  sig: '166B, ASM, in=0, 14 callees. Interactive confirm: mouse_gate_far_entry, viewport_rect_state_store
-    + hud_track_distance_draw (loc_4276E+1), dispatch_220ec_invoke(69972 rect, di=52h,
-    si=2Ch), hw_cfg_copy_a76f -> v/2 with si=100-v/2, hw_cfg_copy_ac13(si,di); loop
-    flag_table_pop_far_thunk keys 79h/59h (y) -> state_mode_check(0) + jmp_loc_10b1c,
-    6Eh/4Eh (n) -> exit; bound_check_gated_4a83 - r29 overlay yes/no confirm loop.'
-  notes: '166B, ASM, in=0, 14 callees. Interactive confirm: mouse_gate_far_entry,
-    viewport_rect_state_store + hud_track_distance_draw (loc_4276E+1), dispatch_220ec_invoke(69972
-    rect, di=52h, si=2Ch), hw_cfg_copy_a76f -> v/2 with si=100-v/2, hw_cfg_copy_ac13(si,di);
-    loop flag_table_pop_far_thunk keys 79h/59h (y) -> state_mode_check(0) + jmp_loc_10b1c,
-    6Eh/4Eh (n) -> exit; bound_check_gated_4a83 - r29 overlay yes/no confirm loop.
-    conf: medium'
-- ida: r32_e120
-  name: r32_farptr_state_mirror_entry
-  kind: function
-  sig: '98B, ASM, in=0, 3 callees. Stores ax->ds:351Ah; mirrors 691Eh overlay state
-    into 602Eh: word_637F8=[691FE]+1Ah, 63802/63800=word_69204/69202; far_cb_1; sub_2BFC3(49F7h:14B6h,
-    49F7h:1507h, 7A26E/7A270 args); far_cb_0; retf - r32 overlay farptr state mirror
-    entry.'
-  notes: '98B, ASM, in=0, 3 callees. Stores ax->ds:351Ah; mirrors 691Eh overlay state
-    into 602Eh: word_637F8=[691FE]+1Ah, 63802/63800=word_69204/69202; far_cb_1; sub_2BFC3(49F7h:14B6h,
-    49F7h:1507h, 7A26E/7A270 args); far_cb_0; retf - r32 overlay farptr state mirror
-    entry. conf: medium'
-- ida: r32_e157
-  name: r32_mouse_gate_entry
-  kind: function
-  sig: 13B, ASM, in=0, 1 callee. ax==FFh -> call mouse_gate_far_entry, else jmp loc_156472
-    (beyond dump) - r32 overlay mouse gate entry stub.
-  notes: '13B, ASM, in=0, 1 callee. ax==FFh -> call mouse_gate_far_entry, else jmp
-    loc_156472 (beyond dump) - r32 overlay mouse gate entry stub. conf: medium'
-- ida: r32_e83
-  name: r32_track_menu_step_entry
-  kind: function
-  sig: 1572B, ASM, in=0, 10 callees. jpt_156DD4 jump table over 7894h mode words (79B6C==32h/34h/36h,
-    79F16 index 0..9), 12Ch (300) threshold gates on 79E80, 79E7E scroll counter idiv
-    10h/8, hud_track_distance_draw + ui_menu_transition_step + bound_check_gated_4a83
-    + r30_counter_step_tail, 4FC2h:4FD52 counter wraps 0..5 driving unk_43D52/unk_43E0C,
-    closes r32_farptr_gate - r32 overlay track/HUD menu step machine.
-  notes: '1572B, ASM, in=0, 10 callees. jpt_156DD4 jump table over 7894h mode words
-    (79B6C==32h/34h/36h, 79F16 index 0..9), 12Ch (300) threshold gates on 79E80, 79E7E
-    scroll counter idiv 10h/8, hud_track_distance_draw + ui_menu_transition_step +
-    bound_check_gated_4a83 + r30_counter_step_tail, 4FC2h:4FD52 counter wraps 0..5
-    driving unk_43D52/unk_43E0C, closes r32_farptr_gate - r32 overlay track/HUD menu
-    step machine. conf: medium'
-- ida: r33_e195
-  name: r33_data_fragment
-  kind: function
-  sig: 25B, DATA, in=0, no callees. Head fsubr garbage, tail reads 602Eh:byte_61615
-    -> si and jmps loc_15ACBC (beyond entry) - r33 overlay data fragment.
-  notes: '25B, DATA, in=0, no callees. Head fsubr garbage, tail reads 602Eh:byte_61615
-    -> si and jmps loc_15ACBC (beyond entry) - r33 overlay data fragment. conf: low'
-- ida: r34_e126
-  name: r34_record_field_store_step
-  kind: function
-  sig: 232B, ASM, in=0, 4 callees. std; sets 602Eh:3646h, sub_2C4B9(bp-3,79BDA) >
-    28h -> word_63955=9; 4Eh-stride record writes at 7894h:dword_79B6E rows [bx+4]=byte
-    63955; accum_record_append -> byte_63926, r34_farobj_proc probe sets [bx+4]=0Ah
-    on nonzero; byte_63927=FFh; retf - r34 overlay record field store step.
-  notes: '232B, ASM, in=0, 4 callees. std; sets 602Eh:3646h, sub_2C4B9(bp-3,79BDA)
-    > 28h -> word_63955=9; 4Eh-stride record writes at 7894h:dword_79B6E rows [bx+4]=byte
-    63955; accum_record_append -> byte_63926, r34_farobj_proc probe sets [bx+4]=0Ah
-    on nonzero; byte_63927=FFh; retf - r34 overlay record field store step. conf:
-    medium'
-- ida: r34_e106
-  name: r34_state_word5_set
-  kind: function
-  sig: '20B, ASM, in=0, 1 callee. es=602Eh: word_63955=5 then jmp loc_160BF4; linearly
-    falls into call fixed_vec3_read - r34 overlay state word-5 set entry.'
-  notes: '20B, ASM, in=0, 1 callee. es=602Eh: word_63955=5 then jmp loc_160BF4; linearly
-    falls into call fixed_vec3_read - r34 overlay state word-5 set entry. conf: medium'
-- ida: r35_e156
-  name: r35_undecoded_fragment
-  kind: function
-  sig: 94B, ASM, in=0, no callees. Disassembly undecodable (dec si; add [bx+si-75h],dl;
-    retn 0EBF7h misdecode) - r35 overlay fragment, not decoded as code.
-  notes: '94B, ASM, in=0, no callees. Disassembly undecodable (dec si; add [bx+si-75h],dl;
-    retn 0EBF7h misdecode) - r35 overlay fragment, not decoded as code. conf: low'
 - ida: r36_e104
   name: r36_farptr_8word_store
   kind: function
@@ -15405,14 +15148,6 @@ symbols:
     until 31F0h:32BA4 <= si: ax=7A32h:[si*2-5108h] -> [7A32h:0AE96h far ptr + si*2],
     then ax=7A32h:0AF5Ah; retf - r27 overlay table copy to far pointer entry. conf:
     medium'
-- ida: r31_e151
-  name: r31_score_max_update
-  kind: function
-  sig: 122B, ASM, in=0, no callees. Gate bl>=ds:20h else skip; score=(cs:byte[bx+89Dh]/53h+1)*([bp+9]+1)/([bp+4]+1)*(1+([bp+7]<3?[bp+7]:0));
-    index bl=[bp+6]*2; keep max into cs:word[bx+11D5h] - r31 overlay score max update.
-  notes: '122B, ASM, in=0, no callees. Gate bl>=ds:20h else skip; score=(cs:byte[bx+89Dh]/53h+1)*([bp+9]+1)/([bp+4]+1)*(1+([bp+7]<3?[bp+7]:0));
-    index bl=[bp+6]*2; keep max into cs:word[bx+11D5h] - r31 overlay score max update.
-    conf: medium'
 - ida: r32_e74
   name: r32_hud_phase_reset_entry
   kind: function
@@ -15422,39 +15157,6 @@ symbols:
   notes: '75B, ASM, in=0, 3 callees. flag_block_zero_5762_5c63 + r32_farptr_gate +
     unk_4335A + r32_hud_phase_dispatch sequence; if 4FC2h:4FD52 != FFFFh call unk_43D52(word);
     zero 7894h:79B60 and 79E86; retf - r32 overlay HUD phase reset entry. conf: medium'
-- ida: r32_e146
-  name: r32_scale_op_dispatch_step
-  kind: function
-  sig: 81B, ASM, in=0, 2 callees. Head misdecodes (6B); then les bx,es:50524 far ptr,
-    ax=[bx]*[bx+2] product, op_dispatch_far_entry(prod, si, 0Ah), op_dispatch_far_entry(ds:0A3A4h,
-    0, si, 8), dispatch_220ec_invoke(7894h:79E64, 5, 10h); retf - r32 overlay scale
-    op dispatch step.
-  notes: '81B, ASM, in=0, 2 callees. Head misdecodes (6B); then les bx,es:50524 far
-    ptr, ax=[bx]*[bx+2] product, op_dispatch_far_entry(prod, si, 0Ah), op_dispatch_far_entry(ds:0A3A4h,
-    0, si, 8), dispatch_220ec_invoke(7894h:79E64, 5, 10h); retf - r32 overlay scale
-    op dispatch step. conf: medium'
-- ida: r33_e121
-  name: r33_args3_far_tail
-  kind: function
-  sig: 13B, ASM, in=0, no callees. Head misdecodes (2 insns); push 1, 0, 0Fh; jmp
-    loc_15AAFA (far tail beyond entry) - r33 overlay 3-arg far tail jump entry.
-  notes: '13B, ASM, in=0, no callees. Head misdecodes (2 insns); push 1, 0, 0Fh; jmp
-    loc_15AAFA (far tail beyond entry) - r33 overlay 3-arg far tail jump entry. conf:
-    medium'
-- ida: r33_e114
-  name: r33_tail_epilogue_stub
-  kind: function
-  sig: 4B, LEAF, in=0, no callees. pop di; pop si; leave; retf - r33 overlay tail
-    epilogue stub.
-  notes: '4B, LEAF, in=0, no callees. pop di; pop si; leave; retf - r33 overlay tail
-    epilogue stub. conf: medium'
-- ida: r35_e172
-  name: r35_loop_fragment
-  kind: function
-  sig: 6B, LEAF, in=0, no callees. loop unk_1637A4; les cx,[bx+si] misdecode; leave;
-    retf - r35 overlay loop fragment stub.
-  notes: '6B, LEAF, in=0, no callees. loop unk_1637A4; les cx,[bx+si] misdecode; leave;
-    retf - r35 overlay loop fragment stub. conf: low'
 - ida: r36_e109
   name: r36_mod_slot_index_entry
   kind: function
@@ -15517,20 +15219,6 @@ symbols:
     8x sub_2C4FF draws with x=(di+{180,0,90,180,270,240,120,240}) mod 360 (slots 1-7
     typed 7/8 + slot 8 wide 12Ch/15h) each + sub_2C59F; closes r39_farptr_call_gate(1,
     5/6 by 63955, si) - r39 overlay ring slot render entry. conf: medium'
-- ida: r48_e191
-  name: r48_op_dispatch_batch_entry
-  kind: function
-  sig: 1470B, ASM, in=0, 4 callees. ~30x op_dispatch_far_entry(dst seg:off, val, [bp-2],
-    0Ah) state-init emissions over 7894h/602Eh/7A32h/639Eh fields (opcode-2/6/1 variants);
-    zeroes 79B62/79D6A/79BD6; clamps 79F14 from dword_79E50[30h] when word_78940==0;
-    opcode-8 out-ptr queries, flag2224a_set, farobj_field_scale_check(7894h:0F32,...);
-    dump truncated at 300-insn cap mid-body - r48 overlay op dispatch batch entry.
-  notes: '1470B, ASM, in=0, 4 callees. ~30x op_dispatch_far_entry(dst seg:off, val,
-    [bp-2], 0Ah) state-init emissions over 7894h/602Eh/7A32h/639Eh fields (opcode-2/6/1
-    variants); zeroes 79B62/79D6A/79BD6; clamps 79F14 from dword_79E50[30h] when word_78940==0;
-    opcode-8 out-ptr queries, flag2224a_set, farobj_field_scale_check(7894h:0F32,...);
-    dump truncated at 300-insn cap mid-body - r48 overlay op dispatch batch entry.
-    conf: medium'
 - ida: r54_e169
   name: r54_farwrap_norm_fragment
   kind: function
@@ -15772,14 +15460,15 @@ symbols:
   notes: '20B, ASM, in=0, 1 callee. ds = cs:word_10842 segment, push dx/ax, call kb_record_load_far;
     retn - kb record load segment wrapper. conf: medium'
 - ida: sub_10C83
-  name: mem_free_probe_flags
+  name: malloc
   kind: function
   sig: 50B, ASM, in=0, no callees. int 21h AH=48h BX=FFFFh largest-block probe; cs:byte_1084D
     = 0, |1 (free < 154Eh paras), |3 (< 11E3h), |80h (< 0F72h) stepwise - DOS free-memory
     probe flag setter.
   notes: '50B, ASM, in=0, no callees. int 21h AH=48h BX=FFFFh largest-block probe;
     cs:byte_1084D = 0, |1 (free < 154Eh paras), |3 (< 11E3h), |80h (< 0F72h) stepwise
-    - DOS free-memory probe flag setter. conf: medium'
+    - DOS free-memory probe flag setter. conf: medium Previous ledger name mem_free_probe_flags;
+    the live IDB name wins (finding 124).'
 - ida: sub_6F4A9
   name: menu_state_snapshot_load
   kind: function
@@ -15966,39 +15655,6 @@ symbols:
   notes: '22B, ASM, in=0, 2 callees (farobj_single_build_project, draw_from_struct).
     si=[bp+6], ds=[bp+8], call draw_from_struct, epilogue - r29 overlay draw-from-struct
     far wrapper. conf: medium'
-- ida: r32_e73
-  name: r32_hud_phase_reset_entry_b
-  kind: function
-  sig: 51B, C, in=0, no listed callees (near call 43E0C). 7894h:79B60=0, 79E86=0,
-    call unk_43E0C(4FC2h:4FD52); dump ends mid-body (no terminator) - r32 overlay
-    HUD phase reset entry (variant B of r32_hud_phase_reset_entry).
-  notes: '51B, C, in=0, no listed callees (near call 43E0C). 7894h:79B60=0, 79E86=0,
-    call unk_43E0C(4FC2h:4FD52); dump ends mid-body (no terminator) - r32 overlay
-    HUD phase reset entry (variant B of r32_hud_phase_reset_entry). conf: medium'
-- ida: r32_e108
-  name: r32_ui_init_entry_fragment
-  kind: function
-  sig: 289B, ASM, in=0, 6 callees (sub_2C3F1/2C3FB, terrain_vm_buffer_decay, ui_menu_panel_init,
-    ui_slot_record_init, ui_loadout_menu_enter). Head misdecodes (and [bx-479Ah],bx),
-    early retn 8E4Fh at +4B stops traversal; 285B tail undumped - r32 overlay UI init
-    entry fragment.
-  notes: '289B, ASM, in=0, 6 callees (sub_2C3F1/2C3FB, terrain_vm_buffer_decay, ui_menu_panel_init,
-    ui_slot_record_init, ui_loadout_menu_enter). Head misdecodes (and [bx-479Ah],bx),
-    early retn 8E4Fh at +4B stops traversal; 285B tail undumped - r32 overlay UI init
-    entry fragment. conf: low'
-- ida: r33_e105
-  name: r33_op_vec3_init_batch
-  kind: function
-  sig: 1415B, ASM, in=0, 18 callees. op_dispatch_far_entry(0Ah/8/0Ch) + op_dispatch_far_wide(0Eh)
-    batch initializing 639Eh:138h..13Ch vec3 pairs via r06_vec3_main_proc, farobj_field_scale_check(602Eh:1450h/63113/6302F,
-    7894h:156Ah/0F32h/0F5Ah), mode_record_field_lookup(7894h:0F5Ah,[bp+6]); 5x 602Eh:[si+68Ah]
-    zero loop; 7A32h:85067=308h, 8506B=FFh; dump truncated at 300-insn cap mid-body
-    - r33 overlay op vec3 init batch entry.
-  notes: '1415B, ASM, in=0, 18 callees. op_dispatch_far_entry(0Ah/8/0Ch) + op_dispatch_far_wide(0Eh)
-    batch initializing 639Eh:138h..13Ch vec3 pairs via r06_vec3_main_proc, farobj_field_scale_check(602Eh:1450h/63113/6302F,
-    7894h:156Ah/0F32h/0F5Ah), mode_record_field_lookup(7894h:0F5Ah,[bp+6]); 5x 602Eh:[si+68Ah]
-    zero loop; 7A32h:85067=308h, 8506B=FFh; dump truncated at 300-insn cap mid-body
-    - r33 overlay op vec3 init batch entry. conf: medium'
 - ida: r33_e85
   name: r33_record_pair_status_resolve
   kind: function
@@ -16022,37 +15678,6 @@ symbols:
     read word array rec+30h entry, scan 4 bytes at 7894h:79E28 far table[off..off+3];
     return 1 on first byte with 80h clear, else 0 - r33 overlay slot flag scan resolve.
     conf: medium'
-- ida: r35_e181
-  name: r35_mode9_menu_select_step
-  kind: function
-  sig: 128B, ASM, in=0, no listed callees (near call 161B10). Sets 4Eh record slot
-    type [bx+4]=9 for indexed + current 79BDA records, near-calls 161B10(602Eh:([bp+0Ch]*27Ah+68Fh),
-    [bp+0Ah], [bp+8]), 79B6E:[932h]=5 / [931h]=4, 7A32h:85067 |= 4 - r35 overlay mode-9
-    select step.
-  notes: '128B, ASM, in=0, no listed callees (near call 161B10). Sets 4Eh record slot
-    type [bx+4]=9 for indexed + current 79BDA records, near-calls 161B10(602Eh:([bp+0Ch]*27Ah+68Fh),
-    [bp+0Ah], [bp+8]), 79B6E:[932h]=5 / [931h]=4, 7A32h:85067 |= 4 - r35 overlay mode-9
-    select step. conf: medium'
-- ida: r35_e193
-  name: r35_op_dispatch_f32_step
-  kind: function
-  sig: 96B, ASM, in=0, 1 callee. Head misdecodes (2 insns); op_dispatch_far_entry(7894h:0F32h,0,id,6),
-    (602Eh:689h,1,id,0Ch), (602Eh:68Ah,5,id,0Ch), (&id,0,id,8) 4-emission sequence;
-    leave/retf - r35 overlay op dispatch F32 step.
-  notes: '96B, ASM, in=0, 1 callee. Head misdecodes (2 insns); op_dispatch_far_entry(7894h:0F32h,0,id,6),
-    (602Eh:689h,1,id,0Ch), (602Eh:68Ah,5,id,0Ch), (&id,0,id,8) 4-emission sequence;
-    leave/retf - r35 overlay op dispatch F32 step. conf: medium'
-- ida: r38_e122
-  name: r38_mode_phase_select_entry
-  kind: function
-  sig: '219B, ASM, in=0, 3 callees. Head misdecodes (add al,0); 3-branch mode setter:
-    (a) 602Eh:63955=0Bh + sub_2C6AD(0), 79B6E:[2C2h] and 4Eh-record[bx+4]=0Bh; (b)
-    63955=0Dh + sub_2C5EF, same fields=0Dh; (c) sub_2C711, [0E08h]=[66Ah]=16h, record+4
-    and 63955=16h - r38 overlay mode phase select entry.'
-  notes: '219B, ASM, in=0, 3 callees. Head misdecodes (add al,0); 3-branch mode setter:
-    (a) 602Eh:63955=0Bh + sub_2C6AD(0), 79B6E:[2C2h] and 4Eh-record[bx+4]=0Bh; (b)
-    63955=0Dh + sub_2C5EF, same fields=0Dh; (c) sub_2C711, [0E08h]=[66Ah]=16h, record+4
-    and 63955=16h - r38 overlay mode phase select entry. conf: medium'
 - ida: r38_e149
   name: r38_retn19_stub
   kind: function
@@ -16500,14 +16125,6 @@ symbols:
     iteration, flag_table_pop_far_thunk + dispatch_22100_invoke + dispatch_220f4_invoke_2arg
     + mouse_gate_far_entry + bda_kb_flag_10000_get bookkeeping, exits when 6E8B7==0
     - r22 slot select modal loop. conf: medium'
-- ida: r33_e128
-  name: r33_garbage_fragment
-  kind: function
-  sig: 103B, ASM, in=0, no callees. Fully garbage decode from entry (sar [bp+si+4Eh],0F7h
-    / jmp far 8E78h:94BAh / retn 0C426h) - r33 overlay fragment with no coherent core.
-  notes: '103B, ASM, in=0, no callees. Fully garbage decode from entry (sar [bp+si+4Eh],0F7h
-    / jmp far 8E78h:94BAh / retn 0C426h) - r33 overlay fragment with no coherent core.
-    conf: low'
 - ida: r33_e90
   name: r33_record_field_range_check
   kind: function
@@ -16542,24 +16159,6 @@ symbols:
     4FC2h:4FD52); farobj_field_scale_check twice (7894h:0F32 vs 602Eh:63031/6302F
     and 6310C/6310A); op_dispatch_far_entry ops 4 -> 0Ch (602Eh:68F, 76E) -> 8 (ss:&[bp-2])
     - r35 field scale op step. conf: medium'
-- ida: r35_e182
-  name: r35_frame_epilogue_stub
-  kind: function
-  sig: 5B, LEAF, in=0, no callees. add sp,8; pop bp; retf - r35 overlay frame epilogue
-    tail stub.
-  notes: '5B, LEAF, in=0, no callees. add sp,8; pop bp; retf - r35 overlay frame epilogue
-    tail stub. conf: medium'
-- ida: r35_e107
-  name: r35_mode8_state_init
-  kind: function
-  sig: 132B, ASM, in=0, no callees. Sets 602Eh:byte_63989=8 (the r35_e100 guard),
-    63955=14h(20), 7894h:79B6E record [+88Ch]=20 and stride-4Eh record [+4]=20 (index
-    word_79BDA=0 -> 63925), ors 60964|=40h and 7A32h:85067|=1 (palette dirty); es:67Ah=4Fh;
-    head misdecodes (pusha vs tail pop bp) - r35 mode-8 state init.
-  notes: '132B, ASM, in=0, no callees. Sets 602Eh:byte_63989=8 (the r35_e100 guard),
-    63955=14h(20), 7894h:79B6E record [+88Ch]=20 and stride-4Eh record [+4]=20 (index
-    word_79BDA=0 -> 63925), ors 60964|=40h and 7A32h:85067|=1 (palette dirty); es:67Ah=4Fh;
-    head misdecodes (pusha vs tail pop bp) - r35 mode-8 state init. conf: medium'
 - ida: r36_e102
   name: r36_entity_f38_1a_step
   kind: function
@@ -16631,26 +16230,6 @@ symbols:
     w=1C2h + 12Ch/0Fh op 3) + sub_2C59F each; then 602Eh:word_6397A 5-way jmp cs:jpt_16A492
     switch (values 0-4 pick gate op 9/8/10/7, 2 arms jmp $+2) closing r39_farptr_call_gate(1,
     op, 0) - r39 overlay variant switch render entry. conf: medium'
-- ida: r48_e91
-  name: r48_field_slot_scan_store
-  kind: function
-  sig: 80B, ASM, in=0, 1 callee. Head misdecodes (mov bh,0F0h / out dx,al junk); mode_record_field_lookup(far
-    ptr es:14FAh:14FCh +3); on hit stores [bp-1] to 7A32h:byte_8506C and returns,
-    else increments [bp-1] looping (jl unk_1791A8) while < 6, exhaust -> 8506C=0FFh
-    - r48 field slot scan store.
-  notes: '80B, ASM, in=0, 1 callee. Head misdecodes (mov bh,0F0h / out dx,al junk);
-    mode_record_field_lookup(far ptr es:14FAh:14FCh +3); on hit stores [bp-1] to 7A32h:byte_8506C
-    and returns, else increments [bp-1] looping (jl unk_1791A8) while < 6, exhaust
-    -> 8506C=0FFh - r48 field slot scan store. conf: medium'
-- ida: r48_e165
-  name: r48_op_wide_entry_step
-  kind: function
-  sig: 50B, ASM, in=0, 2 callees. Head misdecodes (or al,9Ah / fsubr dword ds:1F6Ch)
-    then add sp,0Ah, op_dispatch_far_wide(2, 0, 0, si, 0Eh), op_dispatch_far_entry(ss:&[bp-28h],
-    0, [bp-28h], 8), epilogue - r48 op wide/entry step.
-  notes: '50B, ASM, in=0, 2 callees. Head misdecodes (or al,9Ah / fsubr dword ds:1F6Ch)
-    then add sp,0Ah, op_dispatch_far_wide(2, 0, 0, si, 0Eh), op_dispatch_far_entry(ss:&[bp-28h],
-    0, [bp-28h], 8), epilogue - r48 op wide/entry step. conf: medium'
 - ida: sub_18B071
   name: r52_indexed_pair_step
   kind: function
@@ -16852,6 +16431,106 @@ symbols:
     - far wrapper for the 83Ah trig table lookup.
   notes: '11B, ASM, in=0, 1 callee. ax=[bp+arg_0], call trig_table_lookup_83a5, retf
     - far wrapper for the 83Ah trig table lookup. conf: medium'
+- ida: sub_10281
+  name: ems_alloc
+  kind: function
+  notes: 'User name in the live IDB (47 B at 0x10281), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_102B0
+  name: ems_free
+  kind: function
+  notes: 'User name in the live IDB (81 B at 0x102B0), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_103F1
+  name: ems_save
+  kind: function
+  notes: 'User name in the live IDB (10 B at 0x103F1), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_103FB
+  name: ems_restore
+  kind: function
+  notes: 'User name in the live IDB (10 B at 0x103FB), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_10405
+  name: ems_map_0
+  kind: function
+  notes: 'User name in the live IDB (81 B at 0x10405), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_10853
+  name: alloc_read_mscdex
+  kind: function
+  notes: 'User name in the live IDB (68 B at 0x10853), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_10897
+  name: quit_with_msg
+  kind: function
+  notes: 'User name in the live IDB (8 B at 0x10897), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_11560
+  name: interrupt
+  kind: function
+  notes: 'User name in the live IDB (23 B at 0x11560), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_11707
+  name: network_stuff_0
+  kind: function
+  notes: 'User name in the live IDB (147 B at 0x11707), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2A3F6
+  name: uibounds_clip_horiz_body
+  kind: function
+  notes: 'User name in the live IDB (290 B at 0x2A3F6), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2A518
+  name: uibounds_clip_vert_body
+  kind: function
+  notes: 'User name in the live IDB (321 B at 0x2A518), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2D11A
+  name: video_mode
+  kind: function
+  notes: 'User name in the live IDB (111 B at 0x2D11A), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2D430
+  name: interrupt_some
+  kind: function
+  notes: 'User name in the live IDB (38 B at 0x2D430), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2D456
+  name: timer_stuff
+  kind: function
+  notes: 'User name in the live IDB (15 B at 0x2D456), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2D465
+  name: interrupt_get_set_vector
+  kind: function
+  notes: 'User name in the live IDB (38 B at 0x2D465), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_2D48B
+  name: interrupt_set_vector
+  kind: function
+  notes: 'User name in the live IDB (23 B at 0x2D48B), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_3F7A6
+  name: farobj_store_32075
+  kind: function
+  notes: 'User name in the live IDB (187 B at 0x3F7A6), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_12B9BB
+  name: interrupt_dma
+  kind: function
+  notes: 'User name in the live IDB (184 B at 0x12B9BB), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_12BFEE
+  name: network_stuff
+  kind: function
+  notes: 'User name in the live IDB (151 B at 0x12BFEE), adopted into the ledger (finding
+    124). conf: idb'
+- ida: sub_12C504
+  name: fwrite
+  kind: function
+  notes: 'User name in the live IDB (20 B at 0x12C504), adopted into the ledger (finding
+    124). conf: idb'
 - ida: off_22060
   name: op_dispatch_table
   kind: global

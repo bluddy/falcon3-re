@@ -6287,3 +6287,101 @@ runs in two modes.
 - fall-in entries: 47 / 111.
 
 Almost all are R05/resident.
+
+## 2026-11-10 124 - Live-IDB function-table repairs (S1c) and the committed ground truth re-baselined on the repaired IDB
+Status: APPLIED (canonical IDB; backups `FALCONCD.EXE.i64.bak_rebase` and `.bak_rebase2`). Not committed.
+
+**Problem.** After S1a/S1b the live IDB had 3,541 functions, but the committed `function_bytes.json` (HEAD)
+recorded 2,401, and `verify_idb_s1` said **DAMAGED**. Bisecting the commits showed the IDB had never been
+INTACT against the committed manifests since d2cd1f7. Much of the committed ground truth recorded old
+guesses: merged functions, fall-in fragments, register ranges that cut through real code, and
+semantic names derived from wrong boundaries. The live IDB is the more accurate picture after findings
+120–123, so **the live repaired IDB is now canonical**. The committed inputs follow it, not the other
+way round.
+
+**S1c: function-table repairs** (`tools/plan_rebase_fixes.py` -> `registry/rebase_fixes_expected.json`,
+applied by `tools/apply_rebase_fixes.py`; checked against "before", idempotent, never auto_wait):
+- **31 tail removals.** 18 were orphan alias tails, 8 thunk entry chunks, 3 own tails that were re-added
+  correctly, and 2 entry chunks.
+- **1 fall-in fragment deleted** (0x11DC2A).
+- **3 ends extended** (0x11DA04, 0x6DE83, 0x15AFD).
+- **2 tails appended** on 0x2E20A.
+- **9 functions added.** They are thunk overlay entries plus 0x161945.
+- **0x6CD90 (24 B) turned back into data.** The range straddles R30_569F / R06_5CD9.
+- **The far cref of thunk 0x2C969 swapped** to R67_569Fs.
+- **Gate:** every untouched function keeps its start, end, name and chunks.
+
+**S1c-2: wrong no-return flags** (`registry/rebase_fixes2_expected.json`; `"follows"` the first manifest,
+so the first manifest still reads "already applied"; select it with `RBMAN`):
+- **0x38C91 and 0x4F7B8 return.** 38C91 ends in `retf` and 4F7B8 has 8 `ret`s, yet both were flagged
+  FUNC_NORET. IDA therefore cut the flow after every call to them, which truncated 0x2FD42.
+- **0x322E5, 0x3F700 and 0x2FD42 run on to a `ret`.** They were NORET only through those calls.
+- **The 5 flags were cleared and 5 ends extended:**
+  - 0x15AFD -> 0x16060. The first S1c end, 0x15EC2, stopped at the self-modified `mov si,0ABCDh`. The body
+    actually runs to its `retn` at 0x1605F. This is the 414 B HEAD called `sub_15E42 game_state_setup_multi`.
+  - 0x2703F -> 0x27051.
+  - 0x322E5 -> 0x32393.
+  - 0x2FD42 -> 0x2FEC5.
+  - 0x3F700 -> 0x3F718.
+
+**Re-baseline** (`tools/rebaseline.py`; the record is `registry/rebaseline_expected.json`):
+- **`plan`** diffs HEAD `function_bytes.json` against the fresh extract.
+  - LOST 47: each with the live functions that now cover it.
+  - CHANGED 41: old and new size and sha256.
+  - SPLIT 3: 0x10614, 0x22DFF, 0x23036.
+  - ADDED 1,187.
+- **Register ranges the live IDB contradicts were re-derived.**
+  - Each contradicted range was widened to every overlapping live function and cut into gap-free runs.
+    A run keeps the original name when its start matches, and is otherwise named `name.N`.
+  - **21 ranges were rewritten**, across 19 rewrite records:
+    - upper `i_3B830` -> 21 runs;
+    - resident `res_15AFD` -> 0x15AFD..0x16060;
+    - `res_28CA8` was dropped (keep-only);
+    - the rest are in overlays.
+  - **2 data holes retired** (0x6DF27 and 0x161B10): live functions now cover them. That leaves 68 holes.
+  - **21 untiled gaps were recorded with sha256 and class** (`analysis/s1/gap_probe.json`): 20 are
+    zeros/nops in 0x3FD59..0x40DDA, and the last is 0x67BA3, a dead `jmp` after a no-return call.
+  - **Every HEAD byte that is now outside any function is explained:**
+    - 0x22FCF is a jump table (data);
+    - the 0x3FD59.. gaps;
+    - 0x67BA3;
+    - `r36_e72`'s old span is now inside `sub_164852`.
+- **`ledger`: `naming.yaml` follows the live names.** It goes from 2,068 to **2,038** symbols.
+  - **50 dropped.** 47 of their functions are gone, now inside a live function, e.g. `sub_15E42`,
+    `sub_28CA8` and the `ui_loadout_cmd*` cases of 0x162C00. 3 more have no user name in the live IDB:
+    `sub_28CA1`, `r32_e73` and `sub_161945`.
+  - **3 renamed to the IDB name:**
+    - `ems_map_seg_10231` -> `ems_map`;
+    - `int7a_bx3_dispatch` -> `network_stuff_1`;
+    - `mem_free_probe_flags` -> `malloc`.
+  - **20 IDB user names adopted**, e.g. `ems_alloc`/`ems_free`/`ems_save`/`ems_restore`, `quit_with_msg`,
+    `video_mode`, `interrupt_*`, `timer_stuff`, `fwrite` and `farobj_store_32075` (now at 0x3F7A6).
+  - **`routines.yaml`:** 51 removed, 44 resized and 6 hypotheses changed. Its `counts:` block is still
+    stale.
+- **Pipeline.**
+  - `extract_ida_bytes.py` writes indent 1 and takes the names from the IDB's user names. `FBOUT` / `FBPREV`
+    allow extracting from a copy.
+  - The `naming.py` docstring and `docs/workflow/idb_regeneration.md` (Fast Path 6d/6e, step 6, step V
+    re-baseline, rules 2/5) are updated.
+
+**Gates.**
+- `verify_idb_s1`: **INTACT**, against the re-derived manifests and the 68-hole export
+  (`analysis/s1/integrity_rebase.log`).
+- `naming.py check`: OK, 2,038 entries.
+- `verify_rebuild.py` against HEAD: rc 1, "DIVERGED (88 problems)" = LOST 47 + CHANGED 41.
+  - Every one is recorded in `rebaseline_expected.json`.
+  - SPLIT 3 and the register states (163 applied / 87 pending) agree with the record.
+  - The run is in `analysis/s1/vr_rebaseline_tool.txt`.
+  - The gate turns green against the new HEAD once the re-baseline is committed.
+- Rerunning both apply manifests reports "already applied".
+
+**Open (later S1 items).**
+- **Orphan code runs after function ends:** 0x2142E (51 B), 0x22C62 (6 B, `retf`), 0x2520B, 0x2D31A (to the
+  `int 21h` quit), 0x2E1C2, 0x67F59, 0x69705, 0x6EC14, 0x6EF1C, 0x105DA7 (929 B), 0x10CC60 (208 B),
+  0x167440.
+- **More suspect NORET flags:** 0x33116, 0x331E4, 0x3343E, 0x3F7A6, 0x3F861, 0x3FD66, 0x22DFF, 0x4FE02 and
+  overlay ones. Their callers' flow is cut after the call; e.g. the bytes at 0x2F99E are data, and 0x313A2
+  follows 0x3139F.
+- **Thunk anomalies:** 0x2BE1F, 0x2C153, 0x2C17B, and 34 thunks with no variant.
+- **From S1a/S1b:** 403 merged functions, 65 `not_head` misdecodes and 47 fall-in entries. The auto queue
+  is still not empty.
