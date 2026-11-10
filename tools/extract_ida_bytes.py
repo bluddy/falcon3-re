@@ -3,7 +3,8 @@
 Extract function bytes from IDA database (with fixups applied).
 Enumerates ALL live functions (resident + rebuilt overlays), not the stale survey.
 
-Keys are stable: the previous extract's key for the same ea, else sub_%X -- never a
+Keys are stable: the previous extract's key for the same ea (a start rebased by
+registry/orphan_funcs_expected.json rebase_funcs carries its key over), else sub_%X -- never a
 display name, so a rename cannot change a key.  Names: the live IDB is canonical
 (finding 124) -- 'name' is the function's user-given IDB name, null for dummy/auto
 names; registry/naming.yaml must agree (tools/naming.py check).
@@ -33,6 +34,13 @@ def main():
     if prev.exists():
         for k, v in json.loads(prev.read_text()).items():
             ea_to_key.setdefault(v.get("ea"), k)
+
+    # a function whose start was rebased (finding 130) keeps its key: old ea -> new ea from the orphan manifest
+    om = ROOT / "registry" / "orphan_funcs_expected.json"
+    if om.exists():
+        for x in json.loads(om.read_text()).get("rebase_funcs", []):
+            if x["old_ea"] in ea_to_key and x["ea"] not in ea_to_key:
+                ea_to_key[x["ea"]] = ea_to_key.pop(x["old_ea"])
 
     func_bytes = {}
     for ea in idautils.Functions():

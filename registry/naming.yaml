@@ -13562,9 +13562,9 @@ symbols:
 - ida: r12_e35
   name: r12_state36_reset_stub
   kind: function
-  sig: 78B, in=0. Garbage head; mov word ptr ds:36h, 0FFFFh; retf - resets state word
+  sig: 88B, in=0. Entry 106EE2 (finding 130, the old 78B start was mid-instruction); ax=0, ds:36h=ax, bx=3Ch, dx=8000h, then ds:36h = 0FFFFh or a mask picked by state tests; retf - resets state word
     ds:36h to 0FFFFh.
-  notes: '78B, in=0. Garbage head; mov word ptr ds:36h, 0FFFFh; retf - resets state
+  notes: '88B, in=0. Entry 106EE2 (finding 130, the old 78B start was mid-instruction); ax=0, ds:36h=ax, bx=3Ch, dx=8000h, then ds:36h = 0FFFFh or a mask picked by state tests; retf - resets state
     word ds:36h to 0FFFFh. conf: medium'
 - ida: r33_e79
   name: r33_farcb_seq_entry
@@ -14613,11 +14613,11 @@ symbols:
 - ida: r15_e16
   name: r15_op_init_sequence
   kind: function
-  sig: '105B, ASM, in=0, 7 callees. Fixed opcode sequence: op_dispatch(bl=5) -> save
+  sig: '118B, ASM, in=0, 7 callees. Entry 108430 (finding 130, push ds/es, ds=cs, op_dispatch(ax=0,bx=6,dx=5B3h) precede the old 105B start). Fixed opcode sequence: op_dispatch(bl=5) -> save
     ax -> state_word_27476_set_ax -> op_dispatch(0Ah,4Dh,566h), far_cb_8(1), dispatch_22180_then_27474_8(di=0),
     farptr_table_invoke(0), dispatch_22174_stub, far_cb_8(0), far_cb_4(0,0,200,1,2),
     op_dispatch(8); pops es/ds; retn - r15 overlay op init sequence.'
-  notes: '105B, ASM, in=0, 7 callees. Fixed opcode sequence: op_dispatch(bl=5) ->
+  notes: '118B, ASM, in=0, 7 callees. Entry 108430 (finding 130, push ds/es, ds=cs, op_dispatch(ax=0,bx=6,dx=5B3h) precede the old 105B start). Fixed opcode sequence: op_dispatch(bl=5) ->
     save ax -> state_word_27476_set_ax -> op_dispatch(0Ah,4Dh,566h), far_cb_8(1),
     dispatch_22180_then_27474_8(di=0), farptr_table_invoke(0), dispatch_22174_stub,
     far_cb_8(0), far_cb_4(0,0,200,1,2), op_dispatch(8); pops es/ds; retn - r15 overlay
@@ -15141,10 +15141,10 @@ symbols:
 - ida: r27_e64
   name: r27_table_copy_far_entry
   kind: function
-  sig: '70B, ASM, in=0, no callees. Head misdecodes (1 insn); si=ds:0CA2h; loop until
+  sig: '444B, ASM, in=1. Entry 10CE30 (finding 130): push bp/si/di, copies 31F0h state words to 7A32h:0AF6Ah/0AF48h/0AE90h/0AF64h, runs op_dispatch_far_entry sequences, ends in the old 70B table-copy tail (si=ds:0CA2h; loop until
     31F0h:32BA4 <= si: ax=7A32h:[si*2-5108h] -> [7A32h:0AE96h far ptr + si*2], then
     ax=7A32h:0AF5Ah; retf - r27 overlay table copy to far pointer entry.'
-  notes: '70B, ASM, in=0, no callees. Head misdecodes (1 insn); si=ds:0CA2h; loop
+  notes: '444B, ASM, in=1. Entry 10CE30 (finding 130): push bp/si/di, copies 31F0h state words to 7A32h:0AF6Ah/0AF48h/0AE90h/0AF64h, runs op_dispatch_far_entry sequences, ends in the old 70B table-copy tail (si=ds:0CA2h; loop
     until 31F0h:32BA4 <= si: ax=7A32h:[si*2-5108h] -> [7A32h:0AE96h far ptr + si*2],
     then ax=7A32h:0AF5Ah; retf - r27 overlay table copy to far pointer entry. conf:
     medium'

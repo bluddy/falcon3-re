@@ -77,6 +77,24 @@ def is_expected_extend(extends, a, b):
     return bb.startswith(ab) and _sha(bb[len(ab):]) == x["sha256"]
 
 
+def load_rebases():
+    """{(key-independent) new_ea: entry} of orphan_funcs_expected.json "rebase_funcs" (finding 130): a function whose
+    start moved down onto the real entry; same end, the old bytes are the tail of the new ones, both hashes pinned."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return {}
+    return {e["old_ea"]: e for e in json.loads(p.read_text()).get("rebase_funcs", [])}
+
+
+def is_expected_rebase(rebases, a, b):
+    x = rebases.get(a.get("ea"))
+    if not x or b.get("ea") != x["ea"]:
+        return False
+    if (a.get("size"), b.get("size")) != (x["end"] - x["old_ea"], x["end"] - x["ea"]):
+        return False
+    return (_sha(a.get("bytes")), _sha(b.get("bytes"))) == (x["old_sha256"], x["sha256"])         and (b.get("name") or None) == (a.get("name") or None)
+
+
 def load_patches():
     """{(key, ea, size): (old_sha256, new_sha256)} for the allowlisted byte patches."""
     if not SUBBLOCK.exists():
@@ -140,6 +158,8 @@ def main():
     retired = load_retired()
     patches = load_patches()
     extends = load_extends()
+    rebases = load_rebases()
+    rebased = []
     extended = []
     split_man = load_splits()
     reg_man = load_registers()
@@ -231,6 +251,10 @@ def main():
         if a.get("ea") == b.get("ea") and a.get("bytes") == b.get("bytes"):
             if a.get("size") != b.get("size"):
                 changed.append((k, "size %s->%s" % (a.get("size"), b.get("size"))))
+            continue
+        if is_expected_rebase(rebases, a, b):
+            rebased.append((k, "start 0x%X -> 0x%X (%dB -> %dB, real entry found in front of a misdecoded head)"
+                            % (a["ea"], b["ea"], a["size"], b["size"])))
             continue
         if a.get("ea") != b.get("ea"):
             changed.append((k, "ea %s->%s" % (a.get("ea"), b.get("ea"))))
@@ -369,8 +393,10 @@ def main():
           % len(bytepatches))
     print("  EXTEND  : %d  (intentional: end moved over orphan code, appended bytes sha256-pinned)"
           % len(extended))
+    print("  REBASE  : %d  (intentional: start moved onto the real entry, old and new sha256 pinned)"
+          % len(rebased))
     print("  CHANGED : %d" % len(changed))
-    for k, why in extended:
+    for k, why in extended + rebased:
         print("   %-16s %s" % (k, why))
     if bytepatches:
         print("\n-- PATCH (allowlisted byte patch; verify the manifest is committed) --")

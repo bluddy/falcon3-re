@@ -170,11 +170,14 @@ DBFL_KILL).
      - **S1c-4d (finding 129):** five fall-through continuations joined to their owners (r27_state_buffer_init_entry,
        stack_switch_7a32, sub_3F6A9, farobj_record_step as a tail chunk, flag_block_scan_nonzero); functions stay 3,552;
        backup `.bak_cont`. The manifest now records run, chunk lists before/after and the run's sha256.
-     - Left open (findings 126-129): 6 refused call targets, 7 tiny/misdecoded fl_F fragments, 0x105DA9 and the
-       0x100CC0..0x100DFA data-decoded body, remaining jmp-reached tails, no-xref runs.
+     - **S1c-4e (finding 130):** the refused call targets: r12_state36_reset_stub / r15_op_init_sequence starts rebased
+       to 0x106EE2 / 0x108430, r27_table_copy_far_entry merged with the 0x10CE30 body (444 B), 0x10931E / 0x109445 /
+       0x129F7 / 0x12B12 added; functions 3,552 -> 3,556; backup `.bak_rebase3`. New gate category REBASE.
+     - Left open (findings 126-130): 7 tiny/misdecoded fl_F fragments, 0x105DA9 and the 0x100CC0..0x100DFA
+       data-decoded body, remaining jmp-reached tails, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4d;
+     - commit S1c-4e;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;
