@@ -320,8 +320,16 @@ def main():
         def reg_size(v):
             x = extends.get(v["ea"])
             return x["before_end"] - x["ea"] if x and v["size"] == x["end"] - x["ea"] else v["size"]
-        have = {(k, v["ea"], reg_size(v)) for k, v in now.items()
-                if v.get("ea") is not None and lo <= v["ea"] < hi}
+        # a rebased start (finding 132) is read back at its pre-rebase (ea, size); the rebase itself is verified above
+        rb_new = {x["ea"]: x for x in rebases.values()}
+
+        def reg_key(k, v):
+            x = rb_new.get(v["ea"])
+            if x and v["size"] == x["end"] - x["ea"]:
+                return (k, x["old_ea"], x["end"] - x["old_ea"])
+            return (k, v["ea"], reg_size(v))
+        have = {reg_key(k, v) for k, v in now.items()
+                if v.get("ea") is not None and (lo <= v["ea"] < hi or v["ea"] in rb_new and lo <= rb_new[v["ea"]]["old_ea"] < hi)}
         if have == keep:
             return "pending"          # nothing applied yet: gate stays green
         if have != want:

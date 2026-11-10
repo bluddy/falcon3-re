@@ -176,10 +176,14 @@ DBFL_KILL).
      - **S1c-4f (finding 131):** the jmp-reached tails: 0x100CA8 added as a two-chunk far function (88 B + 236 B tail
        around sub_100D01), sub_4335A rebased to 0x4334E (59 -> 71 B, unnamed); functions 3,556 -> 3,557; backup
        `.bak_tails`. The apply tool gained `TAILS` and unnamed rebases.
-     - Left open (findings 126-131): 7 tiny/misdecoded fl_F fragments, 0x105DA9 junk run, 0x12C4F2 / 0x12C9D0, no-xref runs.
+     - **S1c-4g (finding 132):** two fl_F fragments were mid-instruction function starts: r17_ui_event_loop rebased to
+       0x6EF30 and r6e_heap_layout_finish to 0x69720 (`REBASE` gained `clear_hi`; `verify_rebuild` reads a rebased
+       start back through the register manifests); functions stay 3,557; backup `.bak_frag`.
+     - Left open (findings 126-132): 6 fl_F fragments (data tables / function removal needs a gate path: 0x6EC17,
+       0x6EF1F, 0x2E1E8, 0x167449, 0x22C8B, 0x67F77), 0x105DA9 junk run, 0x12C4F2 / 0x12C9D0, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4f;
+     - commit S1c-4g;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;

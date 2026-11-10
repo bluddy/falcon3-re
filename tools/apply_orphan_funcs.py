@@ -51,11 +51,13 @@ ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x
 # ea -> (tail chunk, clear ranges, seeds, pad bytes): a function whose second chunk lies after a foreign function that sits
 # inside its span (finding 131); pad bytes are single data bytes inside a chunk that no flow reaches
 TAILS = {0x100CA8: ([(0x100D0E, 0x100DFA)], [(0x100CA8, 0x100D00), (0x100D0D, 0x100DFA)], [0x100CA8, 0x100D0E, 0x100DF4], [0x100DEC])}
-# (old_start, new_start, end, clear_lo, ds_para): existing function whose real entry is new_start (finding 130).
-# [clear_lo, end) is cleared and redecoded from new_start; ds_para (or None) extends the DS range down to new_start.
+# (old_start, new_start, end, clear_lo, ds_para[, clear_hi]): existing function whose real entry is new_start (finding 130).
+# [clear_lo, clear_hi) (default end) is cleared and redecoded from new_start; ds_para (or None) extends the DS range
+# down to new_start.  A narrow clear_hi (finding 132, an instruction boundary) leaves the rest of a long body alone.
 REBASE = [(0x106EEC, 0x106EE2, 0x106F3A, 0x106EE2, 0x706E), (0x10843D, 0x108430, 0x1084A6, 0x10843C, None),
           (0x10CFA6, 0x10CE30, 0x10CFEC, 0x10CFA5, None),
-          (0x4335A, 0x4334E, 0x43395, 0x4334E, None)]
+          (0x4335A, 0x4334E, 0x43395, 0x4334E, None),
+          (0x6EF31, 0x6EF30, 0x6F1CE, 0x6EF30, None, 0x6EF39), (0x69723, 0x69720, 0x69AC6, 0x69720, None, 0x6972B)]
 # (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
 EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
 # (func, run_lo, run_hi): fl_F continuations (finding 129).  If run_lo is the main-chunk end the function is
@@ -257,25 +259,26 @@ def rb_state(x):
 
 def rebase(x):
     old, new, end, clo = x["old_ea"], x["ea"], x["end"], x["clear_lo"]
+    chi = x.get("clear_hi") or end
     far = is_far(old)
     must(far == x["far"], "far flag of 0x%X" % old)
     a, orig = clo, set()
-    while a < end:
+    while a < chi:
         h = ida_bytes.get_item_head(a)
         if ida_bytes.is_code(ida_bytes.get_flags(h)):
             orig.add(h)
         a = h + max(ida_bytes.get_item_size(h), 1)
     must(ida_funcs.del_func(old), "del_func 0x%X" % old)
     ida_name.set_name(old, "", ida_name.SN_NOWARN)
-    ida_bytes.del_items(clo, ida_bytes.DELIT_SIMPLE, end - clo)
+    ida_bytes.del_items(clo, ida_bytes.DELIT_SIMPLE, chi - clo)
     if x.get("ds") is not None:
         s = ida_segment.setup_selector(x["ds"])
         must(ida_segment.sel2para(s) == x["ds"], "selector for para 0x%X" % x["ds"])
         must(ida_segregs.split_sreg_range(new, idaapi.str2reg("ds"), s, ida_segregs.SR_user), "DS split at 0x%X" % new)
     made = set()
-    descend(new, new, end, made)
+    descend(new, new, chi, made)
     a = new
-    while a < end:
+    while a < chi:
         must(ida_bytes.is_code(ida_bytes.get_flags(a)) and ida_bytes.get_item_head(a) == a, "non-code head 0x%X in rebased 0x%X" % (a, new))
         a += ida_bytes.get_item_size(a)
     lost = sorted(h for h in orig if not (ida_bytes.is_code(ida_bytes.get_flags(h)) and ida_bytes.get_item_head(h) == h))
@@ -397,7 +400,7 @@ def main():
                          "chunks_before": chunks(ea), "end": None, "sha256": None, "chunks_after": None})
         oldr = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("rebase_funcs", [])} if MANIFEST.exists() else {}
         rebs = []
-        for old, new, end, clo, ds in REBASE:
+        for old, new, end, clo, ds, *chi in REBASE:
             if new in oldr:
                 rebs.append(oldr[new])
                 continue
@@ -405,9 +408,9 @@ def main():
             must(f and f.start_ea == old and f.end_ea == end, "0x%X is not the planned function" % old)
             rebs.append({"ea": new, "old_ea": old, "end": end, "clear_lo": clo, "ds": ds, "name": uname(old),
                          "far": is_far(old), "sha256": sha(new, end), "old_sha256": sha(old, end),
-                         "prefix_sha256": sha(new, old), "lost_heads": None})
+                         "prefix_sha256": sha(new, old), "lost_heads": None, **({"clear_hi": chi[0]} if chi else {})})
         add_all(items, exts, rebs)
-        MANIFEST.write_text(json.dumps({"finding": 131, "step": "S1c-4 orphan code registered as functions (findings 126-131)",
+        MANIFEST.write_text(json.dumps({"finding": 132, "step": "S1c-4 orphan code registered as functions (findings 126-132)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
