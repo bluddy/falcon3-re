@@ -77,6 +77,10 @@ TEXTFIX = [{"table": (0x105D90, 0x105DE6, 0x105D90), "text": (0x105DE6, 0x10626E
 # [new_end, clear_hi) is cleared and the words in [new_end, words_hi) are made 2-byte data; whatever is left up to
 # clear_hi is re-decoded by the ADD entry that follows (so an ADD_CLEAR item must cover [words_hi, clear_hi)).
 TRIM = [(0x22C62, 0x22C8B, 0x22C71, 0x22C89, 0x22C91)]
+# (owner, frag, clear_lo, clear_hi, new_end): finding 138.  frag is a bogus function made of fragments of owner's own body;
+# it is deleted, [clear_lo, clear_hi) is redecoded from clear_lo, owner's tail chunks inside [main_end, new_end) are dropped
+# and owner's main chunk is extended to new_end.
+ABSORB = [(0x166F80, 0x167440, 0x16743E, 0x167450, 0x16781A)]
 # (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
 EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
 # (func, run_lo, run_hi): fl_F continuations (finding 129).  If run_lo is the main-chunk end the function is
@@ -495,8 +499,60 @@ def trim(x):
     must(trim_state(x) == "applied", "trim of 0x%X" % ea)
 
 
-def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=()):
+def ab_state(x):
+    ea, fr, be, ne = x["ea"], x["frag"], x["before_end"], x["end"]
+    f = ida_funcs.get_func(ea)
+    if not f or f.start_ea != ea or sha(be, ne) != x["sha256"]:
+        return "mismatch"
+    g = ida_funcs.get_func(fr)
+    if f.end_ea == ne and chunks(ea) == x["chunks_after"] and not (g and g.start_ea == fr):
+        return "applied"
+    if (f.end_ea == be and chunks(ea) == x["chunks_before"] and g and g.start_ea == fr and uname(fr) == x["frag_name"]
+            and chunks(fr) == x["frag_chunks"] and sha(fr, x["frag_end"]) == x["frag_sha256"]):
+        return "fresh"
+    return "mismatch"
+
+
+def absorb(x):
+    ea, fr, be, ne = x["ea"], x["frag"], x["before_end"], x["end"]
+    clo, chi = x["clear"]
+    far = is_far(ea)
+    must(not is_far(fr) or far, "far flag of 0x%X" % fr)
+    a, orig = clo, set()
+    while a < chi:
+        h = ida_bytes.get_item_head(a)
+        if ida_bytes.is_code(ida_bytes.get_flags(h)):
+            orig.add(h)
+        a = h + max(ida_bytes.get_item_size(h), 1)
+    must(ida_funcs.del_func(fr), "del_func 0x%X" % fr)
+    ida_name.set_name(fr, "", ida_name.SN_NOWARN)
+    ida_bytes.del_items(clo, ida_bytes.DELIT_SIMPLE, chi - clo)
+    a = clo
+    while a < chi:
+        n = ida_ua.create_insn(a)
+        must(n > 0, "create_insn 0x%X" % a)
+        a += n
+    must(a == chi, "redecode of 0x%X..0x%X ends at 0x%X" % (clo, chi, a))
+    lost = sorted(h for h in orig if not (ida_bytes.is_code(ida_bytes.get_flags(h)) and ida_bytes.get_item_head(h) == h))
+    for h in lost:
+        bad = [r.frm for r in idautils.XrefsTo(h, 0) if r.type in (16, 17, 18, 19) and not (clo <= r.frm < chi)]
+        must(not bad, "jump/call into stale head 0x%X from %s" % (h, [hex(b) for b in bad]))
+    f = ida_funcs.get_func(ea)
+    for lo, hi in chunks(ea)[1:]:
+        if be <= lo < ne:
+            must(ida_funcs.remove_func_tail(ida_funcs.get_func(ea), lo), "remove_func_tail 0x%X" % lo)
+    must(ida_funcs.set_func_end(ea, ne), "set_func_end 0x%X -> 0x%X" % (ea, ne))
+    must(is_far(ea) == far, "far flag of 0x%X" % ea)
+    if x["chunks_after"] is None:
+        x["chunks_after"] = chunks(ea)
+    must(ab_state(x) == "applied", "absorb into 0x%X (state %s, chunks %s)" % (ea, ab_state(x), chunks(ea)))
+
+
+def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=()):
     before = snapshot()
+    for x in abs_:
+        if ab_state(x) != "applied":
+            absorb(x)
     for x in trs:
         if trim_state(x) != "applied":
             trim(x)
@@ -544,12 +600,13 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=()):
     after = snapshot()
     new = {it["ea"] for it in items} | {x["ea"] for x in rebs}
     changed = sorted(ea for ea in set(before) if before[ea] != after.get(ea))
-    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs},
+    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_},
          "unplanned existing functions changed %s" % [hex(c) for c in changed[:10]])
     for x in exts:
         must(after[x["ea"]][0] == before[x["ea"]][0], "name of 0x%X changed" % x["ea"])
     for x in rebs:
         must(x["old_ea"] not in after and (x["name"] is None or after[x["ea"]][0] == x["name"]), "rebase of 0x%X" % x["old_ea"])
+    must(not any(x["frag"] in after for x in abs_), "absorbed function still present")
     must(not any(x["ea"] in after for x in rms) and not any(f["ea"] in after for x in tfs for f in x["funcs"]),
          "removed function still present")
     must(set(after) - set(before) <= new, "unplanned new functions %s" % [hex(c) for c in sorted(set(after) - set(before) - new)][:10])
@@ -557,6 +614,8 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=()):
         ["0x%X..0x%X" % (it["ea"], it["end"]) for it in items],
         ["0x%X -> 0x%X" % (x["ea"], x["end"]) for x in exts],
         ["0x%X -> 0x%X %s" % (x["old_ea"], x["ea"], x["name"]) for x in rebs], len(before), len(after)))
+    if abs_:
+        log.append("absorbed: %s" % ["0x%X into 0x%X (end 0x%X)" % (x["frag"], x["ea"], x["end"]) for x in abs_])
     if trs:
         log.append("trimmed: %s" % ["0x%X end 0x%X -> 0x%X" % (x["ea"], x["old_end"], x["end"]) for x in trs])
     if xts:
@@ -670,9 +729,21 @@ def main():
             must(f and f.start_ea == ea and f.end_ea == oe, "0x%X is not the planned function" % ea)
             trs.append({"ea": ea, "old_end": oe, "end": ne, "words_hi": wh, "clear_hi": ch, "name": uname(ea), "far": is_far(ea),
                         "sha256": sha(ea, ch), "kept_sha256": sha(ea, ne)})
-        add_all(items, exts, rebs, rms, tfs, xts, trs)
-        MANIFEST.write_text(json.dumps({"finding": 137, "step": "S1c-4 orphan code registered as functions (findings 126-137)",
-                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "add_funcs": items},
+        olda = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("absorb_funcs", [])} if MANIFEST.exists() else {}
+        abs_ = []
+        for ea, fr, clo, chi, ne in ABSORB:
+            if ea in olda:
+                abs_.append(olda[ea])
+                continue
+            f, g = ida_funcs.get_func(ea), ida_funcs.get_func(fr)
+            must(f and f.start_ea == ea and g and g.start_ea == fr, "0x%X / 0x%X are not the planned functions" % (ea, fr))
+            abs_.append({"ea": ea, "frag": fr, "frag_end": g.end_ea, "frag_name": uname(fr), "frag_far": is_far(fr),
+                         "frag_chunks": chunks(fr), "frag_sha256": sha(fr, g.end_ea), "clear": [clo, chi],
+                         "before_end": f.end_ea, "end": ne, "sha256": sha(f.end_ea, ne), "chunks_before": chunks(ea),
+                         "chunks_after": None})
+        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_)
+        MANIFEST.write_text(json.dumps({"finding": 138, "step": "S1c-4 orphan code registered as functions (findings 126-138)",
+                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
@@ -684,8 +755,10 @@ def main():
     tfs = doc.get("table_fix", [])
     xts = doc.get("text_fix", [])
     trs = doc.get("trim_funcs", [])
+    abs_ = doc.get("absorb_funcs", [])
     states = ([state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts] + [rb_state(x) for x in rebs]
-              + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs] + [xt_state(x) for x in xts] + [trim_state(x) for x in trs])
+              + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs] + [xt_state(x) for x in xts] + [trim_state(x) for x in trs]
+              + [ab_state(x) for x in abs_])
     fresh_trims = [x for x in trs if trim_state(x) == "fresh"]
     for i, it in enumerate(doc["add_funcs"]):
         if states[i] == "mismatch" and any(x["end"] <= it["ea"] < x["old_end"] for x in fresh_trims):
@@ -700,7 +773,7 @@ def main():
         log.append("ABORT: live IDB does not match the manifest; nothing changed")
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         return
-    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs)
+    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_)
     if os.environ.get("OFDRY"):
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("dry run (OFDRY): not saved")

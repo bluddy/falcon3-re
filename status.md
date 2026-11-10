@@ -192,7 +192,10 @@ DBFL_KILL).
      - **S1c-4l (finding 137):** `fixed_vec3_read` (0x22C62) cut from 41 B to its 15 real bytes, the constants behind it
        remade as words and the 8-byte far entry 0x22C89 registered (`trim_funcs` manifest block, `TRIM` apply mode,
        `TRIM` category in verify_rebuild); functions 3,555 -> 3,556; backup `.bak_vec137`.
-     - Left open (findings 126-137): 0x167449 (inside 166F80), no-xref runs, and the R30 menu state machine
+     - **S1c-4m (finding 138):** `r38_data_fragment` (0x167440) deleted and the undecoded code at 0x16743E redecoded;
+       `sub_166F80` now runs 166F80-16781A (`absorb_funcs` manifest block, `ABSORB` apply mode); two ledger entries
+       dropped (2035); functions 3,556 -> 3,555; backup `.bak_abs138`.
+     - Left open (findings 126-138): no-xref runs and the R30 menu state machine
        0x66E62..0x6940E (read-only probes, nothing applied).  It is one giant `[bp+6]` / `[bp-0Eh]` switch function now
        split into ~25 named pieces (ui_menu_panel_init, menu_event_dispatch, ui_menu_transition_step, r30_entry_partial_b/c/d,
        farobj_record_clear_fields, ui_loadout_menu_enter ...), all reached by jumps; the 67F58..683C5 stretch redecodes as one
@@ -204,7 +207,7 @@ DBFL_KILL).
        (ledger entries lost) and needs a decision on the owning function; deferred.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4l;
+     - commit S1c-4m;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;

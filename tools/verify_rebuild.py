@@ -64,7 +64,11 @@ def load_extends():
     p = ROOT / "registry" / "orphan_funcs_expected.json"
     if not p.exists():
         return {}
-    return {e["ea"]: e for e in json.loads(p.read_text()).get("extend_funcs", [])}
+    m = json.loads(p.read_text())
+    out = {e["ea"]: e for e in m.get("extend_funcs", [])}
+    for x in m.get("absorb_funcs", []):       # finding 138: the owner's main chunk grows over the absorbed fragment's bytes
+        out[x["ea"]] = {"ea": x["ea"], "before_end": x["before_end"], "end": x["end"], "sha256": x["sha256"]}
+    return out
 
 
 def is_expected_extend(extends, a, b):
@@ -113,6 +117,9 @@ def load_removes():
         return {}
     m = json.loads(p.read_text())
     out = {e["ea"]: e for e in m.get("remove_funcs", [])}
+    for x in m.get("absorb_funcs", []):       # finding 138: a bogus function deleted, its bytes now belong to the owner
+        out[x["frag"]] = {"ea": x["frag"], "fn_end": x["frag_end"], "end": x["frag_end"], "name": x["frag_name"],
+                          "fn_sha256": x["frag_sha256"]}
     for t in m.get("table_fix", []):          # finding 135: functions deleted together with the table they were misread from
         for f in t["funcs"]:
             out[f["ea"]] = f
