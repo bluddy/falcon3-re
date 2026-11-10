@@ -6720,3 +6720,41 @@ replay (32 applied).
 
 **Still open:** the six fl_F fragments of finding 132 plus sub_105DA7 / the 0x105DA9 table (all need a function-removal path
 in `verify_rebuild`), and the no-xref runs (34 free, 110 adjacent).
+
+## 2026-11-10 134 - function-removal path; three word-table "functions" deleted (S1c-4i)
+
+`verify_rebuild` had no way to accept a deleted function (a missing key is LOST), which blocked every fl_F fragment that is
+data.  The orphan manifest gained `remove_funcs` and the apply tool a `REMOVE` mode:
+
+- `REMOVE = [(ea, fn_end, data_end)]`: `rm_state` / `remove`.  Refuses if a jump or call from outside the span reaches a
+  code head that is cleared; then `del_func`, drop the name, `del_items [ea, data_end)`, and `create_word` over the
+  range.  The manifest pins `fn_sha256` (the function's bytes), `data_sha256` (the whole table head), name and far flag.
+- `verify_rebuild`: a key missing from `now` is accepted only when the committed entry matches the manifest on (ea, size,
+  name, bytes sha256) and no live function starts inside the table.  New REMOVE category; the register check drops the
+  removed function from the expected set (its range still tiles through the other functions and holes).
+
+Applied to the three clear word-table heads (each is the first 2-3 B of a table that a misdecode made into a function; the
+bytes after it were already data, and the `fl_F` flow was the decoder running into the next table row):
+
+- **0x6EC14..0x6EC2C** (`data_fragment_6ec14`, 3 B): `1B 00 41 00 45 00 50 00 51 00 52 00 06 03 ...`, the key/handler table
+  that precedes r17_router_event_loop (0x6EC2C).
+- **0x6EF1C..0x6EF30** (`r17_entry_partial`, 3 B): `1B 00 44 00 4B 00 4D 00 52 00 E5 05 56 05 E5 05 E5 05 98 05`, the same
+  kind of table in front of r17_ui_event_loop (0x6EF30, finding 132).
+- **0x2E1C2..0x2E20A** (unnamed, 38 B): a byte-pair table; sprite_clip_bounds_check starts at 0x2E20A.
+
+The ledger entries were removed too: naming.yaml `sub_6EF1C`, `sub_6EC14`, and the routines.yaml entries for ea 454428 /
+453652 (2038 -> 2036 ledger entries).
+
+**Applied.**  Plan, dry replay (3 fresh, 32 applied), backup `FALCONCD.EXE.i64.bak_rm134`, apply: functions 3,560 -> 3,557.
+Gates: integrity INTACT, `naming.py check` OK (2036), `verify_rebuild` faithful (REMOVE 3, LOST 0, CHANGED 0), idempotent
+replay (35 applied).
+
+**Not removed, on purpose.**  sub_105DA7 (2 B, `01 D0` = `add ax,dx`) sits in the middle of a word table (0x105D90..0x105EB5,
+`01 D0 04 D0 04 ...`) but is not a clean case: IDA records xrefs to it from `call cs:funcs_106A17[bx]` at 0x106A4C and
+0x106A7E (type 17, resolved through an indirect-call table), a data offset at 0x1069B4, and the fl_F flow from 0x105DA5.
+sub_105D9D (0x105D9D..0x105DA7) before it is referenced the same way.  Whether those table entries are real function
+pointers or a misread of the table needs the 0x106A17 dispatch table decoded first, so the region is left for its own
+finding.
+
+**Still open:** 0x167449 (data fragment inside function 166F80, needs chunk restructuring), 0x22C8B, 0x67F77, sub_105DA7 and
+sub_105D9D, and the no-xref runs.

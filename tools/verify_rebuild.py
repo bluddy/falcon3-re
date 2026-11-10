@@ -86,6 +86,24 @@ def load_rebases():
     return {e["old_ea"]: e for e in json.loads(p.read_text()).get("rebase_funcs", [])}
 
 
+def load_removes():
+    """{ea: entry} of orphan_funcs_expected.json "remove_funcs" (finding 134): a 'function' that is the head of a word
+    table and was deleted; accepted as a missing key only on an exact (ea, size, name, sha256) match."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return {}
+    return {e["ea"]: e for e in json.loads(p.read_text()).get("remove_funcs", [])}
+
+
+def is_expected_remove(removes, a, now):
+    x = removes.get(a.get("ea"))
+    if not x or a.get("size") != x["fn_end"] - x["ea"]:
+        return False
+    if _sha(a.get("bytes")) != x["fn_sha256"] or (a.get("name") or None) != x["name"]:
+        return False
+    return not any(v.get("ea") is not None and x["ea"] <= v["ea"] < x["end"] for v in now.values())
+
+
 def is_expected_rebase(rebases, a, b):
     x = rebases.get(a.get("ea"))
     if not x or b.get("ea") != x["ea"]:
@@ -159,6 +177,8 @@ def main():
     patches = load_patches()
     extends = load_extends()
     rebases = load_rebases()
+    removes = load_removes()
+    removed = []
     rebased = []
     extended = []
     split_man = load_splits()
@@ -297,6 +317,11 @@ def main():
     # because every byte moved into a planned child)
     for k in list(lost):
         a = head[k]
+        if is_expected_remove(removes, a, now):
+            lost.remove(k)
+            removed.append((k, "0x%X..0x%X deleted, 0x%X..0x%X is a word table now"
+                            % (a["ea"], a["ea"] + a["size"], a["ea"], removes[a["ea"]]["end"])))
+            continue
         if (k, a.get("ea"), a.get("size")) in retired:
             lost.remove(k)
             recodes.append((k, "%s dB retired (Cluster-B +0x60 base fix)" % a.get("size")))
@@ -315,6 +340,8 @@ def main():
         lo, hi = rng["range"]
         keep = {(f["key"], f["ea"], f["size"]) for f in rng.get("keep_fns", [])}
         want = keep | {(f["key"], f["ea"], f["size"]) for f in rng["new_fns"]}
+        # a function deleted by the remove manifest (finding 134) is no longer expected; its span still tiles the range
+        want = {w for w in want if not (w[1] in removes and w[2] == removes[w[1]]["fn_end"] - w[1])}
         # a register entry records the size at registration time; an allowlisted EXTEND (finding 128/129) is
         # read back at its pre-extension size, the extension itself is verified above (appended-bytes sha256)
         def reg_size(v):
@@ -403,8 +430,9 @@ def main():
           % len(extended))
     print("  REBASE  : %d  (intentional: start moved onto the real entry, old and new sha256 pinned)"
           % len(rebased))
+    print("  REMOVE  : %d  (intentional: word-table head deleted, sha256 pinned)" % len(removed))
     print("  CHANGED : %d" % len(changed))
-    for k, why in extended + rebased:
+    for k, why in extended + rebased + removed:
         print("   %-16s %s" % (k, why))
     if bytepatches:
         print("\n-- PATCH (allowlisted byte patch; verify the manifest is committed) --")
