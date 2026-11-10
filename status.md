@@ -189,14 +189,22 @@ DBFL_KILL).
        backup `.bak_tab135`.
      - **S1c-4k (finding 136):** the 0x105DE6..0x10626E message text typed as strings and the 43-word table made offsets
        (`text_fix` manifest block, `TEXTFIX`); no function-table change; backup `.bak_txt136`.
-     - Left open (findings 126-136): 0x167449 (inside 166F80), 0x22C8B, no-xref runs, and 0x67F58..0x683C5: not a pair of
-       fragments but one 628-instruction body (a repeated `les bx,[79E6C]; mov byte ptr es:[bx+N],0` stamp, entered by the
-       `jmp loc_67E29` back-edge and fall-through) that continues ui_menu_transition_step (0x67BAF) over 14 named fragments
-       (r30_entry_partial_b/c/d, r30_hlt_stub, farobj_record_clear_fields ...); ui_loadout_menu_enter at 0x683C5 starts
-       inside the `push es:[14FAh]` at 0x683C1.  Needs a function-merge path in the apply tool (read-only probe, nothing applied).
+     - **S1c-4l (finding 137):** `fixed_vec3_read` (0x22C62) cut from 41 B to its 15 real bytes, the constants behind it
+       remade as words and the 8-byte far entry 0x22C89 registered (`trim_funcs` manifest block, `TRIM` apply mode,
+       `TRIM` category in verify_rebuild); functions 3,555 -> 3,556; backup `.bak_vec137`.
+     - Left open (findings 126-137): 0x167449 (inside 166F80), no-xref runs, and the R30 menu state machine
+       0x66E62..0x6940E (read-only probes, nothing applied).  It is one giant `[bp+6]` / `[bp-0Eh]` switch function now
+       split into ~25 named pieces (ui_menu_panel_init, menu_event_dispatch, ui_menu_transition_step, r30_entry_partial_b/c/d,
+       farobj_record_clear_fields, ui_loadout_menu_enter ...), all reached by jumps; the 67F58..683C5 stretch redecodes as one
+       body once the pieces and their names are cleared (ui_loadout_menu_enter at 0x683C5 is a bogus start inside the
+       `push es:[14FAh]` at 0x683C1).  The 15-word switch table at 0x69209 (offsets from segment base 0x669F0, `jmp
+       cs:jpt_674CF[bx]` at 0x674CF) has only 6 cases decoded; the other bodies (0x68A18, 0x68A5E, 0x68AE2, 0x68C02,
+       0x68CC0, 0x68E49, 0x68F20, 0x69123) are undecoded and unreferenced.  0x6940B (`enter 6,0`, far-called from 0x675BA)
+       is the real start of r30_record_link; 0x69227 is a real far entry.  Fixing this means merging ~25 named pieces
+       (ledger entries lost) and needs a decision on the owning function; deferred.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4k;
+     - commit S1c-4l;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;

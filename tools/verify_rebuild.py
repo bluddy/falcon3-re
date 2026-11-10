@@ -77,6 +77,25 @@ def is_expected_extend(extends, a, b):
     return bb.startswith(ab) and _sha(bb[len(ab):]) == x["sha256"]
 
 
+def load_trims():
+    """{ea: entry} of registry/orphan_funcs_expected.json "trim_funcs" (finding 137): a function whose tail is
+    really data.  Allowlisted only when the new bytes are a prefix of the old and both hashes are as recorded."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return {}
+    return {e["ea"]: e for e in json.loads(p.read_text()).get("trim_funcs", [])}
+
+
+def is_expected_trim(trims, a, b):
+    x = trims.get(a.get("ea"))
+    if not x or a.get("ea") != b.get("ea"):
+        return False
+    if (a.get("size"), b.get("size")) != (x["old_end"] - x["ea"], x["end"] - x["ea"]):
+        return False
+    ab, bb = a.get("bytes") or "", b.get("bytes") or ""
+    return ab.startswith(bb) and _sha(bb) == x["kept_sha256"]
+
+
 def load_rebases():
     """{(key-independent) new_ea: entry} of orphan_funcs_expected.json "rebase_funcs" (finding 130): a function whose
     start moved down onto the real entry; same end, the old bytes are the tail of the new ones, both hashes pinned."""
@@ -181,11 +200,13 @@ def main():
     retired = load_retired()
     patches = load_patches()
     extends = load_extends()
+    trims = load_trims()
     rebases = load_rebases()
     removes = load_removes()
     removed = []
     rebased = []
     extended = []
+    trimmed = []
     split_man = load_splits()
     reg_man = load_registers()
     hole_live = load_holes()
@@ -292,6 +313,9 @@ def main():
                 continue
             if is_expected_extend(extends, a, b):
                 extended.append((k, "end extended %dB -> %dB over orphan code" % (a["size"], b["size"])))
+                continue
+            if is_expected_trim(trims, a, b):
+                trimmed.append((k, "end trimmed %dB -> %dB, tail is data" % (a["size"], b["size"])))
                 continue
             # shrank + the old range is now tiled by new fns = intended split
             if b.get("size", 0) < a.get("size", 0):
@@ -436,8 +460,9 @@ def main():
     print("  REBASE  : %d  (intentional: start moved onto the real entry, old and new sha256 pinned)"
           % len(rebased))
     print("  REMOVE  : %d  (intentional: word-table head deleted, sha256 pinned)" % len(removed))
+    print("  TRIM    : %d  (intentional: tail of a function is data, kept bytes sha256-pinned)" % len(trimmed))
     print("  CHANGED : %d" % len(changed))
-    for k, why in extended + rebased + removed:
+    for k, why in extended + rebased + removed + trimmed:
         print("   %-16s %s" % (k, why))
     if bytepatches:
         print("\n-- PATCH (allowlisted byte patch; verify the manifest is committed) --")
