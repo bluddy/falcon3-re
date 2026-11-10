@@ -179,11 +179,13 @@ DBFL_KILL).
      - **S1c-4g (finding 132):** two fl_F fragments were mid-instruction function starts: r17_ui_event_loop rebased to
        0x6EF30 and r6e_heap_layout_finish to 0x69720 (`REBASE` gained `clear_hi`; `verify_rebuild` reads a rebased
        start back through the register manifests); functions stay 3,557; backup `.bak_frag`.
-     - Left open (findings 126-132): 6 fl_F fragments (data tables / function removal needs a gate path: 0x6EC17,
-       0x6EF1F, 0x2E1E8, 0x167449, 0x22C8B, 0x67F77), 0x105DA9 junk run, 0x12C4F2 / 0x12C9D0, no-xref runs.
+     - **S1c-4h (finding 133):** 0x12C4F2 (create-file entry), 0x12C9D0 (far wrapper) and 0x12CB27 (3 B stub) added;
+       functions 3,557 -> 3,560; backup `.bak_orph133`. 0x105DA9 is a data table, not code.
+     - Left open (findings 126-133): 6 fl_F fragments + sub_105DA7 (data tables / function removal needs a gate path:
+       0x6EC17, 0x6EF1F, 0x2E1E8, 0x167449, 0x22C8B, 0x67F77, 0x105DA7), no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4g;
+     - commit S1c-4h;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;

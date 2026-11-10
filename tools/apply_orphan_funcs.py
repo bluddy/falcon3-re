@@ -44,7 +44,7 @@ RETS = {"retn", "retf", "iret", "iretw", "retnw", "retfw"}
 ADD = [(0x1617C, 0x162DF), (0x162DF, 0x163AD), (0x16284E, 0x162878), (0x12C970, 0x12C9D0),
        (0x12CA0D, 0x12CAEF), (0x12CAEF, 0x12CB27), (0x12C683, 0x12C7C6), (0x12C951, 0x12C970),
        (0x12CCE9, 0x12CE9D), (0x10931E, 0x1093A8), (0x109445, 0x109519), (0x129F7, 0x12B12), (0x12B12, 0x12B62),
-       (0x100CA8, 0x100D00)]
+       (0x100CA8, 0x100D00), (0x12C4F2, 0x12C504), (0x12C9D0, 0x12C9DF), (0x12CB27, 0x12CB2A)]
 # ea -> (clear_lo, clear_hi, seeds): orphan run with a misdecoded stretch that must be cleared and redecoded first
 ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x109445, 0x109519, [0x109445]),
              0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12]), 0x100CA8: (0x100CA8, 0x100D00, [0x100CA8])}
@@ -410,7 +410,7 @@ def main():
                          "far": is_far(old), "sha256": sha(new, end), "old_sha256": sha(old, end),
                          "prefix_sha256": sha(new, old), "lost_heads": None, **({"clear_hi": chi[0]} if chi else {})})
         add_all(items, exts, rebs)
-        MANIFEST.write_text(json.dumps({"finding": 132, "step": "S1c-4 orphan code registered as functions (findings 126-132)",
+        MANIFEST.write_text(json.dumps({"finding": 133, "step": "S1c-4 orphan code registered as functions (findings 126-133)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
