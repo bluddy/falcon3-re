@@ -291,7 +291,12 @@ def main():
         lo, hi = rng["range"]
         keep = {(f["key"], f["ea"], f["size"]) for f in rng.get("keep_fns", [])}
         want = keep | {(f["key"], f["ea"], f["size"]) for f in rng["new_fns"]}
-        have = {(k, v["ea"], v["size"]) for k, v in now.items()
+        # a register entry records the size at registration time; an allowlisted EXTEND (finding 128/129) is
+        # read back at its pre-extension size, the extension itself is verified above (appended-bytes sha256)
+        def reg_size(v):
+            x = extends.get(v["ea"])
+            return x["before_end"] - x["ea"] if x and v["size"] == x["end"] - x["ea"] else v["size"]
+        have = {(k, v["ea"], reg_size(v)) for k, v in now.items()
                 if v.get("ea") is not None and lo <= v["ea"] < hi}
         if have == keep:
             return "pending"          # nothing applied yet: gate stays green

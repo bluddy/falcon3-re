@@ -40,6 +40,11 @@ ADD = [(0x1617C, 0x162DF), (0x162DF, 0x163AD), (0x16284E, 0x162878), (0x12C970, 
        (0x12CCE9, 0x12CE9D)]
 # (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
 EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
+# (func, run_lo, run_hi): fl_F continuations (finding 129).  If run_lo is the main-chunk end the function is
+# lengthened (set_func_end, which also swallows an adjacent tail chunk), else the run is appended as a tail chunk.
+EXTEND_RUNS = [(0x10CC60, 0x10CC8E, 0x10CE05), (0x2D31A, 0x2D353, 0x2D375), (0x3F6A9, 0x3F6C7, 0x3F6D6),
+               (0x2142E, 0x215FE, 0x21631), (0x2520B, 0x25220, 0x25224)]
+DOS_EXIT = {0x2D353}  # run ends in `mov ax,4C00h / int 21h` (terminates the process)
 # jmp-reached menu bodies (R20/R21): (base, damaged `call far` head, end).  The key table is `mov bx, tab` with
 # `mov cx, n` before the lookup loop; the handler table follows the keys, offsets relative to base.
 MENUS = [(0x10B380, 0x10B4E8, 0x10B6DF), (0x10B720, 0x10B888, 0x10BA7B)]
@@ -148,17 +153,42 @@ def state(item):
     return "mismatch"
 
 
+def norm(x):
+    """Fill the fields the finding-128 entries lack (they were a single contiguous run appended to a one-chunk function)."""
+    x.setdefault("run", [x["before_end"], x["end"]])
+    x.setdefault("run_sha256", x["sha256"])
+    x.setdefault("chunks_before", [[x["ea"], x["before_end"]]])
+    x.setdefault("chunks_after", [[x["ea"], x["end"]]])
+    return x
+
+
 def ext_state(x):
+    """Entry: ea, run [lo, hi) of orphan code, run_sha256, chunks_before/after (sorted chunk lists), before_end/end
+    (main-chunk end, which is what function_bytes.json sees) and sha256 of the bytes appended to the main chunk."""
     f = ida_funcs.get_func(x["ea"])
     if not f or f.start_ea != x["ea"]:
         return "mismatch"
-    if f.end_ea == x["end"]:
+    if chunks(x["ea"]) == x["chunks_after"] and f.end_ea == x["end"]:
         return "applied"
-    if (f.end_ea == x["before_end"] and chunks(x["ea"]) == [[x["ea"], x["before_end"]]]
-            and not any(ida_funcs.get_func(a) for a in range(x["before_end"], x["end"]))
-            and sha(x["before_end"], x["end"]) == x["sha256"]):
+    lo, hi = x["run"]
+    if (chunks(x["ea"]) == x["chunks_before"] and f.end_ea == x["before_end"]
+            and not any(ida_funcs.get_func(a) for a in range(lo, hi)) and sha(lo, hi) == x["run_sha256"]):
         return "fresh"
     return "mismatch"
+
+
+def extend(x):
+    lo, hi = x["run"]
+    f = ida_funcs.get_func(x["ea"])
+    if f.end_ea == lo:
+        must(ida_funcs.set_func_end(x["ea"], hi), "set_func_end 0x%X -> 0x%X" % (x["ea"], hi))
+    else:
+        must(ida_funcs.append_func_tail(f, lo, hi), "append_func_tail 0x%X 0x%X..0x%X" % (x["ea"], lo, hi))
+    if x["chunks_after"] is None:
+        f = ida_funcs.get_func(x["ea"])
+        x["end"], x["chunks_after"] = f.end_ea, chunks(x["ea"])
+        x["sha256"] = sha(x["before_end"], x["end"]) if x["end"] > x["before_end"] else ""
+    must(ext_state(x) == "applied", "extend 0x%X (state %s, chunks %s)" % (x["ea"], ext_state(x), chunks(x["ea"])))
 
 
 def add_all(items, exts=()):
@@ -166,8 +196,7 @@ def add_all(items, exts=()):
     for x in exts:
         if ext_state(x) == "applied":
             continue
-        must(ida_funcs.set_func_end(x["ea"], x["end"]), "set_func_end 0x%X -> 0x%X" % (x["ea"], x["end"]))
-        must(ext_state(x) == "applied" and chunks(x["ea"]) == [[x["ea"], x["end"]]], "extend 0x%X" % x["ea"])
+        extend(x)
     for it in items:
         if state(it) == "applied":
             continue
@@ -221,10 +250,20 @@ def main():
             f = ida_funcs.get_func(ea)
             must(f and f.start_ea == ea, "0x%X is not a function start" % ea)
             if f.end_ea == end and ea in oldx:
-                exts.append(oldx[ea])
+                exts.append(norm(oldx[ea]))
                 continue
             must(terminated(f.end_ea, end), "0x%X..0x%X does not end in a terminator" % (f.end_ea, end))
-            exts.append({"ea": ea, "before_end": f.end_ea, "end": end, "sha256": sha(f.end_ea, end)})
+            exts.append(norm({"ea": ea, "before_end": f.end_ea, "end": end, "sha256": sha(f.end_ea, end)}))
+        for ea, lo, hi in EXTEND_RUNS:
+            if ea in oldx and "run" in oldx[ea]:
+                exts.append(oldx[ea])
+                continue
+            f = ida_funcs.get_func(ea)
+            must(f and f.start_ea == ea, "0x%X is not a function start" % ea)
+            must(not any(ida_funcs.get_func(a) for a in range(lo, hi)), "run 0x%X..0x%X already owned" % (lo, hi))
+            must(terminated(lo, hi) or lo in DOS_EXIT, "run 0x%X..0x%X not terminated" % (lo, hi))
+            exts.append({"ea": ea, "run": [lo, hi], "run_sha256": sha(lo, hi), "before_end": f.end_ea,
+                         "chunks_before": chunks(ea), "end": None, "sha256": None, "chunks_after": None})
         add_all(items, exts)
         MANIFEST.write_text(json.dumps({"finding": 126, "step": "S1c-4 orphan code registered as functions (findings 126-128)",
                                         "extend_funcs": exts, "add_funcs": items}, indent=1).replace("\n", "\r\n"))
@@ -232,7 +271,7 @@ def main():
         log.append("plan written: %s (not saved)" % MANIFEST.name)
         return
     doc = json.loads(MANIFEST.read_text())
-    exts = doc.get("extend_funcs", [])
+    exts = [norm(x) for x in doc.get("extend_funcs", [])]
     states = [state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts]
     log.append("manifest: %d entries (add + extend); live: %d fresh, %d applied, %d mismatched" % (
         len(states), states.count("fresh"), states.count("applied"), states.count("mismatch")))

@@ -167,10 +167,14 @@ DBFL_KILL).
      - **S1c-4c (finding 128):** the 0x12C5xx cluster: sub_12C518 and sub_12C7C6 extended over their jcc/jmp
        continuations, 0x12C683 / 0x12C951 / 0x12CCE9 added; functions 3,549 -> 3,552; backup `.bak_cluster`.
        `verify_rebuild.py` gained an EXTEND category (exact appended-bytes sha256).
-     - Left open (findings 126-128): 6 refused call targets, fl_F continuations, remaining jmp-reached tails, no-xref runs.
+     - **S1c-4d (finding 129):** five fall-through continuations joined to their owners (r27_state_buffer_init_entry,
+       stack_switch_7a32, sub_3F6A9, farobj_record_step as a tail chunk, flag_block_scan_nonzero); functions stay 3,552;
+       backup `.bak_cont`. The manifest now records run, chunk lists before/after and the run's sha256.
+     - Left open (findings 126-129): 6 refused call targets, 7 tiny/misdecoded fl_F fragments, 0x105DA9 and the
+       0x100CC0..0x100DFA data-decoded body, remaining jmp-reached tails, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4;
+     - commit S1c-4d;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;

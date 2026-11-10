@@ -91,7 +91,7 @@ set RBMAN=registry\rebase_fixes2_expected.json & cmd /c "tools\run_idat.bat tool
 #     (manifest registry/flow_fixes_expected.json; FFMODE=plan on a COPY regenerates it, FFDRY=1 checks without saving)
 cmd /c "tools\run_idat.bat tools\apply_flow_fixes.py"
 
-# 6g. S1c-4 orphan code registered as functions: call-reached runs (finding 126) the two R20/R21 menu bodies (finding 127) and the 0x12C5xx cluster (finding 128: two function ends extended, three added)
+# 6g. S1c-4 orphan code registered as functions: call-reached runs (finding 126) the two R20/R21 menu bodies (finding 127) and the 0x12C5xx cluster (finding 128: two function ends extended, three added) and five fall-through continuations (finding 129: five functions extended)
 #     (manifest registry/orphan_funcs_expected.json; OFMODE=plan on a COPY regenerates it, OFDRY=1 checks without saving)
 cmd /c "tools\run_idat.bat tools\apply_orphan_funcs.py"
 
