@@ -6177,3 +6177,113 @@ The rest are `lds` and copies from an unknown ES. These are left unknown on purp
 **Not done.** R69_606E (0x706E0..0x85067) still holds DGROUP plus five sibling data segments as one IDA
 segment, and DGROUP BSS/stack 0x85067..0x85AC0 is unmapped. Splitting a DGROUP segment at 0x7A320 would
 re-base data names and drefs, so it is deferred.
+
+## 2026-11-10 123 - Far calls into the 0x1E10 arena re-pointed from R05 to R29 (variant selector repair, S1a)
+Status: APPLIED (canonical IDB; backup `FALCONCD.EXE.i64.bak_s1a`)
+
+**Problem.** Records R05 (the real image at IDA 0x2E100), R27, R28 and R29 (synthetic, IDA 0x11C3C0) are
+alternative load images of one RTLink overlay arena: all four have w0 = 0x1E10 and the same runtime
+address. IDA resolves a far operand `seg:off` through the identity selector `seg -> para seg`, which always
+lands in the R05 image. So every far call from the menu-time overlays pointed into R05 bytes, where it
+usually hit the middle of an instruction or data. Of the 753 "call into a function body" targets left
+after finding 122, **this was the largest single cause**.
+
+**Which variant is live when (memdumps).** The resident bytes at runtime `(0x1E10+0x1F5)*16` match
+R05 in opening/flight_takeoff/outside_view (0.97/0.92/0.91), and R29 in main_menu, briefing,
+edit_flights, waypoints, pilots and armament (0.74/0.68). **R29 is the menu/briefing variant and R05 the
+sim one.** The two images share only 19.7% of their bytes.
+
+**Resolution rule** (`tools/plan_variant_selectors.py`, over 5,118 direct far calls/jmps into the arena).
+The first rule that decides wins:
+- `intra` (1,152): the caller's own variant owns the seg word as a segment anchor.
+- `segword` (3,480): exactly one variant owns it. R05 and R29 share only anchor 0x1E10, and 21 anchors
+  belong to R29 alone.
+- `family` (472): seg 0x3FA8 is not an anchor of any variant. All its callers are R29 or menu
+  overlays, and the menu memdumps hold R29's three `push bp; mov bp,sp` long-math helpers at +0/+43/+83.
+- `decode_fs` (12): the one variant where the target is a function start.
+- 2 rows are left ambiguous: the seg021 thunk 0x2C304 and R28 0x11C383.
+
+**Cross-checks.**
+- No R05-family code uses any of the 22 remapped selectors, either as a far operand or as a
+  segment-register value.
+- The caller families never mix: R05–R25 call only R05 anchors, and R29–R68 only R29 anchors. The one
+  exception is the seg021 thunk table, which jumps into every variant.
+- Of the contested calls where R05 had a function start but the seg word says R29, 709 have an R29
+  prologue and no R05 prologue.
+
+**Pipeline (manifest-first).**
+1. `tools/export_farcalls.py` is a read-only export of all 13,118 direct far calls/jmps, the variant states,
+   the segment table, and the DS/ES heads that use an R29-only selector.
+2. `tools/plan_variant_selectors.py` writes `registry/variant_sel_expected.json`.
+3. `tools/apply_variant_selectors.py` is the apply step. It checks every item's "before" state and is a
+   no-op once applied. It:
+   - calls `set_selector` for the 22 selectors (seg + 0x1000 -> R29 paragraph);
+   - **swaps the 4,311 far crefs.** It drops the non-user far cref and adds a user `fl_CF`/`fl_JF`. It does
+     not call `del_items`/`create_insn` on far calls: re-creating them made IDA shrink or drop 7 functions
+     (2BE97, 2C2F7, 6760A, 67781, 678FA, 67974, 13DB55; `analysis/s1/exp_sel_all.py`);
+   - moves one function start, 0x13DB55 -> 0x13DB56, past a 1-byte `nop` pad. Its 19 R53/R56 callers
+     enter at +1, and IDA would otherwise move the start itself when the cref is added;
+   - re-creates the 6,310 code heads whose DS/ES holds a remapped selector, after dropping their stale
+     non-user drefs into R05. It never calls auto_wait or plan_range.
+
+**Result.**
+- Calls into function bodies: **753 targets / 4,692 sites -> 522 / 1,368.**
+  - `not_head` (target inside an instruction): 222 -> 65.
+  - Fall-in prologue entries: 57 -> 25.
+  - Fall-in secondary entries: 63 -> 22.
+  - `after_ret_or_jmp` (merged functions): 402 -> 401. These are a separate S1 item.
+  - The remaining 522 are almost all R05/resident (R05 412, seg* 54); only 2 are R29.
+- The re-pointed crefs now land on: a function start 2,005, a code head 271, and **unexplored bytes 2,035**.
+  The unexplored ones are 129 distinct R29 entries that IDA never decoded, because nothing pointed at them.
+  Of these, 117 start with `enter`/`push bp; mov bp,sp` and decode cleanly to `retf`/`jmp`. Examples:
+  0x138F9C (549 callers) and 0x138E6A (337).
+- The 6,310 re-created heads' data xrefs now all point into R29 (the 4FC2/602E/639E ES data).
+- 19 R05 functions lost callers. 14 of them now have no static caller; e.g. `farobj_field_scale_check`
+  0x4ACDC lost 549, `r32_farptr_load_ds` 0x41803 lost 51. Their **names were derived from R29 call
+  sites, so they must be re-checked in S4.**
+
+**Gates.**
+- Function table unchanged except the planned move.
+- Segment-register range counts unchanged.
+- `verify_idb_s1` log (= `verify_idb_local`) byte-identical to the pre-change baseline (3/91/49/5,
+  pre-existing).
+- `extract_ida_bytes` output identical except `sub_13DB55` (8 B) -> `sub_13DB56` (7 B).
+- A rerun reports "already applied: nothing to do".
+
+**S1b: the exposed R29 entries registered** (`tools/register_r29_entries.py`; backup `.bak_s1b`). One script
+runs in two modes.
+- **`VRMODE=plan`** runs on a copy. It performs the registration and records the exact result in
+  `registry/r29_register_expected.json`. Seeds:
+  - the 129 S1a cref targets that are not function starts;
+  - 3 runtime far-transfer targets (`memdump/*fartrans.jsonl`);
+  - transitively, call targets inside the new code (3 rounds: 129 + 43 + 5 + 2).
+- **Default mode** replays the manifest, then requires the function table to equal before + plan exactly,
+  and the head changes outside R29 to equal the recorded ones.
+- Each seed gets flow-based `add_func(ea)`.
+- **Two seeds needed a pre-fix.** 0x127E5A and 0x128AA6 sit directly after the switch jump tables at
+  0x127E4C and 0x128A9A. IDA had misdecoded their first bytes as orphan code in a run on from the table, so
+  those 5 orphan items were undefined first.
+- One far call in the new code (0x1335EF, `2E10:0000`) uses the shared anchor 0x1E10 and got the S1a
+  swap to the R29 image 0x11C3C0.
+
+**Result:**
+- **179 functions / 68,282 B** registered; the table goes 3,354 -> 3,533.
+- Every R29 far-transfer target seen at runtime (172 IPs, 754K events) is now a function start, with 0
+  mid-body.
+- Outside R29 the new code adds data items: 7 new `dw 0` heads in DGROUP (0x79858.., 0x79E48..). 4 old
+  heads were re-typed to the new access width (e.g. 0x79D3C is now inside `dd` 0x79D3A).
+- The new code calls 2 more resident mid-body entries (seg005 `entity_setup_step`, seg020
+  `fixed_vec3_read`). These are resident fall-in entries for the later S1 items.
+
+**S1b gates.**
+- Existing functions are byte-identical in the `extract_ida_bytes` output, and the 179 new ones match the
+  plan.
+- The `verify_idb_s1` log differs only in the function-count line.
+- Rerunning either tool reports "already applied".
+
+**After S1a+S1b:** 524 mid-body targets / 1,409 sites. Of these:
+- `after_ret_or_jmp` (merged functions): 403 / 1,017;
+- `not_head`: 65 / 257;
+- fall-in entries: 47 / 111.
+
+Almost all are R05/resident.

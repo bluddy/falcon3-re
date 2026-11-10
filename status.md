@@ -1,11 +1,13 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-10-24 (session 53 — see Time Log; always bump + append row)
+**Last updated**: 2026-11-10 (session 55 — see Time Log; always bump + append row)
 **Branch**: master (HEAD `6fb6902` at time of writing)
-**Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1, headless only)
+**Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1)
 **IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at
-  `C:\Program Files\IDA Professional 9.1\idat.exe`; interactive IDA must NEVER open
-  Falcon — it holds the Gunship DB)
+  `C:\Program Files\IDA Professional 9.1\idat.exe`). Scripted changes go through headless
+  idat. The "never open Falcon in interactive IDA — it holds the Gunship DB" rule applies
+  only to the machine that hosts the Gunship DB; on the `ybarnoy` machine interactive IDA
+  on Falcon is allowed (close it before running idat — exit=4 otherwise).
 
 > This file is the **entry point for a future agent**. It states the exact current
 > state and the exact method. Deep rationale lives in `docs/findings_log.md`
@@ -47,6 +49,76 @@ See [Code Coverage](docs/code_coverage.md)
 
 See [Game Knowledge Base](docs/game_knowledge_base.md)
 
+## IDB readiness for the function-by-function deep dive (2026-11-10, session 55)
+
+**Question:** after findings 120–122, can we read every function in call-graph order, the way
+Railroad Tycoon was read, or is the IDB still wrong at a basic level?
+
+**Answer:** the addressing model is now right. Four structural defects remain, and each is
+measured below. Until they are fixed, a deep dive would document wrong units and miss the drawing
+code. Measured on a copy (`analysis/segsplit/survey_ready.py` / `survey_mid.py`, read-only,
+DBFL_KILL).
+
+**Steady now:**
+- CS bases are runtime-true (finding 120), DGROUP is proven (finding 121), and per-function
+  DS/SS are applied (finding 122).
+- Resident code is 91.6% inside functions (108,670 B; 757 B unexplored).
+- The 569F family (R30–R68) has 360 KB inside functions and 12 KB unexplored.
+- The call graph is nearly acyclic: 6 cycles of more than one function (23 functions), plus 17
+  self-recursive functions. Collapsing those gives a DAG.
+
+**Remaining defects, in priority order:**
+
+1. **Function boundaries.** About 25% of direct call sites (4,020 calls + 256 jumps) land inside
+   a function body instead of at its start. By target:
+   - 402 targets sit right after a `ret`/`jmp`: merged functions.
+   - 222 targets (about 2,400 sites, mostly R05) are not on an instruction head:
+     misdecode or a wrong caller.
+   - About 120 are fall-in secondary entries.
+   - 52 runtime far-call targets are mid-body (287K events).
+   - The integrity gate is **DAMAGED** against the committed ground truth: 3 missing functions,
+     91 span, 49 name and 5 data-hole problems.
+   - Some of the 1,994 existing names predate findings 120–122 and rest on the old wrong xrefs.
+2. **VGRAPH is missing from the IDB.** At runtime about 1.0M far calls (about 9.4% of the
+   ~10.7M traced) go to CS `0x77A3`, a 12 KB heap block. Its content is `game\VGRAPH`, a
+   runtime-loaded graphics driver:
+   - the 40-word entry table at file offset 0 matches;
+   - the traces hit 126 distinct IPs, 37 of them table entries;
+   - the EXE names `vgraph`/`egraph1`/`egraph0` at file 0x1D518;
+   - `VGRAPHH`/`VGRAPHM` are variants.
+
+   This is very likely the drawing-primitive layer that finding 114 could not find ("rendering
+   code in an undumped overlay"). It must be added as a segment, with its entry table and
+   xrefs, and the game files should be checked for other loaded drivers.
+3. **R05/R27/R28/R29 variant ambiguity, and the unexplored overlay.**
+   - 218 runtime targets (944K events) can't be assigned to one of the variants that share link
+     `0x1E10`.
+   - Unexplored bytes: R29 153 KB, R05 84 KB, R01–R28 74 KB. Much of this is data placed in CODE
+     segments: `R05_44AF` (the sim far data), `R29_3FC2s`, `R05_400C`.
+4. **The IDB is not at rest, and indirect edges are missing.**
+   - The auto queue is non-empty; draining it adds 94 functions.
+   - 527 indirect call/jump sites have no target xref.
+   - 604 functions have no static caller.
+   - Traced far-indirect targets should become user xrefs, but only the traced paths can be
+     recovered that way.
+
+**What stays different from Railroad Tycoon:**
+- The code is mostly hand-written asm (855 ASM / 108 C of 1,215 classified), and there is no
+  16-bit decompiler, so every function is read as assembly.
+- Data knowledge is thin: 11,195 implicit-DS operands still have unknown DS, DGROUP is not its
+  own segment, and about 10 structs exist. This fills in during the deep dive.
+
+**Plan, each step gated before the next:**
+- **S1 Boundaries:** split merged functions, fix the misaligned targets, give fall-in entries
+  their own functions, register the runtime mid-body entries, repair the integrity damage, and
+  drain the auto queue under a manifest. Gate: calls into function bodies close to 0; integrity
+  re-baselined with every difference explained.
+- **S2 VGRAPH:** add it as a segment with its entry table and xrefs; scan for other loaded
+  drivers.
+- **S3 Trace edges:** turn traced indirect calls into user xrefs; rebuild the collapsed call
+  graph and its levels.
+- **S4 Deep dive:** go bottom-up through the graph, re-checking existing names.
+
 ## Immediate Next Steps (in order)
 
 1. ~~**Patch static thunk table in IDA**~~ ✅ DONE (session 17): `tools/patch_thunks_ida.py` ran headless. Thunk table at IDA EA **0x2BD9D** (not 0x1EBAF). 299/303 thunks patched — E8 trap at +0..+2 replaced with NOPs so IDA flows into JMP FAR at +3. Segments converted (JSON seg + 0x0E5E = IDA seg). 4 ambiguous (dup offset 0x000A in recs 1/53) skipped — segments already correct. Log: `analysis/ida_falconcd/patch_thunks.log`.
@@ -61,7 +133,27 @@ See [Game Knowledge Base](docs/game_knowledge_base.md)
 
 6. **Track E first milestone: ISLDAT parser in `rebuild/`** (next, session 53e+): OCaml scaffold per `docs/pipeline.md`, parse `game\ISLDAT.*` byte-on-disk, oracle = `tools/parse_isldat.py` (8/8 ALL OK). Prerequisites now in place — loader found + 11 globals named (finding 106). Remaining knowledge gaps: point transform, attr/opcode/flags, quadrant-AX source.
 
-## Items 1–5 complete; item 6 (Track E parser) is next. Re-plan each session from [Open Items](docs/open_items.md) and `docs/advice.md`.
+7. **IDB stabilisation S1–S4** (session 55+, see "IDB readiness" above). This goes ahead of
+   item 6: a correct IDB comes before the deep dive and the rebuild. S1 (boundaries) is in
+   progress.
+   - **S1a ✅ (finding 123): variant selector repair.**
+     - 4,311 far calls from the menu overlays now resolve into R29 instead of R05.
+     - 6,310 data refs are re-based.
+     - Calls into function bodies: 753 targets / 4,692 sites -> 522 / 1,368.
+     - Gates are green; backup `.bak_s1a`.
+   - **S1b ✅ (finding 123): exposed R29 entries registered.**
+     - 179 functions / 68 KB registered; functions 3,354 -> 3,533.
+     - Every runtime R29 target is now a function start.
+     - Backup `.bak_s1b`.
+   - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
+   - **Next:**
+     - re-baseline the integrity damage (3/91/49/5): live IDB or GT function_bytes as canonical?
+     - 403 merged functions (code after a ret/jmp);
+     - 65 misdecodes;
+     - 47 fall-in entries;
+     - drain the auto queue under a manifest.
+
+## Items 1–5 complete; item 7 (IDB stabilisation) is in progress, then item 6 (Track E parser). Re-plan each session from [Open Items](docs/open_items.md) and `docs/advice.md`.
 
 ## Partial Call Graph (bottom-up method, session 17d)
 
