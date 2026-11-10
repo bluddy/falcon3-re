@@ -1,0 +1,23 @@
+=== 4334E old=4335A name=sub_4335A func 4335A-43395
+  del_func=True
+  4334E b003           mov     al, 3
+  43350 e8e5da         call    sub_40E38
+  43353 8acc           mov     cl, ah
+  43355 32ed           xor     ch, ch
+  43357 b81900         mov     ax, 19h
+  4335A b328           mov     bl, 28h ; '('
+  4335C 03c1           add     ax, cx
+  4335E 02d9           add     bl, cl
+  43360 2ea3fb75       mov     cs:word_42E2B, ax
+  43364 2e881efd75     mov     cs:byte_42E2D, bl
+  43369 2ea3fe75       mov     cs:word_42E2E, ax
+  4336D 2e881e0076     mov     cs:byte_42E30, bl
+  43372 2ec6064e7132   mov     cs:byte_4297E, 32h ; '2'
+  43378 b029           mov     al, 29h ; ')'
+  4337A e8bbda         call    sub_40E38
+  4337D 2e00264e71     add     cs:byte_4297E, ah
+  43382 2ec6064f7110   mov     cs:byte_4297F, 10h
+  43388 2ec606527108   mov     cs:byte_42982, 8
+  4338E 2ec606537108   mov     cs:byte_42983, 8
+  43394 c3             retn
+  original code heads no longer heads: 0 []

@@ -1,0 +1,45 @@
+4335A func 4335A-43395 name sub_4335A flags 5400 ; xrefs to 4335A ['43357/21'] ; to 43353 ['43350/21'] ; to 4334E ['42F6A/19']
+42F5B func 42F5B-42F6D sub_42F5B
+prev items of 4335A: ['43357']
+-- raw bytes 100CA8..100D40: 558bec56578b460a8b560cc476068cc789363e9a8c06409a268944162689541826c7440e000856578d841e2206508d440e06508b460e8b5610268944122689541426ff5c125f5e8ec7268944103d04007714b80300e9f400eab8f62c50b8a80c50e873f3cbc7268a841e222ae426894402268a8420222689440a268a841f222689440626c7440c000026c7440e03003d04007303e9b2003d
+-- 100D00 fixup/bytes: 00e9f400eab8f62c50b8a80c50e8
+imm CA8 hits in seg: ['100D05']
+imm D01 hits in seg: []
+imm D0D hits in seg: []
+imm D0E hits in seg: []
+trial 100CA8: made 34 fails []
+100CA8 55             push    bp
+100CA9 8bec           mov     bp, sp
+100CAB 56             push    si
+100CAC 57             push    di
+100CAD 8b460a         mov     ax, [bp+0Ah]
+100CB0 8b560c         mov     dx, [bp+0Ch]
+100CB3 c47606         les     si, [bp+6]
+100CB6 8cc7           mov     di, es
+100CB8 89363e9a       mov     ds:9A3Eh, si
+100CBC 8c06409a       mov     word ptr ds:9A40h, es
+100CC0 26894416       mov     es:[si+16h], ax
+100CC4 26895418       mov     es:[si+18h], dx
+100CC8 26c7440e0008   mov     word ptr es:[si+0Eh], 800h
+100CCE 56             push    si
+100CCF 57             push    di
+100CD0 8d841e22       lea     ax, [si+221Eh]
+100CD4 06             push    es
+100CD5 50             push    ax
+100CD6 8d440e         lea     ax, [si+0Eh]
+100CD9 06             push    es
+100CDA 50             push    ax
+100CDB 8b460e         mov     ax, [bp+0Eh]
+100CDE 8b5610         mov     dx, [bp+10h]
+100CE1 26894412       mov     es:[si+12h], ax
+100CE5 26895414       mov     es:[si+14h], dx
+100CE9 26ff5c12       call    dword ptr es:[si+12h]
+100CED 5f             pop     di
+100CEE 5e             pop     si
+100CEF 8ec7           mov     es, di
+100CF1 26894410       mov     es:[si+10h], ax
+100CF5 3d0400         cmp     ax, 4
+100CF8 7714           ja      short loc_100D0E
+100CFA b80300         mov     ax, 3
+100CFD e9f400         jmp     loc_100DF4
+100D00 ea             db 0EAh  [NOT REACHED]

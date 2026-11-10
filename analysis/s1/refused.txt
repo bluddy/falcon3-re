@@ -1,0 +1,199 @@
+=== 106EE2
+106ED0 [106EB0] 8bc2               mov     ax, dx 
+106ED2 [106EB0] ab                 stosw 
+106ED3 [106EB0] 8bc6               mov     ax, si 
+106ED5 [106EB0] 8ae1               mov     ah, cl 
+106ED7 [106EB0] ab                 stosw 
+106ED8 [106EB0] e8f5fb             call    sub_106AD0 
+106EDB [106EB0] 1f                 pop     ds 
+106EDC [106EB0] 07                 pop     es 
+106EDD [106EB0] 5f                 pop     di 
+106EDE [106EB0] 5e                 pop     si 
+106EDF [106EB0] 59                 pop     cx 
+106EE0 [106EB0] 5b                 pop     bx 
+106EE1 [106EB0] cb                 retf 
+106EE2 [-] 33c0               xor     ax, ax <- 106F73/17
+106EE4 [-] a33600             mov     ds:36h, ax 
+106EE7 [-] bb3c00             mov     bx, 3Ch ; '<' 
+106EEA [-] ba                 db 0BAh 
+106EEB [-] 00                 db    0 
+106EEC [106EEC] 80833e0500         add     byte ptr [bp+di+53Eh], 0 
+106EF1 [106EEC] 057518             add     ax, 1875h 
+106EF4 [106EEC] c7063600ffff       mov     word ptr byte_7070C+0Ah, 0FFFFh 
+106EFA [106EEC] cb                 retf 
+106EFB [106EEC] 8b0e3b00           mov     cx, word ptr byte_7070C+0Fh <- 106F11/19
+106EFF [106EEC] b8ffff             mov     ax, 0FFFFh 
+106F02 [106EEC] 41                 inc     cx 
+106F03 [106EEC] d3e0               shl     ax, cl 
+106F05 [106EEC] 050100             add     ax, 1 
+106F08 [106EEC] a33600             mov     word ptr byte_7070C+0Ah, ax 
+106F0B [106EEC] cb                 retf 
+106F0C [106EEC] 833e0b0000         cmp     word ptr byte_706E0+0Bh, 0 
+106F11 [106EEC] 75e8               jnz     short loc_106EFB 
+106F13 [106EEC] 833e000005         cmp     word ptr byte_706E0, 5 
+106F18 [106EEC] 750e               jnz     short loc_106F28 
+106F1A [106EEC] 8a0e3a00           mov     cl, byte_7070C+0Eh 
+106F1E [106EEC] bb0100             mov     bx, 1 
+
+=== 108430
+108420 [-] a1                 db 0A1h 
+108421 [-] 16                 db  16h 
+108422 [-] 00                 db    0 
+108423 [-] 2b                 db  2Bh ; + 
+108424 [-] d8                 db 0D8h 
+108425 [-] 74                 db  74h ; t 
+108426 [-] ae                 db 0AEh 
+108427 [-] e8                 db 0E8h 
+108428 [-] 9e                 db  9Eh 
+108429 [-] 0d                 db  0Dh 
+10842A [-] cb                 db 0CBh 
+10842B [-] 58                 db  58h ; X 
+10842C [-] e8                 db 0E8h 
+10842D [-] 7d                 db  7Dh ; } 
+10842E [-] 07                 db    7 
+10842F [-] cb                 db 0CBh 
+108430 [-] 1e                 push    ds <- 108718/17
+108431 [-] 06                 push    es 
+108432 [-] 8cc8               mov     ax, cs 
+108434 [-] 8ed8               mov     ds, ax 
+108436 [-] b80000             mov     ax, 0 
+108439 [-] bb0600             mov     bx, 6 
+10843C [-] ba                 db 0BAh 
+10843D [10843D] b305               mov     bl, 5 
+10843F [10843D] 9abb2e6c1f         call    op_dispatch 
+108444 [10843D] 2ea31e00           mov     cs:word_10766E, ax 
+108448 [10843D] 9ab37f6c1f         call    state_word_27476_set_ax 
+10844D [10843D] 2ea11e00           mov     ax, cs:word_10766E 
+108451 [10843D] bb0a00             mov     bx, 0Ah 
+108454 [10843D] b94d00             mov     cx, 4Dh ; 'M' 
+108457 [10843D] ba6605             mov     dx, 566h 
+10845A [10843D] 9abb2e6c1f         call    op_dispatch 
+10845F [10843D] bb0100             mov     bx, 1 
+108462 [10843D] 9a25676c1f         call    far_cb_8 
+108467 [10843D] 2bff               sub     di, di 
+108469 [10843D] 9af9816c1f         call    dispatch_22180_then_27474_8 
+10846E [10843D] bb0000             mov     bx, 0 
+
+=== 109445
+109430 [1093A8] 1d                 sub     dx, 1Dh 
+109431 [1093A8] 7e10               jle     short loc_109443 
+109433 [1093A8] 3bda               cmp     bx, dx 
+109435 [1093A8] 7e02               jle     short loc_109439 
+109437 [1093A8] 8bda               mov     bx, dx 
+109439 [1093A8] a3ca1c             mov     ds:1CCAh, ax <- 109435/19
+10943C [1093A8] 891ecc1c           mov     ds:1CCCh, bx 
+109440 [1093A8] e80200             call    loc_109445 
+109443 [1093A8] 1f                 pop     ds <- 1093FB/19,109407/19,10940D/19,109413/19,109419/19
+109444 [1093A8] c3                 retn 
+109445 [-] 06                 push    es <- 109440/17
+109446 [-] 8cc8               mov     ax, cs 
+109448 [-] 8ec0               mov     es, ax 
+10944A [-] b8                 db 0B8h 
+10944B [-] cdab               dw 0ABCDh <- 1093A9/2
+10944D [-] b9                 db 0B9h 
+10944E [-] fe                 db 0FEh 
+10944F [-] ff                 db 0FFh 
+109450 [-] be                 db 0BEh 
+109451 [-] 6a                 db  6Ah ; j 
+109452 [-] 00                 db    0 
+109453 [-] 9a                 db  9Ah 
+109454 [-] c4                 db 0C4h 
+109455 [-] 31                 db  31h ; 1 
+109456 [-] 6c                 db  6Ch ; l 
+109457 [-] 1f                 db  1Fh 
+109458 [-] bf                 db 0BFh 
+109459 [-] aa                 db 0AAh 
+10945A [-] 1c                 db  1Ch 
+10945B [-] be                 db 0BEh 
+10945C [-] 6c                 db  6Ch ; l 
+10945D [-] 00                 db    0 
+10945E [-] a5                 db 0A5h 
+10945F [-] b8                 db 0B8h 
+109460 [-] cdab               dw 0ABCDh <- 1093B2/2
+109462 [-] 9a                 db  9Ah 
+109463 [-] 4e                 db  4Eh ; N 
+109464 [-] 54                 db  54h ; T 
+109465 [-] 64                 db  64h ; d 
+109466 [-] 2f                 db  2Fh ; / 
+109467 [-] 1e                 db  1Eh 
+109468 [-] 8e                 db  8Eh 
+109469 [-] da                 db 0DAh 
+10946A [-] 8b                 db  8Bh 
+10946B [-] f0                 db 0F0h 
+10946C [-] bf                 db 0BFh 
+10946D [-] ad                 db 0ADh 
+10946E [-] 1c                 db  1Ch 
+10946F [-] b9                 db 0B9h 
+
+=== 10CE30
+10CE20 [10CE05] eb0c               jmp     short loc_10CE2E 
+10CE22 [10CE05] 0e                 push    cs <- 10CE12/19
+10CE23 [10CE05] e8c601             call    near ptr sub_10CFEC 
+10CE26 [10CE05] 90                 nop 
+10CE27 [10CE05] eb05               jmp     short loc_10CE2E 
+10CE29 [10CE05] 0e                 push    cs <- 10CE17/19
+10CE2A [10CE05] e87b03             call    near ptr sub_10D1A8 
+10CE2D [10CE05] 90                 nop 
+10CE2E [10CE05] 5d                 pop     bp <- 10CE19/19,10CE20/19,10CE27/19
+10CE2F [10CE05] cb                 retf 
+10CE30 [-] 55                 push    bp <- 10CE1C/17
+10CE31 [-] 8bec               mov     bp, sp 
+10CE33 [-] 56                 push    si 
+10CE34 [-] 57                 push    di 
+10CE35 [-] b8f031             mov     ax, 31F0h 
+10CE38 [-] 8ec0               mov     es, ax 
+10CE3A [-] 26a1a20c           mov     ax, word ptr es:loc_32BA0+2 
+10CE3E [-] ba327a             mov     dx, 7A32h 
+10CE41 [-] 8ec2               mov     es, dx 
+10CE43 [-] 26a36aaf           mov     es:0AF6Ah, ax 
+10CE47 [-] b8f031             mov     ax, 31F0h 
+10CE4A [-] 8ec0               mov     es, ax 
+10CE4C [-] 26a1a40c           mov     ax, word ptr es:loc_32BA3+1 
+
+=== 1129F7?
+129E7 [1293B] a35d0e             mov     cs:word_129FD, ax 
+129EA [1293B] 2ea3600e           mov     cs:word_12A00, ax 
+129EE [1293B] 2ea3ab0e           mov     word ptr cs:loc_12A4A+1, ax 
+129F2 [1293B] 2ea3730f           mov     cs:word_12B13, ax 
+129F6 [1293B] c3                 retn 
+129F7 [-] 57                 push    di <- 109670/16,109685/16
+129F8 [-] 56                 push    si 
+129F9 [-] bbcdab             mov     bx, 0ABCDh 
+129FC [-] ba                 db 0BAh 
+129FD [-] cdab               dw 0ABCDh <- 129E6/2,12A34/2
+129FF [-] be                 db 0BEh 
+12A00 [-] cdab               dw 0ABCDh <- 129EA/2,12A39/2
+12A02 [-] 8bc38bea56b914008905896d0289750483c70605 db 8Bh, 0C3h, 8Bh, 0EAh, 56h, 0B9h, 14h, 0, 89h, 5, 89h 
+12A16 [-] cdab               dw 0ABCDh <- 129B9/2
+12A18 [-] 81c5               db 81h, 0C5h 
+12A1A [-] cdab               dw 0ABCDh <- 129C0/2
+12A1C [-] 81c6               db 81h, 0C6h 
+12A1E [-] cdab               dw 0ABCDh <- 129C7/2
+12A20 [-] e2e85e81eb         db 0E2h, 0E8h, 5Eh, 81h, 0EBh 
+12A25 [-] cdab               dw 0ABCDh <- 129CE/2
+
+=== 10931E
+109318 [-] 30                 db  30h ; 0 
+109319 [-] 00                 db    0 
+10931A [-] 00                 db    0 
+10931B [-] 00                 db    0 
+10931C [-] 00                 db    0 
+10931D [-] 00                 db    0 
+10931E [-] 2e890e391d         mov     cs:word_109389, cx <- 10861B/17
+109323 [-] 1e                 push    ds 
+109324 [-] 8cc0               mov     ax, es 
+109326 [-] 8ed8               mov     ds, ax 
+109328 [-] 8cc8               mov     ax, cs 
+10932A [-] 8ec0               mov     es, ax 
+10932C [-] bb2e00             mov     bx, 2Eh ; '.' 
+10932F [-] bf4e1c             mov     di, 1C4Eh 
+109332 [-] 9a4f196c1f         call    vec_delta_norm_1f6ee 
+109337 [-] 8cc8               mov     ax, cs 
+109339 [-] 8ed8               mov     ds, ax 
+10933B [-] be4e1c             mov     si, 1C4Eh 
+10933E [-] 9a380c6c1f         call    sub_202F8 
+109343 [-] 7261               jb      short loc_1093A6 
+109345 [-] 2d0500             sub     ax, 5 
+109348 [-] 83eb05             sub     bx, 5 
+10934B [-] 3b063e02           cmp     ax, ds:23Eh 
+10934F [-] 7e55               jle     short loc_1093A6 

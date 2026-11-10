@@ -1,0 +1,111 @@
+=== 6EC17 func -  xrefs to: ['6EC16/21']
+  6EC13 cb           retf                               f=6EA4A-6EC14
+  6EC14 1b00         sbb     ax, [bx+si]                f=6EC14-6EC17
+  6EC16 41           inc     cx                         f=6EC14-6EC17
+  6EC17 004500       add     [di+0], al                 f=-
+  6EC1A 50           push    ax                         f=-
+  6EC1B 005100       add     [bx+di+0], dl              f=-
+  6EC1E 52           push    dx                         f=-
+  6EC1F 00060346     add     ds:4603h, al               f=-
+  6EC23 0204         add     al, [si]                   f=-
+  6EC25 028702c5     add     al, [bx-3AFEh]             f=-
+  6EC29 02ce         add     cl, dh                     f=-
+  6EC2B 01           db    1                            f=- [DATA]
+  6EC2C 55           push    bp                         f=6EC2C-6ED0A
+  6EC2D 8bec         mov     bp, sp                     f=6EC2C-6ED0A
+
+=== 6EF1F func -  xrefs to: ['6EF1E/21']
+  6EF1B cb           retf                               f=6ED0A-6EF1C
+  6EF1C 1b00         sbb     ax, [bx+si]                f=6EF1C-6EF1F
+  6EF1E 44           inc     sp                         f=6EF1C-6EF1F
+  6EF1F 004b00       add     [bp+di+0], cl              f=-
+  6EF22 4d           dec     bp                         f=-
+  6EF23 005200       add     [bp+si+0], dl              f=-
+  6EF26 e505         in      ax, 5; DMA controller, 823 f=-
+  6EF28 56           push    si                         f=-
+  6EF29 05e505       add     ax, 5E5h                   f=-
+  6EF2C e505         in      ax, 5; DMA controller, 823 f=-
+  6EF2E 98           cbw                                f=-
+  6EF2F 05           db    5                            f=- [DATA]
+  6EF30 c8           db 0C8h                            f=- [DATA]
+  6EF31 0200         add     al, [bx+si]                f=6EF31-6F1CE
+
+=== 2E1E8 func -  xrefs to: ['2E1E6/21']
+  2E1E2 1b03         sbb     ax, [bp+di]                f=2E1C2-2E1E8
+  2E1E4 1c02         sbb     al, 2                      f=2E1C2-2E1E8
+  2E1E6 2002         and     [bp+si], al                f=2E1C2-2E1E8
+  2E1E8 2101         and     [bx+di], ax                f=-
+  2E1EA 2200         and     al, [bx+si]                f=-
+  2E1EC b800c2       mov     ax, 0C200h                 f=-
+  2E1EF 00b800b8     add     [bx+si-4800h], bh          f=-
+  2E1F3 00           add     ah, cl                     f=-
+  2E1F3 00cc         add     ah, cl                     f=-
+  2E1F5 00           add     [bx+si-4800h], bh          f=-
+  2E1F5 00b800b8     add     [bx+si-4800h], bh          f=-
+  2E1F9 00           add     [bx+si-4800h], bh          f=-
+  2E1F9 00b800b8     add     [bx+si-4800h], bh          f=-
+  2E1FD 00           add     dh, bl                     f=-
+
+=== 22C8B func -  xrefs to: ['22C87/21']
+  22C80 00b60003     add     [bp+300h], dh              f=22C62-22C8B
+  22C84 800b80       or      byte ptr [bp+di], 80h      f=22C62-22C8B
+  22C87 0f800ee8     jo      loc_21499                  f=22C62-22C8B
+  22C8B 48           dec     ax                         f=-
+  22C8C 00908bc1     add     [bx+si-3E75h], dl          f=-
+  22C90 cb           retf                               f=-
+  22C91 50           push    ax                         f=22C91-22CD5
+  22C92 52           push    dx                         f=22C91-22CD5
+  22C93 2ea1b135     mov     ax, cs:word_22C71          f=22C91-22CD5
+  22C97 2ef726bd35   mul     word ptr cs:loc_22C7C+1    f=22C91-22CD5
+  22C9C 2ef736c335   div     word ptr cs:loc_22C80+3    f=22C91-22CD5
+  22CA1 2e8916b135   mov     cs:word_22C71, dx          f=22C91-22CD5
+  22CA6 8bca         mov     cx, dx                     f=22C91-22CD5
+  22CA8 2ea1b335     mov     ax, cs:word_22C73          f=22C91-22CD5
+
+=== 67F77 func -  xrefs to: ['67F72/21']
+  67F6D ba9478       mov     dx, 7894h                  f=67F59-67F77
+  67F70 8ec2         mov     es, dx                     f=67F59-67F77
+  67F72 26c41e2c15   les     bx, es:dword_79E6C         f=67F59-67F77
+  67F77 03d8         add     bx, ax                     f=-
+  67F79 26           db  26h ; &                        f=- [DATA]
+  67F7A c6           db 0C6h                            f=- [DATA]
+  67F7B 47           inc     di                         f=67F7B-67F96
+  67F7C 0b00         or      ax, [bx+si]                f=67F7B-67F96
+  67F7E b89478       mov     ax, 7894h                  f=67F7B-67F96
+  67F81 8ec0         mov     es, ax                     f=67F7B-67F96
+  67F83 26a1f415     mov     ax, es:word_79F34          f=67F7B-67F96
+  67F87 ba1700       mov     dx, 17h                    f=67F7B-67F96
+  67F8A f7ea         imul    dx                         f=67F7B-67F96
+  67F8C ba9478       mov     dx, 7894h                  f=67F7B-67F96
+
+=== 69720 func -  xrefs to: ['6971B/21']
+  69714 8ec0         mov     es, ax                     f=69705-69720
+  69716 26ff36d102   push    es:word_6E151              f=69705-69720
+  6971B 26ff36cf02   push    es:word_6E14F              f=69705-69720
+  69720 6a00         push    0                          f=-
+  69722 6a           db  6Ah ; j                        f=- [DATA]
+  69723 006a06       add     [bp+si+6], ch              f=69723-69AC6
+  69726 9ad82e6c1f   call    op_dispatch_far_entry      f=69723-69AC6
+  6972B 83c40a       add     sp, 0Ah                    f=69723-69AC6
+  6972E 8bf0         mov     si, ax                     f=69723-69AC6
+  69730 b8e86d       mov     ax, 6DE8h                  f=69723-69AC6
+  69733 8ec0         mov     es, ax                     f=69723-69AC6
+  69735 26ff36e201   push    word ptr es:dword_6E060+2  f=69723-69AC6
+  6973A 26ff36e001   push    word ptr es:dword_6E060    f=69723-69AC6
+  6973F 6a58         push    58h ; 'X'                  f=69723-69AC6
+
+=== 167449 func -  xrefs to: ['167447/21']
+  167440 788e         js      short loc_1673D0           f=167440-167449
+  167442 c026803ec2   shl     byte ptr ds:3E80h, 0C2h    f=167440-167449
+  167447 1900         sbb     [bx+si], ax                f=167440-167449
+  167449 7405         jz      short loc_167450           f=-
+  16744B 9af50f9f66   call    far ptr loc_679E5          f=-
+  167450 9a411ca32a   call    far ptr tail_bridge_to_mod f=166F80-1673D0
+  167455 9ae31aa32a   call    far ptr sub_2C513          f=166F80-1673D0
+  16745A ba9478       mov     dx, 7894h                  f=166F80-1673D0
+  16745D 8ec2         mov     es, dx                     f=166F80-1673D0
+  16745F 26a35e15     mov     es:word_79E9E, ax          f=166F80-1673D0
+  167463 6a0d         push    0Dh                        f=166F80-1673D0
+  167465 9ad91aa32a   call    far ptr sub_2C509          f=166F80-1673D0
+  16746A 59           pop     cx                         f=166F80-1673D0
+  16746B 9a4c55f749   call    sub_13D77C                 f=166F80-1673D0

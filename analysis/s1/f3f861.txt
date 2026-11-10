@@ -1,0 +1,54 @@
+end=3FB22 noret=True
+ret at 3F8D9
+ret at 3FAAD
+ret at 3FB05
+ret at 3FB1C
+--- tail
+3FAF0 [3F861] call    loc_3E1C2
+3FAF2 [3F861] mov     di, [si+6]
+3FAF5 [3F861] pop     word ptr [di+0AEh]
+3FAF9 [3F861] or      ax, ax
+3FAFB [3F861] jz      short loc_3FB00
+3FAFD [3F861] stc
+3FAFE [3F861] jmp     short loc_3FB01
+3FB00 [3F861] clc
+3FB01 [3F861] pop     bx
+3FB02 [3F861] pop     ax
+3FB03 [3F861] pop     di
+3FB04 [3F861] pop     si
+3FB05 [3F861] retn
+3FB07 [3F861] add     al, ch
+3FB09 [3F861] out     dx, al
+3FB0B [3F861] cmp     cs:byte_3D41A, 0Eh
+3FB11 [3F861] jl      short loc_3FB1D
+3FB13 [3F861] call    loc_3FB20
+3FB16 [3F861] cmp     word ptr [si+18h], 0FFFFh
+3FB1A [3F861] jz      short loc_3FB1D
+3FB1C [3F861] retn
+3FB1D [3F861] call    loc_3E962
+3FB20 [3F861] push    es
+3FB21 [3F861] push    si
+3FB22 [3FB22] mov     ax, [si+2]
+3FB25 [3FB22] mov     di, [si+4]
+3FB28 [3FB22] mov     es, ax
+3FB2A [3FB22] mov     ax, 4082h
+3FB2D [3FB22] mov     bh, [si+15h]
+3FB30 [3FB22] xor     bl, bl
+3FB32 [3FB22] shr     bx, 1
+3FB34 [3FB22] shr     bx, 1
+3FB36 [3FB22] sub     bx, 640h
+3FB3A [3FB22] add     bx, cs:word_3E346
+3FB3F [3FB22] mov     cx, 64h ; 'd'
+3FB42 [3FB22] mov     si, 1396h
+3FB45 [3FB22] call    farobj_project_request_setup
+3FB4A [3FB22] pop     si
+3FB4B [3FB22] mov     di, 1396h
+3FB4E [3FB22] mov     cx, 64h ; 'd'
+3FB51 [3FB22] cmp     word ptr [di], 0FFFFh
+3FB54 [3FB22] jz      short loc_3FBC5
+3FB56 [3FB22] push    cx
+3FB57 [3FB22] push    di
+3FB58 [3FB22] cmp     cs:byte_3D41A, 5
+3FB5E [3FB22] jle     short loc_3FB6B
+--- refs to 3FB22
+  3FB21 type=21

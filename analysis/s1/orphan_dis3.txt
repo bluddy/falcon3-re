@@ -1,0 +1,237 @@
+=== 12C4F0..12C540
+12C4F0 [12C4DE]C pop     ds 
+12C4F1 [12C4DE]C retn 
+12C4F2 [-]C push    ds 
+12C4F3 [-]C mov     ax, cs 
+12C4F5 [-]C mov     ds, ax 
+12C4F7 [-]C mov     dx, 3Bh ; ';' 
+12C4FA [-]C mov     ah, 3Ch ; '<' 
+12C4FC [-]C xor     cx, cx 
+12C4FE [-]C int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT) 
+12C500 [-]C jnb     short fwrite 
+12C502 [-]C pop     ds 
+12C503 [-]C retn 
+12C504 [12C504]C mov     bx, ax <- 12C500/19
+12C506 [12C504]C push    bx 
+12C507 [12C504]C mov     ah, 40h ; '@' 
+12C509 [12C504]C mov     cx, 24h ; '$' 
+12C50C [12C504]C mov     dx, 0 
+12C50F [12C504]C int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE 
+12C511 [12C504]C pop     bx 
+12C512 [12C504]C mov     ah, 3Eh 
+12C514 [12C504]C int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE 
+12C516 [12C504]C pop     ds 
+12C517 [12C504]C retn 
+12C518 [12C518]C push    bp <- 12CADA/17
+12C519 [12C518]C push    di 
+12C51A [12C518]C push    ax 
+12C51B [12C518]C push    bx 
+12C51C [12C518]C push    dx 
+12C51D [12C518]C push    si 
+12C51E [12C518]C push    es 
+12C51F [12C518]C push    ds 
+12C520 [12C518]C mov     ax, 709Fh 
+12C523 [12C518]C mov     ds, ax 
+12C525 [12C518]C cmp     ds:word_709F0, 4 
+12C52A [12C518]C jl      short loc_12C532 
+12C52C [12C518]C call    sub_12C970 
+12C52F [12C518]C jmp     loc_12C661 
+12C532 [-]C xor     ax, ax <- 12C52A/19
+12C534 [-]C mov     ds:word_70A76, ax 
+12C537 [-]C mov     ds:word_70A78, ax 
+12C53A [-]C mov     ds:word_70A74, ax 
+12C53D [-]C mov     ds:word_70A7C, ax 
+
+=== 12C655..12C690
+12C651 [-]C mov     ds:word_70A2A+1, 1 
+12C657 [-]C pop     ds 
+12C658 [-]C or      cx, cx <- 12C5AB/19,12C63A/19,12C649/19
+12C65A [-]C jnz     short loc_12C661 
+12C65C [-]C push    cs 
+12C65D [-]C call    near ptr sub_12CB2A 
+12C660 [-]C nop 
+12C661 [-]C pop     ds <- 12C52F/19,12C65A/19
+12C662 [-]C pop     es 
+12C663 [-]C pop     si 
+12C664 [-]C pop     dx 
+12C665 [-]C pop     bx 
+12C666 [-]C pop     ax 
+12C667 [-]C pop     di 
+12C668 [-]C pop     bp 
+12C669 [-]C retf 
+12C66A [12C66A]C push    dx <- 12C709/17,12C737/17,12C746/17
+12C66B [12C66A]C push    bx 
+12C66C [12C66A]C cmp     cx, 6 
+12C66F [12C66A]C jb      short loc_12C674 
+12C671 [12C66A]C mov     cx, 4 
+12C674 [12C66A]C mov     bx, cx <- 12C66F/19
+12C676 [12C66A]C shl     bx, 1 
+12C678 [12C66A]C add     bx, 18h 
+12C67B [12C66A]C call    overlay_undecoded_body_12bd16 
+12C680 [12C66A]C pop     bx 
+12C681 [12C66A]C pop     dx 
+12C682 [12C66A]C retn 
+12C683 [-]C call    loc_12CCE9 <- 12C59F/17
+12C686 [-]C or      ax, ax 
+12C688 [-]C jnz     short loc_12C68E 
+12C68A [-]C mov     cx, 0 
+12C68D [-]C retn 
+12C68E [-]C mov     bx, 60h ; '`' <- 12C688/19
+
+=== 12C7B8..12C840
+12C7B5 [-]C cmp     cx, 100h <- 12C7AF/19
+12C7B9 [-]C jz      short loc_12C7C0 
+12C7BB [-]C cmp     cl, 5 
+12C7BE [-]C jnz     short loc_12C7C3 
+12C7C0 [-]C mov     cx, 1 <- 12C7B9/19
+12C7C3 [-]C or      cl, cl <- 12C7BE/19
+12C7C5 [-]C retn 
+12C7C6 [12C7C6]C push    bp <- 12C642/17
+12C7C7 [12C7C6]C push    si 
+12C7C8 [12C7C6]C push    dx 
+12C7C9 [12C7C6]C push    di 
+12C7CA [12C7C6]C push    ds 
+12C7CB [12C7C6]C push    es 
+12C7CC [12C7C6]C mov     bx, 0 
+12C7CF [12C7C6]C call    overlay_undecoded_body_12bd16 
+12C7D4 [12C7C6]C mov     ax, 709Fh 
+12C7D7 [12C7C6]C mov     ds, ax 
+12C7D9 [12C7C6]C xor     ax, ax 
+12C7DB [12C7C6]C mov     es, ax 
+12C7DD [12C7C6]C mov     bp, es:46Ch 
+12C7E2 [12C7C6]C add     bp, 14h 
+12C7E5 [12C7C6]C mov     ds:word_70BC1, 8 
+12C7EB [12C7C6]C mov     ds:word_70BC3, 0 
+12C7F1 [12C7C6]C call    sub_12BBA6 
+12C7F6 [12C7C6]C call    sub_12BBA6 <- 12C839/19
+12C7FB [12C7C6]C call    flag_block_build <- 12C834/19
+12C800 [12C7C6]C jnb     short loc_12C826 
+12C802 [12C7C6]C call    flag_block_scan_nonzero 
+12C807 [12C7C6]C cmp     al, 1Bh 
+12C809 [12C7C6]C jz      short loc_12C80F 
+12C80B [12C7C6]C cmp     al, 0 
+12C80D [12C7C6]C jz      short loc_12C826 
+12C80F [12C7C6]C mov     ax, 709Fh <- 12C809/19
+12C812 [12C7C6]C mov     es, ax 
+12C814 [12C7C6]C xor     ax, ax 
+12C816 [12C7C6]C mov     es:word_709F0, ax 
+12C81A [12C7C6]C mov     es:byte_70A37, al 
+12C81E [12C7C6]C mov     es, ax 
+12C820 [12C7C6]C mov     cx, 0FFFEh 
+12C823 [12C7C6]C jmp     loc_12C90B 
+12C826 [-]C call    sub_12BA73 <- 12C800/19,12C80D/19
+12C82B [-]C jnz     short loc_12C83B 
+12C82D [-]C push    bp 
+12C82E [-]C sub     bp, es:46Ch 
+12C833 [-]C pop     bp 
+12C834 [-]C jg      short loc_12C7FB 
+12C836 [-]C add     bp, 14h 
+12C839 [-]C jmp     short loc_12C7F6 
+12C83B [-]C mov     bp, es:46Ch <- 12C82B/19
+
+=== 12C940..12C9E4
+12C940 [-]C add     cs:word_12C400, ax 
+12C945 [-]C add     cs:word_12C400, cx 
+12C94A [-]C and     ax, 7 
+12C94D [-]C add     cx, ax 
+12C94F [-]C pop     ds 
+12C950 [-]C retn 
+12C951 [-]C push    es <- 12C5B3/17,12C6A4/17,12C6B5/17,12C75D/17
+12C952 [-]C xor     ax, ax 
+12C954 [-]C mov     es, ax 
+12C956 [-]C mov     ax, es:46Ch 
+12C95A [-]C cmp     ax, es:46Ch <- 12C95F/19
+12C95F [-]C jz      short loc_12C95A 
+12C961 [-]C mov     ax, es:46Ch <- 12C96C/19
+12C965 [-]C cmp     ax, es:46Ch <- 12C96A/19
+12C96A [-]C jz      short loc_12C965 
+12C96C [-]C loop    loc_12C961 
+12C96E [-]C pop     es 
+12C96F [-]C retn 
+12C970 [12C970]C xor     ax, ax <- 12C52C/17
+12C972 [12C970]C mov     ds:86h, ax 
+12C975 [12C970]C mov     ds:88h, ax 
+12C978 [12C970]C mov     ds:84h, ax 
+12C97B [12C970]C mov     ds:8Ch, ax 
+12C97E [12C970]C mov     ds:82h, ax 
+12C981 [12C970]C mov     word ptr ds:80h, 3C5h 
+12C987 [12C970]C push    es 
+12C988 [12C970]C mov     ax, 709Fh 
+12C98B [12C970]C mov     es, ax 
+12C98D [12C970]C mov     es:byte_709F2, 1 
+12C993 [12C970]C test    byte ptr ds:9Ch, 4 
+12C998 [12C970]C push    ds 
+12C999 [12C970]C jz      short loc_12C9B5 
+12C99B [12C970]C mov     es:byte_709F2, 0 
+12C9A1 [12C970]C call    sub_12D16E 
+12C9A6 [12C970]C cmp     word ptr ds:3Bh, 0 
+12C9AB [12C970]C jz      short loc_12C9C7 
+12C9AD [12C970]C mov     word ptr ds:9, 1 
+12C9B3 [12C970]C jmp     short loc_12C9CD 
+12C9B5 [12C970]C call    sub_12CEA0 <- 12C999/19
+12C9BA [12C970]C mov     word ptr ds:0, 5 
+12C9C0 [12C970]C cmp     word ptr ds:3Bh, 0 
+12C9C5 [12C970]C jnz     short loc_12C9CD 
+12C9C7 [12C970]C mov     word ptr ds:0, 0 <- 12C9AB/19
+12C9CD [12C970]C pop     ds <- 12C9B3/19,12C9C5/19
+12C9CE [12C970]C pop     es 
+12C9CF [12C970]C retn 
+12C9D0 [-]C push    bx 
+12C9D1 [-]C push    bp 
+12C9D2 [-]C mov     bp, sp 
+12C9D4 [-]C mov     bx, [bp+8] 
+12C9D7 [-]C call    overlay_undecoded_body_12bd16 
+12C9DC [-]C pop     bp 
+12C9DD [-]C pop     bx 
+12C9DE [-]C retf 
+12C9DF [12C9DF]C push    ds <- 12D24D/16
+12C9E0 [12C9DF]C push    bp 
+12C9E1 [12C9DF]C push    si 
+12C9E2 [12C9DF]C mov     bp, sp 
+
+=== 12CB1C..12CB34
+12CB1C [12CAEF]C inc     cx 
+12CB1D [12CAEF]C mov     ax, 709Fh <- 12CB14/19
+12CB20 [12CAEF]C mov     ds, ax 
+12CB22 [12CAEF]C mov     byte ptr ds:word_70A2A, cl <- 12CAFB/19,12CB02/19
+12CB26 [12CAEF]C retn 
+12CB27 [-]C push    ds 
+12CB28 [-]C pop     ds 
+12CB29 [-]C retn 
+12CB2A [12CB2A]C push    ds <- 12C65D/17,12D0C1/16,12D31C/16
+12CB2B [12CB2A]C push    es 
+12CB2C [12CB2A]C push    ax 
+12CB2D [12CB2A]C push    cx 
+12CB2E [12CB2A]C mov     ax, 709Fh 
+12CB31 [12CB2A]C mov     ds, ax 
+12CB33 [12CB2A]C mov     es, ax 
+
+=== 12CCDC..12CCF8
+12CCDB [12CB2A]C jz      short loc_12CCBD 
+12CCDD [12CB2A]C call    sub_12BBA6 <- 12CCC3/19
+12CCE2 [12CB2A]C jmp     short loc_12CCB3 
+12CCE4 [12CB2A]C pop     cx <- 12CB3C/19,12CBFF/19,12CCD3/19,12CCD5/19
+12CCE5 [12CB2A]C pop     ax 
+12CCE6 [12CB2A]C pop     es 
+12CCE7 [12CB2A]C pop     ds 
+12CCE8 [12CB2A]C retf 
+12CCE9 [-]C push    es <- 12C683/17
+12CCEA [-]C mov     bx, ds 
+12CCEC [-]C mov     es, bx 
+12CCEE [-]C mov     bx, 28h ; '(' 
+12CCF1 [-]C call    overlay_undecoded_body_12bd16 
+12CCF6 [-]C mov     byte ptr ds:0AD5h, 20h ; ' ' 
+
+=== 12CE90..12CEA4
+12CE8F [-]C call    far_cb_0 
+12CE94 [-]C jmp     loc_12CDB4 <- 12CDFD/19
+12CE97 [-]C pop     bx <- 12CE2C/19
+12CE98 [-]C mov     ax, 0 
+12CE9B [-]C pop     es 
+12CE9C [-]C retn 
+12CE9D [-]D db    0 
+12CE9E [-]D db    0 
+12CE9F [-]D db    0 
+12CEA0 [12CEA0]C push    ds <- 12C9B5/16
+12CEA1 [12CEA0]C push    es 
+12CEA2 [12CEA0]C cmp     word ptr ds:0, 5 

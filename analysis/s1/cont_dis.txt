@@ -1,0 +1,294 @@
+=== 10CC8E..10CE05
+  pre 10CC74 [10CC60]C mov     es, ax 
+  pre 10CC76 [10CC60]C mov     word ptr es:0AF40h, 7A32h 
+  pre 10CC7D [10CC60]C mov     word ptr es:0AF3Eh, 0AF96h 
+  pre 10CC84 [10CC60]C call    state_word_26400_get_zero 
+  pre 10CC89 [10CC60]C mov     bx, 7A32h 
+  pre 10CC8C [10CC60]C mov     es, bx 
+      10CC8E [-]C mov     es:0AF58h, dx 
+      10CC93 [-]C mov     es:0AF56h, ax 
+      10CC97 [-]C mov     ax, 7A32h 
+      10CC9A [-]C mov     es, ax 
+      10CC9C [-]C mov     ax, es:0AF58h 
+      10CCA0 [-]C mov     dx, es:0AF56h 
+      10CCA5 [-]C add     dx, 0C350h 
+      10CCA9 [-]C mov     bx, 7A32h 
+      10CCAC [-]C mov     es, bx 
+      10CCAE [-]C mov     es:0AF78h, ax 
+      10CCB2 [-]C mov     es:0AF76h, dx 
+      10CCB7 [-]C mov     ax, 7A32h 
+      10CCBA [-]C mov     es, ax 
+      10CCBC [-]C mov     ax, es:0AF58h 
+      ... (125 heads)
+      10CE01 [-]C pop     di 
+      10CE02 [-]C pop     si 
+      10CE03 [-]C pop     bp 
+      10CE04 [-]C retf 
+  next 10CE05 [10CE05]C push    bp <- 10CC1E/17,10CDF7/17
+
+=== 105DA9..105EB5
+  pre 105D9D [105D9D]C add     [si], dx <- 106A17/17,1069C2/1
+  pre 105D9F [105D9D]C add     [bx+si], bp 
+  pre 105DA1 [105D9D]C add     [bx+1], sp 
+  pre 105DA4 [105D9D]C pop     es 
+  pre 105DA5 [105D9D]C add     cx, si 
+  pre 105DA7 [105DA7]C add     ax, dx <- 106A4C/17,106A7E/17,1069B4/1
+      105DA9 [-]C add     al, 0D0h 
+      105DAB [-]C add     al, 0D0h 
+      105DAD [-]C add     al, 0D0h 
+      105DAF [-]C add     al, 0D0h 
+      105DB1 [-]C add     al, 0D0h 
+      105DB3 [-]C add     al, 94h 
+      105DB5 [-]C add     [bp+di-21FFh], si 
+      105DB9 [-]C add     [si], ax 
+      105DBB [-]C add     ch, ds:7E02h 
+      105DBF [-]C add     ch, [si+2] 
+      105DC2 [-]C mov     es, word ptr [bp+si] 
+      105DC4 [-]C enter   0DB02h, 2 
+      105DC8 [-]C cmc 
+      105DC9 [-]C add     bl, [bp+di] 
+      ... (179 heads)
+      105EAF [-]C push    dx 
+      105EB0 [-]C and     [si+41h], al 
+      105EB3 [-]C push    sp 
+      105EB4 [-]C inc     cx 
+  next 105EB5 [-]D db    0 
+
+=== 215FE..21631
+  pre 215EC [2142E]C mov     bp, cs:word_1F6DA 
+  pre 215F1 [2142E]C mov     ax, es:3852h 
+  pre 215F5 [2142E]C imul    bp 
+  pre 215F7 [2142E]C idiv    cx 
+  pre 215F9 [2142E]C cmp     ax, 7FFFh 
+  pre 215FC [2142E]C jz      short loc_215E7 
+      215FE [-]C add     ax, 0ABCDh 
+      21601 [-]C cmp     ax, 0ABCDh 
+      21604 [-]C jl      short loc_215E7 
+      21606 [-]C cmp     ax, 0ABCDh 
+      21609 [-]C jg      short loc_215E7 
+      2160B [-]C mov     di, ax 
+      2160D [-]C mov     ax, es:3850h 
+      21611 [-]C imul    bp 
+      21613 [-]C idiv    cx 
+      21615 [-]C cmp     ax, 7FFFh 
+      21618 [-]C jz      short loc_215E7 
+      2161A [-]C add     ax, 0ABCDh 
+      2161D [-]C cmp     ax, 0ABCDh 
+      21620 [-]C jl      short loc_215E7 
+      ... (21 heads)
+      21629 [-]C pop     ax 
+      2162A [-]C call    cs:dword_2209C 
+      2162F [-]C pop     es 
+      21630 [-]C retn 
+  next 21631 [21631]C push    es 
+
+=== 2D353..2D375
+  pre 2D345 [2D31A]C add     ax, 10h 
+  pre 2D348 [2D31A]C adc     dx, 0 
+  pre 2D34B [2D31A]C shr     dx, 1 
+  pre 2D34D [2D31A]C rcr     ax, 1 
+  pre 2D34F [2D31A]C shr     dx, 1 
+  pre 2D351 [2D31A]C rcr     ax, 1 
+      2D353 [-]C shr     dx, 1 
+      2D355 [-]C rcr     ax, 1 
+      2D357 [-]C shr     dx, 1 
+      2D359 [-]C rcr     ax, 1 
+      2D35B [-]C mov     dx, es 
+      2D35D [-]C sub     ax, dx 
+      2D35F [-]C mov     bx, ax 
+      2D361 [-]C mov     ah, 4Ah ; 'J' 
+      2D363 [-]C mov     es, dx 
+      2D365 [-]C int     21h; DOS - 2+ - ADJUST MEMORY BLOCK SIZE (SETBLOCK) 
+      2D367 [-]C mov     dx, ds 
+      2D369 [-]C mov     es, dx 
+      2D36B [-]C call    far ptr alloc_read_mscdex 
+      2D370 [-]C mov     ax, 4C00h 
+      2D373 [-]C int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT) 
+  next 2D375 [-]D db    0 
+
+=== 6EC17..6EC2B
+  pre 6EC0D [6EA4A]C jz      short locret_6EC12 
+  pre 6EC0F [6EA4A]C jmp     loc_6EA56 
+  pre 6EC12 [6EA4A]C leave <- 6EC0D/19
+  pre 6EC13 [6EA4A]C retf 
+  pre 6EC14 [6EC14]C sbb     ax, [bx+si] 
+  pre 6EC16 [6EC14]C inc     cx 
+      6EC17 [-]C add     [di+0], al 
+      6EC1A [-]C push    ax 
+      6EC1B [-]C add     [bx+di+0], dl 
+      6EC1E [-]C push    dx 
+      6EC1F [-]C add     ds:4603h, al 
+      6EC23 [-]C add     al, [si] 
+      6EC25 [-]C add     al, [bx-3AFEh] 
+      6EC29 [-]C add     cl, dh 
+  next 6EC2B [-]D db    1 
+
+=== 6EF1F..6EF2F
+  pre 6EF14 [6ED0A]C pop     cx 
+  pre 6EF15 [6ED0A]C call    loc_100B5 
+  pre 6EF1A [6ED0A]C leave 
+  pre 6EF1B [6ED0A]C retf 
+  pre 6EF1C [6EF1C]C sbb     ax, [bx+si] 
+  pre 6EF1E [6EF1C]C inc     sp 
+      6EF1F [-]C add     [bp+di+0], cl 
+      6EF22 [-]C dec     bp 
+      6EF23 [-]C add     [bp+si+0], dl 
+      6EF26 [-]C in      ax, 5; DMA controller, 8237A-5. 
+      6EF28 [-]C push    si 
+      6EF29 [-]C add     ax, 5E5h 
+      6EF2C [-]C in      ax, 5; DMA controller, 8237A-5. 
+      6EF2E [-]C cbw 
+  next 6EF2F [-]D db    5 
+
+=== 2E1E8..2E1F3
+  pre 2E1DC [2E1C2]C and     [bx+di], ax 
+  pre 2E1DE [2E1C2]C add     [di], ax 
+  pre 2E1E0 [2E1C2]C sbb     al, 0 
+  pre 2E1E2 [2E1C2]C sbb     ax, [bp+di] 
+  pre 2E1E4 [2E1C2]C sbb     al, 2 
+  pre 2E1E6 [2E1C2]C and     [bp+si], al 
+      2E1E8 [-]C and     [bx+di], ax 
+      2E1EA [-]C and     al, [bx+si] 
+      2E1EC [-]C mov     ax, 0C200h 
+      2E1EF [-]C add     [bx+si-4800h], bh 
+  next 2E1F3 [-]D add     ah, cl 
+
+=== 167449..167450
+  pre 167433 [166F80]C mov     es, ax 
+  pre 167435 [166F80]C cmp     es:word_7A276, 0FFh 
+  pre 16743C [166F80]C jz      short loc_167450 
+  pre 167440 [167440]C js      short loc_1673D0 
+  pre 167442 [167440]C shl     byte ptr ds:3E80h, 0C2h 
+  pre 167447 [167440]C sbb     [bx+si], ax 
+      167449 [-]C jz      short loc_167450 
+      16744B [-]C call    far ptr loc_679E5 
+  next 167450 [166F80]C call    far ptr tail_bridge_to_mode_session_state_mirror_init <- 16743C/19,167449/19
+
+=== 22C8B..22C91
+  pre 22C79 [22C62]C pop     es <- 22CEC/3,22CFA/2
+  pre 22C7A [22C62]C jnb     short near ptr loc_22C9C+2 
+  pre 22C7C [22C62]C add     si, [bp+di-4900h] 
+  pre 22C80 [22C62]C add     [bp+300h], dh 
+  pre 22C84 [22C62]C or      byte ptr [bp+di], 80h 
+  pre 22C87 [22C62]C jo      loc_21499 <- 22CC6/3,22D0A/3
+      22C8B [-]C dec     ax 
+      22C8C [-]C add     [bx+si-3E75h], dl 
+      22C90 [-]C retf 
+  next 22C91 [22C91]C push    ax <- 3A014/16,3A092/16,3A4DB/16,3C4C8/16
+
+=== 25220..25224
+  pre 25213 [2520B]C mov     cx, 0Bh 
+  pre 25216 [2520B]C mov     si, 5762h 
+  pre 25219 [2520B]C lodsb <- 2521E/19
+  pre 2521A [2520B]C or      al, al 
+  pre 2521C [2520B]C jnz     short loc_25224 
+  pre 2521E [2520B]C loop    loc_25219 
+      25220 [-]C sub     ax, ax 
+      25222 [-]C jmp     short loc_25242 
+  next 25224 [2520B]C mov     [si-1], ch <- 2521C/19
+
+=== 67F77..67F79
+  pre 67F64 [67F59]C mov     ax, es:word_79F34 
+  pre 67F68 [67F59]C mov     dx, 17h 
+  pre 67F6B [67F59]C imul    dx 
+  pre 67F6D [67F59]C mov     dx, 7894h 
+  pre 67F70 [67F59]C mov     es, dx 
+  pre 67F72 [67F59]C les     bx, es:dword_79E6C 
+      67F77 [-]C add     bx, ax 
+  next 67F79 [-]D db  26h ; & 
+
+=== 69720..69722
+  pre 69708 [69705]C mov     es, ax 
+  pre 6970A [69705]C mov     es:word_6E145, 0 
+  pre 69711 [69705]C mov     ax, 6DE8h 
+  pre 69714 [69705]C mov     es, ax 
+  pre 69716 [69705]C push    es:word_6E151 
+  pre 6971B [69705]C push    es:word_6E14F 
+      69720 [-]C push    0 
+  next 69722 [-]D db  6Ah ; j 
+
+=== 3F6C7..3F6D6
+  pre 3F6B7 [3F6A9]C jz      short loc_3F6CE 
+  pre 3F6B9 [3F6A9]C test    byte ptr [di+4], 84h 
+  pre 3F6BD [3F6A9]C jnz     short loc_3F6CE 
+  pre 3F6BF [3F6A9]C cmp     byte ptr [si+39h], 0 
+  pre 3F6C3 [3F6A9]C jz      short loc_3F6D1 
+  pre 3F6C5 [3F6A9]C jmp     short loc_3F6AD 
+      3F6C7 [-]C pop     ax 
+      3F6C8 [-]C mov     [si+39h], al 
+      3F6CB [-]C xor     ax, ax 
+      3F6CD [-]C retn 
+      3F6CE [-]C inc     byte ptr [si+39h] <- 3F6B7/19,3F6BD/19
+      3F6D1 [-]C pop     ax <- 3F6C3/19
+      3F6D2 [-]C mov     ax, 1 
+      3F6D5 [-]C retn 
+  next 3F6D6 [3F6D6]C push    ds <- 3BE88/17,3D1AF/17,3D20E/17,3D733/17
+
+=== 100DED..100DFA
+  pre 100DDC [-]C call    sub_1010EF 
+  pre 100DDF [-]C call    sub_100DFB 
+  pre 100DE2 [-]C cmp     ax, 306h 
+  pre 100DE5 [-]C jnz     short loc_100DED 
+  pre 100DE7 [-]C mov     ax, 4 
+  pre 100DEA [-]C jmp     short loc_100DF4 
+      100DED [-]C sub     ax, ax <- 100DE5/19
+      100DEF [-]C jmp     short loc_100DF4 
+      100DF1 [-]C mov     ax, 1 <- 100D3C/19,100D44/19
+      100DF4 [-]C pop     di <- 100D62/19,100DEA/19,100DEF/19
+      100DF5 [-]C pop     si 
+      100DF6 [-]C pop     bp 
+      100DF7 [-]C retf    0Ch 
+  next 100DFA [-]D db 0EAh 
+
+=== 4334E..4335A
+  pre 43333 [43307]C call    sub_40E38 
+  pre 43336 [43307]C add     cs:byte_4297E, ah 
+  pre 4333B [43307]C mov     cs:byte_4297F, 10h 
+  pre 43341 [43307]C mov     cs:byte_42982, 0Ah 
+  pre 43347 [43307]C mov     cs:byte_42983, 0Ah 
+  pre 4334D [43307]C retn 
+      4334E [-]C mov     al, 3 <- 42F6A/19
+      43350 [-]C call    sub_40E38 
+      43353 [-]C mov     cl, ah 
+      43355 [-]C xor     ch, ch 
+      43357 [-]C mov     ax, 19h 
+  next 4335A [4335A]C mov     bl, 28h ; '(' 
+
+=== 1093A6..1093A8
+  pre 10937B [-]C cmp     bx, dx 
+  pre 10937D [-]C jle     short loc_109381 
+  pre 10937F [-]C mov     bx, dx 
+  pre 109381 [-]C mov     ds:1CCAh, ax <- 10937D/19
+  pre 109384 [-]C mov     ds:1CCCh, bx 
+  pre 109389 [-]D dw 0ABCDh <- 10931E/2
+      1093A6 [-]C pop     ds <- 109343/19,10934F/19,109355/19,10935B/19
+      1093A7 [-]C retn 
+  next 1093A8 [1093A8]C push    ds <- 10862F/17
+
+=== 12BF89..12BFE1
+  pre 12BF7C [-]D dw offset locret_12BFA7 
+  pre 12BF7E [-]D dw offset sub_12C252 
+  pre 12BF80 [-]D dw offset locret_12BFA7 
+  pre 12BF82 [-]D dw offset locret_12BFA7 
+  pre 12BF84 [-]D dw offset locret_12BFA7 
+  pre 12BF86 [-]D dw offset sub_12C28D 
+      12BF89 [-]C or      ax, 0DB7h 
+      12BF8C [-]C mov     bh, 0Dh 
+      12BF8E [-]C mov     bh, 0Dh 
+      12BF90 [-]C add     dl, [bx+si] 
+      12BF92 [-]C mov     bh, 0Dh 
+      12BF94 [-]C push    es <- 12C0E0/3,12C151/3
+      12BF95 [-]C add     [bp+si+35Ch], cl 
+      12BF99 [-]C xor     bh, bh 
+      12BF9B [-]C shl     bx, 1 
+      12BF9D [-]C cmp     bx, 0Ch 
+      12BFA0 [-]C ja      short locret_12BFA7 
+      12BFA2 [-]C call    cs:off_12BF2A[bx] 
+      12BFA7 [-]C retn <- 12BFA0/19,12BFA2/17,12BFE8/17,12C0AD/17
+      12BFA8 [-]C mov     ax, 709Fh 
+      ... (33 heads)
+      12BFD4 [-]C mov     es:byte_70A2F, al 
+      12BFD8 [-]C mov     es:byte_709F2, al 
+      12BFDC [-]C mov     es:word_70A2A+1, ax 
+      12BFE0 [-]C retn <- 12BFB3/19
+  next 12BFE1 [12BFE1]C xor     ah, ah <- 12BFA2/17,12C0AD/17,12C125/17

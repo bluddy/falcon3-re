@@ -92,7 +92,12 @@ def load_removes():
     p = ROOT / "registry" / "orphan_funcs_expected.json"
     if not p.exists():
         return {}
-    return {e["ea"]: e for e in json.loads(p.read_text()).get("remove_funcs", [])}
+    m = json.loads(p.read_text())
+    out = {e["ea"]: e for e in m.get("remove_funcs", [])}
+    for t in m.get("table_fix", []):          # finding 135: functions deleted together with the table they were misread from
+        for f in t["funcs"]:
+            out[f["ea"]] = f
+    return out
 
 
 def is_expected_remove(removes, a, now):

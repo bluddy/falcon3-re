@@ -1,0 +1,298 @@
+=== 12BF60..12C010
+12BF60 [-]D db 0B7h
+12BF61 [-]D db  0Dh
+12BF62 [-]D db 0B7h
+12BF63 [-]D db  0Dh
+12BF64 [-]D db 0B7h
+12BF65 [-]D db  0Dh
+12BF66 [-]D db 0B7h
+12BF67 [-]D db  0Dh
+12BF68 [-]D db 0B7h
+12BF69 [-]D db  0Dh
+12BF6A [-]D db 0B7h
+12BF6B [-]D db  0Dh
+12BF6C [-]D db 0B7h
+12BF6D [-]D db  0Dh
+12BF6E [-]D db 0B7h
+12BF6F [-]D db  0Dh
+12BF70 [-]D db 0B7h
+12BF71 [-]D db  0Dh
+12BF72 [-]D db 0B7h
+12BF73 [-]D db  0Dh
+12BF74 [-]D db 0B7h
+12BF75 [-]D db  0Dh
+12BF76 [-]D db 0B7h
+12BF77 [-]D db  0Dh
+12BF78 [-]D db 0B7h
+12BF79 [-]D db  0Dh
+12BF7A [-]D db 0B7h
+12BF7B [-]D db  0Dh
+12BF7C [-]D dw offset locret_12BFA7
+12BF7E [-]D dw offset sub_12C252
+12BF80 [-]D dw offset locret_12BFA7
+12BF82 [-]D dw offset locret_12BFA7
+12BF84 [-]D dw offset locret_12BFA7
+12BF86 [-]D dw offset sub_12C28D
+12BF88 [-]D db 0B7h
+12BF89 [-]C or      ax, 0DB7h
+12BF8C [-]C mov     bh, 0Dh
+12BF8E [-]C mov     bh, 0Dh
+12BF90 [-]C add     dl, [bx+si]
+12BF92 [-]C mov     bh, 0Dh
+12BF94 [-]C push    es
+12BF95 [-]C add     [bp+si+35Ch], cl
+12BF99 [-]C xor     bh, bh
+12BF9B [-]C shl     bx, 1
+12BF9D [-]C cmp     bx, 0Ch
+12BFA0 [-]C ja      short locret_12BFA7
+12BFA2 [-]C call    cs:off_12BF2A[bx]
+12BFA7 [-]C retn
+12BFA8 [-]C mov     ax, 709Fh
+12BFAB [-]C mov     es, ax
+12BFAD [-]C cmp     es:word_709F0, 0
+12BFB3 [-]C jz      short locret_12BFE0
+12BFB5 [-]C mov     al, 4
+12BFB7 [-]C push    cs
+12BFB8 [-]C call    near ptr sub_12BC92
+12BFBB [-]C mov     bx, 8
+12BFBE [-]C push    cs
+12BFBF [-]C call    near ptr overlay_undecoded_body_12bd16
+12BFC2 [-]C push    cs
+12BFC3 [-]C call    near ptr interrupt_dma
+12BFC6 [-]C xor     ax, ax
+12BFC8 [-]C mov     es:word_709F0, ax
+12BFCC [-]C mov     es:byte_70A11, al
+12BFD0 [-]C mov     es:word_70A35, ax
+12BFD4 [-]C mov     es:byte_70A2F, al
+12BFD8 [-]C mov     es:byte_709F2, al
+12BFDC [-]C mov     es:word_70A2A+1, ax
+12BFE0 [-]C retn
+12BFE1 [12BFE1]C xor     ah, ah
+12BFE3 [12BFE1]C lodsb
+12BFE4 [12BFE1]C mov     bx, ax
+12BFE6 [12BFE1]C shl     bx, 1
+12BFE8 [12BFE1]C call    cs:off_12BF7C[bx]
+12BFED [12BFE1]C retn
+12BFEE [12BFEE]C push    bp
+12BFEF [12BFEE]C mov     bp, sp
+12BFF1 [12BFEE]C call    retf_noop
+12BFF6 [12BFEE]C push    ds
+12BFF7 [12BFEE]C push    es
+12BFF8 [12BFEE]C push    si
+12BFF9 [12BFEE]C push    di
+12BFFA [12BFEE]C push    bp
+12BFFB [12BFEE]C mov     ax, 709Fh
+12BFFE [12BFEE]C mov     es, ax
+12C000 [12BFEE]C mov     bx, ds:6Dh
+12C004 [12BFEE]C mov     ax, 709Fh
+12C007 [12BFEE]C mov     ds, ax
+12C009 [12BFEE]C mov     es, ax
+12C00B [12BFEE]C inc     ds:word_70A35
+12C00F [12BFEE]C and     ds:word_70A35, 7FFFh
+
+=== 12C960..12CB40
+12C95F [-]C jz      short loc_12C95A
+12C961 [-]C mov     ax, es:46Ch
+12C965 [-]C cmp     ax, es:46Ch
+12C96A [-]C jz      short loc_12C965
+12C96C [-]C loop    loc_12C961
+12C96E [-]C pop     es
+12C96F [-]C retn
+12C970 [-]C xor     ax, ax
+12C972 [-]C mov     ds:86h, ax
+12C975 [-]C mov     ds:88h, ax
+12C978 [-]C mov     ds:84h, ax
+12C97B [-]C mov     ds:8Ch, ax
+12C97E [-]C mov     ds:82h, ax
+12C981 [-]C mov     word ptr ds:80h, 3C5h
+12C987 [-]C push    es
+12C988 [-]C mov     ax, 709Fh
+12C98B [-]C mov     es, ax
+12C98D [-]C mov     es:byte_709F2, 1
+12C993 [-]C test    byte ptr ds:9Ch, 4
+12C998 [-]C push    ds
+12C999 [-]C jz      short loc_12C9B5
+12C99B [-]C mov     es:byte_709F2, 0
+12C9A1 [-]C call    sub_12D16E
+12C9A6 [-]C cmp     word ptr ds:3Bh, 0
+12C9AB [-]C jz      short loc_12C9C7
+12C9AD [-]C mov     word ptr ds:9, 1
+12C9B3 [-]C jmp     short loc_12C9CD
+12C9B5 [-]C call    sub_12CEA0
+12C9BA [-]C mov     word ptr ds:0, 5
+12C9C0 [-]C cmp     word ptr ds:3Bh, 0
+12C9C5 [-]C jnz     short loc_12C9CD
+12C9C7 [-]C mov     word ptr ds:0, 0
+12C9CD [-]C pop     ds
+12C9CE [-]C pop     es
+12C9CF [-]C retn
+12C9D0 [-]C push    bx
+12C9D1 [-]C push    bp
+12C9D2 [-]C mov     bp, sp
+12C9D4 [-]C mov     bx, [bp+8]
+12C9D7 [-]C call    overlay_undecoded_body_12bd16
+12C9DC [-]C pop     bp
+12C9DD [-]C pop     bx
+12C9DE [-]C retf
+12C9DF [12C9DF]C push    ds
+12C9E0 [12C9DF]C push    bp
+12C9E1 [12C9DF]C push    si
+12C9E2 [12C9DF]C mov     bp, sp
+12C9E4 [12C9DF]C mov     si, [bp+0Ah]
+12C9E7 [12C9DF]C mov     ds, word ptr [bp+0Ch]
+12C9EA [12C9DF]C push    es
+12C9EB [12C9DF]C mov     ax, 3CF3h
+12C9EE [12C9DF]C mov     es, ax
+12C9F0 [12C9DF]C mov     cx, 0Ch
+12C9F3 [12C9DF]C mov     di, 4CDh
+12C9F6 [12C9DF]C lodsb
+12C9F7 [12C9DF]C or      al, al
+12C9F9 [12C9DF]C jz      short loc_12CA04
+12C9FB [12C9DF]C cmp     al, 21h ; '!'
+12C9FD [12C9DF]C jge     short loc_12CA01
+12C9FF [12C9DF]C mov     al, 20h ; ' '
+12CA01 [12C9DF]C stosb
+12CA02 [12C9DF]C loop    loc_12C9F6
+12CA04 [12C9DF]C mov     al, 20h ; ' '
+12CA06 [12C9DF]C rep stosb
+12CA08 [12C9DF]C pop     es
+12CA09 [12C9DF]C pop     si
+12CA0A [12C9DF]C pop     bp
+12CA0B [12C9DF]C pop     ds
+12CA0C [12C9DF]C retf
+12CA0D [-]C push    es
+12CA0E [-]C push    ds
+12CA0F [-]C mov     ax, 706Eh
+12CA12 [-]C mov     ds, ax
+12CA14 [-]C mov     ax, 709Fh
+12CA17 [-]C mov     es, ax
+12CA19 [-]C mov     si, 0
+12CA1C [-]C cmp     byte ptr [si+3Ah], 0
+12CA20 [-]C jz      short loc_12CA2C
+12CA22 [-]C mov     es:word_709F0, 0
+12CA29 [-]C jmp     loc_12CAEC
+12CA2C [-]C mov     bx, [si+42h]
+12CA2F [-]C xor     bx, 1
+12CA32 [-]C and     bx, 1
+12CA35 [-]C shl     bx, 1
+12CA37 [-]C shl     bx, 1
+12CA39 [-]C mov     ax, [si+3Eh]
+12CA3C [-]C xor     ax, 1
+12CA3F [-]C or      bx, ax
+12CA41 [-]C shl     bx, 1
+12CA43 [-]C cmp     byte ptr [si+30h], 0
+12CA47 [-]C jnz     short loc_12CA4C
+12CA49 [-]C or      bx, 1
+12CA4C [-]C shl     bx, 1
+12CA4E [-]C mov     ax, [si+40h]
+12CA51 [-]C xor     ax, 1
+12CA54 [-]C and     ax, 1
+12CA57 [-]C or      bx, ax
+12CA59 [-]C mov     es:word_70A8C, bx
+12CA5E [-]C mov     ax, [si+34h]
+12CA61 [-]C mov     es:word_70A8E, ax
+12CA65 [-]C mov     ax, [si+32h]
+12CA68 [-]C mov     es:word_709F0, 2
+12CA6F [-]C cmp     word ptr [si+30h], 2
+12CA73 [-]C jnz     short loc_12CAAD
+12CA75 [-]C mov     es:word_709F0, 4
+12CA7C [-]C cmp     word ptr [si+32h], 2
+12CA80 [-]C jl      short loc_12CA89
+12CA82 [-]C mov     es:word_709F0, 5
+12CA89 [-]C cmp     word ptr [si+3Eh], 0
+12CA8D [-]C jz      short loc_12CA9F
+12CA8F [-]C mov     word ptr es:byte_709FB, 1
+12CA96 [-]C mov     es:word_709F9, 0
+12CA9D [-]C jmp     short loc_12CAAD
+12CA9F [-]C mov     es:word_709F9, 1
+12CAA6 [-]C mov     word ptr es:byte_709FB, 0
+12CAAD [-]C mov     ax, [si+32h]
+12CAB0 [-]C and     ax, 1
+12CAB3 [-]C xor     ax, 1
+12CAB6 [-]C mov     word ptr es:byte_709F3+4, ax
+12CABA [-]C mov     si, 44h ; 'D'
+12CABD [-]C mov     cx, 14h
+12CAC0 [-]C mov     di, 0A6h
+12CAC3 [-]C lodsb
+12CAC4 [-]C stosb
+12CAC5 [-]C or      al, al
+12CAC7 [-]C loopne  loc_12CAC3
+12CAC9 [-]C mov     ax, 14h
+12CACC [-]C sub     ax, cx
+12CACE [-]C mov     word ptr es:byte_70A90, ax
+12CAD2 [-]C mov     ax, es:word_70A8E
+12CAD6 [-]C call    sub_12C49F
+12CAD9 [-]C push    cs
+12CADA [-]C call    near ptr sub_12C518
+12CADD [-]C cmp     cx, 0FFFEh
+12CAE0 [-]C jnz     short loc_12CAE9
+12CAE2 [-]C call    sub_2BDED
+12CAE7 [-]C jmp     short loc_12CAEC
+12CAE9 [-]C call    loc_12CAEF
+12CAEC [-]C pop     es
+12CAED [-]C pop     ds
+12CAEE [-]C retn
+12CAEF [-]C mov     ax, 709Fh
+12CAF2 [-]C mov     ds, ax
+12CAF4 [-]C xor     cx, cx
+12CAF6 [-]C cmp     ds:word_709F0, 0
+12CAFB [-]C jz      short loc_12CB22
+12CAFD [-]C test    byte ptr ds:word_70A8C, 4
+12CB02 [-]C jz      short loc_12CB22
+12CB04 [-]C mov     ax, 709Fh
+12CB07 [-]C mov     ds, ax
+12CB09 [-]C mov     cx, word ptr ds:byte_7159D+5D2h
+12CB0D [-]C or      cx, cx
+12CB0F [-]C jnz     short loc_12CB16
+12CB11 [-]C mov     cx, 1
+12CB14 [-]C jmp     short loc_12CB1D
+12CB16 [-]C sub     cx, 354h
+12CB1A [-]C xchg    ch, cl
+12CB1C [-]C inc     cx
+12CB1D [-]C mov     ax, 709Fh
+12CB20 [-]C mov     ds, ax
+12CB22 [-]C mov     byte ptr ds:word_70A2A, cl
+12CB26 [-]C retn
+12CB27 [-]C push    ds
+12CB28 [-]C pop     ds
+12CB29 [-]C retn
+12CB2A [12CB2A]C push    ds
+12CB2B [12CB2A]C push    es
+12CB2C [12CB2A]C push    ax
+12CB2D [12CB2A]C push    cx
+12CB2E [12CB2A]C mov     ax, 709Fh
+12CB31 [12CB2A]C mov     ds, ax
+12CB33 [12CB2A]C mov     es, ax
+12CB35 [12CB2A]C cmp     ds:word_709F0, 0
+12CB3A [12CB2A]C jnz     short loc_12CB3F
+12CB3C [12CB2A]C jmp     loc_12CCE4
+12CB3F [12CB2A]C cmp     ds:byte_709F2, 1
+
+=== 12CCD0..12CD10
+12CCCF [12CB2A]C cmp     bx, 200h
+12CCD3 [12CB2A]C jmp     short loc_12CCE4
+12CCD5 [12CB2A]C jz      short loc_12CCE4
+12CCD7 [12CB2A]C xor     bx, bx
+12CCD9 [12CB2A]C mov     ds, bx
+12CCDB [12CB2A]C jz      short loc_12CCBD
+12CCDD [12CB2A]C call    sub_12BBA6
+12CCE2 [12CB2A]C jmp     short loc_12CCB3
+12CCE4 [12CB2A]C pop     cx
+12CCE5 [12CB2A]C pop     ax
+12CCE6 [12CB2A]C pop     es
+12CCE7 [12CB2A]C pop     ds
+12CCE8 [12CB2A]C retf
+12CCE9 [-]C push    es
+12CCEA [-]C mov     bx, ds
+12CCEC [-]C mov     es, bx
+12CCEE [-]C mov     bx, 28h ; '('
+12CCF1 [-]C call    overlay_undecoded_body_12bd16
+12CCF6 [-]C mov     byte ptr ds:0AD5h, 20h ; ' '
+12CCFB [-]C call    flag_block_build
+12CD00 [-]C jnb     short loc_12CCFB
+12CD02 [-]C call    flag_block_scan_nonzero
+12CD07 [-]C cmp     al, 6Eh ; 'n'
+12CD09 [-]C jz      short loc_12CD14
+12CD0B [-]C cmp     al, 4Eh ; 'N'
+12CD0D [-]C jz      short loc_12CD14
+12CD0F [-]C mov     ax, 1

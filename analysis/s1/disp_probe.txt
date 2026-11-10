@@ -1,0 +1,63 @@
+== 106A17 table
+1069FD 1069C8  mov     cx, cs:[bx+0C2Eh]                2E 8B 8F 2E 0C
+106A02 1069C8  add     cx, es:word_70A45                26 03 0E 55 00
+106A07 1069C8  cmp     cx, es:word_70A51                26 3B 0E 61 00
+106A0C 1069C8  jg      short loc_106A2F                 7F 21
+106A0E 1069C8  mov     es:word_70A45, cx                26 89 0E 55 00
+106A13 1069C8  push    bx                               53
+106A14 1069C8  mov     di, 1D1h                         BF D1 01
+106A17 1069C8  call    cs:funcs_106A17[bx]              2E FF 97 24 0C
+106A1C 1069C8  pop     bx                               5B
+106A1D 1069C8  sar     bx, 1                            D1 FB
+106A1F 1069C8  inc     bx                               43
+106A20 1069C8  cmp     bx, 5                            83 FB 05
+106A23 1069C8  jl      short loc_106A28                 7C 03
+106A25 1069C8  mov     bx, 0                            BB 00 00
+106A28 1069C8  mov     es:word_70A47, bx                26 89 1E 57 00
+106A2D 1069C8  jmp     short loc_1069F1                 EB C2
+106A2F 1069C8  jmp     short loc_106A91                 EB 60
+106A31 1069C8  db  90h                                  90
+106A32 1069C8  mov     bx, es:word_70A47                26 8B 1E 57 00
+106A37 1069C8  shl     bx, 1                            D1 E3
+106A39 1069C8  mov     cx, cs:[bx+0C2Eh]                2E 8B 8F 2E 0C
+== dispatch region words at cs:0C24..0C40 (seg base 0x100000?)
+word dump 0x106A00..0x106A60: 0C2E 0326 550E 2600 0E3B 0061 217F 8926 550E 5300 D1BF 2E01 97FF 0C24 D15B 43FB FB83 7C05 BB03 0000 8926 571E EB00 EBC2 9060 8B26 571E D100 2EE3 8F8B 0C2E 0326
+== 0x106A3A..0x106AA0
+106A39 1069C8  mov     cx, cs:[bx+0C2Eh]                2E 8B 8F 2E 0C
+106A3E 1069C8  add     cx, es:word_70A45                26 03 0E 55 00
+106A43 1069C8  mov     es:word_70A45, cx                26 89 0E 55 00
+106A48 1069C8  push    bx                               53
+106A49 1069C8  mov     di, 1D1h                         BF D1 01
+106A4C 1069C8  call    cs:funcs_106A17[bx]              2E FF 97 24 0C
+106A51 1069C8  pop     bx                               5B
+106A52 1069C8  sar     bx, 1                            D1 FB
+106A54 1069C8  inc     bx                               43
+106A55 1069C8  cmp     bx, 5                            83 FB 05
+106A58 1069C8  jl      short loc_106A5D                 7C 03
+106A5A 1069C8  mov     bx, 0                            BB 00 00
+106A5D 1069C8  mov     es:word_70A47, bx                26 89 1E 57 00
+106A62 1069C8  shl     bx, 1                            D1 E3
+106A64 1069C8  mov     cx, cs:[bx+0C2Eh]                2E 8B 8F 2E 0C
+106A69 1069C8  add     cx, es:word_70A45                26 03 0E 55 00
+106A6E 1069C8  cmp     cx, es:word_70A51                26 3B 0E 61 00
+106A73 1069C8  jg      short loc_106A91                 7F 1C
+106A75 1069C8  mov     es:word_70A45, cx                26 89 0E 55 00
+106A7A 1069C8  push    bx                               53
+106A7B 1069C8  mov     di, 1D1h                         BF D1 01
+106A7E 1069C8  call    cs:funcs_106A17[bx]              2E FF 97 24 0C
+106A83 1069C8  pop     bx                               5B
+106A84 1069C8  sar     bx, 1                            D1 FB
+106A86 1069C8  inc     bx                               43
+106A87 1069C8  and     bx, 1                            83 E3 01
+106A8A 1069C8  mov     es:word_70A47, bx                26 89 1E 57 00
+106A8F 1069C8  jmp     short loc_106A62                 EB D1
+106A91 1069C8  call    sub_106AA1                       E8 0D 00
+106A94 1069C8  mov     ax, es:word_70A45                26 A1 55 00
+106A98 1069C8  mov     byte ptr es:word_70BC1, al       26 A2 D1 01
+106A9C 1069C8  push    cs                               0E
+106A9D 1069C8  call    near ptr sub_106457              E8 B7 F9
+== table 0x105D90.. words
+0056 0080 009F 00BC 00F2 017A 017D 0114 0128 0167 0107 01F1 04D0 04D0 04D0 04D0 04D0 04D0 0194 01B3 01DE 0204 022E 027E 026C 028E 02C8 02DB 02F5 031B 04D0 03B1
+name at 106A17:  xrefs [('0x106a14', 21)]
+0x105D9D func: sub_105D9D ea 105D9D xrefs [('0x106a17', 17), ('0x1069c2', 1)]
+== 105D9D..105DA9 bytes FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF FF 56 00 80 00 9F 00 BC 00 F2 00 7A 01 7D 01 14 01 28 01 67 01 07 01 F1 01 D0 04 D0 04 D0 04 D0 04

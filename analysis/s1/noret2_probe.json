@@ -1,0 +1,336 @@
+{
+ "2703F": {
+  "name": "farptr_table_get",
+  "chunks": [
+   [
+    159807,
+    159810
+   ]
+  ],
+  "noret": false,
+  "flags": 21506,
+  "exits": [],
+  "before_cut": [
+   [
+    159799,
+    "jnz     short loc_2703D"
+   ],
+   [
+    159801,
+    "mov     es:[di+2Ah], bx"
+   ],
+   [
+    159805,
+    "pop     es"
+   ],
+   [
+    159806,
+    "retf"
+   ],
+   [
+    159807,
+    "mov     di, seg R05_400C"
+   ],
+   [
+    159810,
+    "mov     es, di"
+   ],
+   [
+    159812,
+    "shl     ax, 1"
+   ],
+   [
+    159814,
+    "shl     ax, 1"
+   ],
+   [
+    159816,
+    "add     ax, 34h ; '4'"
+   ],
+   [
+    159819,
+    "mov     di, ax"
+   ],
+   [
+    159821,
+    "les     di, es:[di]"
+   ]
+  ],
+  "cut_prev_targets": []
+ },
+ "322E5": {
+  "name": "mode_extent_recompute",
+  "chunks": [
+   [
+    205541,
+    205704
+   ]
+  ],
+  "noret": true,
+  "flags": 21505,
+  "exits": [],
+  "before_cut": [
+   [
+    205694,
+    "call    dispatch_220f4_stub"
+   ],
+   [
+    205699,
+    "call    terrain_vm_sweep_kick"
+   ],
+   [
+    205704,
+    "call    vga_dac_palette_upload"
+   ],
+   [
+    205709,
+    "call    hw_flag_85052_set_ff"
+   ],
+   [
+    205714,
+    "retn"
+   ],
+   [
+    205715,
+    "mov     ax, 63h ; 'c'"
+   ]
+  ],
+  "cut_prev_targets": [
+   [
+    326846,
+    "terrain_vm_sweep_kick",
+    false,
+    [
+     [
+      326883,
+      "retf"
+     ]
+    ]
+   ]
+  ]
+ },
+ "2FD42": {
+  "name": "game_frame_pipeline_step",
+  "chunks": [
+   [
+    195906,
+    196289
+   ]
+  ],
+  "noret": true,
+  "flags": 21505,
+  "exits": [
+   [
+    196284,
+    "call    terrain_vm_blend_gate",
+    "noret",
+    232593
+   ]
+  ],
+  "before_cut": [
+   [
+    196279,
+    "call    sub_43A68"
+   ],
+   [
+    196284,
+    "call    terrain_vm_blend_gate"
+   ],
+   [
+    196289,
+    "call    ems_terrain_pos_gate"
+   ],
+   [
+    196292,
+    "retn"
+   ],
+   [
+    196293,
+    "cmp     byte ptr ds:45Eh, 0"
+   ],
+   [
+    196298,
+    "jz      short locret_2FEF1"
+   ],
+   [
+    196300,
+    "mov     si, cs:word_2F669"
+   ]
+  ],
+  "cut_prev_targets": [
+   [
+    232593,
+    "terrain_vm_blend_gate",
+    true,
+    [
+     [
+      232613,
+      "call    terrain_vm_blend_apply",
+      "noret",
+      325560
+     ],
+     [
+      232618,
+      "retf"
+     ]
+    ]
+   ]
+  ]
+ },
+ "38C91": {
+  "name": "terrain_vm_blend_gate",
+  "chunks": [
+   [
+    232593,
+    232619
+   ]
+  ],
+  "noret": true,
+  "flags": 21507,
+  "exits": [
+   [
+    232613,
+    "call    terrain_vm_blend_apply",
+    "noret",
+    325560
+   ],
+   [
+    232618,
+    "retf"
+   ]
+  ]
+ },
+ "4F7B8": {
+  "name": "terrain_vm_blend_apply",
+  "chunks": [
+   [
+    325560,
+    325779
+   ]
+  ],
+  "noret": true,
+  "flags": 5123,
+  "exits": [
+   [
+    325595,
+    "retf"
+   ],
+   [
+    325613,
+    "retf"
+   ],
+   [
+    325614,
+    "retn"
+   ],
+   [
+    325615,
+    "retn"
+   ],
+   [
+    325647,
+    "retn"
+   ],
+   [
+    325684,
+    "retn"
+   ],
+   [
+    325743,
+    "retn"
+   ],
+   [
+    325778,
+    "retn"
+   ]
+  ]
+ },
+ "3F700": {
+  "name": "sub_3F700",
+  "chunks": [
+   [
+    259840,
+    259863
+   ]
+  ],
+  "noret": true,
+  "flags": 4609,
+  "exits": [],
+  "before_cut": [
+   [
+    259851,
+    "test    byte ptr cs:sub_40BC5, 2"
+   ],
+   [
+    259857,
+    "nop"
+   ],
+   [
+    259858,
+    "jnz     short sub_3F718"
+   ],
+   [
+    259860,
+    "call    sub_3F788"
+   ],
+   [
+    259863,
+    "retn"
+   ],
+   [
+    259864,
+    "cmp     ax, 486Ah"
+   ],
+   [
+    259867,
+    "jle     short sub_3F71E"
+   ],
+   [
+    259869,
+    "retn"
+   ],
+   [
+    259870,
+    "push    ds"
+   ],
+   [
+    259871,
+    "push    si"
+   ],
+   [
+    259872,
+    "mov     ax, [si+2]"
+   ]
+  ],
+  "cut_prev_targets": [
+   [
+    259976,
+    "sub_3F788",
+    false,
+    [
+     [
+      260000,
+      "retn"
+     ]
+    ]
+   ]
+  ]
+ },
+ "3F788": {
+  "name": "sub_3F788",
+  "chunks": [
+   [
+    259976,
+    260001
+   ]
+  ],
+  "noret": false,
+  "flags": 21504,
+  "exits": [
+   [
+    260000,
+    "retn"
+   ]
+  ]
+ }
+}

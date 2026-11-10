@@ -1,0 +1,438 @@
+=== 22DFF angle_adjusted_copy end=22E77
+22DFF  push    ds
+22E00  push    es
+22E01  mov     ds, cs:word_22DC2
+22E06  mov     si, cs:word_22DC4
+22E0B  mov     es, cs:word_22DC6
+22E10  mov     di, cs:word_22DC8
+22E15  call    sub_22E77
+22E18  mov     bx, 7B0Eh
+22E1B  mov     es, bx
+22E1D  mov     word ptr es:byte_7E96A+0Ch, ax
+22E21  mov     word ptr es:byte_7E96A+0Eh, cx
+22E26  mov     dx, 0ABCDh
+22E29  mov     word ptr es:byte_7E96A+10h, dx
+22E2E  call    view_proj_matmul_3896
+22E31  mov     ax, es
+22E33  mov     ds, ax
+22E35  cmp     word ptr ds:byte_7E96A+0Ah, 0
+22E3A  jg      short loc_22E74
+22E3C  mov     si, 388Ah
+22E3F  call    farobj_tile_copy_resolve
+22E44  add     ax, 0Ch
+22E47  cmp     word ptr ds:byte_7E96A+0Ah, 0
+22E4C  jl      short loc_22E54
+22E4E  cmp     word ptr ds:byte_7E96A+8, ax
+22E52  jnb     short loc_22E74
+22E54  mov     word ptr ds:byte_7E96A+8, ax
+22E57  mov     word ptr ds:byte_7E96A+0Ah, 0
+22E5D  mov     si, 388Ah
+22E60  mov     es, cs:word_22DC2
+22E65  mov     di, cs:word_22DC4
+22E6A  call    sub_22E77
+22E6D  mov     word ptr ds:byte_7E96A+0Ch, ax
+22E70  mov     word ptr ds:byte_7E96A+0Eh, cx
+22E74  pop     es
+22E75  pop     ds
+22E76  retf
+-- end; next head 22E77: push    si
+-- callees:
+   22E77 sub_22E77 noret=False
+   22EA2 view_proj_matmul_3896 noret=False
+   14EAE farobj_tile_copy_resolve noret=False
+
+=== 33116 key_mode_switch_step end=331E4
+33116  call    key_state_machine_tick
+33119  cmp     cs:byte_2F6A9, 0
+3311F  jz      short loc_33124
+33121  jmp     near ptr key_mode_state_setup
+33124  mov     byte_55156, 0
+33129  mov     word_55034, 0FFFFh
+3312F  mov     ax, cs:word_2F667
+33133  add     ax, word_55E50
+33137  call    entity_search_63fd
+3313C  cmp     ax, 0FFFFh
+3313F  jz      short loc_33146
+33141  mov     word_55034, ax
+33144  jmp     short loc_33149
+33146  call    near ptr farobj_selection_gate
+33149  mov     word_54EFA, 1
+3314F  mov     word_54E42, offset aTrack
+33155  mov     word_54E44, ds
+33159  call    mode_extent_recompute
+3315C  mov     word_54F9B, (offset loc_31BD6 - offset funcs_4E5C0)
+33162  mov     word_54F9D, cs
+33166  mov     ax, cs:word_2F669
+3316A  mov     cs:word_2F695, ds
+3316F  mov     cs:word_2F693, ax
+33173  retf
+33174  cmp     word_54F81, 0FFFFh
+33179  jz      short locret_3319D
+3317B  mov     word_54EFA, 0Ch
+33181  mov     byte_55156, 0
+33186  mov     word_54E42, offset aEject
+3318C  mov     word_54E44, ds
+33190  call    mode_extent_recompute
+33193  mov     word_54F9B, (offset loc_31C34 - offset funcs_4E5C0)
+33199  mov     word_54F9D, cs
+3319D  retf
+3319E  mov     word_54EFA, 0Bh
+331A4  mov     byte_55156, 0
+331A9  mov     word_54E42, offset aDeath
+331AF  mov     word_54E44, ds
+331B3  call    mode_extent_recompute
+331B6  mov     word_54F9B, (offset loc_31C5C+2 - offset funcs_4E5C0)
+331BC  mov     word_54F9D, cs
+331C0  retf
+331C1  mov     word_54EFA, 0Dh
+331C7  mov     byte_55156, 0
+331CC  mov     word_54E42, offset aPause
+331D2  mov     word_54E44, ds
+331D6  call    mode_extent_recompute
+331D9  mov     word_54F9B, (offset loc_31C7F+2 - offset funcs_4E5C0)
+331DF  mov     word_54F9D, cs
+331E3  retf
+-- end; next head 331E4: mov     al, cs:byte_2F6A8
+-- callees:
+   3467D key_state_machine_tick noret=False
+   331E4 key_mode_state_setup noret=True
+   4871D entity_search_63fd noret=False
+   34923 farobj_selection_gate noret=False
+   322E5 mode_extent_recompute noret=False
+
+=== 331E4 key_mode_state_setup end=3327A
+331E4  mov     al, cs:byte_2F6A8
+331E8  mov     cs:byte_2F6A7, al
+331EC  mov     ax, cs:word_2F699
+331F0  mov     cs:word_2F695, ax
+331F4  mov     ax, cs:word_2F697
+331F8  mov     cs:word_2F693, ax
+331FC  mov     ax, cs:word_2F69F
+33200  mov     word_54E42, ax
+33203  mov     ax, cs:word_2F6A1
+33207  mov     word_54E44, ax
+3320A  mov     word_54EFA, 0Eh
+33210  call    mode_extent_recompute
+33213  mov     word_54F9B, (offset view_terrain_frame_step+3 - offset funcs_4E5C0)
+33219  mov     word_54F9D, cs
+3321D  retf
+3321E  mov     word_54EFA, 2
+33224  mov     word_54E42, offset aChase
+3322A  mov     word_54E44, ds
+3322E  call    mode_extent_recompute
+33231  mov     word_54F9B, (offset loc_31CDE - offset funcs_4E5C0)
+33237  mov     word_54F9D, cs
+3323B  call    key_state_machine_tick
+3323E  retf
+3323F  mov     al, 0Ch
+33241  call    xlat_mask_setbit_47e
+33244  call    matrix_constants_copy_gate
+33249  jnz     short locret_33258
+3324B  mov     si, cs:word_2F669
+33250  test    word ptr [si+0CAh], 200h
+33256  jz      short loc_33259
+33258  retf
+33259  mov     al, byte_54F23
+3325C  neg     al
+3325E  cbw
+3325F  add     ax, [si+2Eh]
+33262  jg      short loc_3326C
+33264  sub     ax, ax
+33266  mov     [si+0D2h], al
+3326A  jmp     short loc_33276
+3326C  cmp     ax, 9Fh
+3326F  jge     short loc_33276
+33271  or      byte ptr [si+0D2h], 1
+33276  mov     [si+2Eh], ax
+33279  retf
+-- end; next head 3327A: mov     al, 0Dh
+-- callees:
+   322E5 mode_extent_recompute noret=False
+   3467D key_state_machine_tick noret=False
+   30795 xlat_mask_setbit_47e noret=False
+   38CAB matrix_constants_copy_gate noret=False
+
+=== 3343E key_mode_switch_tramp end=33443
+3343E  push    cs
+3343F  call    near ptr key_mode_switch_step
+33442  retf
+-- end; next head 33443: inc     word_54F06
+-- callees:
+   33116 key_mode_switch_step noret=True
+
+=== 3F7A6 farobj_store_32075 end=3F861
+3F7A6  mov     ax, [si+18h]
+3F7A9  mov     cs:word_3F7A1, ax
+3F7AD  mov     word ptr [si+18h], 0FFFFh
+3F7B2  mov     di, [si+6]
+3F7B5  mov     al, [di+76h]
+3F7B8  mov     cs:byte_3F7A5, al
+3F7BC  mov     al, [di+78h]
+3F7BF  mov     ah, 29h ; ')'
+3F7C1  mul     ah
+3F7C3  mov     cs:word_3F7A3, ax
+3F7C7  mov     bx, [si+16h]
+3F7CA  or      ax, ax
+3F7CC  jz      short loc_3F7FE
+3F7CE  test    word ptr [di+0CAh], 100h
+3F7D4  jnz     short loc_3F7FE
+3F7D6  test    byte ptr cs:sub_40BC5, 1
+3F7DC  nop
+3F7DD  jz      short loc_3F7E9
+3F7DF  cmp     byte ptr ds:44Ch, 0
+3F7E4  jz      short loc_3F7FE
+3F7E6  jmp     short loc_3F7F5
+3F7E8  nop
+3F7E9  test    byte ptr [si+0Ah], 8
+3F7ED  jz      short loc_3F7FE
+3F7EF  test    byte ptr [si+0Ah], 80h
+3F7F3  jnz     short loc_3F7FE
+3F7F5  mov     al, [di+77h]
+3F7F8  mov     ah, 29h ; ')'
+3F7FA  mul     ah
+3F7FC  mov     bx, ax
+3F7FE  push    es
+3F7FF  push    si
+3F800  mov     ax, [si+2]
+3F803  mov     di, [si+4]
+3F806  mov     es, ax
+3F808  mov     ax, 2001h
+3F80B  mov     cx, 10h
+3F80E  mov     si, 1396h
+3F811  call    farobj_project_request_setup
+3F816  pop     si
+3F817  pop     es
+3F818  mov     di, 1396h
+3F81B  mov     cx, 10h
+3F81E  cmp     word ptr [di], 0FFFFh
+3F821  jz      short locret_3F860
+3F823  mov     ax, [di+2]
+3F826  cmp     ax, [si]
+3F828  jz      short loc_3F85B
+3F82A  push    di
+3F82B  push    ax
+3F82C  call    sub_40CB7
+3F82F  mov     bl, [di+0Ah]
+3F832  mov     dx, [di+0Ch]
+3F835  mov     di, [di+6]
+3F838  mov     bh, [di+74h]
+3F83B  pop     ax
+3F83C  pop     di
+3F83D  test    bl, 1
+3F840  jz      short loc_3F85B
+3F842  cmp     dx, 4
+3F845  jz      short loc_3F85B
+3F847  test    bh, 10h
+3F84A  jnz     short loc_3F85B
+3F84C  push    di
+3F84D  push    cx
+3F84E  mov     cx, [di]
+3F850  call    near ptr loc_3F8DC+1
+3F853  pop     cx
+3F854  pop     di
+3F855  cmp     word ptr [si+18h], 0FFFFh
+3F859  jnz     short locret_3F860
+3F85B  add     di, 4
+3F85E  loop    loc_3F81E
+3F860  retn
+-- end; next head 3F861: mov     ax, [si+18h]
+-- callees:
+   48E25 farobj_project_request_setup noret=False
+   40CB7 sub_40CB7 noret=False
+
+=== 4FE02 terrain_vm_entry_lookup end=4FE2E
+4FE02  push    ds
+4FE03  mov     si, [si+7Ah]
+4FE06  sub     si, 1
+4FE0A  mov     ax, si
+4FE0C  shl     si, 2
+4FE0F  add     si, ax
+4FE11  mov     ax, 7894h
+4FE14  mov     ds, ax
+4FE16  add     si, 0EF0h
+4FE1A  mov     bl, [si]
+4FE1C  mov     ax, 0FFFFh
+4FE1F  cmp     bl, al
+4FE21  jz      short loc_4FE29
+4FE23  mov     ax, [si+1]
+4FE26  mov     dx, [si+3]
+4FE29  call    loc_4FDB3
+4FE2C  pop     ds
+4FE2D  retf
+-- end; next head 4FE2E: push    ds
+-- callees:
+
+=== 3FD66 sub_3FD66 end=3FD89
+3FD66  add     [bp+51h], dl
+3FD69  push    bp
+3FD6A  test    byte ptr cs:sub_40BC5, 1
+3FD70  nop
+3FD71  jnz     short loc_3FD7E
+3FD73  mov     ax, [si]
+3FD75  call    far ptr sub_44288
+3FD7A  jnb     short farobj_attr_apply_step
+3FD7C  jmp     short loc_3FD85
+3FD7E  call    sub_441F4
+3FD83  jnb     short farobj_attr_apply_step
+3FD85  pop     bp
+3FD86  pop     cx
+3FD87  pop     si
+3FD88  retn
+-- end; next head 3FD89: pop     bp
+-- callees:
+   44288 sub_44288 noret=False
+   3FD89 farobj_attr_apply_step noret=False
+   441F4 sub_441F4 noret=False
+
+=== 3F861 farobj_index_resolve_step end=3FB22
+3F861  mov     ax, [si+18h]
+3F864  mov     cs:word_3F7A1, ax
+3F868  mov     word ptr [si+18h], 0FFFFh
+3F86D  mov     cs:word_3F7A3, 0
+3F874  push    es
+3F875  push    si
+3F876  mov     ax, [si+2]
+3F879  mov     di, [si+4]
+3F87C  mov     es, ax
+3F87E  mov     ax, 2001h
+3F881  mov     bx, [si+16h]
+3F884  mov     cx, 10h
+3F887  mov     si, 1396h
+3F88A  call    farobj_project_request_setup
+3F88F  pop     si
+3F890  pop     es
+3F891  mov     di, 1396h
+3F894  mov     cx, 10h
+3F897  cmp     word ptr [di], 0FFFFh
+3F89A  jz      short locret_3F8D9
+3F89C  mov     ax, [di+2]
+3F89F  cmp     ax, [si]
+3F8A1  jz      short loc_3F8D4
+3F8A3  push    di
+3F8A4  push    ax
+3F8A5  call    sub_40CB7
+3F8A8  mov     bl, [di+0Ah]
+3F8AB  mov     dx, [di+0Ch]
+3F8AE  mov     di, [di+6]
+3F8B1  mov     bh, [di+74h]
+3F8B4  pop     ax
+3F8B5  pop     di
+3F8B6  test    bl, 1
+3F8B9  jz      short loc_3F8D4
+3F8BB  cmp     dx, 4
+3F8BE  jz      short loc_3F8D4
+3F8C0  test    bh, 10h
+3F8C3  jnz     short loc_3F85B
+3F8C5  push    di
+3F8C6  push    cx
+3F8C7  mov     cx, [di]
+3F8C9  call    near ptr loc_3F8DC+1
+3F8CC  pop     cx
+3F8CD  pop     di
+3F8CE  cmp     word ptr [si+18h], 0FFFFh
+3F8D2  jnz     short locret_3F8D9
+3F8D4  add     di, 4
+3F8D7  loop    loc_3F897
+3F8D9  retn
+3F8DA  db 0
+3F8DC  add     bh, bh
+3F8DE  jz      short near ptr loc_3F919+1
+3F8E0  push    word ptr [si+3Ch]
+3F8E3  push    word ptr [si+3Eh]
+3F8E6  push    word ptr [si+40h]
+3F8E9  push    word ptr [si+42h]
+3F8EC  push    word ptr [si+44h]
+3F8EF  push    word ptr [si+1Dh]
+3F8F2  push    word ptr [si+1Fh]
+3F8F5  mov     [si+18h], ax
+3F8F8  mov     cs:byte_3F8DA, bl
+3F8FD  mov     word ptr cs:unk_3F8DB, cx
+3F902  call    sub_4036D
+3F905  call    sub_3F6D6
+3F908  cmp     cs:word_3F7A3, 0
+3F90E  jz      short loc_3F988
+3F910  mov     di, [si+6]
+3F913  test    word ptr [di+0CAh], 100h
+3F919  jnz     short loc_3F988
+3F91B  test    byte ptr [si+0Ah], 8
+3F91F  jz      short loc_3F988
+3F921  test    byte ptr [si+0Ah], 80h
+3F925  jnz     short loc_3F988
+3F927  mov     al, [si+14h]
+3F92A  xor     ah, ah
+3F92C  mov     cl, 4
+3F92E  shl     ax, cl
+3F930  add     ax, 1CCh
+3F933  mov     cx, ax
+3F935  cmp     byte ptr [di+75h], 33h ; '3'
+3F939  jnz     short loc_3F96A
+3F93B  mov     ax, [si+18h]
+3F93E  sub     ax, ds:1360h
+3F942  cmp     ax, cs:word_3B834
+3F947  jnz     short loc_3F953
+3F949  cmp     byte ptr ds:44Ch, 0
+3F94E  jz      short loc_3F953
+3F950  jmp     loc_3FA95
+3F953  mov     al, [si+30h]
+3F956  mov     [si+29h], al
+3F959  call    sub_407B0
+3F95C  mov     byte ptr [si+29h], 0FFh
+3F960  test    byte ptr [di+0Ah], 1
+3F964  jz      short loc_3F96A
+3F966  add     cx, 800h
+3F96A  call    sub_402E1
+3F96D  or      ax, ax
+3F96F  jz      short loc_3F988
+3F971  mov     ax, [si+18h]
+3F974  call    sub_40CB7
+3F977  or      byte ptr [di+0Bh], 1
+3F97B  mov     ax, [si+16h]
+3F97E  cmp     word ptr cs:unk_3F8DB, ax
+3F983  ja      short loc_3F98B
+3F985  jmp     loc_3FA42
+3F988  jmp     short loc_3F9FD
+3F98A  nop
+3F98B  mov     ax, [si+18h]
+3F98E  sub     ax, ds:1360h
+3F992  cmp     ax, cs:word_3B834
+3F997  jnz     short loc_3F9BA
+3F999  mov     al, byte ptr cs:sub_40BC5
+3F99D  push    ax
+3F99E  call    near ptr sub_40BC5+1
+3F9A1  pop     ax
+3F9A2  xchg    al, byte ptr cs:sub_40BC5
+3F9A7  test    al, 4
+3F9A9  nop
+3F9AA  nop
+3F9AB  jnz     short loc_3F9BA
+3F9AD  mov     ax, [si]
+3F9AF  sub     ax, ds:1360h
+3F9B3  push    si
+3F9B4  call    loc_47B68
+3F9B9  pop     si
+3F9BA  mov     ax, cs:word_3F7A3
+3F9BE  cmp     word ptr cs:unk_3F8DB, ax
+3F9C3  ja      short loc_3F9F7
+3F9C5  test    cs:byte_3F7A5, 10h
+3F9CB  jnz     short loc_3F9D4
+3F9CD  cmp     word ptr [si+1Fh], 0FE34h
+3F9D2  jl      short loc_3F9F7
+3F9D4  call    near ptr sub_409BD
+3F9D7  test    byte ptr [si+0Ah], 4
+3F9DB  jnz     short loc_3F9EA
+3F9DD  mov     ax, cs:word_3F7A3
+3F9E1  shr     ax, 1
+3F9E3  cmp     word ptr cs:unk_3F8DB, ax
+3F9E8  ja      short loc_3F9F7
+3F9EA  mov     bl, cs:byte_3F8DA
+-- end; next head 3FB22: mov     ax, [si+2]
+-- callees:
+   48E25 farobj_project_request_setup noret=False
+   40CB7 sub_40CB7 noret=False
+   4036D sub_4036D noret=False
+   3F6D6 sub_3F6D6 noret=False
+   407B0 sub_407B0 noret=False
+   402E1 sub_402E1 noret=False
+   409BD sub_409BD noret=False
+   35671 scroll_scale_lookup noret=False
+   40B10 sub_40B10 noret=False

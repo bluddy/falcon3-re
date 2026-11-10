@@ -1,0 +1,58 @@
+code-looking start at 10626E func 0x10626e
+bytes around: 24 FE EE 1E A1 8E 00 8B 16 90 00 8E D8 0B C0 75 04 0B D2 74 16 B0 0B B4 25 CD 21 1F 1E B0 0C 8B 16 94 00 8E 1E 92 00 B4
+sub_10626E 0x10626e 0x10633e
+106250 db    0
+106251 db  43h ; C
+106252 db  4Fh ; O
+106253 db  4Dh ; M
+106254 db  4Dh ; M
+106255 db  55h ; U
+106256 db  4Eh ; N
+106257 db  49h ; I
+106258 db  43h ; C
+106259 db  41h ; A
+10625A db  54h ; T
+10625B db  49h ; I
+10625C db  4Fh ; O
+10625D db  4Eh ; N
+10625E db  53h ; S
+10625F db    0
+106260 db    1
+106261 db  53h ; S
+106262 db  45h ; E
+106263 db  54h ; T
+106264 db  20h
+106265 db  55h ; U
+106266 db  50h ; P
+106267 db  20h
+106268 db  45h ; E
+106269 db  52h ; R
+10626A db  52h ; R
+10626B db  4Fh ; O
+10626C db  52h ; R
+10626D db    0
+10626E pusha
+10626F push    es
+106270 push    ds
+106271 mov     ax, 709Fh
+106274 mov     ds, ax
+106276 cmp     ds:word_709F0, 0
+10627B jnz     short loc_106280
+10627D jmp     loc_10633A
+106280 cmp     ds:word_709F0, 4
+106285 jl      short loc_10628A
+106287 jmp     loc_106330
+10628A test    byte ptr ds:word_70A8C, 2
+10628F jz      short loc_1062CA
+106291 mov     cx, 3Ch ; '<'
+106294 call    r12_farptr_helper_b
+106297 mov     si, 0ACEh
+10629A mov     cx, 3
+10629D push    cs
+10629E call    near ptr sub_106533
+1069BE dw offset sub_106961 word 0017 refs from: []
+1069C0 dw offset sub_105DA7+1 word 0018 refs from: [('0x105da8', 1)]
+1069C2 dw offset sub_105D9D word 000D refs from: [('0x105d9d', 1)]
+1069C4 db  0Bh word 000B refs from: []
+1069C6 db  17h word 0017 refs from: []
+callers of sub_10626E: [('0x2be54', 18), ('0x106635', 17)]

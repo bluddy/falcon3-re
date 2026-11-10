@@ -1,0 +1,30 @@
+=====
+106A39 1069C8  mov     cx, cs:[bx+0C2Eh]            2E 8B 8F 2E 0C
+106A3E 1069C8  add     cx, es:word_70A45            26 03 0E 55 00
+106A43 1069C8  mov     es:word_70A45, cx            26 89 0E 55 00
+106A48 1069C8  push    bx                           53
+106A49 1069C8  mov     di, 1D1h                     BF D1 01
+106A4C 1069C8  call    cs:funcs_106A17[bx]          2E FF 97 24 0C
+106A51 1069C8  pop     bx                           5B
+106A52 1069C8  sar     bx, 1                        D1 FB
+106A54 1069C8  inc     bx                           43
+106A55 1069C8  cmp     bx, 5                        83 FB 05
+=====
+106A73 1069C8  jg      short loc_106A91             7F 1C
+106A75 1069C8  mov     es:word_70A45, cx            26 89 0E 55 00
+106A7A 1069C8  push    bx                           53
+106A7B 1069C8  mov     di, 1D1h                     BF D1 01
+106A7E 1069C8  call    cs:funcs_106A17[bx]          2E FF 97 24 0C
+106A83 1069C8  pop     bx                           5B
+=====
+1069A8 106976  stosb                                AA
+1069A9 106976  mov     ax, 0EFDh                    B8 FD 0E
+1069AC 106976  stosw                                AB
+1069AD 106976  call    sub_10686A                   E8 BA FE
+1069B0 106976  call    sub_106B07                   E8 54 01
+1069B3 106976  retn                                 C3
+1069B4 -       dw offset sub_106961                 D1 0B 97 0D D4 08
+0x105d9d 0x105d9d 0x105da7 sub_105D9D
+0x105da7 0x105da7 0x105da9 sub_105DA7
+callers of 105D9D: [('0x106a17', 17), ('0x1069c2', 1)]
+funcs 105D00..105F00: [('0x105d9d', '0x105da7', 'sub_105D9D'), ('0x105da7', '0x105da9', 'sub_105DA7')]

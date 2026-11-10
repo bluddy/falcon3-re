@@ -1,0 +1,183 @@
+10CC60 r27_state_buffer_init_entry: func 10CC60-10CC8E flags=1410 chunks=['10CC60-10CC8E']
+   run 10CC8E-10CE05 noncode=[] owners=[]  last=retf
+   xrefs to run start: []
+2142E farobj_record_step: func 2142E-215B7 flags=5400 chunks=['2142E-215B7', '215C1-215FE']
+   run 215FE-21631 noncode=[] owners=[]  last=retn
+   xrefs to run start: []
+2D31A stack_switch_7a32: func 2D31A-2D353 flags=1400 chunks=['2D31A-2D353']
+   run 2D353-2D375 noncode=[] owners=[]  last=int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+   xrefs to run start: []
+3F6A9 sub_3F6A9: func 3F6A9-3F6C7 flags=1400 chunks=['3F6A9-3F6C7']
+   run 3F6C7-3F6D6 noncode=[] owners=[]  last=retn
+   xrefs to run start: []
+2520B flag_block_scan_nonzero: func 2520B-25220 flags=5402 chunks=['2520B-25220', '25224-25247']
+   run 25220-25224 noncode=[] owners=[]  last=jmp     short loc_25242
+   xrefs to run start: []
+--- 0x100D00 region
+100CC0 [-] db  26h ; & 
+100CC1 [-] db  89h 
+100CC2 [-] db  44h ; D 
+100CC3 [-] db  16h 
+100CC4 [-] db  26h ; & 
+100CC5 [-] db  89h 
+100CC6 [-] db  54h ; T 
+100CC7 [-] db  18h 
+100CC8 [-] db  26h ; & 
+100CC9 [-] db 0C7h 
+100CCA [-] db  44h ; D 
+100CCB [-] db  0Eh 
+100CCC [-] db    0 
+100CCD [-] db    8 
+100CCE [-] db  56h ; V 
+100CCF [-] db  57h ; W 
+100CD0 [-] db  8Dh 
+100CD1 [-] db  84h 
+100CD2 [-] db  1Eh 
+100CD3 [-] db  22h ; " 
+100CD4 [-] db    6 
+100CD5 [-] db  50h ; P 
+100CD6 [-] db  8Dh 
+100CD7 [-] db  44h ; D 
+100CD8 [-] db  0Eh 
+100CD9 [-] db    6 
+100CDA [-] db  50h ; P 
+100CDB [-] db  8Bh 
+100CDC [-] db  46h ; F 
+100CDD [-] db  0Eh 
+100CDE [-] db  8Bh 
+100CDF [-] db  56h ; V 
+100CE0 [-] db  10h 
+100CE1 [-] db  26h ; & 
+100CE2 [-] db  89h 
+100CE3 [-] db  44h ; D 
+100CE4 [-] db  12h 
+100CE5 [-] db  26h ; & 
+100CE6 [-] db  89h 
+100CE7 [-] db  54h ; T 
+100CE8 [-] db  14h 
+100CE9 [-] db  26h ; & 
+100CEA [-] db 0FFh 
+100CEB [-] db  5Ch ; \ 
+100CEC [-] db  12h 
+100CED [-] db  5Fh ; _ 
+100CEE [-] db  5Eh ; ^ 
+100CEF [-] db  8Eh 
+100CF0 [-] db 0C7h 
+100CF1 [-] db  26h ; & 
+100CF2 [-] db  89h 
+100CF3 [-] db  44h ; D 
+100CF4 [-] db  10h 
+100CF5 [-] db  3Dh ; = 
+100CF6 [-] db    4 
+100CF7 [-] db    0 
+100CF8 [-] db  77h ; w 
+100CF9 [-] db  14h 
+100CFA [-] db 0B8h 
+100CFB [-] db    3 
+100CFC [-] db    0 
+100CFD [-] db 0E9h 
+100CFE [-] db 0F4h 
+100CFF [-] db    0 
+100D00 [-] db 0EAh 
+100D01 [100D01] mov     ax, 2CF6h <- 2BFC6/18
+100D04 [100D01] push    ax 
+100D05 [100D01] mov     ax, 0CA8h 
+100D08 [100D01] push    ax 
+100D09 [100D01] call    sub_10007F 
+100D0C [100D01] retf 
+100D0D [-] db 0C7h 
+100D0E [-] mov     al, es:[si+221Eh] 
+100D13 [-] sub     ah, ah 
+100D15 [-] mov     es:[si+2], ax 
+100D19 [-] mov     al, es:[si+2220h] 
+100D1E [-] mov     es:[si+0Ah], ax 
+100D22 [-] mov     al, es:[si+221Fh] 
+100D27 [-] mov     es:[si+6], ax 
+100D2B [-] mov     word ptr es:[si+0Ch], 0 
+100D31 [-] mov     word ptr es:[si+0Eh], 3 
+100D37 [-] cmp     ax, 4 
+100D3A [-] jnb     short loc_100D3F 
+100D3C [-] jmp     loc_100DF1 
+100D3F [-] cmp     ax, 6 <- 100D3A/19
+100D42 [-] jbe     short loc_100D47 
+100D44 [-] jmp     loc_100DF1 
+100D47 [-] mov     cl, 10h <- 100D42/19
+100D49 [-] sub     cl, al 
+100D4B [-] mov     ax, 0FFFFh 
+100D4E [-] shr     ax, cl 
+100D50 [-] mov     es:[si+8], ax 
+100D54 [-] mov     ax, es:[si+2] 
+100D58 [-] or      ax, ax 
+100D5A [-] jz      short loc_100D79 
+100D5C [-] dec     ax 
+100D5D [-] jz      short loc_100D65 
+100D5F [-] mov     ax, 2 
+100D62 [-] jmp     loc_100DF4 
+100D65 [-] lea     ax, [si+2F9Eh] <- 100D5D/19
+100D69 [-] push    es 
+100D6A [-] push    ax 
+100D6B [-] mov     ax, 157h 
+100D6E [-] push    cs 
+100D6F [-] push    ax 
+100D70 [-] mov     ax, 100h 
+100D73 [-] call    sub_100BD0 
+100D76 [-] call    sub_101125 
+100D79 [-] push    di <- 100D5A/19
+100D7A [-] lea     ax, [si+30DEh] 
+100D7E [-] push    ax 
+100D7F [-] mov     ax, 137h 
+100D82 [-] push    cs 
+100D83 [-] push    ax 
+100D84 [-] mov     ax, 10h 
+100D87 [-] call    sub_100BD0 
+100D8A [-] lea     bx, [si+30DEh] 
+100D8E [-] mov     cx, 147h 
+100D91 [-] lea     dx, [si+2B1Eh] 
+100D95 [-] mov     ax, 10h 
+100D98 [-] call    sub_1010EF 
+100D9B [-] push    di 
+100D9C [-] lea     ax, [si+30EEh] 
+100DA0 [-] push    ax 
+100DA1 [-] mov     ax, 107h 
+100DA4 [-] push    cs 
+100DA5 [-] push    ax 
+100DA6 [-] mov     ax, 10h 
+100DA9 [-] call    sub_100BD0 
+100DAC [-] push    di 
+100DAD [-] lea     ax, [si+30FEh] 
+100DB1 [-] push    ax 
+100DB2 [-] mov     ax, 117h 
+100DB5 [-] push    cs 
+100DB6 [-] push    ax 
+100DB7 [-] mov     ax, 20h ; ' ' 
+100DBA [-] call    sub_100BD0 
+100DBD [-] push    di 
+100DBE [-] lea     ax, [si+309Eh] 
+100DC2 [-] push    ax 
+100DC3 [-] mov     ax, 87h 
+100DC6 [-] push    cs 
+100DC7 [-] push    ax 
+100DC8 [-] mov     ax, 40h ; '@' 
+100DCB [-] call    sub_100BD0 
+100DCE [-] lea     bx, [si+309Eh] 
+100DD2 [-] mov     cx, 0C7h 
+100DD5 [-] lea     dx, [si+2A1Eh] 
+100DD9 [-] mov     ax, 40h ; '@' 
+100DDC [-] call    sub_1010EF 
+100DDF [-] call    sub_100DFB 
+100DE2 [-] cmp     ax, 306h 
+100DE5 [-] jnz     short loc_100DED 
+100DE7 [-] mov     ax, 4 
+100DEA [-] jmp     short loc_100DF4 
+100DEC [-] db  81h 
+100DED [-] sub     ax, ax <- 100DE5/19
+100DEF [-] jmp     short loc_100DF4 
+100DF1 [-] mov     ax, 1 <- 100D3C/19,100D44/19
+100DF4 [-] pop     di <- 100D62/19,100DEA/19,100DEF/19
+100DF5 [-] pop     si 
+100DF6 [-] pop     bp 
+100DF7 [-] retf    0Ch 
+100DFA [-] db 0EAh 
+100DFB [100DFB] push    bp <- 100DDF/17
+100DFC [100DFB] mov     bp, sp 
+100DFE [100DFB] sub     sp, 2 

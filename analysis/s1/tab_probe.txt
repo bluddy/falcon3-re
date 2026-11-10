@@ -1,0 +1,164 @@
+===== 6EC14
+6EBEE 6EA4A   call    r17_state_zero_6e451       9A A9 0A 8F 6E 
+6EBF3 6EA4A   pop     cx                         59 
+6EBF4 6EA4A   jmp     short loc_6EC02            EB 0C 
+6EBF6 6EA4A   mov     ax, 6E45h                  B8 45 6E 
+6EBF9 6EA4A   mov     es, ax                     8E C0 
+6EBFB 6EA4A   mov     es:word_6E8D7, 0           26 C7 06 87 04 00 
+6EC02 6EA4A   mov     ax, 6E45h                  B8 45 6E 
+6EC05 6EA4A   mov     es, ax                     8E C0 
+6EC07 6EA4A   cmp     es:word_6E8D7, 0           26 83 3E 87 04 00 
+6EC0D 6EA4A   jz      short locret_6EC12         74 03 
+6EC0F 6EA4A   jmp     loc_6EA56                  E9 44 FE 
+6EC12 6EA4A   leave                              C9 locret_6EC12
+6EC13 6EA4A   retf                               CB 
+6EC14 6EC14   sbb     ax, [bx+si]                1B 00 data_fragment_6ec14
+6EC16 6EC14   inc     cx                         41 
+6EC17 -       add     [di+0], al                 00 45 00 
+6EC1A -       push    ax                         50 
+6EC1B -       add     [bx+di+0], dl              00 51 00 
+6EC1E -       push    dx                         52 
+6EC1F -       add     ds:4603h, al               00 06 03 46 
+6EC23 -       add     al, [si]                   02 04 
+6EC25 -       add     al, [bx-3AFEh]             02 87 02 C5 
+6EC29 -       add     cl, dh                     02 CE 
+6EC2B -       db    1                            01 
+6EC2C 6EC2C   push    bp                         55 r17_router_event_loop
+6EC2D 6EC2C   mov     bp, sp                     8B EC 
+6EC2F 6EC2C   call    r17_screen_draw_b          9A 02 0A 8F 6E 
+6EC34 6EC2C   jmp     loc_6ECF8                  E9 C1 00 
+6EC37 6EC2C   call    flag_table_pop_far_thunk   9A 03 5B 6C 1F 
+6EC3C 6EC2C   mov     dx, 6E45h                  BA 45 6E 
+6EC3F 6EC2C   mov     es, dx                     8E C2 
+6EC41 6EC2C   mov     es:word_6E8D2, ax          26 A3 82 04 
+6EC45 6EC2C   mov     ax, 6E45h                  B8 45 6E 
+6EC48 6EC2C   mov     es, ax                     8E C0 
+6EC4A 6EC2C   mov     ax, es:word_6E8D2          26 A1 82 04 
+6EC4E 6EC2C   and     ax, 0FF00h                 25 00 FF 
+6EC51 6EC2C   mov     dx, 6E45h                  BA 45 6E 
+6EC54 6EC2C   mov     es, dx                     8E C2 
+6EC56 6EC2C   mov     es:word_6E8D4, ax          26 A3 84 04 
+6EC5A 6EC2C   mov     ax, 6E45h                  B8 45 6E 
+6EC5D 6EC2C   mov     es, ax                     8E C0 
+6EC5F 6EC2C   and     es:word_6E8D2, 0DFh        26 81 26 82 04 DF 
+  xrefs to 6EC14: []
+  xrefs to 6EC17: [('0x6ec16', 21)]
+===== 6EF1C
+6EEFF 6ED0A   push    0                          6A 00 
+6EF01 6ED0A   call    dispatch_22100_invoke      9A 2B 67 6C 1F 
+6EF06 6ED0A   add     sp, 0Ah                    83 C4 0A 
+6EF09 6ED0A   push    0C8h                       68 C8 00 
+6EF0C 6ED0A   push    0                          6A 00 
+6EF0E 6ED0A   call    dispatch_220f4_invoke_2arg 9A 4E 67 6C 1F 
+6EF13 6ED0A   pop     cx                         59 
+6EF14 6ED0A   pop     cx                         59 
+6EF15 6ED0A   call    loc_100B5                  9A B5 00 00 10 
+6EF1A 6ED0A   leave                              C9 
+6EF1B 6ED0A   retf                               CB 
+6EF1C 6EF1C   sbb     ax, [bx+si]                1B 00 r17_entry_partial
+6EF1E 6EF1C   inc     sp                         44 
+6EF1F -       add     [bp+di+0], cl              00 4B 00 
+6EF22 -       dec     bp                         4D 
+6EF23 -       add     [bp+si+0], dl              00 52 00 
+6EF26 -       in      ax, 5; DMA controller, 823 E5 05 
+6EF28 -       push    si                         56 
+6EF29 -       add     ax, 5E5h                   05 E5 05 
+6EF2C -       in      ax, 5; DMA controller, 823 E5 05 
+6EF2E -       cbw                                98 
+6EF2F -       db    5                            05 
+6EF30 6EF30   enter   2, 0                       C8 02 00 00 r17_ui_event_loop
+6EF34 6EF30   call    mouse_gate_far_entry       9A BB 00 00 10 
+6EF39 6EF30   push    0C8h                       68 C8 00 
+6EF3C 6EF30   push    0                          6A 00 
+6EF3E 6EF30   push    13Fh                       68 3F 01 
+  xrefs to 6EF1C: []
+  xrefs to 6EF1F: [('0x6ef1e', 21)]
+===== 2E1C2
+2E1A0 -       dw 211h                            11 02 
+2E1A2 -       dw 22Eh                            2E 02 
+2E1A4 -       dw 213h                            13 02 
+2E1A6 -       dw 432h                            32 04 
+2E1A8 -       dw 215h                            15 02 
+2E1AA -       dw 437h                            37 04 
+2E1AC -       dw 416h                            16 04 
+2E1AE -       dw 43Eh                            3E 04 
+2E1B0 -       db  1Ah                            1A 
+2E1B1 -       db    4                            04 
+2E1B2 -       db  48h ; H                        48 
+2E1B3 -       db    4                            04 
+2E1B4 -       dw 426h                            26 04 
+2E1B6 -       dw 861h                            61 08 
+2E1B8 -       db    0                            00 
+2E1B9 -       db 4                               04 
+2E1BA -       db 1Dh                             1D 
+2E1BB -       db 3                               03 
+2E1BC -       db  1Eh                            1E 
+2E1BD -       db    2                            02 
+2E1BE -       db  21h ; !                        21 
+2E1BF -       db    2                            02 
+2E1C0 -       and     al, [bx+di]                22 01 
+2E1C2 2E1C2   add     [si], al                   00 04 
+2E1C4 2E1C2   sbb     ax, [bp+di]                1B 03 
+2E1C6 2E1C2   sbb     ax, [bp+si]                1B 02 
+2E1C8 2E1C2   sbb     al, 2                      1C 02 
+2E1CA 2E1C2   and     [bx+di], al                20 01 
+2E1CC 2E1C2   add     al, 4                      04 04 
+2E1CE 2E1C2   sbb     ax, [bx+si]                1B 00 
+2E1D0 2E1C2   sbb     ax, [bx+di]                1B 01 
+2E1D2 2E1C2   sbb     ax, [bx+di]                1B 01 
+2E1D4 2E1C2   sbb     ax, [bp+si]                1B 02 
+2E1D6 2E1C2   sbb     ax, [bp+di]                1B 03 
+2E1D8 2E1C2   sbb     al, 2                      1C 02 
+2E1DA 2E1C2   and     [bp+si], al                20 02 
+2E1DC 2E1C2   and     [bx+di], ax                21 01 
+2E1DE 2E1C2   add     [di], ax                   01 05 
+2E1E0 2E1C2   sbb     al, 0                      1C 00 
+2E1E2 2E1C2   sbb     ax, [bp+di]                1B 03 
+2E1E4 2E1C2   sbb     al, 2                      1C 02 
+2E1E6 2E1C2   and     [bp+si], al                20 02 
+2E1E8 -       and     [bx+di], ax                21 01 
+2E1EA -       and     al, [bx+si]                22 00 
+2E1EC -       mov     ax, 0C200h                 B8 00 C2 
+2E1EF -       add     [bx+si-4800h], bh          00 B8 00 B8 
+2E1F3 -       add     ah, cl                     00 CC 
+2E1F5 -       add     [bx+si-4800h], bh          00 B8 00 B8 
+2E1F9 -       add     [bx+si-4800h], bh          00 B8 00 B8 
+2E1FD -       add     dh, bl                     00 DE 
+2E1FF -       db    0                            00 
+2E200 -       db 0B8h                            B8 
+2E201 -       db    0                            00 
+2E202 -       mov     ax, 0B800h                 B8 00 B8 
+2E205 -       add     [bx+si-4800h], bh          00 B8 00 B8 
+2E209 -       db    0                            00 
+2E20A 2E20A   push    es                         06 sprite_clip_bounds_check
+2E20B 2E20A   mov     es, di                     8E C7 
+2E20D 2E20A   xor     ah, ah                     32 E4 
+2E20F 2E20A   mov     al, bl                     8A C3 
+2E211 2E20A   mov     di, ax                     8B F8 
+2E213 2E20A   mov     ax, 9                      B8 09 00 
+2E216 2E20A   cmp     bh, 0Fh                    80 FF 0F 
+2E219 2E20A   jge     short loc_2E240            7D 25 
+2E21B 2E20A   cmp     bl, 0                      80 FB 00 
+2E21E 2E20A   jnz     short loc_2E23D            75 1D 
+2E220 2E20A   cmp     bh, 4                      80 FF 04 
+2E223 2E20A   jg      short loc_2E227            7F 02 
+2E225 2E20A   pop     es                         07 
+2E226 2E20A   retf                               CB 
+2E227 2E20A   or      cl, 1                      80 C9 01 
+2E22A 2E20A   test    cl, 4                      F6 C1 04 
+2E22D 2E20A   jz      short near ptr loc_2E235+1 74 07 
+2E22F -       mov     bl, 9                      B3 09 
+  xrefs to 2E1C2: [('0x2e1c0', 21)]
+  xrefs to 2E1E8: [('0x2e1e6', 21)]
+  xrefs to 2E20A: [('0x3985e', 16), ('0x3e182', 16), ('0x4126f', 16), ('0x41376', 16), ('0x44cdd', 16), ('0x450d3', 16), ('0x45526', 16), ('0x46ffd', 16), ('0x4a620', 16), ('0x4b3b7', 16), ('0x4d724', 16)]
+===== 105DA7
+105D9F 105D9D  add     [bx+si], bp                01 28 
+105DA1 105D9D  add     [bx+1], sp                 01 67 01 
+105DA4 105D9D  pop     es                         07 
+105DA5 105D9D  add     cx, si                     01 F1 
+105DA7 105DA7  add     ax, dx                     01 D0 
+105DA9 -       add     al, 0D0h                   04 D0 
+105DAB -       add     al, 0D0h                   04 D0 
+105DAD -       add     al, 0D0h                   04 D0 
+105DAF -       add     al, 0D0h                   04 D0 
+  xrefs to 105DA7: [('0x105da5', 21), ('0x106a4c', 17), ('0x106a7e', 17), ('0x1069b4', 1)]

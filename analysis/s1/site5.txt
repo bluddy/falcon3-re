@@ -1,0 +1,93 @@
+=== 2F990..2F9D0
+2F990 [2F6D0] 9a8b2c6c1f                     call    control_axes_read
+2F995 [2F6D0] e8e102                         call    control_axis_store_step
+2F998 [2F6D0] e82628                         call    mode_state_dispatch
+2F99B [2F6D0] e8a403                         call    game_frame_pipeline_step
+2F99E [2F6D0] 9aa4326c1f2e891e               db 9Ah, 0A4h, 32h, 6Ch, 1Fh, 2Eh, 89h, 1Eh, 39h, 0, 2Eh
+2F9A9 [2F6D0] a33700                         mov     ds:37h, ax
+2F9AC [2F6D0] 9ad6326c1f                     call    flag22220_clear
+2F9B1 [2F6D0] 2e8b1e3900                     mov     bx, cs:word_2F679
+2F9B6 [2F6D0] 2e                             mov     ax, cs:word_2F677
+2F9BA [2F6D0] 9adb03524e                     call    state_add_70a03_70a5d
+2F9BF [2F6D0] 9aa2356c1f                     call    fixed_vec3_read
+2F9C4 [2F6D0] 2ea34500                       mov     cs:word_2F685, ax
+2F9C8 [2F6D0] 2e891e4700                     mov     cs:word_2F687, bx
+2F9CD [2F6D0] 2e890e4900                     mov     cs:word_2F689, cx
+=== 326F0..32720
+326F0 [3267C] 9a0116a32a                     call    sub_2C031
+326F5 [3267C] c3                             retn
+326F6 [3267C] e8e173                         call    near ptr steerpoint_state_gate
+326F9 [3267C] 7306                           jnb     short loc_32701
+326FB [3267C] 0e                             push    cs
+326FC [3267C] e83f0d                         call    near ptr key_mode_switch_tramp
+326FF [3267C] 90                             align 2
+32700 [3267C] c3                             retn
+32701 [3267C] 8b1e1404                       mov     bx, ds:414h
+32705 [3267C] 8b873417                       mov     ax, [bx+1734h]
+32709 [3267C] 8b973617                       mov     dx, [bx+1736h]
+3270D [3267C] 2e89165500                     mov     cs:word_2F695, dx
+32712 [3267C] 2ea35300                       mov     cs:word_2F693, ax
+32716 [3267C] 2ec606670002                   mov     cs:byte_2F6A7, 2
+3271C [3267C] e9ab01                         jmp     loc_328CA
+3271F [3267C] e88f02                         call    near ptr hud_panel_rect_compute
+=== 32730..32760
+3272F [3267C] 2e8b362900                     mov     si, cs:word_2F669
+32734 [3267C] f6447401                       test    byte ptr [si+74h], 1
+32738 [3267C] 7406                           jz      short loc_32740
+3273A [3267C] 0e                             push    cs
+3273B [3267C] e8000d                         call    near ptr key_mode_switch_tramp
+3273E [3267C] 90                             db 90h
+3273F [3267C] c3                             db 0C3h
+32740 [3267C] 2e803e7a0000                   cmp     cs:byte_2F6BA, 0
+32746 [3267C] 7517                           jnz     short locret_3275F
+32748 [3267C] 9a4757833b                     call    hud_data_panel_slot_mgr
+3274D [3267C] 2e803e7a0000                   cmp     cs:byte_2F6BA, 0
+32753 [3267C] 750a                           jnz     short locret_3275F
+32755 [3267C] 8b7d06                         mov     di, [di+6]
+32758 [3267C] 8bc7                           mov     ax, di
+3275A [3267C] baaf54                         mov     dx, 54AFh
+3275D [3267C] eb01                           jmp     short loc_32760
+3275F [3267C] c3                             retn
+=== 32A30..32A60
+32A30 [329B1] 9a0116a32a                     call    sub_2C031
+32A35 [329B1] c3                             retn
+32A36 [329B1] 1e                             push    ds
+32A37 [329B1] 9a8e0bae43                     call    obj_timer_farptr_step
+32A3C [329B1] 7307                           jnb     short loc_32A45
+32A3E [329B1] 1f                             pop     ds
+32A3F [329B1] 0e                             push    cs
+32A40 [329B1] e8fb09                         call    near ptr key_mode_switch_tramp
+32A43 [329B1] 90                             align 2
+32A44 [329B1] c3                             retn
+32A45 [329B1] 8bc8                           mov     cx, ax
+32A47 [329B1] 8b5c0c                         mov     bx, [si+0Ch]
+32A4A [329B1] 8b4408                         mov     ax, [si+8]
+32A4D [329B1] 8b540a                         mov     dx, [si+0Ah]
+32A50 [329B1] d1fa                           sar     dx, 1
+32A52 [329B1] d1d8                           rcr     ax, 1
+32A54 [329B1] e86c14                         call    rect_store_40e
+32A57 [329B1] 8bc6                           mov     ax, si
+32A59 [329B1] 8cda                           mov     dx, ds
+32A5B [329B1] 9a1c376c1f                     call    state_farptr_dxax_store
+=== 32A90..32AC0
+32A90 [329B1] 1e                             push    ds
+32A91 [329B1] 06                             push    es
+32A92 [329B1] 9aeb0bae43                     call    farobj_entity_step_near
+32A97 [329B1] 0bc0                           or      ax, ax
+32A99 [329B1] 7d08                           jge     short loc_32AA3
+32A9B [329B1] 07                             pop     es
+32A9C [329B1] 1f                             pop     ds
+32A9D [329B1] 0e                             push    cs
+32A9E [329B1] e89d09                         call    near ptr key_mode_switch_tramp
+32AA1 [329B1] 90                             align 2
+32AA2 [329B1] c3                             retn
+32AA3 [329B1] 740a                           jz      short loc_32AAF
+32AA5 [329B1] b8af54                         mov     ax, 54AFh
+32AA8 [329B1] 8ec0                           mov     es, ax
+32AAA [329B1] 2e8b3e2900                     mov     di, cs:word_2F669
+32AAF [329B1] 8bc6                           mov     ax, si
+32AB1 [329B1] 8cda                           mov     dx, ds
+32AB3 [329B1] 9a1c376c1f                     call    state_farptr_dxax_store
+32AB8 [329B1] 8bc7                           mov     ax, di
+32ABA [329B1] 8cc2                           mov     dx, es
+32ABC [329B1] 9a26376c1f                     call    loc_22DE6

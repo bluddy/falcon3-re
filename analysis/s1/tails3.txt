@@ -1,0 +1,144 @@
+func at 100CA8: None
+func at 100D01: 100D01-100D0D r02_farptr_pair_call_entry
+func at 100D0D: None
+func at 100DFB: 100DFB-100EC6 sub_100DFB
+xrefs to 100D0E: []
+xrefs to 100DF4: ['100DF1/21', '100D62/19', '100DEA/19', '100DEF/19']
+xrefs to 100DFB: ['100DDF/17']
+xrefs to 100CA8: []
+made 124 fails []
+  100CA8 55             push    bp
+  100CA9 8bec           mov     bp, sp
+  100CAB 56             push    si
+  100CAC 57             push    di
+  100CAD 8b460a         mov     ax, [bp+0Ah]
+  100CB0 8b560c         mov     dx, [bp+0Ch]
+  100CB3 c47606         les     si, [bp+6]
+  100CB6 8cc7           mov     di, es
+  100CB8 89363e9a       mov     ds:9A3Eh, si
+  100CBC 8c06409a       mov     word ptr ds:9A40h, es
+  100CC0 26894416       mov     es:[si+16h], ax
+  100CC4 26895418       mov     es:[si+18h], dx
+  100CC8 26c7440e0008   mov     word ptr es:[si+0Eh], 800h
+  100CCE 56             push    si
+  100CCF 57             push    di
+  100CD0 8d841e22       lea     ax, [si+221Eh]
+  100CD4 06             push    es
+  100CD5 50             push    ax
+  100CD6 8d440e         lea     ax, [si+0Eh]
+  100CD9 06             push    es
+  100CDA 50             push    ax
+  100CDB 8b460e         mov     ax, [bp+0Eh]
+  100CDE 8b5610         mov     dx, [bp+10h]
+  100CE1 26894412       mov     es:[si+12h], ax
+  100CE5 26895414       mov     es:[si+14h], dx
+  100CE9 26ff5c12       call    dword ptr es:[si+12h]
+  100CED 5f             pop     di
+  100CEE 5e             pop     si
+  100CEF 8ec7           mov     es, di
+  100CF1 26894410       mov     es:[si+10h], ax
+  100CF5 3d0400         cmp     ax, 4
+  100CF8 7714           ja      short loc_100D0E
+  100CFA b80300         mov     ax, 3
+  100CFD e9f400         jmp     loc_100DF4
+  100D00 ea             db 0EAh   [NOT CODE]
+  100D01 b8f62c         mov     ax, 2CF6h
+  100D04 50             push    ax
+  100D05 b8a80c         mov     ax, 0CA8h
+  100D08 50             push    ax
+  100D09 e873f3         call    sub_10007F
+  100D0C cb             retf
+  100D0D c7             db 0C7h   [NOT CODE]
+  100D0E 268a841e22     mov     al, es:[si+221Eh]
+  100D13 2ae4           sub     ah, ah
+  100D15 26894402       mov     es:[si+2], ax
+  100D19 268a842022     mov     al, es:[si+2220h]
+  100D1E 2689440a       mov     es:[si+0Ah], ax
+  100D22 268a841f22     mov     al, es:[si+221Fh]
+  100D27 26894406       mov     es:[si+6], ax
+  100D2B 26c7440c0000   mov     word ptr es:[si+0Ch], 0
+  100D31 26c7440e0300   mov     word ptr es:[si+0Eh], 3
+  100D37 3d0400         cmp     ax, 4
+  100D3A 7303           jnb     short loc_100D3F
+  100D3C e9b200         jmp     loc_100DF1
+  100D3F 3d0600         cmp     ax, 6
+  100D42 7603           jbe     short loc_100D47
+  100D44 e9aa00         jmp     loc_100DF1
+  100D47 b110           mov     cl, 10h
+  100D49 2ac8           sub     cl, al
+  100D4B b8ffff         mov     ax, 0FFFFh
+  100D4E d3e8           shr     ax, cl
+  100D50 26894408       mov     es:[si+8], ax
+  100D54 268b4402       mov     ax, es:[si+2]
+  100D58 0bc0           or      ax, ax
+  100D5A 741d           jz      short loc_100D79
+  100D5C 48             dec     ax
+  100D5D 7406           jz      short loc_100D65
+  100D5F b80200         mov     ax, 2
+  100D62 e98f00         jmp     loc_100DF4
+  100D65 8d849e2f       lea     ax, [si+2F9Eh]
+  100D69 06             push    es
+  100D6A 50             push    ax
+  100D6B b85701         mov     ax, 157h
+  100D6E 0e             push    cs
+  100D6F 50             push    ax
+  100D70 b80001         mov     ax, 100h
+  100D73 e85afe         call    sub_100BD0
+  100D76 e8ac03         call    sub_101125
+  100D79 57             push    di
+  100D7A 8d84de30       lea     ax, [si+30DEh]
+  100D7E 50             push    ax
+  100D7F b83701         mov     ax, 137h
+  100D82 0e             push    cs
+  100D83 50             push    ax
+  100D84 b81000         mov     ax, 10h
+  100D87 e846fe         call    sub_100BD0
+  100D8A 8d9cde30       lea     bx, [si+30DEh]
+  100D8E b94701         mov     cx, 147h
+  100D91 8d941e2b       lea     dx, [si+2B1Eh]
+  100D95 b81000         mov     ax, 10h
+  100D98 e85403         call    sub_1010EF
+  100D9B 57             push    di
+  100D9C 8d84ee30       lea     ax, [si+30EEh]
+  100DA0 50             push    ax
+  100DA1 b80701         mov     ax, 107h
+  100DA4 0e             push    cs
+  100DA5 50             push    ax
+  100DA6 b81000         mov     ax, 10h
+  100DA9 e824fe         call    sub_100BD0
+  100DAC 57             push    di
+  100DAD 8d84fe30       lea     ax, [si+30FEh]
+  100DB1 50             push    ax
+  100DB2 b81701         mov     ax, 117h
+  100DB5 0e             push    cs
+  100DB6 50             push    ax
+  100DB7 b82000         mov     ax, 20h ; ' '
+  100DBA e813fe         call    sub_100BD0
+  100DBD 57             push    di
+  100DBE 8d849e30       lea     ax, [si+309Eh]
+  100DC2 50             push    ax
+  100DC3 b88700         mov     ax, 87h
+  100DC6 0e             push    cs
+  100DC7 50             push    ax
+  100DC8 b84000         mov     ax, 40h ; '@'
+  100DCB e802fe         call    sub_100BD0
+  100DCE 8d9c9e30       lea     bx, [si+309Eh]
+  100DD2 b9c700         mov     cx, 0C7h
+  100DD5 8d941e2a       lea     dx, [si+2A1Eh]
+  100DD9 b84000         mov     ax, 40h ; '@'
+  100DDC e81003         call    sub_1010EF
+  100DDF e81900         call    sub_100DFB
+  100DE2 3d0603         cmp     ax, 306h
+  100DE5 7506           jnz     short loc_100DED
+  100DE7 b80400         mov     ax, 4
+  100DEA eb08           jmp     short loc_100DF4
+  100DEC 81             db  81h   [NOT CODE]
+  100DED 2bc0           sub     ax, ax
+  100DEF eb03           jmp     short loc_100DF4
+  100DF1 b80100         mov     ax, 1
+  100DF4 5f             pop     di
+  100DF5 5e             pop     si
+  100DF6 5d             pop     bp
+  100DF7 ca0c00         retf    0Ch
+  100DFA ea             db 0EAh   [NOT CODE]
+original heads no longer heads: []

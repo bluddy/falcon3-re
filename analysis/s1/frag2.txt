@@ -1,0 +1,144 @@
+== 6EC14 table
+  words @6EC14: 001B 0041 0045 0050 0051 0052 0306 0246 0204 0287 02C5 01CE 8B55 9AEC
+  6EC2B 01             db    1                              - [D]
+  6EC2C 55             push    bp                           6EC2C-6ED0A
+  6EC2D 8bec           mov     bp, sp                       6EC2C-6ED0A
+  6EC2F 9a020a8f6e     call    r17_screen_draw_b            6EC2C-6ED0A
+   refs to 6EC14/6EC2C: [] ['6E9D4/16']
+== 6EF1C table
+  words @6EF1C: 001B 0044 004B 004D 0052 05E5 0556 05E5 05E5 0598 02C8 0000
+  6EF2F 05             db    5                              - [D]
+  6EF30 c8             db 0C8h                              - [D]
+  6EF31 0200           add     al, [bx+si]                  6EF31-6F1CE
+  6EF33 009abb00       add     [bp+si+0BBh], bl             6EF31-6F1CE
+  6EF37 0010           add     [bx+si], dl                  6EF31-6F1CE
+  6EF39 68c800         push    0C8h                         6EF31-6F1CE
+  6EF3C 6a00           push    0                            6EF31-6F1CE
+  6EF3E 683f01         push    13Fh                         6EF31-6F1CE
+   refs to 6EF1C: [] ; 6EF30/31: ['6EEB6/16']
+== 2E1C2
+  words @2E1C2: 0400 031B 021B 021C 0120 0404 001B 011B 011B 021B 031B 021C 0220 0121 0501 001C 031B 021C 0220 0121 0022 00B8 00C2 00B8 00B8 00CC 00B8 00B8 00B8 00B8 00DE 00B8 00B8 00B8 00B8 00B8 8E06 32C7 8AE4 8BC3
+  2E1E8 2101           and     [bx+di], ax                  -
+  2E1EA 2200           and     al, [bx+si]                  -
+  2E1EC b800c2         mov     ax, 0C200h                   -
+  2E1EF 00b800b8       add     [bx+si-4800h], bh            -
+  2E1F3 00             add     ah, cl                       -
+  2E1F3 00cc           add     ah, cl                       -
+  2E1F5 00             add     [bx+si-4800h], bh            -
+  2E1F5 00b800b8       add     [bx+si-4800h], bh            -
+  2E1F9 00             add     [bx+si-4800h], bh            -
+  2E1F9 00b800b8       add     [bx+si-4800h], bh            -
+  2E1FD 00             add     dh, bl                       -
+  2E1FD 00de           add     dh, bl                       -
+  2E1FF 00             db    0                              - [D]
+  2E200 b8             db 0B8h                              - [D]
+  2E201 00             db    0                              - [D]
+  2E202 b800b8         mov     ax, 0B800h                   -
+  2E205 00b800b8       add     [bx+si-4800h], bh            -
+  2E209 00             db    0                              - [D]
+  2E20A 06             push    es                           2E20A-2E22F
+  2E20B 8ec7           mov     es, di                       2E20A-2E22F
+  2E20D 32e4           xor     ah, ah                       2E20A-2E22F
+  2E20F 8ac3           mov     al, bl                       2E20A-2E22F
+  2E211 8bf8           mov     di, ax                       2E20A-2E22F
+  2E213 b80900         mov     ax, 9                        2E20A-2E22F
+  2E216 80ff0f         cmp     bh, 0Fh                      2E20A-2E22F
+  2E219 7d25           jge     short loc_2E240              2E20A-2E22F
+  2E21B 80fb00         cmp     bl, 0                        2E20A-2E22F
+  2E21E 751d           jnz     short loc_2E23D              2E20A-2E22F
+  2E220 80ff04         cmp     bh, 4                        2E20A-2E22F
+  2E223 7f02           jg      short loc_2E227              2E20A-2E22F
+  2E225 07             pop     es                           2E20A-2E22F
+  2E226 cb             retf                                 2E20A-2E22F
+  2E227 80c901         or      cl, 1                        2E20A-2E22F
+  2E22A f6c104         test    cl, 4                        2E20A-2E22F
+  2E22D 7407           jz      short near ptr loc_2E235+1   2E20A-2E22F
+  2E22F b309           mov     bl, 9                        -
+  2E231 bf09           mov     di, 9                        -
+  2E231 bf0900         mov     di, 9                        -
+  2E234 eb             db 0EBh                              - [D]
+  2E235 0ab308bf       or      dh, [bp+di-40F8h]            -
+  2E239 0800           or      [bx+si], al                  -
+  2E23B eb03           jmp     short loc_2E240              -
+  2E23D b80100         mov     ax, 1                        2E20A-2E22F
+  2E240 4f             dec     di                           2E20A-2E22F
+  2E241 d1e7           shl     di, 1                        2E20A-2E22F
+  2E243 d1e7           shl     di, 1                        2E20A-2E22F
+  2E245 81c70000       add     di, 0                        2E20A-2E22F
+  2E249 80fb01         cmp     bl, 1                        2E20A-2E22F
+  2E24C 7f11           jg      short loc_2E25F              2E20A-2E22F
+  2E24E b80000         mov     ax, 0                        2E20A-2E22F
+  2E251 bb0000         mov     bx, 0                        2E20A-2E22F
+  2E254 b101           mov     cl, 1                        2E20A-2E22F
+  2E256 b501           mov     ch, 1                        2E20A-2E22F
+  2E258 0e             push    cs                           2E20A-2E22F
+  2E259 e89400         call    near ptr farobj_slot_create  2E20A-2E22F
+  2E25C 90             nop                                  2E20A-2E22F
+  2E25D 07             pop     es                           2E20A-2E22F
+  2E25E cb             retf                                 2E20A-2E22F
+  2E25F 53             push    bx                           2E20A-2E22F
+   refs to 2E1C2: ['2E1C0/21']
+== 22C62
+  22C62 2ea1b135       mov     ax, cs:word_22C71            22C62-22C8B
+  22C66 2e8b1eb335     mov     bx, cs:word_22C73            22C62-22C8B
+  22C6B 2e8b0eb535     mov     cx, cs:word_22C75            22C62-22C8B
+  22C70 cb             retf                                 22C62-22C8B
+  22C71 e51c           dw 1CE5h                             22C62-22C8B [D]
+  22C73 0773           dw 7307h                             22C62-22C8B [D]
+  22C75 2203           dw 322h                              22C62-22C8B [D]
+  22C77 e51c           in      ax, 1Ch                      22C62-22C8B
+  22C79 07             pop     es                           22C62-22C8B
+  22C7A 7322           jnb     short near ptr loc_22C9C+2   22C62-22C8B
+  22C7C 03b300b7       add     si, [bp+di-4900h]            22C62-22C8B
+  22C80 00b60003       add     [bp+300h], dh                22C62-22C8B
+  22C84 800b80         or      byte ptr [bp+di], 80h        22C62-22C8B
+  22C87 0f800ee8       jo      loc_21499                    22C62-22C8B
+  22C8B 48             dec     ax                           -
+  22C8C 00908bc1       add     [bx+si-3E75h], dl            -
+  22C90 cb             retf                                 -
+   refs 22C62: ['2F9BF/16', '308C2/16'] ; 22C8B-22C91: [('22C8B', ['22C87/21']), ('22C8C', ['22C8B/21']), ('22C8D', []), ('22C8E', []), ('22C8F', []), ('22C90', ['22C8C/21'])]
+   bytes 22C62: 2ea1b1352e8b1eb3352e8b0eb535cbe51c07732203e51c07732203b300b700b60003800b800f800ee84800908bc1cb50
+== 67F59
+  67F59 d826c647       fsub    dword ptr ds:47C6h           67F59-67F77
+  67F5D 0a00           or      al, [bx+si]                  67F59-67F77
+  67F5F b89478         mov     ax, 7894h                    67F59-67F77
+  67F62 8ec0           mov     es, ax                       67F59-67F77
+  67F64 26a1f415       mov     ax, es:word_79F34            67F59-67F77
+  67F68 ba1700         mov     dx, 17h                      67F59-67F77
+  67F6B f7ea           imul    dx                           67F59-67F77
+  67F6D ba9478         mov     dx, 7894h                    67F59-67F77
+  67F70 8ec2           mov     es, dx                       67F59-67F77
+  67F72 26c41e2c15     les     bx, es:dword_79E6C           67F59-67F77
+  67F77 03d8           add     bx, ax                       -
+  67F79 26             db  26h ; &                          - [D]
+  67F7A c6             db 0C6h                              - [D]
+   refs 67F59/67F77/67F7B: [[], ['67F72/21'], [], ['67F77/21'], []]
+== 69705/69720
+  69705 b8e86d         mov     ax, 6DE8h                    69705-69720
+  69708 8ec0           mov     es, ax                       69705-69720
+  6970A 26c706c5020000 mov     es:word_6E145, 0             69705-69720
+  69711 b8e86d         mov     ax, 6DE8h                    69705-69720
+  69714 8ec0           mov     es, ax                       69705-69720
+  69716 26ff36d102     push    es:word_6E151                69705-69720
+  6971B 26ff36cf02     push    es:word_6E14F                69705-69720
+  69720 6a00           push    0                            -
+  69722 6a             db  6Ah ; j                          - [D]
+  69723 006a06         add     [bp+si+6], ch                69723-69AC6
+  69726 9ad82e6c1f     call    op_dispatch_far_entry        69723-69AC6
+  6972B 83c40a         add     sp, 0Ah                      69723-69AC6
+  6972E 8bf0           mov     si, ax                       69723-69AC6
+  69730 b8e86d         mov     ax, 6DE8h                    69723-69AC6
+  69733 8ec0           mov     es, ax                       69723-69AC6
+  69735 26ff36e201     push    word ptr es:dword_6E060+2    69723-69AC6
+  6973A 26ff36e001     push    word ptr es:dword_6E060      69723-69AC6
+  6973F 6a58           push    58h ; 'X'                    69723-69AC6
+   refs 69705/69720/69723: [['696FE/21'], ['6971B/21'], ['69720/21'], []]
+== 167440
+  167440 788e           js      short loc_1673D0             167440-167449
+  167442 c026803ec2     shl     byte ptr ds:3E80h, 0C2h      167440-167449
+  167447 1900           sbb     [bx+si], ax                  167440-167449
+  167449 7405           jz      short loc_167450             -
+  16744B 9af50f9f66     call    far ptr loc_679E5            -
+  167450 9a411ca32a     call    far ptr tail_bridge_to_mode_ 166F80-1673D0
+   refs 167440/167449/16744B/167450: [[], ['167447/21'], ['167449/21'], ['16744B/21', '16743C/19', '167449/19']]
+   bytes 167430: b894788ec026813e3619ff007412b894788ec026803ec2190074059af50f9f669a411ca32a9ae31a

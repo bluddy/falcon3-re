@@ -1,0 +1,18 @@
+table at 1069B4:
+  [0] 0BD1 -> 106961 mov     al, 17h                    func 0x106961 name sub_106961
+  [1] 0D97 -> 106B27 mov     ax, es:4Bh                 func 0x106b27 name sub_106B27
+  [2] 08D4 -> 106664 cmp     word ptr es:5, 5           func 0x106664 name sub_106664
+  [3] 0940 -> 1066D0 cmp     word ptr es:5, 5           func 0x1066d0 name sub_1066D0
+  [4] 0BE6 -> 106976 cmp     word ptr es:0Bh, 0         func 0x106976 name sub_106976
+table at 1069BE:
+  [0] 0017 -> 105DA7 add     ax, dx                     func 0x105da7 name sub_105DA7
+  [1] 0018 -> 105DA8 add     ax, dx                     func 0x105da7 name 
+  [2] 000D -> 105D9D add     [si], dx                   func 0x105d9d name sub_105D9D
+  [3] 000B -> 105D9B db    1                            func None name 
+  [4] 0017 -> 105DA7 add     ax, dx                     func 0x105da7 name sub_105DA7
+item @1069B4: dw offset sub_106961 @1069BE: dw offset sub_106961 mov     bx, 709Fh
+xrefs to 105D9D: [('0x106a17', 17, 'call    cs:funcs_106A17[bx]'), ('0x1069c2', 1, 'dw offset sub_105D9D')]
+xrefs to 105DA7: [('0x105da5', 21, 'add     cx, si'), ('0x106a4c', 17, 'call    cs:funcs_106A17[bx]'), ('0x106a7e', 17, 'call    cs:funcs_106A17[bx]'), ('0x1069b4', 1, 'dw offset sub_106961')]
+callers/refs 1069C2: dw offset sub_105D9D
+xrefs from 106A17: [('0x106a1c', 21), ('0x105d9d', 17), ('0x106664', 17), ('0x1066d0', 17), ('0x106961', 17), ('0x106976', 17), ('0x106b27', 17), ('0x1069b4', 3)]
+xrefs from 106A4C: [('0x106a51', 21), ('0x105da7', 17), ('0x106664', 17), ('0x1066d0', 17), ('0x106961', 17), ('0x106976', 17), ('0x106b27', 17), ('0x1069b4', 3)]
