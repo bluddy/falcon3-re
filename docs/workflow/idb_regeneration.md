@@ -70,6 +70,11 @@ cmd /c "tools\run_idat.bat tools\fix_overlay_jumps_ida.py"
 #     (manifest registry/segsplit_expected.json; DRYRUN=1 env regenerates it)
 cmd /c "tools\run_idat.bat tools\split_overlay_segments.py"
 
+# 6c. Per-function DS/SS from runtime evidence + caller propagation (finding 122)
+#     (manifest registry/ds_expected.json; regenerate: export_ds_facts.py on a COPY,
+#      then python tools\plan_default_ds.py; the apply never runs auto_wait)
+cmd /c "tools\run_idat.bat tools\apply_default_ds.py"
+
 # 7. Verify IDB integrity (expect VERDICT: INTACT)
 cmd /c "tools\run_idat.bat tools\verify_idb.py"
 ```

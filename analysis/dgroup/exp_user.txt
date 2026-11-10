@@ -1,0 +1,11 @@
+before pop+1 43EFD..43F6D vFFFFFFFFFFFFFFFF t3 | fs 43EFD..43F6D vFFFFFFFFFFFFFFFF t3
+sel 7A32
+split user @FS -> True 43EFF..43F6D v7A32 t2
+after auto_wait 43EFF..43F6D v7A32 t2
+after recreate 43EFF..43F6D v7A32 t2
+auto split BAD over user -> True 43EFF..43F6D v7A32 t2
+reset user 43EFF..43F6D v7A32 t2
+after plan_range 43EFF..43F6D v7A32 t2
+dref test fn 1101A insn 1101E 'and     byte ptr ds:497h, 4Fh' xrefs []
+ after split+auto_wait: ds 1101A..11092 v7A32 t2 'and     ds:byte_7A320+497h, 4Fh' xrefs ['0x7a7b7']
+ after create_insn: 'and     ds:byte_7A320+497h, 4Fh' xrefs ['0x7a7b7']

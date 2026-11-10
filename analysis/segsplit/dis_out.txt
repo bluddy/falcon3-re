@@ -1,27 +1,43 @@
-==== 434A4
-0434A4 [434A2..434B1] 33 C2                                   xor     ax, dx
-0434A6 [434A2..434B1] 2B C2                                   sub     ax, dx
-0434A8 [434A2..434B1] 3D 8B 0C                                cmp     ax, 0C8Bh
-0434AB [434A2..434B1] 7F 05                                   jg      short locret_334B2
-0434AD [434A2..434B1] B3 00                                   mov     bl, 0
-0434AF [434A2..434B1] EB 49                                   jmp     short near ptr loc_334F8+2
-==== 13DB52
-13DB52 [13DAD0..13DB55] 6C 1F                                   call    flag2224a_set
-13DB54 [13DAD0..13DB55] CB                                      retf
-13DB55 [13DB55..13DB5D] 90                       sub_13DB55     nop
-13DB56 [13DB55..13DB5D] 2E C6 06 FA 00 FF                       mov     byte ptr cs:loc_11C4B8+2, 0FFh
-13DB5C [13DB55..13DB5D] CB                                      retf
-13DB5D [13DB5D..13DB74] 90                       sub_13DB5D     nop
-==== 13DBCF
-13DBCF [13DB74..13DBD7] 00                                      mov     bx, 8
-13DBD0 [13DB74..13DBD7] 9A BB 2E 6C 1F                          call    op_dispatch
-13DBD5 [13DB74..13DBD7] EB 31                                   jmp     short near ptr loc_11DC06+2
-13DBD7 [13DBD7..13DC09] 90                       sub_13DBD7     nop
-13DBD8 [13DBD7..13DC09] 2E C6 06 00 01 2D                       mov     byte ptr cs:loc_11C4BD+3, 2Dh ; '-'
-13DBDE [13DBD7..13DC09] 2E C6 06 01 01 31                       mov     byte ptr cs:loc_11C4BD+4, 31h ; '1'
-==== 13DC01
-13DC01 [13DBD7..13DC09] 00                                      mov     word ptr cs:loc_11C4B6, dx
-13DC02 [13DBD7..13DC09] 2E 8C 1E F8 00                          mov     word ptr cs:loc_11C4B8, ds
-13DC07 [13DBD7..13DC09] 1F                                      pop     ds
-13DC08 [13DBD7..13DC09] C3                                      retn
-13DC09 [13DC09..13DC29] 90                       sub_13DC09     nop
+==== 2BDD9
+02BDD9 [2BDD9..2BDE1] E8 E1 F1                 tail_bridge_to call    near ptr tail_bridge_overlay_load
+02BDDC [2BDD9..2BDE1] EA C7 0C 64 2F                          jmp     far ptr hw_config_apply_chain
+02BDE1 [nofn]         05 00                                   db 5, 0
+02BDE3 [2BDE3..2BDEB] E8 D7 F1                 sub_2BDE3      call    near ptr tail_bridge_overlay_load
+02BDE6 [2BDE3..2BDEB] EA 71 00 10 2E                          jmp     far ptr word_2E170+1
+02BDEB [nofn]         1B 00                                   sbb     ax, [bx+si]
+02BDED [2BDED..2BDF5] E8 CD F1                 sub_2BDED      call    near ptr tail_bridge_overlay_load
+02BDF0 [2BDED..2BDF5] EA CC 08 FF 6D                          jmp     loc_6E8BC
+==== 24530
+024530 [24530..24536] 1E                       view_rotation_ push    ds
+024531 [24530..24536] E8 02 00                                call    view_rotation_build
+024534 [24530..24536] 1F                                      pop     ds
+024535 [24530..24536] CB                                      retf
+024536 [24536..24588] 8B 0C                    view_rotation_ mov     cx, [si]
+024538 [24536..24588] 8B 54 02                                mov     dx, [si+2]
+02453B [24536..24588] 8B 44 04                                mov     ax, [si+4]
+02453E [24536..24588] BB 0E 7B                                mov     bx, 7B0Eh
+==== 1101A
+01101A [1101A..1104A] 8A E0                    kbd_led_update mov     ah, al
+01101C [1101A..1104A] B3 03                                   mov     bl, 3
+01101E [1101A..1104A] 80 26 97 04 4F           loc_1101E      and     byte ptr ds:497h, 4Fh
+011023 [1101A..1104A] FA                                      cli
+011024 [1101A..1104A] E8 EA FF                                call    kbd_ctrl_wait_64
+011027 [1101A..1104A] 8A C4                                   mov     al, ah
+==== 13DA52
+13DA52 [13DA52..13DA68] 55                       r29_draw_from_ push    bp
+13DA53 [13DA52..13DA68] 8B EC                                   mov     bp, sp
+13DA55 [13DA52..13DA68] 1E                                      push    ds
+13DA56 [13DA52..13DA68] 56                                      push    si
+13DA57 [13DA52..13DA68] 57                                      push    di
+13DA58 [13DA52..13DA68] 8B 76 06                                mov     si, [bp+arg_0]
+13DA5B [13DA52..13DA68] 8E 5E 08                                mov     ds, [bp+arg_2]
+13DA5E [13DA52..13DA68] 9A 9A 2D 6C 1F                          call    draw_from_struct
+==== 10E25
+010E25 [10E24..10E39] 06                                      push    es
+010E26 [10E24..10E39] 2E 8E 1E 02 00                          mov     ds, word ptr cs:byte_10842
+010E2B [10E24..10E39] 2A E4                                   sub     ah, ah
+010E2D [10E24..10E39] 50                                      push    ax
+010E2E [10E24..10E39] 9A 48 0F 0F 18                          call    irq_state_init
+010E33 [10E24..10E39] 83 C4 02                                add     sp, 2
+010E36 [10E24..10E39] 07                                      pop     es
+010E37 [10E24..10E39] 1F                                      pop     ds
