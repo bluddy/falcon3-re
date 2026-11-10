@@ -46,6 +46,8 @@ ADD = [(0x1617C, 0x162DF), (0x162DF, 0x163AD), (0x16284E, 0x162878), (0x12C970, 
        (0x12CA0D, 0x12CAEF), (0x12CAEF, 0x12CB27), (0x12C683, 0x12C7C6), (0x12C951, 0x12C970),
        (0x12CCE9, 0x12CE9D), (0x10931E, 0x1093A8), (0x109445, 0x109519), (0x129F7, 0x12B12), (0x12B12, 0x12B62),
        (0x100CA8, 0x100D00), (0x12C4F2, 0x12C504), (0x12C9D0, 0x12C9DF), (0x12CB27, 0x12CB2A), (0x22C89, 0x22C91)]
+# finding 139: no-xref runs that end in a terminator (far stubs, wrappers, an ISR); scan analysis/s1/orphan_scan138.json
+ADD += [(0x1002C, 0x1005A), (0x10473, 0x1047C), (0x105DC, 0x105E1), (0x10C7E, 0x10C83), (0x11B90, 0x11B96), (0x11D16, 0x11D2B), (0x13A53, 0x13A57), (0x205BA, 0x205BF), (0x20613, 0x2061B), (0x20889, 0x20897), (0x21ABA, 0x21ABE), (0x22564, 0x2256D), (0x229BB, 0x229C0), (0x229C8, 0x229D1), (0x229D1, 0x229DD), (0x22AEB, 0x22AFF), (0x23E25, 0x23E37), (0x23E37, 0x23E57), (0x23F5E, 0x23F62), (0x2408B, 0x2408F), (0x24963, 0x24970), (0x24970, 0x2497C), (0x2551C, 0x25522), (0x25562, 0x25567), (0x25893, 0x25899), (0x25899, 0x2589F), (0x2B131, 0x2B135), (0x2CA17, 0x2CA3F), (0x2CB72, 0x2CB76), (0x2CB76, 0x2CB7B), (0x12D15E, 0x12D16E)]
 # ea -> (clear_lo, clear_hi, seeds): orphan run with a misdecoded stretch that must be cleared and redecoded first
 ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x109445, 0x109519, [0x109445]),
              0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12]), 0x100CA8: (0x100CA8, 0x100D00, [0x100CA8]),
@@ -742,7 +744,7 @@ def main():
                          "before_end": f.end_ea, "end": ne, "sha256": sha(f.end_ea, ne), "chunks_before": chunks(ea),
                          "chunks_after": None})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_)
-        MANIFEST.write_text(json.dumps({"finding": 138, "step": "S1c-4 orphan code registered as functions (findings 126-138)",
+        MANIFEST.write_text(json.dumps({"finding": 139, "step": "S1c-4 orphan code registered as functions (findings 126-139)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
