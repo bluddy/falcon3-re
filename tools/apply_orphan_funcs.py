@@ -43,14 +43,19 @@ RETS = {"retn", "retf", "iret", "iretw", "retnw", "retfw"}
 # (ea, end): chosen from analysis/s1/orphan_t1*.json; every end is the address after a terminator
 ADD = [(0x1617C, 0x162DF), (0x162DF, 0x163AD), (0x16284E, 0x162878), (0x12C970, 0x12C9D0),
        (0x12CA0D, 0x12CAEF), (0x12CAEF, 0x12CB27), (0x12C683, 0x12C7C6), (0x12C951, 0x12C970),
-       (0x12CCE9, 0x12CE9D), (0x10931E, 0x1093A8), (0x109445, 0x109519), (0x129F7, 0x12B12), (0x12B12, 0x12B62)]
+       (0x12CCE9, 0x12CE9D), (0x10931E, 0x1093A8), (0x109445, 0x109519), (0x129F7, 0x12B12), (0x12B12, 0x12B62),
+       (0x100CA8, 0x100D00)]
 # ea -> (clear_lo, clear_hi, seeds): orphan run with a misdecoded stretch that must be cleared and redecoded first
 ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x109445, 0x109519, [0x109445]),
-             0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12])}
+             0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12]), 0x100CA8: (0x100CA8, 0x100D00, [0x100CA8])}
+# ea -> (tail chunk, clear ranges, seeds, pad bytes): a function whose second chunk lies after a foreign function that sits
+# inside its span (finding 131); pad bytes are single data bytes inside a chunk that no flow reaches
+TAILS = {0x100CA8: ([(0x100D0E, 0x100DFA)], [(0x100CA8, 0x100D00), (0x100D0D, 0x100DFA)], [0x100CA8, 0x100D0E, 0x100DF4], [0x100DEC])}
 # (old_start, new_start, end, clear_lo, ds_para): existing function whose real entry is new_start (finding 130).
 # [clear_lo, end) is cleared and redecoded from new_start; ds_para (or None) extends the DS range down to new_start.
 REBASE = [(0x106EEC, 0x106EE2, 0x106F3A, 0x106EE2, 0x706E), (0x10843D, 0x108430, 0x1084A6, 0x10843C, None),
-          (0x10CFA6, 0x10CE30, 0x10CFEC, 0x10CFA5, None)]
+          (0x10CFA6, 0x10CE30, 0x10CFEC, 0x10CFA5, None),
+          (0x4335A, 0x4334E, 0x43395, 0x4334E, None)]
 # (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
 EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
 # (func, run_lo, run_hi): fl_F continuations (finding 129).  If run_lo is the main-chunk end the function is
@@ -113,20 +118,23 @@ def menu_seeds(base, cf):
 
 def decode_menu(item):
     lo, hi = item["ea"], item["end"]
-    if "clear" in item:
-        clo, chi = item["clear"]
-        a, orig = clo, set()
-        while a < chi:
-            h = ida_bytes.get_item_head(a)
-            if ida_bytes.is_code(ida_bytes.get_flags(h)):
-                orig.add(h)
-            a = h + max(ida_bytes.get_item_size(h), 1)
-        ida_bytes.del_items(clo, ida_bytes.DELIT_SIMPLE, chi - clo)
+    if "clear" in item or "clears" in item:
+        regs = regions(item)
+        orig = set()
+        for clo, chi in item.get("clears") or [item["clear"]]:
+            a = clo
+            while a < chi:
+                h = ida_bytes.get_item_head(a)
+                if ida_bytes.is_code(ida_bytes.get_flags(h)):
+                    orig.add(h)
+                a = h + max(ida_bytes.get_item_size(h), 1)
+            ida_bytes.del_items(clo, ida_bytes.DELIT_SIMPLE, chi - clo)
         for sd in item["seeds"]:
-            descend(sd, lo, hi, set())
+            rlo, rhi = next((x, y) for x, y in regs if x <= sd < y)
+            descend(sd, rlo, rhi, set())
         for h in sorted(orig):
             if not (ida_bytes.is_code(ida_bytes.get_flags(h)) and ida_bytes.get_item_head(h) == h):
-                bad = [r.frm for r in idautils.XrefsTo(h, 0) if r.type in (16, 17, 18, 19) and not (lo <= r.frm < hi)]
+                bad = [r.frm for r in idautils.XrefsTo(h, 0) if r.type in (16, 17, 18, 19) and not any(x <= r.frm < y for x, y in regs)]
                 must(not bad, "jump/call into stale head 0x%X from %s" % (h, [hex(b) for b in bad]))
         return
     else:
@@ -174,14 +182,23 @@ def callers(ea):
                   if x.iscode and idc.print_insn_mnem(x.frm).startswith("call") and ida_funcs.get_func(x.frm))
 
 
+def regions(item):
+    return [[item["ea"], item["end"]]] + [list(t) for t in item.get("tails", [])]
+
+
 def state(item):
     f = ida_funcs.get_func(item["ea"])
-    if f and f.start_ea == item["ea"] and f.end_ea == item["end"]:
+    if f and f.start_ea == item["ea"] and f.end_ea == item["end"] and (not item.get("tails") or chunks(item["ea"]) == sorted(regions(item))):
         return "applied"
-    if (not any(ida_funcs.get_func(a) for a in range(item["ea"], item["end"]))
-            and sha(item["ea"], item["end"]) == item["sha256"]):
+    if (not any(ida_funcs.get_func(a) for lo, hi in regions(item) for a in range(lo, hi))
+            and sha(item["ea"], item["end"]) == item["sha256"]
+            and all(sha(lo, hi) == t for (lo, hi), t in zip(item.get("tails", []), item.get("tails_sha256", [])))):
         return "fresh"
     return "mismatch"
+
+
+def uname(ea):
+    return idaapi.get_name(ea) if ida_bytes.has_user_name(ida_bytes.get_flags(ea)) else None
 
 
 def norm(x):
@@ -229,10 +246,10 @@ def is_far(ea):
 def rb_state(x):
     old, new, end = x["old_ea"], x["ea"], x["end"]
     f = ida_funcs.get_func(new)
-    if f and f.start_ea == new and f.end_ea == end and chunks(new) == [[new, end]] and idaapi.get_name(new) == x["name"]:
+    if f and f.start_ea == new and f.end_ea == end and chunks(new) == [[new, end]] and uname(new) == x["name"]:
         return "applied"
     f = ida_funcs.get_func(old)
-    if (f and f.start_ea == old and f.end_ea == end and chunks(old) == [[old, end]] and idaapi.get_name(old) == x["name"]
+    if (f and f.start_ea == old and f.end_ea == end and chunks(old) == [[old, end]] and uname(old) == x["name"]
             and sha(new, end) == x["sha256"] and not any(ida_funcs.get_func(a) for a in range(new, old))):
         return "fresh"
     return "mismatch"
@@ -271,7 +288,8 @@ def rebase(x):
     if far:
         f.flags |= ida_funcs.FUNC_FAR
         must(ida_funcs.update_func(f), "update_func 0x%X" % new)
-    must(ida_name.set_name(new, x["name"], ida_name.SN_NOWARN), "name of 0x%X" % new)
+    if x["name"]:
+        must(ida_name.set_name(new, x["name"], ida_name.SN_NOWARN), "name of 0x%X" % new)
     must(is_far(new) == far, "far flag of rebased 0x%X" % new)
     if x.get("lost_heads") is None:
         x["lost_heads"] = lost
@@ -296,15 +314,23 @@ def add_all(items, exts=(), rebs=()):
         must(ida_funcs.add_func(it["ea"], it["end"]), "add_func 0x%X..0x%X" % (it["ea"], it["end"]))
         f = ida_funcs.get_func(it["ea"])
         must(f.start_ea == it["ea"] and f.end_ea == it["end"], "span of 0x%X" % it["ea"])
-        must(chunks(it["ea"]) == [[it["ea"], it["end"]]], "chunks of 0x%X" % it["ea"])
-        if "clear" in it:
-            must(terminated(it["ea"], it["end"]), "0x%X..0x%X does not end in a terminator" % (it["ea"], it["end"]))
+        for lo, hi in it.get("tails", []):
+            must(ida_funcs.append_func_tail(f, lo, hi), "append_func_tail 0x%X 0x%X..0x%X" % (it["ea"], lo, hi))
+            f = ida_funcs.get_func(it["ea"])
+        must(chunks(it["ea"]) == sorted(regions(it)), "chunks of 0x%X" % it["ea"])
+        if "clear" in it or "clears" in it:
+            for lo, hi in regions(it):
+                must(terminated(lo, hi), "0x%X..0x%X does not end in a terminator" % (lo, hi))
             it["last"] = idc.generate_disasm_line(idc.prev_head(it["end"], it["ea"]), 0)
         if "seeds" in it:
-            a = it["ea"]
-            while a < it["end"]:
-                must(ida_bytes.is_code(ida_bytes.get_flags(a)), "non-code head 0x%X in 0x%X" % (a, it["ea"]))
-                a += ida_bytes.get_item_size(a)
+            for lo, hi in regions(it):
+                a = lo
+                while a < hi:
+                    if a in it.get("pad", []):
+                        a += 1
+                        continue
+                    must(ida_bytes.is_code(ida_bytes.get_flags(a)), "non-code head 0x%X in 0x%X" % (a, it["ea"]))
+                    a += ida_bytes.get_item_size(a)
     after = snapshot()
     new = {it["ea"] for it in items} | {x["ea"] for x in rebs}
     changed = sorted(ea for ea in set(before) if before[ea] != after.get(ea))
@@ -313,7 +339,7 @@ def add_all(items, exts=(), rebs=()):
     for x in exts:
         must(after[x["ea"]][0] == before[x["ea"]][0], "name of 0x%X changed" % x["ea"])
     for x in rebs:
-        must(x["old_ea"] not in after and after[x["ea"]][0] == x["name"], "rebase of 0x%X" % x["old_ea"])
+        must(x["old_ea"] not in after and (x["name"] is None or after[x["ea"]][0] == x["name"]), "rebase of 0x%X" % x["old_ea"])
     must(set(after) - set(before) <= new, "unplanned new functions %s" % [hex(c) for c in sorted(set(after) - set(before) - new)][:10])
     log.append("functions added: %s; extended: %s; rebased: %s; table %d -> %d, other existing functions unchanged" % (
         ["0x%X..0x%X" % (it["ea"], it["end"]) for it in items],
@@ -329,11 +355,16 @@ def main():
             if state({"ea": ea, "end": end, "sha256": ""}) == "applied" and ea in old:
                 items.append(old[ea])
                 continue
-            must(not any(ida_funcs.get_func(a) for a in range(ea, end)), "0x%X..0x%X already owned" % (ea, end))
+            tails = TAILS[ea][0] if ea in TAILS else []
+            must(not any(ida_funcs.get_func(a) for lo, hi in [(ea, end)] + tails for a in range(lo, hi)), "0x%X..0x%X already owned" % (ea, end))
             must(ea in ADD_CLEAR or terminated(ea, end), "0x%X..0x%X does not end in a terminator" % (ea, end))
             it = {"ea": ea, "end": end, "last": None, "callers": callers(ea), "sha256": sha(ea, end)}
             if ea in ADD_CLEAR:
                 it["clear"], it["seeds"] = list(ADD_CLEAR[ea][:2]), ADD_CLEAR[ea][2]
+            if ea in TAILS:
+                it["tails"], it["tails_sha256"] = [list(t) for t in tails], [sha(lo, hi) for lo, hi in tails]
+                it["clears"], it["seeds"], it["pad"] = [list(c) for c in TAILS[ea][1]], TAILS[ea][2], TAILS[ea][3]
+                del it["clear"]
             items.append(it)
         for base, cf, end in MENUS:
             if state({"ea": base, "end": end, "sha256": ""}) == "applied" and base in old:
@@ -372,11 +403,11 @@ def main():
                 continue
             f = ida_funcs.get_func(old)
             must(f and f.start_ea == old and f.end_ea == end, "0x%X is not the planned function" % old)
-            rebs.append({"ea": new, "old_ea": old, "end": end, "clear_lo": clo, "ds": ds, "name": idaapi.get_name(old),
+            rebs.append({"ea": new, "old_ea": old, "end": end, "clear_lo": clo, "ds": ds, "name": uname(old),
                          "far": is_far(old), "sha256": sha(new, end), "old_sha256": sha(old, end),
                          "prefix_sha256": sha(new, old), "lost_heads": None})
         add_all(items, exts, rebs)
-        MANIFEST.write_text(json.dumps({"finding": 130, "step": "S1c-4 orphan code registered as functions (findings 126-130)",
+        MANIFEST.write_text(json.dumps({"finding": 131, "step": "S1c-4 orphan code registered as functions (findings 126-131)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)

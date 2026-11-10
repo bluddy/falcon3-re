@@ -173,11 +173,13 @@ DBFL_KILL).
      - **S1c-4e (finding 130):** the refused call targets: r12_state36_reset_stub / r15_op_init_sequence starts rebased
        to 0x106EE2 / 0x108430, r27_table_copy_far_entry merged with the 0x10CE30 body (444 B), 0x10931E / 0x109445 /
        0x129F7 / 0x12B12 added; functions 3,552 -> 3,556; backup `.bak_rebase3`. New gate category REBASE.
-     - Left open (findings 126-130): 7 tiny/misdecoded fl_F fragments, 0x105DA9 and the 0x100CC0..0x100DFA
-       data-decoded body, remaining jmp-reached tails, no-xref runs.
+     - **S1c-4f (finding 131):** the jmp-reached tails: 0x100CA8 added as a two-chunk far function (88 B + 236 B tail
+       around sub_100D01), sub_4335A rebased to 0x4334E (59 -> 71 B, unnamed); functions 3,556 -> 3,557; backup
+       `.bak_tails`. The apply tool gained `TAILS` and unnamed rebases.
+     - Left open (findings 126-131): 7 tiny/misdecoded fl_F fragments, 0x105DA9 junk run, 0x12C4F2 / 0x12C9D0, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4e;
+     - commit S1c-4f;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;
