@@ -155,10 +155,14 @@ DBFL_KILL).
      - Integrity is **INTACT**. Every HEAD difference is recorded in
        `registry/rebaseline_expected.json`.
      - Backups: `.bak_rebase`, `.bak_rebase2`. Not committed yet.
+   - **S1c-3 ✅ (finding 125): call flow after wrong no-return flags.**
+     - 22 more functions that return were flagged no-return; flags cleared.
+     - 41 call sites re-flowed and 5 holes in callers re-decoded as code.
+     - Function table unchanged; integrity INTACT; backup `.bak_flow`.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit the re-baseline;
-     - review the remaining orphan code runs and suspect no-return flags (finding 124 "Open");
+     - commit S1c-3;
+     - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;
      - 47 fall-in entries;

@@ -6385,3 +6385,36 @@ so the first manifest still reads "already applied"; select it with `RBMAN`):
 - **Thunk anomalies:** 0x2BE1F, 0x2C153, 0x2C17B, and 34 thunks with no variant.
 - **From S1a/S1b:** 403 merged functions, 65 `not_head` misdecodes and 47 fall-in entries. The auto queue
   is still not empty.
+
+## 2026-11-10 125 - Call flow cut by wrong no-return flags repaired (S1c-3)
+Status: APPLIED (canonical IDB; backup `FALCONCD.EXE.i64.bak_flow`)
+
+**Problem.** Finding 124 cleared the no-return flag on 5 functions that return. A scan of all 35 FUNC_NORET
+functions (`analysis/s1/noret_scan_probe.py`) found **22 more that contain a `ret`/`retf`**:
+`angle_adjusted_copy`, the `key_mode_*` trio at 0x33116/0x331E4/0x3343E, `farobj_store_32075`,
+`farobj_index_resolve_step`, `terrain_vm_entry_lookup`, `sub_3FD66`, and 12 overlay/R-block functions.
+The other 13 end in `int 21h`, `hlt` or a tail `jmp` and have no `ret`, so they stay no-return.
+Clearing a flag does not re-flow the callers: **all 36 sampled call sites into these functions had their
+fall-through edge cut**, and 5 of them left a hole in the caller:
+- 0x2F99E (11 B, after the call to `game_frame_pipeline_step`) was data. It is really
+  `call tick_rate_compute; mov cs:word_2F679,bx; mov cs:word_2F677,ax`, the middle of `game_config_apply_init`.
+- 4 return addresses (0x326FF, 0x3273E/3F, 0x32A43, 0x32AA1) were `align` or data bytes, but are `nop`/`retn`
+  after `push cs; call near key_mode_switch_tramp`.
+
+**Fix** (`tools/apply_flow_fixes.py`, manifest `registry/flow_fixes_expected.json`). One script, two modes:
+`FFMODE=plan` on a copy writes the manifest; the default mode replays it, checking each item's before state.
+- Cleared 22 no-return flags.
+- Re-decoded the 5 ranges (sequential `create_insn`; they land exactly on the range end).
+- Added 41 `fl_F` edges, one for each direct call into a flagged or earlier-cleared function.
+- Never runs `auto_wait`.
+
+**Gates.**
+- The function table (start, end, name, chunks) is identical before and after, in the apply and in the plan.
+- A fresh `extract_ida_bytes.py` output equals the committed `function_bytes.json`: 3,541 functions, no
+  difference.
+- `verify_idb_s1`: INTACT (`analysis/s1/integrity_flow.log`).
+- A rerun reports "already applied".
+
+**Not done.** The `farobj_index_resolve_step` (0x3F861) range ends in `push es; push si` falling into the
+function at 0x3FB22, which is a pre-existing merge, not a flag problem. The orphan runs listed in finding 124
+are still open.

@@ -87,6 +87,10 @@ cmd /c "tools\run_idat.bat tools\register_r29_entries.py"
 cmd /c "tools\run_idat.bat tools\apply_rebase_fixes.py"
 set RBMAN=registry\rebase_fixes2_expected.json & cmd /c "tools\run_idat.bat tools\apply_rebase_fixes.py"
 
+# 6f. S1c-3 call-flow repair after the no-return flags (finding 125)
+#     (manifest registry/flow_fixes_expected.json; FFMODE=plan on a COPY regenerates it, FFDRY=1 checks without saving)
+cmd /c "tools\run_idat.bat tools\apply_flow_fixes.py"
+
 # 7. Verify IDB integrity (expect VERDICT: INTACT)
 cmd /c "tools\run_idat.bat tools\verify_idb.py"
 ```
