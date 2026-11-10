@@ -184,10 +184,13 @@ DBFL_KILL).
      - **S1c-4i (finding 134):** a function-removal path (`remove_funcs` manifest, `REMOVE` apply mode, REMOVE category in
        `verify_rebuild`); three word-table heads deleted (0x6EC14, 0x6EF1C, 0x2E1C2), ledger entries removed; functions
        3,560 -> 3,557; backup `.bak_rm134`.
-     - Left open (findings 126-134): 0x167449 (inside 166F80), 0x22C8B, 0x67F77, the 0x105D90 table / sub_105DA7, no-xref runs.
+     - **S1c-4j (finding 135):** the 0x105D90 offset table and its message text were code; `table_fix` manifest block and
+       `TABLEFIX` apply mode; sub_105D9D and sub_105DA7 deleted, the 0x1069B4 tables retyped; functions 3,557 -> 3,555;
+       backup `.bak_tab135`.
+     - Left open (findings 126-135): 0x105EB5..0x10626E message text, 0x167449 (inside 166F80), 0x22C8B, 0x67F77, no-xref runs.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4i;
+     - commit S1c-4j;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;
