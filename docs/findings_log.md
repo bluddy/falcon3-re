@@ -6901,3 +6901,18 @@ so it is a rebase, not an add.  Only five of the 142 runs have an xref (0x12BF89
 
 **Still open:** the rebase of 0x16F4B5 to 0x16F4B1, the longer pieces (0x100505, 0x6E7C7, 0x12BF89, 0x155F1A), the padding runs and
 the R30 menu state machine.
+
+## 2026-11-10 140 - sub_16F4B5 rebased onto its real prologue (S1c-4o)
+
+`sub_16F4B5` (far, unnamed, 82 B) started three bytes late: its first instructions `push bp / mov bp,sp / push si` sit
+at 0x16F4B1..0x16F4B4 and were left as a 4-byte orphan run (finding 139 flagged it, the one no-xref-scan run with
+eight callers).  All eight callers (far calls, from 0x16DC0B, 0x16DC79, 0x16DCE1, 0x16DD66 and four more) target
+0x16F4B1; the only xrefs into 0x16F4B5 and 0x16F4B4 were the fall-through flow from the bytes before them.  The existing
+REBASE mode moved the start to 0x16F4B1 (86 B, ends unchanged at 0x16F507; no stale code heads, no DS change, no name).
+`function_bytes.json` keeps the key `sub_16F4B5` with ea 0x16F4B1, as `sub_4335A` does for 0x4334E.
+
+Gates: integrity INTACT, `naming.py check` OK (2035), `verify_rebuild` faithful (REBASE 1, everything else 0), idempotent
+replay (72 applied).  Functions stay at 3,586.  Backup `FALCONCD.EXE.i64.bak_reb140`.
+
+**Still open:** the longer leftover pieces (0x100505, 0x6E7C7, 0x12BF89, 0x155F1A), the padding runs and the R30 menu
+state machine.
