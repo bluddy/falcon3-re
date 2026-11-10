@@ -6786,3 +6786,26 @@ to 0x10626E and is not yet retyped as strings.
 
 **Still open:** the rest of the text up to the function at 0x10626E, 0x167449 (inside 166F80), 0x22C8B, 0x67F77, and the
 no-xref runs.
+
+## 2026-11-10 136 - the modem/network message text typed as strings (S1c-4k)
+
+Finding 135 cleared 0x105D90..0x105EB5 to data but left the text behind it (0x105EB5..0x10626E, still undefined bytes)
+and did not set the offsets of the 43-word table.  Both are done now.
+
+- **Layout** (parsed from the bytes, read-only probe): 0x105DE6..0x10626E is a sequence of NUL-terminated ASCII strings,
+  each optionally preceded by a one-byte layout code (1..6, probably a column/row or colour selector).  Entries 12-17, 30
+  and 37 of the table all point at 0x106260 ("SET UP ERROR").  A parse that looks only for NUL glues the code byte 0x03 at
+  0x1061BA to the end of "SESSION TERMINATED  ", which would leave table entry 40 (0x1061BB) mid-string; splitting at every
+  byte below 0x20 fixes that.
+- **Result:** 118 items (strings and code bytes) with no gaps; all 43 table words land on an item head (nearly all on the
+  layout-code byte in front of their string).
+- **0x10614A** is not text: `mov cs:byte_10614A, cl` at 0x1073F2 patches the digit of "PLAYER #2 HAS" at run time, so it
+  stays a one-byte item and the strings around it are split there.
+- The manifest gained a `text_fix` block (`TEXTFIX` / `xt_state` / `textfix`): `op_plain_offset` on every table word, then
+  each text item re-typed as a C string or a single byte; sha256 of the table and the text pinned.  No function-table
+  change, so `function_bytes.json` and `verify_rebuild` are untouched (all categories 0).
+
+**Applied.**  Plan, dry replay (1 fresh, 36 applied), backup `FALCONCD.EXE.i64.bak_txt136`, apply.  Gates: integrity INTACT,
+`naming.py check` OK (2036), `verify_rebuild` faithful (all categories 0), idempotent replay (37 applied).
+
+**Still open:** 0x167449 (inside 166F80), 0x22C8B, 0x67F77, and the no-xref runs.

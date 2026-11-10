@@ -27,6 +27,7 @@ from pathlib import Path
 import ida_bytes
 import ida_funcs
 import ida_loader
+import ida_nalt
 import ida_name
 import ida_segment
 import ida_segregs
@@ -67,6 +68,10 @@ REMOVE = [(0x6EC14, 0x6EC17, 0x6EC2C), (0x6EF1C, 0x6EF1F, 0x6EF30), (0x2E1C2, 0x
 # offsets from base; plain: (lo, hi) words that are not pointers.
 TABLEFIX = [{"funcs": [(0x105D9D, 0x105DA7), (0x105DA7, 0x105DA9)], "clear": (0x105D90, 0x105EB5),
              "words": (0x105D90, 0x105DE6), "offwords": (0x1069B4, 0x1069BE, 0x105D90), "plain": (0x1069BE, 0x1069C8)}]
+# Text fix (finding 136): the message text behind the 0x105D90 offset table becomes strings.  table: (lo, hi, base) offset
+# words; text: (lo, hi) typed as C strings and single control bytes (1..0x1f, bare NUL); keep: bytes that are variables
+# inside the text (0x10614A is the patched player digit of "PLAYER #2 HAS") and stay one-byte items.
+TEXTFIX = [{"table": (0x105D90, 0x105DE6, 0x105D90), "text": (0x105DE6, 0x10626E), "keep": [0x10614A]}]
 # (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
 EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
 # (func, run_lo, run_hi): fl_F continuations (finding 129).  If run_lo is the main-chunk end the function is
@@ -401,8 +406,61 @@ def tablefix(x):
     must(tf_state(x) == "applied", "table fix 0x%X" % lo)
 
 
-def add_all(items, exts=(), rebs=(), rms=(), tfs=()):
+def text_segments(x):
+    lo, hi = x["text"]
+    keep = set(x["keep"])
+    bs = ida_bytes.get_bytes(lo, hi - lo)
+    out, a = [], lo
+    while a < hi:
+        b = bs[a - lo]
+        if a in keep or b < 0x20:
+            out.append((a, 1, "b"))
+            a += 1
+            continue
+        e = a
+        while e < hi and bs[e - lo] >= 0x20 and e not in keep:
+            e += 1
+        if e < hi and bs[e - lo] == 0 and e not in keep:
+            e += 1
+        out.append((a, e - a, "s"))
+        a = e
+    return out
+
+
+def xt_state(x):
+    lo, hi = x["text"]
+    tlo, thi, base = x["table"]
+    if sha(lo, hi) != x["text_sha256"] or sha(tlo, thi) != x["table_sha256"]:
+        return "mismatch"
+    if any(ida_funcs.get_func(a) for a in range(tlo, hi)):
+        return "mismatch"
+    ok = all(ida_bytes.is_off0(ida_bytes.get_flags(a)) for a in range(tlo, thi, 2))
+    for a, n, k in text_segments(x):
+        fl = ida_bytes.get_flags(a)
+        ok = ok and ida_bytes.get_item_size(a) == n and ida_bytes.is_head(fl) and (
+            ida_bytes.is_strlit(fl) if k == "s" else ida_bytes.is_byte(fl))
+    return "applied" if ok else "fresh"
+
+
+def textfix(x):
+    lo, hi = x["text"]
+    tlo, thi, base = x["table"]
+    for a in range(tlo, thi, 2):
+        must(idc.op_plain_offset(a, 0, base), "offset 0x%X" % a)
+    for a, n, k in text_segments(x):
+        ida_bytes.del_items(a, ida_bytes.DELIT_SIMPLE, n)
+        if k == "b":
+            must(ida_bytes.create_byte(a, 1), "create_byte 0x%X" % a)
+        else:
+            must(ida_bytes.create_strlit(a, n, ida_nalt.STRTYPE_C), "create_strlit 0x%X" % a)
+    must(xt_state(x) == "applied", "text fix 0x%X" % lo)
+
+
+def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=()):
     before = snapshot()
+    for x in xts:
+        if xt_state(x) != "applied":
+            textfix(x)
     for x in tfs:
         if tf_state(x) != "applied":
             tablefix(x)
@@ -457,6 +515,8 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=()):
         ["0x%X..0x%X" % (it["ea"], it["end"]) for it in items],
         ["0x%X -> 0x%X" % (x["ea"], x["end"]) for x in exts],
         ["0x%X -> 0x%X %s" % (x["old_ea"], x["ea"], x["name"]) for x in rebs], len(before), len(after)))
+    if xts:
+        log.append("text fix: %s" % ["0x%X..0x%X (%d items)" % (x["text"][0], x["text"][1], len(text_segments(x))) for x in xts])
     if tfs:
         log.append("table fix: %s" % ["0x%X..0x%X (%d functions deleted)" % (x["clear"][0], x["clear"][1], len(x["funcs"])) for x in tfs])
     if rms:
@@ -547,9 +607,17 @@ def main():
             tfs.append({"funcs": fl, "clear": list(t["clear"]), "clear_sha256": sha(*t["clear"]), "words": list(t["words"]),
                         "offwords": list(t["offwords"]), "offwords_sha256": sha(t["offwords"][0], t["offwords"][1]),
                         "plain": list(t["plain"]), "plain_sha256": sha(*t["plain"])})
-        add_all(items, exts, rebs, rms, tfs)
-        MANIFEST.write_text(json.dumps({"finding": 135, "step": "S1c-4 orphan code registered as functions (findings 126-135)",
-                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "add_funcs": items},
+        oldx2 = {x["text"][0]: x for x in json.loads(MANIFEST.read_text()).get("text_fix", [])} if MANIFEST.exists() else {}
+        xts = []
+        for t in TEXTFIX:
+            if t["text"][0] in oldx2:
+                xts.append(oldx2[t["text"][0]])
+                continue
+            xts.append({"table": list(t["table"]), "table_sha256": sha(t["table"][0], t["table"][1]), "text": list(t["text"]),
+                        "text_sha256": sha(*t["text"]), "keep": list(t["keep"])})
+        add_all(items, exts, rebs, rms, tfs, xts)
+        MANIFEST.write_text(json.dumps({"finding": 136, "step": "S1c-4 orphan code registered as functions (findings 126-136)",
+                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
@@ -559,8 +627,9 @@ def main():
     rebs = doc.get("rebase_funcs", [])
     rms = doc.get("remove_funcs", [])
     tfs = doc.get("table_fix", [])
+    xts = doc.get("text_fix", [])
     states = ([state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts] + [rb_state(x) for x in rebs]
-              + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs])
+              + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs] + [xt_state(x) for x in xts])
     log.append("manifest: %d entries (add + extend); live: %d fresh, %d applied, %d mismatched" % (
         len(states), states.count("fresh"), states.count("applied"), states.count("mismatch")))
     if all(s == "applied" for s in states):
@@ -571,7 +640,7 @@ def main():
         log.append("ABORT: live IDB does not match the manifest; nothing changed")
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         return
-    add_all(doc["add_funcs"], exts, rebs, rms, tfs)
+    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts)
     if os.environ.get("OFDRY"):
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("dry run (OFDRY): not saved")
