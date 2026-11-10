@@ -189,7 +189,11 @@ DBFL_KILL).
        backup `.bak_tab135`.
      - **S1c-4k (finding 136):** the 0x105DE6..0x10626E message text typed as strings and the 43-word table made offsets
        (`text_fix` manifest block, `TEXTFIX`); no function-table change; backup `.bak_txt136`.
-     - Left open (findings 126-136): 0x167449 (inside 166F80), 0x22C8B, 0x67F77, no-xref runs.
+     - Left open (findings 126-136): 0x167449 (inside 166F80), 0x22C8B, no-xref runs, and 0x67F58..0x683C5: not a pair of
+       fragments but one 628-instruction body (a repeated `les bx,[79E6C]; mov byte ptr es:[bx+N],0` stamp, entered by the
+       `jmp loc_67E29` back-edge and fall-through) that continues ui_menu_transition_step (0x67BAF) over 14 named fragments
+       (r30_entry_partial_b/c/d, r30_hlt_stub, farobj_record_clear_fields ...); ui_loadout_menu_enter at 0x683C5 starts
+       inside the `push es:[14FAh]` at 0x683C1.  Needs a function-merge path in the apply tool (read-only probe, nothing applied).
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
      - commit S1c-4k;
