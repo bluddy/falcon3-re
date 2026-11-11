@@ -236,14 +236,15 @@ DBFL_KILL).
        0x68CC0, 0x68E49, 0x68F20, 0x69123) are undecoded and unreferenced.  0x6940B (`enter 6,0`, far-called from 0x675BA)
        is the real start of r30_record_link; 0x69227 is a real far entry.  Fixing this means merging ~25 named pieces
        (ledger entries lost) and needs a decision on the owning function; deferred.
-   - **Now (after finding 160, measured 2026-11-11):** 3,979 functions, ledger 2,034; 140 mid-body targets / 327 sites
+   - **Now (after finding 161, measured 2026-11-11):** 3,979 functions (unchanged); mid-body targets 137/326 (not_head 19/44, was 64/125), ledger 2,034; 140 mid-body targets / 327 sites
      (18 merged = 12 shared tails + 1 multi-chunk + 5 deferred, 64 misdecodes, 26+23 fall-in, 9 other); 96 orphan code runs / 221 B.
      **P1 (pure splits) COMPLETE.**  5 targets deferred to P5 / later investigation., ledger 2,034; 489 mid-body targets / 1,156 sites
      (367 merged, 64 misdecodes, 26 + 23 fall-in entries, 9 other); 96 orphan code runs / 221 B (92 are 1-2 B padding).
      Of the 367 merged, 354 are pure splits (~835 sites remaining), 12 shared tails, 1 multi-chunk.
    - **Next:** the full work queue, procedure, mode table and pitfalls are in the [IDB stabilisation plan](docs/workflow/idb_stabilisation_plan.md).  In order:
+     - **S1c-6a (finding 161):** P2: FIX_DECODE mode; 46 of 48 type-2a misdecodes fixed (2 skipped, 10 type-1 + others deferred); not_head 64→19; backup `.bak_misdecode161`.
      - **P1 COMPLETE** (findings 145-160, 16 batches, 389 of 394 pure-split targets split; 5 deferred to P2/P5);
-     - P2 the 64 `not_head` misdecodes; P3 the 49 fall-in entries; P4 the 9 `other` targets and 12 shared tails;
+     - **P2 partial** (finding 161, 46/64 fixed; 18 deferred/failed); P3 the 49 fall-in entries; P4 the other targets and 12 shared tails;
      - P5 the 0x6E696..0x6E8B7 handler cluster / R30 menu state machine (needs a function-merge mode);
      - P6 the small leftover orphans (0x6E16E ...); P7 drain the auto queue (~94 functions) under a manifest;
      - P8 housekeeping; then S2 VGRAPH (P9), S3 trace edges (P10), S4 deep dive (P11).

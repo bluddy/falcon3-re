@@ -168,6 +168,15 @@ def load_split_funcs():
     return {e["ea"]: e for e in json.loads(p.read_text()).get("split_funcs", [])}
 
 
+def load_fix_decode_eas():
+    """{fn_ea} of orphan_funcs_expected.json "fix_decode_funcs" (P2): functions that had
+    misdecoded internal bytes fixed; their sizes may decrease as a side effect."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return set()
+    return {e["fn_ea"] for e in json.loads(p.read_text()).get("fix_decode_funcs", [])}
+
+
 # Carve manifest (finding 59): a parent function is subdivided into PLANNED
 # functions plus data holes that must stay outside every function and keep
 # their recorded sha256.  The live hole bytes come from verify_idb's export
@@ -222,6 +231,7 @@ def main():
     retired = load_retired()
     patches = load_patches()
     split_funcs = load_split_funcs()
+    fix_decode_eas = load_fix_decode_eas()
     extends = load_extends()
     trims = load_trims()
     rebases = load_rebases()
@@ -307,7 +317,7 @@ def main():
 
     lost = sorted(set(head) - set(now))
     added = sorted(set(now) - set(head))
-    changed, renamed, splits, recodes, bytepatches, splitdata = [], [], [], [], [], []
+    changed, renamed, splits, recodes, bytepatches, splitdata, fd_trimmed = [], [], [], [], [], [], []
     for k in set(head) & set(now):
         a, b = head[k], now[k]
         # allowlisted bulk re-derivation (finding 53) -- checked first, and
@@ -352,6 +362,10 @@ def main():
                     splits.append((k, "split at 0x%X (%dB -> %dB+%dB, sha256 pinned)"
                                    % (x["at"], a["size"], b["size"], x["end"] - x["at"])))
                     continue
+            # fix_decode (P2): internal misdecode fixed; function may have shortened as a side effect
+            if a.get("ea") in fix_decode_eas and b.get("size", 0) <= a.get("size", 0):
+                fd_trimmed.append((k, "fix_decode shrank fn from %dB to %dB" % (a.get("size",0), b.get("size",0))))
+                continue
             # shrank + the old range is now tiled by new fns = intended split
             if b.get("size", 0) < a.get("size", 0):
                 # finding 59: a manifest-planned carve, with data holes, is
@@ -444,8 +458,16 @@ def main():
                 else:
                     # split not yet applied (tail doesn't exist in now): keep original entry
                     want.add((k2, ea2, sz2))
+            elif ea2 in fix_decode_eas:
+                # fix_decode (P2) may have shortened this function; use current size
+                owner_now = next((vv for kk, vv in now.items() if vv.get("ea") == ea2), None)
+                if owner_now and owner_now["size"] < sz2:
+                    split_expanded = True
+                    want.add((k2, ea2, owner_now["size"]))
+                else:
+                    want.add((k2, ea2, sz2))
             else:
-                want.add(entry)
+                want.add((k2, ea2, sz2))
 
         have = {reg_key(k, v) for k, v in now.items()
                 if v.get("ea") is not None and (lo <= v["ea"] < hi or v["ea"] in rb_new and lo <= rb_new[v["ea"]]["old_ea"] < hi)}
@@ -525,6 +547,8 @@ def main():
           % len(rebased))
     print("  REMOVE  : %d  (intentional: word-table head deleted, sha256 pinned)" % len(removed))
     print("  TRIM    : %d  (intentional: tail of a function is data, kept bytes sha256-pinned)" % len(trimmed))
+    print("  FD_TRIM : %d  (intentional: fix_decode shrank function, internal misdecode fixed)"
+          % len(fd_trimmed))
     print("  CHANGED : %d" % len(changed))
     for k, why in extended + rebased + removed + trimmed:
         print("   %-16s %s" % (k, why))

@@ -1,15 +1,15 @@
 {
  "cls": {
-  "fallthrough_entry_proloque": 48,
-  "T:fallthrough_entry_proloque": 26,
-  "fallthrough_secondary_entry": 68,
-  "T:fallthrough_secondary_entry": 23,
-  "not_head": 125,
-  "T:not_head": 64,
-  "other": 27,
-  "T:other": 9,
-  "after_ret_or_jmp(merged_fn)": 59,
-  "T:after_ret_or_jmp(merged_fn)": 18
+  "fallthrough_entry_proloque": 39,
+  "T:fallthrough_entry_proloque": 25,
+  "fallthrough_secondary_entry": 69,
+  "T:fallthrough_secondary_entry": 24,
+  "other": 104,
+  "T:other": 49,
+  "not_head": 44,
+  "T:not_head": 19,
+  "after_ret_or_jmp(merged_fn)": 70,
+  "T:after_ret_or_jmp(merged_fn)": 20
  },
  "samples": {
   "fallthrough_entry_proloque": [
@@ -68,15 +68,6 @@
     3
    ],
    [
-    "41167",
-    "sub_4113C",
-    "4113C",
-    "R05_2B83",
-    "nop",
-    "mov",
-    10
-   ],
-   [
     "39D02",
     "state_gate_4ac2_4a83",
     "39CE0",
@@ -120,6 +111,15 @@
     "nop",
     "mov",
     3
+   ],
+   [
+    "33468",
+    "far_mode_event_dispatch",
+    "33443",
+    "R05_1F64",
+    "jnz",
+    "mov",
+    1
    ]
   ],
   "fallthrough_secondary_entry": [
@@ -232,23 +232,32 @@
     1
    ]
   ],
-  "not_head": [
+  "other": [
    [
     "2F294",
     "viewvec3_project_track_max",
     "2F257",
     "R05_1EFE",
-    "add",
     "",
+    "mov",
     1
+   ],
+   [
+    "24E46",
+    "sub_24DEC",
+    "24DEC",
+    "seg020",
+    "",
+    "push",
+    6
    ],
    [
     "2F05F",
     "farobj_config_state_entry",
     "2F043",
     "R05_1EFE",
-    "add",
     "",
+    "test",
     3
    ],
    [
@@ -256,10 +265,84 @@
     "mode_toggle_105f",
     "377CF",
     "R05_1F64",
-    "add",
     "",
+    "mov",
     1
    ],
+   [
+    "4FD52",
+    "hw_state_partial_4fd",
+    "4FD4A",
+    "R05_3FD2",
+    "",
+    "",
+    2
+   ],
+   [
+    "4FD5D",
+    "hw_state_partial_4fd",
+    "4FD4A",
+    "R05_3FD2",
+    "",
+    "push",
+    2
+   ],
+   [
+    "2E920",
+    "farptr_table_field22_store",
+    "2E910",
+    "R05_1E10",
+    "",
+    "push",
+    1
+   ],
+   [
+    "40F13",
+    "farobj_slot_scan_cycle",
+    "40EA8",
+    "R05_2B83",
+    "inc",
+    "push",
+    13
+   ],
+   [
+    "11A7D",
+    "cb_args_invoke",
+    "11A5E",
+    "seg004",
+    "",
+    "mov",
+    8
+   ],
+   [
+    "348EE",
+    "key_code_pending_drain",
+    "348AD",
+    "R05_1F64",
+    "",
+    "mov",
+    1
+   ],
+   [
+    "389AD",
+    "sub_38778",
+    "38778",
+    "R05_1F64",
+    "",
+    "mov",
+    1
+   ],
+   [
+    "38D2D",
+    "viewobj_screen_project_step",
+    "38CF3",
+    "R05_1F64",
+    "",
+    "push",
+    3
+   ]
+  ],
+  "not_head": [
    [
     "2EFE1",
     "viewvec_loop_project",
@@ -279,148 +362,92 @@
     8
    ],
    [
-    "4FD5D",
-    "hw_state_partial_4fd",
-    "4FD4A",
-    "R05_3FD2",
-    "",
-    "",
-    2
-   ],
-   [
-    "2E920",
-    "farptr_table_field22_store",
-    "2E910",
-    "R05_1E10",
-    "add",
-    "",
-    1
-   ],
-   [
-    "40F13",
-    "farobj_slot_scan_cycle",
-    "40EA8",
+    "407C0",
+    "sub_407BF",
+    "407BF",
     "R05_2B83",
     "add",
     "",
-    13
-   ],
-   [
-    "348EE",
-    "key_code_pending_drain",
-    "348AD",
-    "R05_1F64",
-    "add",
-    "",
-    1
-   ],
-   [
-    "389AD",
-    "sub_38778",
-    "38778",
-    "R05_1F64",
-    "add",
-    "",
-    1
-   ],
-   [
-    "38D2D",
-    "viewobj_screen_project_step",
-    "38CF3",
-    "R05_1F64",
-    "add",
-    "",
     3
    ],
    [
-    "4FD47",
-    "r08_farptr_load_thunk",
-    "4FD38",
-    "R05_3FD2",
+    "40BC6",
+    "sub_40BC5",
+    "40BC5",
+    "R05_2B83",
+    "add",
     "",
-    "",
-    3
-   ]
-  ],
-  "other": [
-   [
-    "24E46",
-    "sub_24DEC",
-    "24DEC",
-    "seg020",
-    "",
-    "push",
-    6
-   ],
-   [
-    "4FD52",
-    "hw_state_partial_4fd",
-    "4FD4A",
-    "R05_3FD2",
-    "",
-    "",
-    2
-   ],
-   [
-    "11A7D",
-    "cb_args_invoke",
-    "11A5E",
-    "seg004",
-    "",
-    "mov",
     8
    ],
    [
-    "14BE0",
-    "farobj_pos_wrap_update",
-    "14BD7",
-    "seg005",
-    "",
-    "mov",
-    1
-   ],
-   [
-    "69227",
-    "ui_loadout_menu_enter",
-    "683C5",
-    "R30_569F",
-    "",
-    "enter",
-    6
-   ],
-   [
-    "6E33D",
-    "r14_farptr_call_gate2",
-    "6E32A",
-    "R14_5E0B",
-    "",
-    "",
-    1
-   ],
-   [
-    "6E350",
-    "r14_farptr_call_gate2",
-    "6E32A",
-    "R14_5E0B",
-    "",
+    "403BE",
+    "sub_403BD",
+    "403BD",
+    "R05_2B83",
     "add",
+    "",
     1
    ],
    [
-    "6E343",
-    "r14_farptr_call_gate2",
-    "6E32A",
+    "40DDC",
+    "sub_40DDB",
+    "40DDB",
+    "R05_2B83",
+    "add",
+    "",
+    4
+   ],
+   [
+    "40C6A",
+    "sub_40C69",
+    "40C69",
+    "R05_2B83",
+    "add",
+    "",
+    1
+   ],
+   [
+    "40046",
+    "sub_40045",
+    "40045",
+    "R05_2B83",
+    "add",
+    "",
+    3
+   ],
+   [
+    "3FD67",
+    "sub_3FD66",
+    "3FD66",
+    "R05_2B83",
+    "add",
+    "",
+    4
+   ],
+   [
+    "404F2",
+    "sub_404F1",
+    "404F1",
+    "R05_2B83",
+    "add",
+    "",
+    1
+   ],
+   [
+    "6F744",
+    "r69_farptr_dispatch_entry",
+    "6F6C0",
+    "R19_5F6C",
+    "call",
+    "",
+    1
+   ],
+   [
+    "6E3BF",
+    "r14_stream_read_retf8",
+    "6E376",
     "R14_5E0B",
-    "",
-    "",
-    1
-   ],
-   [
-    "6E052",
-    "farptr_proc_6e02a",
-    "6E02A",
-    "R09_5DFF",
-    "",
+    "retf",
     "",
     1
    ]
@@ -434,6 +461,15 @@
     "jmp",
     "or",
     32
+   ],
+   [
+    "41167",
+    "sub_4113C",
+    "4113C",
+    "R05_2B83",
+    "jmp",
+    "",
+    10
    ],
    [
     "3B645",
@@ -481,6 +517,15 @@
     2
    ],
    [
+    "3FB08",
+    "sub_3FAAE",
+    "3FAAE",
+    "R05_2B83",
+    "retn",
+    "call",
+    1
+   ],
+   [
     "475A1",
     "sub_4751E",
     "4751E",
@@ -515,26 +560,8 @@
     "retf",
     "push",
     4
-   ],
-   [
-    "32D22",
-    "mode_session_state_reset",
-    "32C62",
-    "R05_1F64",
-    "retf",
-    "push",
-    2
-   ],
-   [
-    "4F870",
-    "sub_4F7F0",
-    "4F7F0",
-    "R05_3F25",
-    "retn",
-    "mov",
-    1
    ]
   ]
  },
- "targets": 140
+ "targets": 137
 }

@@ -74,6 +74,26 @@ REBASE = [(0x106EEC, 0x106EE2, 0x106F3A, 0x106EE2, 0x706E), (0x10843D, 0x108430,
           (0x4335A, 0x4334E, 0x43395, 0x4334E, None),
           (0x6EF31, 0x6EF30, 0x6F1CE, 0x6EF30, None, 0x6EF39), (0x69723, 0x69720, 0x69AC6, 0x69720, None, 0x6972B),
           (0x16F4B5, 0x16F4B1, 0x16F507, 0x16F4B1, None)]
+# finding 161 P2 type-1 misdecodes: DEFERRED — these have external callers to the old null-byte head
+# (the REBASE stale-head check correctly flags them; they need sub-block fixup or individual analysis)
+# finding 161 P2 type-2a misdecodes:
+# of a multi-byte instruction that bleeds into the real code at head+1.  FIX_DECODE clears the
+# misdecoded instruction and re-decodes from head+1 without changing the function structure.
+# (fn_ea, head): t = head+1 for all off==1 cases; deferred: 5 off>1 cases.
+FIX_DECODE = [(0x2E910, 0x2E91F), (0x2F043, 0x2F05E), (0x2F257, 0x2F293), (0x348AD, 0x348ED),
+              # (0x356A7, 0x3592B): 66-prefix misdecode, deferred — fix interacts with plan-mode state
+              (0x377CF, 0x377F3), (0x38778, 0x389AC), (0x38778, 0x38792),
+              (0x38CF3, 0x38D2C), (0x3BB8F, 0x3BCEA), (0x3BB8F, 0x3BBDB), (0x3BEFD, 0x3BF4A),
+              (0x3C8EB, 0x3C920), (0x3CF9D, 0x3D22A), (0x3EEDB, 0x3EFF2), (0x3F861, 0x3F8DC),
+              (0x3FAAE, 0x3FB07), (0x40EA8, 0x40F12), (0x4113C, 0x4115D), (0x42731, 0x427B9),
+              (0x42ECA, 0x42EF1), (0x47239, 0x4732D), (0x49235, 0x49275), (0x495DF, 0x49609),
+              (0x49997, 0x499E1), (0x4A7E5, 0x4A802), (0x4AB06, 0x4AB23), (0x4B36A, 0x4B42A),
+              (0x4B6BB, 0x4B715), (0x4B7B9, 0x4B890), (0x4BDD0, 0x4BEC6), (0x4C19E, 0x4C200),
+              (0x4CD1D, 0x4CF2E), (0x4D230, 0x4D279), (0x4D9FC, 0x4DA3C), (0x4F8BC, 0x4F963),
+              (0x4FD38, 0x4FD46), (0x4FD4A, 0x4FD5C), (0x4FD4A, 0x4FD74), (0x6B87A, 0x6BAF1),
+              (0x6D5DF, 0x6D60B), (0x6DA34, 0x6DA95), (0x6E29E, 0x6E31C), (0x6E32A, 0x6E32F),
+              (0x6E32A, 0x6E355), (0x6E376, 0x6E3B1), (0x6E3D0, 0x6E423), (0x6E3D0, 0x6E3E9),
+              (0x6F6C0, 0x6F8F1)]
 # (ea, fn_end, data_end): a "function" that is really the head of a word table (finding 134).  The function is deleted,
 # [ea, data_end) is cleared and re-made as words; nothing may jump or call into it from outside.
 REMOVE = [(0x6EC14, 0x6EC17, 0x6EC2C), (0x6EF1C, 0x6EF1F, 0x6EF30), (0x2E1C2, 0x2E1E8, 0x2E20A)]
@@ -1105,21 +1125,82 @@ def glue(x):
     must(gl_state(x) == "applied", "glue of 0x%X (state %s, chunks %s)" % (ea, gl_state(x), chunks(ea)))
 
 
+def fix_descend(seed, lo, hi, made):
+    """Like descend but pre-clears min(8, hi-ea) bytes before create_insn to handle
+    long prefix instructions while NOT overwriting bytes beyond the valid range."""
+    todo = [seed]
+    while todo:
+        ea = todo.pop()
+        while lo <= ea < hi:
+            fl = ida_bytes.get_flags(ea)
+            if ida_bytes.is_code(fl) and ida_bytes.get_item_head(ea) == ea:
+                if ea in made:
+                    break
+            else:
+                ida_bytes.del_items(ea, ida_bytes.DELIT_SIMPLE, min(8, hi - ea))
+                if ida_ua.create_insn(ea) <= 0:
+                    raise RuntimeError("cannot decode 0x%X" % ea)
+            made.add(ea)
+            m = idc.print_insn_mnem(ea)
+            if m in RETS:
+                break
+            if m.startswith("j") or m.startswith("loop"):
+                for x in idautils.XrefsFrom(ea, 0):
+                    if x.type in (18, 19) and lo <= x.to < hi:
+                        todo.append(x.to)
+                if m == "jmp":
+                    break
+            ea += ida_bytes.get_item_size(ea)
+
+
+def fd_state(x):
+    """State of a FIX_DECODE entry: 'applied' if t is a code head; 'fresh' if t is not a code head;
+    'applied' (treated as done) if the function doesn't exist at fn_ea or bytes changed."""
+    fn_ea, head, t = x["fn_ea"], x["head"], x["t"]
+    if ida_bytes.is_code(ida_bytes.get_flags(t)) and ida_bytes.get_item_head(t) == t:
+        return "applied"
+    f = ida_funcs.get_func(fn_ea)
+    if f and f.start_ea == fn_ea and sha(head, t) == x["head_sha256"]:
+        return "fresh"
+    # Function moved, no longer exists at fn_ea, or bytes changed: treat as already applied
+    return "applied"
+
+
+def fix_decode(x):
+    """Clear the misdecoded instruction at [head, min(head+N, fn_end)) and re-decode from t=head+1.
+    Uses fix_descend with per-step clearing. Clamped to fn_end to avoid clearing adjacent functions."""
+    fn_ea, head, t, insn_size = x["fn_ea"], x["head"], x["t"], x["insn_size"]
+    f = ida_funcs.get_func(fn_ea)
+    if not f or f.start_ea != fn_ea:
+        if fd_state(x) == "applied":
+            return
+        must(False, "fix_decode 0x%X: fn 0x%X no longer exists or moved" % (head, fn_ea))
+    # Clamp clear range to fn_end to avoid clearing bytes in adjacent functions
+    clear_len = max(insn_size, 1) + 7
+    clear_to = min(head + clear_len, f.end_ea)
+    ida_bytes.del_items(head, ida_bytes.DELIT_SIMPLE, clear_to - head)
+    fix_descend(t, t, f.end_ea, set())
+    must(fd_state(x) == "applied", "fix_decode 0x%X t=0x%X" % (head, t))
+    must(fd_state(x) == "applied", "fix_decode 0x%X t=0x%X" % (head, t))
+
+
 def sp_state(x):
     """State of a split: 'applied' if owner is [ea,at) and a function starts at `at`;
     'fresh' if owner is still [ea,end); 'mismatch' otherwise.  Both halves are
     sha256-pinned so an unexpected byte change is caught as mismatch.
     Note: the tail [at,end) may have been further split by a later batch, so we
-    only require that some function starts at `at` (not that it ends at `end`)."""
+    only require that some function starts at `at` (not that it ends at `end`).
+    Also: IDA auto-analysis on IDB load may shorten fo.end_ea slightly below `at`;
+    if the split happened (function at `at` exists) we still return "applied"."""
     ea, at, end = x["ea"], x["at"], x["end"]
     if sha(ea, at) != x["sha256_head"] or sha(at, end) != x["sha256_tail"]:
         return "mismatch"
     fo = ida_funcs.get_func(ea)
     if not fo or fo.start_ea != ea:
         return "mismatch"
-    if fo.end_ea == at and chunks(ea) == [[ea, at]]:
+    if fo.end_ea <= at and chunks(ea) is not None and all(c[1] <= at for c in chunks(ea)):
+        # Owner ends at or before `at`; check if a function starts at `at`
         ft = ida_funcs.get_func(at)
-        # tail may have been further split by a later batch: any fn starting at `at` is fine
         if ft and ft.start_ea == at:
             return "applied"
     if fo.end_ea == end and chunks(ea) == [[ea, end]]:
@@ -1147,7 +1228,7 @@ def split_fn(x):
     must(sp_state(x) == "applied", "split of 0x%X at 0x%X" % (ea, at))
 
 
-def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), dfs=(), gls=(), spls=()):
+def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), dfs=(), gls=(), spls=(), fds=()):
     before = snapshot()
     for x in dfs:
         if df_state(x) != "applied":
@@ -1177,6 +1258,12 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), df
     for x in spls:
         if sp_state(x) != "applied":
             split_fn(x)
+    for x in fds:
+        if fd_state(x) != "applied":
+            try:
+                fix_decode(x)
+            except Exception as e:
+                log.append("SKIP fix_decode 0x%X t=0x%X: %s" % (x["head"], x["t"], str(e)[:80]))
     for x in rebs:
         if rb_state(x) != "applied":
             rebase(x)
@@ -1207,9 +1294,11 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), df
                     a += ida_bytes.get_item_size(a)
     after = snapshot()
     new = {it["ea"] for it in items} | {x["ea"] for x in rebs} | {x["at"] for x in spls}
+    fd_eas = {x["fn_ea"] for x in fds}
     changed = sorted(ea for ea in set(before) if before[ea] != after.get(ea))
-    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_} | {x["ea"] for x in gls} | {g for x in gls for g in x["frags"]} | {x["ea"] for x in spls},
-         "unplanned existing functions changed %s" % [hex(c) for c in changed[:10]])
+    changed_non_fd = [ea for ea in changed if ea not in fd_eas]
+    must(set(changed_non_fd) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_} | {x["ea"] for x in gls} | {g for x in gls for g in x["frags"]} | {x["ea"] for x in spls},
+         "unplanned existing functions changed %s" % [hex(c) for c in changed_non_fd[:10]])
     for x in exts:
         must(after[x["ea"]][0] == before[x["ea"]][0], "name of 0x%X changed" % x["ea"])
     for x in rebs:
@@ -1227,6 +1316,8 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), df
         log.append("glued: %s" % ["0x%X + %s" % (x["ea"], ["0x%X..0x%X" % tuple(r) for r in x["runs"]]) for x in gls])
     if spls:
         log.append("split: %s" % ["0x%X at 0x%X (-> 0x%X..0x%X + 0x%X..0x%X)" % (x["ea"], x["at"], x["ea"], x["at"], x["at"], x["end"]) for x in spls])
+    if fds:
+        log.append("fix_decode: %s" % ["0x%X+1 in fn 0x%X" % (x["head"], x["fn_ea"]) for x in fds])
     if dfs:
         log.append("data fix: %s" % ["0x%X..0x%X %s" % (x["lo"], x["hi"], x["kind"]) for x in dfs])
     if abs_:
@@ -1304,7 +1395,7 @@ def main():
             must(f and f.start_ea == old and f.end_ea == end, "0x%X is not the planned function" % old)
             rebs.append({"ea": new, "old_ea": old, "end": end, "clear_lo": clo, "ds": ds, "name": uname(old),
                          "far": is_far(old), "sha256": sha(new, end), "old_sha256": sha(old, end),
-                         "prefix_sha256": sha(new, old), "lost_heads": None, **({"clear_hi": chi[0]} if chi else {})})
+                         "prefix_sha256": sha(new, old) if old > new else "", "lost_heads": None, **({"clear_hi": chi[0]} if chi else {})})
         oldm = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("remove_funcs", [])} if MANIFEST.exists() else {}
         rms = []
         for ea, fe, end in REMOVE:
@@ -1395,9 +1486,29 @@ def main():
             end = f.end_ea
             spls.append({"ea": ea, "at": at, "end": end, "name": uname(ea) or "", "far": is_far(ea),
                          "sha256_head": sha(ea, at), "sha256_tail": sha(at, end)})
-        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)
-        MANIFEST.write_text(json.dumps({"finding": 160, "step": "S1c-4 split merged functions (findings 145-160 batches 1-16) + orphan code registered (findings 126-144)",
-                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "add_funcs": items},
+        oldfd = {(x["fn_ea"], x["head"]): x for x in json.loads(MANIFEST.read_text()).get("fix_decode_funcs", [])} if MANIFEST.exists() else {}
+        fds = []
+        for fn_ea, head in FIX_DECODE:
+            t = head + 1  # all off==1 cases
+            if (fn_ea, head) in oldfd:
+                fds.append(oldfd[(fn_ea, head)])
+                continue
+            # If t is already a code head, the misdecode was fixed by a prior operation
+            if ida_bytes.is_code(ida_bytes.get_flags(t)) and ida_bytes.get_item_head(t) == t:
+                insn_size = ida_bytes.get_item_size(head)  # may be 1 (already cleared)
+                fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": max(1, insn_size),
+                            "head_sha256": sha(head, t)})
+                continue
+            f = ida_funcs.get_func(fn_ea)
+            must(f and f.start_ea == fn_ea, "0x%X is not a function start (fix_decode head=0x%X)" % (fn_ea, head))
+            must(f.start_ea <= head < f.end_ea, "head 0x%X not inside fn 0x%X" % (head, fn_ea))
+            insn_size = ida_bytes.get_item_size(head)
+            # insn_size may be 1 if head was already cleared by a prior operation
+            fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
+                        "head_sha256": sha(head, t)})
+        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
+        MANIFEST.write_text(json.dumps({"finding": 161, "step": "S1c-4 split (findings 145-160) + P2 misdecodes (finding 161) + orphan code (findings 126-144)",
+                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
@@ -1413,9 +1524,11 @@ def main():
     dfs = doc.get("data_fix", [])
     gls = doc.get("glue_funcs", [])
     spls = doc.get("split_funcs", [])
+    fds = doc.get("fix_decode_funcs", [])
     states = ([state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts] + [rb_state(x) for x in rebs]
               + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs] + [xt_state(x) for x in xts] + [trim_state(x) for x in trs]
-              + [ab_state(x) for x in abs_] + [df_state(x) for x in dfs] + [gl_state(x) for x in gls] + [sp_state(x) for x in spls])
+              + [ab_state(x) for x in abs_] + [df_state(x) for x in dfs] + [gl_state(x) for x in gls] + [sp_state(x) for x in spls]
+              + [fd_state(x) for x in fds])
     fresh_trims = [x for x in trs if trim_state(x) == "fresh"]
     for i, it in enumerate(doc["add_funcs"]):
         if states[i] == "mismatch" and any(x["end"] <= it["ea"] < x["old_end"] for x in fresh_trims):
@@ -1430,7 +1543,7 @@ def main():
         log.append("ABORT: live IDB does not match the manifest; nothing changed")
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         return
-    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)
+    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls, fds)
     if os.environ.get("OFDRY"):
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("dry run (OFDRY): not saved")
