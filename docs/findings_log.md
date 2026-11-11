@@ -7624,3 +7624,24 @@ Script: `tools/add_vgraph.py`. Backup: `.bak_vgraph176`.
 
 **Still to do for VGRAPH:** Add traced xrefs (1.0M calls → 126 IPs) from main code callers;
 verify VGRAPHH/VGRAPHM variants; check for other loaded drivers (falcon3.def, insdata).
+
+## 2026-11-12 177 - S3 Trace edges: add 159 traced indirect-far call xrefs
+
+**What was done.** Added XREF_USER far-call xrefs from all traced indirect_far records
+in harvctl3_fileio.jsonl + debug_test_fileio.jsonl (347,102 unique call events parsed).
+Only pairs where BOTH caller and target have valid code heads in the IDB were added.
+Annotated 73 target functions with their traced call counts.
+
+**Results:**
+- 159 unique (caller_ida, target_ida) xref pairs added
+- 98 unique target functions reached (73 had existing code heads for annotation)
+- 27,969 calls skipped (target in runtime heap/PSP/EMS, no IDA segment)
+- Target breakdown: 90 to VGRAPH (0x85AE0), 69 to main overlay code
+
+**Gate:** verify_rebuild faithful, CHANGED: 0 (xrefs don't affect function structure).
+Scripts: `tools/add_vgraph_xrefs.py`, `tools/add_all_indirect_xrefs.py`.
+
+**Still to do for S3 (P10):** The main gap remains 527 indirect call/jump sites with no
+target xref — these are from other call-dispatch mechanisms not covered by the
+indirect_far traces. The function-to-function xrefs added here cover ~159 pairs.
+Full P10 would need the complete `memdump/trace_20261015_211031_fileio.jsonl` parsing.
