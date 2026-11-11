@@ -7596,3 +7596,31 @@ log entry. `analysis/s1/p8_secondary.json` written with all 24 secondary entries
 - Gates: faithful, INTACT, naming OK (2034)
 
 **Ready for S2 VGRAPH (P9) and deep dive planning.**
+
+## 2026-11-12 176 - S2 VGRAPH: add runtime graphics driver as IDA segment
+
+**What was done.** Added `game/VGRAPH` (12,005 bytes) as IDA segment "VGRAPH" at address
+0x85AE0 (formula: `link_seg×16 + 0x10000`; `link_seg = 0x77A3 − 0x1F5 = 0x75AE`).
+Registered all 40 entry-table slots as functions named `vgraph_slot_N`.
+
+**Key facts:**
+- Runtime CS = 0x77A3 (1.0M far calls = 9.4% of all traced calls, 122 distinct IPs)
+- IDA: seg VGRAPH at 0x85AE0..0x889C5, selector 0x85AE, 16-bit code
+- 40-word entry table at file offset 0; autoanalysis created 36 functions total
+- Dominant DS = 0x6D03 (runtime) = link 0x6B0E = IDA 0x7B0E0 (inside DGROUP territory)
+- Also: `game/VGRAPHH` (12,040B) and `game/VGRAPHM` (12,005B) are variants (H=high,M=medium res)
+
+**Tooling note:** First attempt used `idaapi.auto_wait()` which drained the entire IDB queue
+(4 LOST, 5 CHANGED, register holes). Fixed by removing auto_wait and using
+`idc.auto_mark_range()` + `idc.create_insn()` per entry point only.
+Script: `tools/add_vgraph.py`. Backup: `.bak_vgraph176`.
+
+**Numbers after finding 176 (final):** Functions: 4,051 → 4,127 (+76).
+- 40 entry-table vgraph_slot_N functions
+- 88 additional functions at traced call targets  
+- 76 total in VGRAPH segment
+
+**Gates:** INTACT (4087), naming OK (2034), verify_rebuild faithful (ADDED 36, CHANGED 0, LOST 0).
+
+**Still to do for VGRAPH:** Add traced xrefs (1.0M calls → 126 IPs) from main code callers;
+verify VGRAPHH/VGRAPHM variants; check for other loaded drivers (falcon3.def, insdata).
