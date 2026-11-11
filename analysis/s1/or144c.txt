@@ -1,0 +1,125 @@
+=== 167822
+167800 9acd1ca32a         call    far ptr tail_bridge_to_ui_menu_trans [fn 166F80]
+167805 59                 pop     cx                                   [fn 166F80]
+167806 59                 pop     cx                                   [fn 166F80]
+167807 b89478             mov     ax, 7894h                            [fn 166F80]
+16780A 8ec0               mov     es, ax                               [fn 166F80]
+16780C 26813e3619ff00     cmp     es:word_7A276, 0FFh                  [fn 166F80]
+167813 7412               jz      short loc_167827                     [fn 166F80]
+167815 b89478             mov     ax, 7894h                            [fn 166F80]
+167818 8ec0               mov     es, ax                               [fn 166F80]
+16781A 26                 db  26h ; &                                  
+16781B 80                 db  80h                                      
+16781C 3ec21900           retn    19h                                  [fn 16781C]
+167820 74                 db  74h ; t                                  
+167821 05                 db    5                                      
+167822 9af50f9f66         call    far ptr loc_679E5                    
+167827 c746fe0200         mov     [bp+var_2], 2                        [fn 166F80]
+16782C eb24               jmp     short loc_167852                     [fn 166F80]
+16782E b82e60             mov     ax, 602Eh                            [fn 166F80]
+167831 8b5efe             mov     bx, [bp+var_2]                       [fn 166F80]
+167834 8ec0               mov     es, ax                               [fn 166F80]
+167836 2680bf4536ff       cmp     byte ptr es:[bx+3645h], 0FFh         [fn 166F80]
+16783C 7411               jz      short loc_16784F                     [fn 166F80]
+16783E ff76fe             push    [bp+var_2]                           [fn 166F80]
+167841 8b46fe             mov     ax, [bp+var_2]                       [fn 166F80]
+167844 050300             add     ax, 3                                [fn 166F80]
+167847 50                 push    ax                                   [fn 166F80]
+167848 9aa11ba32a         call    far ptr sub_2C5D1                    [fn 166F80]
+16784D 59                 pop     cx                                   [fn 166F80]
+16784E 59                 pop     cx                                   [fn 166F80]
+16784F ff46fe             inc     [bp+var_2]                           [fn 166F80]
+=== 2E235
+2E200 b800               dw 0B8h                                      
+2E202 b800               dw 0B8h                                      
+2E204 b800               dw 0B8h                                      
+2E206 b800               dw 0B8h                                      
+2E208 b800               dw 0B8h                                      
+2E20A 06                 push    es                                   [fn 2E20A]
+2E20B 8ec7               mov     es, di                               [fn 2E20A]
+2E20D 32e4               xor     ah, ah                               [fn 2E20A]
+2E20F 8ac3               mov     al, bl                               [fn 2E20A]
+2E211 8bf8               mov     di, ax                               [fn 2E20A]
+2E213 b80900             mov     ax, 9                                [fn 2E20A]
+2E216 80ff0f             cmp     bh, 0Fh                              [fn 2E20A]
+2E219 7d25               jge     short loc_2E240                      [fn 2E20A]
+2E21B 80fb00             cmp     bl, 0                                [fn 2E20A]
+2E21E 751d               jnz     short loc_2E23D                      [fn 2E20A]
+2E220 80ff04             cmp     bh, 4                                [fn 2E20A]
+2E223 7f02               jg      short loc_2E227                      [fn 2E20A]
+2E225 07                 pop     es                                   [fn 2E20A]
+2E226 cb                 retf                                         [fn 2E20A]
+2E227 80c901             or      cl, 1                                [fn 2E20A]
+2E22A f6c104             test    cl, 4                                [fn 2E20A]
+2E22D 7407               jz      short near ptr loc_2E235+1           [fn 2E20A]
+2E22F b309               mov     bl, 9                                
+2E231 bf09               mov     di, 9                                
+2E233 00                 mov     di, 9                                
+2E234 eb                 db 0EBh                                      
+2E235 0ab308bf           or      dh, [bp+di-40F8h]                    
+2E239 0800               or      [bx+si], al                          
+2E23B eb03               jmp     short loc_2E240                      
+2E23D b80100             mov     ax, 1                                [fn 2E20A]
+2E240 4f                 dec     di                                   [fn 2E20A]
+2E241 d1e7               shl     di, 1                                [fn 2E20A]
+2E243 d1e7               shl     di, 1                                [fn 2E20A]
+2E245 81c70000           add     di, 0                                [fn 2E20A]
+2E249 80fb01             cmp     bl, 1                                [fn 2E20A]
+2E24C 7f11               jg      short loc_2E25F                      [fn 2E20A]
+2E24E b80000             mov     ax, 0                                [fn 2E20A]
+2E251 bb0000             mov     bx, 0                                [fn 2E20A]
+2E254 b101               mov     cl, 1                                [fn 2E20A]
+2E256 b501               mov     ch, 1                                [fn 2E20A]
+2E258 0e                 push    cs                                   [fn 2E20A]
+2E259 e89400             call    near ptr farobj_slot_create          [fn 2E20A]
+2E25C 90                 nop                                          [fn 2E20A]
+2E25D 07                 pop     es                                   [fn 2E20A]
+2E25E cb                 retf                                         [fn 2E20A]
+2E25F 53                 push    bx                                   [fn 2E20A]
+2E260 51                 push    cx                                   [fn 2E20A]
+2E261 2e8b1d             mov     bx, cs:[di]                          [fn 2E20A]
+2E264 f6c104             test    cl, 4                                [fn 2E20A]
+2E267 7408               jz      short loc_2E271                      [fn 2E20A]
+2E269 051000             add     ax, 10h                              [fn 2E269]
+2E26C b90801             mov     cx, 108h                             [fn 2E269]
+2E26F eb04               jmp     short loc_2E275                      [fn 2E269]
+2E271 2e8b4d02           mov     cx, cs:[di+2]                        [fn 2E20A]
+2E275 0e                 push    cs                                   [fn 2E20A]
+2E276 e87700             call    near ptr farobj_slot_create          [fn 2E20A]
+2E279 90                 nop                                          [fn 2E20A]
+2E27A 59                 pop     cx                                   [fn 2E20A]
+2E27B f6c105             test    cl, 5                                [fn 2E20A]
+2E27E 750f               jnz     short loc_2E28F                      [fn 2E20A]
+2E280 51                 push    cx                                   [fn 2E20A]
+2E281 2e                 mov     bx, cs:[di+3Ch]                      
+2E282 8b5d3c             mov     bx, cs:[di+3Ch]                      
+2E285 2e                 db  2Eh ; .                                  
+2E286 8b4d3e             mov     cx, [di+3Eh]                         
+2E289 0e                 push    cs                                   
+2E28A e8bd00             call    loc_2E34A                            
+2E28D 90                 nop                                          
+2E28E 59                 pop     cx                                   
+2E28F f6c102             test    cl, 2                                [fn 2E20A]
+2E292 7403               jz      short loc_2E297                      [fn 2E20A]
+2E294 eb10               jmp     short loc_2E2A6                      [fn 2E20A]
+2E296 90                 db  90h                                      
+2E297 5b                 pop     bx                                   [fn 2E20A]
+2E298 53                 push    bx                                   [fn 2E20A]
+2E299 51                 push    cx                                   [fn 2E20A]
+2E29A 8ac3               mov     al, bl                               [fn 2E20A]
+2E29C d0f8               sar     al, 1                                [fn 2E20A]
+2E29E fec0               inc     al                                   [fn 2E20A]
+2E2A0 02c3               add     al, bl                               [fn 2E20A]
+2E2A2 e83004             call    loc_2E6D5                            [fn 2E20A]
+2E2A5 59                 pop     cx                                   [fn 2E20A]
+2E2A6 f6c108             test    cl, 8                                [fn 2E20A]
+2E2A9 7403               jz      short loc_2E2AE                      [fn 2E20A]
+2E2AB 5b                 pop     bx                                   [fn 2E20A]
+2E2AC 07                 pop     es                                   [fn 2E20A]
+2E2AD cb                 retf                                         [fn 2E20A]
+2E2AE 58                 pop     ax                                   [fn 2E20A]
+2E2AF 32e4               xor     ah, ah                               [fn 2E20A]
+xrefs to 2E235: []
+xrefs to 2E236: [('0x2e22d', 19)]
+xrefs to 2E286: []
+xrefs to 167822: []

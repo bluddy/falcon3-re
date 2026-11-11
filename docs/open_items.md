@@ -614,3 +614,4 @@
 - L21 (2 fns: sub_186ADC, sub_6E29E) — the final two; one finding hits the global naming queue 0.
 - Global naming queue = 0 -- bottom-up naming campaign COMPLETE (Levels 0-21, 1,631/2,237 fns named). Remaining unnamed are 302 thunk slots + 397 orphans (excluded by design).
 - Orphan sweep COMPLETE (finding 100): all 397/397 orphans named across 6 batches (67/66/66/66/66/66); `orphans` 397 -> 0, named 1,962 -> 2,028/2,237, queue 0. Remaining unnamed: 209, all excluded by design (thunk slots/undecodable). Next-phase candidates: 302 thunk slots, multi-entry range repairs, sub_22DFF undecoded region.
+- **IDB stabilisation (S1-S4) is the active work item** (2026-11-11): remaining function-boundary, misdecode, auto-queue, VGRAPH and trace-edge work is queued as P0-P11 in docs/workflow/idb_stabilisation_plan.md.

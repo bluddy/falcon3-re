@@ -1,0 +1,84 @@
+fn 6E8F0..6EA3A r17_event_main_loop far=True chunks=['6E8F0-6EA3A']
+fn 6E581..6E696 r69_pending_session_step far=True chunks=['6E581-6E696']
+xrefs -> 6E8F0: [('0x2c052', 18)]
+xrefs -> 6E581: [('0x6e57e', 19)]
+xrefs -> 6E64A: [('0x6e649', 21), ('0x6e644', 19)]
+xrefs -> 6E6BC: [('0x6e647', 19), ('0x6eda8', 3), ('0x6eea0', 3)]
+raw 6E8B7..6E900: 2e c7 06 72 00 1d 00 e8 33 0b 2e a0 7e 00 9a 37 56 6c 1f bb 50 00 bf 17 00 be cc 01 9a a4 56 6c 1f 2e a0 79 00 9a 37 56 6c 1f e8 91 05 9a fd 67 6c 1f be 00 00 bf 00 00 bb c8 02 00 00 b8 45 6e 8e c0 26 c7 06 67 04 01 00
+  6E8B7 2ec7           dw 0C72Eh
+  6E8B9 06             db 6
+  6E8BA 72             db  72h ; r
+  6E8BB 00             db    0
+  6E8BC 1d00e8         sbb     ax, 0E800h
+  6E8BF 330b           dw 0B33h
+  6E8C1 2ea0           dw 0A02Eh
+  6E8C3 7e             db 7Eh
+  6E8C4 00             db    0
+  6E8C5 9a37           dw 379Ah
+  6E8C7 56             db 56h
+  6E8C8 6c1f           dw 1F6Ch
+  6E8CA bb50           dw 50BBh
+  6E8CC 00bf           dw 0BF00h
+  6E8CE 1700           dw 17h
+  6E8D0 becc           dw 0CCBEh
+  6E8D2 019a           dw 9A01h
+  6E8D4 a456           dw 56A4h
+  6E8D6 6c             db 6Ch
+  6E8D7 1f2e           dw 2E1Fh
+  6E8D9 a0             db 0A0h
+  6E8DA 7900           dw 79h
+  6E8DC 9a             db  9Ah
+  6E8DD 37             db  37h ; 7
+  6E8DE 56             db  56h ; V
+  6E8DF 6c             db  6Ch ; l
+  6E8E0 1fe8           dw 0E81Fh
+  6E8E2 9105           dw 591h
+  6E8E4 9a             db  9Ah
+  6E8E5 fd             db 0FDh
+  6E8E6 67             db  67h ; g
+  6E8E7 6c             db  6Ch ; l
+  6E8E8 1f             db  1Fh
+  6E8E9 be             db 0BEh
+  6E8EA 00             db    0
+  6E8EB 00             db    0
+  6E8EC bf             db 0BFh
+  6E8ED 00             db    0
+  6E8EE 00             db    0
+  6E8EF bb             db 0BBh
+  6E8F0 c8020000       enter   2, 0
+  6E8F4 b8456e         mov     ax, 6E45h
+  6E8F7 8ec0           mov     es, ax
+  6E8F9 26c70667040100 mov     es:word_6E8B7, 1
+  6E900 b8456e         mov     ax, 6E45h
+  6E903 8ec0           mov     es, ax
+  6E905 26c70687040100 mov     es:word_6E8D7, 1
+  6E90C b8456e         mov     ax, 6E45h
+  6E90F 8ec0           mov     es, ax
+  6E911 26c7068a040100 mov     es:word_6E8DA, 1
+  6E918 b8456e         mov     ax, 6E45h
+  6E91B 8ec0           mov     es, ax
+  6E91D 26c606010000   mov     es:byte_6E451, 0
+  6E923 9af10a8f6e     call    far ptr r17_push_args_c8
+  6E928 9a280b8f6e     call    r17_farptr_dispatch
+  6E92D 9af20c8f6e     call    far ptr r17_screen_draw
+raw 6E540..6E600: 89 16 54 00 2e c6 06 96 00 01 cb 2e c6 06 98 00 01 2e c6 06 96 00 01 cb 9a f2 61 6c 1f 9a 09 68 6c 1f e8 25 0b 9a fd 67 6c 1f 9a df 61 6c 1f 2e c6 06 97 00 01 e9 2e 04 2e 80 3e 95 00 01 74 01 cb 9a f2 61 6c 1f 9a 09 68 6c 1f e8 7f 0a e8 39 04 74 0e e8 09 0a 9a fd 67 6c 1f 9a df 61 6c 1f cb 9a fd 67 6c 1f 9a df 61 6c 1f 2e c6 06 97 00 02 9a 90 06 e4 4d e9 ed 03 9a f2 61 6c 1f 9a 09 68 6c 1f e8 41 0b e8 01 04 75 63 2e 80 3e 98 00 02 75 0a 2e c7 06 10 00 30 00 eb 10 90 2e c7 06 10 00 88 00 2e 83 3e 5a 00 00 7e 42 b4 41 2e 8b 16 10 00 cd 21 e8 8c 05 e8 c1 05 2e c6 06 98 00
+  6E53F 2e89165400     mov     cs:word_6E104, dx
+  6E544 2ec606960001   mov     byte ptr cs:word_6E145+1, 1
+  6E54A cb             retf
+  6E54B 2ec606980001   mov     byte ptr cs:word_6E147+1, 1
+  6E551 2ec606960001   mov     byte ptr cs:word_6E145+1, 1
+  6E557 cb             retf
+  6E558 9af2616c1f     call    pending_task_run
+  6E55D 9a09686c1f     call    far_cb_1
+  6E562 e8250b         call    near ptr loc_6F089+1
+  6E565 9afd676c1f     call    far_cb_0
+  6E56A 9adf616c1f     call    clip_pending_atomic_apply
+  6E56F 2ec606970001   mov     byte ptr cs:word_6E147, 1
+  6E575 e92e04         jmp     near ptr loc_6E9A3+3
+  6E578 2e803e950001   cmp     byte ptr cs:word_6E145, 1
+  6E57E 7401           jz      short near ptr r69_pending_session_step
+  6E580 cb             retf
+  6E581 9af2616c1f     call    pending_task_run
+  6E586 9a09686c1f     call    far_cb_1
+  6E58B e87f0a         call    loc_6F00D
+  6E58E e83904         call    near ptr loc_6E9C8+2

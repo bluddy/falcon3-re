@@ -6970,3 +6970,60 @@ everything else 0), idempotent replay (77 applied).
 **Still open:** 0x6E7C7 (the 0x6E696..0x6E8B7 handler cluster whose seven retf handlers sit under a misdecoded end of
 `r69_pending_session_step`, with base-relative jump-table entries and variable addresses in the same range; it belongs with the
 R30 menu state machine), 0x1982F, 0x1277CC, 0x6EA3B, 0x5DA68 and the padding runs.
+
+## 2026-11-11 143 - thirteen orphan "code" runs that are table data remade as data (S1c-4r)
+
+**Inventory.**  A re-scan of the unowned code heads after finding 142 gives 112 runs (368 B); 92 are 1-2 B padding.  Of the 20
+runs of 3 B or more, 13 are not code at all but the tails of word tables, jump tables or record bytes that IDA decoded as
+instructions.  Each one sits in a data stretch (neighbours are `dw offset ...`, `db 0` or other table words) and has no
+code xref; the data xrefs on its heads are fl_F fall-throughs from the bogus decoding itself:
+
+- Jump / dispatch tables (words): 0x1982F..0x19843 (20 B; 10 words after `sub_197EA`, the `cs:[bx+0Ah]` switch keys), 0x1277CC..0x1277DA
+  (14 B; seven words behind `sub_1274CF`), 0x1B4E0..0x1B4E8 (8 B; four `0x0D8A` entries of a jump table whose head is already
+  `dw offset`), 0x2E190..0x2E194 (4 B), 0x5CDFA..0x5CDFD (3 B, one word and an odd byte) and 0x6EA3A..0x6EA4A (16 B, eight words
+  `FFFF 0043 0046 004F 00F4 00E4 00DC 00EC` between `r17_event_main_loop` and `r17_menu_event_loop`).
+- Record bytes: 0x1F75F..0x1F769 (`b2 6b 6a 69 68 67 6d 67 b3 b3`, bytes), 0x5CDA8..0x5CDB2 (`aa aa aa aa aa f2 45 44 44 4d`),
+  and the repeated record `64 00 00 01 00 00 84 40 00 00 ff ff 00` in the zero-filled area at 0x5D1E6, 0x5D2E5, 0x5D5AB, 0x5D91B and 0x5DA68.
+
+**Fix.**  New manifest block `data_fix` and apply mode `DATAFIX` (`df_state` / `datafix`): `[lo, hi)` is cleared and re-made as words
+(an odd last byte stays a byte) or bytes.  It refuses if a call or jump from outside the range enters it, or if a function owns any of the bytes.  The runs
+are pinned by sha256.  `function_bytes.json` is unchanged (the runs were not in any function).
+
+**Applied.**  Plan (13 fresh, 77 applied), dry replay, backup `FALCONCD.EXE.i64.bak_dat143`, apply.  Gates: integrity INTACT,
+`naming.py check` OK (2035), `verify_rebuild` faithful (everything 0), idempotent replay (90 applied).
+
+**Still open:** 0x167822 and 0x2E235 / 0x2E286 (orphan fragments of two existing functions, next finding), 0x6E7C7 / 0x6E8BC (the 0x6E696
+handler cluster), 0x6E16E (data with two far-call xrefs), 0x67BA3 (R30 switch default `jmp`) and the padding runs.
+
+## 2026-11-11 144 - misdecoded pieces glued back onto two functions (S1c-4s)
+
+**What was wrong.**  Two existing functions each had a stretch of their own body misdecoded, so IDA split it off:
+
+- `sprite_clip_bounds_check` (0x2E20A): the `jz` at 0x2E22D jumps to 0x2E236, one byte into the `mov bl,9 / mov di,9 / jmp` that
+  starts at 0x2E22F; IDA had decoded `or dh,[bp+di-40F8h]` from 0x2E235 and left 0x2E22F..0x2E23D outside the function.  The
+  2-instruction pair `mov bx,cs:[di+3Ch] / mov cx,cs:[di+3Eh]` at 0x2E281..0x2E28F had the same problem (a stray `2E` prefix
+  byte at 0x2E285 made the second `mov` start one byte late).  Both are real code: `mov bl,9 / mov di,9 / jmp loc_2E240`
+  (the 0x2E22F path, plus the `mov bl,8 / mov di,8` entry at 0x2E236) and the cs-relative loads before `call loc_2E34A`.
+- `sub_166F80`: finding 138 absorbed the 0x167440 fragment but left 0x16781A..0x167827 broken.  The bytes are `26 80 3e c2 19 00 74 05 9a f5 0f 9f 66`:
+  `cmp es:word_7A276` ended at 0x16781A with the `es:` prefix and its operand decoded as `retn 19h` (`r38_retn19_stub`, a bogus
+  4-byte "function" at 0x16781C, ledger key `r38_e149`) and a `call far` at 0x167822 that nothing reaches.  The real code is
+  `cmp byte ptr es:[...], ...; jz loc_167827` and the `call far ptr loc_679E5` it skips.
+
+**Fix.**  New manifest block `glue_funcs` and apply mode `GLUE` (`gl_state` / `glue`): optional bogus fragment functions are
+deleted and unnamed, each run is cleared, redecoded by `descend` from its seeds and appended with `append_func_tail` (IDA merges it
+with an adjacent chunk).  The apply refuses if a jump or call from outside enters a stale head.  Entries: 0x2E20A with runs
+0x2E22F..0x2E23D (seeds 0x2E22F, 0x2E236) and 0x2E281..0x2E28F; 0x166F80 with run 0x16781A..0x167827 and fragment 0x16781C.
+`verify_rebuild.py` folds `glue_funcs` into its EXTEND (the main chunk grows over the glued bytes, appended-bytes sha256 pinned) and
+REMOVE (the fragment) allowlists.  The `ab_state` check was loosened to accept a later chunk merge (the absorbed range
+must lie inside one chunk of the owner).
+
+**Ledger.**  The fragment's entries are removed (naming.yaml `r38_e149`, routines.yaml ea 1472540): 2035 -> 2034 entries.
+
+**Results.**  `function_bytes.json` 3,591 -> 3,590: `sub_2E20A` main chunk 37 -> 95 B, `sub_166F80` 2,202 -> 2,943 B (one chunk
+166F80-167AFF now), `r38_e149` gone.
+
+**Applied.**  Plan (2 fresh, 90 applied), dry replay, backup `FALCONCD.EXE.i64.bak_glue144`, apply.  Gates: integrity INTACT,
+`naming.py check` OK (2034), `verify_rebuild` faithful (EXTEND 2, REMOVE 1, everything else 0), idempotent replay (92 applied).
+
+**Still open:** 0x6E7C7 / 0x6E8BC (the 0x6E696..0x6E8B7 handler cluster with the R30 state machine), 0x6E16E (data with two far-call
+xrefs), 0x67BA3 (R30 switch default `jmp`) and the 92 padding runs.

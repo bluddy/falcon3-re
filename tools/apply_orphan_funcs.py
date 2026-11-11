@@ -95,6 +95,17 @@ TRIM = [(0x22C62, 0x22C8B, 0x22C71, 0x22C89, 0x22C91)]
 # it is deleted, [clear_lo, clear_hi) is redecoded from clear_lo, owner's tail chunks inside [main_end, new_end) are dropped
 # and owner's main chunk is extended to new_end.
 ABSORB = [(0x166F80, 0x167440, 0x16743E, 0x167450, 0x16781A)]
+# (func, [(lo, hi, seeds)], [frag functions]): finding 144.  Pieces of a function's own body that were misdecoded and left orphan
+# (or owned by a bogus fragment function, which is deleted and unnamed first): [lo, hi) is cleared, redecoded from the seeds and
+# appended as a chunk of func (append_func_tail merges it with an adjacent chunk).
+GLUE = [(0x2E20A, [(0x2E22F, 0x2E23D, [0x2E22F, 0x2E236]), (0x2E281, 0x2E28F, [0x2E281])], []),
+        (0x166F80, [(0x16781A, 0x167827, [0x16781A])], [0x16781C])]
+# (lo, hi, kind): orphan "code" that is really data (finding 143): jump-table words ('w', an odd last byte stays a byte) or
+# key / record bytes ('b').  [lo, hi) is cleared and re-made as data; nothing may jump or call into it.
+DATAFIX = [(0x1982F, 0x19843, "w"), (0x1277CC, 0x1277DA, "w"), (0x1B4E0, 0x1B4E8, "w"), (0x1F75F, 0x1F769, "b"),
+           (0x2E190, 0x2E194, "w"), (0x5CDA8, 0x5CDB2, "b"), (0x5CDFA, 0x5CDFD, "w"), (0x5D1E6, 0x5D1ED, "b"),
+           (0x5D2E5, 0x5D2E9, "b"), (0x5D5AB, 0x5D5B3, "b"), (0x5D91B, 0x5D925, "b"), (0x5DA68, 0x5DA75, "b"),
+           (0x6EA3A, 0x6EA4A, "w")]
 # (ea, end): existing functions whose body continues in orphan code (jcc/jmp into it) -> set_func_end
 EXTEND = [(0x12C518, 0x12C66A), (0x12C7C6, 0x12C951)]
 # (func, run_lo, run_hi): fl_F continuations (finding 129).  If run_lo is the main-chunk end the function is
@@ -522,7 +533,8 @@ def ab_state(x):
     if not f or f.start_ea != ea or sha(be, ne) != x["sha256"]:
         return "mismatch"
     g = ida_funcs.get_func(fr)
-    if f.end_ea == ne and chunks(ea) == x["chunks_after"] and not (g and g.start_ea == fr):
+    if (f.end_ea >= ne and not (g and g.start_ea == fr)
+            and all(any(c[0] <= lo and hi <= c[1] for c in chunks(ea)) for lo, hi in x["chunks_after"])):   # a later glue may merge chunks
         return "applied"
     if (f.end_ea == be and chunks(ea) == x["chunks_before"] and g and g.start_ea == fr and uname(fr) == x["frag_name"]
             and chunks(fr) == x["frag_chunks"] and sha(fr, x["frag_end"]) == x["frag_sha256"]):
@@ -565,11 +577,99 @@ def absorb(x):
     must(ab_state(x) == "applied", "absorb into 0x%X (state %s, chunks %s)" % (ea, ab_state(x), chunks(ea)))
 
 
-def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=()):
+def df_items(x):
+    lo, hi, k = x["lo"], x["hi"], x["kind"]
+    if k == "b":
+        return [(a, 1) for a in range(lo, hi)]
+    n = (hi - lo) // 2
+    return [(lo + 2 * i, 2) for i in range(n)] + ([(hi - 1, 1)] if (hi - lo) % 2 else [])
+
+
+def df_state(x):
+    lo, hi = x["lo"], x["hi"]
+    if sha(lo, hi) != x["sha256"] or any(ida_funcs.get_func(a) for a in range(lo, hi)):
+        return "mismatch"
+    if all(ida_bytes.is_data(ida_bytes.get_flags(a)) and ida_bytes.get_item_size(a) == n for a, n in df_items(x)):
+        return "applied"
+    return "fresh"
+
+
+def datafix(x):
+    lo, hi = x["lo"], x["hi"]
+    must(ida_bytes.get_item_head(lo) == lo and ida_bytes.get_item_head(hi) == hi, "range 0x%X..0x%X cuts an item" % (lo, hi))
+    bad = [(hex(r.frm), hex(t)) for t in range(lo, hi) for r in idautils.XrefsTo(t, 0)
+           if r.type in (16, 17, 18, 19) and not (lo <= r.frm < hi)]
+    must(not bad, "jump/call into data fix 0x%X from %s" % (lo, bad[:5]))
+    ida_bytes.del_items(lo, ida_bytes.DELIT_SIMPLE, hi - lo)
+    for a, n in df_items(x):
+        must(ida_bytes.create_word(a, 2) if n == 2 else ida_bytes.create_byte(a, 1), "create data 0x%X" % a)
+    must(df_state(x) == "applied", "data fix 0x%X" % lo)
+
+
+def gl_state(x):
+    ea = x["ea"]
+    f = ida_funcs.get_func(ea)
+    if not f or f.start_ea != ea:
+        return "mismatch"
+    if chunks(ea) == x["chunks_after"] and f.end_ea == x["end"] and not any(ida_funcs.get_func(g) and ida_funcs.get_func(g).start_ea == g
+                                                                          for g in x["frags"]):
+        return "applied"
+    if (chunks(ea) == x["chunks_before"] and f.end_ea == x["before_end"]
+            and all(not any(ida_funcs.get_func(a) and ida_funcs.get_func(a).start_ea not in x["frags"] for a in range(lo, hi))
+                    and sha(lo, hi) == h for (lo, hi), h in zip(x["runs"], x["runs_sha256"]))
+            and all(ida_funcs.get_func(g) and ida_funcs.get_func(g).start_ea == g and uname(g) == x["frag_names"][str(g)]
+                    for g in x["frags"])):
+        return "fresh"
+    return "mismatch"
+
+
+def glue(x):
+    ea = x["ea"]
+    runs = [list(r) for r in x["runs"]]
+    orig = set()
+    for g in x["frags"]:
+        must(ida_funcs.del_func(g), "del_func 0x%X" % g)
+        ida_name.set_name(g, "", ida_name.SN_NOWARN)
+    for lo, hi in runs:
+        a = lo
+        while a < hi:
+            h = ida_bytes.get_item_head(a)
+            if ida_bytes.is_code(ida_bytes.get_flags(h)):
+                orig.add(h)
+            a = h + max(ida_bytes.get_item_size(h), 1)
+        ida_bytes.del_items(lo, ida_bytes.DELIT_SIMPLE, hi - lo)
+    for sd in x["seeds"]:
+        rlo, rhi = next((lo, hi) for lo, hi in runs if lo <= sd < hi)
+        descend(sd, rlo, rhi, set())
+    for h in sorted(orig):
+        if not (ida_bytes.is_code(ida_bytes.get_flags(h)) and ida_bytes.get_item_head(h) == h):
+            bad = [r.frm for r in idautils.XrefsTo(h, 0) if r.type in (16, 17, 18, 19) and not any(lo <= r.frm < hi for lo, hi in runs)]
+            must(not bad, "jump/call into stale head 0x%X from %s" % (h, [hex(b) for b in bad]))
+    for lo, hi in runs:
+        a = lo
+        while a < hi:
+            must(ida_bytes.is_code(ida_bytes.get_flags(a)), "non-code head 0x%X in glue run 0x%X" % (a, lo))
+            a += ida_bytes.get_item_size(a)
+        must(a == hi, "glue run 0x%X..0x%X ends at 0x%X" % (lo, hi, a))
+        must(ida_funcs.append_func_tail(ida_funcs.get_func(ea), lo, hi), "append_func_tail 0x%X 0x%X..0x%X" % (ea, lo, hi))
+    if x["chunks_after"] is None:
+        f = ida_funcs.get_func(ea)
+        x["end"], x["chunks_after"] = f.end_ea, chunks(ea)
+        x["sha256"] = sha(x["before_end"], x["end"])
+    must(gl_state(x) == "applied", "glue of 0x%X (state %s, chunks %s)" % (ea, gl_state(x), chunks(ea)))
+
+
+def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), dfs=(), gls=()):
     before = snapshot()
+    for x in dfs:
+        if df_state(x) != "applied":
+            datafix(x)
     for x in abs_:
         if ab_state(x) != "applied":
             absorb(x)
+    for x in gls:
+        if gl_state(x) != "applied":
+            glue(x)
     for x in trs:
         if trim_state(x) != "applied":
             trim(x)
@@ -617,7 +717,7 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=()):
     after = snapshot()
     new = {it["ea"] for it in items} | {x["ea"] for x in rebs}
     changed = sorted(ea for ea in set(before) if before[ea] != after.get(ea))
-    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_},
+    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_} | {x["ea"] for x in gls} | {g for x in gls for g in x["frags"]},
          "unplanned existing functions changed %s" % [hex(c) for c in changed[:10]])
     for x in exts:
         must(after[x["ea"]][0] == before[x["ea"]][0], "name of 0x%X changed" % x["ea"])
@@ -631,6 +731,11 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=()):
         ["0x%X..0x%X" % (it["ea"], it["end"]) for it in items],
         ["0x%X -> 0x%X" % (x["ea"], x["end"]) for x in exts],
         ["0x%X -> 0x%X %s" % (x["old_ea"], x["ea"], x["name"]) for x in rebs], len(before), len(after)))
+    must(not any(g in after for x in gls for g in x["frags"]), "glued fragment function still present")
+    if gls:
+        log.append("glued: %s" % ["0x%X + %s" % (x["ea"], ["0x%X..0x%X" % tuple(r) for r in x["runs"]]) for x in gls])
+    if dfs:
+        log.append("data fix: %s" % ["0x%X..0x%X %s" % (x["lo"], x["hi"], x["kind"]) for x in dfs])
     if abs_:
         log.append("absorbed: %s" % ["0x%X into 0x%X (end 0x%X)" % (x["frag"], x["ea"], x["end"]) for x in abs_])
     if trs:
@@ -760,9 +865,31 @@ def main():
                          "frag_chunks": chunks(fr), "frag_sha256": sha(fr, g.end_ea), "clear": [clo, chi],
                          "before_end": f.end_ea, "end": ne, "sha256": sha(f.end_ea, ne), "chunks_before": chunks(ea),
                          "chunks_after": None})
-        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_)
-        MANIFEST.write_text(json.dumps({"finding": 142, "step": "S1c-4 orphan code registered as functions (findings 126-139)",
-                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "add_funcs": items},
+        oldg = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("glue_funcs", [])} if MANIFEST.exists() else {}
+        gls = []
+        for ea, runs, frags in GLUE:
+            if ea in oldg:
+                gls.append(oldg[ea])
+                continue
+            f = ida_funcs.get_func(ea)
+            must(f and f.start_ea == ea, "0x%X is not a function start" % ea)
+            gls.append({"ea": ea, "runs": [[lo, hi] for lo, hi, sd in runs], "seeds": [q for lo, hi, sd in runs for q in sd],
+                        "runs_sha256": [sha(lo, hi) for lo, hi, sd in runs], "frags": frags,
+                        "frag_names": {str(g): uname(g) for g in frags},
+                        "frag_ends": [ida_funcs.get_func(g).end_ea for g in frags],
+                        "frag_sha256": {str(g): sha(g, ida_funcs.get_func(g).end_ea) for g in frags}, "before_end": f.end_ea, "chunks_before": chunks(ea),
+                        "end": None, "sha256": None, "chunks_after": None})
+        oldd = {x["lo"]: x for x in json.loads(MANIFEST.read_text()).get("data_fix", [])} if MANIFEST.exists() else {}
+        dfs = []
+        for lo, hi, k in DATAFIX:
+            if lo in oldd:
+                dfs.append(oldd[lo])
+                continue
+            must(not any(ida_funcs.get_func(a) for a in range(lo, hi)), "data fix 0x%X..0x%X is owned by a function" % (lo, hi))
+            dfs.append({"lo": lo, "hi": hi, "kind": k, "sha256": sha(lo, hi)})
+        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls)
+        MANIFEST.write_text(json.dumps({"finding": 144, "step": "S1c-4 orphan code registered as functions (findings 126-139)",
+                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
@@ -775,9 +902,11 @@ def main():
     xts = doc.get("text_fix", [])
     trs = doc.get("trim_funcs", [])
     abs_ = doc.get("absorb_funcs", [])
+    dfs = doc.get("data_fix", [])
+    gls = doc.get("glue_funcs", [])
     states = ([state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts] + [rb_state(x) for x in rebs]
               + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs] + [xt_state(x) for x in xts] + [trim_state(x) for x in trs]
-              + [ab_state(x) for x in abs_])
+              + [ab_state(x) for x in abs_] + [df_state(x) for x in dfs] + [gl_state(x) for x in gls])
     fresh_trims = [x for x in trs if trim_state(x) == "fresh"]
     for i, it in enumerate(doc["add_funcs"]):
         if states[i] == "mismatch" and any(x["end"] <= it["ea"] < x["old_end"] for x in fresh_trims):
@@ -792,7 +921,7 @@ def main():
         log.append("ABORT: live IDB does not match the manifest; nothing changed")
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         return
-    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_)
+    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls)
     if os.environ.get("OFDRY"):
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("dry run (OFDRY): not saved")

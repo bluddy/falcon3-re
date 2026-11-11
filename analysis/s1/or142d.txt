@@ -1,0 +1,187 @@
+  6E63C 2e803e950000   cmp     byte ptr cs:word_6E145, 0
+  6E642 7503           jnz     short loc_6E647
+  6E644 eb04           jmp     short loc_6E64A
+  6E646 90             nop
+  6E647 eb73           jmp     short near ptr word_6E6BC
+  6E649 90             nop
+  6E64A 2ec606960001   mov     byte ptr cs:word_6E145+1, 1
+  6E650 2e803e950000   cmp     byte ptr cs:word_6E145, 0
+  6E656 7563           jnz     short near ptr word_6E6BA+1
+  6E658 9af2616c1f     call    pending_task_run
+  6E65D 9a09686c1f     call    far_cb_1
+  6E662 e8f008         call    near ptr loc_6EF53+2
+  6E665 1e             push    ds
+  6E666 8cc8           mov     ax, cs
+  6E668 8ed8           mov     ds, ax
+  6E66A bed701         mov     si, 1D7h
+  6E66D b80000         mov     ax, 0
+  6E670 e88406         call    near ptr loc_6ECF1+6
+  6E673 1f             pop     ds
+  6E674 9afd676c1f     call    far_cb_0
+  6E679 9adf616c1f     call    clip_pending_atomic_apply
+  6E67E 2ec606970000   mov     byte ptr cs:word_6E147, 0
+  6E684 2e803e980002   cmp     byte ptr cs:word_6E147+1, 2
+  6E68A 750a           jnz     short near ptr unk_6E696
+  6E68C 2ec70610003000 mov     cs:word_6E0C0, 30h ; '0'
+  6E693 e91003         jmp     near ptr loc_6E9A3+3
+  6E696 2e             db  2Eh ; .
+  6E697 c7             db 0C7h
+  6E698 06             push    es
+  6E699 10             db  10h
+  6E69A 0088           dw 8800h
+  6E69C 002e           dw 2E00h
+r69 6E581..6E69E chunks ['6E581-6E69E']
+--- linear sweep from 6E69E (no DB change)
+6E69E 833e5a0000       cmp
+6E6A3 7f13             jg
+6E6A5 2ec606980001     mov
+6E6AB 2ec606960001     mov
+6E6B1 2ec606970004     mov
+6E6B7 cb               retf
+6E6B8 e9eb02           jmp
+6E6BB cb               retf
+6E6BC 2ec606960001     mov
+6E6C2 2e803e950001     cmp
+6E6C8 753c             jnz
+6E6CA 2e803e980002     cmp
+6E6D0 7435             jz
+6E6D2 9af2616c1f       call
+6E6D7 9a09686c1f       call
+6E6DC 1e               push
+6E6DD 8cc8             mov
+6E6DF 8ed8             mov
+6E6E1 be5901           mov
+6E6E4 e8e602           call
+6E6E7 1f               pop
+6E6E8 741d             jz
+6E6EA 9afd676c1f       call
+6E6EF 9adf616c1f       call
+6E6F4 2ec606980000     mov
+6E6FA 2ec606970000     mov
+6E700 2ec606960001     mov
+6E706 cb               retf
+6E707 9af2616c1f       call
+6E70C 9a09686c1f       call
+6E711 e84108           call
+6E714 1e               push
+6E715 8cc8             mov
+6E717 8ed8             mov
+6E719 bee301           mov
+6E71C b80000           mov
+6E71F e8d505           call
+6E722 1f               pop
+6E723 9afd676c1f       call
+6E728 9adf616c1f       call
+6E72D 2ec606970000     mov
+6E733 2e803e980002     cmp
+6E739 750a             jnz
+6E73B 2ec70610003000   mov
+6E742 e96102           jmp
+6E745 2ec70610008800   mov
+6E74C 2e833e5a0000     cmp
+6E752 7f13             jg
+6E754 2ec606980001     mov
+6E75A 2ec606960001     mov
+6E760 2ec606970008     mov
+6E766 cb               retf
+6E767 e93c02           jmp
+6E76A 2ec606960001     mov
+6E770 2ec606980000     mov
+6E776 2ea15800         mov
+6E77A 2d1000           sub
+6E77D 7d02             jge
+6E77F 2bc0             sub
+6E781 2ea35800         mov
+6E785 2ec70654000000   mov
+6E78C cb               retf
+6E78D 2ec606960001     mov
+6E793 2ec606980000     mov
+6E799 2ea15800         mov
+6E79D 051000           add
+6E7A0 2e3b065a00       cmp
+6E7A5 7d0b             jge
+6E7A7 2ea35800         mov
+6E7AB 2ec70654000000   mov
+6E7B2 cb               retf
+6E7B3 2ec606960001     mov
+6E7B9 2ec606980000     mov
+6E7BF 2ea15400         mov
+6E7C3 2d0100           sub
+6E7C6 7d25             jge
+6E7C8 2ea15800         mov
+6E7CC 2d1000           sub
+6E7CF 7d04             jge
+6E7D1 2bc0             sub
+6E7D3 eb18             jmp
+6E7D5 2ea35800         mov
+6E7D9 2ea15800         mov
+6E7DD 2e2b065a00       sub
+6E7E2 f7d8             neg
+6E7E4 3d1000           cmp
+6E7E7 7e03             jle
+6E7E9 b81000           mov
+6E7EC 48               dec
+6E7ED 2ea35400         mov
+6E7F1 9af2616c1f       call
+6E7F6 9a09686c1f       call
+6E7FB e8860a           call
+6E7FE 9afd676c1f       call
+6E803 9adf616c1f       call
+6E808 cb               retf
+6E809 2ec606960001     mov
+6E80F 2ec606980000     mov
+6E815 2ea15400         mov
+6E819 40               inc
+6E81A 2e3b065600       cmp
+6E81F 7c14             jl
+6E821 2ea15800         mov
+6E825 051000           add
+6E828 2e3b065a00       cmp
+6E82D 7d0a             jge
+6E82F 2ea35800         mov
+6E833 2bc0             sub
+6E835 2ea35400         mov
+6E839 9af2616c1f       call
+6E83E 9a09686c1f       call
+6E843 e8820a           call
+6E846 9afd676c1f       call
+6E84B 9adf616c1f       call
+6E850 cb               retf
+6E851 2ea29500         mov
+6E855 1e               push
+6E856 06               push
+6E857 8cc8             mov
+6E859 8ed8             mov
+6E85B 8ec0             mov
+6E85D 9ae4556c1f       call
+6E862 bb0200           mov
+6E865 9a4d566c1f       call
+6E86A 2ec606980000     mov
+6E870 2ec7065a000000   mov
+6E877 2ec70656000000   mov
+6E87E 2ec70654000000   mov
+6E885 9a09686c1f       call
+6E88A 2ea07c00         mov
+6E88E 2ea27400         mov
+6E892 2ea07d00         mov
+6E896 2ea27500         mov
+6E89A 2ea07a00         mov
+6E89E 2ea27600         mov
+6E8A2 2ec7066c004c00   mov
+6E8A9 2ec7067000f400   mov
+6E8B0 2ec7066e001500   mov
+6E8B7 2ec70672001d00   mov
+6E8BE e8330b           call
+6E8C1 2ea07e00         mov
+6E8C5 9a37566c1f       call
+6E8CA bb5000           mov
+6E8CD bf1700           mov
+6E8D0 becc01           mov
+6E8D3 9aa4566c1f       call
+6E8D8 2ea07900         mov
+6E8DC 9a37566c1f       call
+6E8E1 e89105           call
+6E8E4 9afd676c1f       call
+6E8E9 be0000           mov
+6E8EC bf0000           mov
+6E8EF ??

@@ -1,6 +1,6 @@
 # Falcon3 Decompilation Status — handover document
 
-**Last updated**: 2026-11-10 (session 55 — see Time Log; always bump + append row)
+**Last updated**: 2026-11-11 (session 55 cont. — see Time Log; always bump + append row)
 **Branch**: master (HEAD `6fb6902` at time of writing)
 **Snapshot**: `analysis/ida_falconcd/FALCONCD.EXE.i64` (IDA Pro 9.1)
 **IDA install**: `C:\Program Files\IDA Professional 9.1\` (idat.exe at
@@ -109,7 +109,7 @@ DBFL_KILL).
 - Data knowledge is thin: 11,195 implicit-DS operands still have unknown DS, DGROUP is not its
   own segment, and about 10 structs exist. This fills in during the deep dive.
 
-**Plan, each step gated before the next:**
+**Plan, each step gated before the next** (working procedure and queue: [IDB stabilisation plan](docs/workflow/idb_stabilisation_plan.md)):
 - **S1 Boundaries:** split merged functions, fix the misaligned targets, give fall-in entries
   their own functions, register the runtime mid-body entries, repair the integrity damage, and
   drain the auto queue under a manifest. Gate: calls into function bodies close to 0; integrity
@@ -204,7 +204,11 @@ DBFL_KILL).
        overlay stub); functions 3,586 -> 3,587; backup `.bak_sw141`.
      - **S1c-4q (finding 142):** four functions behind dispatch tables registered: `sub_12BF96`, `sub_12BFA8`, `sub_155F18`,
        `sub_155F2A` (the table words are made words again first); functions 3,587 -> 3,591; backup `.bak_tbl142`.
-     - Left open (findings 126-142): the 0x6E696..0x6E8B7 handler cluster (with the R30 menu state machine), a few runs of 5-20 bytes and the padding runs
+     - **S1c-4r (finding 143):** 13 orphan "code" runs that are word-table or record data remade as data (new `DATAFIX` mode);
+       no function change; backup `.bak_dat143`.
+     - **S1c-4s (finding 144):** misdecoded pieces glued back onto `sub_2E20A` (two chunks) and `sub_166F80` (the bogus
+       `r38_retn19_stub` fragment removed; new `GLUE` mode); functions 3,591 -> 3,590; ledger 2035 -> 2034; backup `.bak_glue144`.
+     - Left open (findings 126-144): the 0x6E696..0x6E8B7 handler cluster (with the R30 menu state machine), 0x6E16E, 0x67BA3 and the padding runs
        0x66E62..0x6940E (read-only probes, nothing applied).  It is one giant `[bp+6]` / `[bp-0Eh]` switch function now
        split into ~25 named pieces (ui_menu_panel_init, menu_event_dispatch, ui_menu_transition_step, r30_entry_partial_b/c/d,
        farobj_record_clear_fields, ui_loadout_menu_enter ...), all reached by jumps; the 67F58..683C5 stretch redecodes as one
@@ -214,14 +218,17 @@ DBFL_KILL).
        0x68CC0, 0x68E49, 0x68F20, 0x69123) are undecoded and unreferenced.  0x6940B (`enter 6,0`, far-called from 0x675BA)
        is the real start of r30_record_link; 0x69227 is a real far entry.  Fixing this means merging ~25 named pieces
        (ledger entries lost) and needs a decision on the owning function; deferred.
-   - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
-   - **Next:**
-     - commit S1c-4q;
-     - the remaining orphan code runs (finding 124 "Open");
-     - 403 merged functions (code after a ret/jmp);
-     - 65 misdecodes;
-     - 47 fall-in entries;
-     - drain the auto queue under a manifest.
+   - **Now (after finding 144, measured 2026-11-11):** 3,590 functions, ledger 2,034; 529 mid-body targets / 1,299 sites
+     (407 merged functions, 64 misdecodes, 26 + 23 fall-in entries, 9 other); 96 orphan code runs / 221 B, of which
+     92 are 1-2 B padding left on purpose.  Of the 407 merged targets, 394 are pure splits (978 sites), 12 are shared
+     tails (21 sites) and 1 is multi-chunk.
+   - **Next:** the full work queue, procedure, mode table and pitfalls are in the [IDB stabilisation plan](docs/workflow/idb_stabilisation_plan.md).  In order:
+     - P0 commit S1c-4r / S1c-4s (findings 143, 144; applied and gated, not committed);
+     - P1 split the 394 pure-split merged functions (new `SPLIT` mode, batches of ~40);
+     - P2 the 64 `not_head` misdecodes; P3 the 49 fall-in entries; P4 the 9 `other` targets and 12 shared tails;
+     - P5 the 0x6E696..0x6E8B7 handler cluster / R30 menu state machine (needs a function-merge mode);
+     - P6 the small leftover orphans (0x6E16E ...); P7 drain the auto queue (~94 functions) under a manifest;
+     - P8 housekeeping; then S2 VGRAPH (P9), S3 trace edges (P10), S4 deep dive (P11).
 
 ## Items 1–5 complete; item 7 (IDB stabilisation) is in progress, then item 6 (Track E parser). Re-plan each session from [Open Items](docs/open_items.md) and `docs/advice.md`.
 

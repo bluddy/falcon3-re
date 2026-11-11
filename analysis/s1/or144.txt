@@ -1,0 +1,151 @@
+=== 1982F
+197FF 3b46fe               cmp     ax, [bp+var_2]  [fn 197EA]
+19802 7406                 jz      short loc_1980A  [fn 197EA]
+19804 43                   inc     bx  [fn 197EA]
+19805 43                   inc     bx  [fn 197EA]
+19806 e2f4                 loop    loc_197FC  [fn 197EA]
+19808 eb1d                 jmp     short loc_19827  [fn 197EA]
+1980A 2eff670a             jmp     word ptr cs:[bx+0Ah]  [fn 197EA]
+1980E be0a00               mov     si, 0Ah  [fn 197EA]
+19811 eb16                 jmp     short loc_19829  [fn 197EA]
+19813 be0b00               mov     si, 0Bh  [fn 197EA]
+19816 eb11                 jmp     short loc_19829  [fn 197EA]
+19818 be0c00               mov     si, 0Ch  [fn 197EA]
+1981B eb0c                 jmp     short loc_19829  [fn 197EA]
+1981D be0400               mov     si, 4  [fn 197EA]
+19820 eb07                 jmp     short loc_19829  [fn 197EA]
+19822 be0300               mov     si, 3  [fn 197EA]
+19825 eb02                 jmp     short loc_19829  [fn 197EA]
+19827 8bf7                 mov     si, di  [fn 197EA]
+19829 8bc6                 mov     ax, si  [fn 197EA]
+1982B 5f                   pop     di  [fn 197EA]
+1982C 5e                   pop     si  [fn 197EA]
+1982D c9                   leave  [fn 197EA]
+1982E cb                   retf  [fn 197EA]
+1982F 0301                 add     ax, [bx+di]
+19831 0801                 or      [bx+di], al
+19833 1101                 adc     [bx+di], ax
+19835 1201                 adc     al, [bx+di]
+19837 1301                 adc     ax, [bx+di]
+19839 1e                   push    ds
+1983A 17                   pop     ss
+1983B 2317                 and     dx, [bx]
+1983D 2817                 sub     [bx], dl
+1983F 2d1732               sub     ax, 3217h
+19842 17                   pop     ss
+19843 55                   push    bp  [fn 19843]
+19844 8bec                 mov     bp, sp  [fn 19843]
+19846 56                   push    si  [fn 19843]
+19847 57                   push    di  [fn 19843]
+19848 8b7606               mov     si, [bp+arg_0]  [fn 19843]
+1984B 33ff                 xor     di, di  [fn 19843]
+1984D 9a0403361d           call    state_word_77a4a_test  [fn 19843]
+19852 0bc0                 or      ax, ax  [fn 19843]
+19854 740c                 jz      short loc_19862  [fn 19843]
+19856 b87277               mov     ax, 7772h  [fn 19843]
+19859 8ec0                 mov     es, ax  [fn 19843]
+1985B 26c7063603ffff       mov     word ptr es:byte_7780A+24Ch, 0FFFFh  [fn 19843]
+xrefs: []
+=== 1277CC
+12779D 817ef0b300           cmp     [bp+var_10], 0B3h  [fn 1274CF]
+1277A2 771a                 ja      short loc_1277BE  [fn 1274CF]
+1277A4 b8c24f               mov     ax, 4FC2h  [fn 1274CF]
+1277A7 8ec0                 mov     es, ax  [fn 1274CF]
+1277A9 26ff364401           push    es:word_13E024  [fn 1274CF]
+1277AE 68c700               push    0C7h  [fn 1274CF]
+1277B1 6a00                 push    0  [fn 1274CF]
+1277B3 ff76f0               push    [bp+var_10]  [fn 1274CF]
+1277B6 9a92676c1f           call    dispatch_22090_invoke_4arg  [fn 1274CF]
+1277BB 83c408               add     sp, 8  [fn 1274CF]
+1277BE 03fe                 add     di, si  [fn 1274CF]
+1277C0 3b7ef4               cmp     di, [bp+var_C]  [fn 1274CF]
+1277C3 7f03                 jg      short def_127539; jumptable 00127539 default case  [fn 1274CF]
+1277C5 e959ff               jmp     loc_127721  [fn 1274CF]
+1277C8 5f                   pop     di; jumptable 00127539 default case  [fn 1274CF]
+1277C9 5e                   pop     si  [fn 1274CF]
+1277CA c9                   leave  [fn 1274CF]
+1277CB cb                   retf  [fn 1274CF]
+1277CC 5e                   pop     si
+1277CD 44                   inc     sp
+1277CE 96                   xchg    ax, si
+1277CF 44                   inc     sp
+1277D0 c9                   leave
+1277D1 44                   inc     sp
+1277D2 fb                   sti
+1277D3 44                   inc     sp
+1277D4 28453c               sub     [di+3Ch], al
+1277D7 45                   inc     bp
+1277D8 4b                   dec     bx
+1277D9 45                   inc     bp
+1277DA c8420000             enter   42h, 0  [fn 1277DA]
+1277DE 56                   push    si  [fn 1277DA]
+1277DF 57                   push    di  [fn 1277DA]
+1277E0 b89478               mov     ax, 7894h  [fn 1277DA]
+1277E3 8ec0                 mov     es, ax  [fn 1277DA]
+1277E5 268b1e1e12           mov     bx, es:word_79B5E  [fn 1277DA]
+1277EA 83fb06               cmp     bx, 6; switch 5 cases  [fn 1277DA]
+1277ED 7603                 jbe     short loc_1277F2  [fn 1277DA]
+1277EF e95606               jmp     def_1277F4; jumptable 001277F4 default case  [fn 1277DA]
+xrefs: []
+=== 6EA3B
+6EA2E b8456e               mov     ax, 6E45h  [fn 6E8F0]
+6EA31 8ec0                 mov     es, ax  [fn 6E8F0]
+6EA33 26a00100             mov     al, es:byte_6E451  [fn 6E8F0]
+6EA37 98                   cbw  [fn 6E8F0]
+6EA38 c9                   leave  [fn 6E8F0]
+6EA39 cb                   retf  [fn 6E8F0]
+6EA3A ff                   db 0FFh
+6EA3B ff4300               inc     word ptr [bp+di+0]
+6EA3E 46                   inc     si
+6EA3F 004f00               add     [bx+0], cl
+6EA42 f4                   hlt
+6EA43 00e4                 add     ah, ah
+6EA45 00dc                 add     ah, bl
+6EA47 00ec                 add     ah, ch
+6EA49 00                   db    0
+6EA4A c8020000             enter   2, 0  [fn 6EA4A]
+6EA4E 9a                   db  9Ah  [fn 6EA4A]
+6EA4F f2                   db 0F2h  [fn 6EA4A]
+xrefs: []
+=== 5DA68
+5DA50 00                   db    0
+5DA51 00                   db    0
+5DA52 00                   db    0
+5DA53 00                   db    0
+5DA54 00                   db    0
+5DA55 00                   db    0
+5DA56 00                   db    0
+5DA57 00                   db    0
+5DA58 00                   db    0
+5DA59 00                   db    0
+5DA5A 00                   db    0
+5DA5B 00                   db    0
+5DA5C 00                   db    0
+5DA5D 00                   db    0
+5DA5E 00                   db    0
+5DA5F 00                   db    0
+5DA60 00                   db    0
+5DA61 00                   db    0
+5DA62 00                   db    0
+5DA63 00                   db    0
+5DA64 00                   db    0
+5DA65 00                   db    0
+5DA66 00                   db    0
+5DA67 00                   db    0
+5DA68 640000               add     fs:[bx+si], al
+5DA6B 0100                 add     [bx+si], ax
+5DA6D 00844000             add     [si+40h], al
+5DA71 00ff                 add     bh, bh
+5DA73 ff00                 inc     word ptr [bx+si]
+5DA75 00                   db    0
+5DA76 00                   db    0
+5DA77 00                   db    0
+5DA78 00                   db    0
+5DA79 00                   db    0
+5DA7A 00                   db    0
+5DA7B 00                   db    0
+5DA7C 00                   db    0
+5DA7D 00                   db    0
+5DA7E 00                   db    0
+5DA7F 00                   db    0
+xrefs: []
