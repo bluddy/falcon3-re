@@ -578,6 +578,69 @@ SPLIT += [
 SPLIT += [
     (0x4AC80, 0x4ACC9),   # sub_4AC80 (5 of 5: mode_record_field_lookup - last)
 ]
+# finding 162 P3 batch 1 (19 splits: prologue-bearing fall-in entries, one per owner)
+# These are call targets inside a function body where the target has a push/mov/enter prologue
+# AND a fall-through from before. Standard SPLIT creates two functions at the prologue boundary.
+# NOTE: (0x1189E, 0x118D6) skipped — 0x118D2 (mov) is a non-call inner xref to 0x118D6
+#   (shared tail / fall-through branch, not a pure prologue split); defer to P4.
+# All entries here have inner xrefs of type fl_F (21, ordinary flow) or genuine branches because
+# the predecessor instruction falls directly into the split point. These are added to SPLIT_RELAX
+# so split_fn skips the strict "call-only" inner-xref check for them.
+SPLIT += [
+    (0x20AC1, 0x20B29),   # view_bounds_distribute
+    (0x28CA1, 0x28CA4),   # sub_28CA1
+    (0x33443, 0x3352A),   # far_mode_event_dispatch (1 of 6: at 0x3352A)
+    (0x39CE0, 0x39D02),   # state_gate_4ac2_4a83
+    (0x3C00C, 0x3C03D),   # sub_3C00C
+    (0x3E8C5, 0x3E8D2),   # sub_3E8C5
+    (0x3E962, 0x3E96F),   # sub_3E962
+    (0x3F62C, 0x3F62F),   # sub_3F62C (3-byte stub before main body)
+    (0x3FD89, 0x3FD9A),   # farobj_attr_apply_step
+    (0x42AFA, 0x42C31),   # sub_42AFA
+    (0x42E31, 0x42E37),   # sub_42E31
+    (0x49C67, 0x49C80),   # sub_49C67
+    (0x4A4F6, 0x4A505),   # hud_map_overlay_step
+    (0x4D3EC, 0x4D459),   # sub_4D3EC
+    (0x4EE65, 0x4EE82),   # sub_4EE65
+    (0x4F7F0, 0x4F84B),   # sub_4F7F0
+    (0x6E32A, 0x6E343),   # r14_farptr_call_gate2
+    (0x13DB5D, 0x13DB5E), # sub_13DB5D (1-byte stub)
+    (0x13DC09, 0x13DC0A), # sub_13DC09 (1-byte stub)
+]
+# SPLIT_RELAX: at_ea values for P3 entries where non-call inner xrefs are expected.
+# The predecessor instruction falls directly into the split point (fl_F flow xref),
+# and in some cases there are also genuine internal branches to the entry (which
+# become cross-function references after the split, handled by IDA as tail calls).
+# Append new P3 at values here whenever a new P3 finding is added.
+SPLIT_RELAX = {
+    # finding 162 P3 batch 1
+    0x20B29, 0x28CA4, 0x3352A, 0x39D02, 0x3C03D, 0x3E8D2, 0x3E96F,
+    0x3F62F, 0x3FD9A, 0x42C31, 0x42E37, 0x49C80, 0x4A505, 0x4D459,
+    0x4EE82, 0x4F84B, 0x6E343, 0x13DB5E, 0x13DC0A,
+}
+# finding 163 P3 cont (2 splits: far_mode_event_dispatch chain steps 2 & 4)
+# A: split owner 0x33443 (now ends at 0x3352A from f162) at 0x33468 (inside stub)
+# C: split owner 0x3352A (the second half from f162) at 0x339B2
+# B, D, E need owners created by A and C → deferred to finding 164+
+SPLIT += [
+    (0x33443, 0x33468),   # far_mode_event_dispatch stub split (2 of 6)
+    (0x3352A, 0x339B2),   # far_mode_event_dispatch second-half split (4 of 6)
+]
+SPLIT_RELAX |= {0x33468, 0x339B2}  # P3 fall-through entries
+# finding 164 P3 cont (2 splits: far_mode_event_dispatch chain steps 3 & 5)
+# B: split owner 0x33468 (created by f163) at 0x334C2
+# D: split owner 0x339B2 (created by f163) at 0x33C1B
+SPLIT += [
+    (0x33468, 0x334C2),   # far_mode_event_dispatch (3 of 6)
+    (0x339B2, 0x33C1B),   # far_mode_event_dispatch (5 of 6)
+]
+SPLIT_RELAX |= {0x334C2, 0x33C1B}  # P3 fall-through entries
+# finding 165 P3 cont (1 split: far_mode_event_dispatch chain step 6, final)
+# E: split owner 0x33C1B (created by f164) at 0x33D83
+SPLIT += [
+    (0x33C1B, 0x33D83),   # far_mode_event_dispatch (6 of 6, final)
+]
+SPLIT_RELAX |= {0x33D83}  # P3 fall-through entry
 log = []
 
 
@@ -1212,13 +1275,14 @@ def split_fn(x):
     """Split the owner function [ea, end) at `at`: owner becomes [ea, at),
     a new unnamed function [at, end) is registered with the same far flag."""
     ea, at, end, far = x["ea"], x["at"], x["end"], x["far"]
-    for xr in idautils.XrefsTo(at, 0):
-        if not xr.iscode:
-            continue
-        f2 = ida_funcs.get_func(xr.frm)
-        if f2 and f2.start_ea == ea:
-            m = idc.print_insn_mnem(xr.frm)
-            must(m in ("call", "callf"), "non-call inner xref to 0x%X from 0x%X (%s)" % (at, xr.frm, m))
+    if at not in SPLIT_RELAX:
+        for xr in idautils.XrefsTo(at, 0):
+            if not xr.iscode:
+                continue
+            f2 = ida_funcs.get_func(xr.frm)
+            if f2 and f2.start_ea == ea:
+                m = idc.print_insn_mnem(xr.frm)
+                must(m in ("call", "callf"), "non-call inner xref to 0x%X from 0x%X (%s)" % (at, xr.frm, m))
     must(ida_funcs.set_func_end(ea, at), "set_func_end 0x%X -> 0x%X" % (ea, at))
     must(ida_funcs.add_func(at, end), "add_func 0x%X..0x%X" % (at, end))
     if far:
@@ -1473,11 +1537,11 @@ def main():
                 continue
             must(not any(ida_funcs.get_func(a) for a in range(lo, hi)), "data fix 0x%X..0x%X is owned by a function" % (lo, hi))
             dfs.append({"lo": lo, "hi": hi, "kind": k, "sha256": sha(lo, hi)})
-        oldspl = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("split_funcs", [])} if MANIFEST.exists() else {}
+        oldspl = {(x["ea"], x["at"]): x for x in json.loads(MANIFEST.read_text()).get("split_funcs", [])} if MANIFEST.exists() else {}
         spls = []
         for ea, at in SPLIT:
-            if ea in oldspl and oldspl[ea]["at"] == at:
-                spls.append(oldspl[ea])
+            if (ea, at) in oldspl:
+                spls.append(oldspl[(ea, at)])
                 continue
             f = ida_funcs.get_func(ea)
             must(f and f.start_ea == ea, "0x%X is not a function start (split at 0x%X)" % (ea, at))
@@ -1507,7 +1571,7 @@ def main():
             fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
                         "head_sha256": sha(head, t)})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
-        MANIFEST.write_text(json.dumps({"finding": 161, "step": "S1c-4 split (findings 145-160) + P2 misdecodes (finding 161) + orphan code (findings 126-144)",
+        MANIFEST.write_text(json.dumps({"finding": 165, "step": "S1c-4 split (findings 145-160) + P2 misdecodes (finding 161) + P3 prologue splits (findings 162-165)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)

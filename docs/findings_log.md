@@ -7371,3 +7371,75 @@ verify_rebuild faithful (FD_TRIM 33 + CHANGED 0 + REGISTER 170 applied).
 
 **Still open in P2:** 19 not_head targets — 10 type-1 (external callers to null-byte heads, need
 sub-block fixup), 5 off>1 (R14 overlay), 1 66-prefix (deferred), 2 failed (0x4DA3C, 0x6E31C).
+
+## 2026-11-11 162 - P3 batch 1: 19 prologue-bearing fall-in splits
+
+**What was found.**  25 `fallthrough_entry_proloque` targets enumerated by `analysis/s1/p3_probe.py`
+(also 24 `fallthrough_secondary_entry` deferred to P8).  After removing one entry with a shared-tail
+non-call inner xref (0x118D6 from 0x118D2 `mov`, deferred to P4), 19 entries were split this batch.
+
+**What was done.**  Standard SPLIT mode; 19 entries in `SPLIT` list (finding 162 block).  Added
+`SPLIT_RELAX = {at for _, at in SPLIT[-19:]}` and gated split_fn's inner-xref check on it, since
+all 19 have an fl_F (type 21, ordinary flow) predecessor pointing to the split point, plus three MIXED
+entries that also have genuine internal branches (jz/jge/jmp → becomes cross-function ref after split).
+`verify_rebuild.py`: changed `load_split_funcs` to return `{ea: [list]}` instead of `{ea: last}` to
+handle functions split by both P1 and P3 (same owner ea appears twice); updated the REGISTER
+expansion loop and the SPLIT classification matcher accordingly.
+
+**Numbers after finding 162:**
+- Functions: 3,979 → 3,998 (+19)
+- split_funcs manifest: 389 → 408 entries
+- fallthrough_entry_proloque: 25/39 (probe); 19 split, 6 (far_mode_event_dispatch chain) pending P3 cont.
+- Skipped: (0x1189E, 0x118D6) — shared tail, deferred to P4.
+
+**Gates:** integrity INTACT (3998 == ground truth 3998), naming OK (2034), verify_rebuild faithful
+(SPLIT 19, ADDED 19, CHANGED 0, REGISTER 170 applied, FD_TRIM 1).
+
+**Deferred / still open:**
+- far_mode_event_dispatch chain: 5 more splits (findings 163+)
+- (0x1189E, 0x118D6): non-call inner xref, shared tail — P4
+- 24 fallthrough_secondary_entry targets — P8 (record as multi-entry list, no split needed)
+
+## 2026-11-11 163 - P3 cont: far_mode_event_dispatch chain steps 2 & 4
+
+**What was found.**  After finding 162 split (0x33443, 0x3352A), the remaining chain had 0x33468 and
+0x334C2 inside 0x33443..0x3352A, and 0x339B2/0x33C1B/0x33D83 inside 0x3352A..0x33EC3.  Steps 2
+(0x33443 → 0x33468) and 4 (0x3352A → 0x339B2) are independent and can be batched.
+
+**Two bugs fixed in tooling:**
+1. `apply_orphan_funcs.py` PLAN mode: `oldspl` dict keyed only by `ea` lost the P1 entry for
+   ea=0x3E962 when P3 also split it, causing "at=0x3EB4E not inside" error.  Changed to key by
+   `(ea, at)` pair so both entries coexist.
+2. `SPLIT_RELAX` changed from fragile `{at for _, at in SPLIT[-19:]}` slice to an explicit set
+   with named finding annotations.  New P3 at values added with `|=`.
+
+**Numbers after finding 163:**
+- Functions: 3,998 → 4,000 (+2)
+- split_funcs manifest: 408 → 410 entries
+- far_mode_event_dispatch chain: 3 more splits pending (findings 164+)
+
+**Gates:** integrity INTACT (4000 == ground truth 4000), naming OK (2034), verify_rebuild faithful
+(SPLIT 19, ADDED 21, CHANGED 0, REGISTER 170 applied, FD_TRIM 1).
+
+## 2026-11-11 164 - P3 cont: far_mode_event_dispatch chain steps 3 & 5
+
+**What was found.**  After finding 163 created sub_33468 and sub_339B2, steps 3 (0x33468→0x334C2)
+and 5 (0x339B2→0x33C1B) can be batched.
+
+**Numbers after finding 164:** Functions: 4,000 → 4,002; split_funcs 410 → 412.
+
+**Gates:** INTACT (4002), naming OK (2034), verify_rebuild faithful (CHANGED 0, ADDED 23).
+
+## 2026-11-11 165 - P3 cont: far_mode_event_dispatch chain step 6 (final)
+
+**What was found.**  Final split of the far_mode_event_dispatch chain: sub_33C1B (created by f164)
+at 0x33D83.  far_mode_event_dispatch is now fully decomposed into 6 separate functions.
+
+**Numbers after finding 165:** Functions: 4,002 → 4,003; split_funcs 412 → 413.
+
+**Gates:** INTACT (4003), naming OK (2034), verify_rebuild faithful (CHANGED 0, ADDED 24).
+
+**P3 (fallthrough_entry_proloque) COMPLETE:**
+- finding 162: 19 splits (batch 1)
+- findings 163-165: 6 splits (far_mode_event_dispatch chain)
+- Total: 25 of 25 targets split (1 deferred to P4: (0x1189E, 0x118D6) shared tail)

@@ -159,13 +159,17 @@ def load_patches():
 
 
 def load_split_funcs():
-    """{owner_ea: entry} of orphan_funcs_expected.json "split_funcs" (P1): a function split
-    at address `at` -> owner shrinks to [ea,at), new unnamed fn [at,end).  Allowlisted only
-    when both the head sha256 and tail sha256 exactly match the manifest."""
+    """{owner_ea: [entries]} of orphan_funcs_expected.json "split_funcs" (P1/P3): a function
+    split at address `at` -> owner shrinks to [ea,at), new unnamed fn [at,end).  Allowlisted only
+    when both the head sha256 and tail sha256 exactly match the manifest.
+    Returns a list per ea to handle multiple splits of the same owner (P1+P3 cases)."""
     p = ROOT / "registry" / "orphan_funcs_expected.json"
     if not p.exists():
         return {}
-    return {e["ea"]: e for e in json.loads(p.read_text()).get("split_funcs", [])}
+    out = {}
+    for e in json.loads(p.read_text()).get("split_funcs", []):
+        out.setdefault(e["ea"], []).append(e)
+    return out
 
 
 def load_fix_decode_eas():
@@ -350,11 +354,13 @@ def main():
             if is_expected_trim(trims, a, b):
                 trimmed.append((k, "end trimmed %dB -> %dB, tail is data" % (a["size"], b["size"])))
                 continue
-            # manifest-pinned SPLIT (P1): owner shrinks, new fn at the split point, both halves sha256-pinned
-            x = split_funcs.get(a.get("ea"))
-            if (x and a.get("ea") == b.get("ea")
-                    and b.get("size") == x["at"] - x["ea"]
-                    and _sha(b.get("bytes")) == x["sha256_head"]):
+            # manifest-pinned SPLIT (P1/P3): owner shrinks, new fn at the split point, both halves sha256-pinned
+            x_list = split_funcs.get(a.get("ea"), [])
+            x = next((e for e in x_list
+                       if (a.get("ea") == b.get("ea")
+                           and b.get("size") == e["at"] - e["ea"]
+                           and _sha(b.get("bytes")) == e["sha256_head"])), None)
+            if x is not None:
                 # the tail [at,end) may have been further split by a later batch;
                 # just check that some function starts at x["at"]
                 tail = next((v for v in now.values() if v.get("ea") == x["at"]), None)
@@ -434,9 +440,11 @@ def main():
                 return (k, x["old_ea"], x["end"] - x["old_ea"])
             return (k, v["ea"], reg_size(v))
 
-        # Expand want_base for functions split by later batches (P1 splits).
+        # Expand want_base for functions split by later batches (P1/P3 splits).
         # For each registered function (key, ea, old_size) where split_funcs has ea:
         #   replace with (key, ea, new_size=at-ea) + (tail_key, at, tail_size) recursively.
+        # split_funcs maps ea -> list of entries (a function may be split multiple times across
+        # different findings, e.g. P1 split at X and P3 split at Y < X of the same owner).
         # This keeps the register validation consistent across batches without updating manifests.
         split_expanded = False
         want = set()
@@ -444,19 +452,24 @@ def main():
         while to_expand:
             entry = to_expand.pop()
             k2, ea2, sz2 = entry
-            sp = split_funcs.get(ea2)
-            if sp:
-                # This function was split at sp["at"].  Check whether the split has already happened.
-                tail = next(((kk, vv) for kk, vv in now.items() if vv.get("ea") == sp["at"]), None)
+            sp_list = split_funcs.get(ea2, [])
+            if sp_list:
+                # Collect all tails that exist in `now` (each split whose at-fn was created).
                 owner_now = next((vv for kk, vv in now.items() if vv.get("ea") == ea2), None)
-                if tail and owner_now:
-                    # split has occurred: use the current owner size and re-queue the tail
+                tails_found = []
+                for sp in sp_list:
+                    tail = next(((kk, vv) for kk, vv in now.items() if vv.get("ea") == sp["at"]), None)
+                    if tail:
+                        tails_found.append(tail)
+                if tails_found and owner_now:
+                    # One or more splits have occurred: use current owner size and re-queue all tails.
                     split_expanded = True
                     want.add((k2, ea2, owner_now["size"]))
-                    tail_key, tail_v = tail
-                    to_expand.append((tail_key, sp["at"], tail_v["size"]))
+                    for tail in tails_found:
+                        tail_key, tail_v = tail
+                        to_expand.append((tail_key, tail_v["ea"], tail_v["size"]))
                 else:
-                    # split not yet applied (tail doesn't exist in now): keep original entry
+                    # No split yet applied (tails don't exist in now): keep original entry.
                     want.add((k2, ea2, sz2))
             elif ea2 in fix_decode_eas:
                 # fix_decode (P2) may have shortened this function; use current size
