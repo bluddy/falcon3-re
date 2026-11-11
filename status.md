@@ -247,6 +247,9 @@ DBFL_KILL).
      - **S1c-6e (finding 165):** P3 cont: far_mode_event_dispatch chain step 6 (COMPLETE); functions 4,002 → 4,003; backup `.bak_split165`.
      - **S1c-7a (finding 166):** P4 batch 1: 5 pure merged_fn splits; `log=[]` + `SPLIT_OWNERS` fixes; functions 4,003 → 4,008; backup `.bak_split166`.
      - **S1c-7b (finding 167):** P4 cont: r14_farptr_call_gate split 2; functions 4,008 → 4,009; backup `.bak_split167`.
+     - **Now (after finding 169, 2026-11-11):** 4,020 functions; P4 merged_fn shared tails done except segment_clip_test (tails=True) + 0x41167 (add_func fails); 6 `other` real + 24 secondary entries remain.
+     - **S1c-7c (finding 168):** P4 shared tails batch 1: 8 splits; functions 4,009 → 4,017; backup `.bak_split168`.
+     - **S1c-7d (finding 169):** P4 chain cont: 3 splits; functions 4,017 → 4,020; backup `.bak_split169`.
      - **S1c-6a (finding 161):** P2: FIX_DECODE mode; 46 of 48 type-2a misdecodes fixed (2 skipped, 10 type-1 + others deferred); not_head 64→19; backup `.bak_misdecode161`.
      - **P1 COMPLETE** (findings 145-160, 16 batches, 389 of 394 pure-split targets split; 5 deferred to P2/P5);
      - **P2 partial** (finding 161, 46/64 fixed; 18 deferred/failed); **P3 partial** (finding 162, 19 of 25 split; 5 far_mode_event_dispatch chain + 1 shared-tail deferred); P4 the other targets and 12 shared tails;

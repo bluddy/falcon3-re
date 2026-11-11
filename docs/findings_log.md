@@ -7474,3 +7474,27 @@ One entry (retf before 0x6E43B, no internal jmps from owner).
 **Numbers after finding 167:** Functions: 4,008 → 4,009 (+1); split_funcs: 419 entries.
 
 **Gates:** INTACT (4009), naming OK (2034), verify_rebuild faithful (CHANGED 0, ADDED 6, SPLIT 5).
+
+## 2026-11-11 168 - P4 shared tails batch 1 (8 splits)
+
+**What was done.** 8 shared-tail merged_fn splits: (0x3352A→0x3396E, 0x3B618→0x3B645,
+0x48F99→0x49078, 0x4F0B6→0x4F0CB, 0x6D4F4→0x6D4FC — single-entry shared tails) +
+(0x32C62→0x32D22, 0x3B5D1→0x3B5DB, 0x4751E→0x475A1 — first of chain pairs, continuations in f169).
+All added to SPLIT_RELAX (non-call inner xrefs: jz/jmp/loop).
+Skipped: (0x4113C, 0x41167) — add_func(0x41167) fails (bytes not valid function head for IDA).
+
+**Numbers after finding 168:** Functions: 4,009 → 4,017 (+8); split_funcs: 436 entries.
+
+**Gates:** INTACT (4017), naming OK (2034), verify_rebuild faithful (SPLIT 8, ADDED 8, CHANGED 0).
+
+## 2026-11-11 169 - P4 shared tails chain continuations (3 splits)
+
+**What was done.** Chain continuation splits after finding 168:
+- (0x32D22, 0x33074): mode_session_state_reset second split (jz from 0x33071)
+- (0x3B5DB, 0x3B5E9): sub_3B5D1 second split (jmp from 0x3B5D9)
+- (0x475A1, 0x4760F): sub_4751E second split (loop×2 from 0x4767A/0x47683)
+All in SPLIT_RELAX.
+
+**Numbers after finding 169:** Functions: 4,017 → 4,020 (+3); split_funcs: 430 entries.
+
+**Gates:** INTACT (4020), naming OK (2034), verify_rebuild faithful (CHANGED 0, ADDED 11, SPLIT 8).

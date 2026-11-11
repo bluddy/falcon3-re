@@ -661,6 +661,29 @@ SPLIT += [
     (0x6E404, 0x6E43B),   # r14_farptr_call_gate: retf before 0x6E43B (step 2 of 2)
 ]
 SPLIT_OWNERS |= {0x6E404}  # update owners set
+# finding 168 P4 shared tails batch 1 (9 splits)
+# These all have non-call inner xrefs (jz/jmp/loop) from the owner → added to SPLIT_RELAX.
+# Entries 32D22+33074, 3B5DB+3B5E9, 475A1+4760F are chains: first half only here, second in f169.
+SPLIT += [
+    (0x3352A, 0x3396E),   # sub_3352A: jz from 0x33934 to 0x3396E (2 callers)
+    (0x3B618, 0x3B645),   # sub_3B618: jz from 0x3B61C to 0x3B645 (1 caller)
+    (0x48F99, 0x49078),   # sub_48F99: jmp from 0x49091 to 0x49078 (2 callers)
+    (0x4F0B6, 0x4F0CB),   # sub_4F0B6: jmp from 0x4F126 to 0x4F0CB (4 callers)
+    (0x6D4F4, 0x6D4FC),   # r06_mode_gate_49a3: jz from 0x6D4F9 (1 caller)
+    # (0x4113C, 0x41167) DEFERRED — add_func fails at 0x41167, bytes not valid code head for IDA
+    (0x32C62, 0x32D22),   # mode_session_state_reset chain step 1 (jnz from 0x32CD4, 2 callers)
+    (0x3B5D1, 0x3B5DB),   # sub_3B5D1 chain step 1 (jz from 0x3B5D7, 2 callers)
+    (0x4751E, 0x475A1),   # sub_4751E chain step 1 (loop×2 from 0x47603/0x4760C, 1 caller)
+]
+SPLIT_RELAX |= {0x3396E, 0x3B645, 0x49078, 0x4F0CB, 0x6D4FC, 0x32D22, 0x3B5DB, 0x475A1}
+# finding 169 P4 shared tails chain continuations
+# After finding 168: sub_32D22 (0x32D22..0x33116), sub_3B5DB (0x3B5DB..0x3B618), sub_475A1 (0x475A1..0x47686)
+SPLIT += [
+    (0x32D22, 0x33074),   # mode_session_state_reset chain step 2 (jz from 0x33071, 2 callers)
+    (0x3B5DB, 0x3B5E9),   # sub_3B5D1 chain step 2 (jmp from 0x3B5D9, 2 callers)
+    (0x475A1, 0x4760F),   # sub_4751E chain step 2 (loop×2 from 0x4767A/0x47683, 1 caller)
+]
+SPLIT_RELAX |= {0x33074, 0x3B5E9, 0x4760F}
 
 
 def descend(seed, lo, hi, made):
@@ -1594,7 +1617,7 @@ def main():
             fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
                         "head_sha256": sha(head, t)})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
-        MANIFEST.write_text(json.dumps({"finding": 167, "step": "S1c-4 split (findings 145-160) + P2 (finding 161) + P3 (findings 162-165) + P4 (findings 166-167)",
+        MANIFEST.write_text(json.dumps({"finding": 169, "step": "S1c-4..P4 (findings 145-168) + P4 shared tails chain continuations (finding 169)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
