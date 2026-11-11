@@ -52,13 +52,37 @@ ADD += [(0x1002C, 0x1005A), (0x10473, 0x1047C), (0x105DC, 0x105E1), (0x10C7E, 0x
 ADD += [(0x100457, 0x1004BE)]
 # finding 142: the real entry sits in a misdecoded stretch behind a word table (0x12BF96) or inside a table's last bytes (0x155F18)
 ADD += [(0x12BF96, 0x12BFA8), (0x12BFA8, 0x12BFE1), (0x155F18, 0x155F2A), (0x155F2A, 0x155F4C)]
+# finding 172 P6: 26 terminated orphan runs with callers (small gaps between P1-split functions)
+ADD += [
+    (0x2E98B, 0x2E992), (0x2F185, 0x2F188), (0x2F353, 0x2F35B), (0x34901, 0x34907),
+    (0x37810, 0x37818), (0x38C81, 0x38C91), (0x3BEEB, 0x3BEFD), (0x3C004, 0x3C00C),
+    (0x3D313, 0x3D319), (0x3FAA7, 0x3FAAE), (0x40F56, 0x40F5D), (0x42832, 0x42838),
+    (0x42F08, 0x42F10), (0x492D8, 0x492E0), (0x496CB, 0x496D3), (0x49A19, 0x49A1F),
+    (0x4A87F, 0x4A88F), (0x4B4C8, 0x4B4D0), (0x4B7B1, 0x4B7B9), (0x4B8E4, 0x4B8EC),
+    (0x4BF52, 0x4BF5A), (0x4C3C2, 0x4C3C7), (0x4D352, 0x4D35A), (0x4FA33, 0x4FA3B),
+    (0x6DC04, 0x6DC09), (0x6F8FF, 0x6F907),
+]
+# finding 173 P7: drain auto queue — 19 clean ADD entries (conflict-free).
+# 12 entries inside 0x4E520 need chain SPLIT (finding 174+); 0x434B2/0x13DBD8 need investigation.
+# 6 not-terminated entries in FALL: 0x3FB20, 0x4DA3D, 0x6E31D, 0x15DB74, 0x15DCA3
+# (0x4E5B4 excluded since owned by 0x4E520)
+ADD += [
+    (0x3FB20, 0x3FB22),  # R05 — analyzed; 2B fall-through stub
+    # Deferred from P7: overlay segments (R12/R18/R28/R29/R33/R49) need decoding first
+]
+# Deferred from P7 auto queue: 0x43BAC (add_func fails), 0x4DA3D (data bytes),
+# 0x6E31D (R14 overlay), 0x434B2/0x13DBD8 (owned), 0x4E5xx (inside 0x4E520 — need SPLIT)
+# R12/R18/R28/R29/R33/R49 entries: bytes undecoded, need create_insn before add_func
+# finding 174 P7 cont: split 0x4E520 chain (12 sub-functions from auto queue)
+# DEFERRED: PLAN mode crashes during PLAN mode's add_all for this entry
+# (0x4E520, 0x4E5B4) will be handled after investigating the crash
 # ea -> (clear_lo, clear_hi, seeds): orphan run with a misdecoded stretch that must be cleared and redecoded first
 ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x109445, 0x109519, [0x109445]),
              0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12]), 0x100CA8: (0x100CA8, 0x100D00, [0x100CA8]),
              0x22C89: (0x22C89, 0x22C91, [0x22C89]), 0x100457: (0x100457, 0x1004BE, [0x100457]),
              0x12BF96: (0x12BF88, 0x12BF99, [0x12BF96]), 0x155F18: (0x155F18, 0x155F1A, [0x155F18])}
 # functions that end by falling into the entry of the next function (0x155F4C is a shared `retn` stub)
-FALL = {0x155F2A}
+FALL = {0x155F2A, 0x3FB20}
 # ea -> (lo, hi): word table entries inside the ADD_CLEAR range, made words again before the code behind them is redecoded
 ADD_WORDS = {0x12BF96: (0x12BF88, 0x12BF96)}
 # ea -> (tail chunk, clear ranges, seeds, pad bytes): a function whose second chunk lies after a foreign function that sits
@@ -656,6 +680,16 @@ log = []
 # add_func items that were later split (their end changes after the split is applied,
 # so a plain end-equality check would return "mismatch" and try to re-add them).
 SPLIT_OWNERS = {ea for ea, at in SPLIT}
+# SPLIT_TAILS: owner_ea values whose function has IDA tail chunks (unusual).
+# Standard split_fn checks chunks(ea)==[[ea,end]] which fails for these.
+# set_func_end still works; the tail chunk is retained by the stub after the split.
+SPLIT_TAILS = set()
+# finding 171 P4: segment_clip_test split (has tail chunk at 0x25F8F..0x25F93)
+# set_func_end(0x25F93, 0x26099) works (confirmed on probe); tail stays with stub.
+SPLIT += [
+    (0x25F93, 0x26099),   # segment_clip_test: 32 callers, prev=jmp, no inner xrefs
+]
+SPLIT_TAILS.add(0x25F93)
 # finding 167 P4 cont: r14_farptr_call_gate second split (needs 0x6E404 from f166)
 SPLIT += [
     (0x6E404, 0x6E43B),   # r14_farptr_call_gate: retf before 0x6E43B (step 2 of 2)
@@ -684,6 +718,14 @@ SPLIT += [
     (0x475A1, 0x4760F),   # sub_4751E chain step 2 (loop×2 from 0x4767A/0x47683, 1 caller)
 ]
 SPLIT_RELAX |= {0x33074, 0x3B5E9, 0x4760F}
+# finding 170 P4 'other' batch: 3 pure splits with no inner xrefs (classified 'other' not 'fallthrough')
+# These have no fall-through and no internal jumps from owner → standard split, no SPLIT_RELAX needed.
+# Owner code is not fully decoded before the target (prev_mnem=''), typical for ds-setup prologues.
+SPLIT += [
+    (0x11A5E, 0x11A7D),   # cb_args_invoke: 'mov' at 0x11A7D, 8 callers
+    (0x14BD7, 0x14BE0),   # farobj_pos_wrap_update: 'mov' at 0x14BE0, 1 caller
+    (0x24DEC, 0x24E46),   # sub_24DEC: 'push' at 0x24E46, 6 callers
+]
 
 
 def descend(seed, lo, hi, made):
@@ -1312,7 +1354,7 @@ def sp_state(x):
         ft = ida_funcs.get_func(at)
         if ft and ft.start_ea == at:
             return "applied"
-    if fo.end_ea == end and chunks(ea) == [[ea, end]]:
+    if fo.end_ea == end and (chunks(ea) == [[ea, end]] or ea in SPLIT_TAILS):
         return "fresh"
     return "mismatch"
 
@@ -1592,7 +1634,7 @@ def main():
             f = ida_funcs.get_func(ea)
             must(f and f.start_ea == ea, "0x%X is not a function start (split at 0x%X)" % (ea, at))
             must(f.end_ea > at > ea, "0x%X: at=0x%X not inside [ea, end=0x%X)" % (ea, at, f.end_ea))
-            must(chunks(ea) == [[ea, f.end_ea]], "0x%X has tail chunks, cannot split" % ea)
+            must(chunks(ea) == [[ea, f.end_ea]] or ea in SPLIT_TAILS, "0x%X has tail chunks, cannot split" % ea)
             end = f.end_ea
             spls.append({"ea": ea, "at": at, "end": end, "name": uname(ea) or "", "far": is_far(ea),
                          "sha256_head": sha(ea, at), "sha256_tail": sha(at, end)})
@@ -1617,7 +1659,7 @@ def main():
             fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
                         "head_sha256": sha(head, t)})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
-        MANIFEST.write_text(json.dumps({"finding": 169, "step": "S1c-4..P4 (findings 145-168) + P4 shared tails chain continuations (finding 169)",
+        MANIFEST.write_text(json.dumps({"finding": 173, "step": "S1c-4..P7 (findings 145-173): P7 auto queue partial",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)

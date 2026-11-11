@@ -181,6 +181,17 @@ def load_fix_decode_eas():
     return {e["fn_ea"] for e in json.loads(p.read_text()).get("fix_decode_funcs", [])}
 
 
+def load_add_eas():
+    """{ea: size} of orphan_funcs_expected.json "add_funcs" (findings 126+/P6): orphan code runs
+    registered as new functions.  When such a function falls inside a REGISTER block range,
+    it becomes an 'extra' function that wasn't in the registration manifest; the REGISTER
+    expansion adds it to 'want' so the block validates correctly."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return {}
+    return {e["ea"]: e["end"] - e["ea"] for e in json.loads(p.read_text()).get("add_funcs", [])}
+
+
 # Carve manifest (finding 59): a parent function is subdivided into PLANNED
 # functions plus data holes that must stay outside every function and keep
 # their recorded sha256.  The live hole bytes come from verify_idb's export
@@ -236,6 +247,7 @@ def main():
     patches = load_patches()
     split_funcs = load_split_funcs()
     fix_decode_eas = load_fix_decode_eas()
+    add_eas = load_add_eas()
     extends = load_extends()
     trims = load_trims()
     rebases = load_rebases()
@@ -481,6 +493,17 @@ def main():
                     want.add((k2, ea2, sz2))
             else:
                 want.add((k2, ea2, sz2))
+
+        # Add any newly-registered orphan functions (ADD entries, findings 126+/P6) that fall
+        # within this register block range.  These didn't exist when the register manifest was
+        # written so they appear as 'extra' in have; adding them to want keeps the block valid.
+        for ae_ea, ae_sz in add_eas.items():
+            if lo <= ae_ea < hi:
+                ae_now = next(((kk, vv) for kk, vv in now.items() if vv.get("ea") == ae_ea), None)
+                if ae_now:
+                    ae_key, ae_v = ae_now
+                    split_expanded = True
+                    want.add((ae_key, ae_ea, ae_v["size"]))
 
         have = {reg_key(k, v) for k, v in now.items()
                 if v.get("ea") is not None and (lo <= v["ea"] < hi or v["ea"] in rb_new and lo <= rb_new[v["ea"]]["old_ea"] < hi)}

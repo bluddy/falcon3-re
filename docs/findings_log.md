@@ -7498,3 +7498,64 @@ All in SPLIT_RELAX.
 **Numbers after finding 169:** Functions: 4,017 → 4,020 (+3); split_funcs: 430 entries.
 
 **Gates:** INTACT (4020), naming OK (2034), verify_rebuild faithful (CHANGED 0, ADDED 11, SPLIT 8).
+
+## 2026-11-11 170 - P4 'other' batch: 3 pure splits
+
+**What was found.** Three `other` real targets with no inner xrefs from owner:
+- (0x11A5E, 0x11A7D): cb_args_invoke → `2E C6` (CS: MOV), 8 callers
+- (0x14BD7, 0x14BE0): farobj_pos_wrap_update → `2E C6` (CS: MOV), 1 caller
+- (0x24DEC, 0x24E46): sub_24DEC → `push ES; push DI; push CX; push AX` prologue, 6 callers
+Classified `other` because no flow xref to target (undecoded bytes before target, typical DS/segment-setup prologues).
+
+**Remaining deferred:** segment_clip_test (tails=True), 0x41167 (is_code=False), 0x4FD52+0x6E052 (mnem='').
+
+**Numbers after finding 170:** Functions: 4,020 → 4,023 (+3); split_funcs: 433 entries.
+
+**Gates:** INTACT (4023), naming OK (2034), verify_rebuild faithful (SPLIT 3, ADDED 3, CHANGED 0).
+
+## 2026-11-11 171 - P4 segment_clip_test tail-chunk split
+
+**What was found.** segment_clip_test (0x25F93) has an IDA tail chunk at 0x25F8F..0x25F93
+(4 bytes: stc+retf+clc+retf = the error/success return stubs). Standard split_fn rejects
+functions with tail chunks. Investigation on a probe confirmed: `set_func_end(0x25F93, 0x26099)`
+succeeds even with tail chunks, the tail stays attached to the stub. `del_func` returns False
+(function undeletable due to tail chunk). `del_func_tail` doesn't exist in IDA Pro 9.1.
+
+**Tooling changes:** Added `SPLIT_TAILS` set + updated three check points:
+- PLAN mode: `chunks(ea) == [[ea, end]] or ea in SPLIT_TAILS`
+- sp_state "fresh": same relaxation
+- split_fn: tail chunk check was already removed (from earlier edit)
+
+**Numbers after finding 171:** Functions: 4,023 → 4,024 (+1); split_funcs: 434 entries.
+
+**Gates:** INTACT (4024), naming OK (2034), verify_rebuild faithful (SPLIT 4, ADDED 4, CHANGED 0).
+
+## 2026-11-11 172 - P6 orphan ADD batch: 26 terminated runs with callers
+
+**What was done.** 26 small terminated orphan runs (3-56 bytes) with at least 1 caller,
+all in R05/R06/R19 segments. These are gaps between P1-split functions that weren't originally
+registered. Added via ADD mode.
+
+**Two tooling bugs fixed in verify_rebuild.py:**
+1. `load_fix_decode_eas` body accidentally removed → returned None → eas membership test failed
+2. Added `load_add_eas()` + expansion loop in `reg_validate`: new ADD entries within registered
+   ranges are added to `want` (similar to split expansion), so REGISTER blocks validate correctly.
+
+**Numbers after finding 172:** Functions: 4,024 → 4,050 (+26); add_funcs manifest grows by 26.
+
+**Gates:** INTACT (4050), naming OK (2034), verify_rebuild faithful (ADDED 30, SPLIT 4, CHANGED 0,
+REGISTER 170 applied).
+
+## 2026-11-11 173 - P7 auto queue partial: 1 R05 function
+
+**What was done.** Auto queue probe (`idc.auto_wait()` on probe copy) found 33 new functions.
+19 were conflict-free; 12 were inside 0x4E520 (need SPLIT chain, finding 174+); 2 were owned by
+adjacent functions (0x434B2/0x13DBD8). Of the 19: most are overlay functions (R12/R18/R28/R29/
+R33/R49) whose bytes are undecoded in the current IDB (`add_func` fails). Only 1 R05 entry worked:
+sub_3FB20 (0x3FB20..0x3FB22, 2B fall-through stub).
+
+**Overlay function strategy for finding 174:** Use ADD_CLEAR with seeds to decode+register.
+
+**Numbers after finding 173:** Functions: 4,050 → 4,051 (+1); backup `.bak_add173`.
+
+**Gates:** INTACT (4051), naming OK (2034), verify_rebuild faithful (ADDED 31, SPLIT 4, CHANGED 0).
