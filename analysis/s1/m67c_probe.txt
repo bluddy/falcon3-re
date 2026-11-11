@@ -1,0 +1,35 @@
+table words: ['0xae4', '0xafa', '0xb0a', '0xf50', '0x10f1', '0x11a6', '0x11b6', '0x2028', '0x206e', '0x20f2', '0x2212', '0x22d0', '0x2459', '0x2530', '0x2733']
+674C0 jmp     loc_6709E
+674C2 mov     bx, [bp-0Eh]
+674C5 cmp     bx, 0Eh; switch 6 cases
+674C8 jbe     short loc_674CD
+674CA jmp     def_674CF; jumptable 000674CF default case
+674CD shl     bx, 1
+674CF jmp     cs:jpt_674CF[bx]; switch jump
+674D4 cmp     word ptr [bp+6], 0; jumptable 000674CF case 0
+674D8 jnz     short loc_674E7
+674DA mov     word ptr [bp+6], 5
+674DF call    sub_13C980
+674E4 jmp     loc_69182
+674E7 jmp     def_674CF; jumptable 000674CF default case
+674EA cmp     word ptr [bp+6], 0; jumptable 000674CF case 1
+674EE jnz     short loc_674F7
+674F0 mov     word ptr [bp+6], 4
+674F5 jmp     short loc_674DF
+674F7 jmp     def_674CF; jumptable 000674CF default case
+674FA mov     ax, 4FC2h; jumptable 000674CF case 2
+674FD mov     es, ax
+674FF cmp     es:word_13E012, 0FFFFh
+
+xrefs 157cc8 context:
+157CC6 mov     es, ax
+157CC8 push    es:jpt_674CF
+157CCD push    word ptr es:locret_69207
+157CD2 push    0
+157CD4 push    0
+157CD6 push    6
+157CD8 call    op_dispatch_far_entry
+157CDD add     sp, 0Ah
+xrefs to 69227: [('0x67066', 16), ('0x67578', 16), ('0x6765f', 16), ('0x67a5c', 16), ('0x689d1', 16), ('0x68f08', 16), ('0x157d84', 2), ('0x1580f9', 3), ('0x15812f', 2), ('0x15815d', 2)]
+xrefs to 6930B: [('0x69308', 21)]
+xrefs to 6940B: [('0x675ba', 16)]

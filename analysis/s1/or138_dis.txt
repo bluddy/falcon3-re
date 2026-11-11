@@ -1,0 +1,342 @@
+=== 1002C..1005A 46B prev=mouse_delta_scale_stub(end 0x1002c) next=0x1005a xin=[]
+   1002C 9c               pushf
+   1002D 2e803e000000     cmp     cs:byte_10000, 0
+   10033 7423             jz      short loc_10058
+   10035 50               push    ax
+   10036 53               push    bx
+   10037 51               push    cx
+   10038 52               push    dx
+   10039 56               push    si
+   1003A 57               push    di
+   1003B 55               push    bp
+   1003C b80300           mov     ax, 3
+   1003F cd33             int     33h; - MS MOUSE - RETURN POSITION AND BUTTON STATUS
+   10041 d1e9             shr     cx, 1
+   10043 8bc1             mov     ax, cx
+   10045 8bda             mov     bx, dx
+   10047 9ab3606c1f       call    stub_to_25777
+   1004C 9a09616c1f       call    clip_pending_apply_gate
+   10051 5d               pop     bp
+   10052 5f               pop     di
+   10053 5e               pop     si
+   10054 5a               pop     dx
+   10055 59               pop     cx
+   10056 5b               pop     bx
+   10057 58               pop     ax
+   10058 9d               popf
+   10059 cb               retf
+=== 10473..1047C 9B prev=state_byte_bx2f_set(end 0x10473) next=0x1047c xin=[]
+   10473 2ae4             sub     ah, ah
+   10475 2ea03900         mov     al, cs:byte_10249
+   10479 0bc0             or      ax, ax
+   1047B cb               retf
+=== 105DC..105E1 5B prev=state_word_10219_get(end 0x105dc) next=0x105e1 xin=[]
+   105DC 2ea10b00         mov     ax, cs:word_1021B
+   105E0 cb               retf
+=== 10852..10853 1B prev=None(end None) next=0x10853 xin=[]
+   10852 cb               retf
+=== 10C7E..10C83 5B prev=farptr_7075_pick(end 0x10c7e) next=0x10c83 xin=[]
+   10C7E 2ea00d00         mov     al, cs:byte_1084D
+   10C82 cb               retf
+=== 11B90..11B96 6B prev=font_glyph_lookup(end 0x11b90) next=None xin=[]
+   11B90 9a6c010010       call    mouse_buttons_get
+   11B95 cb               retf
+=== 11D16..11D2B 21B prev=None(end None) next=0x11d2b xin=[]
+   11D16 55               push    bp
+   11D17 8bec             mov     bp, sp
+   11D19 56               push    si
+   11D1A 57               push    di
+   11D1B 1e               push    ds
+   11D1C 06               push    es
+   11D1D c57606           lds     si, [bp+6]
+   11D20 0e               push    cs
+   11D21 e80700           call    near ptr entity_seg_reset
+   11D24 90               nop
+   11D25 07               pop     es
+   11D26 1f               pop     ds
+   11D27 5f               pop     di
+   11D28 5e               pop     si
+   11D29 5d               pop     bp
+   11D2A cb               retf
+=== 13A53..13A57 4B prev=slot3_tile_record_load(end 0x13a53) next=0x13a57 xin=[]
+   13A53 e80100           call    sorted_key_search_bl
+   13A56 cb               retf
+=== 170F9..170FB 2B prev=sbi_config_081b_opl(end 0x170f9) next=0x170fb xin=[]
+   170F9 cb               retf
+   170FA cb               retf
+=== 172DA..172DC 2B prev=sbi_port_discover_aa(end 0x172da) next=None xin=[]
+   172DA cb               retf
+   172DB cb               retf
+=== 205BA..205BF 5B prev=view_extent_compute_1f6da(end 0x205ba) next=0x205bf xin=[]
+   205BA 2ea12000         mov     ax, cs:word_1F6E0
+   205BE cb               retf
+=== 20613..2061B 8B prev=state_word_7e54d_get(end 0x20613) next=0x2061b xin=[]
+   20613 2ea26a00         mov     cs:state_byte_1f72a, al
+   20617 e80100           call    record_op_dispatch_220b0
+   2061A cb               retf
+=== 20889..20897 14B prev=view_extent_shadow_save(end 0x20889) next=0x20897 xin=[]
+   20889 2e891e1400       mov     cs:word_1F6D4, bx
+   2088E 2e893e1600       mov     cs:word_1F6D6, di
+   20893 e89302           call    loc_20B29
+   20896 cb               retf
+=== 21ABA..21ABE 4B prev=record_queue_swap_drain(end 0x21aba) next=0x21abe xin=[]
+   21ABA e80100           call    state_nibble_gate_step
+   21ABD cb               retf
+=== 22269..2226A 1B prev=program_terminate(end 0x22269) next=0x2226a xin=[]
+   22269 cb               retf
+=== 22564..2256D 9B prev=error_display_terminate(end 0x22564) next=0x2256d xin=[]
+   22564 2ae4             sub     ah, ah
+   22566 2ea08b2b         mov     al, cs:byte_2224B
+   2256A 0bc0             or      ax, ax
+   2256C cb               retf
+=== 229BB..229C0 5B prev=tick_wait_until_22220(end 0x229bb) next=0x229c0 xin=[]
+   229BB 2ea1602b         mov     ax, cs:word_22220
+   229BF cb               retf
+=== 229C8..229DD 21B prev=vector_shutdown_chain(end 0x229c8) next=0x229dd xin=[]
+   229C8 b80000           mov     ax, 0
+   229CB 2eff1ec029       call    dword ptr cs:byte_22080
+   229D0 cb               retf
+   229D1 55               push    bp
+   229D2 8bec             mov     bp, sp
+   229D4 8b4606           mov     ax, [bp+6]
+   229D7 0e               push    cs
+   229D8 e80200           call    near ptr config_defaults_init
+   229DB 5d               pop     bp
+   229DC cb               retf
+=== 22AEB..22AFF 20B prev=pit_divisor_set_bx(end 0x22aeb) next=0x22aff xin=[]
+   22AEB 54               push    sp
+   22AEC 58               pop     ax
+   22AED 3bc4             cmp     ax, sp
+   22AEF 750a             jnz     short loc_22AFB
+   22AF1 8bc5             mov     ax, bp
+   22AF3 8bec             mov     bp, sp
+   22AF5 83460002         add     word ptr [bp+0], 2
+   22AF9 8be8             mov     bp, ax
+   22AFB b8ff7f           mov     ax, 7FFFh
+   22AFE cf               iret
+=== 23E25..23E57 50B prev=fixed_vec_normalize_7b0e(end 0x23e25) next=0x23e57 xin=[]
+   23E25 268b04           mov     ax, es:[si]
+   23E28 262b05           sub     ax, es:[di]
+   23E2B 8bd8             mov     bx, ax
+   23E2D 268b4402         mov     ax, es:[si+2]
+   23E31 262b4502         sub     ax, es:[di+2]
+   23E35 eb96             jmp     short fixed_vec_normalize_7b0e
+   23E37 268b04           mov     ax, es:[si]
+   23E3A 262b05           sub     ax, es:[di]
+   23E3D 8bd8             mov     bx, ax
+   23E3F 268b4402         mov     ax, es:[si+2]
+   23E43 262b4502         sub     ax, es:[di+2]
+   23E47 e883ff           call    fixed_vec_normalize_7b0e
+   23E4A 8bd8             mov     bx, ax
+   23E4C 268b4404         mov     ax, es:[si+4]
+   23E50 262b4504         sub     ax, es:[di+4]
+   23E54 e976ff           jmp     fixed_vec_normalize_7b0e
+=== 23F5E..23F62 4B prev=vec3_norm_es_di(end 0x23f5e) next=0x23f62 xin=[]
+   23F5E e80100           call    vec3_dot
+   23F61 cb               retf
+=== 2408B..2408F 4B prev=sub_23F82(end 0x2408b) next=0x2408f xin=[]
+   2408B e80100           call    fixed_vec3_cross
+   2408E cb               retf
+=== 24963..2497C 25B prev=fixed_vec3_transform_es(end 0x24963) next=0x2497c xin=[]
+   24963 53               push    bx
+   24964 52               push    dx
+   24965 2bd2             sub     dx, dx
+   24967 92               xchg    ax, dx
+   24968 bba005           mov     bx, 5A0h
+   2496B f7f3             div     bx
+   2496D 5a               pop     dx
+   2496E 5b               pop     bx
+   2496F cb               retf
+   24970 53               push    bx
+   24971 52               push    dx
+   24972 bba005           mov     bx, 5A0h
+   24975 f7e3             mul     bx
+   24977 8bc2             mov     ax, dx
+   24979 5a               pop     dx
+   2497A 5b               pop     bx
+   2497B cb               retf
+=== 2551C..25522 6B prev=dispatch_22158_stub(end 0x2551c) next=0x25522 xin=[]
+   2551C 2eff1e902a       call    dword ptr cs:byte_22150
+   25521 cb               retf
+=== 25562..25567 5B prev=dispatch_2214c_stub(end 0x25562) next=0x25567 xin=[]
+   25562 2ea3db5d         mov     cs:word_2549B, ax
+   25566 cb               retf
+=== 25893..2589F 12B prev=clip_bounds_restore_25450(end 0x25893) next=0x2589f xin=[]
+   25893 2eff1e502a       call    cs:dword_22110
+   25898 cb               retf
+   25899 2eff1e542a       call    cs:dword_22114
+   2589E cb               retf
+=== 2B131..2B135 4B prev=None(end None) next=0x2b135 xin=[]
+   2B131 e80100           call    near ptr overlay_ems_stack_segment_load
+   2B134 cb               retf
+=== 2CA17..2CA3F 40B prev=dos_indirect_dispatch_2c9ba(end 0x2cb1b) next=0x2ca3f xin=[]
+   2CA17 50               push    ax
+   2CA18 06               push    es
+   2CA19 b001             mov     al, 1
+   2CA1B e82f01           call    far_callback_vector_walk
+   2CA1E 2e8e065200       mov     es, cs:word_2C9C2
+   2CA23 fa               cli
+   2CA24 2ea14e00         mov     ax, word ptr cs:dword_2C9BE
+   2CA28 26a30a00         mov     es:0Ah, ax
+   2CA2C 2ea15000         mov     ax, word ptr cs:dword_2C9BE+2
+   2CA30 26a30c00         mov     es:0Ch, ax
+   2CA34 2ec70607010000   mov     cs:word_2CA77, 0
+   2CA3B fb               sti
+   2CA3C 07               pop     es
+   2CA3D 58               pop     ax
+   2CA3E cb               retf
+=== 2CB72..2CB7B 9B prev=always_false(end 0x2cb72) next=None xin=[]
+   2CB72 b9ffff           mov     cx, 0FFFFh
+   2CB75 cb               retf
+   2CB76 33c0             xor     ax, ax
+   2CB78 8bd0             mov     dx, ax
+   2CB7A cb               retf
+=== 2E235..2E23D 8B prev=None(end None) next=0x2e20a xin=[]
+   2E235 0ab308bf         or      dh, [bp+di-40F8h]
+   2E239 0800             or      [bx+si], al
+   2E23B eb03             jmp     short loc_2E240
+=== 67BA3..67BA6 3B prev=menu_pending_task_step(end 0x67ba3) next=0x67ba6 xin=[]
+   67BA3 e9d415           jmp     def_674CF; jumptable 000674CF default case
+=== 67F77..67F79 2B prev=r30_entry_partial_b(end 0x67f77) next=None xin=[('0x67f72', 21)]
+   67F77 03d8             add     bx, ax
+=== 6DFF0..6DFF1 1B prev=None(end None) next=None xin=[('0x6ed5e', 16), ('0x6ed8a', 16), ('0x6edb6', 16), ('0x6ef89', 16)]
+   6DFF0 9d               popf;  | RTFIX applied
+=== 6E16E..6E176 8B prev=None(end None) next=None xin=[('0x6ef5d', 16), ('0x6f60c', 16)]
+   6E16E 008c0599         add     [si-66FBh], cl
+   6E172 0030             add     [bx+si], dh
+   6E174 00ef             add     bh, ch
+=== 6E7C7..6E809 66B prev=None(end None) next=None xin=[]
+   6E7C7 252ea1           and     ax, 0A12Eh
+   6E7CA 58               pop     ax
+   6E7CB 002d             add     [di], ch
+   6E7CD 1000             adc     [bx+si], al
+   6E7CF 7d04             jge     short loc_6E7D5
+   6E7D1 2bc0             sub     ax, ax
+   6E7D3 eb18             jmp     short loc_6E7ED
+   6E7D5 2ea35800         mov     cs:word_6E108, ax
+   6E7D9 2ea15800         mov     ax, cs:word_6E108
+   6E7DD 2e2b065a00       sub     ax, cs:word_6E10A
+   6E7E2 f7d8             neg     ax
+   6E7E4 3d1000           cmp     ax, 10h
+   6E7E7 7e03             jle     short loc_6E7EC
+   6E7E9 b81000           mov     ax, 10h
+   6E7EC 48               dec     ax
+   6E7ED 2ea35400         mov     cs:word_6E104, ax
+   6E7F1 9af2616c1f       call    pending_task_run
+   6E7F6 9a09686c1f       call    far_cb_1
+   6E7FB e8860a           call    near ptr loc_6F283+1
+   6E7FE 9afd676c1f       call    far_cb_0
+   6E803 9adf616c1f       call    clip_pending_atomic_apply
+   6E808 cb               retf
+=== 100505..10059E 153B prev=None(end None) next=None xin=[]
+   100505 2e8a875701       mov     al, cs:[bx+157h]
+   10050A fec0             inc     al
+   10050C 88808e00         mov     [bx+si+8Eh], al
+   100510 d1e3             shl     bx, 1
+   100512 2e8b875702       mov     ax, cs:[bx+257h]
+   100517 d1e0             shl     ax, 1
+   100519 89809403         mov     [bx+si+394h], ax
+   10051D d1eb             shr     bx, 1
+   10051F 4b               dec     bx
+   100520 7de3             jge     short loc_100505
+   100522 33ff             xor     di, di
+   100524 bb0001           mov     bx, 100h
+   100527 2e8a8d0701       mov     cl, cs:[di+107h]
+   10052C ba0100           mov     dx, 1
+   10052F d3e2             shl     dx, cl
+   100531 8956f6           mov     [bp-0Ah], dx
+   100534 33d2             xor     dx, dx
+   100536 2e8a853701       mov     al, cs:[di+137h]
+   10053B 8ac8             mov     cl, al
+   10053D fec0             inc     al
+   10053F 2e02850701       add     al, cs:[di+107h]
+   100544 88808e00         mov     [bx+si+8Eh], al
+   100548 8bc2             mov     ax, dx
+   10054A d3e0             shl     ax, cl
+   10054C 2e0a854701       or      al, cs:[di+147h]
+   100551 d1e0             shl     ax, 1
+   100553 40               inc     ax
+   100554 d1e3             shl     bx, 1
+   100556 89809403         mov     [bx+si+394h], ax
+   10055A d1eb             shr     bx, 1
+   10055C 43               inc     bx
+   10055D 42               inc     dx
+   10055E 3956f6           cmp     [bp-0Ah], dx
+   100561 77d3             ja      short loc_100536
+   100563 47               inc     di
+   100564 83ff10           cmp     di, 10h
+   100567 72be             jb      short loc_100527
+   100569 b8327a           mov     ax, 7A32h
+   10056C 8ed8             mov     ds, ax
+   10056E 8d444e           lea     ax, [si+4Eh]
+   100571 06               push    es
+   100572 50               push    ax
+   100573 b8c700           mov     ax, 0C7h
+   100576 0e               push    cs
+   100577 50               push    ax
+   100578 b84000           mov     ax, 40h ; '@'
+   10057B e85206           call    sub_100BD0
+   10057E 8d440e           lea     ax, [si+0Eh]
+   100581 ff363c9a         push    word ptr ds:dword_83D5A+2
+   100585 50               push    ax
+   100586 b88700           mov     ax, 87h
+   100589 0e               push    cs
+   10058A 50               push    ax
+   10058B b84000           mov     ax, 40h ; '@'
+   10058E e83f06           call    sub_100BD0
+   100591 e80b00           call    sub_10059F
+   100594 2bc0             sub     ax, ax
+   100596 5e               pop     si
+   100597 5f               pop     di
+   100598 8be5             mov     sp, bp
+   10059A 5d               pop     bp
+   10059B ca1400           retf    14h
+=== 12BF89..12BFE1 88B prev=None(end None) next=0x12bfe1 xin=[('0x12c0e0', 3), ('0x12c151', 3), ('0x12bfe8', 17), ('0x12c0ad', 17)]
+   12BF89 0db70d           or      ax, 0DB7h
+   12BF8C b70d             mov     bh, 0Dh
+   12BF8E b70d             mov     bh, 0Dh
+   12BF90 0210             add     dl, [bx+si]
+   12BF92 b70d             mov     bh, 0Dh
+   12BF94 06               push    es
+   12BF95 008a5c03         add     [bp+si+35Ch], cl
+   12BF99 32ff             xor     bh, bh
+   12BF9B d1e3             shl     bx, 1
+   12BF9D 83fb0c           cmp     bx, 0Ch
+   12BFA0 7705             ja      short locret_12BFA7
+   12BFA2 2eff973a0d       call    cs:off_12BF2A[bx]
+   12BFA7 c3               retn
+   12BFA8 b89f70           mov     ax, 709Fh
+   12BFAB 8ec0             mov     es, ax
+   12BFAD 26833e000000     cmp     es:word_709F0, 0
+   12BFB3 742b             jz      short locret_12BFE0
+   12BFB5 b004             mov     al, 4
+   12BFB7 0e               push    cs
+   12BFB8 e8d7fc           call    near ptr sub_12BC92
+   12BFBB bb0800           mov     bx, 8
+   12BFBE 0e               push    cs
+   12BFBF e854fd           call    near ptr overlay_undecoded_body_12bd16
+   12BFC2 0e               push    cs
+   12BFC3 e8f5f9           call    near ptr interrupt_dma
+   12BFC6 33c0             xor     ax, ax
+   12BFC8 26a30000         mov     es:word_709F0, ax
+   12BFCC 26a22100         mov     es:byte_70A11, al
+   12BFD0 26a34500         mov     es:word_70A35, ax
+   12BFD4 26a23f00         mov     es:byte_70A2F, al
+   12BFD8 26a20200         mov     es:byte_709F2, al
+   12BFDC 26a33b00         mov     es:word_70A2A+1, ax
+   12BFE0 c3               retn
+=== 12D15E..12D16E 16B prev=sub_12CEA0(end 0x12d15e) next=0x12d16e xin=[]
+   12D15E 57               push    di
+   12D15F 33c0             xor     ax, ax
+   12D161 8bc8             mov     cx, ax
+   12D163 49               dec     cx
+   12D164 f2ae             repne scasb
+   12D166 8bcf             mov     cx, di
+   12D168 5f               pop     di
+   12D169 2bcf             sub     cx, di
+   12D16B f3a6             repe cmpsb
+   12D16D c3               retn
+=== 16F4B1..16F4B5 4B prev=sub_16F47D(end 0x16f4b1) next=0x16f4b5 xin=[('0x16dc0b', 16), ('0x16dc79', 16), ('0x16dce1', 16), ('0x16dd66', 16)]
+   16F4B1 55               push    bp
+   16F4B2 8bec             mov     bp, sp
+   16F4B4 56               push    si

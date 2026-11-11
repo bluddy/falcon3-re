@@ -1,9 +1,9 @@
 """Read-only (DBFL_KILL): every maximal run of code heads that belong to no function.  For each run: size, the
 function ending just before it, whether it ends in a ret/jmp, the xrefs into it (code and data) and the first
-and last disassembly lines.  Output: analysis/s1/orphan_scan.json"""
+and last disassembly lines.  Output: analysis/s1/orphan_scan138.json"""
 import json, traceback
 import idaapi, idc, idautils, ida_funcs, ida_bytes, ida_segment
-OUT = r"C:\Users\ybarnoy\projects\falcon3\analysis\s1\orphan_scan.json"
+OUT = r"C:\Users\ybarnoy\projects\falcon3\analysis\s1\orphan_scan138.json"
 RETS = {"retn", "retf", "iret", "iretw", "retnw", "retfw"}
 R = {"runs": []}
 try:

@@ -1,0 +1,295 @@
+fn 229DD..22A44 config_defaults_init xrefs=[('0x108f3', 16), ('0x229d8', 17)]
+fn 22A44..22A79 int0_vector_hook xrefs=[('0x108dc', 16)]
+fn 22A79..22A9F vector_shutdown_restore xrefs=[('0x229c0', 17)]
+fn 22A9F..22AC6 int8_vector_hook_343f xrefs=[('0x22a73', 17)]
+fn 22AC6..22ADC int8_vector_restore_2221c xrefs=[('0x22a99', 17)]
+fn 22ADC..22AEB pit_divisor_set_bx xrefs=[('0x22a70', 17), ('0x22a96', 17)]
+fn 22AFF..22B38 timer_tick_isr xrefs=[]
+fn 22B3A..22C28 joystick_gate_counter xrefs=[('0x26620', 17), ('0x29983', 17), ('0x1f710', 1)]
+fn 22C28..22C53 pit_channel0_latch_read xrefs=[('0x2f734', 16), ('0x69244', 16), ('0x12843c', 16), ('0x13169f', 16), ('0x1324ce', 16), ('0x1325e1', 16)]
+fn 22C53..22C62 fixed_vec3_write xrefs=[('0x2fb2b', 16), ('0x30dc8', 16)]
+fn 22C62..22C8B fixed_vec3_read xrefs=[('0x2f9bf', 16), ('0x308c2', 16)]
+fn 22C91..22CD5 fixed_vec3_accumulate_a xrefs=[('0x3a014', 16), ('0x3a092', 16), ('0x3a4db', 16), ('0x3c4c8', 16), ('0x3d6a5', 16), ('0x40e39', 16)]
+fn 22CD5..22D19 fixed_vec3_accumulate_b xrefs=[('0x255d0', 16), ('0x2e64f', 16), ('0x2e743', 16), ('0x2e799', 16), ('0x2e7bc', 16), ('0x2e7df', 16)]
+fn 22DCE..22DDC sub_22DCE xrefs=[]
+fn 22DDC..22DFA state_farptr_dxax_store xrefs=[('0x325f4', 16), ('0x3284e', 16), ('0x328d6', 16), ('0x32a5b', 16), ('0x32ab3', 16)]
+fn 22DFA..22DFF state_word_22e27_set xrefs=[('0x325d2', 16), ('0x32614', 16), ('0x32634', 16), ('0x3286c', 16), ('0x328bd', 16), ('0x32931', 16)]
+fn 22DFF..22E77 angle_adjusted_copy xrefs=[('0x3249b', 16), ('0x32871', 16), ('0x329ab', 16), ('0x329fd', 16), ('0x32a21', 16), ('0x32ace', 16)]
+
+22C40 code fn=0x22c28 2ea3b335     mov     cs:word_22C73, ax
+22C44 code fn=0x22c28 e440         in      al, 40h; Timer 8253-5 (AT: 8254.2).
+22C46 code fn=0x22c28 eb00         jmp     short $+2
+22C48 code fn=0x22c28 8ae0         mov     ah, al
+22C4A code fn=0x22c28 e440         in      al, 40h; Timer 8253-5 (AT: 8254.2).
+22C4C code fn=0x22c28 eb00         jmp     short $+2
+22C4E code fn=0x22c28 2ea3b535     mov     cs:word_22C75, ax
+22C52 code fn=0x22c28 cb           retf
+22C53 code fn=0x22c53 2ea3b135     mov     cs:word_22C71, ax
+22C57 code fn=0x22c53 2e891eb335   mov     cs:word_22C73, bx
+22C5C code fn=0x22c53 2e890eb535   mov     cs:word_22C75, cx
+22C61 code fn=0x22c53 cb           retf
+22C62 code fn=0x22c62 2ea1b135     mov     ax, cs:word_22C71
+22C66 code fn=0x22c62 2e8b1eb335   mov     bx, cs:word_22C73
+22C6B code fn=0x22c62 2e8b0eb535   mov     cx, cs:word_22C75
+22C70 code fn=0x22c62 cb           retf
+22C71 data fn=0x22c62 e51c         dw 1CE5h
+22C73 data fn=0x22c62 0773         dw 7307h
+22C75 data fn=0x22c62 2203         dw 322h
+22C77 code fn=0x22c62 e51c         in      ax, 1Ch
+22C79 code fn=0x22c62 07           pop     es
+22C7A code fn=0x22c62 7322         jnb     short near ptr loc_22C9C+2
+22C7C code fn=0x22c62 03b300b7     add     si, [bp+di-4900h]
+22C80 code fn=0x22c62 00b60003     add     [bp+300h], dh
+22C84 code fn=0x22c62 800b80       or      byte ptr [bp+di], 80h
+22C87 code fn=0x22c62 0f800ee8     jo      loc_21499
+22C8B code fn=-       48           dec     ax
+22C8C code fn=-       00908bc1     add     [bx+si-3E75h], dl
+22C90 code fn=-       cb           retf
+22C91 code fn=0x22c91 50           push    ax
+22C92 code fn=0x22c91 52           push    dx
+22C93 code fn=0x22c91 2ea1b135     mov     ax, cs:word_22C71
+22C97 code fn=0x22c91 2ef726bd35   mul     word ptr cs:loc_22C7C+1
+22C9C code fn=0x22c91 2ef736c335   div     word ptr cs:loc_22C80+3
+22CA1 code fn=0x22c91 2e8916b135   mov     cs:word_22C71, dx
+22CA6 code fn=0x22c91 8bca         mov     cx, dx
+22CA8 code fn=0x22c91 2ea1b335     mov     ax, cs:word_22C73
+22CAC code fn=0x22c91 2ef726bf35   mul     word ptr cs:loc_22C7C+3
+22CB1 code fn=0x22c91 2ef736c535   div     word ptr cs:loc_22C84+1
+22CB6 code fn=0x22c91 2e8916b335   mov     cs:word_22C73, dx
+22CBB code fn=0x22c91 03ca         add     cx, dx
+22CBD code fn=0x22c91 2ea1b535     mov     ax, cs:word_22C75
+22CC1 code fn=0x22c91 2ef726c135   mul     word ptr cs:loc_22C80+1
+22CC6 code fn=0x22c91 2ef736c735   div     word ptr cs:loc_22C87
+22CCB code fn=0x22c91 2e8916b535   mov     cs:word_22C75, dx
+xref 2F9BF -> 22C62 type 16
+xref 308C2 -> 22C62 type 16
+xref 22C32 -> 22C71 type 2
+xref 22C53 -> 22C71 type 2
+xref 22CA1 -> 22C71 type 2
+xref 22C40 -> 22C73 type 2
+xref 22C57 -> 22C73 type 2
+xref 22CA8 -> 22C73 type 3
+xref 22CB6 -> 22C73 type 2
+xref 22C4E -> 22C75 type 2
+xref 22C5C -> 22C75 type 2
+xref 22CBD -> 22C75 type 3
+xref 22CCB -> 22C75 type 2
+xref 22CD7 -> 22C77 type 3
+xref 22CE5 -> 22C77 type 2
+xref 22CEC -> 22C79 type 3
+xref 22CFA -> 22C79 type 2
+xref 22D01 -> 22C7B type 3
+xref 22D0F -> 22C7B type 2
+xref 22CDB -> 22C7D type 3
+xref 22CAC -> 22C7F type 3
+xref 22CF0 -> 22C7F type 3
+xref 22CC1 -> 22C81 type 3
+xref 22D05 -> 22C81 type 3
+xref 22CE0 -> 22C83 type 3
+xref 22CB1 -> 22C85 type 3
+xref 22CF5 -> 22C85 type 3
+xref 22CC6 -> 22C87 type 3
+xref 22D0A -> 22C87 type 3
+xref 679A9 -> 22C89 type 16
+xref 67A0C -> 22C89 type 16
+xref 686D6 -> 22C89 type 16
+xref 68739 -> 22C89 type 16
+xref 69249 -> 22C89 type 16
+xref 6925A -> 22C89 type 16
+xref 6B884 -> 22C89 type 16
+xref 6B8CE -> 22C89 type 16
+xref 128441 -> 22C89 type 16
+xref 12844D -> 22C89 type 16
+xref 128459 -> 22C89 type 16
+xref 128465 -> 22C89 type 16
+xref 131A36 -> 22C89 type 16
+xref 131A61 -> 22C89 type 16
+xref 131A8C -> 22C89 type 16
+xref 13251E -> 22C89 type 16
+xref 132612 -> 22C89 type 16
+xref 1369CE -> 22C89 type 16
+xref 136A23 -> 22C89 type 16
+xref 1375F5 -> 22C89 type 16
+xref 137636 -> 22C89 type 16
+xref 137FC2 -> 22C89 type 16
+xref 138035 -> 22C89 type 16
+xref 138091 -> 22C89 type 16
+xref 138106 -> 22C89 type 16
+xref 139FAA -> 22C89 type 16
+xref 139FF5 -> 22C89 type 16
+xref 13A01C -> 22C89 type 16
+xref 13A043 -> 22C89 type 16
+xref 13A06A -> 22C89 type 16
+xref 13A091 -> 22C89 type 16
+xref 13A0C5 -> 22C89 type 16
+xref 13A0EC -> 22C89 type 16
+xref 13A113 -> 22C89 type 16
+xref 13A13A -> 22C89 type 16
+xref 13A161 -> 22C89 type 16
+xref 13A188 -> 22C89 type 16
+xref 13A1AF -> 22C89 type 16
+xref 13A1D6 -> 22C89 type 16
+xref 13A1FD -> 22C89 type 16
+xref 13A224 -> 22C89 type 16
+xref 13A24B -> 22C89 type 16
+xref 13A272 -> 22C89 type 16
+xref 13A299 -> 22C89 type 16
+xref 13A2B1 -> 22C89 type 16
+xref 13A2FE -> 22C89 type 16
+xref 13A330 -> 22C89 type 16
+xref 13A368 -> 22C89 type 16
+xref 13C727 -> 22C89 type 16
+xref 15AAC0 -> 22C89 type 16
+xref 15AB5E -> 22C89 type 16
+xref 15D69F -> 22C89 type 16
+xref 15DDC3 -> 22C89 type 16
+xref 15E0FA -> 22C89 type 16
+xref 15E3FF -> 22C89 type 16
+xref 15E4A9 -> 22C89 type 16
+xref 15E538 -> 22C89 type 16
+xref 15E8C4 -> 22C89 type 16
+xref 15FF27 -> 22C89 type 16
+xref 16011A -> 22C89 type 16
+xref 16023E -> 22C89 type 16
+xref 16024B -> 22C89 type 16
+xref 160316 -> 22C89 type 16
+xref 1608AE -> 22C89 type 16
+xref 1608FA -> 22C89 type 16
+xref 16090B -> 22C89 type 16
+xref 160982 -> 22C89 type 16
+xref 1609E9 -> 22C89 type 16
+xref 160A31 -> 22C89 type 16
+xref 160A70 -> 22C89 type 16
+xref 160AB4 -> 22C89 type 16
+xref 160AEA -> 22C89 type 16
+xref 160B17 -> 22C89 type 16
+xref 160B61 -> 22C89 type 16
+xref 160BB0 -> 22C89 type 16
+xref 160D98 -> 22C89 type 16
+xref 161502 -> 22C89 type 16
+xref 163019 -> 22C89 type 16
+xref 1630A7 -> 22C89 type 16
+xref 163231 -> 22C89 type 16
+xref 16342E -> 22C89 type 16
+xref 163518 -> 22C89 type 16
+xref 163866 -> 22C89 type 16
+xref 1638DC -> 22C89 type 16
+xref 16444E -> 22C89 type 16
+xref 1645BE -> 22C89 type 16
+xref 164764 -> 22C89 type 16
+xref 164775 -> 22C89 type 16
+xref 164795 -> 22C89 type 16
+xref 16490E -> 22C89 type 16
+xref 1649A8 -> 22C89 type 16
+xref 1651F2 -> 22C89 type 16
+xref 166079 -> 22C89 type 16
+xref 166DFA -> 22C89 type 16
+xref 167CCE -> 22C89 type 16
+xref 167E3D -> 22C89 type 16
+xref 16C407 -> 22C89 type 16
+xref 16C438 -> 22C89 type 16
+xref 16C590 -> 22C89 type 16
+xref 16E424 -> 22C89 type 16
+xref 175181 -> 22C89 type 16
+xref 176045 -> 22C89 type 16
+xref 176124 -> 22C89 type 16
+xref 17759A -> 22C89 type 16
+xref 1775B9 -> 22C89 type 16
+xref 177721 -> 22C89 type 16
+xref 177748 -> 22C89 type 16
+xref 1777BB -> 22C89 type 16
+xref 1777E5 -> 22C89 type 16
+xref 17BA8C -> 22C89 type 16
+xref 17BAEC -> 22C89 type 16
+xref 186641 -> 22C89 type 16
+xref 1866D8 -> 22C89 type 16
+xref 18676E -> 22C89 type 16
+xref 186804 -> 22C89 type 16
+xref 18689A -> 22C89 type 16
+xref 186930 -> 22C89 type 16
+xref 1869F6 -> 22C89 type 16
+xref 186A39 -> 22C89 type 16
+xref 186C78 -> 22C89 type 16
+xref 18753A -> 22C89 type 16
+xref 187554 -> 22C89 type 16
+xref 187971 -> 22C89 type 16
+xref 187A1B -> 22C89 type 16
+xref 187B49 -> 22C89 type 16
+xref 188E2A -> 22C89 type 16
+xref 1A174F -> 22C89 type 16
+xref 1A1782 -> 22C89 type 16
+xref 1A17B5 -> 22C89 type 16
+xref 1A18DA -> 22C89 type 16
+xref 1A1907 -> 22C89 type 16
+xref 1A1934 -> 22C89 type 16
+xref 3A014 -> 22C91 type 16
+xref 3A092 -> 22C91 type 16
+xref 3A4DB -> 22C91 type 16
+xref 3C4C8 -> 22C91 type 16
+xref 3D6A5 -> 22C91 type 16
+xref 40E39 -> 22C91 type 16
+xref 40E47 -> 22C91 type 16
+xref 425A2 -> 22C91 type 16
+xref 42F33 -> 22C91 type 16
+xref 43082 -> 22C91 type 16
+xref 432AF -> 22C91 type 16
+xref 444C3 -> 22C91 type 16
+xref 44587 -> 22C91 type 16
+xref 448FB -> 22C91 type 16
+xref 44BD5 -> 22C91 type 16
+xref 45008 -> 22C91 type 16
+xref 4520B -> 22C91 type 16
+xref 45423 -> 22C91 type 16
+xref 45859 -> 22C91 type 16
+xref 46B42 -> 22C91 type 16
+xref 46BA3 -> 22C91 type 16
+xref 46BF8 -> 22C91 type 16
+xref 46C36 -> 22C91 type 16
+xref 46C55 -> 22C91 type 16
+xref 47CD6 -> 22C91 type 16
+xref 48690 -> 22C91 type 16
+xref 489A7 -> 22C91 type 16
+xref 48AED -> 22C91 type 16
+xref 48C9D -> 22C91 type 16
+xref 48D64 -> 22C91 type 16
+xref 4946C -> 22C91 type 16
+xref 4947C -> 22C91 type 16
+xref 498BF -> 22C91 type 16
+xref 4993F -> 22C91 type 16
+xref 499B3 -> 22C91 type 16
+xref 499C1 -> 22C91 type 16
+xref 499CF -> 22C91 type 16
+xref 4A6A2 -> 22C91 type 16
+xref 4A6C5 -> 22C91 type 16
+xref 4A6E7 -> 22C91 type 16
+xref 4ADEF -> 22C91 type 16
+xref 4B30E -> 22C91 type 16
+xref 4B381 -> 22C91 type 16
+xref 4B50D -> 22C91 type 16
+xref 4BF20 -> 22C91 type 16
+xref 4C3E8 -> 22C91 type 16
+xref 4C434 -> 22C91 type 16
+xref 4C480 -> 22C91 type 16
+xref 4C4CC -> 22C91 type 16
+xref 4C51D -> 22C91 type 16
+xref 4C569 -> 22C91 type 16
+xref 4C5B9 -> 22C91 type 16
+xref 4C60E -> 22C91 type 16
+xref 4C65A -> 22C91 type 16
+xref 4C6AA -> 22C91 type 16
+xref 4C6FA -> 22C91 type 16
+xref 4C746 -> 22C91 type 16
+xref 4C796 -> 22C91 type 16
+xref 4C7E2 -> 22C91 type 16
+xref 4C7F0 -> 22C91 type 16
+xref 4C840 -> 22C91 type 16
+xref 4C895 -> 22C91 type 16
+xref 4C8E5 -> 22C91 type 16
+xref 4C93A -> 22C91 type 16
+xref 4C9B2 -> 22C91 type 16
+xref 4CF46 -> 22C91 type 16
+xref 4D1D3 -> 22C91 type 16
+xref 4D448 -> 22C91 type 16
+xref 4D663 -> 22C91 type 16
+xref 4D673 -> 22C91 type 16
+xref 12D740 -> 22C91 type 16

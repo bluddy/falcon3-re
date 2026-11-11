@@ -1,0 +1,73 @@
+fn 16F47D..16F4B1 sub_16F47D chunks=['16F47D-16F4B1']
+fn 2C9F0..2CB1B  chunks=['2CAF0-2CB1B', '2C9C4-2CA17']
+--- 16F47D tail
+   16F495 0x16f47d e91a9f66         call    loc_684D9
+   16F499 0x16f47d 83c406           add     sp, 6
+   16F49C 0x16f47d be0600           mov     si, 6
+   16F49F 0x16f47d eb08             jmp     short loc_16F4A9
+   16F4A1 0x16f47d 56               push    si
+   16F4A2 0x16f47d 9a671a9f66       call    loc_68455+2
+   16F4A7 0x16f47d 59               pop     cx
+   16F4A8 0x16f47d 46               inc     si
+   16F4A9 0x16f47d 83fe0b           cmp     si, 0Bh
+   16F4AC 0x16f47d 7cf3             jl      short loc_16F4A1
+   16F4AE 0x16f47d 5e               pop     si
+   16F4AF 0x16f47d 5d               pop     bp
+   16F4B0 0x16f47d cb               retf
+   16F4B1 -      55               push    bp
+   16F4B2 -      8bec             mov     bp, sp
+   16F4B4 -      56               push    si
+   16F4B5 0x16f4b5 8b7606           mov     si, [bp+6]
+   16F4B8 0x16f4b5 8bc6             mov     ax, si
+   16F4BA 0x16f4b5 0bc0             or      ax, ax
+   16F4BC 0x16f4b5 740c             jz      short loc_16F4CA
+   16F4BE 0x16f4b5 3d0500           cmp     ax, 5
+   16F4C1 0x16f4b5 741e             jz      short loc_16F4E1
+   16F4C3 0x16f4b5 3d0600           cmp     ax, 6
+   16F4C6 0x16f4b5 742f             jz      short loc_16F4F7
+   16F4C8 0x16f4b5 eb3a             jmp     short loc_16F504
+   16F4CA 0x16f4b5 b89478           mov     ax, 7894h
+   16F4CD 0x16f4b5 8ec0             mov     es, ax
+   16F4CF 0x16f4b5 26813e40152c01   cmp     es:word_79E80, 12Ch
+--- xrefs to 16F4B1
+   16DC0B type 16 in 0x16daa0
+   16DC79 type 16 in 0x16daa0
+   16DCE1 type 16 in 0x16daa0
+   16DD66 type 16 in 0x16daa0
+   16DDFB type 16 in 0x16daa0
+   16DE64 type 16 in 0x16daa0
+   16DF0C type 16 in 0x16daa0
+   16F2A9 type 16 in 0x16daa0
+--- 2CA17 context
+   2CA00 0x2caf0 7610             jbe     short loc_2CA12
+   2CA02 0x2caf0 3c07             cmp     al, 7
+   2CA04 0x2caf0 740c             jz      short loc_2CA12
+   2CA06 0x2caf0 8b160d02         mov     dx, word_2CB7D
+   2CA0A 0x2caf0 b409             mov     ah, 9
+   2CA0C 0x2caf0 cd21             int     21h; DOS - PRINT STRING
+   2CA0E 0x2caf0 b407             mov     ah, 7
+   2CA10 0x2caf0 cd21             int     21h; DOS - DIRECT STDIN INPUT, NO ECHO
+   2CA12 0x2caf0 b8014c           mov     ax, 4C01h
+   2CA15 0x2caf0 cd21             int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+   2CA17 -      50               push    ax
+   2CA18 -      06               push    es
+   2CA19 -      b001             mov     al, 1
+   2CA1B -      e82f01           call    far_callback_vector_walk
+   2CA1E -      2e8e065200       mov     es, cs:word_2C9C2
+   2CA23 -      fa               cli
+   2CA24 -      2ea14e00         mov     ax, word ptr cs:dword_2C9BE
+   2CA28 -      26a30a00         mov     es:0Ah, ax
+   2CA2C -      2ea15000         mov     ax, word ptr cs:dword_2C9BE+2
+   2CA30 -      26a30c00         mov     es:0Ch, ax
+   2CA34 -      2ec70607010000   mov     cs:word_2CA77, 0
+   2CA3B -      fb               sti
+   2CA3C -      07               pop     es
+   2CA3D -      58               pop     ax
+   2CA3E -      cb               retf
+   2CA3F 0x2ca3f 50               push    ax
+   2CA40 0x2ca3f 2e8c065200       mov     cs:word_2C9C2, es
+   2CA45 0x2ca3f 2ea14e00         mov     ax, word ptr cs:dword_2C9BE
+   2CA49 0x2ca3f 2e0b065000       or      ax, word ptr cs:dword_2C9BE+2
+   2CA4E 0x2ca3f 7512             jnz     short loc_2CA62
+xrefs -> 2CA17: []
+xrefs -> 2CA3F: [('0x2b1ec', 16)]

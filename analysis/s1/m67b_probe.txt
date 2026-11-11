@@ -1,0 +1,44 @@
+xrefs to 68A18: []
+  also any xref into [68A18, +16): [('0x68a18', '0x68a1d', 21), ('0x68a1d', '0x68a20', 21), ('0x68a20', '0x68a22', 21)]
+xrefs to 68F20: []
+  also any xref into [68F20, +16): [('0x68f20', '0x68f25', 21), ('0x68f25', '0x68f28', 21), ('0x68f28', '0x68f2a', 21)]
+xrefs to 69209: [('0x674cf', 3), ('0x157cc8', 3)]
+  also any xref into [69209, +16): [('0x674cf', '0x69209', 3), ('0x157cc8', '0x69209', 3), ('0x157d1b', '0x69215', 3), ('0x157d16', '0x69217', 3)]
+xrefs to 6940B: [('0x675ba', 16)]
+  also any xref into [6940B, +16): [('0x675ba', '0x6940b', 16), ('0x6940c', '0x6940d', 21), ('0x6940e', '0x69411', 21), ('0x69411', '0x69412', 21), ('0x69412', '0x69416', 21), ('0x69416', '0x69419', 21)]
+pass1 heads 1133 holes [('0x68a18', 1125), ('0x68f20', 594), ('0x69209', 30), ('0x6940b', 3)] fails []
+  seed 68A18: +44 heads, fails []
+  seed 68F20: +161 heads, fails []
+  seed 69209: +13 heads, fails []
+  seed 6940B: +0 heads, fails ['0x6940b']
+final holes [('0x68a5c', 68), ('0x68ae2', 923), ('0x69123', 79), ('0x6940b', 3)]
+xrefs to 68A18 now: []
+xrefs to 68F20 now: []
+   68A18 call    sub_130A2F
+   68A1D mov     ax, 6DE8h
+   68A20 mov     es, ax
+   68A22 cmp     byte ptr es:loc_6DF7C, 0
+   68A28 jnz     short loc_68A2D
+   68A2A jmp     loc_6709E
+   68A2D mov     ax, [bp-6]
+   --
+   68F20 call    sub_130A2F
+   68F25 mov     ax, 6DE8h
+   68F28 mov     es, ax
+   68F2A cmp     byte ptr es:loc_6DF7C, 0
+   68F30 jnz     short loc_68F35
+   68F32 jmp     loc_6902D
+   68F35 mov     ax, 602Eh
+   --
+   69209 in      al, 0Ah; jump table for switch statement
+   6920B cli
+   6920C or      cl, [bp+si]
+   6920E or      dx, [bx+si+0Fh]
+   69211 icebp
+   69212 adc     [bp-49EFh], ah
+   --
+   6940B db 0C8h
+   6940C db    6
+   6940D db    0
+   6940E add     [bp-73h], dl
+   --

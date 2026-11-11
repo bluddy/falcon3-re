@@ -1,0 +1,43 @@
+1673A0 data fn=0x166f80 c60646364f     mov     es:byte_151BE6, 4Fh ; 'O' | 
+1673A5 code fn=0x166f80 682e60         push    602Eh | 
+1673A8 code fn=0x166f80 688f06         push    68Fh | 
+1673AB code fn=0x166f80 9a471ba32a     call    far ptr tail_bridge_to_loadout_menu_e | 
+1673B0 code fn=0x166f80 59             pop     cx | 
+1673B1 code fn=0x166f80 59             pop     cx | 
+1673B2 code fn=0x166f80 b82e60         mov     ax, 602Eh | 
+1673B5 code fn=0x166f80 8ec0           mov     es, ax | 
+1673B7 code fn=0x166f80 26c6064736ff   mov     es:byte_151BE7, 0FFh | 
+1673BD code fn=0x166f80 9a971ba32a     call    far ptr tail_bridge_to_mode_session_state_mirror_init_b | loc_1673BD
+1673C2 code fn=0x166f80 b89478         mov     ax, 7894h | 
+1673C5 code fn=0x166f80 8ec0           mov     es, ax | 
+1673C7 code fn=0x166f80 26813e3619ff00 cmp     es:word_7A276, 0FFh | 
+1673CE code fn=0x166f80 7412           jz      short loc_1673E2 | 
+1673D0 code fn=0x167440 b89478         mov     ax, 7894h | loc_1673D0
+1673D3 code fn=0x167440 8ec0           mov     es, ax | 
+1673D5 code fn=0x167440 26803ec21900   cmp     es:byte_7A302, 0 | 
+1673DB code fn=0x167440 7405           jz      short loc_1673E2 | 
+1673DD code fn=0x167440 9af50f9f66     call    far ptr loc_679E5 | 
+1673E2 code fn=0x167440 9a5f1ca32a     call    far ptr tail_bridge_to_r30_entry_partial_c | loc_1673E2
+1673E7 code fn=0x167440 9ae31aa32a     call    far ptr sub_2C513 | 
+1673EC code fn=0x167440 ba9478         mov     dx, 7894h | 
+1673EF code fn=0x167440 8ec2           mov     es, dx | 
+
+xrefs -> 1673D0: [('0x1673ce', 21), ('0x167440', 19)]
+xrefs -> 16740F: [('0x1670dd', 19), ('0x167b1f', 1)]
+xrefs -> 167440: []
+xrefs -> 167441: []
+xrefs -> 167442: [('0x167440', 21)]
+xrefs -> 167447: [('0x167442', 21)]
+xrefs -> 167449: [('0x167447', 21)]
+xrefs -> 16743E: [('0x16743c', 21)]
+xrefs -> 16744B: [('0x167449', 21)]
+xrefs -> 167A8A: [('0x1671f1', 19), ('0x16738a', 19), ('0x16740c', 19), ('0x16747a', 19), ('0x1674f8', 19), ('0x167705', 19), ('0x16771f', 19), ('0x167880', 19), ('0x1678d5', 19), ('0x167a76', 19)]
+fn 166F80 flags=1410 end=1673D0 name=sub_166F80
+   chunk 166F80-1673D0
+   chunk 16740F-16743E
+   chunk 167450-16781A
+   chunk 167827-167AFF
+fn 167440 flags=1400 end=167449 name=r38_data_fragment
+   chunk 167440-167449
+   chunk 1673D0-16740F
+bytes 16743E..167450: b894788ec026803ec2190074059af50f9f66

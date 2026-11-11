@@ -1,0 +1,53 @@
+67F58 data fn=- db    3
+fn 67F59..67F77 r30_entry_partial_b  xrefs=[]
+    last 67F72 les     bx, es:dword_79E6C
+67F77 code fn=- add     bx, ax
+67F79 data fn=- db  26h ; &
+67F7A data fn=- db 0C6h
+fn 67F7B..67F96 r30_entry_record_walk  xrefs=[]
+    last 67F91 les     bx, es:dword_79E6C
+fn 67F96..67FB0 ui_record_field_clear_frag  xrefs=[('0x67f91', 21)]
+    last 67FAE mov     es, dx
+67FB0 data fn=- db  26h ; &
+67FB1 data fn=- db 0C4h
+fn 67FB2..67FD4 r30_entry_field_clear  xrefs=[]
+    last 67FCF les     bx, es:dword_79E6C
+fn 67FD4..68121 farobj_record_clear_fields  xrefs=[('0x67fcf', 21)]
+    last 6811E mov     ax, 7894h
+fn 68121..68159 r30_counter_step_tail  xrefs=[('0x6811e', 21)]
+    last 68155 mov     ax, 709Fh
+fn 68159..681BA ui_slot_scan_step  xrefs=[]
+    last 681B7 mov     ax, 7894h
+fn 681BA..681C0 es_word_79f34_load  xrefs=[('0x681b7', 21)]
+    last 681BC mov     ax, es:word_79F34
+681C0 data fn=- db 0BAh
+fn 681C1..681CC r30_entry_partial_c  xrefs=[]
+    last 681C9 retn    0C426h
+fn 681CC..6828D ui_slot_record_field_init  xrefs=[]
+    last 6828B mov     es, ax
+6828D data fn=- db  26h ; &
+6828E data fn=- db  8Bh
+6828F data fn=- db  1Eh
+fn 68290..68291 r30_hlt_stub  xrefs=[]
+    last 68290 hlt
+fn 68291..682B0 overlay_undecoded_body_68291  xrefs=[]
+    last 682AE imul    dx
+682B0 data fn=- db 0BAh
+fn 682B1..682D9 r30_entry_partial_d  xrefs=[]
+    last 682D4 les     bx, es:dword_79E6C
+fn 682D9..683C1 ui_slot_record_init  xrefs=[('0x682d4', 21)]
+    last 683BC push    word ptr es:dword_79E3A+2
+683C1 data fn=- db  26h ; &
+683C2 data fn=- db 0FFh
+683C3 data fn=- db  36h ; 6
+683C4 data fn=- db 0FAh
+fn 683C5..6940E ui_loadout_menu_enter  xrefs=[]
+    last 6940C push    es
+
+xrefs into 67BAF..68400 from outside, non-flow:
+  67BAA -> 67BAF type 19
+  689B7 -> 67BAF type 19
+
+retf/retn heads in 67F58..68400:
+  681C9 retn    0C426h
+  682B4 retn    0C426h
