@@ -202,7 +202,9 @@ DBFL_KILL).
        at 3,586; backup `.bak_reb140`.
      - **S1c-4p (finding 141):** the switch function at 0x100457 registered with its second chunk (0x1004CC..0x10059E, behind an
        overlay stub); functions 3,586 -> 3,587; backup `.bak_sw141`.
-     - Left open (findings 126-141): the longer pieces 0x6E7C7, 0x12BF89 and 0x155F1A, the padding runs and the R30 menu state machine
+     - **S1c-4q (finding 142):** four functions behind dispatch tables registered: `sub_12BF96`, `sub_12BFA8`, `sub_155F18`,
+       `sub_155F2A` (the table words are made words again first); functions 3,587 -> 3,591; backup `.bak_tbl142`.
+     - Left open (findings 126-142): the 0x6E696..0x6E8B7 handler cluster (with the R30 menu state machine), a few runs of 5-20 bytes and the padding runs
        0x66E62..0x6940E (read-only probes, nothing applied).  It is one giant `[bp+6]` / `[bp-0Eh]` switch function now
        split into ~25 named pieces (ui_menu_panel_init, menu_event_dispatch, ui_menu_transition_step, r30_entry_partial_b/c/d,
        farobj_record_clear_fields, ui_loadout_menu_enter ...), all reached by jumps; the 67F58..683C5 stretch redecodes as one
@@ -214,7 +216,7 @@ DBFL_KILL).
        (ledger entries lost) and needs a decision on the owning function; deferred.
    - **Now:** 524 mid-body targets / 1,409 sites, mostly R05/resident.
    - **Next:**
-     - commit S1c-4p;
+     - commit S1c-4q;
      - the remaining orphan code runs (finding 124 "Open");
      - 403 merged functions (code after a ret/jmp);
      - 65 misdecodes;

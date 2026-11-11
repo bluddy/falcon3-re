@@ -50,10 +50,17 @@ ADD = [(0x1617C, 0x162DF), (0x162DF, 0x163AD), (0x16284E, 0x162878), (0x12C970, 
 ADD += [(0x1002C, 0x1005A), (0x10473, 0x1047C), (0x105DC, 0x105E1), (0x10C7E, 0x10C83), (0x11B90, 0x11B96), (0x11D16, 0x11D2B), (0x13A53, 0x13A57), (0x205BA, 0x205BF), (0x20613, 0x2061B), (0x20889, 0x20897), (0x21ABA, 0x21ABE), (0x22564, 0x2256D), (0x229BB, 0x229C0), (0x229C8, 0x229D1), (0x229D1, 0x229DD), (0x22AEB, 0x22AFF), (0x23E25, 0x23E37), (0x23E37, 0x23E57), (0x23F5E, 0x23F62), (0x2408B, 0x2408F), (0x24963, 0x24970), (0x24970, 0x2497C), (0x2551C, 0x25522), (0x25562, 0x25567), (0x25893, 0x25899), (0x25899, 0x2589F), (0x2B131, 0x2B135), (0x2CA17, 0x2CA3F), (0x2CB72, 0x2CB76), (0x2CB76, 0x2CB7B), (0x12D15E, 0x12D16E)]
 # finding 141: a switch function entered through an overlay stub that pushes its offset; its second chunk lies after the stub
 ADD += [(0x100457, 0x1004BE)]
+# finding 142: the real entry sits in a misdecoded stretch behind a word table (0x12BF96) or inside a table's last bytes (0x155F18)
+ADD += [(0x12BF96, 0x12BFA8), (0x12BFA8, 0x12BFE1), (0x155F18, 0x155F2A), (0x155F2A, 0x155F4C)]
 # ea -> (clear_lo, clear_hi, seeds): orphan run with a misdecoded stretch that must be cleared and redecoded first
 ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x109445, 0x109519, [0x109445]),
              0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12]), 0x100CA8: (0x100CA8, 0x100D00, [0x100CA8]),
-             0x22C89: (0x22C89, 0x22C91, [0x22C89]), 0x100457: (0x100457, 0x1004BE, [0x100457])}
+             0x22C89: (0x22C89, 0x22C91, [0x22C89]), 0x100457: (0x100457, 0x1004BE, [0x100457]),
+             0x12BF96: (0x12BF88, 0x12BF99, [0x12BF96]), 0x155F18: (0x155F18, 0x155F1A, [0x155F18])}
+# functions that end by falling into the entry of the next function (0x155F4C is a shared `retn` stub)
+FALL = {0x155F2A}
+# ea -> (lo, hi): word table entries inside the ADD_CLEAR range, made words again before the code behind them is redecoded
+ADD_WORDS = {0x12BF96: (0x12BF88, 0x12BF96)}
 # ea -> (tail chunk, clear ranges, seeds, pad bytes): a function whose second chunk lies after a foreign function that sits
 # inside its span (finding 131); pad bytes are single data bytes inside a chunk that no flow reaches
 TAILS = {0x100CA8: ([(0x100D0E, 0x100DFA)], [(0x100CA8, 0x100D00), (0x100D0D, 0x100DFA)], [0x100CA8, 0x100D0E, 0x100DF4], [0x100DEC]),
@@ -161,6 +168,9 @@ def decode_menu(item):
                     orig.add(h)
                 a = h + max(ida_bytes.get_item_size(h), 1)
             ida_bytes.del_items(clo, ida_bytes.DELIT_SIMPLE, chi - clo)
+        if "words" in item:
+            for a in range(item["words"][0], item["words"][1], 2):
+                must(ida_bytes.create_word(a, 2), "create_word 0x%X" % a)
         for sd in item["seeds"]:
             rlo, rhi = next((x, y) for x, y in regs if x <= sd < y)
             descend(sd, rlo, rhi, set())
@@ -644,10 +654,12 @@ def main():
             tails = TAILS[ea][0] if ea in TAILS else []
             freed = {a for (tea, toe, tne, twh, tch) in TRIM for a in range(tne, toe)}
             must(not any(ida_funcs.get_func(a) for lo, hi in [(ea, end)] + tails for a in range(lo, hi) if a not in freed), "0x%X..0x%X already owned" % (ea, end))
-            must(ea in ADD_CLEAR or terminated(ea, end), "0x%X..0x%X does not end in a terminator" % (ea, end))
+            must(ea in ADD_CLEAR or ea in FALL or terminated(ea, end), "0x%X..0x%X does not end in a terminator" % (ea, end))
             it = {"ea": ea, "end": end, "last": None, "callers": callers(ea), "sha256": sha(ea, end)}
             if ea in ADD_CLEAR:
                 it["clear"], it["seeds"] = list(ADD_CLEAR[ea][:2]), ADD_CLEAR[ea][2]
+                if ea in ADD_WORDS:
+                    it["words"] = list(ADD_WORDS[ea])
             if ea in TAILS:
                 it["tails"], it["tails_sha256"] = [list(t) for t in tails], [sha(lo, hi) for lo, hi in tails]
                 it["clears"], it["seeds"], it["pad"] = [list(c) for c in TAILS[ea][1]], TAILS[ea][2], TAILS[ea][3]
@@ -749,7 +761,7 @@ def main():
                          "before_end": f.end_ea, "end": ne, "sha256": sha(f.end_ea, ne), "chunks_before": chunks(ea),
                          "chunks_after": None})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_)
-        MANIFEST.write_text(json.dumps({"finding": 139, "step": "S1c-4 orphan code registered as functions (findings 126-139)",
+        MANIFEST.write_text(json.dumps({"finding": 142, "step": "S1c-4 orphan code registered as functions (findings 126-139)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)

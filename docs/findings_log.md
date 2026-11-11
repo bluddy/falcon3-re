@@ -6940,3 +6940,33 @@ Applied: plan (3,586 -> 3,587, no other function changed), dry replay (1 fresh, 
 1, everything else 0), idempotent replay (73 applied).  `function_bytes.json` has the main chunk only (`sub_100457`, 103 B).
 
 **Still open:** the longer leftover pieces 0x6E7C7, 0x12BF89 and 0x155F1A, the padding runs and the R30 menu state machine.
+
+## 2026-11-11 142 - four functions behind dispatch tables at 0x12BF96 and 0x155F18 registered (S1c-4q)
+
+**0x12BF89 (88 B).**  The run is not one function.  The word table at 0x12BF7C..0x12BF96 (`off_12BF7C`, 13 offsets from
+0x12B1F0, most of them the `retn` at 0x12BFA7) had its last bytes decoded as instructions, so IDA lost the 6-byte code stub
+that follows it.  The words at 0x12BF88..0x12BF94 are table entries (all 0x0DB7 = `locret_12BFA7`, plus 0x1002 for
+0x12C1F2); the real code starts at 0x12BF96: the word 0x0006 at 0x12BF94 is the last table entry, and `8a 5c 03` is `mov bl,[si+3]`
+(then `xor bh,bh / shl bx,1 / cmp bx,0Ch / ja / call cs:off_12BF2A[bx] / retn`), an 18-byte dispatcher that ends at the `retn`
+0x12BFA7 (the `ja` and the table entries 0x0DB7 point at it).  Behind it, 0x12BFA8..0x12BFE1 (57 B) is a second function (`mov ax,709Fh / mov es,ax / cmp es:word_709F0,0 / jz`,
+three near calls, a block of `es:` stores, `retn`).  Both are orphan code with no xref to their first byte (they are reached through overlay or vector tables at run time).  `sub_12BFE1` (the `lodsb` dispatcher that follows)
+is unchanged.  Registered as `sub_12BF96` (18 B) and `sub_12BFA8` (57 B).  The table words 0x12BF88..0x12BF96 are made words
+again by a new `ADD_WORDS` item (the clear covers 0x12BF88..0x12BF99, then 0x12BF88..0x12BF95 are re-created as words and the
+code is redecoded from 0x12BF96).
+
+**0x155F1A (50 B).**  `unk_155F18` is called from 0x155D10 (in `sub_155CE4`) and 0x155DC1 (in `sub_155D8A`) with `bx` = state
+number.  The orphan run began at `cmp bx,6` (0x155F1A), but the two bytes before it, `32 ff` = `xor bh,bh`, were left as data
+bytes at the end of the far-pointer table behind 0x155F00; the real entry is 0x155F18 (`xor bh,bh / cmp bx,6 / jge / shl bx,1 /
+shl bx,1 / jmp dword ptr cs:[bx+1240h]`, `retn`).  So the function starts two bytes earlier than the orphan run.  Registered as `sub_155F18`
+(18 B, ends at the second `retn` 0x155F29), with ADD_CLEAR over 0x155F18..0x155F1A only.  The 34 bytes behind it
+(0x155F2A..0x155F4C, `mov ah,cs:byte_155D83 / call sub_156013 / cmp ah,cs:byte_1553F6 / jnz nullsub_27 / ... inc cs:word_155EF9/B / retn`)
+form a function of their own, `sub_155F2A`.  Its last instruction is `inc cs:word_155EFB` at 0x155F47, which falls into the one-byte `nullsub_27` (`retn`, 0x155F4C), so
+the run does not end in a terminator; the new `FALL` set lets the plan accept that.  No call into it exists.
+
+**Applied.**  Plan (3,587 -> 3,591, 4 functions, no other function changed), dry replay (4 fresh, 73 applied), backup
+`FALCONCD.EXE.i64.bak_tbl142`, apply.  Gates: integrity INTACT, `naming.py check` OK (2035), `verify_rebuild` faithful (ADDED 4,
+everything else 0), idempotent replay (77 applied).
+
+**Still open:** 0x6E7C7 (the 0x6E696..0x6E8B7 handler cluster whose seven retf handlers sit under a misdecoded end of
+`r69_pending_session_step`, with base-relative jump-table entries and variable addresses in the same range; it belongs with the
+R30 menu state machine), 0x1982F, 0x1277CC, 0x6EA3B, 0x5DA68 and the padding runs.
