@@ -247,7 +247,9 @@ DBFL_KILL).
      - **S1c-6e (finding 165):** P3 cont: far_mode_event_dispatch chain step 6 (COMPLETE); functions 4,002 → 4,003; backup `.bak_split165`.
      - **S1c-7a (finding 166):** P4 batch 1: 5 pure merged_fn splits; `log=[]` + `SPLIT_OWNERS` fixes; functions 4,003 → 4,008; backup `.bak_split166`.
      - **S1c-7b (finding 167):** P4 cont: r14_farptr_call_gate split 2; functions 4,008 → 4,009; backup `.bak_split167`.
-     - **Now (after finding 172, 2026-11-11):** 4,050 functions; P6 orphan ADD done (26 runs); remaining: 6 non-terminated orphans, 0x67BA3/0x6E7C7/0x6E8BC (data/dead); P7 auto queue next.
+     - **Now (after finding 174, 2026-11-11):** 4,051 functions; S1c stabilisation largely complete.
+       Deferred: P5 R30 cluster, 0x4E520 chain (PLAN crash), overlay auto-queue functions.
+       24 secondary entries documented in `analysis/s1/p8_secondary.json`.
      - **S1c-7f (finding 172):** P6 orphan ADD batch: 26 runs; functions 4,024 → 4,050; backup `.bak_add172`.
      - **S1c-7e (finding 170):** P4 'other' batch: 3 pure splits; functions 4,020 → 4,023; backup `.bak_split170`.
      - **S1c-7c (finding 168):** P4 shared tails batch 1: 8 splits; functions 4,009 → 4,017; backup `.bak_split168`.

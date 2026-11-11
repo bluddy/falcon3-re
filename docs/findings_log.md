@@ -7559,3 +7559,40 @@ sub_3FB20 (0x3FB20..0x3FB22, 2B fall-through stub).
 **Numbers after finding 173:** Functions: 4,050 → 4,051 (+1); backup `.bak_add173`.
 
 **Gates:** INTACT (4051), naming OK (2034), verify_rebuild faithful (ADDED 31, SPLIT 4, CHANGED 0).
+
+## 2026-11-11 174 - P8 housekeeping: record 24 fallthrough_secondary_entry targets
+
+**What was done.** Recorded all 24 `fallthrough_secondary_entry` targets as a JSON file
+(`analysis/s1/p8_secondary.json`). These are call targets inside a function body that also
+have a fall-through from the previous instruction, but lack a push/mov/enter prologue.
+They are legitimate multi-entry function points that IDA cannot express distinctly —
+recorded here for reference during the deep dive, NOT split (splitting would be semantically
+wrong for these patterns).
+
+Notable entries:
+- 0x4288E (r32_farptr_gate): 36 callers — high-value entry point within the R32 far-pointer gate
+- 0x6EB64 (r17_menu_event_loop): 8 callers — secondary entry in the R17 menu event loop
+- 0x32CF2 (mode_session_state_reset): secondary entry within mode session state reset
+
+**Numbers:** No IDB changes. Survey after finding 173: 92 mid-body targets
+(merged_fn 11, fallthrough_entry_proloque 1, secondary 24, not_head 19, other 49).
+
+**Deferred P4/P7:** 0x41167 (is_code=False), 0x4E520 chain (PLAN crashes), overlay segments
+(need decode), 0x434B2/0x13DBD8 (owned by adjacent functions).
+
+**What remains for S1 completion:** P5 handler cluster (R30 menus, needs merge mode); minor
+deferred P2/P4 items; P7 overlay functions (need ADD_CLEAR decode).
+
+## 2026-11-11 175 - P8 housekeeping: manifest update to finding 174
+
+**What was done.** Manifest bumped from finding 173 to 174 to record P8 completion.
+No IDB changes (committed=4051=now). Deferred overlay functions documented in finding 174
+log entry. `analysis/s1/p8_secondary.json` written with all 24 secondary entries.
+
+**Status after S1c stabilisation:**
+- 4,051 functions (up from 3,590 at finding 144, +461 = +12.8%)
+- 92 mid-body targets remaining (down from 529 at finding 144)
+- Deferred: P5 R30 handler cluster, 0x4E520 chain, overlay functions, minor P2/P4 items
+- Gates: faithful, INTACT, naming OK (2034)
+
+**Ready for S2 VGRAPH (P9) and deep dive planning.**

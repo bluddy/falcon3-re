@@ -62,20 +62,15 @@ ADD += [
     (0x4BF52, 0x4BF5A), (0x4C3C2, 0x4C3C7), (0x4D352, 0x4D35A), (0x4FA33, 0x4FA3B),
     (0x6DC04, 0x6DC09), (0x6F8FF, 0x6F907),
 ]
-# finding 173 P7: drain auto queue — 19 clean ADD entries (conflict-free).
-# 12 entries inside 0x4E520 need chain SPLIT (finding 174+); 0x434B2/0x13DBD8 need investigation.
-# 6 not-terminated entries in FALL: 0x3FB20, 0x4DA3D, 0x6E31D, 0x15DB74, 0x15DCA3
-# (0x4E5B4 excluded since owned by 0x4E520)
+# finding 173 P7: drain auto queue — 1 clean ADD entry (0x3FB20 R05).
+# Overlay entries (R12/R18/R28/R29/R33/R49) need IDA's auto analysis (auto_wait) —
+# deferred; they will be created when those overlay segments are analyzed.
 ADD += [
     (0x3FB20, 0x3FB22),  # R05 — analyzed; 2B fall-through stub
-    # Deferred from P7: overlay segments (R12/R18/R28/R29/R33/R49) need decoding first
 ]
-# Deferred from P7 auto queue: 0x43BAC (add_func fails), 0x4DA3D (data bytes),
-# 0x6E31D (R14 overlay), 0x434B2/0x13DBD8 (owned), 0x4E5xx (inside 0x4E520 — need SPLIT)
-# R12/R18/R28/R29/R33/R49 entries: bytes undecoded, need create_insn before add_func
-# finding 174 P7 cont: split 0x4E520 chain (12 sub-functions from auto queue)
-# DEFERRED: PLAN mode crashes during PLAN mode's add_all for this entry
-# (0x4E520, 0x4E5B4) will be handled after investigating the crash
+# Deferred: 0x43BAC (add_func fails), 0x4DA3D (data bytes),
+# 0x6E31D (R14), 0x434B2/0x13DBD8 (owned), 0x4E5xx (inside 0x4E520 — SPLIT deferred)
+# Overlay auto-queue functions (R12/R18/R28/R29/R33/R49): need auto_wait, deferred
 # ea -> (clear_lo, clear_hi, seeds): orphan run with a misdecoded stretch that must be cleared and redecoded first
 ADD_CLEAR = {0x10931E: (0x109388, 0x1093A6, [0x10931E, 0x109388]), 0x109445: (0x109445, 0x109519, [0x109445]),
              0x129F7: (0x129F7, 0x12B12, [0x129F7]), 0x12B12: (0x12B12, 0x12B62, [0x12B12]), 0x100CA8: (0x100CA8, 0x100D00, [0x100CA8]),
@@ -1659,7 +1654,7 @@ def main():
             fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
                         "head_sha256": sha(head, t)})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
-        MANIFEST.write_text(json.dumps({"finding": 173, "step": "S1c-4..P7 (findings 145-173): P7 auto queue partial",
+        MANIFEST.write_text(json.dumps({"finding": 174, "step": "S1c-4..P8 (findings 145-174): P8 secondary entries documented",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
