@@ -7027,3 +7027,303 @@ must lie inside one chunk of the owner).
 
 **Still open:** 0x6E7C7 / 0x6E8BC (the 0x6E696..0x6E8B7 handler cluster with the R30 state machine), 0x6E16E (data with two far-call
 xrefs), 0x67BA3 (R30 switch default `jmp`) and the 92 padding runs.
+
+## 2026-11-11 145 - P1 batch 1: split 40 pure-split merged functions (S1c-5a)
+
+**What was wrong.**  After findings 123-144, 407 direct call targets land right after a ret/jmp inside the
+owner function (merged functions).  The merged_split probe classified 394 of these as pure splits (no non-call
+inner xref to the target, single-chunk owner) so the two halves are independent.
+
+**Fix.**  New manifest block `split_funcs` and apply mode `SPLIT` (`sp_state` / `split_fn`): for each
+`(owner, at)` pair, `set_func_end(owner, at)` shrinks the owner to `[owner, at)` and `add_func(at, end)`
+registers a new unnamed function `[at, end)` with the same far flag.  Both halves are sha256-pinned in the
+manifest.  `verify_rebuild.py` gained `load_split_funcs()` and an `is_expected_split()` check that validates
+both sha256 halves before classifying the owner as SPLIT (falls back to auto-detection if unmatched).
+
+**Batch 1 (40 splits)**: resident seg000 through early R05 overlays (owners at 0x100AF..0x37051), one split
+per owner (lowest split point; remaining split points will appear in the new tail function and are handled in
+later batches).  Owners with names kept their names; new tail functions are `sub_<at>`.
+
+**Results.**
+- Functions 3,590 -> 3,630 (+40 new tail functions).
+- Ledger 2,034 (unchanged).
+- Mid-body call targets: 529 / 1,299 sites -> 489 / 1,156 sites.
+  - merged_fn: 407 / 1,031 -> 367 / 888 (40 targets / 143 sites removed by this batch).
+  - Other classes unchanged (not_head 64/125, prologue fall-in 26/48, secondary 23/68, other 9/27).
+
+**Applied.**  Plan (40 fresh, 92 applied), dry replay, backup `FALCONCD.EXE.i64.bak_split145`, apply.
+Gates: integrity INTACT, `naming.py check` OK (2034), `verify_rebuild` faithful
+(SPLIT 40 sha256-pinned + ADDED 40 + LOST 0 + CHANGED 0), idempotent replay (132 applied).
+
+**Still open in P1:** 354 remaining pure-split targets in 115 owners (many have multiple split points that
+will surface in later batches), 12 shared tails, 1 multi-chunk (`segment_clip_test` 0x25F93).
+
+## 2026-11-11 146 - P1 batch 2: split 40 more pure-split merged functions (S1c-5b)
+
+**What was wrong.**  After finding 145, 354 pure-split targets remained in 133 owners.  Batch 2 takes the
+next 40 by address: second splits of batch-1 tail functions (sub_100C1, sub_22846, etc.) plus new owners
+from R05_1F64 and R05_2ACF (sprite_project_screen_y, pos_move_angle_step, pos_step_chain_engine,
+tile_quad_classify, farobj_* suite).
+
+**Fix.**  40 more `(owner, at)` pairs appended to `SPLIT` in finding 146 batch block.  Three bugs found and
+fixed in the process:
+
+1. **sp_state was too strict on the applied check**: required `get_func(at).end_ea == end`, but tails from
+   earlier batches get split further by later batches.  Fixed to only require a function starts at `at`.
+
+2. **verify_rebuild.py is_expected_split was too strict on the tail sha256**: required the tail function's
+   exact size to match.  Fixed to just check that some function starts at `x["at"]`.
+
+3. **reg_validate in verify_rebuild.py became stale**: batch 2 split functions that were in REGISTER
+   manifests, invalidating their exact (key, ea, size) tuples.  Fixed `reg_validate` to recursively
+   expand split owners in `want` using `split_funcs` before comparing to `have`; tiling check is skipped
+   when expansion occurred (tiling is implied by `have == expanded_want`).  This fix applies to all future
+   batches automatically.
+
+**Results.**
+- Functions 3,630 -> 3,670 (+40 new tail functions).
+- Ledger 2,034 (unchanged).
+- Survey_mid not re-run (finding 145 numbers still approximately correct for the whole batch 1+2 picture;
+  will re-run before documenting batch 3).
+
+**Applied.**  Plan (40 fresh, 132 applied), dry replay (40 fresh, 132 applied — concurrent with plan,
+ran against updated manifest), backup `.bak_split146`, apply.  Fixed sp_state + is_expected_split + reg_validate.
+Idempotent replay (172 applied, 0 fresh — after sp_state fix).  Gates: integrity INTACT, naming OK (2034),
+verify_rebuild faithful (SPLIT 62 + ADDED 80 + LOST 0 + CHANGED 0 + REGISTER 166 applied).
+
+## 2026-11-11 147 - P1 batch 3: split 40 more pure-split merged functions (S1c-5c)
+
+**What was done.**  40 more `(owner, at)` pairs: second-level tails of batch-2 owners (sub_12320,
+sub_22436, sub_30610, etc.) plus new R05_2B83 suite (farobj_view_project_step, farobj_angle_distance_gate,
+hud_data_panel_slot_mgr, farobj_class_table_entry, farobj_state_flag_set, farobj_range_slot_init,
+farobj_flag_or_set, farobj_index_state_swap, hud_object_text_format, farobj_selection_window_step,
+mode_phase_apply_state, farobj_thrust_burn_step, farobj_fuel_apply_step, farobj_matrix_project_copy).
+
+**Bug fixed.**  `reg_validate` expansion in `verify_rebuild.py` was using `sp["end"]-sp["ea"] == sz2` to
+detect splits, which failed for tails added to `to_expand` (their sz2 is the CURRENT size, smaller than
+original). Fixed to look up the owner's current size from `now` and always follow the tail when
+`split_funcs` has an entry for the ea AND the tail function exists in `now`.  This makes the cascade
+correct for arbitrarily deep split chains.
+
+**Results.** Functions 3,670 -> 3,710. Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (40 fresh, 172 applied), backup `.bak_split147`, apply.  Idempotent replay
+(212 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 78 sha256-pinned + ADDED 120 + LOST 0 + CHANGED 0 + REGISTER 166 applied).
+
+## 2026-11-11 148 - P1 batch 4: split 40 more pure-split merged functions (S1c-5d)
+
+**What was done.**  40 more `(owner, at)` pairs: continued multi-split chains (control_axes_read,
+dgroup_state_cycle_step, farobj_* chains) plus new large owners (hud_track_distance_draw,
+ui_slot_filter_predicate, farobj_entity_*, hud_state_rowtable_step, game_setup_staged_init,
+viewport_strip_row_draw, hud_readout_timer_render, hud_track_strip_pipeline, sprite_delta_project_47686,
+r32_hud_phase_dispatch, hud_rowlist_timer_step, hud_panel_transform_step, record_script_coord_entry,
+viewport_bounds_setup, target_cycle_scan, tile_grid_scan_step, aircraft_record_load_step,
+store_fall_sim_step).
+
+**Results.** Functions 3,710 -> 3,750. Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (40 fresh, 212 applied), backup `.bak_split148`, apply.  Idempotent replay
+(252 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 97 sha256-pinned + ADDED 160 + LOST 0 + CHANGED 0 + REGISTER 168 applied).
+
+## 2026-11-11 149 - P1 batch 5: split 40 more pure-split merged functions (S1c-5e)
+
+**What was done.**  40 more `(owner, at)` pairs: continued multi-split chains plus new large owners
+(entity_spawn_from_tile, mode_record_field_lookup (12 splits!), ui_aircraft_slot_step, farobj_pos_move_angle_step
+(11 splits), sprite_step_clip_project_body, pos_state_block_read, tile_object_interpreter, farobj_tile_key_cache,
+farobj_table_init_69ff, farobj_queue_drain_dispatch, farobj_record_flag_ops).
+
+**Results.** Functions 3,750 -> 3,790. Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (40 fresh, 252 applied), backup `.bak_split149`, apply.  Idempotent replay
+(292 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 108 sha256-pinned + ADDED 200 + LOST 0 + CHANGED 0 + REGISTER 168 applied).
+
+## 2026-11-11 149 - P1 batch 5: split 40 more pure-split merged functions (S1c-5e)
+
+**What was done.**  40 more `(owner, at)` pairs: continued multi-split chains plus new large owners
+(entity_spawn_from_tile, mode_record_field_lookup (12 splits!), ui_aircraft_slot_step, farobj_pos_move_angle_step
+(11 splits), sprite_step_clip_project_body, pos_state_block_read, tile_object_interpreter, farobj_tile_key_cache,
+farobj_table_init_69ff, farobj_queue_drain_dispatch, farobj_record_flag_ops).
+
+**Results.** Functions 3,750 -> 3,790. Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (40 fresh, 252 applied), backup `.bak_split149`, apply.  Idempotent replay
+(292 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 108 sha256-pinned + ADDED 200 + LOST 0 + CHANGED 0 + REGISTER 168 applied).
+
+## 2026-11-11 150 - P1 batch 6: split 40 more pure-split merged functions (S1c-5f)
+
+**What was done.**  40 more `(owner, at)` pairs: continued multi-split chains plus new owners
+(farobj_move_accumulate_step (9 splits), farobj_flag_dispatch_step, farobj_class16_record_ops,
+farobj_slot_step_spawn, view_wrap_projection_entry (6 splits), ems_opstream_buffer_append,
+overlay_teardown_restore_state, ems_stream_pointer_step (6 splits), farobj_slot_create_status,
+farobj_cfg_step_control, store_cmd_interpreter).
+
+**Results.** Functions 3,790 -> 3,830. Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (40 fresh, 292 applied), backup `.bak_split150`, apply.  Idempotent replay
+(332 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 119 sha256-pinned + ADDED 240 + LOST 0 + CHANGED 0 + REGISTER 169 applied).
+
+## 2026-11-11 151 - P1 batch 7: split 40 more pure-split merged functions (S1c-5g)
+
+**What was done.**  40 more `(owner, at)` pairs: multi-split chain continuations plus new owners
+(ems_opstream_table_flush, ems_entity_slot_script (8 splits), ems_state_flags_709f, entity_record_table_ops
+(5 splits), vga_dac_palette_upload, farobj_cfg_gate_85059, view_pos_cache_update, sprite_blend_0ad2d,
+terrain_vm_blend_apply, palette_delta_blend, hw_cfg_copy_a76f, hw_flag_85052_set_ff).
+
+**Results.** Functions 3,830 -> 3,870. Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (40 fresh, 332 applied), backup `.bak_split151`, apply.  Idempotent replay
+(372 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 131 sha256-pinned + ADDED 280 + LOST 0 + CHANGED 0 + REGISTER 170 applied).
+
+## 2026-11-11 152 - P1 batch 8: split 45 pure-split merged functions (S1c-5h)
+
+**What was done.**  48 owners attempted; 45 splits applied.  Three entries were skipped:
+
+- `(0x683C5, 0x6940B)`: `ui_loadout_menu_enter` tail is only 3 bytes and belongs to the deferred P5 handler
+  cluster (0x6E696..0x6E8B7); `add_func 0x6940B..0x6940E` fails.
+- `(0x6E32A, 0x6E36F)` and `(0x6E3D0, 0x6E404)`: R14 overlay entries; `add_func` fails at tails.
+- `(0x12C683, 0x12C764)`: `sub_12C683` is also in the ADD list (finding 128); SPLIT after ADD
+  creates a "mismatch" in the ADD state check.
+
+Three bugs found and fixed:
+
+1. **SPLIT ran before EXTEND in `add_all`**: caused `ext_state` to fail for the extended function at
+   0x12C7C6 (in EXTEND_RUNS) which we're also splitting in this batch.  Fixed by moving the SPLIT loop
+   to run AFTER EXTEND in `add_all`.  Also cleaned up a doubled SPLIT loop and a wrong `trim_state` on
+   the REBASE loop, introduced by an earlier edit.
+
+2. **`ext_state` was too strict after extension + split**: required `f.end_ea == x["end"]` but the
+   function's end shrinks when split further.  Fixed to also return "applied" when the bytes of the
+   extended run are unchanged and `f.end_ea > run_lo` (the extension happened, possibly followed by a
+   split).
+
+**Results.** Functions 3,870 -> 3,915 (+45 tail functions). Ledger 2,034 (unchanged).
+
+**Applied.**  Plan (45 fresh), dry replay, backup `.bak_split152`, apply.  Idempotent replay (417 applied,
+nothing to do — after ext_state fix).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 151 sha256-pinned + ADDED 325 + LOST 0 + CHANGED 0 + REGISTER 170 applied).
+
+**Still open in P1:** ~65 pure-split targets in ~25 owners remain (the R14 and 0x683C5 cases are deferred).
+
+## 2026-11-11 153 - P1 batch 9: split 22 pure-split merged functions (S1c-5i)
+
+**What was done.**  22 more `(owner, at)` pairs: continued multi-split chains plus new owners
+(nullsub_36 at 0x4EC42 — 1-byte stub split into 1 B + ems_entity_slot_script deep chain, R30 overlays:
+ui_loadout_menu_enter excluded/deferred, r06 overlay entries, distance_tier_classify_entry).  Skipped
+entries 0x683C5/0x6E32A/0x6E3D0/0x12C683 carried forward from batch 8.
+
+Three more bugs found and fixed in `tools/apply_orphan_funcs.py` and `tools/verify_rebuild.py`:
+
+1. **PLAN mode regenerated EXTEND entry after SPLIT**: when function 0x12C7C6 was split in batch 8, its
+   end changed from 0x12C951 to 0x12C912.  The PLAN code for `EXTEND` items checked `f.end_ea == end`
+   before re-using the manifest entry; since it now failed, a NEW entry was created with `before_end =
+   0x12C912`, causing `extend` to call `set_func_end(0x12C7C6, 0x12C951)` on a probe that already had
+   the split.  Fixed by always re-using the manifest entry when `ea in oldx` (regardless of `f.end_ea`).
+
+2. **`ext_state` fresh/mismatch after EXTEND + SPLIT**: The standard `chunks_before / before_end`
+   "fresh" check in `ext_state` used `f.end_ea == lo` where lo was the original `before_end`.  After
+   SPLIT at some `at > lo`, `f.end_ea == at ≠ lo`, so "fresh" was not recognised and "mismatch" was
+   returned.  Fixed (in finding 152's idempotent fix) by adding a preliminary "applied" branch:
+   `sha(lo, hi) == run_sha256 and f.end_ea > lo`.
+
+3. **register `expand_registered_splits` used planned post-split size for unapplied splits**: when the
+   manifest contains a future split (batch N+1) but function_bytes.json is at batch N, the expansion
+   set `want = (key, ea, sp["at"]-sp["ea"])` which doesn't match `now`.  Fixed to keep the original
+   `sz2` when the tail function doesn't yet exist in `now`.
+
+**Results.** Functions 3,915 -> 3,937 (+22). Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (22 fresh, 417 applied), backup `.bak_split153`, apply.  Idempotent replay
+(439 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 151 sha256-pinned + ADDED 347 + LOST 0 + CHANGED 0 + REGISTER 170 applied).
+
+**Still open in P1:** ~47 pure-split targets remain (the probe found 26 owners / 69 splits, minus the
+4 skipped = 65 splits, but each batch 9 owner has remaining tails from the split chains).  Next probe
+will show the accurate remaining count.
+
+## 2026-11-11 154 - P1 batch 10: split 17 pure-split merged functions (S1c-5j)
+
+**What was done.**  17 more `(owner, at)` pairs: continued multi-split chains (mode_record_field_lookup
+7 more, farobj_pos_move_angle_step 6 more, farobj_move_accumulate_step 5 more, ems_entity_slot_script
+5 more) plus remaining tails (record_script_coord_entry, tile_grid_scan_step, ui_aircraft_slot_step,
+tile_object_interpreter, view_wrap_projection_entry, ems_stream_pointer_step, entity_record_table_ops,
+angle_fixed_rotate_apply, ui_slot_count_tally, r06_ui_dispatch_block, r06_mode_dispatch_bx8,
+viewport_strip_row_draw, hud_track_strip_pipeline).
+
+**Results.** Functions 3,937 -> 3,954 (+17). Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (17 fresh, 439 applied), backup `.bak_split154`, apply.  Idempotent replay
+(456 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 151 sha256-pinned + ADDED 364 + LOST 0 + CHANGED 0 + REGISTER 170 applied).
+
+**Still open in P1:** last batch probe shows ~30 more splits in ~17 owners (deepest part of the
+mode_record_field_lookup and farobj_pos_move_angle_step chains).  Proceeding to batch 11.
+
+## 2026-11-11 155 - P1 batch 11: split 10 pure-split merged functions (S1c-5k)
+
+**What was done.**  10 more `(owner, at)` pairs: continued the four remaining deep chains
+(mode_record_field_lookup, farobj_pos_move_angle_step, farobj_move_accumulate_step,
+ems_entity_slot_script) plus single-split remainders
+(viewport_strip_row_draw, hud_track_strip_pipeline, view_wrap_projection_entry,
+ems_stream_pointer_step, entity_record_table_ops, r06_mode_dispatch_bx8).
+
+**Results.** Functions 3,954 -> 3,964 (+10). Ledger 2,034 (unchanged).
+
+**Applied.**  Plan, dry replay (10 fresh, 456 applied), backup `.bak_split155`, apply.  Idempotent replay
+(466 applied, nothing to do).  Gates: integrity INTACT, naming OK (2034), verify_rebuild faithful
+(SPLIT 151 sha256-pinned + ADDED 374 + LOST 0 + CHANGED 0 + REGISTER 170 applied).
+
+**Still open in P1:** ~20 pure-split targets in ~10 owners remain (deepest tails of mode_record_field_lookup
+and farobj_pos_move_angle_step chains).  Proceeding to batch 12.
+
+## 2026-11-11 156 - P1 batch 12: split 4 pure-split merged functions (S1c-5l)
+
+**What was done.**  4 splits: first level of the 4 remaining deep chains (mode_record_field_lookup,
+farobj_pos_move_angle_step, farobj_move_accumulate_step, ems_entity_slot_script).  Skipped entries
+carried over: 0x683C5 (ui_loadout_menu_enter/P5 cluster), 0x6E32A, 0x6E3D0 (R14, add_func fails),
+0x12C683 (ADD conflict).  One more bug fixed: multi-level chained splits cannot all be in SPLIT at
+once — the manifest-building loop runs before add_all creates intermediate functions; must do one level
+per finding.  Results: functions 3,964 -> 3,968; backup `.bak_split156`.  Gates: INTACT, faithful.
+
+## 2026-11-11 157 - P1 batch 13: split 4 pure-split merged functions (S1c-5m)
+
+**What was done.**  Second level of the 4 deep chains: (0x4AB06, 0x4AC1E), (0x4B251, 0x4B2BD),
+(0x4D230, 0x4D35A), (0x4ECAC, 0x4EE65).  Results: functions 3,968 -> 3,972; backup `.bak_split157`.
+Gates: INTACT, faithful.
+
+## 2026-11-11 158 - P1 batch 14: split 4 pure-split merged functions (S1c-5n)
+
+**What was done.**  Third level: (0x4AC1E, 0x4AC5E), (0x4B2BD, 0x4B2EE), (0x4D35A, 0x4D38C),
+(0x4EE65, 0x4EEB3).  farobj_move_accumulate_step and ems_entity_slot_script chains complete.
+Results: functions 3,972 -> 3,976; backup `.bak_split158`.  Gates: INTACT, faithful.
+
+## 2026-11-11 159 - P1 batch 15: split 2 pure-split merged functions (S1c-5o)
+
+**What was done.**  Fourth level of two remaining chains: (0x4AC5E, 0x4AC80), (0x4B2EE, 0x4B327).
+farobj_pos_move_angle_step chain complete.  Results: functions 3,976 -> 3,978; backup `.bak_split159`.
+Gates: INTACT, faithful.
+
+## 2026-11-11 160 - P1 batch 16: split 1 pure-split merged function (S1c-5p) — P1 COMPLETE
+
+**What was done.**  Final split: (0x4AC80, 0x4ACC9) — last level of mode_record_field_lookup chain.
+This completes ALL addressable pure-split merged functions.  Findings 145-160 collectively split 389
+of the 394 pure-split targets; 5 were deferred (0x683C5/P5, 0x6E32A, 0x6E3D0/R14-fails,
+0x12C683/ADD-conflict).  Results: functions 3,978 -> 3,979; backup `.bak_split160`.  Gates: INTACT,
+faithful.
+
+**P1 final numbers (after finding 160, survey_mid):**
+- Functions: 3,979 (from 3,590 = +389 pure-split tails).
+- Mid-body call targets: 140 / 327 sites (from 529 / 1,299):
+  - merged_fn: 18 / 59 (from 407 / 1,031); 18 = 12 shared tails + 1 multi-chunk + 5 deferred.
+  - not_head: 64 / 125 (unchanged).
+  - fallthrough_entry_proloque: 26 / 48 (unchanged).
+  - fallthrough_secondary_entry: 23 / 68 (unchanged).
+  - other: 9 / 27 (unchanged).
+- Orphan code: 96 runs / 221 B (92 are 1-2 B padding), unchanged.
+
+**Next:** P2 (misdecodes), P3 (fall-in entries), P4 (other), P5 (handler cluster), etc.

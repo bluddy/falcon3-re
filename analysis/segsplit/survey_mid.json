@@ -1,15 +1,15 @@
 {
  "cls": {
-  "fallthrough_entry_proloque": 47,
-  "T:fallthrough_entry_proloque": 25,
-  "after_ret_or_jmp(merged_fn)": 1017,
-  "T:after_ret_or_jmp(merged_fn)": 403,
-  "fallthrough_secondary_entry": 64,
-  "T:fallthrough_secondary_entry": 22,
-  "other": 24,
+  "fallthrough_entry_proloque": 48,
+  "T:fallthrough_entry_proloque": 26,
+  "fallthrough_secondary_entry": 68,
+  "T:fallthrough_secondary_entry": 23,
+  "not_head": 125,
+  "T:not_head": 64,
+  "other": 27,
   "T:other": 9,
-  "not_head": 257,
-  "T:not_head": 65
+  "after_ret_or_jmp(merged_fn)": 59,
+  "T:after_ret_or_jmp(merged_fn)": 18
  },
  "samples": {
   "fallthrough_entry_proloque": [
@@ -18,6 +18,15 @@
     "cb_layout_step_1189e",
     "1189E",
     "seg004",
+    "mov",
+    "mov",
+    1
+   ],
+   [
+    "20B29",
+    "view_bounds_distribute",
+    "20AC1",
+    "seg020",
     "mov",
     "mov",
     1
@@ -60,8 +69,8 @@
    ],
    [
     "41167",
-    "farobj_class_table_entry",
-    "4111F",
+    "sub_4113C",
+    "4113C",
     "R05_2B83",
     "nop",
     "mov",
@@ -87,8 +96,8 @@
    ],
    [
     "3C03D",
-    "farobj_record_ops_exec",
-    "3BB8F",
+    "sub_3C00C",
+    "3C00C",
     "R05_2B83",
     "mov",
     "mov",
@@ -111,125 +120,6 @@
     "nop",
     "mov",
     3
-   ],
-   [
-    "33468",
-    "far_mode_event_dispatch",
-    "33443",
-    "R05_1F64",
-    "jnz",
-    "mov",
-    1
-   ]
-  ],
-  "after_ret_or_jmp(merged_fn)": [
-   [
-    "253E4",
-    "sub_2533D",
-    "2533D",
-    "seg020",
-    "jmp",
-    "push",
-    2
-   ],
-   [
-    "2629A",
-    "trig_clip_project_entry",
-    "26281",
-    "seg020",
-    "retf",
-    "push",
-    1
-   ],
-   [
-    "12884",
-    "param_table_init",
-    "127D4",
-    "seg005",
-    "retf",
-    "mov",
-    1
-   ],
-   [
-    "38CE2",
-    "matrix_constants_copy_gate",
-    "38CAB",
-    "R05_1F64",
-    "retf",
-    "xchg",
-    3
-   ],
-   [
-    "2295C",
-    "int32_to_ascii",
-    "228BF",
-    "seg020",
-    "retn",
-    "sub",
-    11
-   ],
-   [
-    "24DEC",
-    "dispatch_220dc_stub",
-    "24DE6",
-    "seg020",
-    "retf",
-    "push",
-    2
-   ],
-   [
-    "10DA7",
-    "stub_bundle_10d8c",
-    "10D8C",
-    "seg002",
-    "retf",
-    "push",
-    2
-   ],
-   [
-    "254CA",
-    "flag254a1_set",
-    "254C0",
-    "seg020",
-    "retf",
-    "call",
-    2
-   ],
-   [
-    "3061B",
-    "dgroup_state_cycle_step",
-    "305E4",
-    "R05_1F64",
-    "retf",
-    "mov",
-    2
-   ],
-   [
-    "305F7",
-    "dgroup_state_cycle_step",
-    "305E4",
-    "R05_1F64",
-    "retn",
-    "push",
-    1
-   ],
-   [
-    "254D0",
-    "flag254a1_set",
-    "254C0",
-    "seg020",
-    "retf",
-    "call",
-    2
-   ],
-   [
-    "259D8",
-    "dispatch_2210c_invoke_5arg",
-    "259B9",
-    "seg020",
-    "retf",
-    "call",
-    1
    ]
   ],
   "fallthrough_secondary_entry": [
@@ -280,8 +170,8 @@
    ],
    [
     "3B6F5",
-    "tile_quad_classify",
-    "3B6BB",
+    "sub_3B6E2",
+    "3B6E2",
     "R05_2ACF",
     "mov",
     "call",
@@ -339,89 +229,6 @@
     "R05_2B83",
     "jz",
     "call",
-    1
-   ]
-  ],
-  "other": [
-   [
-    "6E052",
-    "farptr_proc_6e02a",
-    "6E02A",
-    "R09_5DFF",
-    "",
-    "",
-    1
-   ],
-   [
-    "24E46",
-    "dispatch_220dc_stub",
-    "24DE6",
-    "seg020",
-    "",
-    "push",
-    6
-   ],
-   [
-    "4FD52",
-    "hw_state_partial_4fd",
-    "4FD4A",
-    "R05_3FD2",
-    "",
-    "",
-    2
-   ],
-   [
-    "11A7D",
-    "cb_args_invoke",
-    "11A5E",
-    "seg004",
-    "",
-    "mov",
-    5
-   ],
-   [
-    "14BE0",
-    "farobj_pos_wrap_update",
-    "14BD7",
-    "seg005",
-    "",
-    "mov",
-    1
-   ],
-   [
-    "69227",
-    "ui_loadout_menu_enter",
-    "683C5",
-    "R30_569F",
-    "",
-    "enter",
-    6
-   ],
-   [
-    "6E33D",
-    "r14_farptr_call_gate2",
-    "6E32A",
-    "R14_5E0B",
-    "",
-    "",
-    1
-   ],
-   [
-    "6E350",
-    "r14_farptr_call_gate2",
-    "6E32A",
-    "R14_5E0B",
-    "",
-    "add",
-    1
-   ],
-   [
-    "6E343",
-    "r14_farptr_call_gate2",
-    "6E32A",
-    "R14_5E0B",
-    "",
-    "",
     1
    ]
   ],
@@ -509,8 +316,8 @@
    ],
    [
     "389AD",
-    "tile_sample_script_dispatch",
-    "386F2",
+    "sub_38778",
+    "38778",
     "R05_1F64",
     "add",
     "",
@@ -534,7 +341,200 @@
     "",
     3
    ]
+  ],
+  "other": [
+   [
+    "24E46",
+    "sub_24DEC",
+    "24DEC",
+    "seg020",
+    "",
+    "push",
+    6
+   ],
+   [
+    "4FD52",
+    "hw_state_partial_4fd",
+    "4FD4A",
+    "R05_3FD2",
+    "",
+    "",
+    2
+   ],
+   [
+    "11A7D",
+    "cb_args_invoke",
+    "11A5E",
+    "seg004",
+    "",
+    "mov",
+    8
+   ],
+   [
+    "14BE0",
+    "farobj_pos_wrap_update",
+    "14BD7",
+    "seg005",
+    "",
+    "mov",
+    1
+   ],
+   [
+    "69227",
+    "ui_loadout_menu_enter",
+    "683C5",
+    "R30_569F",
+    "",
+    "enter",
+    6
+   ],
+   [
+    "6E33D",
+    "r14_farptr_call_gate2",
+    "6E32A",
+    "R14_5E0B",
+    "",
+    "",
+    1
+   ],
+   [
+    "6E350",
+    "r14_farptr_call_gate2",
+    "6E32A",
+    "R14_5E0B",
+    "",
+    "add",
+    1
+   ],
+   [
+    "6E343",
+    "r14_farptr_call_gate2",
+    "6E32A",
+    "R14_5E0B",
+    "",
+    "",
+    1
+   ],
+   [
+    "6E052",
+    "farptr_proc_6e02a",
+    "6E02A",
+    "R09_5DFF",
+    "",
+    "",
+    1
+   ]
+  ],
+  "after_ret_or_jmp(merged_fn)": [
+   [
+    "26099",
+    "segment_clip_test",
+    "25F93",
+    "seg020",
+    "jmp",
+    "or",
+    32
+   ],
+   [
+    "3B645",
+    "sub_3B618",
+    "3B618",
+    "R05_2ACF",
+    "jmp",
+    "push",
+    1
+   ],
+   [
+    "3B5DB",
+    "sub_3B5D1",
+    "3B5D1",
+    "R05_2ACF",
+    "jmp",
+    "imul",
+    2
+   ],
+   [
+    "3B5E9",
+    "sub_3B5D1",
+    "3B5D1",
+    "R05_2ACF",
+    "retn",
+    "mov",
+    2
+   ],
+   [
+    "3396E",
+    "far_mode_event_dispatch",
+    "33443",
+    "R05_1F64",
+    "retf",
+    "mov",
+    2
+   ],
+   [
+    "33074",
+    "mode_session_state_reset",
+    "32C62",
+    "R05_1F64",
+    "retf",
+    "cmp",
+    2
+   ],
+   [
+    "475A1",
+    "sub_4751E",
+    "4751E",
+    "R05_33AE",
+    "retn",
+    "push",
+    1
+   ],
+   [
+    "4760F",
+    "sub_4751E",
+    "4751E",
+    "R05_33AE",
+    "retn",
+    "or",
+    1
+   ],
+   [
+    "49078",
+    "sub_48F99",
+    "48F99",
+    "R05_38DB",
+    "retf",
+    "cmp",
+    2
+   ],
+   [
+    "4F0CB",
+    "sub_4F0B6",
+    "4F0B6",
+    "R05_3E52",
+    "retf",
+    "push",
+    4
+   ],
+   [
+    "32D22",
+    "mode_session_state_reset",
+    "32C62",
+    "R05_1F64",
+    "retf",
+    "push",
+    2
+   ],
+   [
+    "4F870",
+    "sub_4F7F0",
+    "4F7F0",
+    "R05_3F25",
+    "retn",
+    "mov",
+    1
+   ]
   ]
  },
- "targets": 524
+ "targets": 140
 }

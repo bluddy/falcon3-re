@@ -116,6 +116,448 @@ DOS_EXIT = {0x2D353}  # run ends in `mov ax,4C00h / int 21h` (terminates the pro
 # jmp-reached menu bodies (R20/R21): (base, damaged `call far` head, end).  The key table is `mov bx, tab` with
 # `mov cx, n` before the lookup loop; the handler table follows the keys, offsets relative to base.
 MENUS = [(0x10B380, 0x10B4E8, 0x10B6DF), (0x10B720, 0x10B888, 0x10BA7B)]
+# (owner_ea, at): split the owner function at `at` -> owner becomes [owner_ea, at), new unnamed fn [at, end).
+# One entry per batch per owner (use the lowest `at` per owner each batch; higher split points appear in
+# the new function and are handled in a later batch).  finding 145 batch 1.
+SPLIT = [
+    (0x100AF, 0x100B5),   # bda_kb_flag_10000_get
+    (0x100BB, 0x100C1),   # mouse_gate_far_entry (first of 2)
+    (0x10D8C, 0x10D97),   # stub_bundle_10d8c (first of 2)
+    (0x10E03, 0x10E0C),   # flag1084c_get
+    (0x11A0C, 0x11A30),   # state_quad_11873_set (first of 2)
+    (0x121C2, 0x122AE),   # entity_setup_step (first of 3)
+    (0x127D4, 0x12884),   # param_table_init (first of 3)
+    (0x128A1, 0x128AB),   # state_farptr_get (first of 3)
+    (0x2234B, 0x2241E),   # control_axes_read (first of 5)
+    (0x22841, 0x22846),   # state_word_2223e_set (first of 3)
+    (0x228BF, 0x2295C),   # int32_to_ascii
+    (0x22DDC, 0x22DE6),   # state_farptr_dxax_store (first of 3)
+    (0x24DE6, 0x24DEC),   # dispatch_220dc_stub
+    (0x24FB9, 0x2501A),   # flag_bits_dispatch
+    (0x2533D, 0x253E4),   # sub_2533D
+    (0x254C0, 0x254C5),   # flag254a1_set (first of 4)
+    (0x25687, 0x2568C),   # view_block4287_entry (first of 3)
+    (0x259B9, 0x259D8),   # dispatch_2210c_invoke_5arg
+    (0x25E42, 0x25E4E),   # angle_quad_norm_far
+    (0x26281, 0x2629A),   # trig_clip_project_entry
+    (0x263F0, 0x263F6),   # dispatch_220d4_stub
+    (0x26FF4, 0x2700E),   # farobj_copy_cond
+    (0x274CF, 0x274D5),   # state_word_27470_set_ds
+    (0x275D8, 0x27649),   # buffer_budget_entry_block (first of 2)
+    (0x27697, 0x276B4),   # far_list_dispatch
+    (0x2E2F0, 0x2E34A),   # farobj_slot_create
+    (0x2E6C2, 0x2E6D5),   # farobj_cmd_interp
+    (0x2FB5A, 0x2FBE9),   # mode_request_code_dispatch (first of 2)
+    (0x305E4, 0x305F7),   # dgroup_state_cycle_step (first of 6)
+    (0x3099C, 0x309A7),   # control_axes_record_store
+    (0x30AA8, 0x30AE5),   # event_table_name_fill
+    (0x30CB8, 0x30D4F),   # farobj_record_bulk_copy (first of 2)
+    (0x327BE, 0x327C8),   # farobj_rect_state_setup
+    (0x34416, 0x34469),   # handle_build_8f_block (first of 3)
+    (0x345BA, 0x345FD),   # object_farptr_dispatch
+    (0x3470D, 0x34770),   # range_key_event_dispatch (first of 2)
+    (0x34954, 0x34A8E),   # mode_entity_select_apply
+    (0x35EB5, 0x35FDF),   # rot_segment_strip_draw (first of 2)
+    (0x36FAC, 0x36FE5),   # sprite_in_view_test
+    (0x37051, 0x37056),   # mode_byte_dispatch
+]
+# finding 146 batch 2 (40 splits, early overlays R05)
+SPLIT += [
+    (0x100C1, 0x10108),   # sub_100C1 (tail of mouse_gate_far_entry, second split)
+    (0x10D97, 0x10DA7),   # sub_10D97 (second split of stub_bundle_10d8c)
+    (0x11A30, 0x11A44),   # sub_11A30 (second split of state_quad_11873_set)
+    (0x122AE, 0x12320),   # sub_122AE (first of 2: entity_setup_step tail)
+    (0x12884, 0x1288B),   # sub_12884 (first of 2: param_table_init tail)
+    (0x128AB, 0x128CD),   # sub_128AB (first of 2: state_farptr_get tail)
+    (0x2241E, 0x22436),   # sub_2241E (first of 4: control_axes_read tail)
+    (0x22846, 0x2284B),   # sub_22846 (first of 2: state_word_2223e_set tail)
+    (0x22DE6, 0x22DF0),   # sub_22DE6 (first of 2: state_farptr_dxax_store tail)
+    (0x254C5, 0x254CA),   # sub_254C5 (first of 3: flag254a1_set tail)
+    (0x2568C, 0x25693),   # sub_2568C (first of 2: view_block4287_entry tail)
+    (0x27649, 0x2765D),   # sub_27649 (second split of buffer_budget_entry_block)
+    (0x2FBE9, 0x2FBFD),   # sub_2FBE9 (second split of mode_request_code_dispatch)
+    (0x305F7, 0x30610),   # sub_305F7 (first of 5: dgroup_state_cycle_step tail)
+    (0x30D4F, 0x30D5F),   # sub_30D4F (second split of farobj_record_bulk_copy)
+    (0x34469, 0x34474),   # sub_34469 (first of 2: handle_build_8f_block tail)
+    (0x34770, 0x3480A),   # nullsub_35 (second split of range_key_event_dispatch)
+    (0x35FDF, 0x36006),   # sub_35FDF (second split of rot_segment_strip_draw)
+    (0x3772D, 0x377AB),   # sprite_project_screen_y (first of 2)
+    (0x37818, 0x378A9),   # terrain_angle_time_step
+    (0x386F2, 0x3875B),   # tile_sample_script_dispatch (first of 3)
+    (0x38CAB, 0x38CB2),   # matrix_constants_copy_gate (first of 5)
+    (0x395DF, 0x396D3),   # aircraft_motion_step
+    (0x39AA9, 0x39AAF),   # state_word_2e12b_set
+    (0x39BD3, 0x39C14),   # mode_quadrant_accum_step
+    (0x39F1D, 0x3A003),   # steerpoint_scan_update
+    (0x3A29C, 0x3A35E),   # hud_track_label_strip
+    (0x3A88D, 0x3A8B1),   # map_view_project_pipeline
+    (0x3AB59, 0x3AB7E),   # terrain_grid_cb_dispatch
+    (0x3ADDA, 0x3AF9F),   # pos_move_angle_step (first of 3)
+    (0x3B338, 0x3B503),   # pos_step_chain_engine (first of 7)
+    (0x3B6BB, 0x3B6E2),   # tile_quad_classify (first of 6)
+    (0x3BB8F, 0x3BEFD),   # farobj_record_ops_exec (first of 4)
+    (0x3C1BD, 0x3C319),   # farobj_slot_update_driver (first of 4)
+    (0x3C4F2, 0x3C57E),   # farobj_slot_project_step (first of 4)
+    (0x3CE92, 0x3CEDD),   # farobj_behavior_dispatch_step (first of 5)
+    (0x3DC55, 0x3DE4A),   # farobj_altitude_scale_step (first of 7)
+    (0x3E16B, 0x3E170),   # farobj_cmd_accum_sweep (first of 5)
+    (0x3E552, 0x3E878),   # farobj_cfg_scan_step (first of 2)
+    (0x3E95E, 0x3E962),   # farobj_cfg_code_patch (first of 3)
+]
+# finding 147 batch 3 (40 splits, R05_2B83 through R05_33AE area)
+SPLIT += [
+    (0x12320, 0x1232E),   # sub_12320 (remaining entity_setup_step tail)
+    (0x1288B, 0x12890),   # sub_1288B (remaining param_table_init tail)
+    (0x128CD, 0x12910),   # sub_128CD (remaining state_farptr_get tail)
+    (0x22436, 0x2243B),   # sub_22436 (first of 3: control_axes_read multi-split)
+    (0x2284B, 0x22850),   # sub_2284B (remaining state_word_2223e_set tail)
+    (0x22DF0, 0x22DF5),   # sub_22DF0 (remaining state_farptr_dxax_store tail)
+    (0x254CA, 0x254D0),   # sub_254CA (first of 2: flag254a1_set tail)
+    (0x25693, 0x256A3),   # sub_25693 (remaining view_block4287_entry tail)
+    (0x30610, 0x3061B),   # sub_30610 (first of 4: dgroup_state_cycle_step tail)
+    (0x34474, 0x3448A),   # sub_34474 (remaining handle_build_8f_block tail)
+    (0x377AB, 0x377C0),   # sub_377AB (remaining sprite_project_screen_y tail)
+    (0x3875B, 0x3876A),   # sub_3875B (first of 2: tile_sample_script_dispatch tail)
+    (0x38CB2, 0x38CB7),   # sub_38CB2 (first of 4: matrix_constants_copy_gate tail)
+    (0x3AF9F, 0x3B1B9),   # sub_3AF9F (first of 2: pos_move_angle_step tail)
+    (0x3B503, 0x3B549),   # sub_3B503 (first of 6: pos_step_chain_engine tail)
+    (0x3B6E2, 0x3B72C),   # sub_3B6E2 (first of 5: tile_quad_classify tail)
+    (0x3BEFD, 0x3C00C),   # sub_3BEFD (first of 3: farobj_record_ops_exec tail)
+    (0x3C319, 0x3C38D),   # sub_3C319 (first of 3: farobj_slot_update_driver tail)
+    (0x3C57E, 0x3C5CA),   # sub_3C57E (first of 3: farobj_slot_project_step tail)
+    (0x3CEDD, 0x3CEF4),   # sub_3CEDD (first of 4: farobj_behavior_dispatch_step tail)
+    (0x3DE4A, 0x3DE6F),   # sub_3DE4A (first of 6: farobj_altitude_scale_step tail)
+    (0x3E170, 0x3E1C2),   # sub_3E170 (first of 4: farobj_cmd_accum_sweep tail)
+    (0x3E878, 0x3E8C5),   # sub_3E878 (remaining farobj_cfg_scan_step tail)
+    (0x3E962, 0x3EB4E),   # sub_3E962 (first of 2: farobj_cfg_code_patch tail)
+    (0x3EEDB, 0x3F274),   # farobj_view_project_step (first of 3)
+    (0x3F861, 0x3FAAE),   # farobj_index_resolve_step
+    (0x3FBCC, 0x3FC66),   # farobj_angle_distance_gate (first of 2)
+    (0x3FCF1, 0x3FD32),   # range_scale_accum_clamp
+    (0x40F77, 0x41075),   # hud_data_panel_slot_mgr (first of 2)
+    (0x4111F, 0x41123),   # farobj_class_table_entry (first of 4)
+    (0x415CE, 0x415FD),   # farobj_state_flag_set
+    (0x41646, 0x416EC),   # farobj_range_slot_init
+    (0x41784, 0x4179E),   # farobj_flag_or_set (first of 2)
+    (0x41B4E, 0x41B68),   # farobj_index_state_swap (first of 5)
+    (0x41D21, 0x41D23),   # hud_object_text_format
+    (0x42025, 0x42139),   # farobj_selection_window_step
+    (0x42220, 0x4222D),   # mode_phase_apply_state
+    (0x4236B, 0x423A9),   # farobj_thrust_burn_step
+    (0x4245B, 0x42503),   # farobj_fuel_apply_step
+    (0x42553, 0x425A2),   # farobj_matrix_project_copy
+]
+# finding 148 batch 4 (40 splits, R05_33AE through R05_38DB area)
+SPLIT += [
+    (0x2243B, 0x22440),   # sub_2243B (first of 2: control_axes_read multi-split cont.)
+    (0x254D0, 0x254DC),   # sub_254D0 (remaining flag254a1_set tail)
+    (0x3061B, 0x30650),   # sub_3061B (first of 3: dgroup_state_cycle_step tail cont.)
+    (0x3876A, 0x38778),   # sub_3876A (remaining tile_sample_script_dispatch tail)
+    (0x38CB7, 0x38CBC),   # sub_38CB7 (first of 3: matrix_constants_copy_gate tail cont.)
+    (0x3B1B9, 0x3B256),   # sub_3B1B9 (remaining pos_move_angle_step tail)
+    (0x3B549, 0x3B57F),   # sub_3B549 (first of 3: pos_step_chain_engine tail cont.)
+    (0x3B72C, 0x3B73C),   # sub_3B72C (first of 3: tile_quad_classify tail cont.)
+    (0x3C00C, 0x3C09E),   # sub_3C00C (first of 2: farobj_record_ops_exec tail cont.)
+    (0x3C38D, 0x3C3E1),   # sub_3C38D (first of 2: farobj_slot_update_driver tail cont.)
+    (0x3C5CA, 0x3C62C),   # sub_3C5CA (first of 2: farobj_slot_project_step tail cont.)
+    (0x3CEF4, 0x3CF9D),   # sub_3CEF4 (first of 3: farobj_behavior_dispatch_step tail cont.)
+    (0x3DE6F, 0x3DED9),   # sub_3DE6F (first of 3: farobj_altitude_scale_step tail cont.)
+    (0x3E1C2, 0x3E1F6),   # sub_3E1C2 (first of 3: farobj_cmd_accum_sweep tail cont.)
+    (0x3EB4E, 0x3EBA5),   # sub_3EB4E (remaining farobj_cfg_code_patch tail)
+    (0x3F274, 0x3F287),   # sub_3F274 (first of 2: farobj_view_project_step tail cont.)
+    (0x3FC66, 0x3FCE1),   # sub_3FC66 (remaining farobj_angle_distance_gate tail)
+    (0x41075, 0x410F6),   # sub_41075 (remaining hud_data_panel_slot_mgr tail)
+    (0x41123, 0x4113C),   # sub_41123 (first of 3: farobj_class_table_entry tail cont.)
+    (0x4179E, 0x417B2),   # sub_4179E (remaining farobj_flag_or_set tail)
+    (0x41B68, 0x41BDF),   # sub_41B68 (first of 3: farobj_index_state_swap tail cont.)
+    (0x426CC, 0x42731),   # hud_track_distance_draw (first of 2)
+    (0x4289E, 0x428A1),   # ui_slot_filter_predicate (first of 5)
+    (0x44352, 0x445A6),   # farobj_entity_attr_setup (first of 2)
+    (0x446CB, 0x4478D),   # farobj_entity_step_near (first of 2)
+    (0x45057, 0x45074),   # hud_state_rowtable_step (first of 5)
+    (0x45976, 0x45C4B),   # game_setup_staged_init (first of 4)
+    (0x45F2C, 0x45FB4),   # viewport_strip_row_draw (first of 8)
+    (0x46999, 0x46AC0),   # hud_readout_timer_render (first of 6)
+    (0x46D42, 0x46ECF),   # hud_track_strip_pipeline (first of 8)
+    (0x47686, 0x47743),   # sprite_delta_project_47686
+    (0x47A9B, 0x47B10),   # r32_hud_phase_dispatch (first of 3)
+    (0x47BDE, 0x47DF5),   # hud_rowlist_timer_step (first of 5)
+    (0x47F9E, 0x4812B),   # hud_panel_transform_step
+    (0x484C1, 0x4853F),   # record_script_coord_entry (first of 7)
+    (0x487B2, 0x487C3),   # viewport_bounds_setup (first of 3)
+    (0x48B05, 0x48C20),   # target_cycle_scan
+    (0x48EC7, 0x48F99),   # tile_grid_scan_step (first of 7)
+    (0x493C4, 0x493FC),   # aircraft_record_load_step
+    (0x495DF, 0x496D3),   # store_fall_sim_step (first of 6)
+]
+# finding 149 batch 5 (40 splits, R05_39AB through R05_3BDD area)
+SPLIT += [
+    (0x22440, 0x22445),   # sub_22440 (remaining control_axes_read chain)
+    (0x30650, 0x306D1),   # sub_30650 (first of 2: dgroup_state_cycle_step tail cont.)
+    (0x38CBC, 0x38CCF),   # sub_38CBC (first of 2: matrix_constants_copy_gate tail cont.)
+    (0x3B57F, 0x3B5B0),   # sub_3B57F (first of 4: pos_step_chain_engine tail cont.)
+    (0x3B73C, 0x3B7B2),   # sub_3B73C (first of 3: tile_quad_classify tail cont.)
+    (0x3C09E, 0x3C0AE),   # sub_3C09E (remaining farobj_record_ops_exec tail)
+    (0x3C3E1, 0x3C48F),   # sub_3C3E1 (remaining farobj_slot_update_driver tail)
+    (0x3C62C, 0x3C8EB),   # sub_3C62C (remaining farobj_slot_project_step tail)
+    (0x3CF9D, 0x3D319),   # sub_3CF9D (first of 2: farobj_behavior_dispatch_step tail cont.)
+    (0x3DED9, 0x3DF1E),   # sub_3DED9 (first of 3: farobj_altitude_scale_step tail cont.)
+    (0x3E1F6, 0x3E269),   # sub_3E1F6 (first of 2: farobj_cmd_accum_sweep tail cont.)
+    (0x3F287, 0x3F3A8),   # sub_3F287 (remaining farobj_view_project_step tail)
+    (0x4113C, 0x41466),   # sub_4113C (first of 2: farobj_class_table_entry tail cont.)
+    (0x41BDF, 0x41BF1),   # sub_41BDF (first of 3: farobj_index_state_swap tail cont.)
+    (0x42731, 0x42838),   # sub_42731 (remaining hud_track_distance_draw tail)
+    (0x428A1, 0x428C1),   # sub_428A1 (first of 4: ui_slot_filter_predicate tail cont.)
+    (0x445A6, 0x4460F),   # sub_445A6 (remaining farobj_entity_attr_setup tail)
+    (0x4478D, 0x4486B),   # sub_4478D (remaining farobj_entity_step_near tail)
+    (0x45074, 0x45270),   # sub_45074 (first of 4: hud_state_rowtable_step tail cont.)
+    (0x45C4B, 0x45D13),   # sub_45C4B (first of 3: game_setup_staged_init tail cont.)
+    (0x45FB4, 0x45FF1),   # sub_45FB4 (first of 7: viewport_strip_row_draw tail cont.)
+    (0x46AC0, 0x46AF9),   # sub_46AC0 (first of 5: hud_readout_timer_render tail cont.)
+    (0x46ECF, 0x46F46),   # sub_46ECF (first of 7: hud_track_strip_pipeline tail cont.)
+    (0x47B10, 0x47B2A),   # sub_47B10 (first of 2: r32_hud_phase_dispatch tail cont.)
+    (0x47DF5, 0x47E1C),   # sub_47DF5 (first of 4: hud_rowlist_timer_step tail cont.)
+    (0x4853F, 0x48571),   # sub_4853F (first of 6: record_script_coord_entry tail cont.)
+    (0x487C3, 0x48800),   # sub_487C3 (first of 2: viewport_bounds_setup tail cont.)
+    (0x48F99, 0x490BA),   # sub_48F99 (first of 6: tile_grid_scan_step tail cont.)
+    (0x496D3, 0x498ED),   # sub_496D3 (first of 5: store_fall_sim_step tail cont.)
+    (0x49AB4, 0x49C03),   # entity_spawn_from_tile (first of 4)
+    (0x4A7E5, 0x4A88F),   # mode_record_field_lookup (first of 12)
+    (0x4AD30, 0x4AD88),   # ui_aircraft_slot_step (first of 6)
+    (0x4AEC4, 0x4AFBD),   # farobj_pos_move_angle_step (first of 11)
+    (0x4B36A, 0x4B4D0),   # sprite_step_clip_project_body (first of 2)
+    (0x4B584, 0x4B5D5),   # pos_state_block_read
+    (0x4B68D, 0x4B6BB),   # tile_object_interpreter (first of 6)
+    (0x4BFB8, 0x4BFE0),   # farobj_tile_key_cache
+    (0x4C0E4, 0x4C14F),   # farobj_table_init_69ff (first of 2)
+    (0x4C19E, 0x4C3C7),   # farobj_queue_drain_dispatch (first of 3)
+    (0x4CB62, 0x4CC50),   # farobj_record_flag_ops
+]
+# finding 150 batch 6 (40 splits, R05_3C0D through R05_3E52 area)
+SPLIT += [
+    (0x306D1, 0x30769),   # sub_306D1 (remaining dgroup_state_cycle_step tail)
+    (0x38CCF, 0x38CE2),   # sub_38CCF (remaining matrix_constants_copy_gate tail)
+    (0x3B5B0, 0x3B5BD),   # sub_3B5B0 (first of 3: pos_step_chain_engine tail cont.)
+    (0x3B7B2, 0x3B7C3),   # sub_3B7B2 (first of 2: tile_quad_classify tail cont.)
+    (0x3D319, 0x3D37F),   # sub_3D319 (remaining farobj_behavior_dispatch_step tail)
+    (0x3DF1E, 0x3E01A),   # sub_3DF1E (first of 3: farobj_altitude_scale_step tail cont.)
+    (0x3E269, 0x3E2D3),   # sub_3E269 (remaining farobj_cmd_accum_sweep tail)
+    (0x41466, 0x41555),   # sub_41466 (remaining farobj_class_table_entry tail)
+    (0x41BF1, 0x41C07),   # sub_41BF1 (first of 2: farobj_index_state_swap tail cont.)
+    (0x428C1, 0x428D4),   # sub_428C1 (first of 3: ui_slot_filter_predicate tail cont.)
+    (0x45270, 0x4540B),   # sub_45270 (first of 3: hud_state_rowtable_step tail cont.)
+    (0x45D13, 0x45E29),   # sub_45D13 (first of 2: game_setup_staged_init tail cont.)
+    (0x45FF1, 0x46000),   # sub_45FF1 (first of 6: viewport_strip_row_draw tail cont.)
+    (0x46AF9, 0x46B2B),   # sub_46AF9 (first of 4: hud_readout_timer_render tail cont.)
+    (0x46F46, 0x46FEA),   # sub_46F46 (first of 6: hud_track_strip_pipeline tail cont.)
+    (0x47B2A, 0x47B68),   # sub_47B2A (remaining r32_hud_phase_dispatch tail)
+    (0x47E1C, 0x47E43),   # sub_47E1C (first of 3: hud_rowlist_timer_step tail cont.)
+    (0x48571, 0x485AC),   # sub_48571 (first of 5: record_script_coord_entry tail cont.)
+    (0x48800, 0x48864),   # sub_48800 (remaining viewport_bounds_setup tail)
+    (0x490BA, 0x490F4),   # sub_490BA (first of 5: tile_grid_scan_step tail cont.)
+    (0x498ED, 0x49982),   # sub_498ED (first of 4: store_fall_sim_step tail cont.)
+    (0x49C03, 0x49C2E),   # sub_49C03 (first of 3: entity_spawn_from_tile tail cont.)
+    (0x4A88F, 0x4A8DE),   # sub_4A88F (first of 11: mode_record_field_lookup tail cont.)
+    (0x4AD88, 0x4AE06),   # sub_4AD88 (first of 5: ui_aircraft_slot_step tail cont.)
+    (0x4AFBD, 0x4B048),   # sub_4AFBD (first of 10: farobj_pos_move_angle_step tail cont.)
+    (0x4B4D0, 0x4B505),   # sub_4B4D0 (remaining sprite_step_clip_project_body tail)
+    (0x4B6BB, 0x4B7B9),   # sub_4B6BB (first of 5: tile_object_interpreter tail cont.)
+    (0x4C14F, 0x4C15E),   # sub_4C14F (remaining farobj_table_init_69ff tail)
+    (0x4C3C7, 0x4CAE2),   # sub_4C3C7 (first of 2: farobj_queue_drain_dispatch tail cont.)
+    (0x4CD1D, 0x4D143),   # farobj_move_accumulate_step (first of 9)
+    (0x4D3C7, 0x4D3EC),   # farobj_flag_dispatch_step
+    (0x4D544, 0x4D55F),   # farobj_class16_record_ops (first of 2)
+    (0x4D8A7, 0x4D9C3),   # farobj_slot_step_spawn (first of 2)
+    (0x4DC16, 0x4DC63),   # view_wrap_projection_entry (first of 6)
+    (0x4DE76, 0x4DF80),   # ems_opstream_buffer_append
+    (0x4DF9D, 0x4DFEA),   # overlay_teardown_restore_state (first of 2)
+    (0x4E14C, 0x4E18F),   # ems_stream_pointer_step (first of 6)
+    (0x4E309, 0x4E314),   # farobj_slot_create_status
+    (0x4E320, 0x4E32B),   # farobj_cfg_step_control (first of 2)
+    (0x4E520, 0x4E803),   # store_cmd_interpreter (first of 2)
+]
+# finding 151 batch 7 (40 splits, R05_3E52/R05_3F25 and overlays)
+SPLIT += [
+    (0x3B5BD, 0x3B5D1),   # sub_3B5BD (first of 2: pos_step_chain_engine tail cont.)
+    (0x3B7C3, 0x3B7F3),   # sub_3B7C3 (remaining tile_quad_classify tail)
+    (0x3E01A, 0x3E02E),   # sub_3E01A (first of 2: farobj_altitude_scale_step tail cont.)
+    (0x41C07, 0x41C2C),   # sub_41C07 (remaining farobj_index_state_swap tail)
+    (0x428D4, 0x42939),   # sub_428D4 (first of 2: ui_slot_filter_predicate tail cont.)
+    (0x4540B, 0x45472),   # sub_4540B (first of 2: hud_state_rowtable_step tail cont.)
+    (0x45E29, 0x45ECB),   # sub_45E29 (remaining game_setup_staged_init tail)
+    (0x46000, 0x4602C),   # sub_46000 (first of 5: viewport_strip_row_draw tail cont.)
+    (0x46B2B, 0x46B66),   # sub_46B2B (first of 3: hud_readout_timer_render tail cont.)
+    (0x46FEA, 0x4705F),   # sub_46FEA (first of 5: hud_track_strip_pipeline tail cont.)
+    (0x47E43, 0x47E87),   # sub_47E43 (first of 2: hud_rowlist_timer_step tail cont.)
+    (0x485AC, 0x485B3),   # sub_485AC (first of 4: record_script_coord_entry tail cont.)
+    (0x490F4, 0x4915D),   # sub_490F4 (first of 4: tile_grid_scan_step tail cont.)
+    (0x49982, 0x49997),   # sub_49982 (first of 3: store_fall_sim_step tail cont.)
+    (0x49C2E, 0x49C40),   # sub_49C2E (first of 2: entity_spawn_from_tile tail cont.)
+    (0x4A8DE, 0x4A94C),   # sub_4A8DE (first of 10: mode_record_field_lookup tail cont.)
+    (0x4AE06, 0x4AE27),   # sub_4AE06 (first of 4: ui_aircraft_slot_step tail cont.)
+    (0x4B048, 0x4B09F),   # sub_4B048 (first of 9: farobj_pos_move_angle_step tail cont.)
+    (0x4B7B9, 0x4B8EC),   # sub_4B7B9 (first of 4: tile_object_interpreter tail cont.)
+    (0x4CAE2, 0x4CB0A),   # sub_4CAE2 (remaining farobj_queue_drain_dispatch tail)
+    (0x4D143, 0x4D160),   # sub_4D143 (first of 8: farobj_move_accumulate_step tail cont.)
+    (0x4D55F, 0x4D75F),   # sub_4D55F (remaining farobj_class16_record_ops tail)
+    (0x4D9C3, 0x4D9FC),   # sub_4D9C3 (remaining farobj_slot_step_spawn tail)
+    (0x4DC63, 0x4DC97),   # sub_4DC63 (first of 5: view_wrap_projection_entry tail cont.)
+    (0x4DFEA, 0x4E044),   # sub_4DFEA (remaining overlay_teardown_restore_state tail)
+    (0x4E18F, 0x4E194),   # sub_4E18F (first of 5: ems_stream_pointer_step tail cont.)
+    (0x4E32B, 0x4E361),   # sub_4E32B (remaining farobj_cfg_step_control tail)
+    (0x4E803, 0x4E86E),   # sub_4E803 (remaining store_cmd_interpreter tail)
+    (0x4E90E, 0x4E93A),   # ems_opstream_table_flush (first of 3)
+    (0x4EAF8, 0x4EB82),   # ems_entity_slot_script (first of 8)
+    (0x4EED3, 0x4EF01),   # ems_state_flags_709f (first of 2)
+    (0x4EF1C, 0x4EF4E),   # entity_record_table_ops (first of 5)
+    (0x4F271, 0x4F385),   # vga_dac_palette_upload (first of 2)
+    (0x4F3A3, 0x4F3BA),   # farobj_cfg_gate_85059
+    (0x4F4FE, 0x4F5CB),   # view_pos_cache_update
+    (0x4F72B, 0x4F76A),   # sprite_blend_0ad2d (first of 2)
+    (0x4F7B8, 0x4F7F0),   # terrain_vm_blend_apply
+    (0x4FA8A, 0x4FB1C),   # palette_delta_blend
+    (0x4FBC2, 0x4FC2D),   # hw_cfg_copy_a76f
+    (0x4FCE4, 0x4FCF3),   # hw_flag_85052_set_ff
+]
+# finding 152 batch 8 (49 splits, R05_3F25 through R05_3DAD + all overlays remaining)
+SPLIT += [
+    (0x3B5D1, 0x3B618),   # sub_3B5D1 (remaining pos_step_chain_engine tail)
+    (0x3E02E, 0x3E042),   # sub_3E02E (remaining farobj_altitude_scale_step tail)
+    (0x42939, 0x42957),   # sub_42939 (remaining ui_slot_filter_predicate tail)
+    (0x45472, 0x456A3),   # sub_45472 (remaining hud_state_rowtable_step tail)
+    (0x4602C, 0x4611C),   # sub_4602C (first of 4: viewport_strip_row_draw tail cont.)
+    (0x46B66, 0x46BD6),   # sub_46B66 (first of 2: hud_readout_timer_render tail cont.)
+    (0x4705F, 0x47111),   # sub_4705F (first of 4: hud_track_strip_pipeline tail cont.)
+    (0x47E87, 0x47EC6),   # sub_47E87 (remaining hud_rowlist_timer_step tail)
+    (0x485B3, 0x48612),   # sub_485B3 (first of 3: record_script_coord_entry tail cont.)
+    (0x4915D, 0x491F6),   # sub_4915D (first of 3: tile_grid_scan_step tail cont.)
+    (0x49997, 0x49A1F),   # sub_49997 (first of 2: store_fall_sim_step tail cont.)
+    (0x49C40, 0x49C67),   # sub_49C40 (remaining entity_spawn_from_tile tail)
+    (0x4A94C, 0x4A9E9),   # sub_4A94C (first of 9: mode_record_field_lookup tail cont.)
+    (0x4AE27, 0x4AE35),   # sub_4AE27 (first of 3: ui_aircraft_slot_step tail cont.)
+    (0x4B09F, 0x4B0D8),   # sub_4B09F (first of 8: farobj_pos_move_angle_step tail cont.)
+    (0x4B8EC, 0x4B94F),   # sub_4B8EC (first of 3: tile_object_interpreter tail cont.)
+    (0x4D160, 0x4D17C),   # sub_4D160 (first of 7: farobj_move_accumulate_step tail cont.)
+    (0x4DC97, 0x4DD0A),   # sub_4DC97 (first of 4: view_wrap_projection_entry tail cont.)
+    (0x4E194, 0x4E199),   # sub_4E194 (first of 4: ems_stream_pointer_step tail cont.)
+    (0x4E93A, 0x4E945),   # sub_4E93A (first of 2: ems_opstream_table_flush tail cont.)
+    (0x4EB82, 0x4EC42),   # sub_4EB82 (first of 7: ems_entity_slot_script tail cont.)
+    (0x4EF01, 0x4EF0C),   # sub_4EF01 (remaining ems_state_flags_709f tail)
+    (0x4EF4E, 0x4EF7B),   # sub_4EF4E (first of 4: entity_record_table_ops tail cont.)
+    (0x4F385, 0x4F394),   # sub_4F385 (remaining vga_dac_palette_upload tail)
+    (0x4F76A, 0x4F7A0),   # sub_4F76A (remaining sprite_blend_0ad2d tail)
+    (0x4FD80, 0x4FD82),   # pop_ds_retf
+    (0x4FDAD, 0x4FDB3),   # state_word_0f0e_store
+    (0x4FEB5, 0x4FECC),   # angle_fixed_rotate_apply (first of 3)
+    # (0x683C5, 0x6940B) SKIPPED: ui_loadout_menu_enter is part of the deferred 0x6E696 handler cluster (P5)
+    (0x6A050, 0x6A19F),   # r30_mode_set_637fc_c
+    (0x6A5BD, 0x6A651),   # ui_menu_page_setup
+    (0x6B53A, 0x6B669),   # ui_slot_count_tally (first of 3)
+    (0x6CDA8, 0x6CDFA),   # r06_mode_step_dispatch
+    (0x6CE4B, 0x6CE4C),   # r06_farptr_dispatch_gate
+    (0x6D0C9, 0x6D126),   # r06_state_init_e56
+    (0x6D13D, 0x6D145),   # r06_gate_4ac9
+    (0x6D256, 0x6D29F),   # r06_ui_dispatch_block (first of 3)
+    (0x6D4F4, 0x6D51A),   # r06_mode_gate_49a3 (first of 2)
+    (0x6D68D, 0x6D6EC),   # r06_mode_state_update
+    (0x6D838, 0x6D875),   # r06_mode_step_tick
+    (0x6D8E6, 0x6D948),   # r06_mode_dispatch_bx8 (first of 4)
+    (0x6DD12, 0x6DD8E),   # distance_tier_classify_entry (first of 2)
+    # 0x6E32A r14_farptr_call_gate2 and 0x6E3D0 r14_farptr_call_gate SKIPPED: add_func fails at tails
+    (0x106E66, 0x106E79), # r12_farptr_helper_c_record_wrap
+    (0x107015, 0x10701D), # r12_ah0c_far_call_entry
+    (0x166061, 0x166098), # r36_mod_slot_index_entry
+    # (0x12C683, 0x12C764) SKIPPED: sub_12C683 is also in the ADD list (finding 128), conflict
+    (0x12C7C6, 0x12C912), # sub_12C7C6 (safe: in EXTEND_RUNS not ADD, EXTEND runs before SPLIT)
+]
+# finding 153 batch 9 (22 splits, final tail chains + R30/R06 overlays)
+SPLIT += [
+    (0x4611C, 0x463DA),   # sub_4611C (first of 3: viewport_strip_row_draw tail cont.)
+    (0x46BD6, 0x46C72),   # sub_46BD6 (remaining hud_readout_timer_render tail)
+    (0x47111, 0x47162),   # sub_47111 (first of 3: hud_track_strip_pipeline tail cont.)
+    (0x48612, 0x486A9),   # sub_48612 (first of 2: record_script_coord_entry tail cont.)
+    (0x491F6, 0x49235),   # sub_491F6 (first of 2: tile_grid_scan_step tail cont.)
+    (0x49A1F, 0x49A5B),   # sub_49A1F (remaining store_fall_sim_step tail)
+    (0x4A9E9, 0x4AAA4),   # sub_4A9E9 (first of 8: mode_record_field_lookup deep chain)
+    (0x4AE35, 0x4AE66),   # sub_4AE35 (first of 2: ui_aircraft_slot_step tail cont.)
+    (0x4B0D8, 0x4B12C),   # sub_4B0D8 (first of 7: farobj_pos_move_angle_step deep chain)
+    (0x4B94F, 0x4B9D0),   # sub_4B94F (first of 2: tile_object_interpreter tail cont.)
+    (0x4D17C, 0x4D19C),   # sub_4D17C (first of 6: farobj_move_accumulate_step deep chain)
+    (0x4DD0A, 0x4DD3B),   # sub_4DD0A (first of 3: view_wrap_projection_entry tail cont.)
+    (0x4E199, 0x4E1A3),   # sub_4E199 (first of 3: ems_stream_pointer_step tail cont.)
+    (0x4E945, 0x4EA53),   # sub_4E945 (remaining ems_opstream_table_flush tail)
+    (0x4EC42, 0x4EC43),   # nullsub_36 (1-byte stub before the ems_entity_slot_script deep chain)
+    (0x4EF7B, 0x4F0A9),   # sub_4EF7B (first of 3: entity_record_table_ops tail cont.)
+    (0x4FECC, 0x4FF3C),   # sub_4FECC (first of 2: angle_fixed_rotate_apply tail cont.)
+    (0x6B669, 0x6B709),   # sub_6B669 (first of 2: ui_slot_count_tally tail cont.)
+    (0x6D29F, 0x6D3D5),   # sub_6D29F (first of 2: r06_ui_dispatch_block tail cont.)
+    (0x6D51A, 0x6D575),   # sub_6D51A (remaining r06_mode_gate_49a3 tail)
+    (0x6D948, 0x6D967),   # sub_6D948 (first of 3: r06_mode_dispatch_bx8 tail cont.)
+    (0x6DD8E, 0x6DE07),   # sub_6DD8E (remaining distance_tier_classify_entry tail)
+]
+# finding 154 batch 10 (17 splits, final batch of pure splits)
+SPLIT += [
+    (0x463DA, 0x46439),   # sub_463DA (first of 2: viewport_strip_row_draw deep chain)
+    (0x47162, 0x47239),   # sub_47162 (first of 2: hud_track_strip_pipeline deep chain)
+    (0x486A9, 0x486D1),   # sub_486A9 (remaining record_script_coord_entry tail)
+    (0x49235, 0x492E0),   # sub_49235 (remaining tile_grid_scan_step tail)
+    (0x4AAA4, 0x4AABC),   # sub_4AAA4 (first of 7: mode_record_field_lookup deep chain)
+    (0x4AE66, 0x4AEA6),   # sub_4AE66 (remaining ui_aircraft_slot_step tail)
+    (0x4B12C, 0x4B16A),   # sub_4B12C (first of 6: farobj_pos_move_angle_step deep chain)
+    (0x4B9D0, 0x4BBFD),   # sub_4B9D0 (remaining tile_object_interpreter tail)
+    (0x4D19C, 0x4D1C6),   # sub_4D19C (first of 5: farobj_move_accumulate_step deep chain)
+    (0x4DD3B, 0x4DDB4),   # sub_4DD3B (first of 2: view_wrap_projection_entry tail cont.)
+    (0x4E1A3, 0x4E1EE),   # sub_4E1A3 (first of 2: ems_stream_pointer_step tail cont.)
+    (0x4EC43, 0x4EC58),   # sub_4EC43 (first of 5: ems_entity_slot_script deep chain)
+    (0x4F0A9, 0x4F0B6),   # sub_4F0A9 (first of 2: entity_record_table_ops tail cont.)
+    (0x4FF3C, 0x50035),   # sub_4FF3C (remaining angle_fixed_rotate_apply tail)
+    (0x6B709, 0x6B77F),   # sub_6B709 (remaining ui_slot_count_tally tail)
+    (0x6D3D5, 0x6D3FB),   # sub_6D3D5 (remaining r06_ui_dispatch_block tail)
+    (0x6D967, 0x6D988),   # sub_6D967 (first of 2: r06_mode_dispatch_bx8 tail cont.)
+]
+# finding 155 batch 11 (10 splits, final deep chains)
+SPLIT += [
+    (0x46439, 0x4649B),   # sub_46439 (remaining viewport_strip_row_draw tail)
+    (0x47239, 0x4751E),   # sub_47239 (remaining hud_track_strip_pipeline tail)
+    (0x4AABC, 0x4AAE2),   # sub_4AABC (first of 6: mode_record_field_lookup deep chain)
+    (0x4B16A, 0x4B1E3),   # sub_4B16A (first of 5: farobj_pos_move_angle_step deep chain)
+    (0x4D1C6, 0x4D1EC),   # sub_4D1C6 (first of 4: farobj_move_accumulate_step deep chain)
+    (0x4DDB4, 0x4DE2F),   # sub_4DDB4 (remaining view_wrap_projection_entry tail)
+    (0x4E1EE, 0x4E2C8),   # sub_4E1EE (remaining ems_stream_pointer_step tail)
+    (0x4EC58, 0x4EC76),   # sub_4EC58 (first of 4: ems_entity_slot_script deep chain)
+    (0x4F0B6, 0x4F128),   # sub_4F0B6 (remaining entity_record_table_ops tail)
+    (0x6D988, 0x6D9DE),   # sub_6D988 (remaining r06_mode_dispatch_bx8 tail)
+]
+# finding 156 batch 12 (4 splits, one per remaining deep chain)
+SPLIT += [
+    (0x4AAE2, 0x4AB06),   # sub_4AAE2 (1 of 5: mode_record_field_lookup deep chain)
+    (0x4B1E3, 0x4B251),   # sub_4B1E3 (1 of 4: farobj_pos_move_angle_step deep chain)
+    (0x4D1EC, 0x4D230),   # sub_4D1EC (1 of 3: farobj_move_accumulate_step deep chain)
+    (0x4EC76, 0x4ECAC),   # sub_4EC76 (1 of 3: ems_entity_slot_script deep chain)
+]
+# finding 157 batch 13 (4 splits, second level of remaining chains)
+SPLIT += [
+    (0x4AB06, 0x4AC1E),   # sub_4AB06 (2 of 5: mode_record_field_lookup chain)
+    (0x4B251, 0x4B2BD),   # sub_4B251 (2 of 4: farobj_pos_move_angle_step chain)
+    (0x4D230, 0x4D35A),   # sub_4D230 (2 of 3: farobj_move_accumulate_step chain)
+    (0x4ECAC, 0x4EE65),   # sub_4ECAC (2 of 3: ems_entity_slot_script chain)
+]
+# finding 158 batch 14
+SPLIT += [
+    (0x4AC1E, 0x4AC5E),   # sub_4AC1E (3 of 5: mode_record_field_lookup chain)
+    (0x4B2BD, 0x4B2EE),   # sub_4B2BD (3 of 4: farobj_pos_move_angle_step chain)
+    (0x4D35A, 0x4D38C),   # sub_4D35A (3 of 3: farobj_move_accumulate_step - last)
+    (0x4EE65, 0x4EEB3),   # sub_4EE65 (3 of 3: ems_entity_slot_script - last)
+]
+# finding 159 batch 15
+SPLIT += [
+    (0x4AC5E, 0x4AC80),   # sub_4AC5E (4 of 5: mode_record_field_lookup chain)
+    (0x4B2EE, 0x4B327),   # sub_4B2EE (4 of 4: farobj_pos_move_angle_step - last)
+]
+# finding 160 batch 16 (1 split, final split of mode_record_field_lookup chain)
+SPLIT += [
+    (0x4AC80, 0x4ACC9),   # sub_4AC80 (5 of 5: mode_record_field_lookup - last)
+]
 log = []
 
 
@@ -271,8 +713,12 @@ def ext_state(x):
         return "mismatch"
     if chunks(x["ea"]) == x["chunks_after"] and f.end_ea == x["end"]:
         return "applied"
+    # Also "applied" if the extension occurred (end moved past before_end = run[0]) but
+    # the function was subsequently split further: bytes of the extended run are unchanged.
     lo, hi = x["run"]
-    if (chunks(x["ea"]) == x["chunks_before"] and f.end_ea == x["before_end"]
+    if sha(lo, hi) == x["run_sha256"] and f.end_ea > lo:
+        return "applied"
+    if (chunks(x["ea"]) == x["chunks_before"] and f.end_ea == lo
             and not any(ida_funcs.get_func(a) for a in range(lo, hi)) and sha(lo, hi) == x["run_sha256"]):
         return "fresh"
     return "mismatch"
@@ -659,7 +1105,49 @@ def glue(x):
     must(gl_state(x) == "applied", "glue of 0x%X (state %s, chunks %s)" % (ea, gl_state(x), chunks(ea)))
 
 
-def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), dfs=(), gls=()):
+def sp_state(x):
+    """State of a split: 'applied' if owner is [ea,at) and a function starts at `at`;
+    'fresh' if owner is still [ea,end); 'mismatch' otherwise.  Both halves are
+    sha256-pinned so an unexpected byte change is caught as mismatch.
+    Note: the tail [at,end) may have been further split by a later batch, so we
+    only require that some function starts at `at` (not that it ends at `end`)."""
+    ea, at, end = x["ea"], x["at"], x["end"]
+    if sha(ea, at) != x["sha256_head"] or sha(at, end) != x["sha256_tail"]:
+        return "mismatch"
+    fo = ida_funcs.get_func(ea)
+    if not fo or fo.start_ea != ea:
+        return "mismatch"
+    if fo.end_ea == at and chunks(ea) == [[ea, at]]:
+        ft = ida_funcs.get_func(at)
+        # tail may have been further split by a later batch: any fn starting at `at` is fine
+        if ft and ft.start_ea == at:
+            return "applied"
+    if fo.end_ea == end and chunks(ea) == [[ea, end]]:
+        return "fresh"
+    return "mismatch"
+
+
+def split_fn(x):
+    """Split the owner function [ea, end) at `at`: owner becomes [ea, at),
+    a new unnamed function [at, end) is registered with the same far flag."""
+    ea, at, end, far = x["ea"], x["at"], x["end"], x["far"]
+    for xr in idautils.XrefsTo(at, 0):
+        if not xr.iscode:
+            continue
+        f2 = ida_funcs.get_func(xr.frm)
+        if f2 and f2.start_ea == ea:
+            m = idc.print_insn_mnem(xr.frm)
+            must(m in ("call", "callf"), "non-call inner xref to 0x%X from 0x%X (%s)" % (at, xr.frm, m))
+    must(ida_funcs.set_func_end(ea, at), "set_func_end 0x%X -> 0x%X" % (ea, at))
+    must(ida_funcs.add_func(at, end), "add_func 0x%X..0x%X" % (at, end))
+    if far:
+        f = ida_funcs.get_func(at)
+        f.flags |= ida_funcs.FUNC_FAR
+        must(ida_funcs.update_func(f), "update_func far 0x%X" % at)
+    must(sp_state(x) == "applied", "split of 0x%X at 0x%X" % (ea, at))
+
+
+def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), dfs=(), gls=(), spls=()):
     before = snapshot()
     for x in dfs:
         if df_state(x) != "applied":
@@ -686,6 +1174,9 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), df
         if ext_state(x) == "applied":
             continue
         extend(x)
+    for x in spls:
+        if sp_state(x) != "applied":
+            split_fn(x)
     for x in rebs:
         if rb_state(x) != "applied":
             rebase(x)
@@ -715,9 +1206,9 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), df
                     must(ida_bytes.is_code(ida_bytes.get_flags(a)), "non-code head 0x%X in 0x%X" % (a, it["ea"]))
                     a += ida_bytes.get_item_size(a)
     after = snapshot()
-    new = {it["ea"] for it in items} | {x["ea"] for x in rebs}
+    new = {it["ea"] for it in items} | {x["ea"] for x in rebs} | {x["at"] for x in spls}
     changed = sorted(ea for ea in set(before) if before[ea] != after.get(ea))
-    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_} | {x["ea"] for x in gls} | {g for x in gls for g in x["frags"]},
+    must(set(changed) <= {x["ea"] for x in exts} | {x["old_ea"] for x in rebs} | {x["ea"] for x in rms} | {f["ea"] for x in tfs for f in x["funcs"]} | {x["ea"] for x in trs} | {x["ea"] for x in abs_} | {x["frag"] for x in abs_} | {x["ea"] for x in gls} | {g for x in gls for g in x["frags"]} | {x["ea"] for x in spls},
          "unplanned existing functions changed %s" % [hex(c) for c in changed[:10]])
     for x in exts:
         must(after[x["ea"]][0] == before[x["ea"]][0], "name of 0x%X changed" % x["ea"])
@@ -734,6 +1225,8 @@ def add_all(items, exts=(), rebs=(), rms=(), tfs=(), xts=(), trs=(), abs_=(), df
     must(not any(g in after for x in gls for g in x["frags"]), "glued fragment function still present")
     if gls:
         log.append("glued: %s" % ["0x%X + %s" % (x["ea"], ["0x%X..0x%X" % tuple(r) for r in x["runs"]]) for x in gls])
+    if spls:
+        log.append("split: %s" % ["0x%X at 0x%X (-> 0x%X..0x%X + 0x%X..0x%X)" % (x["ea"], x["at"], x["ea"], x["at"], x["at"], x["end"]) for x in spls])
     if dfs:
         log.append("data fix: %s" % ["0x%X..0x%X %s" % (x["lo"], x["hi"], x["kind"]) for x in dfs])
     if abs_:
@@ -784,7 +1277,9 @@ def main():
         for ea, end in EXTEND:
             f = ida_funcs.get_func(ea)
             must(f and f.start_ea == ea, "0x%X is not a function start" % ea)
-            if f.end_ea == end and ea in oldx:
+            if ea in oldx:
+                # always re-use the existing manifest entry: a later SPLIT may have changed
+                # f.end_ea without undoing the extension (bytes of the extended run unchanged)
                 exts.append(norm(oldx[ea]))
                 continue
             must(terminated(f.end_ea, end), "0x%X..0x%X does not end in a terminator" % (f.end_ea, end))
@@ -887,9 +1382,22 @@ def main():
                 continue
             must(not any(ida_funcs.get_func(a) for a in range(lo, hi)), "data fix 0x%X..0x%X is owned by a function" % (lo, hi))
             dfs.append({"lo": lo, "hi": hi, "kind": k, "sha256": sha(lo, hi)})
-        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls)
-        MANIFEST.write_text(json.dumps({"finding": 144, "step": "S1c-4 orphan code registered as functions (findings 126-139)",
-                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "add_funcs": items},
+        oldspl = {x["ea"]: x for x in json.loads(MANIFEST.read_text()).get("split_funcs", [])} if MANIFEST.exists() else {}
+        spls = []
+        for ea, at in SPLIT:
+            if ea in oldspl and oldspl[ea]["at"] == at:
+                spls.append(oldspl[ea])
+                continue
+            f = ida_funcs.get_func(ea)
+            must(f and f.start_ea == ea, "0x%X is not a function start (split at 0x%X)" % (ea, at))
+            must(f.end_ea > at > ea, "0x%X: at=0x%X not inside [ea, end=0x%X)" % (ea, at, f.end_ea))
+            must(chunks(ea) == [[ea, f.end_ea]], "0x%X has tail chunks, cannot split" % ea)
+            end = f.end_ea
+            spls.append({"ea": ea, "at": at, "end": end, "name": uname(ea) or "", "far": is_far(ea),
+                         "sha256_head": sha(ea, at), "sha256_tail": sha(at, end)})
+        add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)
+        MANIFEST.write_text(json.dumps({"finding": 160, "step": "S1c-4 split merged functions (findings 145-160 batches 1-16) + orphan code registered (findings 126-144)",
+                                        "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
@@ -904,9 +1412,10 @@ def main():
     abs_ = doc.get("absorb_funcs", [])
     dfs = doc.get("data_fix", [])
     gls = doc.get("glue_funcs", [])
+    spls = doc.get("split_funcs", [])
     states = ([state(it) for it in doc["add_funcs"]] + [ext_state(x) for x in exts] + [rb_state(x) for x in rebs]
               + [rm_state(x) for x in rms] + [tf_state(x) for x in tfs] + [xt_state(x) for x in xts] + [trim_state(x) for x in trs]
-              + [ab_state(x) for x in abs_] + [df_state(x) for x in dfs] + [gl_state(x) for x in gls])
+              + [ab_state(x) for x in abs_] + [df_state(x) for x in dfs] + [gl_state(x) for x in gls] + [sp_state(x) for x in spls])
     fresh_trims = [x for x in trs if trim_state(x) == "fresh"]
     for i, it in enumerate(doc["add_funcs"]):
         if states[i] == "mismatch" and any(x["end"] <= it["ea"] < x["old_end"] for x in fresh_trims):
@@ -921,7 +1430,7 @@ def main():
         log.append("ABORT: live IDB does not match the manifest; nothing changed")
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         return
-    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls)
+    add_all(doc["add_funcs"], exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)
     if os.environ.get("OFDRY"):
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("dry run (OFDRY): not saved")

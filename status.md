@@ -206,6 +206,24 @@ DBFL_KILL).
        `sub_155F2A` (the table words are made words again first); functions 3,587 -> 3,591; backup `.bak_tbl142`.
      - **S1c-4r (finding 143):** 13 orphan "code" runs that are word-table or record data remade as data (new `DATAFIX` mode);
        no function change; backup `.bak_dat143`.
+     - **S1c-5p (finding 160):** P1 COMPLETE: batch 16 (1 split, last mode_record_field_lookup level); functions 3,978 -> 3,979; backup `.bak_split160`.
+     - **S1c-5o (finding 159):** P1 batch 15: 2 splits; functions 3,976 -> 3,978; backup `.bak_split159`.
+     - **S1c-5n (finding 158):** P1 batch 14: 4 splits; functions 3,972 -> 3,976; backup `.bak_split158`.
+     - **S1c-5m (finding 157):** P1 batch 13: 4 splits; functions 3,968 -> 3,972; backup `.bak_split157`.
+     - **S1c-5l (finding 156):** P1 batch 12: 4 splits; fixed multi-level chain plan ordering; functions 3,964 -> 3,968; backup `.bak_split156`.
+     - **S1c-5k (finding 155):** P1 batch 11: 10 splits; functions 3,954 -> 3,964; backup `.bak_split155`.
+     - **S1c-5j (finding 154):** P1 batch 10: 17 splits; functions 3,937 -> 3,954; backup `.bak_split154`.
+     - **S1c-5i (finding 153):** P1 batch 9: 22 splits (3 bugs fixed in tools); functions 3,915 -> 3,937; backup `.bak_split153`.
+     - **S1c-5h (finding 152):** P1 batch 8: 45 splits (3 skipped: deferred P5/R14 cases + ADD conflict); fixed add_all ordering and ext_state; functions 3,870 -> 3,915; backup `.bak_split152`.
+     - **S1c-5g (finding 151):** P1 batch 7: 40 more pure-split merges; functions 3,830 -> 3,870; backup `.bak_split151`.
+     - **S1c-5f (finding 150):** P1 batch 6: 40 more pure-split merges; functions 3,790 -> 3,830; backup `.bak_split150`.
+     - **S1c-5e (finding 149):** P1 batch 5: 40 more pure-split merges; functions 3,750 -> 3,790; backup `.bak_split149`.
+     - **S1c-5d (finding 148):** P1 batch 4: 40 more pure-split merges; functions 3,710 -> 3,750; backup `.bak_split148`.
+     - **S1c-5c (finding 147):** P1 batch 3: 40 more pure-split merges; fixed reg_validate cascade for multi-level splits; functions 3,670 -> 3,710; backup `.bak_split147`.
+     - **S1c-5b (finding 146):** P1 batch 2: 40 more pure-split merged functions; fixed sp_state,
+       is_expected_split, and reg_validate for multi-batch splits; functions 3,630 -> 3,670; backup `.bak_split146`.
+     - **S1c-5a (finding 145):** P1 batch 1: 40 pure-split merged functions split (new SPLIT mode,
+       split_funcs manifest block, sha256-pinned both halves); functions 3,590 -> 3,630; backup `.bak_split145`.
      - **S1c-4s (finding 144):** misdecoded pieces glued back onto `sub_2E20A` (two chunks) and `sub_166F80` (the bogus
        `r38_retn19_stub` fragment removed; new `GLUE` mode); functions 3,591 -> 3,590; ledger 2035 -> 2034; backup `.bak_glue144`.
      - Left open (findings 126-144): the 0x6E696..0x6E8B7 handler cluster (with the R30 menu state machine), 0x6E16E, 0x67BA3 and the padding runs
@@ -218,13 +236,13 @@ DBFL_KILL).
        0x68CC0, 0x68E49, 0x68F20, 0x69123) are undecoded and unreferenced.  0x6940B (`enter 6,0`, far-called from 0x675BA)
        is the real start of r30_record_link; 0x69227 is a real far entry.  Fixing this means merging ~25 named pieces
        (ledger entries lost) and needs a decision on the owning function; deferred.
-   - **Now (after finding 144, measured 2026-11-11):** 3,590 functions, ledger 2,034; 529 mid-body targets / 1,299 sites
-     (407 merged functions, 64 misdecodes, 26 + 23 fall-in entries, 9 other); 96 orphan code runs / 221 B, of which
-     92 are 1-2 B padding left on purpose.  Of the 407 merged targets, 394 are pure splits (978 sites), 12 are shared
-     tails (21 sites) and 1 is multi-chunk.
+   - **Now (after finding 160, measured 2026-11-11):** 3,979 functions, ledger 2,034; 140 mid-body targets / 327 sites
+     (18 merged = 12 shared tails + 1 multi-chunk + 5 deferred, 64 misdecodes, 26+23 fall-in, 9 other); 96 orphan code runs / 221 B.
+     **P1 (pure splits) COMPLETE.**  5 targets deferred to P5 / later investigation., ledger 2,034; 489 mid-body targets / 1,156 sites
+     (367 merged, 64 misdecodes, 26 + 23 fall-in entries, 9 other); 96 orphan code runs / 221 B (92 are 1-2 B padding).
+     Of the 367 merged, 354 are pure splits (~835 sites remaining), 12 shared tails, 1 multi-chunk.
    - **Next:** the full work queue, procedure, mode table and pitfalls are in the [IDB stabilisation plan](docs/workflow/idb_stabilisation_plan.md).  In order:
-     - P0 commit S1c-4r / S1c-4s (findings 143, 144; applied and gated, not committed);
-     - P1 split the 394 pure-split merged functions (new `SPLIT` mode, batches of ~40);
+     - **P1 COMPLETE** (findings 145-160, 16 batches, 389 of 394 pure-split targets split; 5 deferred to P2/P5);
      - P2 the 64 `not_head` misdecodes; P3 the 49 fall-in entries; P4 the 9 `other` targets and 12 shared tails;
      - P5 the 0x6E696..0x6E8B7 handler cluster / R30 menu state machine (needs a function-merge mode);
      - P6 the small leftover orphans (0x6E16E ...); P7 drain the auto queue (~94 functions) under a manifest;

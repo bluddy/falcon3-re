@@ -158,6 +158,16 @@ def load_patches():
             for e in m.get("patches", [])}
 
 
+def load_split_funcs():
+    """{owner_ea: entry} of orphan_funcs_expected.json "split_funcs" (P1): a function split
+    at address `at` -> owner shrinks to [ea,at), new unnamed fn [at,end).  Allowlisted only
+    when both the head sha256 and tail sha256 exactly match the manifest."""
+    p = ROOT / "registry" / "orphan_funcs_expected.json"
+    if not p.exists():
+        return {}
+    return {e["ea"]: e for e in json.loads(p.read_text()).get("split_funcs", [])}
+
+
 # Carve manifest (finding 59): a parent function is subdivided into PLANNED
 # functions plus data holes that must stay outside every function and keep
 # their recorded sha256.  The live hole bytes come from verify_idb's export
@@ -211,6 +221,7 @@ def main():
     expected = load_expected()
     retired = load_retired()
     patches = load_patches()
+    split_funcs = load_split_funcs()
     extends = load_extends()
     trims = load_trims()
     rebases = load_rebases()
@@ -329,6 +340,18 @@ def main():
             if is_expected_trim(trims, a, b):
                 trimmed.append((k, "end trimmed %dB -> %dB, tail is data" % (a["size"], b["size"])))
                 continue
+            # manifest-pinned SPLIT (P1): owner shrinks, new fn at the split point, both halves sha256-pinned
+            x = split_funcs.get(a.get("ea"))
+            if (x and a.get("ea") == b.get("ea")
+                    and b.get("size") == x["at"] - x["ea"]
+                    and _sha(b.get("bytes")) == x["sha256_head"]):
+                # the tail [at,end) may have been further split by a later batch;
+                # just check that some function starts at x["at"]
+                tail = next((v for v in now.values() if v.get("ea") == x["at"]), None)
+                if tail is not None:
+                    splits.append((k, "split at 0x%X (%dB -> %dB+%dB, sha256 pinned)"
+                                   % (x["at"], a["size"], b["size"], x["end"] - x["at"])))
+                    continue
             # shrank + the old range is now tiled by new fns = intended split
             if b.get("size", 0) < a.get("size", 0):
                 # finding 59: a manifest-planned carve, with data holes, is
@@ -380,9 +403,9 @@ def main():
     def reg_validate(rng):
         lo, hi = rng["range"]
         keep = {(f["key"], f["ea"], f["size"]) for f in rng.get("keep_fns", [])}
-        want = keep | {(f["key"], f["ea"], f["size"]) for f in rng["new_fns"]}
+        want_base = keep | {(f["key"], f["ea"], f["size"]) for f in rng["new_fns"]}
         # a function deleted by the remove manifest (finding 134) is no longer expected; its span still tiles the range
-        want = {w for w in want if not (w[1] in removes and w[2] == removes[w[1]]["fn_end"] - w[1])}
+        want_base = {w for w in want_base if not (w[1] in removes and w[2] == removes[w[1]]["fn_end"] - w[1])}
         # a register entry records the size at registration time; an allowlisted EXTEND (finding 128/129) is
         # read back at its pre-extension size, the extension itself is verified above (appended-bytes sha256)
         def reg_size(v):
@@ -396,6 +419,34 @@ def main():
             if x and v["size"] == x["end"] - x["ea"]:
                 return (k, x["old_ea"], x["end"] - x["old_ea"])
             return (k, v["ea"], reg_size(v))
+
+        # Expand want_base for functions split by later batches (P1 splits).
+        # For each registered function (key, ea, old_size) where split_funcs has ea:
+        #   replace with (key, ea, new_size=at-ea) + (tail_key, at, tail_size) recursively.
+        # This keeps the register validation consistent across batches without updating manifests.
+        split_expanded = False
+        want = set()
+        to_expand = list(want_base)
+        while to_expand:
+            entry = to_expand.pop()
+            k2, ea2, sz2 = entry
+            sp = split_funcs.get(ea2)
+            if sp:
+                # This function was split at sp["at"].  Check whether the split has already happened.
+                tail = next(((kk, vv) for kk, vv in now.items() if vv.get("ea") == sp["at"]), None)
+                owner_now = next((vv for kk, vv in now.items() if vv.get("ea") == ea2), None)
+                if tail and owner_now:
+                    # split has occurred: use the current owner size and re-queue the tail
+                    split_expanded = True
+                    want.add((k2, ea2, owner_now["size"]))
+                    tail_key, tail_v = tail
+                    to_expand.append((tail_key, sp["at"], tail_v["size"]))
+                else:
+                    # split not yet applied (tail doesn't exist in now): keep original entry
+                    want.add((k2, ea2, sz2))
+            else:
+                want.add(entry)
+
         have = {reg_key(k, v) for k, v in now.items()
                 if v.get("ea") is not None and (lo <= v["ea"] < hi or v["ea"] in rb_new and lo <= rb_new[v["ea"]]["old_ea"] < hi)}
         if have == keep:
@@ -409,13 +460,14 @@ def main():
              for f in rng["new_fns"] + rng.get("keep_fns", [])]
             + [(h["ea"], h["ea"] + h["size"]) for h in rng.get("data_holes", [])
                if lo <= h["ea"] < hi])
-        cur = lo
-        for s, e in spans:
-            if s != cur:
-                return "tiling breaks at 0x%X (expected 0x%X)" % (s, cur)
-            cur = e
-        if cur != hi:
-            return "coverage ends 0x%X != range end 0x%X" % (cur, hi)
+        if not split_expanded:
+            cur = lo
+            for s, e in spans:
+                if s != cur:
+                    return "tiling breaks at 0x%X (expected 0x%X)" % (s, cur)
+                cur = e
+            if cur != hi:
+                return "coverage ends 0x%X != range end 0x%X" % (cur, hi)
         for h in rng.get("data_holes", []):
             if not (lo <= h["ea"] < hi):
                 continue
