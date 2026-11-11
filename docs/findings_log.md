@@ -7443,3 +7443,34 @@ at 0x33D83.  far_mode_event_dispatch is now fully decomposed into 6 separate fun
 - finding 162: 19 splits (batch 1)
 - findings 163-165: 6 splits (far_mode_event_dispatch chain)
 - Total: 25 of 25 targets split (1 deferred to P4: (0x1189E, 0x118D6) shared tail)
+
+## 2026-11-11 166 - P4 batch 1: 5 pure-split merged_fn entries
+
+**What was found.**  P4 survey (`analysis/s1/p4_probe.py`) enumerated all `other` and
+`after_ret_or_jmp(merged_fn)` targets.  5 merged_fn entries had no internal jumps from
+the owner and no tail chunks: sub_3FAAE (0x3FB08, 1 caller), sub_4F84B (0x4F870, P3-created),
+terrain_vm_flag_gate (0x4F964, 1 caller), r14_farptr_call_gate (0x6E404, step 1 of 2),
+sub_12C683 (0x12C764, deferred from P1 "ADD conflict").
+
+**Three tooling bugs found and fixed:**
+1. `log = []` accidentally removed by P4 editing → all idat.exe runs failed with NameError
+   (exit code 1, stale log appeared to show success)
+2. `SPLIT_OWNERS` set added + `state()` updated: an add_func item can be "applied"
+   even if the function's end changed (because a later SPLIT truncated it)
+3. `SPLIT_RELAX = {at for _, at in SPLIT[-19:]}` → replaced with explicit set (more robust)
+
+**Numbers after finding 166:**
+- Functions: 4,003 → 4,008 (+5)
+- split_funcs manifest: 413 → 418 entries
+- P4 pending: 0x6E43B (r14, needs 0x6E404 split first → finding 167), shared tails, `other` real entries
+
+**Gates:** INTACT (4008), naming OK (2034), verify_rebuild faithful (SPLIT 5, ADDED 5, CHANGED 0).
+
+## 2026-11-11 167 - P4 cont: r14_farptr_call_gate second split
+
+**What was done.**  Split r14_farptr_call_gate (0x6E404, created by finding 166) at 0x6E43B.
+One entry (retf before 0x6E43B, no internal jmps from owner).
+
+**Numbers after finding 167:** Functions: 4,008 → 4,009 (+1); split_funcs: 419 entries.
+
+**Gates:** INTACT (4009), naming OK (2034), verify_rebuild faithful (CHANGED 0, ADDED 6, SPLIT 5).

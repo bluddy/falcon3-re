@@ -641,7 +641,26 @@ SPLIT += [
     (0x33C1B, 0x33D83),   # far_mode_event_dispatch (6 of 6, final)
 ]
 SPLIT_RELAX |= {0x33D83}  # P3 fall-through entry
+# finding 166 P4 batch 1: 5 pure-split merged_fn entries (no internal jmps, no tail chunks)
+# These are `after_ret_or_jmp(merged_fn)` entries that were missed in P1 (created later by P1/P3
+# splits or deferred due to ADD conflict), confirmed no internal jumps from owner, no tail chunks.
+SPLIT += [
+    (0x3FAAE, 0x3FB08),   # sub_3FAAE: retn before 0x3FB08, 1 caller
+    (0x4F84B, 0x4F870),   # sub_4F84B (from P3 f162): retn before 0x4F870, 1 caller
+    (0x4F8BC, 0x4F964),   # terrain_vm_flag_gate: retf before 0x4F964, 1 caller
+    (0x6E3D0, 0x6E404),   # r14_farptr_call_gate: retf before 0x6E404 (step 1 of 2)
+    (0x12C683, 0x12C764), # sub_12C683: retn before 0x12C764 (deferred from P1: ADD conflict resolved)
+]
 log = []
+# SPLIT_OWNERS: owner ea values for all SPLIT entries.  Used by state() to recognise
+# add_func items that were later split (their end changes after the split is applied,
+# so a plain end-equality check would return "mismatch" and try to re-add them).
+SPLIT_OWNERS = {ea for ea, at in SPLIT}
+# finding 167 P4 cont: r14_farptr_call_gate second split (needs 0x6E404 from f166)
+SPLIT += [
+    (0x6E404, 0x6E43B),   # r14_farptr_call_gate: retf before 0x6E43B (step 2 of 2)
+]
+SPLIT_OWNERS |= {0x6E404}  # update owners set
 
 
 def descend(seed, lo, hi, made):
@@ -767,6 +786,10 @@ def regions(item):
 def state(item):
     f = ida_funcs.get_func(item["ea"])
     if f and f.start_ea == item["ea"] and f.end_ea == item["end"] and (not item.get("tails") or chunks(item["ea"]) == sorted(regions(item))):
+        return "applied"
+    # If this function was later split (ea is in SPLIT_OWNERS), its end changed from item["end"].
+    # The function still starts at item["ea"] and was successfully created; return "applied".
+    if f and f.start_ea == item["ea"] and item["ea"] in SPLIT_OWNERS:
         return "applied"
     if (not any(ida_funcs.get_func(a) for lo, hi in regions(item) for a in range(lo, hi))
             and sha(item["ea"], item["end"]) == item["sha256"]
@@ -1571,7 +1594,7 @@ def main():
             fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
                         "head_sha256": sha(head, t)})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
-        MANIFEST.write_text(json.dumps({"finding": 165, "step": "S1c-4 split (findings 145-160) + P2 misdecodes (finding 161) + P3 prologue splits (findings 162-165)",
+        MANIFEST.write_text(json.dumps({"finding": 167, "step": "S1c-4 split (findings 145-160) + P2 (finding 161) + P3 (findings 162-165) + P4 (findings 166-167)",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
                                        indent=1).replace("\n", "\r\n"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
