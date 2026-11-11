@@ -1,0 +1,17 @@
+=== BEFORE ===
+item_size(h): 5
+is_code(h): True
+is_code(t): False
+item_head(t): 0x3592B
+fn: 0x356A7..0x35934
+disasm at h: mov     byte ptr cs:loc_35929, al
+byte at h: 66
+byte at t: 2E
+insn_size: 5, clear_len: 12
+
+=== AFTER del_items ===
+item_size(h): 1 is_code(h): False
+item_size(t): 1 is_code(t): False item_head(t): 0x3592C
+create_insn(t): n=4
+disasm_t: mov     byte ptr cs:loc_35929, al
+item_head(t): 0x3592C, is_code(t): True
