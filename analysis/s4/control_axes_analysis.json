@@ -1,0 +1,539 @@
+{
+  "control_axes_read": {
+    "address": "0x2234b",
+    "size": 211,
+    "calls": [
+      "cs_byte_test_zero",
+      "joystick_axis_read_clamp"
+    ],
+    "xref_count": 1,
+    "callers": {
+      "game_config_apply_init": 1
+    },
+    "disasm_sample": [
+      {
+        "address": "0x2234b",
+        "disasm": "call    cs_byte_test_zero"
+      },
+      {
+        "address": "0x22350",
+        "disasm": "jz      short loc_2236B"
+      },
+      {
+        "address": "0x22352",
+        "disasm": "call    joystick_axis_read_clamp"
+      },
+      {
+        "address": "0x22357",
+        "disasm": "mov     word ptr cs:byte_22232+4, bx"
+      },
+      {
+        "address": "0x2235c",
+        "disasm": "mov     word ptr cs:byte_22232+6, ax"
+      },
+      {
+        "address": "0x22360",
+        "disasm": "mov     word ptr cs:byte_22232, cx"
+      },
+      {
+        "address": "0x22365",
+        "disasm": "mov     word ptr cs:byte_22232+2, dx"
+      },
+      {
+        "address": "0x2236a",
+        "disasm": "retf"
+      },
+      {
+        "address": "0x2236b",
+        "disasm": "sub     dx, dx"
+      },
+      {
+        "address": "0x2236d",
+        "disasm": "sub     bx, bx"
+      },
+      {
+        "address": "0x2236f",
+        "disasm": "test    al, 3"
+      },
+      {
+        "address": "0x22371",
+        "disasm": "jz      short loc_223A3"
+      },
+      {
+        "address": "0x22373",
+        "disasm": "mov     bx, cs:word_22244"
+      },
+      {
+        "address": "0x22378",
+        "disasm": "test    al, 2"
+      },
+      {
+        "address": "0x2237a",
+        "disasm": "jnz     short loc_22394"
+      },
+      {
+        "address": "0x2237c",
+        "disasm": "mov     bx, cs:word_22242"
+      },
+      {
+        "address": "0x22381",
+        "disasm": "cmp     bx, 9"
+      },
+      {
+        "address": "0x22384",
+        "disasm": "jg      short loc_2238B"
+      },
+      {
+        "address": "0x22386",
+        "disasm": "shr     bx, 1"
+      },
+      {
+        "address": "0x22388",
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "address": "0x2238b",
+        "disasm": "neg     bx"
+      },
+      {
+        "address": "0x2238d",
+        "disasm": "mov     cs:word_22244, dx"
+      },
+      {
+        "address": "0x22392",
+        "disasm": "jmp     short loc_223A3"
+      },
+      {
+        "address": "0x22394",
+        "disasm": "mov     cs:word_22242, dx"
+      },
+      {
+        "address": "0x22399",
+        "disasm": "cmp     bx, 9"
+      },
+      {
+        "address": "0x2239c",
+        "disasm": "jg      short loc_223A3"
+      },
+      {
+        "address": "0x2239e",
+        "disasm": "shr     bx, 1"
+      },
+      {
+        "address": "0x223a0",
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "address": "0x223a3",
+        "disasm": "sub     cx, cx"
+      },
+      {
+        "address": "0x223a5",
+        "disasm": "test    al, 0Ch"
+      }
+    ]
+  },
+  "joystick_poll": {
+    "address": "0x1122a",
+    "size": 111,
+    "calls": [],
+    "xref_count": 1,
+    "callers": {
+      "joystick_gate_counter": 1
+    },
+    "disasm_sample": [
+      {
+        "address": "0x1122a",
+        "disasm": "cmp     cs:byte_11171, 0"
+      },
+      {
+        "address": "0x11230",
+        "disasm": "jz      short locret_11298"
+      },
+      {
+        "address": "0x11232",
+        "disasm": "cmp     cs:byte_11175, 0"
+      },
+      {
+        "address": "0x11238",
+        "disasm": "jz      short loc_1128B"
+      },
+      {
+        "address": "0x1123a",
+        "disasm": "push    cx"
+      },
+      {
+        "address": "0x1123b",
+        "disasm": "push    bx"
+      },
+      {
+        "address": "0x1123c",
+        "disasm": "push    dx"
+      },
+      {
+        "address": "0x1123d",
+        "disasm": "push    ax"
+      },
+      {
+        "address": "0x1123e",
+        "disasm": "cmp     cs:word_11176, 0"
+      },
+      {
+        "address": "0x11244",
+        "disasm": "jz      short loc_11253"
+      },
+      {
+        "address": "0x11246",
+        "disasm": "mov     bx, cs:word_11176"
+      },
+      {
+        "address": "0x1124b",
+        "disasm": "mov     ah, 84h"
+      },
+      {
+        "address": "0x1124d",
+        "disasm": "xor     dx, dx"
+      },
+      {
+        "address": "0x1124f",
+        "disasm": "int     15h; SYSTEM - READ JOYSTICK (AT,XT2,XT286,PS)"
+      },
+      {
+        "address": "0x11251",
+        "disasm": "jmp     short loc_11257"
+      },
+      {
+        "address": "0x11253",
+        "disasm": "mov     dx, 201h"
+      },
+      {
+        "address": "0x11256",
+        "disasm": "in      al, dx; Game I/O port"
+      },
+      {
+        "address": "0x11257",
+        "disasm": "cmp     cs:word_1117A, 0"
+      },
+      {
+        "address": "0x1125d",
+        "disasm": "jz      short loc_11282"
+      },
+      {
+        "address": "0x1125f",
+        "disasm": "mov     cx, 8"
+      },
+      {
+        "address": "0x11262",
+        "disasm": "xor     dx, dx"
+      },
+      {
+        "address": "0x11264",
+        "disasm": "push    ax"
+      },
+      {
+        "address": "0x11265",
+        "disasm": "not     ax"
+      },
+      {
+        "address": "0x11267",
+        "disasm": "and     ax, 0F0h"
+      },
+      {
+        "address": "0x1126a",
+        "disasm": "mov     dl, al"
+      },
+      {
+        "address": "0x1126c",
+        "disasm": "shr     al, 1"
+      },
+      {
+        "address": "0x1126e",
+        "disasm": "adc     dh, 0"
+      },
+      {
+        "address": "0x11271",
+        "disasm": "loop    loc_1126C"
+      },
+      {
+        "address": "0x11273",
+        "disasm": "pop     ax"
+      },
+      {
+        "address": "0x11274",
+        "disasm": "cmp     dh, 2"
+      }
+    ]
+  },
+  "key_event_process": {
+    "address": "0x181a7",
+    "size": 290,
+    "calls": [
+      "state_word_77b34_get",
+      "state_mode_check",
+      "event_tone_key_play",
+      "key_mapper",
+      "key_action_execute_sbi",
+      "kb_record_key_event"
+    ],
+    "xref_count": 1,
+    "callers": {
+      "key_event_gated_process": 1
+    },
+    "disasm_sample": [
+      {
+        "address": "0x181a7",
+        "disasm": "enter   2, 0"
+      },
+      {
+        "address": "0x181ab",
+        "disasm": "push    si"
+      },
+      {
+        "address": "0x181ac",
+        "disasm": "push    di"
+      },
+      {
+        "address": "0x181ad",
+        "disasm": "mov     si, [bp+arg_0]"
+      },
+      {
+        "address": "0x181b0",
+        "disasm": "mov     di, [bp+arg_4]"
+      },
+      {
+        "address": "0x181b3",
+        "disasm": "mov     [bp+var_2], 0"
+      },
+      {
+        "address": "0x181b8",
+        "disasm": "mov     ax, 7772h"
+      },
+      {
+        "address": "0x181bb",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "address": "0x181bd",
+        "disasm": "cmp     word ptr es:byte_774F3+2A6h, 1"
+      },
+      {
+        "address": "0x181c3",
+        "disasm": "jnz     short loc_181E0"
+      },
+      {
+        "address": "0x181c5",
+        "disasm": "mov     ax, 7772h"
+      },
+      {
+        "address": "0x181c8",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "address": "0x181ca",
+        "disasm": "cmp     word ptr es:byte_774F3+2A4h, 0"
+      },
+      {
+        "address": "0x181d0",
+        "disasm": "jnz     short loc_181E0"
+      },
+      {
+        "address": "0x181d2",
+        "disasm": "mov     ax, 7772h"
+      },
+      {
+        "address": "0x181d5",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "address": "0x181d7",
+        "disasm": "mov     word ptr es:byte_7780A+274h, 1"
+      },
+      {
+        "address": "0x181de",
+        "disasm": "jmp     short loc_181EC"
+      },
+      {
+        "address": "0x181e0",
+        "disasm": "mov     ax, 7772h"
+      },
+      {
+        "address": "0x181e3",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "address": "0x181e5",
+        "disasm": "mov     word ptr es:byte_7780A+274h, 0"
+      },
+      {
+        "address": "0x181ec",
+        "disasm": "mov     ax, 7772h"
+      },
+      {
+        "address": "0x181ef",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "address": "0x181f1",
+        "disasm": "cmp     word ptr es:byte_77B1F+1Dh, 0"
+      },
+      {
+        "address": "0x181f7",
+        "disasm": "jnz     short loc_181FE"
+      },
+      {
+        "address": "0x181f9",
+        "disasm": "xor     ax, ax"
+      },
+      {
+        "address": "0x181fb",
+        "disasm": "jmp     loc_182C5"
+      },
+      {
+        "address": "0x181fe",
+        "disasm": "call    state_word_77b34_get"
+      },
+      {
+        "address": "0x18203",
+        "disasm": "or      ax, ax"
+      },
+      {
+        "address": "0x18205",
+        "disasm": "jz      short loc_1820F"
+      }
+    ]
+  },
+  "mouse_int33_dispatch": {
+    "address": "0x1018f",
+    "size": 120,
+    "calls": [],
+    "xref_count": 7,
+    "callers": {
+      "sub_10DC24": 1,
+      "sub_12FAC3": 1,
+      "sub_130B39": 2,
+      "sub_13142E": 1
+    },
+    "disasm_sample": [
+      {
+        "address": "0x1018f",
+        "disasm": "push    bp"
+      },
+      {
+        "address": "0x10190",
+        "disasm": "mov     bp, sp"
+      },
+      {
+        "address": "0x10192",
+        "disasm": "push    ds"
+      },
+      {
+        "address": "0x10193",
+        "disasm": "push    es"
+      },
+      {
+        "address": "0x10194",
+        "disasm": "push    di"
+      },
+      {
+        "address": "0x10195",
+        "disasm": "push    si"
+      },
+      {
+        "address": "0x10196",
+        "disasm": "push    dx"
+      },
+      {
+        "address": "0x10197",
+        "disasm": "push    cx"
+      },
+      {
+        "address": "0x10198",
+        "disasm": "push    bx"
+      },
+      {
+        "address": "0x10199",
+        "disasm": "push    ax"
+      },
+      {
+        "address": "0x1019a",
+        "disasm": "mov     ax, [bp+arg_4]"
+      },
+      {
+        "address": "0x1019d",
+        "disasm": "mov     ds, ax"
+      },
+      {
+        "address": "0x1019f",
+        "disasm": "mov     si, [bp+arg_2]"
+      },
+      {
+        "address": "0x101a2",
+        "disasm": "mov     ax, [bp+arg_8]"
+      },
+      {
+        "address": "0x101a5",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "address": "0x101a7",
+        "disasm": "mov     ax, [si]"
+      },
+      {
+        "address": "0x101a9",
+        "disasm": "cmp     ax, 9"
+      },
+      {
+        "address": "0x101ac",
+        "disasm": "jz      short loc_101FD"
+      },
+      {
+        "address": "0x101ae",
+        "disasm": "cmp     ax, 0Ch"
+      },
+      {
+        "address": "0x101b1",
+        "disasm": "jz      short loc_101FD"
+      },
+      {
+        "address": "0x101b3",
+        "disasm": "cmp     ax, 10h"
+      },
+      {
+        "address": "0x101b6",
+        "disasm": "jz      short loc_101FD"
+      },
+      {
+        "address": "0x101b8",
+        "disasm": "cmp     ax, 14h"
+      },
+      {
+        "address": "0x101bb",
+        "disasm": "jz      short loc_101FD"
+      },
+      {
+        "address": "0x101bd",
+        "disasm": "cmp     ax, 16h"
+      },
+      {
+        "address": "0x101c0",
+        "disasm": "jz      short loc_101FD"
+      },
+      {
+        "address": "0x101c2",
+        "disasm": "cmp     ax, 17h"
+      },
+      {
+        "address": "0x101c5",
+        "disasm": "jz      short loc_101FD"
+      },
+      {
+        "address": "0x101c7",
+        "disasm": "cmp     ax, 18h"
+      },
+      {
+        "address": "0x101ca",
+        "disasm": "jz      short loc_101FD"
+      }
+    ]
+  }
+}
