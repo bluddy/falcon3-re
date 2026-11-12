@@ -16808,10 +16808,5 @@ symbols:
   notes: 'Resets kind index and clears extended-slot flags for a farobj. HYPOTHESIS.'
 
 # --- S4 Level-1 additions (2026-11-12) ---
-- ida: sub_260AF
-  name: stub_to_trig_lookup
-  kind: function
-  sig: 'void far; AX=BX=table_offset; calls trig_table_lookup (near, 0x249D8) + retf.
-    4B. 192K dyn, 25 callers. HYPOTHESIS.'
-  notes: 'Far-callable wrapper for trig_table_lookup. Callers include rot_segment_strip_draw,
-    tile_strip_project_draw. The trig table is at 0x7B0E:0x3868. S4 Level-1.'
+# (sub_260AF already named stub_to_249d8 — kept, following stub_to_EA convention)
+# stub_to_249d8 = far wrapper for trig_table_lookup (near at 0x249D8), trig table at 0x7B0E:0x3868
