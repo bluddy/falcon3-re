@@ -17051,3 +17051,61 @@ symbols:
   name: stub_via_cs_29d0
   kind: function
   notes: dispatch stub call far cs:[0x29D0]; 4.6K calls; finding 198
+
+# S4 Level-0 batch 6 (ranks 66-80, finding 201+)
+- ida: sub_25DEB
+  name: dispatch_5arg_via_cs_2a40
+  kind: function
+  notes: 5-arg marshalling (SI/DI/BX/AX/DX) then call far cs:[0x2A40]; 3.3K calls; finding 201
+- ida: sub_256B2
+  name: stub_via_cs_29e4
+  kind: function
+  notes: dispatch stub call far cs:[0x29E4]; 3.2K calls; finding 201
+- ida: sub_25E08
+  name: stub_via_cs_2a40
+  kind: function
+  notes: dispatch stub call far cs:[0x2A40]; 2.9K calls; finding 201
+- ida: sub_2295E
+  name: stub_via_cs_29ec
+  kind: function
+  notes: dispatch stub call far cs:[0x29EC]; 2.9K calls; finding 201
+- ida: sub_260BF
+  name: seg7b0e_table_3fda_copy_scale
+  kind: function
+  notes: seg 0x7B0E indexed table (BX*8) at 0x3FDA, copy 4 words + scale last by 16; 2.8K calls; finding 201
+- ida: sub_1FE54
+  name: seg7b0e_table_3052_dword_get
+  kind: function
+  notes: seg 0x7B0E indexed table (BX*4) read dword at 0x3052; 2.6K calls; finding 201
+- ida: sub_24CA4
+  name: cs_dispatcher_params_save_54f8_to_5500
+  kind: function
+  notes: backup CS:[0x54F8/FA/FB/FC] dispatcher params to CS:[0x5500+]; 2.5K calls; finding 201
+- ida: sub_24D0D
+  name: cs_dispatcher_param_setup_bx_indexed
+  kind: function
+  notes: extract BX top 2 bits to CS:[0x54FC], index CS:[0x54F0+] table by lower 14 bits; 2.4K calls; finding 201
+- ida: sub_24CC5
+  name: cs_dispatcher_params_restore_5500_to_54f8
+  kind: function
+  notes: restore CS:[0x54F8/FA/FB/FC] dispatcher params from CS:[0x5500+]; 2.4K calls; finding 201
+- ida: sub_231D3
+  name: cs_word_3666_get
+  kind: function
+  notes: read CS:[0x3666] to AX, pairs with batch 3 clamped setter; 2.4K calls; finding 201
+- ida: sub_263EA
+  name: stub_via_cs_2a00
+  kind: function
+  notes: dispatch stub call far cs:[0x2A00], extends 0x2AA0+ downward; 2.0K calls; finding 201
+- ida: sub_25CCB
+  name: coord_pair_scale_div8_add
+  kind: function
+  notes: read [SI] and [SI+2], divide by 8, add to BX and DI; 1.8K calls; finding 201
+- ida: sub_22DFA
+  name: cs_word_3767_set
+  kind: function
+  notes: write AX to CS:[0x3767]; 1.7K calls; finding 201
+- ida: sub_22DDC
+  name: cs_dword_3702_set
+  kind: function
+  notes: write DX:AX to CS:[0x3702:0x3704], extends 0x3662-0x3708 region; 1.7K calls; finding 201
