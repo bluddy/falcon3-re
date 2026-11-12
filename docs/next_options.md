@@ -79,18 +79,27 @@ remaining unknown-DS operands identified in finding 122.
 
 ## S4 Deep dive
 
-### Bottom-up function reading
-The callgraph has **327 endpoints, 911/1,232 nodes, 6 levels** (callgraph_partial.json).
-Good entry points (Level-0 hardware/kernel leaves):
-- `op_dispatch` (32-slot DOS service shim: alloc/free/open/close/read/write/lseek)
-- `fn_table_dispatch` (view/projection dispatcher, 15 modes)
-- IRQ handlers: `int8_vector_hook`/`unhook`, `sound_device_init`
-- I/O: `kb_records_rebuild`, `key_code_resolve`, `file_create`
-- Graphics: `vgraph_slot_N` callees (once named)
+### Bottom-up function reading — IN PROGRESS (2026-11-12)
+The callgraph has **327 endpoints, 2364/4127 Level-0 leaves, 30 levels** (callgraph rebuilt).
+Initial Level-0 analysis complete for 28 high-traffic leaves (see `registry/functions.yaml`).
 
-Work bottom-up: re-verify existing names against post-120/122 xrefs; add new names;
-propagate types upward. The 2,034 existing ledger entries predate the boundary repairs
-and may have errors from old wrong xrefs.
+**Confirmed renames:**
+- `bda_equipment_flag_get` → `bda_kb_flag_get` (PROVEN: 0x417 is keyboard flags, not equipment)
+- `state_farptr_get` → `map_tile_pos_get` (STRONG: clearly returns map X/Y tile coords)
+- `fixed_abs_div4` → documented as abs_i16 net effect (HYPOTHESIS: naming.yaml not yet changed)
+
+**New names assigned:**
+- `clip_or_draw_dispatch` (sub_26099): sign-of-AX selects draw vs. clip callback
+- `farobj_vec3_accum_b_ret`: far wrapper returning fixed_vec3_accumulate_b result
+
+**Key architecture understood:**
+- `farptr_table_get` = farobj instance slot lookup (table in R05_400C:0x34, 4B/entry)
+- `active_farptr_set/restore` = current 3D batch context pointer (CS globals 0x22210-0x22216)
+- `cs:dword_220D0/220D4/220A0/220C8/220E0/220EC` = opcode handler pointers (render pipeline)
+- `timer_tick_isr` = IRQ0 at ~18.2Hz, every 4th tick chains to BIOS / joystick poll
+- `farobj_render_vtable` at 0x26400 (14 entries: object_quad_proj_draw through flag_1f733_gate)
+
+**Next: continue Level-0 analysis, then Level-1 (398 functions).**
 
 ---
 

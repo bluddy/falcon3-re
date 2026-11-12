@@ -1,0 +1,383 @@
+# S4 Function Evidence — structured analysis of Falcon 3 functions
+#
+# CERTAINTY (inherits game_knowledge.yaml scale):
+#   PROVEN    — byte-level proof (sha, exact disasm match, documented API)
+#   STRONG    — 2+ independent signals agree (disasm + trace/callers)
+#   HYPOTHESIS — plausible from code reading, single signal
+#   UNKNOWN   — not yet analysed
+#   DISPROVEN — previous name/understanding was wrong; kept for history
+#
+# API format: "return_type name(params...)" — C-ish, real-mode callers
+#   calling_conv: far_cdecl | near_cdecl | register | isr
+#   register: params in AX, BX, CX, DX, SI, DI, ES, DS, ... ; return in AX/DX:AX/ES:DI
+#   stack args use BP+4 (near) or BP+6 (far, because far retaddr = 4B) offsets
+#
+# first analysis pass (S4): 2026-11-12, findings derived from Level-0 disassembly probe
+
+schema: 1
+
+functions:
+
+  - ea: "0x1018F"
+    key: sub_1018F
+    name: mouse_int33_dispatch          # already in naming.yaml; name is accurate
+    name_certainty: STRONG
+    desc: >
+      Far function called by the DOS INT 33h mouse driver as an event callback.
+      Receives a pointer to a mouse-event record (DS:SI = seg:offset of the record,
+      ES = an extra segment).  First word of the record is the INT 33h function number
+      (move=1, left-btn=2/4, right=8/0x10, etc.; specific tests for 9, 0xC, 0x10,
+      0x14, 0x16-0x19, 0x1F-0x21).  Dispatches to the game's mouse state update.
+    calling_convention: far_cdecl
+    params:
+      - {stack_offset: "bp+6", name: event_offset, type: uint16, reg_hint: SI, certainty: STRONG,
+         notes: "offset of the mouse event record; function number at [SI+0], buttons at [SI+2], delta at [SI+4]"}
+      - {stack_offset: "bp+8", name: event_seg, type: uint16, reg_hint: DS, certainty: STRONG,
+         notes: "segment of the mouse event record"}
+      - {stack_offset: "bp+0xC", name: extra_seg, type: uint16, reg_hint: ES, certainty: HYPOTHESIS}
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+    globals: []
+
+  - ea: "0x112A1"
+    key: sub_112A1
+    name: input_status_pack
+    name_certainty: HYPOTHESIS
+    desc: >
+      Packs the current joystick/mouse button state into a single byte returned in AL.
+      Uses CS:word_11102 (two bytes, in the input-driver CS segment) as a latch.
+      The 0xF0 mask in AH and the nibble shifts suggest 4-bit joystick button fields.
+      Called only by mouse_buttons_get and mouse_buttons_get_2.
+    calling_convention: register
+    params: []
+    return: "al = packed input status byte"
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:word_11102", proposed_name: joy_btn_latch, type: uint16,
+         desc: "joystick/mouse button state latch — high nibble and low nibble packed separately",
+         certainty: HYPOTHESIS}
+
+  - ea: "0x24E5D"
+    key: sub_24E5D
+    name: bda_kb_flag_get              # RENAME from bda_equipment_flag_get
+    old_name: bda_equipment_flag_get
+    old_name_verdict: DISPROVEN
+    name_certainty: PROVEN
+    desc: >
+      Reads the BIOS Data Area keyboard flags byte at ES:0x417 (ES=0).
+      0x417 = keyboard status flags byte 1 (Caps/Num/Scroll-Lock states, Shift/Alt/Ctrl pressed).
+      NOT the equipment flags (which are at 0x410-0x411).
+      Returns zero-extended 8-bit value in AX.
+    calling_convention: far_cdecl
+    params: []
+    return: "ax = BDA keyboard flags byte (uint16, upper byte = 0)"
+    return_certainty: PROVEN
+    certainty: PROVEN
+    globals:
+      - {ea: "0:0x417", name: bda_keyboard_flags, type: uint8, desc: "BDA keyboard status flags (Shift/Alt/Ctrl/Lock states)", certainty: PROVEN}
+
+  - ea: "0x22AFF"
+    key: sub_22AFF
+    name: timer_tick_isr
+    name_certainty: PROVEN
+    desc: >
+      IRQ0 (PIT timer) interrupt service routine. Runs at ~18.2 Hz.
+      Maintains two counters: word_22220 (increments every tick if gate byte_2224B != 1)
+      and word_22222 (always increments). Every 4th tick (word_22222 AND 3 == 0):
+      either chains to original BIOS timer vector (loc_22B27) or just sends EOI.
+      Also chains to joystick polling when byte_22246 != 0 and gate not set.
+    calling_convention: isr
+    params: []
+    return: "IRET"
+    return_certainty: PROVEN
+    certainty: PROVEN
+    globals:
+      - {ea: "cs:byte_2224B", proposed_name: timer_gate_flag, type: uint8, desc: "ISR gate: 1 = skip tick counter increment", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22220", proposed_name: tick_counter, type: uint16, desc: "gated tick counter; increments each IRQ0 when gate=0", certainty: STRONG}
+      - {ea: "cs:word_22222", proposed_name: timer_divider, type: uint16, desc: "ungated tick counter; AND 3 drives 4-tick chain to BIOS", certainty: STRONG}
+      - {ea: "cs:byte_22246", proposed_name: joystick_timer_flag, type: uint8, desc: "enables joystick polling chain in timer ISR", certainty: HYPOTHESIS}
+
+  - ea: "0x2703F"
+    key: sub_2703F
+    name: farobj_vtable_get            # RENAME from farptr_table_get
+    old_name: farptr_table_get
+    old_name_verdict: DISPROVEN
+    name_certainty: STRONG
+    desc: >
+      Looks up an entry in the farobj virtual-dispatch table stored in R05_400C.
+      Table starts at offset 0x34 within the R05 segment; each entry is a 4-byte
+      far pointer (selector:offset).  Input AX = 0-based slot index.
+      Returns ES:DI = far pointer to the function/data for that slot.
+      78 static callers include far_obj_field_call, farobj_field_set,
+      farobj_copy_invoke — this is the central farobj dispatch mechanism.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+    return: "ES:DI = far pointer from vtable entry"
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "R05_400C:0x34", proposed_name: farobj_vtable, type: "far_ptr[N]",
+         desc: "farobj virtual dispatch table; AX*4+0x34 is the entry offset in R05_400C segment",
+         certainty: STRONG}
+
+  - ea: "0x2228F"
+    key: sub_2228F
+    name: active_farptr_restore
+    name_certainty: HYPOTHESIS
+    desc: >
+      Copies the saved far pointer (word_22214:word_22216) over the active far pointer
+      (word_22210:word_22212).  Used to restore a previously-saved working context pointer
+      (likely the current 3D projection object or batch context).
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:word_22210", proposed_name: active_farptr_offset, type: uint16, desc: "offset half of the current active farobj context pointer", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22212", proposed_name: active_farptr_seg,    type: uint16, desc: "segment half of the current active farobj context pointer", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22214", proposed_name: saved_farptr_offset,  type: uint16, desc: "offset half of the saved farobj context pointer (save/restore pair)", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22216", proposed_name: saved_farptr_seg,     type: uint16, desc: "segment half of the saved farobj context pointer", certainty: HYPOTHESIS}
+
+  - ea: "0x22285"
+    key: sub_22285
+    name: active_farptr_set
+    name_certainty: HYPOTHESIS
+    desc: >
+      Sets the active far pointer to AX (offset) : DX (segment).
+      These are stored in CS:word_22210 and CS:word_22212 respectively.
+    calling_convention: register
+    params:
+      - {reg: AX, name: ptr_offset, type: uint16, certainty: STRONG}
+      - {reg: DX, name: ptr_seg,    type: uint16, certainty: STRONG}
+    return: void
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+
+  - ea: "0x215B7"
+    key: sub_215B7
+    name: flag_byte_get                # TODO: more specific after callers studied
+    name_certainty: HYPOTHESIS
+    desc: >
+      Returns cs:byte_1F743 in AL.  Called by record_xform_apply, farobj_record_step,
+      view_proj_ring_shift, state_bits_pack.  Likely a render/batch active flag byte
+      read by multiple pipeline stages.  Name needs refinement once byte_1F743 role is clear.
+    calling_convention: register
+    params: []
+    return: "al = byte_1F743"
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:byte_1F743", proposed_name: render_batch_flag, type: uint8,
+         desc: "flag read by multiple render pipeline stages; exact role unknown", certainty: HYPOTHESIS}
+
+  - ea: "0x1FCC9"
+    key: sub_1FCC9
+    name: flag_clear                   # TODO: more specific
+    name_certainty: HYPOTHESIS
+    desc: >
+      Clears cs:byte_1F734 to 0.  Called only by farobj_batch_build_project.
+      Companion to flag_set_lowbit (0x1FCBD).  Likely clears a batch-active flag.
+    calling_convention: register
+    params: []
+    return: void
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:byte_1F734", proposed_name: batch_active_flag, type: uint8,
+         desc: "batch active flag; set/cleared by farobj_batch_build_project", certainty: HYPOTHESIS}
+
+  - ea: "0x1FCBD"
+    key: sub_1FCBD
+    name: flag_set_lowbit
+    name_certainty: HYPOTHESIS
+    desc: >
+      Sets cs:byte_1F734 = bit-0 of cs:byte_1F733.
+      Effect: batch_active_flag = 1 if lsb of byte_1F733 is set, else 0.
+      Called only by farobj_batch_build_project (same caller as flag_clear).
+    calling_convention: register
+    params: []
+    return: void
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:byte_1F733", proposed_name: batch_mode_bits, type: uint8,
+         desc: "batch mode bits; lsb drives batch_active_flag", certainty: HYPOTHESIS}
+
+  - ea: "0x22C91"
+    key: sub_22C91
+    name: fixed_vec3_accumulate_a
+    name_certainty: HYPOTHESIS
+    desc: >
+      Per-component fixed-point accumulate for a 3-component vector stored in CS globals.
+      For each axis i: accum[i] = (accum[i] * scale[i]) % divisor[i]; CX += remainder.
+      Returns CX = sum of all three remainders (fractional accumulation).
+      Three component pairs: (word_22C71, 22C7D/22C83), (22C73, 22C7F/22C85), (22C75, 22C81/22C87).
+      Likely position/rotation fractional step accumulation for physics (called from mode_frame_step_core).
+    calling_convention: register
+    params: []
+    return: "cx = sum of axis remainders"
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:word_22C71", proposed_name: vec3_accum_x, type: int16, desc: "X-axis accumulator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C73", proposed_name: vec3_accum_y, type: int16, desc: "Y-axis accumulator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C75", proposed_name: vec3_accum_z, type: int16, desc: "Z-axis accumulator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C7D", proposed_name: vec3_scale_x,  type: int16, desc: "X scale numerator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C7F", proposed_name: vec3_scale_y,  type: int16, desc: "Y scale numerator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C81", proposed_name: vec3_scale_z,  type: int16, desc: "Z scale numerator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C83", proposed_name: vec3_div_x,    type: int16, desc: "X scale denominator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C85", proposed_name: vec3_div_y,    type: int16, desc: "Y scale denominator", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22C87", proposed_name: vec3_div_z,    type: int16, desc: "Z scale denominator", certainty: HYPOTHESIS}
+
+  - ea: "0x24DB8"
+    key: sub_24DB8
+    name: far_cb_with_args
+    name_certainty: HYPOTHESIS
+    desc: >
+      Invokes the registered callback at cs:dword_220E0 with ES pre-set to 0x834A
+      and BP = cs:word_24BB8.  The 0x834A segment is a fixed runtime heap location.
+      The BP value is a callback argument (struct pointer or similar).
+      Called by mode_ratio_dispatch, far_cb_rect_bounds, mode_frame_step_core.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:dword_220E0", proposed_name: frame_cb_ptr, type: far_ptr, desc: "current frame callback pointer; set by mode system", certainty: HYPOTHESIS}
+      - {ea: "cs:word_24BB8", proposed_name: frame_cb_arg,  type: uint16, desc: "BP argument passed to the frame callback", certainty: HYPOTHESIS}
+
+  - ea: "0x26099"
+    key: sub_26099
+    name: clip_or_draw_dispatch        # NEW NAME
+    name_certainty: HYPOTHESIS
+    desc: >
+      If AX >= 0: calls cs:opcode_handler_5 (draw path).
+      If AX < 0 (clipped / off-screen): calls cs:dword_220C8 (clip path).
+      Called by hud_draw_chain_step, rot_segment_strip_draw, tile_strip_project_draw.
+      AX is likely a projected screen coordinate; negative = off-screen / clipped.
+    calling_convention: register
+    params:
+      - {reg: AX, name: screen_coord_or_flag, type: int16, desc: "projected screen X (or similar); negative = off-screen", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:opcode_handler_5", proposed_name: draw_handler, type: far_ptr, desc: "draw path handler", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_220C8",        proposed_name: clip_handler,  type: far_ptr, desc: "clip/skip path handler", certainty: HYPOTHESIS}
+
+  - ea: "0x22C89"
+    key: sub_22C89
+    name: farobj_vec3_accum_b_ret      # NEW NAME
+    name_certainty: HYPOTHESIS
+    desc: >
+      8B wrapper: calls fixed_vec3_accumulate_b via a CS-relative near call,
+      then returns CX in AX.  This is the far-callable version of the B accumulate step.
+      Called from ui_slot_record_fill and ui_loadout_menu_enter.
+    calling_convention: register
+    params: []
+    return: "ax = result from fixed_vec3_accumulate_b (was CX)"
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x22EE8"
+    key: sub_22EE8
+    name: abs_i16                      # RENAME from fixed_abs_div4
+    old_name: fixed_abs_div4
+    old_name_verdict: DISPROVEN
+    name_certainty: STRONG
+    desc: >
+      Computes absolute value of AX as a 16-bit integer.
+      Trick: ax*=4, abs(ax*4), ax/=4 — net effect is abs(ax) for |input| < 8192.
+      Returns the result in AX.  Called by hud_readout_render, farobj_entity_attr_setup.
+    calling_convention: register
+    params:
+      - {reg: AX, name: value, type: int16, certainty: PROVEN}
+    return: "ax = |value| (uint16)"
+    return_certainty: PROVEN
+    certainty: STRONG
+
+  - ea: "0x16F10"
+    key: sub_16F10
+    name: opl_reg_write                # RENAME from hw_reg_write_pair
+    old_name: hw_reg_write_pair
+    old_name_verdict: DISPROVEN
+    name_certainty: STRONG
+    desc: >
+      Writes an OPL (FM synthesis) register address+data pair with timing delays.
+      Loads the OPL base I/O port from [0x7A32:0xAD50].
+      Writes arg_0 (register address) to port N, delays via 6 reads, then
+      writes arg_2 (data value) to port N+1 with 18+ read delays.
+      The delay loops are required by the OPL2/OPL3 chip timing specs.
+    calling_convention: far_cdecl
+    params:
+      - {stack_offset: "bp+6", name: reg_addr, type: uint8,  certainty: STRONG, desc: "OPL register index to write"}
+      - {stack_offset: "bp+8", name: reg_data, type: uint8,  certainty: STRONG, desc: "value to write to that register"}
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "0x7A32:0xAD50", proposed_name: opl_base_port, type: uint16,
+         desc: "I/O port number for the OPL chip address register (typically 0x388)", certainty: HYPOTHESIS}
+
+  - ea: "0x24CF7"
+    key: sub_24CF7
+    name: cs_word_store
+    name_certainty: HYPOTHESIS
+    desc: >
+      Stores AL to cs:byte_24BBA and AH to cs:byte_24BBB — effectively stores AX
+      as two separate bytes at a fixed CS location.  Called by clip_flag_gated_callback,
+      hud_data_panel_draw, hud_metric_rows_draw — suggests these are HUD display parameters.
+    calling_convention: register
+    params:
+      - {reg: AX, name: packed_params, type: uint16, desc: "AL=byte_24BBA, AH=byte_24BBB; exact roles unknown", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:byte_24BBA", proposed_name: hud_param_lo, type: uint8, desc: "HUD display parameter (low byte)", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_24BBB", proposed_name: hud_param_hi, type: uint8, desc: "HUD display parameter (high byte)", certainty: HYPOTHESIS}
+
+  - ea: "0x263F6"
+    key: sub_263F6
+    name: dispatch_220d0_stub          # just the initial call; rest is table data
+    name_certainty: HYPOTHESIS
+    desc: >
+      6-byte callable stub at 0x263F6: calls cs:dword_220D0 (a far pointer) and returns.
+      Followed by alignment bytes and a named far-pointer table (the farobj render vtable
+      covering object_quad_proj_draw through flag_1f733_gate — 14 entries).
+      IDA merges the stub and the data table as one 122B 'function'; they are separate.
+      Called by mode_axis_state_select, hud_draw_chain_step, hud_terrain_strip_render.
+    calling_convention: register
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    notes: >
+      The table of 14 far pointers embedded after the RETF at 0x263FB
+      is farobj_render_vtable. Its entries cover the main per-frame object
+      processing operations (project, draw, advance, etc.).
+
+  - ea: "0x128A1"
+    key: sub_128A1
+    name: map_tile_pos_get             # RENAME from state_farptr_get (WRONG)
+    old_name: state_farptr_get
+    old_name_verdict: DISPROVEN
+    name_certainty: HYPOTHESIS
+    desc: >
+      Returns the current map tile position: AX = map_pos_y, BX = map_pos_x.
+      These are named globals (CS-relative) in seg005 overlay.
+      Called by tile_object_interpreter, farobj_tile_key_cache, r12 state-record entries.
+      Original name 'state_farptr_get' was completely wrong — it doesn't return a far pointer.
+    calling_convention: register
+    params: []
+    return: "ax = map_pos_y (tile Y), bx = map_pos_x (tile X)"
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:map_pos_y", proposed_name: map_pos_y, type: int16, desc: "current map tile Y position", certainty: HYPOTHESIS}
+      - {ea: "cs:map_pos_x", proposed_name: map_pos_x, type: int16, desc: "current map tile X position", certainty: HYPOTHESIS}

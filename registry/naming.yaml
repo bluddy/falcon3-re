@@ -205,7 +205,13 @@ symbols:
 - ida: sub_2703F
   name: farptr_table_get
   kind: function
-  sig: AX=in index; returns ES:DI far ptr from table seg 0x500C base +0x34 (4B/entry);
+  sig: AX=in index; returns ES:DI far ptr from table in R05_400C segment at offset 0x34 (4B/entry);
+  notes: >
+    18B; 78 callers, 210K dyn. Central farobj dispatch: returns ES:DI = far pointer
+    to the N-th farobj instance record from the table at R05_400C:0x34.
+    The table holds one far ptr (4B) per registered farobj slot.
+    Callers: far_obj_field_call, farobj_field_set, farobj_copy_invoke, farptr_table_entry_store.
+    Old sig said seg 0x500C — now R05_400C after overlay rebase. STRONG.
     clobbers AX,DI,ES
   notes: '18B, 210K calls, 6 overlay callers. `shl ax,x2` -> *4 (far-ptr stride).
     conf: high'
@@ -626,12 +632,13 @@ symbols:
   notes: '413B, 17.8K calls. multi-entry (>=4) — split candidate. conf: med (entries
     certain, rotate co-located unclear)'
 - ida: sub_128A1
-  name: state_farptr_get
+  name: map_tile_pos_get              # was state_farptr_get — WRONG; returns map tile X/Y, not a far pointer
   kind: function
-  sig: '+0: returns AX:BX = cs:11C26:11C24 (saved far ptr); +0xA also returns DL=cs:11C86,
-    CL=cs:11C87, SI/DI=cs:11C28/11C2A; +0x2C copies 6-word entity state into cs:11C9x/11CFx;
-    +0x3F teardown (DS=ES=71C1, far call sub_2BEA1)'
-  notes: '154B, 15.8K calls. 4 entries — split candidate. conf: med'
+  sig: AX = cs:map_pos_y, BX = cs:map_pos_x; void far; seg005 overlay
+  notes: 'RENAMED from state_farptr_get (finding S4): previous name completely wrong.
+    Function returns current map tile coordinates from named CS globals map_pos_y and map_pos_x.
+    Called by tile_object_interpreter, farobj_tile_key_cache, r12 state entries. HYPOTHESIS
+    pending verification of what map_pos_y/x actually count (tile index vs pixel).'
 - ida: sub_231F0
   name: fn_table_dispatch
   kind: function
@@ -1655,9 +1662,12 @@ symbols:
     (no matrix branch -- view_proj_preset_offset minus that branch)
   notes: '89B; near-twin of view_proj_preset_offset. conf: med'
 - ida: sub_24E5D
-  name: bda_equipment_flag_get
+  name: bda_kb_flag_get               # was bda_equipment_flag_get — WRONG; 0x417 is keyboard flags, not equipment
   kind: function
-  sig: AX = BDA byte at 0040:0417 (keyboard shift flags); void far
+  sig: AX = BDA keyboard flags byte at 0:0x417 (Shift/Alt/Ctrl/Lock state); void far
+  notes: 'RENAMED from bda_equipment_flag_get (finding S4): address 0x417 is BIOS keyboard
+    flags byte 1 (CapsLock/NumLock/ScrollLock/Insert/Alt/Ctrl/Shift states), NOT
+    the equipment flags at 0x410. Called by game_config_apply_init, main_frame_update_loop. PROVEN.'
   notes: '17B, 243K calls. ES=0, BX=417h -> AL=ES:[BX] = BDA 0040:0417 shift-flag
     byte, zero-extended to AX. conf: high'
 - ida: sub_100AF
@@ -16763,3 +16773,21 @@ symbols:
   kind: global
   sig: far function pointer for opcode 5 handler
   notes: 'Entry 5 in opcode_handler_table (unused in observed theaters). conf: med'
+
+# --- S4 Level-0 analysis additions (2026-11-12) ---
+- ida: sub_26099
+  name: clip_or_draw_dispatch
+  kind: function
+  sig: 'void far; AX = projected screen coord (int16): if AX>=0 call cs:opcode_handler_5
+    (draw), if AX<0 call cs:dword_220C8 (clip/skip). 16B, 37K dyn, 11 callers.'
+  notes: 'Called by hud_draw_chain_step, rot_segment_strip_draw, tile_strip_project_draw.
+    AX is likely a projected X (or depth) coordinate; negative = off-screen / behind
+    clip plane. The sign test selects between two renderer callbacks. HYPOTHESIS.'
+
+- ida: sub_22C89
+  name: farobj_vec3_accum_b_ret
+  kind: function
+  sig: 'void far -> AX = result; pushes CS, near-calls fixed_vec3_accumulate_b, moves CX->AX,
+    retf. 8B wrapper to make the near-only accumulate_b callable as a far function.'
+  notes: 'Called by ui_slot_record_fill (x2) and ui_loadout_menu_enter (x3+). Returns
+    accumulate_b result (was CX) in AX. HYPOTHESIS — verify fixed_vec3_accumulate_b.'

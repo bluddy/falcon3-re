@@ -1570,10 +1570,7 @@ routines:
   size: 154
   far: true
   class: ASM
-  hypothesis: state_farptr_get
-  sig: '+0: returns AX:BX = cs:11C26:11C24 (saved far ptr); +0xA also returns DL=cs:11C86,
-    CL=cs:11C87, SI/DI=cs:11C28/11C2A; +0x2C copies 6-word entity state into cs:11C9x/11CFx;
-    +0x3F teardown (DS=ES=71C1, far call sub_2BEA1)'
+  hypothesis: map_tile_pos_get
   port_status: unported
   verified: null
   notes: '154B, 15.8K calls. 4 entries — split candidate. conf: med'
@@ -3583,7 +3580,7 @@ routines:
   size: 17
   far: true
   class: ASM
-  hypothesis: bda_equipment_flag_get
+  hypothesis: bda_kb_flag_get
   sig: AX = BDA byte at 0040:0417 (keyboard shift flags); void far
   port_status: unported
   verified: null
