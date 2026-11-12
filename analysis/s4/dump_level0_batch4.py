@@ -20,7 +20,7 @@ cls = json.loads(CLS.read_text())
 # Load named functions from registry
 import re
 named = set()
-for line in REG.read_text().split('\n'):
+for line in REG.read_text(encoding='utf-8').split('\n'):
     if m := re.match(r'^\s*-\s+key:\s+(\w+)', line):
         named.add(m.group(1))
 
@@ -58,16 +58,17 @@ for fn in all_fns:
 # Sort by (dyn DESC, in DESC)
 level0_candidates.sort(key=lambda x: (-x["dyn"], -x["in"]))
 
-# Extract batch 4: ranks 36-50
-BATCH_START = 35
+# Extract batch: configure here
+BATCH_NUM = 5
+BATCH_START = 50  # 0-indexed, so rank 51 = index 50
 BATCH_SIZE = 15
-batch4 = level0_candidates[BATCH_START:BATCH_START + BATCH_SIZE]
+batch = level0_candidates[BATCH_START:BATCH_START + BATCH_SIZE]
 
-print(f"Level-0 Batch 4 (ranks 36-50, {len(batch4)} functions)")
+print(f"Level-0 Batch {BATCH_NUM} (ranks {BATCH_START+1}-{BATCH_START+BATCH_SIZE}, {len(batch)} functions)")
 print("=" * 80)
 print()
 
-for i, node in enumerate(batch4, start=BATCH_START+1):
+for i, node in enumerate(batch, start=BATCH_START+1):
     name = node["name"]
     ea = node["ea"]
     dyn = node["dyn"]
@@ -86,7 +87,7 @@ for i, node in enumerate(batch4, start=BATCH_START+1):
 # Summary
 print()
 print("Summary:")
-print(f"  Total: {len(batch4)} functions")
-sizes = [len(bytes.fromhex(fb.get(n['name'], {}).get('bytes', '00'))) for n in batch4]
+print(f"  Total: {len(batch)} functions")
+sizes = [len(bytes.fromhex(fb.get(n['name'], {}).get('bytes', '00'))) for n in batch]
 print(f"  Size range: {min(sizes)}-{max(sizes)}B")
-print(f"  Call range: {min(n['dyn'] for n in batch4)}-{max(n['dyn'] for n in batch4)} dyn_calls")
+print(f"  Call range: {min(n['dyn'] for n in batch)}-{max(n['dyn'] for n in batch)} dyn_calls")
