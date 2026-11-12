@@ -8447,3 +8447,59 @@ pattern shift away from simple accessors toward infrastructure functions.
 
 The 66 named functions capture the "core loop" of the game: state management, dispatch,
 view rendering, input, random numbers, math, and string formatting.
+
+
+## 2026-11-11 204 - Multi-layer overlay wrapper architecture dominates call graph
+Status: CONFIRMED
+
+**Context:** S4 Level-0 campaign (findings 180-203) completed 66 high-value names, discovered value cliff at rank 81 (all dyn=0). Proceeded to analyze Level-1 and Level-2 to identify next targets.
+
+**Discovery:** The call graph above Level-0 is dominated by **overlay entry wrappers** rather than substantive game logic:
+
+**Level-1 (424 unnamed):**
+- ~310 functions (73%) are 8-byte overlay trampolines
+- Pattern: `call sub_2AFBD` (tail_bridge_overlay_load) + `jmp far segment:offset`
+- These define the entry point interface to overlay code
+- Only 7 non-wrapper functions have dyn>0
+- Remaining 298 non-wrappers have dyn=0 (unexecuted in traces)
+
+**Level-2 (235 unnamed):**
+- Top function sub_2BFC3 has 30,515 calls (highest in ALL levels)
+- Manual inspection confirms it's ALSO an 8-byte overlay wrapper
+- Pattern continues: overlay wrappers calling overlay wrappers
+- At least 4 non-wrapper functions in top 20 with dyn>0
+
+**Architecture implications:**
+- Real game logic resides **inside overlay segments**, not in the call graph
+- Call graph predominantly exposes **interface layer** (entry trampolines)
+- Multi-layer wrapper structure: Level-2 → Level-1 wrappers → overlay code
+- Traditional bottom-up naming limited by overlay boundary
+
+**Wrapper pattern (8 bytes):**
+```asm
+call sub_2AFBD          ; tail_bridge_overlay_load (131 bytes)
+jmp far segment:offset  ; jump to overlay target code
+```
+
+**Evidence:**
+- Level-1 batch 1 analysis: 11 of 15 top functions match pattern
+- Level-2 rank 1 (sub_2BFC3, 30.5K calls): confirmed 8B wrapper
+- Size distribution: Level-1 has 310+ functions ≤20 bytes
+- Manual decode in `analysis/s4/level1_batch1_manual_decode.md`
+
+**Non-wrapper high-value targets** (11 total, all with dyn>0):
+- Level-1: sub_2241E (9210), sub_254DC (977), sub_2318C (93), sub_23199 (22), sub_122AE (17), sub_11A7D (5), sub_10DA7 (4)
+- Level-2: sub_256A3 (10222), sub_2501A (488), sub_276B4 (194), sub_100C1 (8)
+
+**Strategy impact:**
+- Bottom-up naming hits diminishing returns above Level-0 (wrapper noise)
+- Two viable paths forward:
+  1. Name the 11 non-wrapper functions (already mostly decoded)
+  2. Shift to trace-driven overlay target analysis (analyze actual game logic)
+
+**Artifacts:**
+- `analysis/s4/level1_batch1_manual_decode.md` - Level-1 wrapper analysis
+- `analysis/s4/level_analysis_summary.md` - comprehensive level breakdown
+- Commit 89aba43 (Level-1 analysis), 403f2a4 (complete level summary)
+
+**Related findings:** 182 (FarObj dispatch via far pointers), 183 (trig lookup tables), 188 (overlay stub pattern), 193 (two-stage dispatcher)

@@ -263,6 +263,22 @@ DBFL_KILL).
      - P5 the 0x6E696..0x6E8B7 handler cluster / R30 menu state machine (needs a function-merge mode);
      - P6 the small leftover orphans (0x6E16E ...); P7 drain the auto queue (~94 functions) under a manifest;
      - P8 housekeeping; then S2 VGRAPH (P9), S3 trace edges (P10), S4 deep dive (P11).
+   - **S4 Level-0 campaign COMPLETE (findings 180-203):**
+     - 66 high-value Level-0 functions named (22.8% of 289 total)
+     - Batches 1-6 covered ranks 1-80 (dyn_calls DESC)
+     - Batch 7 analysis: value cliff discovered (all 15 functions have dyn=0)
+     - CS-segment state map 95% complete (470+ bytes, 21 regions)
+     - PRNG (triple LCG), itoa, 3D vector ops, dispatcher infrastructure documented
+     - 4 boundary errors deferred to later phase
+     - Ledger 2034 → 2105 (+71 entries)
+     - Commits: e5d3b16, f79e488, 504ce9f, 5b3c8e3, 49efe63, 0561f12, 4df0253
+   - **S4 Level-1/2 analysis (findings 204):**
+     - Level-1: 73% are 8-byte overlay entry wrappers (call loader + jmp far)
+     - Level-2: overlay wrappers continue upward, top function (30.5K calls) also wrapper
+     - Multi-layer overlay wrapper architecture documented
+     - 11 non-wrapper high-value targets identified (7 Level-1, 4 Level-2)
+     - Real game logic resides in overlay targets, not call graph
+     - Commits: 89aba43 (Level-1 analysis), 403f2a4 (complete level analysis)
 
 ## Items 1–5 complete; item 7 (IDB stabilisation) is in progress, then item 6 (Track E parser). Re-plan each session from [Open Items](docs/open_items.md) and `docs/advice.md`.
 
