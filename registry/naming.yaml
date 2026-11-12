@@ -1,4 +1,4 @@
-schema: 1
+﻿schema: 1
 symbols:
 - ida: sub_16FDD
   name: always_true
@@ -194,7 +194,7 @@ symbols:
   kind: function
   sig: AL=in nibble arg; AL=out merged status; clobbers CX; R-M-W on cs:11102
   notes: '37B, 318K calls (hottest leaf). Shares cs:11102 with joystick_poll; nibble-shift+OR
-    merge then R-M-W. conf: low — semantics of the merge not yet pinned down'
+    merge then R-M-W. conf: low â€” semantics of the merge not yet pinned down'
 - ida: sub_16F10
   name: hw_reg_write_pair
   kind: function
@@ -211,7 +211,7 @@ symbols:
     to the N-th farobj instance record from the table at R05_400C:0x34.
     The table holds one far ptr (4B) per registered farobj slot.
     Callers: far_obj_field_call, farobj_field_set, farobj_copy_invoke, farptr_table_entry_store.
-    Old sig said seg 0x500C — now R05_400C after overlay rebase. STRONG.
+    Old sig said seg 0x500C â€” now R05_400C after overlay rebase. STRONG.
     clobbers AX,DI,ES
   notes: '18B, 210K calls, 6 overlay callers. `shl ax,x2` -> *4 (far-ptr stride).
     conf: high'
@@ -311,7 +311,7 @@ symbols:
   notes: '563B, 18K calls; signed 32b divide with power-of-2 scale. Finding 105: [di]
     = ISLDAT record XYZ (i32 16.16nm at +0/+4/+8), es:[bx] = reference point at body+0xC57.
     **Finding 107: attr (record +0x20) read into SI, shifted by attr_scale_shift (word_1F6E6),
-    used as divisor in fixed-point division for X/Y/Z deltas — attr = coordinate scale
+    used as divisor in fixed-point division for X/Y/Z deltas â€” attr = coordinate scale
     factor per feature type (0x14=base, 0x32, 0x64, 0xC8).** conf: med'
 - ida: sub_1BCFA
   name: irq_unmask_and_query
@@ -328,7 +328,7 @@ symbols:
   name: es_word_zero
   kind: function
   sig: ES=0x7B0E; [ES:0EBC]=0
-  notes: '18B, 12K calls. sets CX=14h but stosw shows no REP prefix — verify whether
+  notes: '18B, 12K calls. sets CX=14h but stosw shows no REP prefix â€” verify whether
     IDA dropped a `rep`. conf: low'
 - ida: sub_25567
   name: cs_word_get_25499
@@ -339,7 +339,7 @@ symbols:
 - ida: sub_10CBE
   name: cs_word_get_10842
   kind: function
-  sig: AX = word at cs:10842 (2 bytes; IDA labels it byte_10842 — mis-typed label);
+  sig: AX = word at cs:10842 (2 bytes; IDA labels it byte_10842 â€” mis-typed label);
     clobbers none
   notes: '5B, 9K calls, 5 callers in 0x18xxx. conf: high on shape'
 - ida: sub_25F3E
@@ -621,7 +621,7 @@ symbols:
   sig: in DX:AX 32-bit + BL=pad char (20h=space, 2Dh='-' when negative); decimal divide
     by 10 loop, digit+30h written backwards to [SI]; also 2 secondary entries (0x2292A/0x22943)
     that load cs:1F6CC..1F6D2 and call sub_205C3
-  notes: '159B, 22K calls. **classification says DATA — wrong, it is code** (graph-cleanup
+  notes: '159B, 22K calls. **classification says DATA â€” wrong, it is code** (graph-cleanup
     open item). conf: high on core (div 10 / add al,30h / back-fill loop)'
 - ida: sub_23036
   name: farptr_state_set
@@ -629,10 +629,10 @@ symbols:
   sig: '+0: BX=cs:36EE[BX] -> cs:22DB4/22DB6 (far ptr from table); +0x10: AX:DX ->
     same; +0x1A: SI:DS -> cs:22DBE/22DC0; +0x73: embedded 2D rotate (imul x2, sum,
     shl, saturate 0x7FFF/0x8001)'
-  notes: '413B, 17.8K calls. multi-entry (>=4) — split candidate. conf: med (entries
+  notes: '413B, 17.8K calls. multi-entry (>=4) â€” split candidate. conf: med (entries
     certain, rotate co-located unclear)'
 - ida: sub_128A1
-  name: map_tile_pos_get              # was state_farptr_get — WRONG; returns map tile X/Y, not a far pointer
+  name: map_tile_pos_get              # was state_farptr_get â€” WRONG; returns map tile X/Y, not a far pointer
   kind: function
   sig: AX = cs:map_pos_y, BX = cs:map_pos_x; void far; seg005 overlay
   notes: 'RENAMED from state_farptr_get (finding S4): previous name completely wrong.
@@ -650,7 +650,7 @@ symbols:
   kind: function
   sig: cs:22248 &= 0x80; near call cs:off_22060[BX] (op index -> 17 targets); if cs:2224A
     set -> call sub_224D3; returns flags from cs:22248 & 0x7F
-  notes: '29B, 6.5K calls; **39 callers** (busiest in graph), 17 table targets — the
+  notes: '29B, 6.5K calls; **39 callers** (busiest in graph), 17 table targets â€” the
     central parameterized-operation dispatcher (sub_127D4 calls it with field ids
     6/0xA/0xE/8). conf: high'
 - ida: sub_249C8
@@ -692,7 +692,7 @@ symbols:
   name: flag22220_clear
   kind: function
   sig: void; cs:word_22220 = 0; 2nd entry at +8 wraps sub_229AB with a BP frame
-  notes: '21B, 13.2K calls; 2 entries — split candidate. conf: high (entry 0)'
+  notes: '21B, 13.2K calls; 2 entries â€” split candidate. conf: high (entry 0)'
 - ida: sub_258B2
   name: pending_task_run
   kind: function
@@ -707,7 +707,7 @@ symbols:
     builds a 0x40-entry batch, calls clip_flags_batch; alt path clamps coords and
     calls sub_1202A'
   notes: '775B, 11.2K calls; callers sub_121C2 + self. shares prologue with sub_128A1+0x2C
-    (possible duplicate) — split/dedup candidate. conf: med'
+    (possible duplicate) â€” split/dedup candidate. conf: med'
 - ida: sub_127D4
   name: param_table_init
   kind: function
@@ -715,7 +715,7 @@ symbols:
     passing CX/DX values; stores handle to cs:11BDA; also far_cb_8 + 5 small helpers;
     3 tail entries clear/get/set cs:byte_11C88
   notes: '193B, 11.6K calls; field-id sequence = table initialisation. 3 tail entries
-    — split candidate. conf: med'
+    â€” split candidate. conf: med'
 - ida: sub_1655A
   name: entity_update_batch
   kind: function
@@ -745,7 +745,7 @@ symbols:
   kind: function
   sig: push es, push cs; near call farptr_table_get -> ES:DI=object; 9x MOVSW (18B
     copy); retf
-  notes: '16B, 8.6K calls; range may overrun ~1B (17B of insns) — verify. conf: high'
+  notes: '16B, 8.6K calls; range may overrun ~1B (17B of insns) â€” verify. conf: high'
 - ida: sub_26FF4
   name: farobj_copy_cond
   kind: function
@@ -770,7 +770,7 @@ symbols:
   kind: function
   sig: void; near call sub_23DCD (point transform) then retf; +4..+72 is ~64B of trailing
     data/undecoded inside the range
-  notes: '72B but only the first 4B are code — range includes trailing bytes; **cleanup
+  notes: '72B but only the first 4B are code â€” range includes trailing bytes; **cleanup
     candidate**. conf: high on the stub'
 - ida: sub_25A06
   name: farwrap_25a1c
@@ -778,7 +778,7 @@ symbols:
   sig: '+0: near call cs:dword_22108 then retf (trampoline); +6: LDS SI,[bp+6]; push
     cs; near call sub_25A1C (arg-taking wrapper)'
   notes: '22B, 10.5K calls; same merged trampoline+wrapper shape as view_limits_wrap
-    — split candidate. conf: med'
+    â€” split candidate. conf: med'
 - ida: sub_2C09F
   name: overlay_tail_bridge
   kind: function
@@ -829,7 +829,7 @@ symbols:
   sig: loads far src (cs:22DC2..22DC5) and dst (..22DC6..22DC9) into DS:SI/ES:DI;
     helper calls angle_xy_far then subtracts cs:22D24 and calls sub_24988; stores
     dx->es:389Ah; calls sub_14EAE with si=388Ah; gates on ds:3894/3892
-  notes: '163B, 2.6K calls; contains undecoded/data regions (0x22E18-0x22E93) — possibly
+  notes: '163B, 2.6K calls; contains undecoded/data regions (0x22E18-0x22E93) â€” possibly
     self-modifying. conf: low'
 - ida: sub_24A90
   name: stub_to_24a94
@@ -882,7 +882,7 @@ symbols:
   sig: '+0: cs:byte_254A1=AL; +5: return it; +0xA/+0x10/+0x16/+0x1C: 4 separate far-cb
     trampolines (cs:22160/22164/22198/2215C); +0x22: arg wrapper -> far_cb_9'
   notes: '57B, 1.7K calls to +0 specifically (dyn keyed by start addr). 7 entries
-    — split candidate. conf: high on entry 0'
+    â€” split candidate. conf: high on entry 0'
 - ida: sub_25099
   name: flag_block_build
   kind: function
@@ -940,7 +940,7 @@ symbols:
   sig: enter 2h; DI=[bp+arg_0]; SI=0; calls group_all_free_check (named); on success
     sub_1AA6C + sub_1D88C(C) + sub_1D914 + sub_1E062; pushes constants 0xFFFF/0x45/0x50
   notes: '1511B, C-class, 552 calls; callers: event_state_machine, sub_18BC8. **largest
-    unnamed C — port candidate.** conf: med'
+    unnamed C â€” port candidate.** conf: med'
 - ida: sub_1E110
   name: index_scroll_step
   kind: function
@@ -1662,7 +1662,7 @@ symbols:
     (no matrix branch -- view_proj_preset_offset minus that branch)
   notes: '89B; near-twin of view_proj_preset_offset. conf: med'
 - ida: sub_24E5D
-  name: bda_kb_flag_get               # was bda_equipment_flag_get — WRONG; 0x417 is keyboard flags, not equipment
+  name: bda_kb_flag_get               # was bda_equipment_flag_get â€” WRONG; 0x417 is keyboard flags, not equipment
   kind: function
   sig: AX = BDA keyboard flags byte at 0:0x417 (Shift/Alt/Ctrl/Lock state); void far
   notes: 'RENAMED from bda_equipment_flag_get (finding S4): address 0x417 is BIOS keyboard
@@ -12730,7 +12730,7 @@ symbols:
     farobj_class_table_entry). entity_state_load (flag_block_zero_5762_5c63), ds:45Eh=1
     + 7-word movsw, flag_byte_get -> 26h<<cl, stub_to_23966 slot3_tile_record_load,
     ds:20h/24h position add/sub, ds:45Fh gate, terrain_matrix_advance_11d04, ems_init,
-    joystick_poll, farobj_tile_stream_build. NOT the ISLDAT loader — byte-sig false
+    joystick_poll, farobj_tile_stream_build. NOT the ISLDAT loader â€” byte-sig false
     positive (finding 105); it calls isldat_state_load (finding 106). conf: medium'
 - ida: sub_386F2
   name: tile_sample_script_dispatch
@@ -16790,7 +16790,7 @@ symbols:
   sig: 'void far -> AX = result; pushes CS, near-calls fixed_vec3_accumulate_b, moves CX->AX,
     retf. 8B wrapper to make the near-only accumulate_b callable as a far function.'
   notes: 'Called by ui_slot_record_fill (x2) and ui_loadout_menu_enter (x3+). Returns
-    accumulate_b result (was CX) in AX. HYPOTHESIS — verify fixed_vec3_accumulate_b.'
+    accumulate_b result (was CX) in AX. HYPOTHESIS â€” verify fixed_vec3_accumulate_b.'
 
 # --- S4 Level-1: farobj dispatch system additions (2026-11-12) ---
 # (sub_2647E already named farobj_type_field_get in existing ledger; updated notes there)
@@ -16798,7 +16798,7 @@ symbols:
   name: farobj_state_scan_bit_set
   kind: function
   sig: 'void far; AX=slot: sets bit 0x100 in FarObj.state_flags [+0x24]. 13B orphan.'
-  notes: 'Sets scan-requested bit. No static callers — may be called indirectly. S4.'
+  notes: 'Sets scan-requested bit. No static callers â€” may be called indirectly. S4.'
 
 - ida: sub_49A5B
   name: farobj_kind_slot_reset
@@ -16808,7 +16808,7 @@ symbols:
   notes: 'Resets kind index and clears extended-slot flags for a farobj. HYPOTHESIS.'
 
 # --- S4 Level-1 additions (2026-11-12) ---
-# (sub_260AF already named stub_to_249d8 — kept, following stub_to_EA convention)
+# (sub_260AF already named stub_to_249d8 â€” kept, following stub_to_EA convention)
 # stub_to_249d8 = far wrapper for trig_table_lookup (near at 0x249D8), trig table at 0x7B0E:0x3868
 
 # --- S4 Level-2/3: op_dispatch targets + DOS services confirmed (2026-11-12) ---
@@ -16819,21 +16819,21 @@ symbols:
 #   BX=10 file_find_first BX=12 file_find_next BX=14 file_get_dta
 #   BX=16 mem_copy_fwd   BX=18 mem_store_fwd  BX=1A dos_print_str
 #   BX=1C file_delete    BX=1E file_size
-# (all entries already in existing ledger — duplicates removed)
+# (all entries already in existing ledger â€” duplicates removed)
 
 - ida: word_45150
   name: entity_attr_table
   kind: global
   sig: 40+ word entries, entity type attributes; R05_33AE + 0x1662 = IDA 0x45150
   notes: 'Table A: entity attributes read by farobj_entity_attr_setup (0x44352) via
-    DS:[BX+1662h]. Each word entry provides scaled values → FarObj.attr_a/b/c.
+    DS:[BX+1662h]. Each word entry provides scaled values â†’ FarObj.attr_a/b/c.
     Source: S4 entity_class probe 2026-11-12; see analysis/ida_falconcd/entity_tables.json'
 - ida: word_455E2
   name: entity_class_table
   kind: global
   sig: 40+ word entries, entity class codes; R05_33AE + 0x16F4 = IDA 0x455E2
   notes: 'Table B: entity class codes read by farobj_entity_attr_setup (0x44352) via
-    DS:[BX+16F4h]. Low byte of each word → FarObj.entity_class [+0x14]. Codes tested
+    DS:[BX+16F4h]. Low byte of each word â†’ FarObj.entity_class [+0x14]. Codes tested
     by farobj_type_gate_test (0x4BF8B) for values 0x12/14/33/38. Source: S4 entity_class
     probe 2026-11-12; see analysis/ida_falconcd/entity_tables.json'
 
@@ -16963,3 +16963,49 @@ symbols:
   name: cs_save_si_ds_36fe
   kind: function
   notes: save SI and DS to CS:[0x36FE:0x3700]; context save; 9 calls; finding 191
+
+# S4 Level-0 batch 4 (ranks 36-50, finding 194+)
+- ida: sub_260A9
+  name: stub_via_cs_2a04
+  kind: function
+  notes: dispatch stub call far cs:[0x2A04] + retf; 13.3K calls; finding 194
+- ida: sub_22964
+  name: cs_word_2b60_scale_div
+  kind: function
+  notes: scale/normalize using CS:[0x2B60] divisor, clamp to [0,4]; 12.9K calls; finding 194
+- ida: sub_22884
+  name: itoa_decimal_signed
+  kind: function
+  notes: convert signed AX to decimal ASCII at [SI], width CL; 12.4K calls; finding 194
+- ida: sub_2302B
+  name: dispatch_via_cs_0022_table
+  kind: function
+  notes: indirect call through CS:[CS:[0x0022]+0]; 12.1K calls; finding 194
+- ida: sub_20AAA
+  name: seg7b0e_clear_0ebc_40bytes
+  kind: function
+  notes: zero-fill 40 bytes at seg 0x7B0E:0EBC (view space); 12.1K calls; finding 194
+- ida: sub_22CD5
+  name: prng_step_triple_lcg
+  kind: function
+  notes: PRNG triple LCG step on CS:[0x35B7/B9/BB], accumulate remainders; 11.1K calls; finding 194
+- ida: sub_14C77
+  name: vec3_copy_clamp_xy_40
+  kind: function
+  notes: copy 3 dwords [SI] to [DI], clamp first two to [-40,+40]; 10.8K calls; finding 194
+- ida: sub_22C53
+  name: cs_triple_35b1_set
+  kind: function
+  notes: write AX:BX:CX to CS:[0x35B1:0x35B3:0x35B5]; 10.7K calls; finding 194
+- ida: sub_22C62
+  name: cs_triple_35b1_get
+  kind: function
+  notes: read CS:[0x35B1:0x35B3:0x35B5] to AX:BX:CX; 10.2K calls; finding 194
+- ida: sub_16579
+  name: cs_word_0128_get
+  kind: function
+  notes: read CS:[0x0128] to AX; 10.2K calls; finding 194
+- ida: sub_25567
+  name: cs_word_5dd9_get
+  kind: function
+  notes: read CS:[0x5DD9] to AX, extends 0x5DD1 region; 10.1K calls; finding 194
