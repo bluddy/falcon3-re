@@ -1,0 +1,162 @@
+{
+  "name": "terrain_attr_walk_13110",
+  "address": "0x13110",
+  "size": 82,
+  "call_count": 1,
+  "calls": [
+    {
+      "address": "0x13158",
+      "target": "0x13162",
+      "name": "terrain_lookup_gated_b"
+    }
+  ],
+  "xref_count": 4,
+  "unique_callers": 2,
+  "callers": {
+    "sub_12910": 1,
+    "terrain_frame_update_driver": 3
+  },
+  "loop_count": 2,
+  "loops": [
+    {
+      "address": "0x13131",
+      "target": "0x1599",
+      "type": "jl"
+    },
+    {
+      "address": "0x1315f",
+      "target": "0x1588",
+      "type": "loop"
+    }
+  ],
+  "disassembly": [
+    {
+      "address": "0x13110",
+      "disasm": "mov     dx, cs:word_11C2E"
+    },
+    {
+      "address": "0x13115",
+      "disasm": "mov     bx, cs:word_11C2C"
+    },
+    {
+      "address": "0x1311a",
+      "disasm": "mov     cx, 9"
+    },
+    {
+      "address": "0x1311d",
+      "disasm": "mov     si, cs:word_11C40"
+    },
+    {
+      "address": "0x13122",
+      "disasm": "add     cx, 19h"
+    },
+    {
+      "address": "0x13125",
+      "disasm": "sub     si, 32h ; '2'"
+    },
+    {
+      "address": "0x13128",
+      "disasm": "mov     cs:byte_11C8B, 1"
+    },
+    {
+      "address": "0x1312e",
+      "disasm": "cmp     cx, 13h"
+    },
+    {
+      "address": "0x13131",
+      "disasm": "jl      short loc_13139"
+    },
+    {
+      "address": "0x13133",
+      "disasm": "mov     cs:byte_11C8B, 0"
+    },
+    {
+      "address": "0x13139",
+      "disasm": "push    dx"
+    },
+    {
+      "address": "0x1313a",
+      "disasm": "push    bx"
+    },
+    {
+      "address": "0x1313b",
+      "disasm": "push    cx"
+    },
+    {
+      "address": "0x1313c",
+      "disasm": "lodsb"
+    },
+    {
+      "address": "0x1313d",
+      "disasm": "cbw"
+    },
+    {
+      "address": "0x1313e",
+      "disasm": "add     dx, ax"
+    },
+    {
+      "address": "0x13140",
+      "disasm": "lodsb"
+    },
+    {
+      "address": "0x13141",
+      "disasm": "cbw"
+    },
+    {
+      "address": "0x13142",
+      "disasm": "add     bx, ax"
+    },
+    {
+      "address": "0x13144",
+      "disasm": "push    si"
+    },
+    {
+      "address": "0x13145",
+      "disasm": "mov     ax, dx"
+    },
+    {
+      "address": "0x13147",
+      "disasm": "sub     ax, cs:word_11C46"
+    },
+    {
+      "address": "0x1314c",
+      "disasm": "sub     bx, cs:word_11C48"
+    },
+    {
+      "address": "0x13151",
+      "disasm": "and     ax, 1FFh"
+    },
+    {
+      "address": "0x13154",
+      "disasm": "and     bx, 1FFh"
+    },
+    {
+      "address": "0x13158",
+      "disasm": "call    terrain_lookup_gated_b"
+    },
+    {
+      "address": "0x1315b",
+      "disasm": "pop     si"
+    },
+    {
+      "address": "0x1315c",
+      "disasm": "pop     cx"
+    },
+    {
+      "address": "0x1315d",
+      "disasm": "pop     bx"
+    },
+    {
+      "address": "0x1315e",
+      "disasm": "pop     dx"
+    },
+    {
+      "address": "0x1315f",
+      "disasm": "loop    loc_13128"
+    },
+    {
+      "address": "0x13161",
+      "disasm": "retn"
+    }
+  ]
+}
