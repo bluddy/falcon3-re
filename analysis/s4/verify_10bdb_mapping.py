@@ -36,17 +36,17 @@ def main():
             break
     
     if not seg020:
-        print("\n✗ seg020 not found in segment map")
+        print("\n[ERROR] seg020 not found in segment map")
         return
     
-    print(f"\n✓ Found seg020:")
+    print(f"\n[OK] Found seg020:")
     print(f"  Start: 0x{seg020['start_ea']:08X}")
     print(f"  End:   0x{seg020['end_ea']:08X}")
     print(f"  Size:  {seg020['end_ea'] - seg020['start_ea']:,} bytes")
     
     # Calculate linear address of seg020:051B
     linear_051B = seg020['start_ea'] + 0x051B
-    print(f"\n✓ seg020:051B linear address: 0x{linear_051B:08X}")
+    print(f"\n[OK] seg020:051B linear address: 0x{linear_051B:08X}")
     
     # Search for this address in multi-entry functions
     found_entry = None
@@ -62,14 +62,14 @@ def main():
             break
     
     if found_entry:
-        print(f"\n✓ Found as multi-entry point:")
+        print(f"\n[OK] Found as multi-entry point:")
         print(f"  Parent function: {parent_func}")
         print(f"  Segment:offset: {found_entry['segoff']}")
         print(f"  Offset from function start: +0x{found_entry['offset_from_start']:04X}")
         print(f"  Cross-references: {found_entry['xref_count']:,}")
         
         if found_entry['xref_count'] > 10000:
-            print(f"\n✓ CONFIRMED: This entry has {found_entry['xref_count']:,} xrefs")
+            print(f"\n[OK] CONFIRMED: This entry has {found_entry['xref_count']:,} xrefs")
             print(f"  This matches our expectation of ~10,222 calls to 'sub_10BDB'")
         
         print(f"\n  Sample callers:")
@@ -82,10 +82,10 @@ def main():
             for func in data['functions']:
                 if func['start_ea'] == xref['ea']:
                     if func['name'] == 'sub_256A3' or func['segoff'] == 'seg020:5FED':
-                        print(f"\n✓ VERIFIED: Caller sub_256A3 (seg020:5FED) found in xref list")
+                        print(f"\n[OK] VERIFIED: Caller sub_256A3 (seg020:5FED) found in xref list")
                         break
     else:
-        print(f"\n✗ seg020:051B (0x{linear_051B:08X}) NOT found as multi-entry point")
+        print(f"\n[ERROR] seg020:051B (0x{linear_051B:08X}) NOT found as multi-entry point")
         print("  Possible reasons:")
         print("  - It's actually a main function entry (check functions list)")
         print("  - IDA doesn't recognize it as code")
@@ -126,10 +126,10 @@ def main():
         
         if found_entry:
             print(f"\nConclusion:")
-            print(f"  ✓ seg020:051B is a secondary entry point in {parent_func}")
-            print(f"  ✓ It has {found_entry['xref_count']:,} callers (matches 'sub_10BDB' call count)")
-            print(f"  ✓ One caller is sub_256A3 (our analysis entry point)")
-            print(f"  → Finding 207: NOT a missing function, just mis-mapped address")
+            print(f"  [OK] seg020:051B is a secondary entry point in {parent_func}")
+            print(f"  [OK] It has {found_entry['xref_count']:,} callers (matches 'sub_10BDB' call count)")
+            print(f"  [OK] One caller is sub_256A3 (our analysis entry point)")
+            print(f"  => Finding 207: NOT a missing function, just mis-mapped address")
 
 if __name__ == '__main__':
     main()

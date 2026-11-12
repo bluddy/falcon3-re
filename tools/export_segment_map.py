@@ -120,49 +120,72 @@ def main():
     print("Enhanced Segment Export")
     print("=" * 60)
     
-    # Wait for autoanalysis to complete
-    idaapi.auto_wait()
-    
-    # Export segments
-    print("\n[1/3] Exporting segment map...")
-    segments = get_segment_map()
-    print(f"  Found {len(segments)} segments")
-    
-    # Find multi-entry functions
-    print("\n[2/3] Finding multi-entry functions...")
-    multi_entry = find_multi_entry_functions()
-    print(f"  Found {len(multi_entry)} functions with secondary entry points")
-    
-    # Export enhanced function info
-    print("\n[3/3] Exporting enhanced function information...")
-    functions = export_enhanced_functions()
-    print(f"  Exported {len(functions)} functions")
-    
-    # Prepare output
-    output = {
-        'segments': segments,
-        'multi_entry_functions': multi_entry,
-        'functions': functions,
-        'summary': {
-            'total_segments': len(segments),
-            'total_functions': len(functions),
-            'multi_entry_count': len(multi_entry),
-            'total_secondary_entries': sum(len(entries) for entries in multi_entry.values())
+    try:
+        # Wait for autoanalysis to complete
+        print("\nWaiting for autoanalysis...")
+        idaapi.auto_wait()
+        
+        # Export segments
+        print("\n[1/3] Exporting segment map...")
+        segments = get_segment_map()
+        print(f"  Found {len(segments)} segments")
+        
+        # Find multi-entry functions
+        print("\n[2/3] Finding multi-entry functions...")
+        multi_entry = find_multi_entry_functions()
+        print(f"  Found {len(multi_entry)} functions with secondary entry points")
+        
+        # Export enhanced function info
+        print("\n[3/3] Exporting enhanced function information...")
+        functions = export_enhanced_functions()
+        print(f"  Exported {len(functions)} functions")
+        
+        # Prepare output
+        output = {
+            'segments': segments,
+            'multi_entry_functions': multi_entry,
+            'functions': functions,
+            'summary': {
+                'total_segments': len(segments),
+                'total_functions': len(functions),
+                'multi_entry_count': len(multi_entry),
+                'total_secondary_entries': sum(len(entries) for entries in multi_entry.values())
+            }
         }
-    }
+        
+        # Determine output path
+        # First try idc.ARGV[1], then try a path relative to IDB
+        output_path = None
+        if len(idc.ARGV) > 1:
+            output_path = idc.ARGV[1]
+        else:
+            # Use path relative to IDB location
+            idb_path = idc.get_idb_path()
+            import os
+            idb_dir = os.path.dirname(idb_path)
+            output_path = os.path.join(idb_dir, 'segment_map.json')
+        
+        print(f"\nWriting to: {output_path}")
+        
+        # Write to file
+        with open(output_path, 'w') as f:
+            json.dump(output, f, indent=2)
+        
+        print(f"\n✓ Export complete: {output_path}")
+        print(f"  - {output['summary']['total_segments']} segments")
+        print(f"  - {output['summary']['total_functions']} functions")
+        print(f"  - {output['summary']['multi_entry_count']} multi-entry functions")
+        print(f"  - {output['summary']['total_secondary_entries']} secondary entry points")
+        print("=" * 60)
+        
+    except Exception as e:
+        print(f"\n✗ ERROR: {e}")
+        import traceback
+        traceback.print_exc()
+        return False
     
-    # Write to file
-    output_path = idc.ARGV[1] if len(idc.ARGV) > 1 else 'segment_map.json'
-    with open(output_path, 'w') as f:
-        json.dump(output, f, indent=2)
-    
-    print(f"\n✓ Export complete: {output_path}")
-    print(f"  - {output['summary']['total_segments']} segments")
-    print(f"  - {output['summary']['total_functions']} functions")
-    print(f"  - {output['summary']['multi_entry_count']} multi-entry functions")
-    print(f"  - {output['summary']['total_secondary_entries']} secondary entry points")
-    print("=" * 60)
+    return True
 
 if __name__ == '__main__':
-    main()
-    idc.qexit(0)  # Exit IDA after script completes
+    success = main()
+    idc.qexit(0 if success else 1)  # Exit IDA with status code
