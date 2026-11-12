@@ -463,16 +463,92 @@ Companion variants: `VGRAPHH` (Harrier, 47.7% identical, shifted entry IPs) and 
 
 ## 12. Mode / State Machine
 
-**HYPOTHESIS** (from function naming, `mode_frame_step_core`, `game_config_apply_init`).
+**STRONG** (from main_frame_update_loop, game_frame_update_chain analysis).
 
-Falcon 3.0 has multiple game modes:
-- Cockpit view, map view, debrief, loadout, main menu, campaign screen
-- Mode transitions managed by `mode_frame_step_core` / `mode_phase_apply_core` / `mode_flags_apply`
-- Current mode stored in globals at DGROUP
+### Game Mode (word_54D2B)
 
-The farobj opcode handler pointers (`dword_220D0` family) are **per-mode** — set during mode transitions to point to appropriate rendering/update functions. `dispatch_220d0_stub` etc. are thin wrappers that call through these pointers.
+Controls which update path runs each frame:
+- `<= 14` or `= 26`: menu path (keyboard-only)
+- `> 14` and `≠ 26`: flight simulation path
 
-The `mode_session_state_reset` chain (findings 168-169) resets game state between sessions. The `mode_axis_state_select` (1,929B, Level-2+) handles joystick axis selection and dispatch for view/map mode.
+### Per-Frame Update Architecture
+
+Two parallel frame chains run during flight:
+
+**`main_frame_update_loop`** dispatches (top level):
+1. `game_frame_update_chain` — entity simulation + AI + HUD
+2. `game_frame_pipeline_step` — rendering + terrain + projection
+
+**`game_frame_update_chain` (0x2FEF2, R05_1F64)** — the entity update chain:
+```
+farobj_slot_update_driver       → 16 slot records
+farobj_move_accumulate_step     → 40-entry entity motion (CX=82 max)
+entity_timer_row_scan           → countdown timers
+aircraft_slot_cycle_step        → 40 aircraft/AI slots
+mode_strip_frame_step, tile_object_interpreter, farobj_tile_key_cache
+farobj_slot_step_spawn, farobj_sweep_all
+HUD: hud_state_rowtable_step, hud_panel_transform_step, hud_readout_timer_render
+entity_proj_depth_class         → depth classification for drawing order
+angle_matrix_far_invoke(DS:0x48BA+0xC) → build rotation matrix from aircraft heading
+fixed_matrix_load_7b0e(0x430C)  → load matrix into trig segment
+```
+
+`DS:0x48BAh` = current aircraft entity pointer; `DS:0x44AAh` = aircraft index (0–2).
+
+### Mode Frame Step Core: `mode_frame_step_core` (0x3A3D6, 508B)
+
+Per-entity flight simulation step. Checks gates (paused/active), processes:
+- `steerpoint_scan_update` — navigation
+- `entity_table_walk_49a3` — entity AI processing
+- Farobj active gate ([bx+0x74] from scan list)
+- Mode phase counter `ds:0x4AC2` (when ≥ 4 → alternate rendering)
+- Render dispatch callbacks
+
+---
+
+## 13. Flight Physics and Aircraft System
+
+**STRONG** (from pos_step_chain_engine, control_axes_read, aircraft_slot_cycle_step).
+
+### Flight Control Axes (`control_axes_read`, 0x2234B)
+
+Reads 4 flight control axes, normalized to ±2048 (±0x800). Two input modes:
+- **Joystick**: `joystick_axis_read_clamp` → BX/AX/CX/DX = aileron/elevator/throttle/rudder
+- **Keyboard**: accumulated key presses from CS:word_22242/44/3E/40 (with dead zone ≤ 9)
+
+Normalized: `axis = raw × 0x800 / cs:word_2222C`. Stored to `cs:byte_22232+0/2/4/6`.
+
+### Aircraft Kinematics Block (`pos_step_chain_engine`, 0x3B338)
+
+Core position step function. The aircraft kinematics are stored in a **13-word (26B) flight state block** at `DS:[0x32]` (also mirrored to `DS:[0x66]` and `ES:0x7B0E:0x43BA`):
+- Likely: heading, speed, altitude, roll, pitch, and XY/Z position deltas
+- Step formula: `delta = speed_coeff × 0x3334` (tile units = 13,108 per tile)
+- Uses **self-modifying code** (patches inline constants each frame for speed)
+
+### Aircraft Slot Array (`aircraft_slot_cycle_step`, 0x49546)
+
+40 × 24B aircraft/AI slot records at `DS:0x49AB:[0xC]`:
+
+| Offset | Field |
+|---|---|
+| [+0] | flags (0 = inactive) |
+| [+1] | farobj slot index |
+| [+D] | entity type |
+| [+14/16] | far callback pointer |
+
+Cycled each frame; deactivates entries after processing (sets [+0] = 0). Handles AI aircraft, missiles, explosions. Counter cycles 0–50 (0x33) with step `word_4A3E8`.
+
+### Entity Motion Table (`farobj_move_accumulate_step`, 0x4CD1D)
+
+40-entry entity motion table at `DS:0x69FF:[4]` (stride 27B = 0x1B per entry):
+
+| Offset | Field |
+|---|---|
+| [+3] | entity_class |
+| [+6] | flags (bit 0x200=skip, bit 0x1=active) |
+| [+21h, +25h] | slot identification |
+
+Processes up to 82 active entities per frame, applying motion accumulation from physics step.
 
 ---
 
@@ -666,7 +742,15 @@ Based on naming analysis and function organization (HYPOTHESIS unless noted):
 
 ## 19. What We Don't Know Yet
 
-- Exact entity_class codes (0x12/0x14/0x33/0x38 → aircraft/vehicle/ground/naval?) — table in R05_33AE not yet correctly read
+- Exact entity_class codes (0x12/0x14/0x33/0x38 → see §16 hypothesis; type table in R05_33AE not correctly read yet)
+- Asset format (PKWARE DCL compression — UNKNOWN, never exercised)
+- Full FarObj struct layout (fields 0x2E–0x73 and 0x7C–0xD0)
+- Full 13-word flight state block at DS:[0x32] layout (heading, speed, altitude, roll, pitch ordering)
+- Aircraft flight model details: lift, drag, gravity equations inside pos_step_chain_engine
+- The event_state_machine (0x1AB34) full 17-case breakdown
+- How the HUD overlays onto the 3D scene (record_queue_push → renderer chain)
+- Campaign and mission state management (above Level-18 of callgraph)
+- The 15-slot fn_table_dispatch view mode functions (sub_23235..sub_235BB)
 - Asset format (PKWARE DCL compression — UNKNOWN, never exercised)
 - Full FarObj struct layout (fields 0x2E–0x73 and 0x7C–0xD0); struct at 0x54AF:0x386F [+0xC0/0xC1] = possibly hit points/fuel (30 = 0x1E initial)
 - How view_projection maps to actual screen pixel coordinates (complete math beyond the formula)

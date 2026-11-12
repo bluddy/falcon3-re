@@ -1540,3 +1540,149 @@ functions:
     return: void
     return_certainty: HYPOTHESIS
     certainty: HYPOTHESIS
+
+  # --- Flight physics and aircraft systems (S4 2026-11-12) ---
+
+  - ea: "0x2FEF2"
+    key: sub_2FEF2
+    name: game_frame_update_chain
+    name_certainty: STRONG
+    desc: >
+      The actual per-frame entity/aircraft update chain (300B, R05_1F64).
+      Called by game_config_apply_init and sub_30D5F (not main_frame_update_loop!).
+      Sequence:
+        farobj_slot_update_driver, farobj_move_accumulate_step(CX=82, SI=0x44DD),
+        entity_timer_row_scan(CX=82, DI=0x4677), aircraft_slot_cycle_step,
+        mode_strip_frame_step, tile_object_interpreter, farobj_tile_key_cache,
+        farobj_slot_step_spawn, farobj_sweep_all, range_cb_dispatch_loop,
+        hud_state_rowtable_step, hud_panel_transform_step, hud_readout_timer_render,
+        entity_timer2e_dec_14, sprite_project_gate_c5, entity_proj_depth_class,
+        entity_timer_dec_2e, angle_matrix_far_invoke(SI=aircraft+0xC),
+        fixed_matrix_load_7b0e(DI=0x430C).
+      DS:0x48BAh = current aircraft entity pointer (SI). DS:0x44AAh = aircraft index (0-2).
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "ds:0x48BAh", proposed_name: current_aircraft_ptr, type: uint16,
+         desc: "current aircraft entity record offset (SI for angle_matrix_far_invoke)", certainty: STRONG}
+      - {ea: "ds:0x44AAh", proposed_name: aircraft_index, type: uint16,
+         desc: "current aircraft index 0-2 (player + wingmen?); drives DS:0x48C2/0x48C8 table lookup", certainty: HYPOTHESIS}
+      - {ea: "ds:0x44DDh", proposed_name: entity_array_base, type: uint16,
+         desc: "base of entity array (82 entries max, stride varies by function)", certainty: STRONG}
+
+  - ea: "0x3A3D6"
+    key: sub_3A3D6
+    name: mode_frame_step_core
+    name_certainty: STRONG
+    desc: >
+      Per-mode per-entity simulation core (508B, R05_1F64). Called each frame for each
+      active entity when in flight mode. SI = entity state record (struct at DS:0x706).
+      Checks gate: ds:0x44C (paused?) + [si+0xCA] bit 0x100 → skip if set.
+      Operations: steerpoint_scan_update (navigation), entity_table_walk_49a3 (entity AI),
+      farobj active gate check ([bx+0x74] from farobj scan list), mode phase tracking
+      (ds:0x4AC2), dispatch_220d8_via_24bba (render callbacks), far_cb_2, farobj vtable.
+      Phase counter ds:0x4AC2: when >= 4 → alternate path (ds:0x4AC5 mode).
+    calling_convention: register
+    params:
+      - {reg: SI, name: entity_record, type: uint16, desc: "entity state record offset in DS", certainty: STRONG}
+      - {reg: AH, name: entity_flags, type: uint8, certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "ds:0x706h", proposed_name: sim_entity_ptr, type: uint16,
+         desc: "current simulation entity pointer (set from SI on entry)", certainty: STRONG}
+      - {ea: "ds:0x4AC2h", proposed_name: mode_phase, type: uint8,
+         desc: "simulation mode phase counter; >= 4 = alternate rendering path", certainty: HYPOTHESIS}
+
+  - ea: "0x2234B"
+    key: sub_2234B
+    name: control_axes_read
+    name_certainty: STRONG
+    desc: >
+      Reads flight control axis values (211B). Two modes:
+        Joystick: calls joystick_axis_read_clamp, stores BX/AX/CX/DX = 4 axes
+        Keyboard: accumulates axis presses from cs:word_22242/44/3E/40, with dead zone
+      Normalizes all axes to range ±0x800 (±2048) via: `axis = raw × 0x800 / cs:word_2222C`.
+      Stores to cs:byte_22232+0/2/4/6 (4 axis words).
+      Axis mapping: BX=aileron/roll, AX=elevator/pitch, CX=throttle?, DX=rudder?
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "cs:byte_22232",   proposed_name: axis_aileron,  type: int16, desc: "aileron axis ±2048", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_22232+2", proposed_name: axis_elevator, type: int16, desc: "elevator axis ±2048", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_22232+4", proposed_name: axis_throttle, type: int16, desc: "throttle axis ±2048", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_22232+6", proposed_name: axis_rudder,   type: int16, desc: "rudder axis ±2048", certainty: HYPOTHESIS}
+      - {ea: "cs:word_2222C",   proposed_name: axis_sensitivity, type: uint16, desc: "axis scale divisor", certainty: HYPOTHESIS}
+
+  - ea: "0x3B338"
+    key: sub_3B338
+    name: pos_step_chain_engine
+    name_certainty: STRONG
+    desc: >
+      Core aircraft position step engine (459B, R05_2ACF). Converts a heading/speed
+      value (AX) into a world position delta:
+        IF AX=0: AX=1 (minimum motion); ELSE AX = sign×2+1
+        ds:0xB0 = step coefficient; ds:0xB2 = AX × 0x3334 (tile units per step)
+        ds:0xB4 = abs(AX)
+      Copies 13-word flight state from DS:[0x32] to DS:[0x66] AND to ES:0x7B0E:0x43BA.
+      Uses SELF-MODIFYING CODE (patches loc_3B494+1 and others with new constants each frame).
+      The 13-word (26B) flight state block at DS:[0x32] holds the core aircraft kinematics:
+        heading, speed, altitude, roll, pitch, and position deltas.
+    calling_convention: register
+    params:
+      - {reg: AX, name: speed_or_heading, type: int16, desc: "current speed/step magnitude; 0=stopped", certainty: STRONG}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "ds:0x32h",  proposed_name: flight_state_block, type: "int16[13]",
+         desc: "13-word aircraft kinematics block (heading, speed, altitude, roll, pitch, pos deltas)", certainty: HYPOTHESIS}
+      - {ea: "ds:0x66h",  proposed_name: flight_state_prev,  type: "int16[13]",
+         desc: "previous frame flight state (copy of flight_state_block)", certainty: HYPOTHESIS}
+      - {ea: "0x7B0E:0x43BAh", proposed_name: flight_state_trig, type: "int16[13]",
+         desc: "flight state copy in trig segment for matrix computation", certainty: HYPOTHESIS}
+
+  - ea: "0x49546"
+    key: sub_49546
+    name: aircraft_slot_cycle_step
+    name_certainty: STRONG
+    desc: >
+      Cycles through 40 (0x28) aircraft/entity slots at DS:[0xC] stride 24B (R05_393C).
+      For each active slot ([+0] ≠ 0): calls sub_496D3, farptr_table_get([+1]),
+      sub_49A1F; checks [+0] bits; updates via callback at [+14h]:[+16h]; clears slot.
+      This likely handles: AI aircraft respawn, missile flight, explosion lifecycle.
+      Counter cs:word_49544 cycles 0..50 (0x33 max) using word_4A3E8 as step size.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "0x49AB:0x000Ch", proposed_name: aircraft_slot_array, type: "AircraftSlot[40]",
+         desc: "40 × 24B aircraft/entity slot records; [+0]=flags, [+1]=farobj_slot, [+D]=type, [+14/16]=callback", certainty: STRONG}
+
+  - ea: "0x4CD1D"
+    key: sub_4CD1D
+    name: farobj_move_accumulate_step
+    name_certainty: STRONG
+    desc: >
+      Per-entity motion accumulation for all active entities (1062B, R05_3C0D).
+      DS = 0x69FF; entity table at DS:[4] stride 27B (0x1B), up to 40 entries (0..0x27).
+      Each entry: [+3]=entity_class, [+6]=flags (bit 0x200=skip, bit 0x1=active),
+      [+21h/+25h]=slot identification. For active, non-skipped entities with valid slots:
+      checks flag table at DI stride 27B, processes motion (bit 0x21 of flag word).
+      CX=0x52 and SI=0x44DD passed from game_frame_update_chain (iterator state).
+    calling_convention: register
+    params:
+      - {reg: CX, name: entity_count, type: uint16, desc: "max entities to process (82)", certainty: HYPOTHESIS}
+      - {reg: SI, name: entity_array, type: uint16, desc: "entity array base offset in DS", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
