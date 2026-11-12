@@ -16820,3 +16820,19 @@ symbols:
 #   BX=16 mem_copy_fwd   BX=18 mem_store_fwd  BX=1A dos_print_str
 #   BX=1C file_delete    BX=1E file_size
 # (all entries already in existing ledger — duplicates removed)
+
+- ida: word_45150
+  name: entity_attr_table
+  kind: global
+  sig: 40+ word entries, entity type attributes; R05_33AE + 0x1662 = IDA 0x45150
+  notes: 'Table A: entity attributes read by farobj_entity_attr_setup (0x44352) via
+    DS:[BX+1662h]. Each word entry provides scaled values → FarObj.attr_a/b/c.
+    Source: S4 entity_class probe 2026-11-12; see analysis/ida_falconcd/entity_tables.json'
+- ida: word_455E2
+  name: entity_class_table
+  kind: global
+  sig: 40+ word entries, entity class codes; R05_33AE + 0x16F4 = IDA 0x455E2
+  notes: 'Table B: entity class codes read by farobj_entity_attr_setup (0x44352) via
+    DS:[BX+16F4h]. Low byte of each word → FarObj.entity_class [+0x14]. Codes tested
+    by farobj_type_gate_test (0x4BF8B) for values 0x12/14/33/38. Source: S4 entity_class
+    probe 2026-11-12; see analysis/ida_falconcd/entity_tables.json'
