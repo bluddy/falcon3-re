@@ -311,6 +311,46 @@ Also from Level-1 analysis:
 - `fn_table_dispatch` uses `cs:word_22D28` as the current view mode index (0–14)
 - `op_dispatch` = 17-slot DOS/memory operation shim (allocate/free/read/write/seek); see §13 for details
 
+### Rendering Pipeline (STRONG)
+
+The 3D rendering pipeline, traced from `main_frame_update_loop`:
+
+```
+main_frame_update_loop
+└── game_frame_pipeline_step (once per flight frame)
+     ├── fn_table_dispatch → sets view projection constants
+     ├── farobj_batch_build_project  ← TERRAIN TILE RENDERER
+     │    └── coord_point_group_project (per-tile patch)
+     │         └── view_projection (THE 3D projection, 282K calls/session)
+     ├── sub_256A3 → view_projection (fixed reference point)
+     ├── viewlist_project_flagged (per-entity object list)
+     │    └── view_projection (each flagged 16B view record)
+     ├── viewmode3_vector_project (mode 3 cockpit vectors)
+     │    └── view_projection
+     └── farobj_sort_and_step → farobj_record_lookup_step
+
+Additional projection paths (per-farobj):
+     viewobj_project_select
+     ├── viewobj_project_advance → view_projection
+     └── viewobj_project_advance_mark → view_projection (also sets state_flags bit 5)
+```
+
+**`view_projection` (0x20BDB, 1076B)** — the core 3D projection:
+- Input: ES:BX = view origin (world XY int32), DS:DI = object to project
+- Algorithm: `screen = (world_x - view_x) × 16 / |FarObj.cmd_field[+0x20]|`
+- FarObj.cmd_field [+0x20] must be NEGATIVE for projection to proceed (negated to get scale)
+- Also uses `cs:word_1F6E6` as a secondary scale factor
+- FarObj.object_kind [+0x22] doubles as an **LOD accumulator** (incremented by viewobj_project_advance)
+- FarObj.state_flags [+0x24] bit 0x80 = skip projection gate
+
+**`farobj_batch_build_project` (0x13CB0)** — terrain tile batch renderer:
+- Computes XY view offsets: `offset = (cs:word_11BCC - 0x7FF) × (−0xCCD) / 0x400`
+- Processes a stream of tile drawing commands from DS:SI
+- Each tile patch projected via `coord_point_group_project`
+- Callers: `farobj_tile_stream_build`, `tile_base_batch_build`
+
+**Distance-based LOD** in terrain object renderer (sub_4DDB4): 3 tiers based on projected distance (thresholds 0x3A98 and 0x7530), selecting BX = 0x809 (close), 0x80B (medium), 0x80D (far).
+
 ### farobj_render_vtable (0x26400)
 
 A table of 14 far pointers embedded at 0x26400 (after the `dispatch_220d0_stub` retf):
@@ -365,10 +405,18 @@ Packs the joystick/mouse button latch (`cs:word_11102`) into a single byte retur
 
 ## 9. Audio (OPL/FM) — `opl_reg_write` (0x16F10)
 
-**STRONG.** Far function that writes one (register, data) pair to the OPL FM synthesis chip.
+**PROVEN.** The OPL base port is **0x388** (confirmed: `sound_device_init` calls `adlib_device_init(0x388)` for device type 2).
 
-```
-Port = [0x7A32:0xAD50]  ; OPL base I/O port (hypothesis: 0x388 for AdLib/SB)
+**Sound device type codes** (from `sound_device_init`, 0x1740D):
+
+| AX | Mode | Initialization |
+|---|---|---|
+| 1 | PC speaker | `always_true` (no-op) |
+| 2 | **AdLib/OPL2 at port 0x388** | `adlib_device_init(0x388)` — **PROVEN** |
+| 3 | SoundBlaster | `sbi_port_discover_aa` (auto-detect) |
+| 4 | SBI verify | `sbi_reset_verify` |
+
+**OPL register write** (`opl_reg_write`, 0x16F10):
 OUT port, reg_addr       ; write register address
 IN al, port (×6)         ; delay loop
 OUT port+1, reg_data     ; write data byte

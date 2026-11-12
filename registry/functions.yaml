@@ -1318,3 +1318,97 @@ functions:
     globals:
       - {ea: "cs:0x5762", proposed_name: input_flag_bytes, type: "flags8[11]",
          desc: "88-bit keyboard/button event flag bitmap; each bit = one input event", certainty: STRONG}
+
+  # --- Rendering pipeline (S4 2026-11-12) ---
+
+  - ea: "0x13CB0"
+    key: sub_13CB0
+    name: farobj_batch_build_project
+    name_certainty: STRONG
+    desc: >
+      Main terrain tile batch renderer (346B, seg005). Processes a stream of tile
+      drawing commands from DS:SI, projecting each tile patch via coord_point_group_project.
+      Computes world-space offsets from view center:
+        offset_x = (cs:word_11BCC - 0x7FF) × (-0xCCD) / 0x400
+        offset_y = (cs:word_11BCA - 0x400) × (-0xCCD) / 0x400
+      Stores offsets to cs:word_11BD6/BD8 (X) and cs:word_11BD2/BD4 (Y).
+      Command stream: lodsb reads command byte; bit 7 or top 2 bits = special.
+      After projection: calls flag_set_lowbit, es_ptr_slots_init.
+      Callers: farobj_tile_stream_build, tile_base_batch_build.
+    calling_convention: register
+    params:
+      - {reg: SI, name: cmd_stream, type: uint16, desc: "offset of tile command stream in DS", certainty: STRONG}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+
+  - ea: "0x13A71"
+    key: sub_13A71
+    name: coord_point_group_project
+    name_certainty: STRONG
+    desc: >
+      Projects a group of coordinate points from tile-space to screen-space (288B, seg005).
+      Called by farobj_batch_build_project for each tile patch.
+      Sets up world position offsets in DS:0x7EA..0x7F0 from CS globals (word_11BD6..BD4).
+      Uses active_farptr_set to register the view context, calls tile_quad_sample_group
+      to build the tile quad, then projects each point via view_projection.
+    calling_convention: register
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+
+  - ea: "0x124B4"
+    key: sub_124B4
+    name: farobj_tile_align_project
+    name_certainty: HYPOTHESIS
+    desc: >
+      Aligns a view object to the tile grid and projects it (128B, seg005).
+      Writes int32 world XY (from cs:word_11BBA + cs:word_11BD6/BD8/BD2/BD4 offsets)
+      into ES:DI view record [+0..7], then calls view_projection with that record as DI.
+      The view record at ES:DI is a temporary 16-byte buffer for the projection.
+    calling_convention: register
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x2F535"
+    key: sub_2F535
+    name: viewmode3_vector_project
+    name_certainty: HYPOTHESIS
+    desc: >
+      Projects view vectors for mode 3 (cockpit / forward view?) — 91B, R05_1F40.
+      Only runs when state_word_44d3d_get() == 3. Loops through word_62D6A entries
+      starting at DS:0x66, copies 3 XY components to DS:0x2E+offsets, sets ES=0x54AF,
+      BX=0x20 (view origin from that segment), and calls view_projection.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  # --- Sound device initialization (confirmed) ---
+  - ea: "0x1740D"
+    key: sub_1740D
+    name: sound_device_init
+    name_certainty: PROVEN
+    desc: >
+      Initializes sound hardware based on device type AX:
+        AX=1: PC speaker (always_true — no-op)
+        AX=2: AdLib/OPL2 at I/O port 0x388 (calls adlib_device_init(0x388))  PROVEN
+        AX=3: SoundBlaster auto-detect (calls sbi_port_discover_aa)
+        AX=4: SBI reset/verify (calls sbi_reset_verify)
+        other: returns 0 (not supported)
+      Confirms OPL base port = 0x388 (AdLib standard port). PROVEN.
+    calling_convention: far_cdecl
+    params:
+      - {reg: AX, name: device_type, type: uint16,
+         desc: "1=PC speaker, 2=AdLib/OPL at 0x388, 3=SoundBlaster, 4=SBI verify",
+         certainty: PROVEN}
+    return: "ax = nonzero on success"
+    return_certainty: STRONG
+    certainty: PROVEN
+    globals:
+      - {ea: "0x0388", proposed_name: opl_port_388, type: uint16,
+         desc: "AdLib OPL2/OPL3 standard I/O port 0x388 (address register)", certainty: PROVEN}
