@@ -98,7 +98,16 @@ REBASE = [(0x106EEC, 0x106EE2, 0x106F3A, 0x106EE2, 0x706E), (0x10843D, 0x108430,
           (0x6940E, 0x6940B, 0x69462, 0x6940B, None),
           # finding 179 P5b: ui_loadout_menu_enter starts mid-instruction (0x683C5 = last byte of push es:[0x14FA]);
           # real start is 0x683C1; narrow clear_hi=0x683C6 to redecode only the 5-byte push prefix
-          (0x683C5, 0x683C1, 0x6940B, 0x683C1, None, 0x683C6)]
+          (0x683C5, 0x683C1, 0x6940B, 0x683C1, None, 0x683C6),
+          # finding 205 P2 batch 1: 6 not_head misdecodes where calls land 1 byte into current function start
+          # (all have 0x00 orphan byte before, no prior function ownership, xrefs point to prev byte)
+          (0x407BF, 0x407BE, 0x40843, 0x407BE, None),  # sub_407BF: 2 xrefs to 0x407BE, 0 to current
+          (0x40DDB, 0x40DDA, 0x40E35, 0x40DDA, None),  # sub_40DDB: 1 xref to 0x40DDA
+          (0x40C69, 0x40C68, 0x40C73, 0x40C68, None),  # sub_40C69: 7 xrefs to 0x40C68
+          (0x40045, 0x40044, 0x4005C, 0x40044, None),  # sub_40045: 2 xrefs to 0x40044
+          (0x3FD66, 0x3FD65, 0x3FD89, 0x3FD65, None),  # sub_3FD66: 4 xrefs to 0x3FD65
+          (0x404F1, 0x404F0, 0x404F6, 0x404F0, None),  # sub_404F1: 2 xrefs to 0x404F0
+]
 # finding 161 P2 type-1 misdecodes: DEFERRED — these have external callers to the old null-byte head
 # (the REBASE stale-head check correctly flags them; they need sub-block fixup or individual analysis)
 # finding 161 P2 type-2a misdecodes:
