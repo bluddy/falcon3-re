@@ -10,15 +10,16 @@
 ## Table of Contents
 
 1. [Overview](#overview)
-2. [Memory Architecture](#memory-architecture)
-3. [Frame Pipeline](#frame-pipeline)
-4. [Rendering System](#rendering-system)
-5. [Visibility Culling](#visibility-culling)
-6. [Object Management](#object-management)
-7. [Overlay System](#overlay-system)
-8. [Data Structures](#data-structures)
-9. [Performance Budget](#performance-budget)
-10. [Verified Addresses](#verified-addresses)
+2. [System Documentation](#system-documentation)
+3. [Memory Architecture](#memory-architecture)
+4. [Frame Pipeline](#frame-pipeline)
+5. [Rendering System](#rendering-system)
+6. [Visibility Culling](#visibility-culling)
+7. [Object Management](#object-management)
+8. [Overlay System](#overlay-system)
+9. [Data Structures](#data-structures)
+10. [Performance Budget](#performance-budget)
+11. [Verified Addresses](#verified-addresses)
 
 ---
 
@@ -36,6 +37,84 @@ Falcon 3.0 is a DOS real-time flight simulator (1991) that maintains 18 FPS on 3
 - **Main Loop**: 44 function calls per frame
 - **Visibility Passes**: 4 per frame (3 pre-render + 1 during render)
 - **Systems Mapped**: 9 complete (rendering, culling, terrain, overlay, HUD, physics, weapons/AI, input, audio)
+
+**Documentation Status**: All 9 major systems have comprehensive deep-dive documentation. See [System Documentation](#system-documentation) below.
+
+---
+
+## System Documentation
+
+Complete deep-dive documentation for all 9 major subsystems:
+
+### 1. **RENDERING_SYSTEM.md** (6 core functions)
+- **Path**: `analysis/RENDERING_SYSTEM.md`
+- **Scope**: 3D graphics pipeline, view projection, transformation
+- **Key Functions**: `view_projection`, `fixed_vec3_transform_es`, rendering bridge functions
+- **Discovery**: Overlay integration point identified, 7 function calls mapped
+
+### 2. **CULLING_SYSTEM.md** (inline, 460 instructions)
+- **Path**: `analysis/CULLING_SYSTEM.md`
+- **Scope**: 4-pass hierarchical visibility culling (frustum → occlusion → backface → LOD)
+- **Key Discovery**: Culling is inline within `view_projection` (66 branches), not separate functions
+- **Performance**: 60-90% object rejection, processes 32 candidates → 3-12 rendered
+
+### 3. **TERRAIN_SYSTEM.md** (hot path, 306 calls/frame)
+- **Path**: `analysis/s4/TERRAIN_SYSTEM.md`
+- **Scope**: Terrain rendering and elevation queries
+- **Key Functions**: `terrain_frame_update_driver`, `terrain_attr_walk_13110` (34-iteration loop)
+- **Performance**: 306 terrain lookups per frame, critical hot path
+
+### 4. **OVERLAY_SYSTEM.md** (96 functions)
+- **Path**: `analysis/OVERLAY_SYSTEM.md`
+- **Scope**: 2D HUD overlays, vector graphics, screen-space UI
+- **Key Functions**: `overlay_tail_bridge` (8 bytes), `tail_bridge_overlay_load`
+- **Integration**: Called from `view_projection` after 3D rendering complete
+
+### 5. **HUD_SYSTEM.md** (30+ functions)
+- **Path**: `analysis/HUD_SYSTEM.md`
+- **Scope**: HUD logic and state management (what to display)
+- **Architecture**: Two-stage design - HUD generates commands, overlay renders them
+- **Elements**: Airspeed, altitude, heading, targeting, weapons status, warnings
+
+### 6. **PHYSICS_SYSTEM.md** (48 functions)
+- **Path**: `analysis/PHYSICS_SYSTEM.md`
+- **Scope**: Flight model, aerodynamics, F-16 dynamics simulation
+- **Components**: Force calculation, motion integration, control surfaces, coordinate transforms
+- **Performance**: 5-10ms per frame (significant portion of budget)
+
+### 7. **WEAPONS_AI_SYSTEM.md** (262 functions - LARGEST)
+- **Path**: `analysis/WEAPONS_AI_SYSTEM.md`
+- **Scope**: Combat simulation, enemy AI, weapons physics, engagement logic
+- **Subsystems**: AI decision-making (~100 functions), weapons physics (~100 functions), targeting (~62 functions)
+- **Complexity**: Very high - dogfighting AI, missile guidance, damage model
+
+### 8. **INPUT_SYSTEM.md** (74 functions)
+- **Path**: `analysis/INPUT_SYSTEM.md`
+- **Scope**: Keyboard, mouse, joystick input handling
+- **Hardware**: PC ports (keyboard 0x60, joystick 0x201), BIOS interrupts
+- **Components**: Device polling, input processing, command mapping, calibration
+
+### 9. **AUDIO_SYSTEM.md** (25 functions - SMALLEST)
+- **Path**: `analysis/AUDIO_SYSTEM.md`
+- **Scope**: Sound effects and audio output
+- **Hardware**: PC Speaker, Sound Blaster, AdLib, possibly Roland MT-32
+- **Sounds**: Weapons, engine, warnings, radio calls
+
+### System Size Summary
+
+| System | Functions | Relative Size | Complexity |
+|--------|-----------|---------------|------------|
+| Weapons/AI | 262 | 35% | Very High |
+| Overlay | 96 | 13% | Medium-High |
+| Input | 74 | 10% | Medium |
+| Physics | 48 | 6% | High |
+| HUD | 30+ | 4% | Medium |
+| Audio | 25 | 3% | Low-Medium |
+| Terrain | ~15 | 2% | Medium (hot path) |
+| Rendering | 6 core | 1% | High (critical path) |
+| Culling | Inline | 0% (embedded) | High (performance critical) |
+
+**Note**: Percentages are estimates. Remaining ~25% includes main loop, file I/O, menu systems, mission logic, and utility functions.
 
 ---
 
