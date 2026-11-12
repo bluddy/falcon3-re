@@ -1,0 +1,579 @@
+{
+  "functions": [
+    {
+      "name": "font_glyph_advance_11860",
+      "address": "0x11ae7",
+      "size": 62,
+      "disasm_first_20": [
+        {
+          "addr": "0x11ae7",
+          "inst": "mov     al, es:[bx+1]"
+        },
+        {
+          "addr": "0x11aeb",
+          "inst": "add     al, 2"
+        },
+        {
+          "addr": "0x11aed",
+          "inst": "sub     ah, ah"
+        },
+        {
+          "addr": "0x11aef",
+          "inst": "mov     cs:word_11860, ax"
+        },
+        {
+          "addr": "0x11af3",
+          "inst": "mov     di, cs:word_1185A"
+        },
+        {
+          "addr": "0x11af8",
+          "inst": "add     di, 6"
+        },
+        {
+          "addr": "0x11afb",
+          "inst": "push    bx"
+        },
+        {
+          "addr": "0x11afc",
+          "inst": "push    cx"
+        },
+        {
+          "addr": "0x11afd",
+          "inst": "push    di"
+        },
+        {
+          "addr": "0x11afe",
+          "inst": "push    si"
+        },
+        {
+          "addr": "0x11aff",
+          "inst": "call    font_glyph_lookup"
+        },
+        {
+          "addr": "0x11b02",
+          "inst": "mov     ax, si"
+        },
+        {
+          "addr": "0x11b04",
+          "inst": "pop     si"
+        },
+        {
+          "addr": "0x11b05",
+          "inst": "push    ax"
+        },
+        {
+          "addr": "0x11b06",
+          "inst": "mov     bx, cs:word_1186C"
+        },
+        {
+          "addr": "0x11b0b",
+          "inst": "sub     bx, bp"
+        },
+        {
+          "addr": "0x11b0d",
+          "inst": "shr     bx, 1"
+        },
+        {
+          "addr": "0x11b0f",
+          "inst": "add     bx, cs:word_11858"
+        },
+        {
+          "addr": "0x11b14",
+          "inst": "call    far_cb_gated"
+        },
+        {
+          "addr": "0x11b19",
+          "inst": "pop     si"
+        }
+      ],
+      "disasm_last_10": [
+        {
+          "addr": "0x11b0d",
+          "inst": "shr     bx, 1"
+        },
+        {
+          "addr": "0x11b0f",
+          "inst": "add     bx, cs:word_11858"
+        },
+        {
+          "addr": "0x11b14",
+          "inst": "call    far_cb_gated"
+        },
+        {
+          "addr": "0x11b19",
+          "inst": "pop     si"
+        },
+        {
+          "addr": "0x11b1a",
+          "inst": "pop     di"
+        },
+        {
+          "addr": "0x11b1b",
+          "inst": "pop     cx"
+        },
+        {
+          "addr": "0x11b1c",
+          "inst": "pop     bx"
+        },
+        {
+          "addr": "0x11b1d",
+          "inst": "add     di, cs:word_11860"
+        },
+        {
+          "addr": "0x11b22",
+          "inst": "loop    loc_11AFB"
+        },
+        {
+          "addr": "0x11b24",
+          "inst": "retn"
+        }
+      ],
+      "calls": [
+        "font_glyph_lookup",
+        "far_cb_gated"
+      ]
+    },
+    {
+      "name": "font_glyph_lookup",
+      "address": "0x11b6a",
+      "size": 38,
+      "disasm_first_20": [
+        {
+          "addr": "0x11b6a",
+          "inst": "sub     bp, bp"
+        },
+        {
+          "addr": "0x11b6c",
+          "inst": "lodsb"
+        },
+        {
+          "addr": "0x11b6d",
+          "inst": "or      al, al"
+        },
+        {
+          "addr": "0x11b6f",
+          "inst": "jz      short locret_11B8F"
+        },
+        {
+          "addr": "0x11b71",
+          "inst": "sub     al, es:[bx+2]"
+        },
+        {
+          "addr": "0x11b75",
+          "inst": "js      short loc_11B6C"
+        },
+        {
+          "addr": "0x11b77",
+          "inst": "sub     ah, ah"
+        },
+        {
+          "addr": "0x11b79",
+          "inst": "mov     dx, es:[bx+4]"
+        },
+        {
+          "addr": "0x11b7d",
+          "inst": "mul     dx"
+        },
+        {
+          "addr": "0x11b7f",
+          "inst": "push    bx"
+        },
+        {
+          "addr": "0x11b80",
+          "inst": "add     bx, ax"
+        },
+        {
+          "addr": "0x11b82",
+          "inst": "add     bx, 7"
+        },
+        {
+          "addr": "0x11b85",
+          "inst": "mov     al, es:[bx]"
+        },
+        {
+          "addr": "0x11b88",
+          "inst": "pop     bx"
+        },
+        {
+          "addr": "0x11b89",
+          "inst": "sub     ah, ah"
+        },
+        {
+          "addr": "0x11b8b",
+          "inst": "add     bp, ax"
+        },
+        {
+          "addr": "0x11b8d",
+          "inst": "jmp     short loc_11B6C"
+        },
+        {
+          "addr": "0x11b8f",
+          "inst": "retn"
+        }
+      ],
+      "disasm_last_10": [
+        {
+          "addr": "0x11b7d",
+          "inst": "mul     dx"
+        },
+        {
+          "addr": "0x11b7f",
+          "inst": "push    bx"
+        },
+        {
+          "addr": "0x11b80",
+          "inst": "add     bx, ax"
+        },
+        {
+          "addr": "0x11b82",
+          "inst": "add     bx, 7"
+        },
+        {
+          "addr": "0x11b85",
+          "inst": "mov     al, es:[bx]"
+        },
+        {
+          "addr": "0x11b88",
+          "inst": "pop     bx"
+        },
+        {
+          "addr": "0x11b89",
+          "inst": "sub     ah, ah"
+        },
+        {
+          "addr": "0x11b8b",
+          "inst": "add     bp, ax"
+        },
+        {
+          "addr": "0x11b8d",
+          "inst": "jmp     short loc_11B6C"
+        },
+        {
+          "addr": "0x11b8f",
+          "inst": "retn"
+        }
+      ],
+      "calls": []
+    },
+    {
+      "name": "line_draw_441e",
+      "address": "0x28b08",
+      "size": 409,
+      "disasm_first_20": [
+        {
+          "addr": "0x28b08",
+          "inst": "mov     di, 441Eh"
+        },
+        {
+          "addr": "0x28b0b",
+          "inst": "mov     cs:slope_temp_cx, 0FFFFh"
+        },
+        {
+          "addr": "0x28b12",
+          "inst": "mov     cs:line_table_flags, 0"
+        },
+        {
+          "addr": "0x28b19",
+          "inst": "push    cx"
+        },
+        {
+          "addr": "0x28b1a",
+          "inst": "mov     cx, 0ABCDh"
+        },
+        {
+          "addr": "0x28b1d",
+          "inst": "lodsw"
+        },
+        {
+          "addr": "0x28b1e",
+          "inst": "cwd"
+        },
+        {
+          "addr": "0x28b1f",
+          "inst": "add     ax, 0ABCDh"
+        },
+        {
+          "addr": "0x28b22",
+          "inst": "adc     dx, 0ABCDh"
+        },
+        {
+          "addr": "0x28b26",
+          "inst": "jcxz    short loc_28B4A"
+        },
+        {
+          "addr": "0x28b28",
+          "inst": "push    cx"
+        },
+        {
+          "addr": "0x28b29",
+          "inst": "or      dx, dx"
+        },
+        {
+          "addr": "0x28b2b",
+          "inst": "jns     short loc_28B43"
+        },
+        {
+          "addr": "0x28b2d",
+          "inst": "neg     dx"
+        },
+        {
+          "addr": "0x28b2f",
+          "inst": "neg     ax"
+        },
+        {
+          "addr": "0x28b31",
+          "inst": "sbb     dx, 0"
+        },
+        {
+          "addr": "0x28b34",
+          "inst": "shr     dx, 1"
+        },
+        {
+          "addr": "0x28b36",
+          "inst": "rcr     ax, 1"
+        },
+        {
+          "addr": "0x28b38",
+          "inst": "loop    loc_28B34"
+        },
+        {
+          "addr": "0x28b3a",
+          "inst": "neg     dx"
+        }
+      ],
+      "disasm_last_10": [
+        {
+          "addr": "0x28c87",
+          "inst": "mov     es:[di+6], ax"
+        },
+        {
+          "addr": "0x28c8b",
+          "inst": "and     cs:slope_temp_cx, ax"
+        },
+        {
+          "addr": "0x28c90",
+          "inst": "or      cs:line_table_flags, ax"
+        },
+        {
+          "addr": "0x28c95",
+          "inst": "pop     si"
+        },
+        {
+          "addr": "0x28c96",
+          "inst": "pop     cx"
+        },
+        {
+          "addr": "0x28c97",
+          "inst": "add     di, 10h"
+        },
+        {
+          "addr": "0x28c9a",
+          "inst": "dec     cx"
+        },
+        {
+          "addr": "0x28c9b",
+          "inst": "jle     short locret_28CA0"
+        },
+        {
+          "addr": "0x28c9d",
+          "inst": "jmp     loc_28B19"
+        },
+        {
+          "addr": "0x28ca0",
+          "inst": "retn"
+        }
+      ],
+      "calls": []
+    },
+    {
+      "name": "tile_clip_draw_14200",
+      "address": "0x14200",
+      "size": 106,
+      "disasm_first_20": [
+        {
+          "addr": "0x14200",
+          "inst": "sub     ah, ah"
+        },
+        {
+          "addr": "0x14202",
+          "inst": "mov     al, cs:byte_11C7A"
+        },
+        {
+          "addr": "0x14206",
+          "inst": "shl     ax, 1"
+        },
+        {
+          "addr": "0x14208",
+          "inst": "add     ax, 110h"
+        },
+        {
+          "addr": "0x1420b",
+          "inst": "mov     bp, ax"
+        },
+        {
+          "addr": "0x1420d",
+          "inst": "add     di, cs:word_11C4E"
+        },
+        {
+          "addr": "0x14212",
+          "inst": "mov     ch, 7"
+        },
+        {
+          "addr": "0x14214",
+          "inst": "mov     cl, 7"
+        },
+        {
+          "addr": "0x14216",
+          "inst": "push    bx"
+        },
+        {
+          "addr": "0x14217",
+          "inst": "push    si"
+        },
+        {
+          "addr": "0x14218",
+          "inst": "push    di"
+        },
+        {
+          "addr": "0x14219",
+          "inst": "push    cx"
+        },
+        {
+          "addr": "0x1421a",
+          "inst": "push    bx"
+        },
+        {
+          "addr": "0x1421b",
+          "inst": "sub     ah, ah"
+        },
+        {
+          "addr": "0x1421d",
+          "inst": "mov     al, cs:[bp+0]"
+        },
+        {
+          "addr": "0x14221",
+          "inst": "shl     ax, 1"
+        },
+        {
+          "addr": "0x14223",
+          "inst": "shl     ax, 1"
+        },
+        {
+          "addr": "0x14225",
+          "inst": "add     bx, ax"
+        },
+        {
+          "addr": "0x14227",
+          "inst": "mov     ax, [bx+2]"
+        },
+        {
+          "addr": "0x1422a",
+          "inst": "mov     bx, [bx]"
+        }
+      ],
+      "disasm_last_10": [
+        {
+          "addr": "0x14257",
+          "inst": "pop     di"
+        },
+        {
+          "addr": "0x14258",
+          "inst": "pop     si"
+        },
+        {
+          "addr": "0x14259",
+          "inst": "pop     bx"
+        },
+        {
+          "addr": "0x1425a",
+          "inst": "add     si, 8"
+        },
+        {
+          "addr": "0x1425d",
+          "inst": "add     di, 10h"
+        },
+        {
+          "addr": "0x14260",
+          "inst": "add     bx, 20h ; ' '"
+        },
+        {
+          "addr": "0x14263",
+          "inst": "dec     ch"
+        },
+        {
+          "addr": "0x14265",
+          "inst": "jle     short locret_14269"
+        },
+        {
+          "addr": "0x14267",
+          "inst": "jmp     short loc_14214"
+        },
+        {
+          "addr": "0x14269",
+          "inst": "retn"
+        }
+      ],
+      "calls": []
+    },
+    {
+      "name": "sprite_offset_dispatch_343e",
+      "address": "0x35b2f",
+      "size": 20,
+      "disasm_first_20": [
+        {
+          "addr": "0x35b2f",
+          "inst": "mov     si, [si+7B6h]"
+        },
+        {
+          "addr": "0x35b33",
+          "inst": "sub     si, ax"
+        },
+        {
+          "addr": "0x35b35",
+          "inst": "add     bx, ds:6F8h"
+        },
+        {
+          "addr": "0x35b39",
+          "inst": "add     di, ds:6FAh"
+        },
+        {
+          "addr": "0x35b3d",
+          "inst": "call    cs:dword_35924"
+        },
+        {
+          "addr": "0x35b42",
+          "inst": "retn"
+        }
+      ],
+      "disasm_last_10": [
+        {
+          "addr": "0x35b2f",
+          "inst": "mov     si, [si+7B6h]"
+        },
+        {
+          "addr": "0x35b33",
+          "inst": "sub     si, ax"
+        },
+        {
+          "addr": "0x35b35",
+          "inst": "add     bx, ds:6F8h"
+        },
+        {
+          "addr": "0x35b39",
+          "inst": "add     di, ds:6FAh"
+        },
+        {
+          "addr": "0x35b3d",
+          "inst": "call    cs:dword_35924"
+        },
+        {
+          "addr": "0x35b42",
+          "inst": "retn"
+        }
+      ],
+      "calls": [
+        "cs:dword_35924"
+      ]
+    }
+  ]
+}
