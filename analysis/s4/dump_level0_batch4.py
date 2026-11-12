@@ -59,8 +59,8 @@ for fn in all_fns:
 level0_candidates.sort(key=lambda x: (-x["dyn"], -x["in"]))
 
 # Extract batch: configure here
-BATCH_NUM = 6
-BATCH_START = 65  # 0-indexed, so rank 66 = index 65
+BATCH_NUM = 7
+BATCH_START = 80  # 0-indexed, so rank 81 = index 80
 BATCH_SIZE = 15
 batch = level0_candidates[BATCH_START:BATCH_START + BATCH_SIZE]
 
