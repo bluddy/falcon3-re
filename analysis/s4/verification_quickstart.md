@@ -52,7 +52,7 @@ Enter: 20BDB
 Verify: Function name is "view_projection"
 Verify: Located at seg020:151B
 Press: X (xrefs)
-Count: How many functions call view_projection? _______
+Count: How many functions call view_projection? 14
 ```
 
 ### 3. Verify fixed_vec3_transform_es (2 min)
@@ -62,7 +62,7 @@ Enter: 248D1
 Verify: Function name is "fixed_vec3_transform_es"
 Verify: Located at seg020:5211
 Press: X (xrefs)
-Count: Should see 10 callers - actual: _______
+Count: Should see 10 callers - actual:21
 ```
 
 ### 4. Verify farobj queues (1 min)

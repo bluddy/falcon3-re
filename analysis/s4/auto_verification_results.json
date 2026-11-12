@@ -1,0 +1,281 @@
+{
+  "phase1_addresses": {
+    "passed": [
+      "seg020 base = 0x1f6c0 \u2713",
+      "view_projection at 0x20bdb \u2713",
+      "fixed_vec3_transform_es at 0x248d1 \u2713"
+    ],
+    "failed": [],
+    "warnings": []
+  },
+  "phase2_math_helpers": {
+    "passed": [],
+    "failed": [],
+    "warnings": [
+      "seg015:0C65 called by: ",
+      "seg015:0C7A called by: stream_command_interpret",
+      "seg015:0CDB called by: stream_command_interpret",
+      "seg015:0CF0 called by: ",
+      "seg015:0D51 called by: ",
+      "seg015:0D66 called by: stream_command_interpret",
+      "seg017:01FE called by: ",
+      "seg017:021C called by: ",
+      "seg017:01E3 called by: ",
+      "seg020:1A2F called by: vec_delta_norm_1f6ee"
+    ],
+    "details": [
+      {
+        "segoff": "seg015:0C65",
+        "address": "0x1cc57",
+        "description": "segment setup",
+        "function": "stream_command_interpret",
+        "is_entry": false,
+        "xref_count": 0,
+        "callers": [],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg015:0C7A",
+        "address": "0x1cc6c",
+        "description": "complex dispatcher",
+        "function": "stream_command_interpret",
+        "is_entry": false,
+        "xref_count": 1,
+        "callers": [
+          "stream_command_interpret"
+        ],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg015:0CDB",
+        "address": "0x1cccd",
+        "description": "32-bit left shift",
+        "function": "stream_command_interpret",
+        "is_entry": false,
+        "xref_count": 1,
+        "callers": [
+          "stream_command_interpret"
+        ],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg015:0CF0",
+        "address": "0x1cce2",
+        "description": "far call wrapper",
+        "function": "stream_command_interpret",
+        "is_entry": false,
+        "xref_count": 0,
+        "callers": [],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg015:0D51",
+        "address": "0x1cd43",
+        "description": "wrapper with cleanup",
+        "function": "stream_command_interpret",
+        "is_entry": false,
+        "xref_count": 0,
+        "callers": [],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg015:0D66",
+        "address": "0x1cd58",
+        "description": "conditional math",
+        "function": "stream_command_interpret",
+        "is_entry": false,
+        "xref_count": 1,
+        "callers": [
+          "stream_command_interpret"
+        ],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg017:01FE",
+        "address": "0x1d894",
+        "description": "table lookup",
+        "function": "group_children_release",
+        "is_entry": false,
+        "xref_count": 0,
+        "callers": [],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg017:021C",
+        "address": "0x1d8b2",
+        "description": "multiply-accumulate",
+        "function": "group_children_release",
+        "is_entry": false,
+        "xref_count": 0,
+        "callers": [],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg017:01E3",
+        "address": "0x1d879",
+        "description": "conditional epilogue",
+        "function": "channel_list_register_batch",
+        "is_entry": false,
+        "xref_count": 0,
+        "callers": [],
+        "exclusive": false
+      },
+      {
+        "segoff": "seg020:1A2F",
+        "address": "0x210ef",
+        "description": "32-bit absolute value",
+        "function": "vec_delta_norm_1f6ee",
+        "is_entry": false,
+        "xref_count": 1,
+        "callers": [
+          "vec_delta_norm_1f6ee"
+        ],
+        "exclusive": false
+      }
+    ]
+  },
+  "phase3_graphics": {
+    "passed": [
+      "fixed_vec3_transform_es size correct",
+      "vec2_normalize_seq size correct",
+      "farobj_record_step size correct",
+      "farobj_record_push_7c054 size correct",
+      "farobj_record_lookup_step size correct",
+      "farobj_record_push_7d0c6 size correct"
+    ],
+    "failed": [],
+    "warnings": [
+      "fixed_vec3_transform_es has 21 callers, expected 10",
+      "vec2_normalize_seq has 3 callers, expected 2"
+    ],
+    "details": [
+      {
+        "expected_name": "fixed_vec3_transform_es",
+        "actual_name": "fixed_vec3_transform_es",
+        "address": "0x248d1",
+        "expected_size": 146,
+        "actual_size": 146,
+        "expected_callers": 10,
+        "actual_callers": 21
+      },
+      {
+        "expected_name": "vec2_normalize_seq",
+        "actual_name": "vec2_normalize_seq",
+        "address": "0x23e66",
+        "expected_size": 17,
+        "actual_size": 17,
+        "expected_callers": 2,
+        "actual_callers": 3
+      },
+      {
+        "expected_name": "farobj_record_step",
+        "actual_name": "farobj_record_step",
+        "address": "0x2142e",
+        "expected_size": 393,
+        "actual_size": 393,
+        "expected_callers": null,
+        "actual_callers": 2
+      },
+      {
+        "expected_name": "farobj_record_push_7c054",
+        "actual_name": "farobj_record_push_7c054",
+        "address": "0x2128e",
+        "expected_size": 72,
+        "actual_size": 72,
+        "expected_callers": null,
+        "actual_callers": 1
+      },
+      {
+        "expected_name": "farobj_record_lookup_step",
+        "actual_name": "farobj_record_lookup_step",
+        "address": "0x213e6",
+        "expected_size": 72,
+        "actual_size": 72,
+        "expected_callers": null,
+        "actual_callers": 2
+      },
+      {
+        "expected_name": "farobj_record_push_7d0c6",
+        "actual_name": "farobj_record_push_7d0c6",
+        "address": "0x212d6",
+        "expected_size": 70,
+        "actual_size": 70,
+        "expected_callers": null,
+        "actual_callers": 1
+      }
+    ]
+  },
+  "phase4_vec3_callers": {
+    "passed": [
+      "object_proj_draw_dispatch call count correct",
+      "object_quad_proj_draw call count correct",
+      "record_xform_apply call count correct",
+      "stub_to_248d1 call count correct",
+      "sub_21657 call count correct",
+      "view_basis_build_3850 call count correct",
+      "view_proj_setup_1f73d call count correct",
+      "view_proj_setup_1f73d_rot call count correct",
+      "view_projection call count correct",
+      "view_scroll_rotate_apply call count correct"
+    ],
+    "failed": [],
+    "warnings": [],
+    "details": [
+      {
+        "caller": "object_proj_draw_dispatch",
+        "actual_calls": 1,
+        "expected_calls": 1
+      },
+      {
+        "caller": "object_quad_proj_draw",
+        "actual_calls": 4,
+        "expected_calls": 4
+      },
+      {
+        "caller": "record_xform_apply",
+        "actual_calls": 4,
+        "expected_calls": 4
+      },
+      {
+        "caller": "stub_to_248d1",
+        "actual_calls": 1,
+        "expected_calls": 1
+      },
+      {
+        "caller": "sub_21657",
+        "actual_calls": 1,
+        "expected_calls": 1
+      },
+      {
+        "caller": "view_basis_build_3850",
+        "actual_calls": 2,
+        "expected_calls": 2
+      },
+      {
+        "caller": "view_proj_setup_1f73d",
+        "actual_calls": 3,
+        "expected_calls": 3
+      },
+      {
+        "caller": "view_proj_setup_1f73d_rot",
+        "actual_calls": 3,
+        "expected_calls": 3
+      },
+      {
+        "caller": "view_projection",
+        "actual_calls": 1,
+        "expected_calls": 1
+      },
+      {
+        "caller": "view_scroll_rotate_apply",
+        "actual_calls": 1,
+        "expected_calls": 1
+      }
+    ]
+  },
+  "phase5_sub_21657": {
+    "passed": [
+      "sub_21657 has no direct callers (indirect call)"
+    ]
+  }
+}
