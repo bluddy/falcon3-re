@@ -1,0 +1,226 @@
+[
+  {
+    "target": "0x2EFE1",
+    "func_start": "0x2EFE0",
+    "func_name": "viewvec_loop_project",
+    "xrefs_count": 1,
+    "xrefs": [
+      {
+        "from": "0x301A1",
+        "type": 16,
+        "from_func": "game_state_load_apply"
+      }
+    ],
+    "insn_start": "0x2EFE0",
+    "is_mid_insn": true,
+    "insn_at_head": "add     ds:0B906h, bl",
+    "disasm_around": [
+      "0002EFE0: add     ds:0B906h, bl <-- INSN_HEAD",
+      "0002EFE4: inc     di",
+      "0002EFE5: bound   cx, [bp-7127h]",
+      "0002EFEA: mov     ds:0Ah, ax",
+      "0002EFED: mov     ds:6, bx",
+      "0002EFF1: cmp     bx, 0",
+      "0002EFF4: jz      short loc_2F03B"
+    ]
+  },
+  {
+    "target": "0x3592C",
+    "func_start": "0x356A7",
+    "func_name": "viewvec_half_add_step",
+    "xrefs_count": 8,
+    "xrefs": [
+      {
+        "from": "0x3022E",
+        "type": 17,
+        "from_func": "game_state_load_apply"
+      },
+      {
+        "from": "0x305AC",
+        "type": 17,
+        "from_func": "mode_change_apply_step"
+      },
+      {
+        "from": "0x305D0",
+        "type": 17,
+        "from_func": "mode_change_apply_step"
+      },
+      {
+        "from": "0x32B6E",
+        "type": 17,
+        "from_func": "view_mode_bits_step"
+      },
+      {
+        "from": "0x33314",
+        "type": 17,
+        "from_func": "key_event_mode_gate"
+      },
+      {
+        "from": "0x33825",
+        "type": 17,
+        "from_func": "sub_3352A"
+      },
+      {
+        "from": "0x33839",
+        "type": 17,
+        "from_func": "sub_3352A"
+      },
+      {
+        "from": "0x33AD9",
+        "type": 17,
+        "from_func": "sub_339B2"
+      }
+    ],
+    "insn_start": "0x3592B",
+    "is_mid_insn": true,
+    "insn_at_head": "mov     byte ptr cs:loc_35929, al",
+    "disasm_around": [
+      "000356A7: push    ds",
+      "000356A8: mov     ds, cs:word_2F66F",
+      "000356AD: mov     bx, cs:word_348E0",
+      "000356B2: add     bx, 44h ; 'D'",
+      "000356B5: mov     di, cs:word_348E2",
+      "000356BA: add     di, 0",
+      "000356BD: mov     si, cs:word_2F671",
+      "000356C2: mov     si, [si]",
+      "000356C4: add     si, cs:word_2F671",
+      "000356C9: call    far ptr fixed_vec2_half_add",
+      "000356CE: mov     bx, cs:word_348E0",
+      "000356D3: add     bx, 83h",
+      "000356D7: mov     di, cs:word_348E2",
+      "000356DC: add     di, 0",
+      "000356DF: mov     si, cs:word_2F671",
+      "000356E4: mov     si, [si+2]",
+      "000356E7: add     si, cs:word_2F671",
+      "000356EC: call    far ptr fixed_vec2_half_add",
+      "000356F1: mov     bx, cs:word_348E0",
+      "000356F6: add     bx, 0B9h"
+    ]
+  },
+  {
+    "target": "0x407C0",
+    "func_start": "0x407BF",
+    "func_name": "sub_407BF",
+    "xrefs_count": 3,
+    "xrefs": [
+      {
+        "from": "0x3BE6D",
+        "type": 17,
+        "from_func": "farobj_record_ops_exec"
+      },
+      {
+        "from": "0x3C2B1",
+        "type": 17,
+        "from_func": "farobj_slot_update_driver"
+      },
+      {
+        "from": "0x3D1AC",
+        "type": 17,
+        "from_func": "sub_3CF9D"
+      }
+    ],
+    "insn_start": "0x407BF",
+    "is_mid_insn": true,
+    "insn_at_head": "add     al, ch",
+    "disasm_around": [
+      "000407BF: add     al, ch <-- INSN_HEAD",
+      "000407C1: in      ax, dx",
+      "000407C2: call    dword ptr ds:5656h",
+      "000407C6: mov     ax, [di+2]",
+      "000407C9: mov     si, [di+4]",
+      "000407CC: mov     ds, ax",
+      "000407CE: mov     bx, [si+0Ch]",
+      "000407D1: mov     dx, [si+0Eh]",
+      "000407D4: pop     di"
+    ]
+  },
+  {
+    "target": "0x40BC6",
+    "func_start": "0x40BC5",
+    "func_name": "sub_40BC5",
+    "xrefs_count": 8,
+    "xrefs": [
+      {
+        "from": "0x3C1F5",
+        "type": 17,
+        "from_func": "farobj_slot_update_driver"
+      },
+      {
+        "from": "0x3C247",
+        "type": 17,
+        "from_func": "farobj_slot_update_driver"
+      },
+      {
+        "from": "0x3F99E",
+        "type": 17,
+        "from_func": "farobj_index_resolve_step"
+      },
+      {
+        "from": "0x41547",
+        "type": 17,
+        "from_func": "sub_41466"
+      },
+      {
+        "from": "0x4158A",
+        "type": 17,
+        "from_func": "sub_41555"
+      },
+      {
+        "from": "0x41BE8",
+        "type": 17,
+        "from_func": "sub_41BDF"
+      },
+      {
+        "from": "0x41BFE",
+        "type": 17,
+        "from_func": "sub_41BF1"
+      },
+      {
+        "from": "0x423B7",
+        "type": 17,
+        "from_func": "sub_423A9"
+      }
+    ],
+    "insn_start": "0x40BC5",
+    "is_mid_insn": true,
+    "insn_at_head": "add     ds:6C6h, ch",
+    "disasm_around": [
+      "00040BC5: add     ds:6C6h, ch <-- INSN_HEAD",
+      "00040BC9: xchg    ax, bp",
+      "00040BCA: push    bx",
+      "00040BCB: add     [bp+di+2B04h], cl",
+      "00040BCF: push    es",
+      "00040BD0: pusha",
+      "00040BD1: adc     bp, ds:63Bh",
+      "00040BD5: add     al, 0",
+      "00040BD7: jnz     short sub_40BEF",
+      "00040BD9: or      byte ptr cs:sub_40BC5, 1"
+    ]
+  },
+  {
+    "target": "0x403BE",
+    "func_start": "0x403BD",
+    "func_name": "sub_403BD",
+    "xrefs_count": 1,
+    "xrefs": [
+      {
+        "from": "0x3C24A",
+        "type": 17,
+        "from_func": "farobj_slot_update_driver"
+      }
+    ],
+    "insn_start": "0x403BD",
+    "is_mid_insn": true,
+    "insn_at_head": "add     ds:6F6h, ch",
+    "disasm_around": [
+      "000403BD: add     ds:6F6h, ch <-- INSN_HEAD",
+      "000403C1: xchg    ax, bp",
+      "000403C2: push    bx",
+      "000403C3: add     [bx+si+2174h], dx",
+      "000403C7: mov     di, [si+6]",
+      "000403CA: cmp     word ptr [di+56h], 3E8h",
+      "000403CF: jg      short sub_403DE",
+      "000403D1: call    sub_4045F"
+    ]
+  }
+]

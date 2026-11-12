@@ -1,0 +1,270 @@
+{
+  "target": "0x4113C",
+  "split_at": "0x41167",
+  "function_name": "sub_4113C",
+  "function_start": "0x4113C",
+  "function_end": "0x41466",
+  "split_mnem": "",
+  "split_disasm": "mov     cs:byte_4115D, 0",
+  "prev_ea": "0x41164",
+  "prev_mnem": "jmp",
+  "prev_disasm": "jmp     short loc_4116D",
+  "xrefs_to_split": [
+    {
+      "from": "0x39834",
+      "type": 16,
+      "from_func": "store_impact_step"
+    },
+    {
+      "from": "0x3E1B5",
+      "type": 17,
+      "from_func": "sub_3E170"
+    },
+    {
+      "from": "0x404E1",
+      "type": 17,
+      "from_func": "sub_404B4"
+    },
+    {
+      "from": "0x4076F",
+      "type": 17,
+      "from_func": "sub_40708"
+    },
+    {
+      "from": "0x4077B",
+      "type": 17,
+      "from_func": "sub_40708"
+    },
+    {
+      "from": "0x455B7",
+      "type": 16,
+      "from_func": "sub_45472"
+    },
+    {
+      "from": "0x474DB",
+      "type": 16,
+      "from_func": "sub_47239"
+    },
+    {
+      "from": "0x4810B",
+      "type": 16,
+      "from_func": "hud_panel_transform_step"
+    },
+    {
+      "from": "0x481F6",
+      "type": 16,
+      "from_func": "sub_4812B"
+    },
+    {
+      "from": "0x4D752",
+      "type": 16,
+      "from_func": "sub_4D55F"
+    }
+  ],
+  "disasm_before_split": [
+    "0004113C: push    ds",
+    "0004113D: push    es",
+    "0004113E: mov     bx, 54AFh",
+    "00041141: mov     ds, bx",
+    "00041143: mov     es, bx",
+    "00041145: call    sub_40CB7",
+    "00041148: mov     si, [di+6]",
+    "0004114B: mov     ax, [si+50h]",
+    "0004114E: mov     bx, [si+52h]",
+    "00041151: mov     cx, [si+54h]",
+    "00041154: pop     es",
+    "00041155: pop     ds",
+    "00041156: retf",
+    "00041157: db 0",
+    "00041158: dw 0",
+    "0004115A: dw 0",
+    "0004115C: db 0",
+    "0004115D: db 0",
+    "0004115E: mov     cs:byte_4115D, 1",
+    "00041164: jmp     short loc_4116D"
+  ],
+  "disasm_after_split": [
+    "00041167: mov     cs:byte_4115D, 0",
+    "0004116D: push    ds",
+    "0004116E: mov     di, 54AFh",
+    "00041171: mov     ds, di",
+    "00041173: mov     cs:word_41158, ax",
+    "00041177: mov     cs:word_4115A, bp",
+    "0004117C: push    bx",
+    "0004117D: call    sub_40CB7",
+    "00041180: mov     si, di",
+    "00041182: mov     di, [si+6]",
+    "00041185: pop     bx",
+    "00041186: mov     al, [si+56h]",
+    "00041189: shl     al, 1",
+    "0004118B: cmp     [di+0C9h], al",
+    "0004118F: jb      short loc_41193",
+    "00041191: pop     ds",
+    "00041192: retf",
+    "00041193: cmp     cs:byte_4115D, 1",
+    "00041199: jnz     short loc_411A1",
+    "0004119B: mov     [di+0C9h], cl",
+    "0004119F: jmp     short loc_411FC",
+    "000411A1: mov     al, bl",
+    "000411A3: mul     bh",
+    "000411A5: add     ax, 32h ; '2'",
+    "000411A8: mov     cl, 64h ; 'd'",
+    "000411AA: div     cl",
+    "000411AC: or      al, al",
+    "000411AE: jnz     short loc_411B2",
+    "000411B0: pop     ds",
+    "000411B1: retf"
+  ],
+  "internal_jumps_crossing": [
+    {
+      "from": "0x41164",
+      "to": "0x4116D",
+      "direction": "down"
+    },
+    {
+      "from": "0x41167",
+      "to": "0x4115D",
+      "direction": "up"
+    },
+    {
+      "from": "0x41173",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x41177",
+      "to": "0x4115A",
+      "direction": "up"
+    },
+    {
+      "from": "0x41193",
+      "to": "0x4115D",
+      "direction": "up"
+    },
+    {
+      "from": "0x411B6",
+      "to": "0x41157",
+      "direction": "up"
+    },
+    {
+      "from": "0x411BC",
+      "to": "0x41157",
+      "direction": "up"
+    },
+    {
+      "from": "0x411CA",
+      "to": "0x41157",
+      "direction": "up"
+    },
+    {
+      "from": "0x411EF",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x4127F",
+      "to": "0x4115C",
+      "direction": "up"
+    },
+    {
+      "from": "0x412CA",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x412DA",
+      "to": "0x4115C",
+      "direction": "up"
+    },
+    {
+      "from": "0x41318",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x41322",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x41338",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x41347",
+      "to": "0x4115C",
+      "direction": "up"
+    },
+    {
+      "from": "0x41380",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x4138A",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x4139D",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x413AB",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x413F6",
+      "to": "0x4115C",
+      "direction": "up"
+    },
+    {
+      "from": "0x413FC",
+      "to": "0x4115A",
+      "direction": "up"
+    },
+    {
+      "from": "0x4140A",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x41418",
+      "to": "0x41158",
+      "direction": "up"
+    },
+    {
+      "from": "0x41427",
+      "to": "0x4115C",
+      "direction": "up"
+    },
+    {
+      "from": "0x4142B",
+      "to": "0x4115A",
+      "direction": "up"
+    },
+    {
+      "from": "0x41436",
+      "to": "0x4115A",
+      "direction": "up"
+    },
+    {
+      "from": "0x41448",
+      "to": "0x4115A",
+      "direction": "up"
+    },
+    {
+      "from": "0x41457",
+      "to": "0x4115C",
+      "direction": "up"
+    },
+    {
+      "from": "0x4145B",
+      "to": "0x41158",
+      "direction": "up"
+    }
+  ]
+}
