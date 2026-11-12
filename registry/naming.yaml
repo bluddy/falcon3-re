@@ -16877,3 +16877,40 @@ symbols:
   name: cs_word_2b84_set
   kind: function
   notes: write CS:[0x2B84] word; CS-segment state block; 7.5K calls; finding 180
+
+- ida: sub_100B5
+  name: stub_to_1f6c_61df
+  kind: function
+  notes: far call trampoline to 1F6C:61DF; 2.9K calls from 11 overlays; finding 187
+- ida: sub_22DE6
+  name: cs_dword_3706_set
+  kind: function
+  notes: write DX:AX pair to CS:[0x3706:0x3708]; 1.7K calls; finding 184
+- ida: sub_22F2C
+  name: fixed_normalize_dispatch
+  kind: function
+  notes: 163B fixed-point range transform with jump table at CS:[0x390F]; 1.5K calls; finding 189
+- ida: sub_255F6
+  name: cs_dword_5dd1_get_atomic
+  kind: function
+  notes: CLI/STI atomic read of CS:[0x5DD1:0x5DD3] pair; 1.3K calls; finding 184
+- ida: sub_22F15
+  name: seg7b0e_copy_3808_to_3820
+  kind: function
+  notes: copy 9 words (18B) from 7B0E:3808 to 7B0E:3820 (forward); view state save; 603 calls; finding 185
+- ida: sub_22EFE
+  name: seg7b0e_copy_3820_to_3808
+  kind: function
+  notes: copy 9 words (18B) from 7B0E:3820 to 7B0E:3808 (back); view state restore; 603 calls; finding 185
+- ida: sub_2305B
+  name: seg7b0e_copy_split_388a_3896
+  kind: function
+  notes: copy 18B from DS:SI to 7B0E:388A (12B) + 7B0E:3896 (6B) split-dest; 534 calls; finding 185
+- ida: sub_1024A
+  name: ems_dual_op_44
+  kind: function
+  notes: two EMS int 67h AH=44h operations (page mapping) with CS:[21h]/CS:[Fh] params; 534 calls; finding 188
+- ida: sub_22440
+  name: cs_word_2b76_set
+  kind: function
+  notes: write AX to CS:[0x2B76] (setter for cs_word_2b76_get); 489 calls; finding 184
