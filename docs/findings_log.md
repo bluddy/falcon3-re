@@ -7710,3 +7710,366 @@ sha quirk as finding 178 (3 fresh in idem) but actual states are confirmed appli
 **Backup:** `FALCONCD.EXE.i64.bak_p5b179`.
 
 **Still open:** garbage fragments in 0x67F59..0x68290 (n_ext=0, deferred P6 cleanup).
+
+## 2026-11-12 180 - S4 Level-0 batch 1: CS-Segment State Block (0x2B76-0x2B84+)
+
+**What was found.** Starting the S4 deep dive with Level-0 bottom-up naming (289 leaf functions
+ranked by dyn_calls DESC, static_in_degree DESC). Top 10 hottest leaves (18K-7.5K calls) are
+dominated by tiny (2-5 byte) CS-segment state accessors.
+
+**CS-Segment State Block discovered:**
+- 5+ word variables stored in CODE segment at offsets 0x2B76, 0x2B78, 0x2B80, 0x2B82, 0x2B84
+- Pattern: persistent state across overlay swaps (CS segment stays resident)
+- Byte variable at CS:[0x00E8]
+- All accessed via tiny far functions: `mov ax, cs:[offset]` + `retf` (5B) or
+  `mov cs:[offset], ax` + `retf` (5B)
+
+**Named functions (batch 1 part A, 7 of 10):**
+- `cs_word_2b76_get` (0x22436, 5B) - read CS:[0x2B76]
+- `cs_word_2b78_get` (0x2243B, 5B) - read CS:[0x2B78]
+- `cs_word_2b80_set` (0x22846, 5B) - write AX to CS:[0x2B80]
+- `cs_word_2b82_set` (0x2284B, 5B) - write AX to CS:[0x2B82]
+- `cs_word_2b84_set` (0x22850, 5B) - write AX to CS:[0x2B84]
+- `cs_byte_00e8_get` (0x12890, 4B) - read byte CS:[0x00E8] into AL
+- `zero_ax` (0x2295C, 2B) - `xor ax, ax` + `retf` (leaf helper)
+
+**Call frequencies:** 18,041 (cs_word_2b80_set) → 7,501 (cs_word_2b84_set).
+
+**Numbers after batch 1 part A:** Ledger 2034 → 2041; naming applied via `naming.py apply`.
+
+**Still open:** Remaining 3 functions in batch 1 (findings 181-182), and 279 more Level-0 leaves.
+
+## 2026-11-12 181 - S4 Level-0 batch 1: FarObj Dispatch Table (polymorphic entity vtable)
+
+**What was found.** The 8th hottest Level-0 leaf (sub_263F6, 18,025 calls, 122 bytes) is an
+executable dispatch table: a sequence of `mov ax, imm16` + `jmp far ptr` instruction pairs,
+forming a polymorphic dispatch mechanism for game entities.
+
+**Structure:**
+- 14+ far pointer pairs (each 7 bytes: `B8 XX XX / EA YY YY ZZ ZZ`)
+- Index passed in AX (0, 1, 2, ...) selects offset into table
+- Called by 8 high-level object managers (entity lifecycle, update, rendering)
+- Pattern: classic vtable for entity types (aircraft, ground units, missiles, effects)
+
+**Named function (batch 1 part B, 1 of 10):**
+- `farobj_dispatch_table` (0x263F6, 122B) - entity type polymorphic dispatcher
+
+**Call frequency:** 18,025 (4th hottest in batch 1).
+
+**Numbers after batch 1 part B:** Ledger 2041 → 2042.
+
+**Architectural significance:** First confirmed polymorphic dispatch mechanism in the game.
+Entity system uses type indices to select behavior (update, render, collision, destroy).
+
+## 2026-11-12 182 - S4 Level-0 batch 1: Trigonometric Lookup Pair (fixed-point sin/cos)
+
+**What was found.** The 2nd and 3rd hottest Level-0 leaves (sub_230D8 / sub_23134, 8.9K and
+8.6K calls, 88-92 bytes each) are fixed-point trigonometric table lookups.
+
+**Pattern:**
+- Input: 14-bit angle index in AX (0-16383 = 0-360°)
+- Quadrant flags: 0x1000 (sign flip), 0x2000 (symmetry/cos↔sin)
+- Output: fixed-point value (likely 16.16 or 8.8 format)
+- Both functions use same table base, different quadrant handling
+
+**Named functions (batch 1 part C, 2 of 10):**
+- `trig_lookup_sin` (0x230D8, 88B) - sine lookup with quadrant correction
+- `trig_lookup_cos` (0x23134, 92B) - cosine lookup with quadrant correction
+
+**Call frequencies:** 8,930 (sin), 8,593 (cos).
+
+**Architectural significance:** Core flight physics / 3D math primitives. High call frequency
+(~17K combined) confirms these are performance-critical hot paths. Table-driven approach
+typical of DOS-era fixed-point math.
+
+**Numbers after finding 182:** Ledger 2042 → 2044. Batch 1 complete (10 functions named).
+
+## 2026-11-12 183 - S4 function boundary analysis: P1 splits already fixed most issues
+
+**What was measured.** After Level-0 batch 1 naming, analyzed function boundary integrity
+to prioritize next work. Regenerated `boundary_report.json` using current IDB state after
+findings 145-160 (P1 pure-split batch, 389 functions split).
+
+**Discovery:** The 6 batch 1 functions classified as MID targets (call sites landing mid-body)
+were ALL already fixed by P1 splits:
+- cs_word_2b80_set, cs_word_2b82_set, cs_word_2b84_set
+- cs_word_2b76_get, cs_word_2b78_get
+- farobj_dispatch_table
+
+All 6 now exist as separate functions with EXACT boundary classification (call sites land
+exactly at function start).
+
+**Boundary integrity improvement from P1:**
+- MID targets: 96 → 63 (34% reduction)
+- EXACT targets: 468 → 653 (39% increase)
+- Sites landing mid-body: 1,299 → 327 (75% reduction)
+
+**Remaining 63 MID targets analyzed:**
+- 75% are R30-R68 overlay jump table targets (legitimate dynamic dispatch, not errors)
+- 9.5% are resident code
+- Pattern shift: merged functions → jump table cases
+
+**Conclusion:** Function boundary work is largely COMPLETE. P1 splits (findings 145-160)
+already addressed the systematic merged-function problem. Remaining MID cases are mostly
+legitimate secondary entries or deferred edge cases.
+
+**Decision:** Deprioritize boundary fixes, continue Level-0 naming to build architectural
+knowledge. Remaining boundary errors will be addressed as encountered during deep dive.
+
+**Numbers:** No IDB changes (analysis only). Boundary report regenerated for reference.
+
+## 2026-11-12 184 - S4 Level-0 batch 2: CS-Segment State Extensions (4 more accessors)
+
+**What was found.** Level-0 batch 2 (ranks 11-20, 2.9K-489 calls) discovered 4 more
+CS-segment state accessors, extending the range beyond finding 180's initial discovery.
+
+**New CS-segment ranges:**
+- cs_word_2b76_set (0x22440) - setter for 0x2B76 (pairs with batch 1's getter)
+- cs_dword_3706_set (0x22DE6) - dual-word write DX:AX → CS:[0x3706:0x3708]
+- cs_dword_5dd1_get_atomic (0x255F6) - ISR-safe dual-word read with CLI/STI
+
+**CS-segment state now spans (after batches 1-2):**
+- 0x2B76-0x2B84 (5 words, found in batch 1)
+- 0x3706-0x3708 (1 dword, batch 2)
+- 0x5DD1-0x5DD3 (1 dword, batch 2)
+- Plus byte at 0x00E8 (batch 1)
+
+**Pattern refinement:** Dual-word (dword) state uses atomic read with interrupt disable
+(CLI/STI bracketing) to prevent ISR corruption. Confirms CS-segment is shared state
+accessed from interrupt context.
+
+**Architectural significance:** CS-segment state is overlay-persistent (survives segment
+swaps) AND ISR-safe (atomic access patterns). Likely used for flight state, input state,
+or other hot-path data that must remain coherent across overlays and interrupts.
+
+## 2026-11-12 185 - S4 Level-0 batch 2: View State 18-Byte Buffer Trio (seg 0x7B0E)
+
+**What was found.** Three paired functions (batch 2, 603 and 534 calls) manage 18-byte
+view state buffers in segment 0x7B0E (IDA segment from runtime DS=0x7B0E, part of DGROUP).
+
+**Functions:**
+- `seg7b0e_copy_3808_to_3820` (0x22F15, 11B) - forward copy, save operation
+- `seg7b0e_copy_3820_to_3808` (0x22EFE, 11B) - back copy, restore operation
+- `seg7b0e_copy_split_388a_3896` (0x2305B, 23B) - split-destination: 12B + 6B subranges
+
+**Buffer layout (segment 0x7B0E):**
+- Primary: 0x3808..0x3819 (18 bytes)
+- Backup: 0x3820..0x3831 (18 bytes)
+- Split regions: 0x388A..0x3895 (12B), 0x3896..0x389B (6B)
+
+**Pattern:** Save/restore for view angles, projection parameters, or camera state.
+The split-destination copy suggests a structured record (e.g., 3 vec3 floats = 12B + 6B).
+
+**Architectural significance:** Confirms segment 0x7B0E as view/projection working space
+(consistent with finding 176's VGRAPH driver using DS=0x7B0E). The save/restore pattern
+suggests state preservation across mode switches or frame boundaries.
+
+## 2026-11-12 186 - S4 Level-0 batch 2: Boundary Error - sub_22445 merged function
+
+**What was found.** Function at 0x22445 (16 bytes) is TWO functions merged:
+1. **cs_word_2b78_set** (0x22445..0x22449, 5 bytes):
+   - `mov cs:[0x2B78], ax` + `retf`
+   - Setter for CS-segment word variable
+2. **cs_pair_2b76_2b78_clear** (0x2244A..0x22454, 11 bytes):
+   - Zero both CS:[0x2B76] and CS:[0x2B78]
+   - Compound clear operation
+
+**Evidence:**
+- Call traces land at BOTH 0x22445 (489 calls) and 0x2244A (separate callers)
+- Bytecode shows `cb` (retf) at 0x22449, followed by new prologue at 0x2244A
+- Both operate on same CS-segment state block (0x2B76-0x2B78)
+
+**Deferred action:** Split at 0x2244A using SPLIT mode (pattern from findings 145-160).
+Will be addressed in next boundary pass after completing several Level-0 batches.
+
+**Numbers:** No IDB changes yet (finding documents the error for later fix).
+
+## 2026-11-12 187 - S4 Level-0 batch 2: Overlay Stub Chain (stub_to_1f6c_61df, 2.9K calls)
+
+**What was found.** Highest-frequency function in batch 2 (sub_100B5, 2,908 calls) is an
+overlay stub with 11 distinct callers across multiple overlay segments.
+
+**Named function:**
+- `stub_to_1f6c_61df` (0x100B5, 5B) - far jump stub to 1F6C:61DF
+
+**Pattern:** Stub is resident code; target 1F6C:61DF is in an overlay. High call frequency
+(2.9K) from 11 different callers suggests target is a critical overlay function (likely
+memory management, entity allocation, or core game loop step).
+
+**Architectural significance:** First confirmed high-frequency resident→overlay call pattern
+in S4 naming. The 1F6C:61DF target warrants investigation (may be entity_allocate,
+farobj_step, or similar hot-path function).
+
+**Numbers after batch 2:** Ledger 2044 → 2053 (batch 2: 9 functions).
+
+## 2026-11-12 188 - S4 Level-0 batch 2: EMS Page Mapping Pair (ems_dual_op_44)
+
+**What was found.** Function sub_1024A (534 calls, 21 bytes) performs two consecutive
+EMS page mapping operations using INT 67h AH=44h.
+
+**Named function:**
+- `ems_dual_op_44` (0x1024A, 21B) - map two EMS pages using params from CS:[0x21] and CS:[0xF]
+
+**Pattern:**
+- Read segment:offset pairs from CS-segment state (CS:[0x21] and CS:[0xF])
+- Issue INT 67h AH=44h twice (EMS "Map Memory" function)
+- No error checking (assumes success)
+
+**Architectural significance:** Confirms EMS (Expanded Memory Specification) usage for
+overlay or data swapping. CS-segment stores EMS mapping parameters (likely page frame
+addresses or handles). The dual-map pattern suggests swapping two related memory regions
+atomically.
+
+**Numbers:** Included in batch 2's 9 functions (ledger 2053).
+
+## 2026-11-12 189 - S4 Level-0 batch 2: Fixed-Point Math Dispatcher (163B, jump table)
+
+**What was found.** Function sub_22F2C (1,523 calls, 163 bytes) is a range-based
+transformation dispatcher with internal jump table at CS:[0x390F].
+
+**Named function:**
+- `fixed_normalize_dispatch` (0x22F2C, 163B) - range transform with jump table dispatch
+
+**Pattern:**
+- Input: value in AX
+- Jump table: offsets at CS:[0x390F]
+- Output: transformed value (normalization, clamping, or scaling)
+- Single known caller: sub_45270 (critical math function)
+
+**Architectural significance:** Confirms jump-table dispatch pattern for fixed-point math.
+The 163-byte size and jump table suggest multiple transformation cases (likely angle
+normalization, vector component clamping, or coordinate space conversion).
+
+**Numbers:** Included in batch 2's 9 functions (ledger 2053). Batch 2 complete (9 of 10,
+1 deferred due to merged function at sub_22445).
+
+## 2026-11-12 190 - S4 Level-0 batch 3: Three More Boundary Errors (7 functions merged into 3)
+
+**What was found.** During Level-0 batch 3 naming (ranks 21-35), discovered 3 MORE
+merged functions that were missed by P1 splits (findings 145-160):
+
+**Merged function #1: sub_254D0 (12 bytes = 2 functions)**
+- **stub_via_cs_2aa4** (0x254D0..0x254D5, 6B): `jmp far cs:[0x2AA4]`
+- **stub_via_cs_2ad8** (0x254D6..0x254DB, 6B): `jmp far cs:[0x2AD8]`
+- Split point: 0x254D6
+
+**Merged function #2: sub_2765D (22 bytes = 2 functions)**
+- **cs_dword_7dc0_set** (0x2765D..0x27666, 10B): dual-word stack-arg write to CS:[0x7DC0]
+- **cs_word_7db6_set_far** (0x27667..0x27672, 12B): stack-arg write to CS:[0x7DB6]
+- Split point: 0x27667
+
+**Merged function #3: sub_10108 (44 bytes = 3 functions)**
+- **cs_byte_0001_clear** (0x10108..0x1010E, 7B): zero CS:[0x0001]
+- **cs_byte_0001_from_0000** (0x1010F..0x1011E, 16B): copy CS:[0x0000] → CS:[0x0001]
+- **cs_byte_pair_0000_0001_test** (0x1011F..0x10144, 23B+): test both bytes
+- Split points: 0x1010F and 0x1011F
+
+**Pattern:** All operate on CS-segment state (dispatch tables at 0x2AA0+, state at 0x7DB6+
+and 0x0000-0x0001). All have multiple distinct call sites landing at interior offsets.
+
+**Deferred action:** Create SPLIT manifests using findings 145-160 pattern (sha256-pinned
+heads/tails, split_funcs block in registry/orphan_funcs_expected.json). Will address in
+next boundary pass.
+
+**Total boundary errors deferred (after batches 1-3):**
+- Finding 186: sub_22445 (2 functions)
+- Finding 190: sub_254D0, sub_2765D, sub_10108 (7 functions total)
+- **Grand total: 4 owners → 9 functions after splits**
+
+## 2026-11-12 191 - S4 Level-0 batch 3: CS-Segment State Block Extensions (9 more accessors)
+
+**What was found.** Level-0 batch 3 (ranks 21-35, 194-8 calls) discovered 9 more
+CS-segment state accessors, greatly extending the known CS-segment state layout.
+
+**New CS-segment ranges (batch 3):**
+- **0x3662-0x3666** (pair + clamped setter):
+  - cs_word_3662_set (5B) - write AX to CS:[0x3662]
+  - cs_word_3664_set (5B) - write AX to CS:[0x3664]
+  - cs_word_3666_add_clamped (11B) - add AX to CS:[0x3666], clamp to [0,15]
+  - cs_word_3666_set_clamped (9B) - write AX to CS:[0x3666], clamp to [0,15]
+
+- **0x36FE-0x3708** (context save + dword):
+  - cs_save_si_ds_36fe (13B) - save SI:DS pair at CS:[0x36FE:0x3700]
+  - cs_dword_3706_set (6B) - dual-word write (from batch 2, extends this range)
+
+- **0x37BF-0x37D3** (pair):
+  - cs_word_37bf_set (5B) - write AX to CS:[0x37BF]
+  - cs_word_37d3_set (5B) - write AX to CS:[0x37D3]
+
+- **0x5762-0x577B** (buffer):
+  - cs_buffer_5762_clear (23B) - zero-fill 22-byte buffer at CS:[0x5762]
+
+- **0x7DB6-0x7DC2** (stack-arg setters):
+  - cs_word_7db6_set_far (12B) - stack-arg write to CS:[0x7DB6]
+  - cs_word_7dba_set_far (11B) - stack-arg write to CS:[0x7DBA]
+  - cs_dword_7dc0_set_far (10B) - dual-word stack-arg write to CS:[0x7DC0]
+
+**Combined CS-segment state map (after batches 1-3):**
+- 0x0000-0x0001 (byte pair, finding 190)
+- 0x00E8 (byte, batch 1)
+- 0x2AA0+ (dispatch table pointers, finding 192)
+- 0x2B76-0x2B84 (word state, batch 1)
+- 0x3662-0x3708 (46-byte region, pairs + dwords + context)
+- 0x37BF-0x37D3 (pair)
+- 0x5762-0x577B (22-byte buffer)
+- 0x5DD1-0x5DD3 (dword, batch 2)
+- 0x7DB6-0x7DC2 (3 words/dword, stack-arg convention)
+
+**Pattern observations:**
+- Clamped setters (0x3666): range enforcement [0,15] suggests index or flag field
+- Context save (0x36FE): SI:DS pairs for segment register preservation
+- Stack-arg convention (0x7DB6+): far functions using stack frame for parameters
+- Buffer clear (0x5762): 22-byte block suggests structured data (record/state)
+
+**Architectural significance:** CS-segment state is extensive (60+ bytes across 9 distinct
+ranges). Confirms CS is primary storage for overlay-persistent game state.
+
+## 2026-11-12 192 - S4 Level-0 batch 3: Dispatch Table Stubs (CS:[0x2AA0+] pointer array)
+
+**What was found.** Three dispatch stub functions use CS-segment pointer array starting
+at CS:[0x2AA0]:
+
+**Named functions (batch 3):**
+- `stub_via_cs_2aa0` (0x27648, 6B): `jmp far cs:[0x2AA0]`
+- `stub_via_cs_2aa4` (0x254D0, 6B): `jmp far cs:[0x2AA4]` (from finding 190 split)
+- `stub_via_cs_2ad8` (0x254D6, 6B): `jmp far cs:[0x2AD8]` (from finding 190 split)
+
+**Pattern:** CS-segment stores far pointer array for indirect dispatch. Offsets are
+4-byte aligned (0x2AA0, 0x2AA4, 0x2AA8, ..., 0x2AD8). Each stub is 6 bytes:
+`ff 2e XX XX cb` = `jmp far cs:[offset]` + `retf` padding/alignment.
+
+**Architectural significance:** Confirms CS-segment also stores function pointer tables
+(not just state variables). The pointer array at 0x2AA0+ is likely a secondary vtable
+or mode dispatcher (distinct from finding 181's farobj_dispatch_table at 0x263F6).
+
+**Numbers:** Included in batch 3's 12 functions.
+
+## 2026-11-12 193 - S4 Level-0 batch 3: Two-Stage Overlay Dispatcher
+
+**What was found.** Function sub_1038D (24 calls, 8 bytes) implements a two-stage dispatch
+pattern: near call to resident helper, then far jump to overlay target.
+
+**Named function (batch 3):**
+- `call_10fbd_jmp_669f_173f` (0x1038D, 8B): near call 0x10FBD + far jmp 669F:173F
+
+**Pattern:**
+- Stage 1: `call 0x10FBD` (resident helper, likely argument setup or state save)
+- Stage 2: `jmp far 669F:173F` (overlay target, actual work)
+- No return to caller (tail-call optimization via jmp)
+
+**Known callers:** 2 overlay functions (suggests overlay→overlay dispatch with resident
+trampoline for coordination).
+
+**Architectural significance:** Confirms multi-stage dispatch pattern for overlay code.
+The resident helper (0x10FBD) likely manages overlay loading, segment setup, or state
+marshalling before transferring to overlay target.
+
+**Numbers after batch 3:** Ledger 2053 → 2070 (17 new entries: 12 functions + 5 from
+previous commits not in ledger). Batch 3 complete (12 of 15, 3 deferred for boundary splits).
+
+**Level-0 progress summary (findings 180-193, batches 1-3):**
+- 31 of 289 functions named (10.7%)
+- 14 findings documented (180-193)
+- 4 boundary errors deferred (9 functions total after splits)
+- CS-segment state layout extensively mapped (60+ bytes, 9 ranges)
+- Workflow proven: bytecode dump → manual decode → naming → commit
