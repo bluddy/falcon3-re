@@ -17109,3 +17109,34 @@ symbols:
   name: cs_dword_3702_set
   kind: function
   notes: write DX:AX to CS:[0x3702:0x3704], extends 0x3662-0x3708 region; 1.7K calls; finding 201
+
+- ida: sub_2241E
+  name: overlay_1110_conditional_dual_call
+  kind: function
+  sig: 'void far; call far 1110:0123; if !ZF call far 1110:034B; cmp AL,3; if <3 mov AX,cs:[2B74]; CF based on result'
+  notes: '24B, 9210 dyn, 1 caller. Conditional two-stage overlay call (1110:0123 + maybe 1110:034B). Reads cs:2B74. Returns with CF set/clear. conf: high'
+- ida: sub_2318C
+  name: cs_word_3662_add_call_store
+  kind: function
+  sig: 'void far; AX += cs:[3662]; call sub_24980; cs:[3662] = AX'
+  notes: '13B, 93 dyn, 1 caller. CS-segment state read-modify-write pattern. Adds cs:[3662] to AX, transforms via sub_24980, stores back. conf: high'
+- ida: sub_23199
+  name: cs_word_3664_add_call_store
+  kind: function
+  sig: 'void far; AX += cs:[3664]; call sub_24988; cs:[3664] = AX'
+  notes: '13B, 22 dyn, 1 caller. CS-segment state read-modify-write pattern. Adds cs:[3664] to AX, transforms via sub_24988, stores back. Pairs with sub_2318C. conf: high'
+- ida: sub_122AE
+  name: subsystem_init_multi_call
+  kind: function
+  sig: 'void far; setup DS=71C1; far calls to 1F6C:13FC, 1F6C:3B2B, 1F6C:148D, 1F6C:0ED8; near calls sub_130D5, sub_133A8'
+  notes: '114B, 17 dyn, 3 callers. Complex subsystem initialization. Sets up DS segment, multiple overlay far calls (1F6C), buffer writes. conf: med'
+- ida: sub_11A7D
+  name: cs_state_init_overlay_1f6c_multi
+  kind: function
+  sig: 'void far; cs:[20-22]=5,6,7; if CX!=0 save CX/SI to cs:[18-1A]; 4x far call 1F6C (55E4,5637,564D,5605); save results cs:[1C-1E]'
+  notes: '106B, 5 dyn, 3 callers. CS-segment state initialization with overlay 1F6C calls. Sets cs:[0x20-22], saves CX/SI, calls 4 overlay entries. conf: med'
+- ida: sub_10DA7
+  name: overlay_poll_loop_1000_016c
+  kind: function
+  sig: 'void far; save BP/SI/DI; call far 1F6C:5B87; loop call far 1000:016C while AL!=0'
+  notes: '31B, 4 dyn, 2 callers. Polling loop waiting for overlay 1000:016C to return AL=0. Calls 1F6C:5B87 first. conf: med'
