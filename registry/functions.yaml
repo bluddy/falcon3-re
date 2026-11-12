@@ -601,3 +601,198 @@ functions:
   # 0x54AF:0x1734  farobj_scan_list    far_ptr[16] active-object scan list (16 entries, 4B each)
   # 0x54AF:0x4ED   entity_accum_table  EntityAccumEntry[40]  motion accumulation entries
   # 0x7B0E:0x3052  farobj_typedesc_table  far_ptr[N]  type descriptor table (FarObjTypeDesc records)
+
+  # --- Level-1 analysis (S4 2026-11-12) ---
+
+  - ea: "0x1016C"
+    key: sub_1016C
+    name: mouse_buttons_get
+    name_certainty: STRONG
+    desc: >
+      Returns the current mouse/joystick button state as a 3-bit mask in AX.
+      If cs:byte_10000 ≠ 0: calls INT 33h (mouse driver) AX=3 (get position+buttons),
+      returns BX & 7 (button bits 0-2). Otherwise falls back to joystick via
+      input_status_pack: returns ~(input_status_pack()) & 0xF0 >> 4 (inverted high nibble).
+    calling_convention: far_cdecl
+    params: []
+    return: "ax = button mask (bits 0-2 for left/right/middle buttons; 0=none pressed)"
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x24984"
+    key: sub_24984
+    name: stub_to_24988
+    name_certainty: PROVEN
+    desc: "4B far stub — calls fixed_angle_fold_e000 (0x24988) and returns."
+    calling_convention: far_cdecl
+    params: [{reg: AX, name: raw_angle, type: uint16, certainty: PROVEN}]
+    return: "ax = signed 14-bit angle"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x2497C"
+    key: sub_2497C
+    name: stub_to_24980
+    name_certainty: PROVEN
+    desc: "4B far stub — calls fixed_angle_mask_3fff (0x24980) and returns."
+    calling_convention: far_cdecl
+    params: [{reg: AX, name: angle, type: uint16, certainty: PROVEN}]
+    return: "ax = angle & 0x3FFF"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x260AF"
+    key: sub_260AF
+    name: stub_to_trig_lookup     # was stub_to_249d8 — NEW NAME
+    name_certainty: HYPOTHESIS
+    desc: >
+      4B far stub — calls trig_table_lookup (near, at 0x249D8) and returns.
+      Used as a far-callable wrapper for the trigonometry table lookup.
+      192K dynamic calls; callers include rot_segment_strip_draw, tile_strip_project_draw.
+    calling_convention: far_cdecl
+    params: [{reg: BX, name: table_offset, type: uint16, certainty: HYPOTHESIS,
+              desc: "offset into the trig table at 0x7B0E:0x3868"}]
+    return: "ax = trig value; cx = secondary trig value (from trig_table_lookup)"
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x248CD"
+    key: sub_248CD
+    name: stub_to_248d1
+    name_certainty: PROVEN
+    desc: "4B far stub — calls fixed_vec3_transform_es (0x248D1) and returns."
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x23D2B"
+    key: sub_23D2B
+    name: fixed_matrix_mul
+    name_certainty: STRONG
+    desc: >
+      Fixed-point 2×2 matrix multiply using trig table values.
+      Loads DS=0x7B0E (trig/matrix segment). Looks up two trig values at 0x3868/0x386C,
+      then performs 4 fixed-point multiplications with 16.16 rounding:
+        (add ax, 0x4000; adc dx, 0; shl ax, 1; rcl dx, 1) = round-and-normalize.
+      Input matrix elements from ds:word_7E948/7E94A, ds:word_7E94C/7E94E.
+      Returns: AX = result (hi word of 16.16 product sum), BX/CX/DI = intermediates.
+      Part of the 3D projection pipeline; called by view_proj_matmul_3896 et al.
+    calling_convention: register
+    params:
+      - {reg: DI, name: scale_factor, type: int16, desc: "scale applied to all 4 multiplications", certainty: HYPOTHESIS}
+    return: "ax = final hi-word result"
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "0x7B0E:0x3868", proposed_name: trig_sin_table, type: "int16[N]",
+         desc: "sine lookup table (trig_table_lookup reads from here)", certainty: HYPOTHESIS}
+      - {ea: "0x7B0E:0x7E948", proposed_name: view_matrix, type: "int16[4]",
+         desc: "2×2 view/rotation matrix coefficients", certainty: HYPOTHESIS}
+
+  - ea: "0x24992"
+    key: sub_24992
+    name: angle_wrap
+    name_certainty: HYPOTHESIS
+    desc: >
+      Wraps a 3-component angle structure at DS:SI when the pitch component is out of range.
+      If [SI+2] is between 0xF000 and 0x1000 (stable range): returns unchanged.
+      Otherwise: wraps [SI+2] via negate+0x2000 step; also wraps [SI+0] and [SI+4]
+      (heading and roll) with fixed_angle_mask_3fff(+0x2000).
+    calling_convention: register
+    params:
+      - {reg: SI, name: angle_struct_ptr, type: "uint16*", desc: "pointer to 3-word angle struct: [0]=heading, [2]=pitch, [4]=roll", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x25F64"
+    key: sub_25F64
+    name: view_limits_wrap
+    name_certainty: HYPOTHESIS
+    desc: >
+      Two-entry dispatch for view/frustum limits.
+      Entry 1 (0x25F64): calls cs:dword_220E4 (a view-limits callback pointer) and returns.
+      Entry 2 (0x25F6A): frame-based, loads DS:SI from stack [bp+6], calls view_limits_load.
+      Part of the visible-bounds / window-clipping pipeline.
+      Reveals dword_220E4 as another opcode handler pointer (view limits mode).
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:dword_220E4", proposed_name: view_limits_cb_ptr, type: far_ptr,
+         desc: "view/frustum limits callback (per-mode); another entry in the 0x220xx handler family",
+         certainty: HYPOTHESIS}
+
+  - ea: "0x22996"
+    key: sub_22996
+    name: flag22220_clear
+    name_certainty: HYPOTHESIS
+    desc: >
+      Two entries:
+      Entry 1 (0x22996): resets tick_counter (cs:word_22220) to 0.
+      Entry 2 (0x2299E): waits until tick_counter reaches BX (via tick_wait_until_22220).
+      Used at game init, mode transitions, and synchronization points.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+
+  - ea: "0x2257B"
+    key: sub_2257B
+    name: op_dispatch
+    name_certainty: STRONG
+    desc: >
+      17-slot DOS/memory operation shim. Clears lower 7 bits of cs:byte_22248 (status byte),
+      dispatches via cs:op_dispatch_table[BX] (a 17-entry function pointer table),
+      checks cs:byte_2224A for error flag (calls error_display_terminate if set),
+      and returns cs:byte_22248 & 0x7F as status.
+      BX values observed: 0=free?, 2=alloc?, 6=alloc_seg, 8=close?, 0xA=resize, 0xE=write, 0x10=read, 0x12=seek.
+      Used by entity_slot_create, isldat_state_load, param_table_init, etc.
+      Very likely wraps DOS INT 21h memory/file operations (allocate segment = AH=0x48, etc.).
+    calling_convention: register
+    params:
+      - {reg: AX, name: handle_or_seg, type: uint16, certainty: HYPOTHESIS}
+      - {reg: BX, name: op_code, type: uint16, desc: "operation index into op_dispatch_table", certainty: STRONG}
+      - {reg: CX, name: param_cx, type: uint16, certainty: HYPOTHESIS}
+      - {reg: DX, name: param_dx, type: uint16, certainty: HYPOTHESIS}
+    return: "ax = result (segment handle, byte count, etc. — op-dependent)"
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "cs:op_dispatch_table", proposed_name: op_dispatch_table, type: "near_ptr[17]",
+         desc: "17-entry table of near function pointers for DOS/memory operations", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_22248", proposed_name: op_status, type: flags8, desc: "operation status/mode byte", certainty: HYPOTHESIS}
+      - {ea: "cs:byte_2224A", proposed_name: op_error_flag, type: uint8, desc: "set on error; triggers error_display_terminate", certainty: HYPOTHESIS}
+
+  - ea: "0x231F0"
+    key: sub_231F0
+    name: fn_table_dispatch
+    name_certainty: STRONG
+    desc: >
+      View/projection mode dispatcher. Saves DS:DI to cs:word_22DBC/22DBA.
+      Dispatches via cs:fn_table_dispatch_table[BX] (15 targets sub_23235..sub_235BB
+      — one per projection/view mode). After dispatch: rebuilds angle matrix from
+      ES:0x7B0E:0x3884, copies matrix constants. Returns:
+        BX = es:word_7E968, CX = es:word_7E966, DX = es:word_7E94C+0x18.
+      These are projection matrix values used by the 3D rendering pipeline.
+      Called by entity_setup_step, game_frame_pipeline_step, terrain_state_reinit.
+    calling_convention: register
+    params:
+      - {reg: BX, name: view_mode_index, type: uint16, desc: "current view/projection mode index", certainty: HYPOTHESIS}
+    return: "BX/CX/DX = projection matrix output values"
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+    globals:
+      - {ea: "cs:fn_table_dispatch_table", proposed_name: view_mode_dispatch_table, type: "near_ptr[15]",
+         desc: "15-entry table of view/projection mode functions; index in cs:word_22D28", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22D28", proposed_name: view_mode_index, type: uint16, desc: "current view mode index (0-14)", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22DBC", proposed_name: saved_ds, type: uint16, desc: "DS saved during fn_table_dispatch", certainty: HYPOTHESIS}
+      - {ea: "cs:word_22DBA", proposed_name: saved_di, type: uint16, desc: "DI saved during fn_table_dispatch", certainty: HYPOTHESIS}
+      - {ea: "0x7B0E:0x7E948", proposed_name: view_matrix, type: "int16[4]", desc: "2×2 view rotation matrix", certainty: HYPOTHESIS}
+      - {ea: "0x7B0E:0x7E966", proposed_name: proj_z_scale, type: int16, desc: "projection Z scale factor", certainty: HYPOTHESIS}
+      - {ea: "0x7B0E:0x7E968", proposed_name: proj_z_offset, type: int16, desc: "projection Z offset", certainty: HYPOTHESIS}

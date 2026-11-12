@@ -279,9 +279,13 @@ A set of **CS-relative far pointer slots** at addresses around 0x2200x acts as t
 | `dword_220D0` | - | `dispatch_220d0_stub` calls this (terrain strip) |
 | `dword_220D4` | - | `dispatch_220d4_stub` calls this (HUD draw) |
 | `dword_220E0` | `frame_cb_ptr` | Main frame callback (`far_cb_with_args` invokes this + ES=0x834A, BP=word_24BB8) |
+| `dword_220E4` | `view_limits_cb_ptr` | View/frustum limits callback (`view_limits_wrap` entry 1 calls this) |
 | `dword_220EC` | - | `dispatch_220ec_invoke(BX,DI,DS:SI)` |
 
-These pointers are set by the mode system (e.g. `game_config_apply_init`, `mode_frame_step_core`) and swapped out when transitioning between game states (cockpit view, map view, debrief, etc.).
+Also from Level-1 analysis:
+- `dword_220E4` = `view_limits_cb_ptr` (view/frustum limits mode callback)
+- `fn_table_dispatch` uses `cs:word_22D28` as the current view mode index (0–14)
+- `op_dispatch` = 17-slot DOS/memory operation shim (allocate/free/read/write/seek); see §13 for details
 
 ### farobj_render_vtable (0x26400)
 
@@ -369,14 +373,19 @@ Companion variants: `VGRAPHH` (Harrier, 47.7% identical, shifted entry IPs) and 
 
 ## 11. 3D Coordinate System and Math
 
-**HYPOTHESIS** (from `farptr_table_accum_fields`, `farptr_table_offset_apply`, Level-0 math functions).
+**HYPOTHESIS** (from `farptr_table_accum_fields`, `farptr_table_offset_apply`, Level-0/1 math functions).
 
 - **World coordinates**: signed int32 per axis (stored as lo:hi word pairs in FarObj)
 - **Angles**: 14-bit fixed-point, range 0–16383 for heading/roll (via `fixed_angle_mask_3fff`), signed –8192..8191 for pitch (via `fixed_angle_fold_e000`)
+- **Angle struct** (3-word array at DS:SI): [+0]=heading, [+2]=pitch, [+4]=roll; `angle_wrap` (0x24992) normalizes pitch and re-wraps heading/roll
 - **Vector operations**: `fixed_vec3_accumulate_a/b` for per-frame position stepping (3-component int16 delta accumulation with 32-bit carry)
+- **Matrix math**: `fixed_matrix_mul` (0x23D2B) performs 16.16 fixed-point multiply-accumulate using trig table values from `0x7B0E:0x3868`. Rounding pattern: `add ax, 0x4000; adc dx, 0; shl ax, 1; rcl dx, 1`.
+- **Trig table**: at `0x7B0E:0x3868` (hypothesis: sine table, possibly also cosine and atan). Accessed via `trig_table_lookup` (near, at 0x249D8) and its far stubs (`stub_to_249d8`=0x260AF, `stub_to_trig_lookup`).
+- **Matrix segment `0x7B0E`**: also contains the view rotation matrix at `0x7B0E:0x7E948` (4 × int16 = 2×2 matrix) and projection output words at `0x7B0E:0x7E966/7E968`.
+- **View mode dispatch**: `fn_table_dispatch` (0x231F0) selects one of 15 view/projection modes via `cs:fn_table_dispatch_table[cs:word_22D28]`. After dispatch, rebuilds angle matrix and returns projection values.
 - **Projection**: `segment_clip_test` (0x25F93, 262B, 42K calls) — 2D segment clip against viewport bounds stored in `cs:word_2547C/0/2/4` (xmin/xmax/ymin/ymax)
 - **Screen coordinates**: signed int16; negative = off-screen/clipped (basis of `clip_or_draw_dispatch`)
-- **View transform**: `fn_table_dispatch` (0x231F0) — 15-mode indexed dispatch via `cs:off_22D2A[BX]`
+- **View limits**: `view_limits_wrap` (0x25F64) calls either `cs:dword_220E4` (a per-mode view-limits callback) or `view_limits_load` from stack args
 
 ---
 
