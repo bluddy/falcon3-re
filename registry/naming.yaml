@@ -17140,3 +17140,24 @@ symbols:
   kind: function
   sig: 'void far; save BP/SI/DI; call far 1F6C:5B87; loop call far 1000:016C while AL!=0'
   notes: '31B, 4 dyn, 2 callers. Polling loop waiting for overlay 1000:016C to return AL=0. Calls 1F6C:5B87 first. conf: med'
+
+- ida: sub_256A3
+  name: indexed_table_dispatch_7b0e_4287
+  kind: function
+  sig: 'void far; push DS; DS=7B0E; DI=4287; call +B52B; pop DS'
+  notes: '15B, 10222 dyn (HIGHEST Level-2 non-wrapper). Table accessor/dispatcher using segment 7B0E at offset 4287. Critical hot path. conf: high'
+- ida: sub_2501A
+  name: cs_bitscan_dispatch_576d
+  kind: function
+  sig: 'void far; swap cs:[5784]; copy 11B from DS:SI to CS:576D; scan bits, call function for each set bit; CF=processed flag'
+  notes: '109B, 488 dyn. Bitfield scanner over CS:576D (11 bytes). Iterates set bits, calls near function for each. Sets cs:[5761] and returns CF. conf: med'
+- ida: sub_276B4
+  name: arg_forward_wrapper_near
+  kind: function
+  sig: 'void far; load [bp+6] into BX; call +3'
+  notes: '13B, 194 dyn. Thin wrapper loading first argument into BX and calling near function. Almost a stub. conf: high'
+- ida: sub_100C1
+  name: mouse_poll_wait_release_int33
+  kind: function
+  sig: 'void far; call far 1F6C:61F2; if cs:[0]!=0: INT 33h AX=3 (mouse pos) loop while BX&3; call near; INT 33h AX=11 (motion)'
+  notes: '71B, 8 dyn. Mouse input handler via INT 33h. Polls mouse position until buttons released (BX&3==0), reads motion counters. conf: med'
