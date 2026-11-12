@@ -1,0 +1,2195 @@
+{
+ "0x1018f": {
+  "ea": "0x1018f",
+  "name": "mouse_int33_dispatch",
+  "size": 120,
+  "seg": "seg000",
+  "far": true,
+  "disasm": [
+   "  1018F  push    bp",
+   "  10190  mov     bp, sp",
+   "  10192  push    ds",
+   "  10193  push    es",
+   "  10194  push    di",
+   "  10195  push    si",
+   "  10196  push    dx",
+   "  10197  push    cx",
+   "  10198  push    bx",
+   "  10199  push    ax",
+   "  1019A  mov     ax, [bp+arg_4]",
+   "  1019D  mov     ds, ax",
+   "  1019F  mov     si, [bp+arg_2]",
+   "  101A2  mov     ax, [bp+arg_8]",
+   "  101A5  mov     es, ax",
+   "  101A7  mov     ax, [si]",
+   "  101A9  cmp     ax, 9",
+   "  101AC  jz      short loc_101FD",
+   "  101AE  cmp     ax, 0Ch",
+   "  101B1  jz      short loc_101FD",
+   "  101B3  cmp     ax, 10h",
+   "  101B6  jz      short loc_101FD",
+   "  101B8  cmp     ax, 14h",
+   "  101BB  jz      short loc_101FD",
+   "  101BD  cmp     ax, 16h",
+   "  101C0  jz      short loc_101FD",
+   "  101C2  cmp     ax, 17h",
+   "  101C5  jz      short loc_101FD",
+   "  101C7  cmp     ax, 18h",
+   "  101CA  jz      short loc_101FD",
+   "  101CC  cmp     ax, 19h",
+   "  101CF  jz      short loc_101FD",
+   "  101D1  cmp     ax, 1Fh",
+   "  101D4  jz      short loc_101FD",
+   "  101D6  cmp     ax, 20h ; ' '",
+   "  101D9  jz      short loc_101FD",
+   "  101DB  cmp     ax, 21h ; '!'",
+   "  101DE  jz      short loc_101FD",
+   "  101E0  mov     bx, [si+2]",
+   "  101E3  mov     cx, [si+4]",
+   "  101E6  mov     dx, [si+6]",
+   "  101E9  int     33h; - MS MOUSE -",
+   "  101EB  mov     di, [bp+arg_6]",
+   "  101EE  mov     es:[di], ax",
+   "  101F1  mov     es:[di+2], bx",
+   "  101F5  mov     es:[di+4], cx",
+   "  101F9  mov     es:[di+6], dx",
+   "  101FD  pop     ax",
+   "  101FE  pop     bx",
+   "  101FF  pop     cx",
+   "  10200  pop     dx",
+   "  10201  pop     si",
+   "  10202  pop     di",
+   "  10203  pop     es",
+   "  10204  pop     ds",
+   "  10205  pop     bp",
+   "  10206  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x10dc41",
+    "fn": "sub_10DC24",
+    "mnem": "call"
+   },
+   {
+    "from": "0x12fb28",
+    "fn": "sub_12FAC3",
+    "mnem": "call"
+   },
+   {
+    "from": "0x130b80",
+    "fn": "sub_130B39",
+    "mnem": "call"
+   },
+   {
+    "from": "0x130ba9",
+    "fn": "sub_130B39",
+    "mnem": "call"
+   },
+   {
+    "from": "0x131476",
+    "fn": "sub_13142E",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x112a1": {
+  "ea": "0x112a1",
+  "name": "input_status_pack",
+  "size": 37,
+  "seg": "seg003",
+  "far": true,
+  "disasm": [
+   "  112A1  push    cx",
+   "  112A2  push    ax",
+   "  112A3  mov     ah, 0F0h",
+   "  112A5  xchg    ah, byte ptr cs:word_11102",
+   "  112AA  mov     cx, 4",
+   "  112AD  shl     al, cl",
+   "  112AF  mov     cl, ah",
+   "  112B1  xchg    ah, byte ptr cs:word_11102+1",
+   "  112B6  or      al, ah",
+   "  112B8  xor     cl, al",
+   "  112BA  not     cl",
+   "  112BC  or      cl, byte ptr cs:word_11102+1",
+   "  112C1  pop     ax",
+   "  112C2  mov     al, cl",
+   "  112C4  pop     cx",
+   "  112C5  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x10156",
+    "fn": "mouse_buttons_get_2",
+    "mnem": "call"
+   },
+   {
+    "from": "0x10183",
+    "fn": "mouse_buttons_get",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x11102",
+    "name": "word_11102"
+   }
+  ]
+ },
+ "0x24e5d": {
+  "ea": "0x24e5d",
+  "name": "bda_equipment_flag_get",
+  "size": 17,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  24E5D  push    es",
+   "  24E5E  push    bx",
+   "  24E5F  sub     bx, bx",
+   "  24E61  mov     es, bx",
+   "  24E63  mov     bx, 417h",
+   "  24E66  mov     al, es:[bx]",
+   "  24E69  sub     ah, ah",
+   "  24E6B  pop     bx",
+   "  24E6C  pop     es",
+   "  24E6D  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x108a6",
+    "fn": "alloc_read_mscdex",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2f8f9",
+    "fn": "game_config_apply_init",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3132e",
+    "fn": "main_frame_update_loop",
+    "mnem": "call"
+   },
+   {
+    "from": "0x313e2",
+    "fn": "main_frame_update_loop",
+    "mnem": "call"
+   },
+   {
+    "from": "0x12fdbb",
+    "fn": "sub_12FAC3",
+    "mnem": "call"
+   },
+   {
+    "from": "0x12fdd5",
+    "fn": "sub_12FAC3",
+    "mnem": "call"
+   },
+   {
+    "from": "0x12fdf9",
+    "fn": "sub_12FAC3",
+    "mnem": "call"
+   },
+   {
+    "from": "0x13069f",
+    "fn": "sub_12FAC3",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x22aff": {
+  "ea": "0x22aff",
+  "name": "timer_tick_isr",
+  "size": 57,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  22AFF  push    ax; traced calls: 57799",
+   "  22B00  cmp     cs:byte_2224B, 1",
+   "  22B06  jz      short loc_22B0D",
+   "  22B08  inc     cs:word_22220",
+   "  22B0D  mov     ax, cs:word_22222",
+   "  22B11  inc     ax",
+   "  22B12  mov     cs:word_22222, ax",
+   "  22B16  and     ax, 3",
+   "  22B19  jnz     short loc_22B21",
+   "  22B1B  pop     ax",
+   "  22B1C  jmp     short loc_22B27",
+   "  22B1E  nop",
+   "  22B1F  nop",
+   "  22B20  nop",
+   "  22B21  mov     al, 20h ; ' '",
+   "  22B23  out     20h, al; Interrupt controller, 8259A.",
+   "  22B25  pop     ax",
+   "  22B26  iret",
+   "  22B27  push    ax",
+   "  22B28  cmp     cs:byte_2224B, 1",
+   "  22B2E  jz      short near ptr unk_22B38",
+   "  22B30  cmp     cs:byte_22246, 0",
+   "  22B36  jnz     short near ptr joystick_gate_counter+1"
+  ],
+  "callers": [],
+  "data_refs": [
+   {
+    "ea": "0x2224b",
+    "name": "byte_2224B"
+   },
+   {
+    "ea": "0x22220",
+    "name": "word_22220"
+   },
+   {
+    "ea": "0x22222",
+    "name": "word_22222"
+   },
+   {
+    "ea": "0x22246",
+    "name": "byte_22246"
+   }
+  ]
+ },
+ "0x2703f": {
+  "ea": "0x2703f",
+  "name": "farptr_table_get",
+  "size": 18,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  2703F  mov     di, seg R05_400C",
+   "  27042  mov     es, di",
+   "  27044  shl     ax, 1",
+   "  27046  shl     ax, 1",
+   "  27048  add     ax, 34h ; '4'",
+   "  2704B  mov     di, ax",
+   "  2704D  les     di, es:[di]",
+   "  27050  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x26472",
+    "fn": "far_obj_field_call",
+    "mnem": "call"
+   },
+   {
+    "from": "0x264ae",
+    "fn": "farobj_field_set",
+    "mnem": "call"
+   },
+   {
+    "from": "0x26692",
+    "fn": "sub_26690",
+    "mnem": "call"
+   },
+   {
+    "from": "0x26b0f",
+    "fn": "farobj_copy_invoke",
+    "mnem": "call"
+   },
+   {
+    "from": "0x26c24",
+    "fn": "farptr_table_entry_store",
+    "mnem": "call"
+   },
+   {
+    "from": "0x26fe6",
+    "fn": "farobj_copy_block",
+    "mnem": "call"
+   },
+   {
+    "from": "0x26ff6",
+    "fn": "farobj_copy_cond",
+    "mnem": "call"
+   },
+   {
+    "from": "0x27003",
+    "fn": "farobj_copy_cond",
+    "mnem": "call"
+   },
+   {
+    "from": "0x27010",
+    "fn": "sub_2700E",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2702b",
+    "fn": "sub_2700E",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x2228f": {
+  "ea": "0x2228f",
+  "name": "active_farptr_restore",
+  "size": 17,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  2228F  mov     ax, cs:word_22214",
+   "  22293  mov     cs:word_22210, ax",
+   "  22297  mov     ax, cs:word_22216",
+   "  2229B  mov     cs:word_22212, ax",
+   "  2229F  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x13cf6",
+    "fn": "farobj_batch_build_project",
+    "mnem": "call"
+   },
+   {
+    "from": "0x14bd0",
+    "fn": "pos_neighbor_norm_scan",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a921",
+    "fn": "sub_3A8B1",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a996",
+    "fn": "sub_3A8B1",
+    "mnem": "call"
+   },
+   {
+    "from": "0x4dc0e",
+    "fn": "r39_farptr_gate_big",
+    "mnem": "call"
+   },
+   {
+    "from": "0x108daa",
+    "fn": "r15_flag_107762_body",
+    "mnem": "call"
+   },
+   {
+    "from": "0x111d18",
+    "fn": "sub_111AF6",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x22214",
+    "name": "word_22214"
+   },
+   {
+    "ea": "0x22210",
+    "name": "word_22210"
+   },
+   {
+    "ea": "0x22216",
+    "name": "word_22216"
+   },
+   {
+    "ea": "0x22212",
+    "name": "word_22212"
+   }
+  ]
+ },
+ "0x22285": {
+  "ea": "0x22285",
+  "name": "active_farptr_set",
+  "size": 10,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  22285  mov     cs:word_22210, ax",
+   "  22289  mov     cs:word_22212, dx",
+   "  2228E  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x13ad1",
+    "fn": "coord_point_group_project",
+    "mnem": "call"
+   },
+   {
+    "from": "0x13b55",
+    "fn": "coord_point_group_project",
+    "mnem": "call"
+   },
+   {
+    "from": "0x14b47",
+    "fn": "pos_neighbor_norm_scan",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a8c8",
+    "fn": "sub_3A8B1",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a951",
+    "fn": "sub_3A8B1",
+    "mnem": "call"
+   },
+   {
+    "from": "0x4dcf9",
+    "fn": "sub_4DC97",
+    "mnem": "call"
+   },
+   {
+    "from": "0x4de1e",
+    "fn": "sub_4DDB4",
+    "mnem": "call"
+   },
+   {
+    "from": "0x108d71",
+    "fn": "r15_flag_107762_body",
+    "mnem": "call"
+   },
+   {
+    "from": "0x111cf8",
+    "fn": "sub_111AF6",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x22210",
+    "name": "word_22210"
+   },
+   {
+    "ea": "0x22212",
+    "name": "word_22212"
+   }
+  ]
+ },
+ "0x1122a": {
+  "ea": "0x1122a",
+  "name": "joystick_poll",
+  "size": 111,
+  "seg": "seg003",
+  "far": true,
+  "disasm": [
+   "  1122A  cmp     cs:byte_11171, 0",
+   "  11230  jz      short locret_11298",
+   "  11232  cmp     cs:byte_11175, 0",
+   "  11238  jz      short loc_1128B",
+   "  1123A  push    cx",
+   "  1123B  push    bx",
+   "  1123C  push    dx",
+   "  1123D  push    ax",
+   "  1123E  cmp     cs:word_11176, 0",
+   "  11244  jz      short loc_11253",
+   "  11246  mov     bx, cs:word_11176",
+   "  1124B  mov     ah, 84h",
+   "  1124D  xor     dx, dx",
+   "  1124F  int     15h; SYSTEM - READ JOYSTICK (AT,XT2,XT286,PS)",
+   "  11251  jmp     short loc_11257",
+   "  11253  mov     dx, 201h",
+   "  11256  in      al, dx; Game I/O port",
+   "  11257  cmp     cs:word_1117A, 0",
+   "  1125D  jz      short loc_11282",
+   "  1125F  mov     cx, 8",
+   "  11262  xor     dx, dx",
+   "  11264  push    ax",
+   "  11265  not     ax",
+   "  11267  and     ax, 0F0h",
+   "  1126A  mov     dl, al",
+   "  1126C  shr     al, 1",
+   "  1126E  adc     dh, 0",
+   "  11271  loop    loc_1126C",
+   "  11273  pop     ax",
+   "  11274  cmp     dh, 2",
+   "  11277  jl      short loc_11282",
+   "  11279  xor     dh, dh",
+   "  1127B  mov     cs:word_11168, dx",
+   "  11280  mov     al, 0F0h",
+   "  11282  and     byte ptr cs:word_11102, al",
+   "  11287  pop     ax",
+   "  11288  pop     dx",
+   "  11289  pop     bx",
+   "  1128A  pop     cx",
+   "  1128B  dec     cs:byte_11173",
+   "  11290  jge     short locret_11298",
+   "  11292  mov     cs:byte_11173, 0",
+   "  11298  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x22c0a",
+    "fn": "joystick_gate_counter",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x11171",
+    "name": "byte_11171"
+   },
+   {
+    "ea": "0x11175",
+    "name": "byte_11175"
+   },
+   {
+    "ea": "0x11176",
+    "name": "word_11176"
+   },
+   {
+    "ea": "0x1117a",
+    "name": "word_1117A"
+   },
+   {
+    "ea": "0x11168",
+    "name": "word_11168"
+   },
+   {
+    "ea": "0x11102",
+    "name": "word_11102"
+   },
+   {
+    "ea": "0x11173",
+    "name": "byte_11173"
+   }
+  ]
+ },
+ "0x215b7": {
+  "ea": "0x215b7",
+  "name": "flag_byte_get",
+  "size": 5,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  215B7  mov     al, cs:byte_1F743",
+   "  215BB  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x1fb6f",
+    "fn": "record_xform_apply",
+    "mnem": "call"
+   },
+   {
+    "from": "0x214b1",
+    "fn": "farobj_record_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x233d6",
+    "fn": "view_proj_ring_shift",
+    "mnem": "call"
+   },
+   {
+    "from": "0x30826",
+    "fn": "state_bits_pack",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3114f",
+    "fn": "terrain_state_reinit",
+    "mnem": "call"
+   },
+   {
+    "from": "0x33721",
+    "fn": "sub_3352A",
+    "mnem": "call"
+   },
+   {
+    "from": "0x396d7",
+    "fn": "obj_fuel_exhaust_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x399a2",
+    "fn": "farobj_height_gate_wrap",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3fdf9",
+    "fn": "sub_3FD9A",
+    "mnem": "call"
+   },
+   {
+    "from": "0x400e6",
+    "fn": "sub_40081",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x1f743",
+    "name": "byte_1F743"
+   }
+  ]
+ },
+ "0x21266": {
+  "ea": "0x21266",
+  "name": "es_ptr_slots_init",
+  "size": 40,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  21266  push    es",
+   "  21267  mov     ax, 7B0Eh",
+   "  2126A  mov     es, ax",
+   "  2126C  sub     ax, ax",
+   "  2126E  mov     word ptr es:byte_7BFEC+68h, ax",
+   "  21272  mov     word ptr es:byte_7BFEC+6Ah, ax",
+   "  21276  mov     word ptr es:byte_7BFEC+6Ch, 0F7Ah",
+   "  2127D  mov     word ptr es:byte_7BFEC+10D6h, ax",
+   "  21281  mov     word ptr es:byte_7BFEC+10D8h, ax",
+   "  21285  mov     word ptr es:byte_7BFEC+10DAh, 1FE8h",
+   "  2128C  pop     es",
+   "  2128D  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x13d0a",
+    "fn": "farobj_batch_build_project",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2fe13",
+    "fn": "game_frame_pipeline_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2fe41",
+    "fn": "game_frame_pipeline_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2fe70",
+    "fn": "game_frame_pipeline_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x31238",
+    "fn": "terrain_state_reinit",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a8fd",
+    "fn": "sub_3A8B1",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a96d",
+    "fn": "sub_3A8B1",
+    "mnem": "call"
+   },
+   {
+    "from": "0x104146",
+    "fn": "sub_103C99",
+    "mnem": "call"
+   },
+   {
+    "from": "0x108c36",
+    "fn": "r15_flag_107762_body",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x22c91": {
+  "ea": "0x22c91",
+  "name": "fixed_vec3_accumulate_a",
+  "size": 68,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  22C91  push    ax",
+   "  22C92  push    dx",
+   "  22C93  mov     ax, cs:word_22C71",
+   "  22C97  mul     cs:word_22C7D",
+   "  22C9C  div     cs:word_22C83",
+   "  22CA1  mov     cs:word_22C71, dx",
+   "  22CA6  mov     cx, dx",
+   "  22CA8  mov     ax, cs:word_22C73",
+   "  22CAC  mul     cs:word_22C7F",
+   "  22CB1  div     cs:word_22C85",
+   "  22CB6  mov     cs:word_22C73, dx",
+   "  22CBB  add     cx, dx",
+   "  22CBD  mov     ax, cs:word_22C75",
+   "  22CC1  mul     cs:word_22C81",
+   "  22CC6  div     cs:word_22C87",
+   "  22CCB  mov     cs:word_22C75, dx",
+   "  22CD0  add     cx, dx",
+   "  22CD2  pop     dx",
+   "  22CD3  pop     ax",
+   "  22CD4  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x3a014",
+    "fn": "sub_3A003",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a092",
+    "fn": "sub_3A003",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a4db",
+    "fn": "mode_frame_step_core",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3c4c8",
+    "fn": "sub_3C48F",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3d6a5",
+    "fn": "sub_3D37F",
+    "mnem": "call"
+   },
+   {
+    "from": "0x40e39",
+    "fn": "sub_40E38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x40e47",
+    "fn": "sub_40E46",
+    "mnem": "call"
+   },
+   {
+    "from": "0x425a2",
+    "fn": "sub_425A2",
+    "mnem": "call"
+   },
+   {
+    "from": "0x42f33",
+    "fn": "sub_42F26",
+    "mnem": "call"
+   },
+   {
+    "from": "0x43082",
+    "fn": "sub_43082",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x22c71",
+    "name": "word_22C71"
+   },
+   {
+    "ea": "0x22c7d",
+    "name": "word_22C7D"
+   },
+   {
+    "ea": "0x22c83",
+    "name": "word_22C83"
+   },
+   {
+    "ea": "0x22c73",
+    "name": "word_22C73"
+   },
+   {
+    "ea": "0x22c7f",
+    "name": "word_22C7F"
+   },
+   {
+    "ea": "0x22c85",
+    "name": "word_22C85"
+   },
+   {
+    "ea": "0x22c75",
+    "name": "word_22C75"
+   },
+   {
+    "ea": "0x22c81",
+    "name": "word_22C81"
+   },
+   {
+    "ea": "0x22c87",
+    "name": "word_22C87"
+   }
+  ]
+ },
+ "0x1bcfa": {
+  "ea": "0x1bcfa",
+  "name": "irq_unmask_and_query",
+  "size": 55,
+  "seg": "seg014",
+  "far": true,
+  "disasm": [
+   "  1BCFA  push    bp",
+   "  1BCFB  mov     bp, sp",
+   "  1BCFD  push    si",
+   "  1BCFE  xor     si, si",
+   "  1BD00  push    ax",
+   "  1BD01  in      al, 21h; Interrupt controller, 8259A.",
+   "  1BD03  and     al, 0FCh",
+   "  1BD05  out     21h, al; Interrupt controller, 8259A.",
+   "  1BD07  pop     ax",
+   "  1BD08  mov     ax, 7772h",
+   "  1BD0B  mov     es, ax",
+   "  1BD0D  mov     ax, word ptr es:byte_77B1F+27h",
+   "  1BD11  cmp     ax, 2",
+   "  1BD14  jz      short loc_1BD22",
+   "  1BD16  cmp     ax, 3",
+   "  1BD19  jz      short loc_1BD22",
+   "  1BD1B  cmp     ax, 4",
+   "  1BD1E  jz      short loc_1BD22",
+   "  1BD20  jmp     short loc_1BD2C",
+   "  1BD22  mov     ax, 7772h",
+   "  1BD25  mov     es, ax",
+   "  1BD27  mov     si, word ptr es:byte_77B1F+19h",
+   "  1BD2C  mov     ax, si",
+   "  1BD2E  pop     si",
+   "  1BD2F  pop     bp",
+   "  1BD30  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x180a6",
+    "fn": "irq_unmask_with_ds",
+    "mnem": "call"
+   },
+   {
+    "from": "0x19098",
+    "fn": "irq_state_init",
+    "mnem": "call"
+   },
+   {
+    "from": "0x19582",
+    "fn": "mode_slot_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x196b6",
+    "fn": "mode_slot_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x1bfcc",
+    "fn": "irq_unmask_count_wait",
+    "mnem": "call"
+   },
+   {
+    "from": "0x1bfe2",
+    "fn": "irq_unmask_count_wait",
+    "mnem": "call"
+   },
+   {
+    "from": "0x66cc8",
+    "fn": "mode_session_state_mirror_init",
+    "mnem": "call"
+   },
+   {
+    "from": "0x66cdb",
+    "fn": "mode_session_state_mirror_init",
+    "mnem": "call"
+   },
+   {
+    "from": "0x13d6f6",
+    "fn": "sub_13D6E4",
+    "mnem": "call"
+   },
+   {
+    "from": "0x13d708",
+    "fn": "sub_13D6E4",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x25f93": {
+  "ea": "0x25f93",
+  "name": "segment_clip_test",
+  "size": 262,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  25F93  sub     dx, dx",
+   "  25F95  mov     ax, [si]",
+   "  25F97  cmp     ax, cs:word_2547C",
+   "  25F9C  jge     short loc_25FA3",
+   "  25F9E  or      dx, 1",
+   "  25FA1  jmp     short loc_25FAD",
+   "  25FA3  cmp     ax, cs:word_25480",
+   "  25FA8  jle     short loc_25FAD",
+   "  25FAA  or      dx, 2",
+   "  25FAD  mov     ax, [si+2]",
+   "  25FB0  cmp     ax, cs:word_2547E",
+   "  25FB5  jge     short loc_25FBC",
+   "  25FB7  or      dx, 4",
+   "  25FBA  jmp     short loc_25FC6",
+   "  25FBC  cmp     ax, cs:word_25482",
+   "  25FC1  jle     short loc_25FC6",
+   "  25FC3  or      dx, 8",
+   "  25FC6  sub     bp, bp",
+   "  25FC8  mov     ax, [si+4]",
+   "  25FCB  cmp     ax, cs:word_2547C",
+   "  25FD0  jge     short loc_25FD7",
+   "  25FD2  or      bp, 1",
+   "  25FD5  jmp     short loc_25FE1",
+   "  25FD7  cmp     ax, cs:word_25480",
+   "  25FDC  jle     short loc_25FE1",
+   "  25FDE  or      bp, 2",
+   "  25FE1  mov     ax, [si+6]",
+   "  25FE4  cmp     ax, cs:word_2547E",
+   "  25FE9  jge     short loc_25FF0",
+   "  25FEB  or      bp, 4",
+   "  25FEE  jmp     short loc_25FFA",
+   "  25FF0  cmp     ax, cs:word_25482",
+   "  25FF5  jle     short loc_25FFA",
+   "  25FF7  or      bp, 8",
+   "  25FFA  test    dx, bp",
+   "  25FFC  jnz     short loc_25F8F",
+   "  25FFE  mov     ax, dx",
+   "  26000  or      ax, bp",
+   "  26002  jz      short loc_25F91",
+   "  26004  mov     ax, 2",
+   "  26007  or      dx, dx",
+   "  26009  jnz     short loc_26010",
+   "  2600B  mov     ax, 406h",
+   "  2600E  mov     dx, bp",
+   "  26010  push    si",
+   "  26011  mov     bx, [si]",
+   "  26013  mov     cx, [si+4]",
+   "  26016  mov     di, [si+6]",
+   "  26019  mov     si, [si+2]",
+   "  2601C  test    dx, 3",
+   "  26020  jz      short loc_26034",
+   "  26022  mov     bp, cs:word_2547C",
+   "  26027  test    dx, 1",
+   "  2602B  jnz     short loc_2604A",
+   "  2602D  mov     bp, cs:word_25480",
+   "  26032  jmp     short loc_2604A",
+   "  26034  xchg    ah, al",
+   "  26036  xchg    bx, si",
+   "  26038  xchg    cx, di",
+   "  2603A  mov     bp, cs:word_2547E",
+   "  2603F  test    dx, 4",
+   "  26043  jnz     short loc_2604A",
+   "  26045  mov     bp, cs:word_25482",
+   "  2604A  mov     word ptr cs:loc_26075+2, bp",
+   "  2604F  mov     word ptr cs:loc_26089+2, bp",
+   "  26054  mov     byte ptr cs:loc_26090+2, ah",
+   "  26059  mov     byte ptr cs:loc_26093+2, al",
+   "  2605D  jmp     short $+2",
+   "  2605F  cmp     bx, cx",
+   "  26061  jle     short loc_26067",
+   "  26063  xchg    bx, cx",
+   "  26065  xchg    si, di",
+   "  26067  mov     ax, bx",
+   "  26069  add     ax, cx",
+   "  2606B  sar     ax, 1",
+   "  2606D  mov     bp, ax",
+   "  2606F  mov     ax, si",
+   "  26071  add     ax, di",
+   "  26073  sar     ax, 1",
+   "  26075  cmp     bp, 0ABCDh",
+   "  ... (32 more bytes)"
+  ],
+  "callers": [
+   {
+    "from": "0x26096",
+    "fn": "segment_clip_test",
+    "mnem": "jmp"
+   },
+   {
+    "from": "0x263a4",
+    "fn": "sub_2629A",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35c8a",
+    "fn": "hud_draw_chain_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35fb2",
+    "fn": "rot_segment_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35fc3",
+    "fn": "rot_segment_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3641c",
+    "fn": "view_rect_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36583",
+    "fn": "mode_draw_dispatch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36f59",
+    "fn": "sprite_rect_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36f72",
+    "fn": "sprite_rect_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37357",
+    "fn": "hud_terrain_strip_render",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x2547c",
+    "name": "word_2547C"
+   },
+   {
+    "ea": "0x25480",
+    "name": "word_25480"
+   },
+   {
+    "ea": "0x2547e",
+    "name": "word_2547E"
+   },
+   {
+    "ea": "0x25482",
+    "name": "word_25482"
+   }
+  ]
+ },
+ "0x24db8": {
+  "ea": "0x24db8",
+  "name": "far_cb_with_args",
+  "size": 18,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  24DB8  push    es; traced calls: 31660",
+   "  24DB9  mov     ax, 834Ah",
+   "  24DBC  mov     es, ax",
+   "  24DBE  mov     bp, cs:word_24BB8",
+   "  24DC3  call    cs:dword_220E0",
+   "  24DC8  pop     es",
+   "  24DC9  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x24db0",
+    "fn": "far_cb_with_args_far_wrapper",
+    "mnem": "call"
+   },
+   {
+    "from": "0x359ac",
+    "fn": "mode_ratio_dispatch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36fa6",
+    "fn": "far_cb_rect_bounds",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a52e",
+    "fn": "mode_frame_step_core",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a66a",
+    "fn": "map_overlay_clip_frame",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a76b",
+    "fn": "hud_map_overlay_frame",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a798",
+    "fn": "hud_crosshair_ratio_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3a7d4",
+    "fn": "hud_crosshair_ratio_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6d3b4",
+    "fn": "sub_6D29F",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6d3cf",
+    "fn": "sub_6D29F",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x24bb8",
+    "name": "word_24BB8"
+   },
+   {
+    "ea": "0x220e0",
+    "name": "dword_220E0"
+   }
+  ]
+ },
+ "0x26099": {
+  "ea": "0x26099",
+  "name": "sub_26099",
+  "size": 16,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  26099  or      ax, ax",
+   "  2609B  js      short loc_260A3",
+   "  2609D  call    cs:opcode_handler_5",
+   "  260A2  retf",
+   "  260A3  call    dword ptr cs:byte_220C8",
+   "  260A8  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x35c93",
+    "fn": "hud_draw_chain_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35fbb",
+    "fn": "rot_segment_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35fcc",
+    "fn": "rot_segment_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36314",
+    "fn": "tile_strip_project_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36341",
+    "fn": "tile_strip_project_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x36429",
+    "fn": "view_rect_strip_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3658d",
+    "fn": "mode_draw_dispatch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x365b0",
+    "fn": "mode_draw_dispatch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x365c2",
+    "fn": "mode_draw_dispatch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x365d4",
+    "fn": "mode_draw_dispatch",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x220cc",
+    "name": "opcode_handler_5"
+   },
+   {
+    "ea": "0x220c8",
+    "name": "byte_220C8"
+   }
+  ]
+ },
+ "0x1fcc9": {
+  "ea": "0x1fcc9",
+  "name": "flag_clear",
+  "size": 7,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  1FCC9  mov     cs:byte_1F734, 0",
+   "  1FCCF  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x13e04",
+    "fn": "farobj_batch_build_project",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x1f734",
+    "name": "byte_1F734"
+   }
+  ]
+ },
+ "0x25ef4": {
+  "ea": "0x25ef4",
+  "name": "dispatch_220ec_invoke",
+  "size": 25,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  25EF4  push    bp",
+   "  25EF5  mov     bp, sp",
+   "  25EF7  push    si",
+   "  25EF8  push    di",
+   "  25EF9  push    ds",
+   "  25EFA  mov     bx, [bp+arg_0]",
+   "  25EFD  mov     di, [bp+arg_2]",
+   "  25F00  lds     si, [bp+arg_4]",
+   "  25F03  call    cs:dword_220EC",
+   "  25F08  pop     ds",
+   "  25F09  pop     di",
+   "  25F0A  pop     si",
+   "  25F0B  pop     bp",
+   "  25F0C  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x11c470",
+    "fn": "sub_11C450",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c48c",
+    "fn": "sub_11C450",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c4a8",
+    "fn": "sub_11C450",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c4c4",
+    "fn": "sub_11C450",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c528",
+    "fn": "sub_11C504",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c59a",
+    "fn": "sub_11C576",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c600",
+    "fn": "sub_11C5DC",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c666",
+    "fn": "sub_11C642",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c682",
+    "fn": "sub_11C642",
+    "mnem": "call"
+   },
+   {
+    "from": "0x11c72b",
+    "fn": "sub_11C707",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x220ec",
+    "name": "dword_220EC"
+   }
+  ]
+ },
+ "0x1fcbd": {
+  "ea": "0x1fcbd",
+  "name": "flag_set_lowbit",
+  "size": 12,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  1FCBD  mov     al, 1",
+   "  1FCBF  and     al, cs:byte_1F733",
+   "  1FCC4  mov     cs:byte_1F734, al",
+   "  1FCC8  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x13d05",
+    "fn": "farobj_batch_build_project",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x1f733",
+    "name": "byte_1F733"
+   },
+   {
+    "ea": "0x1f734",
+    "name": "byte_1F734"
+   }
+  ]
+ },
+ "0x25f0d": {
+  "ea": "0x25f0d",
+  "name": "dispatch_220ec_stub",
+  "size": 37,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  25F0D  call    cs:dword_220EC",
+   "  25F12  retf",
+   "  25F13  push    bp",
+   "  25F14  mov     bp, sp",
+   "  25F16  push    si",
+   "  25F17  push    di",
+   "  25F18  push    ds",
+   "  25F19  mov     bx, [bp+6]",
+   "  25F1C  mov     di, [bp+8]",
+   "  25F1F  lds     si, [bp+0Ah]",
+   "  25F22  call    cs:dword_220A0",
+   "  25F27  pop     ds",
+   "  25F28  pop     di",
+   "  25F29  pop     si",
+   "  25F2A  pop     bp",
+   "  25F2B  retf",
+   "  25F2C  call    cs:dword_220A0",
+   "  25F31  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x32052",
+    "fn": "coord_window_bounds_test",
+    "mnem": "call"
+   },
+   {
+    "from": "0x33f74",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x33fcf",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3402a",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x34085",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x340c1",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3411c",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x34158",
+    "fn": "view_limits_apply_33f38",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37ac9",
+    "fn": "game_setup_frame_chain",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37b17",
+    "fn": "state_gate_451_dispatch",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x220ec",
+    "name": "dword_220EC"
+   },
+   {
+    "ea": "0x220a0",
+    "name": "dword_220A0"
+   }
+  ]
+ },
+ "0x22c89": {
+  "ea": "0x22c89",
+  "name": "sub_22C89",
+  "size": 8,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  22C89  push    cs",
+   "  22C8A  call    near ptr fixed_vec3_accumulate_b",
+   "  22C8D  nop",
+   "  22C8E  mov     ax, cx",
+   "  22C90  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x679a9",
+    "fn": "ui_slot_record_fill",
+    "mnem": "call"
+   },
+   {
+    "from": "0x67a0c",
+    "fn": "ui_slot_record_fill",
+    "mnem": "call"
+   },
+   {
+    "from": "0x686d6",
+    "fn": "ui_loadout_menu_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x68739",
+    "fn": "ui_loadout_menu_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69249",
+    "fn": "ui_loadout_menu_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6925a",
+    "fn": "ui_loadout_menu_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6b884",
+    "fn": "r06_vec3_main_proc",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6b8ce",
+    "fn": "r06_vec3_main_proc",
+    "mnem": "call"
+   },
+   {
+    "from": "0x128441",
+    "fn": "sub_12841F",
+    "mnem": "call"
+   },
+   {
+    "from": "0x12844d",
+    "fn": "sub_12841F",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x263f0": {
+  "ea": "0x263f0",
+  "name": "dispatch_220d4_stub",
+  "size": 6,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  263F0  call    dword ptr cs:byte_220D0+4; traced calls: 25330",
+   "  263F5  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x3755d",
+    "fn": "hud_terrain_strip_render",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37911",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3792a",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37951",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3796e",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37985",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x379aa",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x379c7",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x379de",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37a04",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x25ebd": {
+  "ea": "0x25ebd",
+  "name": "far_cb_0",
+  "size": 6,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  25EBD  call    cs:opcode_handler_1",
+   "  25EC2  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x2253c",
+    "fn": "error_display_terminate",
+    "mnem": "call"
+   },
+   {
+    "from": "0x277af",
+    "fn": "far_op_execute",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2d06d",
+    "fn": "r01_file_create_3ch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x337ba",
+    "fn": "sub_3352A",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6886e",
+    "fn": "ui_loadout_menu_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69391",
+    "fn": "ui_loadout_menu_enter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69ef7",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69f93",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6a02f",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6a0e9",
+    "fn": "r30_mode_set_637fc_c",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x220b8",
+    "name": "opcode_handler_1"
+   }
+  ]
+ },
+ "0x25ec9": {
+  "ea": "0x25ec9",
+  "name": "far_cb_1",
+  "size": 6,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  25EC9  call    cs:opcode_handler_2",
+   "  25ECE  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x2252c",
+    "fn": "error_display_terminate",
+    "mnem": "call"
+   },
+   {
+    "from": "0x277a3",
+    "fn": "far_op_execute",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2d054",
+    "fn": "r01_file_create_3ch",
+    "mnem": "call"
+   },
+   {
+    "from": "0x33781",
+    "fn": "sub_3352A",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69e13",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69ed2",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x69f6e",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6a00a",
+    "fn": "ui_menu_page_args_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6a0c4",
+    "fn": "r30_mode_set_637fc_c",
+    "mnem": "call"
+   },
+   {
+    "from": "0x6a173",
+    "fn": "r30_mode_set_637fc_c",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x220bc",
+    "name": "opcode_handler_2"
+   }
+  ]
+ },
+ "0x22ee8": {
+  "ea": "0x22ee8",
+  "name": "fixed_abs_div4",
+  "size": 16,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  22EE8  shl     ax, 1",
+   "  22EEA  shl     ax, 1",
+   "  22EEC  push    dx",
+   "  22EED  cwd",
+   "  22EEE  xor     ax, dx",
+   "  22EF0  sub     ax, dx",
+   "  22EF2  pop     dx",
+   "  22EF3  shr     ax, 1",
+   "  22EF5  shr     ax, 1",
+   "  22EF7  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x36a9a",
+    "fn": "hud_readout_render",
+    "mnem": "call"
+   },
+   {
+    "from": "0x444a7",
+    "fn": "farobj_entity_attr_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x444b9",
+    "fn": "farobj_entity_attr_setup",
+    "mnem": "call"
+   },
+   {
+    "from": "0x44c3d",
+    "fn": "sub_4486B",
+    "mnem": "call"
+   },
+   {
+    "from": "0x44d44",
+    "fn": "sub_4486B",
+    "mnem": "call"
+   },
+   {
+    "from": "0x44d84",
+    "fn": "sub_4486B",
+    "mnem": "call"
+   },
+   {
+    "from": "0x44d8e",
+    "fn": "sub_4486B",
+    "mnem": "call"
+   },
+   {
+    "from": "0x45ef8",
+    "fn": "sub_45ECB",
+    "mnem": "call"
+   },
+   {
+    "from": "0x45f16",
+    "fn": "sub_45ECB",
+    "mnem": "call"
+   },
+   {
+    "from": "0x47553",
+    "fn": "sub_4751E",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x16f10": {
+  "ea": "0x16f10",
+  "name": "hw_reg_write_pair",
+  "size": 70,
+  "seg": "seg006",
+  "far": true,
+  "disasm": [
+   "  16F10  push    bp",
+   "  16F11  mov     bp, sp",
+   "  16F13  push    bx",
+   "  16F14  push    ds",
+   "  16F15  mov     bx, 7A32h",
+   "  16F18  mov     ds, bx",
+   "  16F1A  mov     bx, 0AD50h",
+   "  16F1D  mov     dx, [bx]",
+   "  16F1F  pop     ds",
+   "  16F20  pop     bx",
+   "  16F21  mov     ax, [bp+arg_0]",
+   "  16F24  out     dx, al",
+   "  16F25  in      al, dx",
+   "  16F26  in      al, dx",
+   "  16F27  in      al, dx",
+   "  16F28  in      al, dx",
+   "  16F29  in      al, dx",
+   "  16F2A  in      al, dx",
+   "  16F2B  inc     dx",
+   "  16F2C  mov     ax, [bp+arg_2]",
+   "  16F2F  out     dx, al",
+   "  16F30  dec     dx",
+   "  16F31  in      al, dx",
+   "  16F32  in      al, dx",
+   "  16F33  in      al, dx",
+   "  16F34  in      al, dx",
+   "  16F35  in      al, dx",
+   "  16F36  in      al, dx",
+   "  16F37  in      al, dx",
+   "  16F38  in      al, dx",
+   "  16F39  in      al, dx",
+   "  16F3A  in      al, dx",
+   "  16F3B  in      al, dx",
+   "  16F3C  in      al, dx",
+   "  16F3D  in      al, dx",
+   "  16F3E  in      al, dx",
+   "  16F3F  in      al, dx",
+   "  16F40  in      al, dx",
+   "  16F41  in      al, dx",
+   "  16F42  in      al, dx",
+   "  16F43  in      al, dx",
+   "  16F44  in      al, dx",
+   "  16F45  in      al, dx",
+   "  16F46  in      al, dx",
+   "  16F47  in      al, dx",
+   "  16F48  in      al, dx",
+   "  16F49  in      al, dx",
+   "  16F4A  in      al, dx",
+   "  16F4B  in      al, dx",
+   "  16F4C  in      al, dx",
+   "  16F4D  in      al, dx",
+   "  16F4E  in      al, dx",
+   "  16F4F  in      al, dx",
+   "  16F50  in      al, dx",
+   "  16F51  in      al, dx",
+   "  16F52  in      al, dx",
+   "  16F53  in      al, dx",
+   "  16F54  pop     bp",
+   "  16F55  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x1711c",
+    "fn": "opl_addr_data_init_60_80",
+    "mnem": "call"
+   },
+   {
+    "from": "0x1712b",
+    "fn": "opl_addr_data_init_60_80",
+    "mnem": "call"
+   },
+   {
+    "from": "0x17141",
+    "fn": "opl_addr_data_init_60_80",
+    "mnem": "call"
+   },
+   {
+    "from": "0x17150",
+    "fn": "opl_addr_data_init_60_80",
+    "mnem": "call"
+   },
+   {
+    "from": "0x17174",
+    "fn": "opl_addr_data_init_60_80",
+    "mnem": "call"
+   },
+   {
+    "from": "0x17183",
+    "fn": "opl_addr_data_init_60_80",
+    "mnem": "call"
+   },
+   {
+    "from": "0x1764f",
+    "fn": "adlib_synth_init",
+    "mnem": "call"
+   },
+   {
+    "from": "0x17661",
+    "fn": "adlib_synth_init",
+    "mnem": "call"
+   },
+   {
+    "from": "0x17738",
+    "fn": "channel_mode20_write_ae76",
+    "mnem": "call"
+   },
+   {
+    "from": "0x1774b",
+    "fn": "channel_mode20_write_ae76",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": []
+ },
+ "0x24cf7": {
+  "ea": "0x24cf7",
+  "name": "cs_word_store",
+  "size": 10,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  24CF7  mov     cs:byte_24BBA, al",
+   "  24CFB  mov     cs:byte_24BBB, ah",
+   "  24D00  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x11aa3",
+    "fn": "sub_11A7D",
+    "mnem": "call"
+   },
+   {
+    "from": "0x24cf2",
+    "fn": "cs_word_store_wrap",
+    "mnem": "call"
+   },
+   {
+    "from": "0x2fc2c",
+    "fn": "clip_flag_gated_callback",
+    "mnem": "call"
+   },
+   {
+    "from": "0x30f1c",
+    "fn": "hud_data_panel_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x320e9",
+    "fn": "hud_metric_rows_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x32396",
+    "fn": "ui_gauge_panel_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x32407",
+    "fn": "ui_gauge_panel_draw",
+    "mnem": "call"
+   },
+   {
+    "from": "0x350e3",
+    "fn": "mode_axis_state_select",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35169",
+    "fn": "mode_axis_state_select",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35bd6",
+    "fn": "hud_draw_chain_step",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x24bba",
+    "name": "byte_24BBA"
+   },
+   {
+    "ea": "0x24bbb",
+    "name": "byte_24BBB"
+   }
+  ]
+ },
+ "0x263f6": {
+  "ea": "0x263f6",
+  "name": "sub_263F6",
+  "size": 122,
+  "seg": "seg020",
+  "far": true,
+  "disasm": [
+   "  263F6  call    dword ptr cs:byte_220D0",
+   "  263FB  retf",
+   "  263FC  align 8",
+   "  26400  dw 0FFFFh",
+   "  26402  dw 0",
+   "  26404  dw 0",
+   "  26406  dw 0",
+   "  26408  dw 0",
+   "  2640A  dw 0",
+   "  2640C  dw 0",
+   "  2640E  dw 0",
+   "  26410  dw 0",
+   "  26412  dw 6Eh",
+   "  26414  dw 58h",
+   "  26416  dw 100h",
+   "  26418  dw 0",
+   "  2641A  dw 0",
+   "  2641C  dw 0",
+   "  2641E  db 8 dup(0)",
+   "  26426  dd object_quad_proj_draw",
+   "  2642A  dd object_init_flag_draw",
+   "  2642E  dd object_rot_proj_draw",
+   "  26432  dd object_view_matrix_build",
+   "  26436  dd object_frame_advance_step",
+   "  2643A  dd farobj_render_draw_1f712",
+   "  2643E  dd object_type_field_step",
+   "  26442  dd object_proj_draw_dispatch",
+   "  26446  dd farobj_render_prep_1f712",
+   "  2644A  dd object_scale_gather_draw",
+   "  2644E  dd object_record_stream_step",
+   "  26452  dd object_type3_table_step",
+   "  26456  dd anim_line_object_draw",
+   "  2645A  dd flag_1f733_gate",
+   "  2645E  db 4 dup(0), 58h, 2 dup(2)",
+   "  26465  db 0",
+   "  26466  dw 0",
+   "  26468  dw offset sub_26593",
+   "  2646A  dw offset sprite_stride_dispatch_1f718",
+   "  2646C  dw 0",
+   "  2646E  db 0",
+   "  2646F  db 0"
+  ],
+  "callers": [
+   {
+    "from": "0x34f85",
+    "fn": "mode_axis_state_select",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35024",
+    "fn": "mode_axis_state_select",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35030",
+    "fn": "mode_axis_state_select",
+    "mnem": "call"
+   },
+   {
+    "from": "0x35beb",
+    "fn": "hud_draw_chain_step",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37546",
+    "fn": "hud_terrain_strip_render",
+    "mnem": "call"
+   },
+   {
+    "from": "0x378fb",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37918",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x3793b",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37958",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x37975",
+    "fn": "sub_378A9",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x220d0",
+    "name": "byte_220D0"
+   },
+   {
+    "ea": "0x286ce",
+    "name": "object_quad_proj_draw"
+   },
+   {
+    "ea": "0x28774",
+    "name": "object_init_flag_draw"
+   },
+   {
+    "ea": "0x28147",
+    "name": "object_rot_proj_draw"
+   },
+   {
+    "ea": "0x27180",
+    "name": "object_view_matrix_build"
+   },
+   {
+    "ea": "0x2713d",
+    "name": "object_frame_advance_step"
+   },
+   {
+    "ea": "0x26cd8",
+    "name": "farobj_render_draw_1f712"
+   },
+   {
+    "ea": "0x26c4a",
+    "name": "object_type_field_step"
+   },
+   {
+    "ea": "0x26b2e",
+    "name": "object_proj_draw_dispatch"
+   },
+   {
+    "ea": "0x26a49",
+    "name": "farobj_render_prep_1f712"
+   },
+   {
+    "ea": "0x268dd",
+    "name": "object_scale_gather_draw"
+   },
+   {
+    "ea": "0x2676d",
+    "name": "object_record_stream_step"
+   },
+   {
+    "ea": "0x264c5",
+    "name": "object_type3_table_step"
+   },
+   {
+    "ea": "0x27a20",
+    "name": "anim_line_object_draw"
+   },
+   {
+    "ea": "0x27a17",
+    "name": "flag_1f733_gate"
+   },
+   {
+    "ea": "0x26593",
+    "name": "sub_26593"
+   },
+   {
+    "ea": "0x2650c",
+    "name": "sprite_stride_dispatch_1f718"
+   }
+  ]
+ },
+ "0x128a1": {
+  "ea": "0x128a1",
+  "name": "state_farptr_get",
+  "size": 10,
+  "seg": "seg005",
+  "far": true,
+  "disasm": [
+   "  128A1  mov     ax, cs:map_pos_y",
+   "  128A5  mov     bx, cs:map_pos_x",
+   "  128AA  retf"
+  ],
+  "callers": [
+   {
+    "from": "0x4b699",
+    "fn": "tile_object_interpreter",
+    "mnem": "call"
+   },
+   {
+    "from": "0x4bfc1",
+    "fn": "farobj_tile_key_cache",
+    "mnem": "call"
+   },
+   {
+    "from": "0x4f0a9",
+    "fn": "sub_4F0A9",
+    "mnem": "call"
+   },
+   {
+    "from": "0x107135",
+    "fn": "r12_fd09_state_record_entry",
+    "mnem": "call"
+   },
+   {
+    "from": "0x10716f",
+    "fn": "r12_fd08_state_record_entry",
+    "mnem": "call"
+   },
+   {
+    "from": "0x1071a9",
+    "fn": "r12_fd0ac_record_entry",
+    "mnem": "call"
+   }
+  ],
+  "data_refs": [
+   {
+    "ea": "0x11c26",
+    "name": "map_pos_y"
+   },
+   {
+    "ea": "0x11c24",
+    "name": "map_pos_x"
+   }
+  ]
+ }
+}
