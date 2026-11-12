@@ -1,0 +1,294 @@
+================================================================================
+FALCON 3.0 GRAPHICS PIPELINE ARCHITECTURE MAP
+================================================================================
+
+                          MAIN RENDERING PIPELINE
+                          
+┌──────────────────────────────────────────────────────────────────────────┐
+│                         view_projection (0x20BDB)                        │
+│                         seg020:151B | 1,076 bytes                        │
+│                                                                           │
+│  Main 3D-to-2D transformation pipeline called from rendering loop        │
+└──────────────────────────────────────────────────────────────────────────┘
+                                     │
+                    ┌────────────────┼────────────────┐
+                    │                │                │
+                    ▼                ▼                ▼
+        ╔═══════════════╗  ╔═══════════════╗  ╔═══════════════╗
+        ║  MATH SETUP   ║  ║  TRANSFORM    ║  ║  VISIBILITY   ║
+        ║  (10 helpers) ║  ║  (vec3/vec2)  ║  ║  (farobj)     ║
+        ╚═══════════════╝  ╚═══════════════╝  ╚═══════════════╝
+
+================================================================================
+STAGE 1: MATH SETUP (10 exclusive helpers)
+================================================================================
+
+seg015:0C65  ────→  Segment setup
+seg015:0C7A  ────→  Complex dispatcher
+seg015:0CDB  ────→  32-bit left shift
+seg015:0CF0  ────→  Far call wrapper (→ 0x1994:0D94)
+seg015:0D51  ────→  Wrapper with cleanup
+seg015:0D66  ────→  Conditional math
+
+seg017:01FE  ────→  Table lookup (→ 0x7772:0x0F34)
+seg017:021C  ────→  Multiply-accumulate loop
+seg017:01E3  ────→  Conditional epilogue
+
+seg020:1A2F  ────→  32-bit absolute value (0x210EF)
+
+NOTE: These are mid-function entry points, called ONLY by view_projection
+
+================================================================================
+STAGE 2: TRANSFORMATION (Core graphics functions)
+================================================================================
+
+fixed_vec3_transform_es (0x248D1, seg020:5211, 146 bytes)
+    │
+    │  Called by 10 functions:
+    │
+    ├──→  view_projection (1 call)
+    ├──→  record_xform_apply (4 calls)
+    ├──→  object_quad_proj_draw (4 calls)
+    ├──→  view_proj_setup_1f73d (3 calls)
+    ├──→  view_proj_setup_1f73d_rot (3 calls)
+    ├──→  view_basis_build_3850 (2 calls)
+    ├──→  object_proj_draw_dispatch (1 call)
+    ├──→  view_scroll_rotate_apply (1 call)
+    ├──→  stub_to_248d1 (1 call)
+    └──→  sub_21657 (1 call) ⚠ UNNAMED, no direct callers
+
+vec2_normalize_seq (17 bytes)
+    │
+    └──→  Called by 2 functions
+
+================================================================================
+STAGE 3: VISIBILITY CULLING (farobj system)
+================================================================================
+
+farobj_sort_and_step (seg020:1C5C)  ← Orchestrator
+    │
+    ├──→  farobj_record_step (393 bytes)
+    │       └──→  Iterate objects, apply culling tests
+    │
+    ├──→  farobj_record_lookup_step (72 bytes)
+    │       └──→  Check visibility status
+    │
+    ├──→  farobj_record_push_7c054 (72 bytes)
+    │       └──→  Add to NEAR queue (DGROUP:0x7C054)
+    │
+    └──→  farobj_record_push_7d0c6 (70 bytes)
+            └──→  Add to FAR queue (DGROUP:0x7D0C6)
+
+Queue Architecture:
+    Near Queue: DGROUP:0x7C054
+    Far Queue:  DGROUP:0x7D0C6  (+ 4,210 bytes)
+    
+    Purpose: Level-of-Detail (LOD) management for performance
+
+================================================================================
+DATA STRUCTURES
+================================================================================
+
+DGROUP:0x4287    ┃  3D Coordinate Structure
+                 ┃  Used by: sub_256A3
+                 ┃  Type: struct (x, y, z) - needs verification
+
+DGROUP:0x7C054   ┃  Near Object Queue
+                 ┃  Objects close to camera (full detail)
+
+DGROUP:0x7D0C6   ┃  Far Object Queue  
+                 ┃  Objects far from camera (reduced detail)
+                 ┃  Separation: 4,210 bytes from near queue
+
+0x7772:0x0F34    ┃  Math Lookup Table
+                 ┃  4-byte entries, precomputed values
+                 ┃  Used by: seg017:01FE (table lookup helper)
+
+================================================================================
+SEGMENT ARCHITECTURE
+================================================================================
+
+seg020 (Resident Code Segment)
+    Base:     0x1F6C0
+    Selector: 0x1F6C
+    Size:     45,936 bytes
+    Range:    0x1F6C0 → 0x2AA30
+    
+    Key Functions:
+        0x20BDB  view_projection
+        0x248D1  fixed_vec3_transform_es
+        0x256A3  sub_256A3
+        0x210EF  abs_helper (seg020:1A2F)
+        + all 6 core graphics functions
+        + farobj system functions
+
+NOTE: All critical graphics code is RESIDENT (not overlaid)
+      This ensures fast rendering without disk I/O
+
+================================================================================
+RENDERING CALL GRAPH (Top-Level)
+================================================================================
+
+Game Main Loop
+    │
+    └──→ Rendering System
+            │
+            ├──→ view_projection (main pipeline)
+            │       │
+            │       ├──→ 10 math helpers (setup)
+            │       ├──→ fixed_vec3_transform_es (transform)
+            │       ├──→ vec2_normalize_seq (normalize)
+            │       └──→ 4 farobj functions (cull)
+            │
+            ├──→ record_xform_apply (4x vec3 transforms)
+            │
+            ├──→ object_quad_proj_draw (4x vec3 transforms)
+            │
+            ├──→ view_proj_setup_1f73d (3x vec3 transforms)
+            │
+            ├──→ view_proj_setup_1f73d_rot (3x vec3 transforms)
+            │
+            ├──→ view_basis_build_3850 (2x vec3 transforms)
+            │
+            ├──→ object_proj_draw_dispatch (1x vec3 transform)
+            │
+            ├──→ view_scroll_rotate_apply (1x vec3 transform)
+            │
+            └──→ farobj_sort_and_step (visibility culling)
+
+Total vec3_transform calls per frame: ~20+ (varies by scene complexity)
+
+================================================================================
+STATISTICS
+================================================================================
+
+Codebase Coverage:
+    Total segments:        137
+    Total functions:       4,170
+    Multi-entry functions: 2,385 (57%)
+    
+    Functions analyzed:    ~50
+    Functions documented:  26
+    
+Graphics Pipeline:
+    Main function size:    1,076 bytes (view_projection)
+    Pipeline calls:        16 total
+    Math helpers:          10 (exclusive)
+    Core graphics funcs:   6 (all resident)
+    Transform callers:     10 (9 named, 1 unnamed)
+    
+farobj System:
+    Core functions:        4
+    Queues:                2 (near/far)
+    Related functions:     250+
+    
+Analysis Output:
+    Files created:         28
+    Lines of code:         ~3,500
+    Data size:             ~9 MB
+    Commits:               9
+
+================================================================================
+VERIFICATION STATUS
+================================================================================
+
+✓ COMPLETED
+    - Segment export infrastructure
+    - Address translation verification
+    - Pipeline mapping (16 calls identified)
+    - Math helper identification (10 exclusive)
+    - Graphics function cataloging (6 core)
+    - Caller graph analysis (10 callers)
+    - farobj system documentation
+    - Verification tools created
+
+⏳ READY FOR VERIFICATION (2-3 hours)
+    - Math helper exclusivity confirmation (IDA xrefs)
+    - vec3_transform call counts (verify 4x, 3x, etc.)
+    - Graphics function sizes (verify byte counts)
+    - Data structure layouts (examine in IDA)
+    - Multi-entry function spot-check
+    - Complete call graph walk-through
+
+⚠ PENDING INVESTIGATION
+    - sub_21657 naming (no direct callers, indirect call)
+    - sub_256A3 naming (uses DGROUP:0x4287)
+    - DGROUP:0x4287 structure layout
+    - 0x7772:0x0F34 table contents
+    - farobj culling algorithm details
+    - Complete scene graph architecture
+
+================================================================================
+NEXT STEPS
+================================================================================
+
+1. Open IDA Pro with FALCONCD.EXE.i64
+
+2. Run 5-minute quick verification:
+   → verification_quickstart.md (Section: 5-Minute Verification Checklist)
+
+3. If discrepancies found:
+   → Document in verification_findings.txt
+   → Update analysis JSON files
+
+4. For deep verification:
+   → manual_verification_guide.md (2-3 hours)
+   → Verify all 10 math helpers (xref check)
+   → Verify all 10 vec3 callers (call count)
+   → Check data structures
+
+5. Follow-up tasks:
+   → Name sub_21657 based on context
+   → Name sub_256A3 based on usage
+   → Document data structure layouts
+   → Map complete scene graph
+
+================================================================================
+KEY INSIGHTS
+================================================================================
+
+1. Multi-Entry Architecture (57% of functions)
+   Deliberate optimization for DOS memory constraints
+
+2. Math Helpers are Highly Specialized
+   10 functions used ONLY by view_projection
+
+3. Graphics Functions are Resident
+   All critical code in seg020 (no overlay swaps)
+
+4. farobj System is Sophisticated
+   250+ functions for visibility culling and LOD
+
+5. Transformation Pipeline is Clean
+   Clear separation: setup → transform → normalize → project
+
+================================================================================
+FILES CREATED THIS SESSION
+================================================================================
+
+Analysis Tools:
+    export_segment_map.py, address_translator.py
+    analyze_view_projection.py, disassemble_math_helpers.py
+    analyze_graphics_functions.py, analyze_vec3_transform_callers.py
+    analyze_farobj_system.py, analyze_sub_21657.py
+
+Verification Tools:
+    verify_graphics_pipeline.py, prepare_verification_data.py
+    find_seg020.py, run_verification.bat
+
+Documentation:
+    verification_quickstart.md ⭐ START HERE
+    manual_verification_guide.md, ida_verification_plan.md
+    ADDRESS_TRANSLATION_GUIDE.md, view_projection_analysis.md
+    math_helpers_identified.md, finding_207_sub_10bdb.md
+    session_extended_summary.md, this file
+
+Data Files (JSON):
+    segment_map.json (3.4 MB), projection_pipeline_map.json
+    math_library_analysis.json, graphics_functions_analysis.json
+    vec3_transform_callers.json, farobj_system_analysis.json
+    sub_21657_analysis.json, math_helper_bytecode.json
+
+================================================================================
+END OF MAP
+================================================================================
