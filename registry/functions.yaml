@@ -1412,3 +1412,131 @@ functions:
     globals:
       - {ea: "0x0388", proposed_name: opl_port_388, type: uint16,
          desc: "AdLib OPL2/OPL3 standard I/O port 0x388 (address register)", certainty: PROVEN}
+
+  # --- Entity lifecycle system (S4 2026-11-12) ---
+
+  - ea: "0x213E6"
+    key: sub_213E6
+    name: farobj_record_lookup_step
+    name_certainty: HYPOTHESIS
+    desc: >
+      Per-farobj step dispatcher: looks up the type descriptor record stream for a
+      farobj's object_kind, advances to the right record, then executes it.
+      Uses FarObj.object_kind [+0x22] (the LOD accumulator): index = object_kind×4 + 0x3052,
+      then loads a far ptr from the type desc table at 0x7B0E:0x3052+index.
+      Skips bytes in the record stream (first byte = skip distance), then scans for
+      0xFFFF sentinel at 8-byte intervals. Sets cs:byte_1F742 = 0 on completion.
+      Called by view_projection (each projected object) and farobj_sort_and_step.
+    calling_convention: register
+    params:
+      - {reg: "ES:DI", name: farobj_ptr, type: "FarObj*", certainty: STRONG}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x3C1BD"
+    key: sub_3C1BD
+    name: farobj_slot_update_driver
+    name_certainty: STRONG
+    desc: >
+      Drives the per-frame update of 16 farobj entity slot records stored at
+      DS:0x54AF:0x386F (each 92 bytes = stride 0x5C). Runs 3 passes over all 16 slots:
+        Pass 1: if [si+0xA] & 1 (active): call sub_40BC5+1, sub_3C62C, sub_4355B
+        Pass 2: if [si+0xA] & 1: call sub_428A1; if result != 0: call sub_4355B
+        Pass 3: different per-slot operations
+      Called by game_frame_update_chain (another entry in the main update chain).
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "0x54AF:0x386F", proposed_name: entity_slot_records, type: "EntitySlotRec[16]",
+         desc: "16 entity slot records, each 92B; [+0xA] bit 0 = active", certainty: STRONG}
+
+  - ea: "0x2E2D0"
+    key: sub_2E2D0
+    name: farobj_sweep_all
+    name_certainty: STRONG
+    desc: >
+      Three-phase per-frame sweep of all farobj data structures:
+        1. farobj_slot_sweep — sweeps farobj slot states
+        2. farobj_cmd_sweep  — sweeps command queues
+        3. farobj_entity_accum_sweep — applies motion accumulation entries
+      Called by game_frame_update_chain and main_frame_update_loop each flight frame.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x2E6C2"
+    key: sub_2E6C2
+    name: farobj_cmd_interp
+    name_certainty: HYPOTHESIS
+    desc: >
+      Advances the command field (FarObj.cmd_field [+0x20]) for a farobj slot.
+      AX += 0x1B9 (441), reads current cmd_field via farptr_table_field20_get,
+      computes delta with [di+4], stores new value via farptr_table_field_store.
+      Called by farobj_cmd_sweep.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_base, type: uint16, desc: "farobj slot index (before +0x1B9 offset)", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x4D8A7"
+    key: sub_4D8A7
+    name: farobj_slot_step_spawn
+    name_certainty: HYPOTHESIS
+    desc: >
+      Entity spawning: creates new entities from a spawn queue. Checks spawn-active
+      flag at DS:0x6B58:byte_6B58A bit 0. Iterates up to 10 spawn entries (stride 6)
+      starting at DS:[0x33]. For each active entry, accumulates position via
+      fixed_vec3_accumulate_b with jitter (cx & 7 - 3), then spawns the entity.
+      Likely spawns missiles, explosions, or aircraft from engagement events.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "0x6B58:byte_6B58A", proposed_name: spawn_active_flag, type: flags8,
+         desc: "bit 0 = spawn system active", certainty: HYPOTHESIS}
+
+  - ea: "0x2EA78"
+    key: sub_2EA78
+    name: entity_slot_pair_create
+    name_certainty: HYPOTHESIS
+    desc: >
+      Creates a pair of linked entity slots from two type IDs at DS:SI.
+      Reads two type IDs (lodsw × 2). For each non-0xFFFF value: calls
+      entity_slot_create(BX=0 or 1) to create the slot. Used for linked entities
+      like weapon + launching platform, or aircraft + wingman pairs.
+    calling_convention: register
+    params:
+      - {reg: SI, name: type_id_pair, type: uint16, desc: "offset of [type_a, type_b] in DS; 0xFFFF = skip", certainty: STRONG}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x3BB8F"
+    key: sub_3BB8F
+    name: farobj_record_ops_exec
+    name_certainty: HYPOTHESIS
+    desc: >
+      Large 860B per-farobj operations executor (R05_2B83). Called by farobj_process_386f.
+      From entity record at DS:SI:
+        SI[0] = farobj slot index → farptr_table_get → ES:DI = farobj
+        SI[6] = offset of entity state buffer (DI)
+        DI[0xC0] = 0x1E (30); DI[0xC1] = 0x1E — initializes two state bytes to 30
+      Uses ds:0x135E & 3 (mod 3) × 25 for some periodic computation.
+      Then loads from 0x7894 and 0x54AF segments, reading entity position data.
+      The 0x1E (30) values at [DI+0xC0/0xC1] likely initialize hit points or fuel.
+    calling_convention: register
+    params:
+      - {reg: SI, name: entity_record, type: uint16, desc: "entity slot record offset in DS", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS

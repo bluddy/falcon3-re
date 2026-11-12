@@ -550,11 +550,59 @@ A multi-level file streaming API manages budget-limited reads from large data fi
 
 ## 16. Entity / World Management
 
-**HYPOTHESIS** (from function naming, S4 analysis).
+**STRONG** (from farobj system analysis, main loop disassembly).
 
-- **EntityAccumEntry** at `0x54AF:0x4ED` (40 entries × 14B): per-frame motion commands applied by `farobj_entity_accum_sweep` (deltas for position and orientation)
-- **Entity creation**: `entity_slot_create` opens disk files via op_dispatch, reads entity records, initializes FarObj fields; `FarObj.slot_id` [+0x27] = slot index, `FarObj.slot_flags` [+0x26] = state flags
-- **Map tile position**: `map_tile_pos_get` (0x128A1) returns current map tile X/Y from CS globals `map_pos_x`/`map_pos_y`
+### Entity Data Layers
+
+The entity system uses four distinct data structures updated each flight frame:
+
+| Structure | Location | Description |
+|---|---|---|
+| Main farobj table | `R05_400C:0x34` (N×4B) | Primary state: position, orientation, type, LOD |
+| Entity slot records | `0x54AF:0x386F` (16×92B) | Per-frame update state; [+0xA] bit 0 = active |
+| Event/timer state | `0x7772:0x506+N` (byte/N) | Countdown timers (weapons reload, state changes) |
+| Spawn queue | `0x6B58:0x33` (10×6B) | Pending entity creation queue |
+
+### Per-Frame Entity Update Sequence
+
+Each FLIGHT frame in `main_frame_update_loop`:
+1. `farobj_slot_update_driver` — 3-pass update of 16 entity slot records at `0x54AF:0x386F`
+2. `farobj_move_accumulate_step` — apply EntityAccumEntry motion (CX=0x52 entries max)
+3. `aircraft_slot_cycle_step` — cycle aircraft slot states
+4. `farobj_slot_step_spawn` — process spawn queue (up to 10 pending spawns)
+5. `farobj_sweep_all` — three sweeps: slot sweep + cmd sweep + entity accum sweep
+6. `game_frame_pipeline_step` → includes `farobj_sort_and_step` (depth sort + per-entity step via `farobj_record_lookup_step`)
+
+### Entity Class Codes (FarObj.entity_class [+0x14])
+
+Set by `farobj_entity_attr_setup` from type table B at DS:0x16F4 (R05_33AE overlay).
+Used by `farobj_type_gate_test` (gate: only process certain entity types):
+
+| Code | Hypothesis |
+|---|---|
+| 0x12 (18) | Player / allied aircraft |
+| 0x14 (20) | Enemy aircraft |
+| 0x33 (51) | Ground target / vehicle |
+| 0x38 (56) | Naval / other entity |
+
+### Entity Step State Machine
+
+`farobj_record_lookup_step` (called each frame per projected entity) uses:
+- `FarObj.object_kind` [+0x22] × 4 + 0x3052 → type descriptor stream index at `0x7B0E:0x3052`
+- Advances through the stream to find the right record (8-byte entries, 0xFFFF = end)
+- Executes the per-type step logic
+
+### Entity Creation
+
+`entity_slot_pair_create` creates linked entity pairs (e.g., aircraft + wingman):
+calls `entity_slot_create` twice with BX=0 and BX=1.
+`farobj_slot_step_spawn` handles spawn queue; uses `fixed_vec3_accumulate_b` with jitter (±3)
+for position variation on spawned entities.
+
+### Map Tile Position
+
+`map_tile_pos_get` (0x128A1, corrected from `state_farptr_get`) returns current tile X/Y
+from CS globals `map_pos_x` / `map_pos_y`.
 
 ---
 
@@ -618,19 +666,16 @@ Based on naming analysis and function organization (HYPOTHESIS unless noted):
 
 ## 19. What We Don't Know Yet
 
-- Exact entity_class codes (0x12/0x14/0x33/0x38 → aircraft/vehicle/ground/naval?)
+- Exact entity_class codes (0x12/0x14/0x33/0x38 → aircraft/vehicle/ground/naval?) — table in R05_33AE not yet correctly read
 - Asset format (PKWARE DCL compression — UNKNOWN, never exercised)
-- Full FarObj struct layout (fields 0x2E–0x73 and 0x7C–0xD0)
-- Full render pipeline (how objects go from FarObj to screen via view_projection)
-- Sound/music beyond OPL register writes
-- EMS/XMS overlay swapping details
-- Campaign state machine (session, mission, debrief)
-- Network/multiplayer support (if any)
-- The 15-slot `fn_table_dispatch` (0x231F0) table contents (view mode functions)
-- The `event_state_machine` (0x1AB34) full 17-case breakdown
-- What `farobj_record_lookup_step` does in the depth-sorted farobj loop
-- How `view_projection` maps world coords to screen pixels (complete math)
+- Full FarObj struct layout (fields 0x2E–0x73 and 0x7C–0xD0); struct at 0x54AF:0x386F [+0xC0/0xC1] = possibly hit points/fuel (30 = 0x1E initial)
+- How view_projection maps to actual screen pixel coordinates (complete math beyond the formula)
 - The aircraft flight physics (sub_3A003 → mode_frame_step_core chain)
+- The event_state_machine (0x1AB34) full 17-case breakdown
+- What the 16-entry type descriptor stream format looks like in detail
+- The 15-slot fn_table_dispatch (0x231F0) table contents (view mode functions)
+- How the HUD overlays onto the 3D scene (record_queue_push → renderer)
+- Campaign and mission state management (above Level-18)
 
 ---
 
