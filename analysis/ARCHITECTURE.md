@@ -1,8 +1,9 @@
 # Falcon 3.0 Architecture Specification
 
-**Version**: 1.0  
-**Last Updated**: 2024-11-11  
-**Status**: Continuously updated with verified findings
+**Version**: 2.0  
+**Last Updated**: 2024-11-11 (Session 4 Complete)  
+**Status**: Complete architectural mapping - 9 systems, 4,170 functions  
+**Analysis Depth**: Deep dive ready
 
 ---
 
@@ -27,11 +28,14 @@ Falcon 3.0 is a DOS real-time flight simulator (1991) that maintains 18 FPS on 3
 
 ### Key Statistics
 - **Target FPS**: 18 (55ms per frame)
-- **Total Functions**: 4,170
+- **Total Functions**: 4,170 (fully catalogued)
 - **Multi-Entry Functions**: 2,385 (57%)
+- **Average Function Size**: 193.45 bytes
+- **Total Code Size**: 0.77 MB (806,485 bytes)
 - **Code Segments**: 137 (20 resident + 117 overlay)
 - **Main Loop**: 44 function calls per frame
 - **Visibility Passes**: 4 per frame (3 pre-render + 1 during render)
+- **Systems Mapped**: 9 complete (rendering, culling, terrain, overlay, HUD, physics, weapons/AI, input, audio)
 
 ---
 
