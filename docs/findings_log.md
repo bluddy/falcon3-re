@@ -8073,3 +8073,244 @@ previous commits not in ledger). Batch 3 complete (12 of 15, 3 deferred for boun
 - 4 boundary errors deferred (9 functions total after splits)
 - CS-segment state layout extensively mapped (60+ bytes, 9 ranges)
 - Workflow proven: bytecode dump → manual decode → naming → commit
+
+## 2026-11-12 194 - S4 Level-0 batch 4: PRNG discovery (pseudo-random number generator)
+
+**What was found.** During Level-0 batch 4 naming (ranks 36-50), discovered `prng_step_triple_lcg`
+(sub_22CD5, 68 bytes, 11,084 calls) - the first confirmed pseudo-random number generator in the
+codebase.
+
+**Structure:**
+- **Triple linear congruential generator** operating on CS:[0x35B7, 0x35B9, 0x35BB]
+- Pattern for each of 3 channels: `(word * multiplier) / divisor`, store remainder
+- Multipliers at CS:[0x35BD, 0x35BF, 0x35C1]
+- Divisors at CS:[0x35C3, 0x35C5, 0x35C7]
+- Output: accumulates three remainders into CX (combined random value)
+
+**Algorithm:**
+```
+for i in [0, 1, 2]:
+    state[i] = (state[i] * mult[i]) / div[i]
+    cx += state[i]  // accumulate remainders
+return cx
+```
+
+**CS-segment PRNG state block (17 bytes at 0x35B7-0x35C7):**
+- 0x35B7, 0x35B9, 0x35BB: current state (3 words)
+- 0x35BD, 0x35BF, 0x35C1: multipliers (3 words)
+- 0x35C3, 0x35C5, 0x35C7: divisors (3 words)
+- Plus 1 padding byte (17 total)
+
+**Architectural significance:** High call frequency (11.1K) confirms this is a hot-path
+function used throughout the game (AI randomness, terrain generation, effects variation,
+procedural content). Triple-channel design suggests independent random streams or
+improved period/quality vs single LCG.
+
+**Related discovery:** CS:[0x35B1-0x35B5] (6 bytes) are save/restore slots for this
+PRNG state (cs_triple_35b1_get/set functions, 10.7K and 10.2K calls respectively).
+
+## 2026-11-12 195 - S4 Level-0 batch 4: Number formatting utility (itoa_decimal_signed)
+
+**What was found.** First non-accessor utility function discovered in Level-0:
+`itoa_decimal_signed` (sub_22884, 59 bytes, 12,413 calls, 18 static callers).
+
+**Function signature:**
+- Input: AX = signed 16-bit integer, SI = buffer pointer, CL = field width
+- Output: ASCII decimal string at [SI], space or minus sign padding
+
+**Algorithm:**
+- Determine sign, set padding character (' ' or '-')
+- Write field width and sign to buffer
+- Convert via divide-by-10 loop, ASCII digit conversion (+0x30)
+- Null-terminate
+
+**Pattern:** Classic itoa implementation using repeated division by 10, processing digits
+right-to-left. Field width support suggests this is used for fixed-width display (HUD,
+debug text, score display).
+
+**Architectural significance:** High call frequency (12.4K) and 18 distinct callers
+confirm this is a core utility used throughout the game for UI/debug display. First
+confirmed string formatting function in the codebase.
+
+## 2026-11-12 196 - S4 Level-0 batch 4: CS-Segment state extensions (7 new ranges)
+
+**What was found.** Level-0 batch 4 (ranks 36-50) extended the CS-segment state map
+by 7 new ranges:
+
+**New ranges:**
+1. **0x0022** (word) - dispatch table index for `dispatch_via_cs_0022_table`
+   - Indirect dispatch: load index from CS:[0x0022], call through CS:[index+0]
+   - 12.1K calls = high-frequency secondary dispatcher
+
+2. **0x0128** (word) - `cs_word_0128_get`
+   - Simple word read, 10.2K calls
+
+3. **0x2A04** (far pointer) - `stub_via_cs_2a04`
+   - Extends 0x2AA0+ dispatch pointer array region
+   - 13.3K calls = highest frequency in batch 4
+
+4. **0x2B60** (word) - scaling divisor for `cs_word_2b60_scale_div`
+   - Used in normalization: `(291 / CS:[0x2B60])`, clamp result to [0,4]
+   - 12.9K calls
+
+5. **0x35B1-0x35B5** (6 bytes) - triple-word state save/restore
+   - `cs_triple_35b1_set/get` (10.7K and 10.2K calls)
+   - Used for PRNG state backup (see finding 194)
+
+6. **0x35B7-0x35C7** (17 bytes) - PRNG state block
+   - See finding 194 for full structure
+
+7. **0x5DD9** (word) - `cs_word_5dd9_get`
+   - Extends 0x5DD1-0x5DD3 region (batch 2, finding 184)
+   - 10.1K calls
+
+**CS-segment state map after batch 4:**
+- Total: ~150+ bytes across 14 distinct regions
+- Dominant patterns: state variables (words/dwords), dispatch tables, PRNG, scaling parameters
+
+## 2026-11-12 197 - S4 Level-0 batch 4: 3D vector clamping (flight physics limiting)
+
+**What was found.** First confirmed 3D vector operation with range limiting:
+`vec3_copy_clamp_xy_40` (sub_14C77, 79 bytes, 10,756 calls, 5 callers).
+
+**Function behavior:**
+- Input: SI = source buffer (12 bytes = 3 dwords), DI = destination buffer
+- Output: copied 3 dwords with first two (X,Y) clamped to [-40, +40]
+- Third component (Z) copied unchanged
+
+**Pattern:**
+```
+for component in [X, Y]:
+    if component < -40: component = -40
+    if component > +40: component = +40
+for component in [Z]:
+    copy unchanged
+```
+
+**Architectural significance:**
+- First confirmed 3D vector operation in the codebase
+- Clamping to ±40 suggests velocity or acceleration limiting for flight physics
+- Z-axis unclamped → likely altitude rate (no artificial limit)
+- High frequency (10.8K calls) confirms this is in the flight physics hot path
+
+**Related context:** Likely operates on fixed-point coordinates (dword = 32-bit fixed,
+possibly 16.16 or 24.8 format). The ±40 limit in fixed-point would correspond to a
+physical velocity/acceleration threshold appropriate for flight simulation.
+
+## 2026-11-12 198 - S4 Level-0 batch 5: CS-Segment state extensions (9 new ranges)
+
+**What was found.** Level-0 batch 5 (ranks 51-65) extended the CS-segment state map
+by 9 new ranges, bringing total CS-segment state to 160+ bytes across 15 regions.
+
+**New ranges:**
+
+1. **0x0002** (word) - `cs_word_0002_get`
+   - Extends 0x0000-0x0001 byte pair to 0x0000-0x0002 region (byte pair + word)
+   - 9.1K calls
+
+2. **0x000C-0x0012** (7 bytes, 4 words) - block copy source
+   - `cs_block_000c_to_esdi_8bytes` reads 4 consecutive words, writes to ES:DI buffer
+   - First CS-segment block copy operation (see finding 200)
+   - 7.3K calls
+
+3. **0x29D0** (far pointer) - `stub_via_cs_29d0`
+   - New dispatch pointer region (0x29D0-0x29E8)
+   - 4.6K calls
+
+4. **0x29E8** (far pointer) - `stub_via_cs_29e8`
+   - Used by conditional dual-dispatcher (see finding 199)
+   - 6.6K calls
+
+5. **0x2A60** (far pointer) - `stub_via_cs_2a60`
+   - Extends 0x2AA0+ dispatch pointer array
+   - 5.7K calls
+
+6. **0x2B6C-0x2B70** (5 bytes) - scaled output storage
+   - `cs_scale_144_clamp_store_2b6c` stores 3 words after scaling by 144/256
+   - Clamps AX ≥ 18, DX ≥ 8
+   - 9.2K calls
+
+7. **0x2B7E** (word) - `cs_word_2b7e_set`
+   - Extends 0x2B76-0x2B84 region from 8 bytes to 9 bytes
+   - 8.4K calls
+
+8. **0x54F8-0x54FC** (5 bytes) - dispatcher parameter block
+   - 0x54F8: word (BP parameter)
+   - 0x54FA, 0x54FB: bytes (AL parameters)
+   - 0x54FC: flags byte (bits 6+7 control conditional execution)
+   - Used by `dispatch_dual_seg834a_cs54fc` (see finding 199)
+
+9. **0x5DC7** (byte) - `cs_byte_5dc7_get`
+   - Near 0x5DD1-0x5DD9 region
+   - 7.4K calls
+
+**Architectural patterns emerging:**
+- **Dispatch pointer arrays** clustering in 0x29D0-0x2AD8 range (15+ pointers)
+- **State blocks** at 0x2B60-0x2B84 (36 bytes: scaling, persistent state)
+- **Block storage** at 0x000C-0x0012 (bulk export target)
+- **Specialized parameters** at 0x5400+ range (dispatcher params)
+
+## 2026-11-12 199 - S4 Level-0 batch 5: Segment 0x834A first reference
+
+**What was found.** First reference to segment 0x834A in `dispatch_dual_seg834a_cs54fc`
+(sub_24D64, 60 bytes, 6,981 calls, 10 callers).
+
+**Function behavior:**
+- Setup ES = 0x834A (data segment)
+- Test CS:[0x54FC] flags byte (bits 6+7)
+- If flags set: conditional dual-dispatch via CS:[0x29E8]
+  - First call: load AL from CS:[0x54FB], BP from CS:[0x54F8], adjust BX/DI based on flags
+  - Second call: load AL from CS:[0x54FA], BP from CS:[0x54F8] (same BP)
+- Both calls indirect through CS:[0x29E8] far pointer
+
+**Segment 0x834A characteristics:**
+- Not DGROUP (DGROUP is 0x7B0E + offsets)
+- Not view/projection space (0x7B0E)
+- Likely a specialized data segment for specific subsystem
+
+**Architectural significance:** Conditional dual-dispatch pattern suggests this is
+a specialized operation mode (possibly rendering, audio, or EMS-related). The flag-based
+conditional execution (CS:[0x54FC]) implies runtime state affects dispatcher behavior.
+
+**Parameter block (CS:[0x54F8-0x54FC]):**
+- 0x54F8: BP (shared across both calls)
+- 0x54FA, 0x54FB: AL parameters (different per call)
+- 0x54FC: flags byte (bits 6+7 = execution control, bit 6 = DI adjustment)
+
+## 2026-11-12 200 - S4 Level-0 batch 5: Block copy pattern (bulk state export)
+
+**What was found.** First CS-segment block copy operation: `cs_block_000c_to_esdi_8bytes`
+(sub_2033F, 21 bytes, 7,271 calls, 3 callers).
+
+**Function behavior:**
+- Input: ES:DI = destination buffer pointer
+- Operation: copy 4 consecutive CS-segment words (8 bytes) from CS:[0x000C-0x0012] to ES:DI
+- Output: buffer at ES:DI contains copied state
+
+**Pattern:**
+```asm
+mov ax, cs:[0x000C]
+stosw                    ; [ES:DI] = AX, DI += 2
+mov ax, cs:[0x000E]
+stosw
+mov ax, cs:[0x0010]
+stosw
+mov ax, cs:[0x0012]
+stosw
+```
+
+**Architectural significance:**
+- First bulk state export operation (vs single-word accessors)
+- High frequency (7.3K calls) confirms this is a hot path
+- Pattern: read-only export of 8-byte CS-segment state block to caller's buffer
+- Likely used for state snapshots, save/restore, or inter-module communication
+
+**CS:[0x000C-0x0012] block contents (unknown):**
+- Could be: 4 word state variables, 2 dword values, or a structured record
+- Block is read frequently but not yet observed being written
+- May be initialized at startup and read throughout execution
+
+**Contrast with finding 191's cs_save_si_ds_36fe:**
+- Finding 191: saves caller's SI:DS to CS-segment (import)
+- Finding 200: exports CS-segment state to caller's buffer (export)
+- Together: bidirectional state transfer patterns
