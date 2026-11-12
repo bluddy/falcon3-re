@@ -182,6 +182,29 @@ copies matrix constants, returns:
 - CX = `ES:word_7E966` (projection Z scale)
 - DX = `ES:word_7E94C+18h`
 
+**The 15 View Mode Functions:**
+
+| Index | Address | Name | Description |
+|---|---|---|---|
+| 0 | 0x23235 | `view_proj_default` | Conditional: if cs:byte_2322A==0 → copy 3 words DS:SI → ES:DI=3884h |
+| 1 | 0x2325E | `view_proj_preset_1` | ES:3884=0x0555, ES:3886=0x0199, ES:3888=0 |
+| 2 | 0x2327B | `view_proj_preset_2` | ES:3884=0xFAAB (−0x555), ES:3886=0x0199, ES:3888=0 |
+| 3 | 0x23298 | `view_proj_preset_4` | ES:3884=0x1000, ES:3886=0, ES:3888=0 |
+| 4 | 0x232B2 | `view_proj_preset_5` | ES:3884=0xF000 (−0x1000), ES:3886=0, ES:3888=0 |
+| 5 | 0x232CC | `view_proj_preset_3` | ES:3884=0xE000, ES:3886=0, ES:3888=0 |
+| 6 | 0x232E6 | `view_matrix_build` | ES:3884=ES:3896, ES:3886=ES:3898, ES:3888=0; matrix build chain |
+| 7 | 0x23316 | `view_proj_preset_6` | ES:3884=0, ES:3886=0xF000 (−0x1000), ES:3888=0 |
+| 8 | 0x23330 | `view_proj_preset_7` | ES:3884=0, ES:3886=0x1000, ES:3888=0 |
+| 9 | 0x2334A | `view_proj_offset_accum` | Load ES:3884=CS:22D22, ES:3886=CS:22D24; matrix multiply |
+| 10 | 0x23394 | `view_proj_load_3896` | Read 3 words at 7B0E:3896 → globals |
+| 11 | 0x233D6 | `view_proj_ring_shift` | Barrel shift: DX:AX = BX << CL |
+| 12 | 0x233FD | `view_proj_ring_push` | Copy 3 words → ES:3884; push into 0x12-byte ring buffer |
+| 13 | 0x2350A | `view_angles_from_struct` | Copy 6 words CS:22DC0:22DBE → 7B0E:38AC; angle transformation |
+| 14 | 0x235BB | `view_proj_preset_offset` | Read 7B0E:3896 (3 words); optional CS:22D22/22D24 offset |
+
+All functions write to the 3-vector at ES:7B0E:0x3884/3886/3888 (unit scale 0x1000 = 1.0).
+Presets 1-7 are fixed camera orientations. Modes 9-14 perform dynamic view transformations.
+
 ---
 
 ## Opcode Handler Dispatch (CS: 0x220xx Family)

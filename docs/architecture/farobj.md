@@ -90,8 +90,16 @@ struct FarObj {
     uint16_t type_base;     // +0x2A  written by farobj_field_set for subtype 1 & 3
     uint16_t type_ext_A;    // +0x2C  written for subtype 2
 
-    // === UNKNOWN (0x2E-0x73) ===
-    // 70 bytes not yet mapped
+    // === Extended Fields (0x2E-0x73) ===
+    // 70 bytes with varying access patterns (see probe results)
+    // Field access frequency (from DS:[SI+N] scan):
+    //   +0x2E: 56 accesses (alu/write/read) in 41 functions
+    //   +0x2F: 17 accesses (alu/inc) in 16 functions
+    //   +0x30: 31 accesses (mixed) in 25 functions
+    //   +0x31-0x33: 16-35 accesses each
+    //   +0x34-0x73: 1-40 accesses each (decreasing frequency)
+    // NOTE: Many fields accessed by terrain/rendering/physics functions
+    // Detailed mapping: see analysis/ida_falconcd/farobj_si_fields.json
 
     // === Active/Scan (0x74-0x7B) ===
     uint8_t  active;        // +0x74  bit 0 = slot active/occupied (checked by scan_74 functions)
@@ -149,7 +157,18 @@ type-dependent fields [+0x2A/0x2C]:
 
 ## Entity Class Codes (FarObj.entity_class [+0x14])
 
-Set by `farobj_entity_attr_setup` (0x44352) from type table B at `DS:0x16F4` (R05_33AE).
+Set by `farobj_entity_attr_setup` (0x44352) from **type table B** at R05_33AE + 0x16F4 (IDA 0x455E2).
+Table A (entity attributes) is at R05_33AE + 0x1662 (IDA 0x45150).
+
+Setup process:
+```asm
+; farobj_entity_attr_setup at 0x44352
+shl  bx, 1              ; BX = type_index * 2
+mov  cx, [bx+1662h]     ; CX = table A entry (attribute word)
+mov  bx, [bx+16F4h]     ; BX = table B entry (low byte = entity class)
+mov  [si+14h], bx       ; FarObj.entity_class = low byte of table B
+```
+
 Used by `farobj_type_gate_test` (0x4BF8B) for entity-type filtering.
 
 | Code | Hypothesis | Evidence |
@@ -160,6 +179,11 @@ Used by `farobj_type_gate_test` (0x4BF8B) for entity-type filtering.
 | 0x38 (56) | Naval / other entity | HYPOTHESIS |
 
 `farobj_type_gate_test`: returns CF=0 if [DI+14h] ∈ {0x12, 0x14, 0x33, 0x38}; CF=1 otherwise.
+
+**Entity Type Tables (R05_33AE segment, DS_BASE = 0x43AEE in IDA):**
+- Table A: 40+ word entries, entity attributes → FarObj.attr_a/b/c
+- Table B: 40+ word entries, low byte → FarObj.entity_class [+0x14]
+- See: `analysis/ida_falconcd/entity_tables.json` for full table dump
 
 ---
 
