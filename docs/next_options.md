@@ -1,7 +1,7 @@
 # Next Analysis Options
 
-Written 2026-11-12 after finding 177 (S2 VGRAPH + S3 trace edges partial).
-Current state: 4,127 functions, findings 145–177 applied, IDB clean.
+Written 2026-11-12, updated 2026-11-12 after S4 Level-0 batch 1 (findings 180-182).
+Current state: 4,127 functions, 2,049 named (49.6%), 289 Level-0 in naming queue.
 
 ---
 
@@ -79,27 +79,29 @@ remaining unknown-DS operands identified in finding 122.
 
 ## S4 Deep dive
 
-### Bottom-up function reading — IN PROGRESS (2026-11-12)
-The callgraph has **327 endpoints, 2364/4127 Level-0 leaves, 30 levels** (callgraph rebuilt).
-Initial Level-0 analysis complete for 28 high-traffic leaves (see `registry/functions.yaml`).
+### Bottom-up function reading — BATCH 1 COMPLETE (2026-11-12)
+The callgraph has **289 Level-0 in naming queue, 30 levels** (callgraph rebuilt with findings 180-182).
 
-**Confirmed renames:**
-- `bda_equipment_flag_get` → `bda_kb_flag_get` (PROVEN: 0x417 is keyboard flags, not equipment)
-- `state_farptr_get` → `map_tile_pos_get` (STRONG: clearly returns map X/Y tile coords)
-- `fixed_abs_div4` → documented as abs_i16 net effect (HYPOTHESIS: naming.yaml not yet changed)
+**S4 Level-0 Batch 1 (10 functions, 91K total dyn calls):**
+- Finding 180: CS-segment state block accessors (0x2B76-0x2B84+)
+  - 7 tiny functions (2-5B): `cs_word_2b76_get`, `cs_word_2b78_get`, `cs_word_2b80_set`, 
+    `cs_word_2b82_set`, `cs_word_2b84_set`, `cs_byte_00e8_get`, `zero_ax`
+  - Overlay-persistent CODE-segment storage, likely flight physics state
+- Finding 181: `farobj_dispatch_table` (sub_263F6, 122B, 18K calls)
+  - Polymorphic dispatch table/vtable for FarObj entity types
+  - Called by 8 high-level object managers
+- Finding 182: Trig lookup pair (`trig_lookup_sin`, `trig_lookup_cos`)
+  - Fixed-point sin/cos tables, 14-bit angle + quadrant flags
+  - 88-92B functions, 8K-9K calls each
 
-**New names assigned:**
-- `clip_or_draw_dispatch` (sub_26099): sign-of-AX selects draw vs. clip callback
-- `farobj_vec3_accum_b_ret`: far wrapper returning fixed_vec3_accumulate_b result
+**Previous names (findings 145-177):**
+- `bda_kb_flag_get`, `map_tile_pos_get`, `clip_or_draw_dispatch`, `farobj_vec3_accum_b_ret`
+- `farptr_table_get`, `active_farptr_set/restore`, `timer_tick_isr`, `farobj_render_vtable`
 
-**Key architecture understood:**
-- `farptr_table_get` = farobj instance slot lookup (table in R05_400C:0x34, 4B/entry)
-- `active_farptr_set/restore` = current 3D batch context pointer (CS globals 0x22210-0x22216)
-- `cs:dword_220D0/220D4/220A0/220C8/220E0/220EC` = opcode handler pointers (render pipeline)
-- `timer_tick_isr` = IRQ0 at ~18.2Hz, every 4th tick chains to BIOS / joystick poll
-- `farobj_render_vtable` at 0x26400 (14 entries: object_quad_proj_draw through flag_1f733_gate)
-
-**Next: continue Level-0 analysis, then Level-1 (398 functions).**
+**Next options:**
+1. **Function boundary fixes** ← HIGH PRIORITY: 25% of call sites land mid-body, blocking probes
+2. Continue Level-0 naming (279 remaining, next batch: sub_100B5, sub_22DE6, sub_22F2C...)
+3. Level-1 naming (398 functions after Level-0 complete)
 
 ---
 
