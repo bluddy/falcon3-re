@@ -404,35 +404,69 @@ The `mode_session_state_reset` chain (findings 168-169) resets game state betwee
 
 ---
 
-## 13. Entity / World Management
+## 13. DOS Services / Resource Management (`op_dispatch`)
 
-**HYPOTHESIS** (from function naming, S4 analysis).
+**PROVEN.** The `op_dispatch` function (0x2257B, 29B) is the central DOS services shim with 16 operations, dispatched via `call cs:op_dispatch_table[BX]` where BX is a **byte offset** into a table at CS:0x22060 (seg020 base = 0x1F6C0):
 
-### Entity Sweep
+| BX | Function | DOS operation |
+|---|---|---|
+| 0x00 | `dos_mem_alloc` | INT 21h AH=48h: allocate paragraph block |
+| 0x02 | `dos_mem_free`  | INT 21h AH=49h: free paragraph block |
+| 0x04 | `file_create`   | INT 21h AH=3Ch: create file |
+| 0x06 | `file_open`     | INT 21h AH=3Dh: open (AX=0/1/2=r/w/rw) |
+| 0x08 | `file_close`    | INT 21h AH=3Eh: close handle |
+| 0x0A | `file_read`     | INT 21h AH=3Fh: read (also gates timer ISR) |
+| 0x0C | `file_write`    | INT 21h AH=40h: write |
+| 0x0E | `file_lseek`    | INT 21h AH=42h: seek (CH=method) |
+| 0x10 | `file_find_first`| INT 21h AH=4Eh: find first file |
+| 0x12 | `file_find_next` | INT 21h AH=4Fh: find next |
+| 0x14 | `file_get_dta`  | INT 21h AH=2Fh: get DTA address |
+| 0x16 | `mem_copy_fwd`  | REP MOVSW+MOVSB: copy CX bytes DS:SI→ES:DI |
+| 0x18 | `mem_store_fwd` | REP STOSW+STOSB: fill CX bytes at ES:DI |
+| 0x1A | `dos_print_str` | INT 21h AH=9: print DS:SI string |
+| 0x1C | `file_delete`   | INT 21h AH=41h: delete file |
+| 0x1E | `file_size`     | lseek to end+start to get file size |
 
-`entity_accum_table` at `0x54AF:0x4ED` holds up to 40 `EntityAccumEntry` records (14B each):
-- `count` (uint16): 0 = empty; nonzero = active
-- `delta_x/y` (int16): position deltas per sweep
-- `countdown` (uint16): timer (decremented; entity moves until 0)
-- `delta_hdg/pit/rol` (int16): angle deltas per sweep
-
-`farobj_entity_accum_sweep` (0x2E48C) iterates all 40 entries each frame, applying deltas to the linked farobj's position and orientation via `farptr_table_accum_fields` and `farptr_table_offset_apply`.
-
-### Entity Slots
-
-Entity creation (`entity_slot_create` 0x2EBCD, 463B) calls `op_dispatch` to allocate memory segments, then initializes FarObj fields. The entity slot index is stored in `FarObj.slot_id` [+0x27]. The slot flags at [+0x26] track extended-slot state.
-
-### Map / Tile System
-
-`map_tile_pos_get` (0x128A1, previously misnamed `state_farptr_get`) returns tile coordinates:
-- AX = `cs:map_pos_y` (Y tile index)
-- BX = `cs:map_pos_x` (X tile index)
-
-Called by `tile_object_interpreter`, `farobj_tile_key_cache`, R12 state entry records.
+**Entity loading pattern**: `entity_slot_create` (0x2EBCD) uses BX=6 (file_open) to open entity data files, BX=0xA (file_read) to load records, BX=0xE (file_lseek) to seek, and BX=8 (file_close) to release. FarObj entity instances are **loaded from disk at creation time**.
 
 ---
 
-## 14. Key Global Variables (DGROUP 0x7A32)
+## 14. World / Terrain System
+
+**STRONG** (from `farobj_tile_copy_resolve`, `tile_world_index_3334`, Level-2 analysis).
+
+- **World space**: signed int32 per axis (FarObj lo:hi word pairs)
+- **Tile grid**: 512×512 tiles, each **0x3334 (13,108) world units** per side → ~6.7M world units total
+- **World→tile**: `tile = 0x1FF - ((world + 0x003400) & 0x1FF0000) / 0x3334`
+- **Valid tile types**: 0x00..0x5F (returned by `tile_index_resolve`; > 0x5F = out-of-bounds)
+- **Core function**: `farobj_tile_copy_resolve` (0x14EAE, 470B, 397K calls, 44 callers) — converts FarObj world_x/y to tile indices, looks up terrain type. Called by entity step, rendering, terrain queries.
+- **Self-modifying code**: `farobj_rect_ratio_build` (0x14CC6) patches inline matrix operands (placeholder `0xABCD`) with live trig values — avoids memory indirection in the hot path.
+
+---
+
+## 15. Audio Architecture
+
+**STRONG** (from `channel_release`, `channel_volume_store`, `opl_reg_write`, Level-2).
+
+- **Channels**: handles are byte offsets into channel data tables; `[handle - 0x519E]` = key control, `[handle - 0x5186]` = volume, `[handle - 0x517A]` = active/key-on flag
+- **OPL mode**: `ds:0xAF90` = 0 → OPL2/AdLib (channels 0-8); nonzero → SoundBlaster (channels 6-9 use different registers)
+- **OPL key-on**: writing byte 0x20 to `[handle - 0x517A]` triggers key-on; `hw_reg_write_pair` writes OPL 0xB0+channel register
+- **Volume table**: at DS:0x99A7 (OPL mode) or 0x99B9 (SB mode) — maps channel to OPL register index
+- **Subsystem**: seg007 overlay — `sbi_channel_event_dispatch`, `channel_release`, `channel_volume_store`, `channel_note_seq_write`, `sbi_level_write_6`
+
+---
+
+## 16. Entity / World Management
+
+**HYPOTHESIS** (from function naming, S4 analysis).
+
+- **EntityAccumEntry** at `0x54AF:0x4ED` (40 entries × 14B): per-frame motion commands applied by `farobj_entity_accum_sweep` (deltas for position and orientation)
+- **Entity creation**: `entity_slot_create` opens disk files via op_dispatch, reads entity records, initializes FarObj fields; `FarObj.slot_id` [+0x27] = slot index, `FarObj.slot_flags` [+0x26] = state flags
+- **Map tile position**: `map_tile_pos_get` (0x128A1) returns current map tile X/Y from CS globals `map_pos_x`/`map_pos_y`
+
+---
+
+## 17. Key Global Variables (DGROUP 0x7A32)
 
 | CS/DS offset | Proposed name | Type | Description |
 |---|---|---|---|
@@ -459,7 +493,7 @@ Called by `tile_object_interpreter`, `farobj_tile_key_cache`, R12 state entry re
 
 ---
 
-## 15. Known Subsystem Map (Overlay Segments)
+## 18. Known Subsystem Map (Overlay Segments)
 
 Based on naming analysis and function organization (HYPOTHESIS unless noted):
 
@@ -484,7 +518,7 @@ Based on naming analysis and function organization (HYPOTHESIS unless noted):
 
 ---
 
-## 16. What We Don't Know Yet
+## 19. What We Don't Know Yet
 
 - Exact entity_class codes (0x12/0x14/0x33/0x38 → aircraft/vehicle/ground/naval?)
 - Asset format (PKWARE DCL compression — UNKNOWN, never exercised)

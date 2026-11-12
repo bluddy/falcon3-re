@@ -796,3 +796,215 @@ functions:
       - {ea: "0x7B0E:0x7E948", proposed_name: view_matrix, type: "int16[4]", desc: "2×2 view rotation matrix", certainty: HYPOTHESIS}
       - {ea: "0x7B0E:0x7E966", proposed_name: proj_z_scale, type: int16, desc: "projection Z scale factor", certainty: HYPOTHESIS}
       - {ea: "0x7B0E:0x7E968", proposed_name: proj_z_offset, type: int16, desc: "projection Z offset", certainty: HYPOTHESIS}
+
+  # --- Level-2/3 analysis (S4 2026-11-12) ---
+
+  - ea: "0x225F4"
+    key: sub_225F4
+    name: dos_mem_alloc
+    name_certainty: PROVEN
+    desc: >
+      DOS INT 21h AH=48h — allocate memory paragraph block.
+      Input: AX = size (probably in paragraphs). Returns AX = segment.
+      op_dispatch entry BX=0 (byte offset 0 in table at 0x22060).
+    calling_convention: register
+    params: [{reg: AX, name: size_paras, type: uint16, certainty: HYPOTHESIS}]
+    return: "ax = allocated segment paragraph (or 0xFFFF on fail)"
+    return_certainty: STRONG
+    certainty: PROVEN
+
+  - ea: "0x22626"
+    key: sub_22626
+    name: dos_mem_free
+    name_certainty: PROVEN
+    desc: >
+      DOS INT 21h AH=49h — free memory segment.
+      Input: AX = segment to free. op_dispatch entry BX=2.
+    calling_convention: register
+    params: [{reg: AX, name: segment, type: uint16, certainty: PROVEN}]
+    return: void
+    return_certainty: STRONG
+    certainty: PROVEN
+
+  - ea: "0x22699"
+    key: sub_22699
+    name: file_create
+    name_certainty: PROVEN
+    desc: "DOS INT 21h AH=3Ch — create file. op_dispatch BX=4."
+    calling_convention: register
+    params:
+      - {reg: AX, name: attribs, type: uint16, certainty: HYPOTHESIS}
+      - {reg: DX, name: filename_off, type: uint16, desc: "near offset of filename string in DS", certainty: STRONG}
+    return: "ax = file handle or error code"
+    return_certainty: STRONG
+    certainty: PROVEN
+
+  - ea: "0x226B6"
+    key: sub_226B6
+    name: file_open
+    name_certainty: PROVEN
+    desc: "DOS INT 21h AH=3Dh — open file. op_dispatch BX=6. AX=access_mode (0=read,1=write,2=rdwr)."
+    calling_convention: register
+    params:
+      - {reg: AX, name: access_mode, type: uint16, desc: "0=read, 1=write, 2=rdwr", certainty: STRONG}
+      - {reg: DX, name: filename_off, type: uint16, certainty: STRONG}
+    return: "ax = file handle"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x226DF"
+    key: sub_226DF
+    name: file_close
+    name_certainty: PROVEN
+    desc: "DOS INT 21h AH=3Eh — close file handle. op_dispatch BX=8."
+    calling_convention: register
+    params: [{reg: AX, name: handle, type: uint16, certainty: PROVEN}]
+    return: void
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x226E8"
+    key: sub_226E8
+    name: file_read
+    name_certainty: PROVEN
+    desc: "DOS INT 21h AH=3Fh — read from file. op_dispatch BX=0xA. Sets timer_gate_flag before INT."
+    calling_convention: register
+    params:
+      - {reg: AX, name: handle, type: uint16, certainty: PROVEN}
+      - {reg: CX, name: bytes,  type: uint16, certainty: PROVEN}
+      - {reg: DX, name: buffer, type: uint16, desc: "near offset of buffer", certainty: PROVEN}
+    return: "ax = bytes read"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x22712"
+    key: sub_22712
+    name: file_write
+    name_certainty: PROVEN
+    desc: "DOS INT 21h AH=40h — write to file. op_dispatch BX=0xC."
+    calling_convention: register
+    params:
+      - {reg: AX, name: handle, type: uint16, certainty: PROVEN}
+      - {reg: CX, name: bytes,  type: uint16, certainty: PROVEN}
+      - {reg: DX, name: buffer, type: uint16, certainty: PROVEN}
+    return: "ax = bytes written"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x2273C"
+    key: sub_2273C
+    name: file_lseek
+    name_certainty: PROVEN
+    desc: "DOS INT 21h AH=42h — seek file. op_dispatch BX=0xE. CH=seek_method."
+    calling_convention: register
+    params:
+      - {reg: AX, name: handle, type: uint16, certainty: PROVEN}
+      - {reg: CH, name: method, type: uint8, desc: "0=SEEK_SET, 1=SEEK_CUR, 2=SEEK_END", certainty: PROVEN}
+      - {reg: CX, name: offset_hi, type: uint16, desc: "high word of seek offset", certainty: PROVEN}
+      - {reg: DX, name: offset_lo, type: uint16, desc: "low word of seek offset", certainty: PROVEN}
+    return: "dx:ax = new file position"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x227BF"
+    key: sub_227BF
+    name: mem_copy_fwd
+    name_certainty: PROVEN
+    desc: "Copy CX bytes from DS:SI to ES:DI (REP MOVSW+MOVSB). op_dispatch BX=0x16."
+    calling_convention: register
+    params:
+      - {reg: CX, name: count, type: uint16, certainty: PROVEN}
+      - {reg: SI, name: src,   type: uint16, desc: "source offset in DS", certainty: PROVEN}
+      - {reg: DI, name: dst,   type: uint16, desc: "destination offset in ES", certainty: PROVEN}
+    return: void
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x227C8"
+    key: sub_227C8
+    name: mem_store_fwd
+    name_certainty: PROVEN
+    desc: "Fill CX bytes at ES:DI with AL (REP STOSW+STOSB). op_dispatch BX=0x18."
+    calling_convention: register
+    params:
+      - {reg: AL, name: fill_byte, type: uint8, certainty: PROVEN}
+      - {reg: CX, name: count, type: uint16, certainty: PROVEN}
+      - {reg: DI, name: dst,   type: uint16, certainty: PROVEN}
+    return: void
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x23C9B"
+    key: sub_23C9B
+    name: angle_xy_far
+    name_certainty: STRONG
+    desc: >
+      Computes the 2D bearing angle (atan2) from ES:DI (source position, int32 XY)
+      to DS:SI (target position, int32 XY). Uses angle_delta_quadrant (quadrant from
+      sign of delta-X and delta-Y), then fixed_ratio_blend (arctangent via ratio).
+      Adjusts by ±0x2000 or ±0x4000 based on quadrant.
+      Returns AX = bearing in 14-bit angle system (0=north, 0x1000=east, 0x2000=south).
+      ES:DI and DS:SI have 4-word (8-byte) XY int32 fields (like FarObj world_x/y).
+    calling_convention: register
+    params:
+      - {reg: "ES:DI", name: src_pos, type: "FarObj*",
+         desc: "source position (fields [+0,2]=X int32, [+4,6]=Y int32)", certainty: STRONG}
+      - {reg: "DS:SI", name: dst_pos, type: "FarObj*",
+         desc: "target position (same layout)", certainty: STRONG}
+    return: "ax = bearing angle 14-bit (0=north CW)"
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x23B8A"
+    key: sub_23B8A
+    name: angle_xy_near
+    name_certainty: STRONG
+    desc: >
+      Near version of angle_xy_far: computes bearing from DS:DI (not ES:DI) to DS:SI.
+      Otherwise identical algorithm. Used when both positions are in the same segment.
+    calling_convention: register
+    params:
+      - {reg: DI, name: src_pos_off, type: uint16, desc: "source position offset in DS", certainty: STRONG}
+      - {reg: SI, name: dst_pos_off, type: uint16, desc: "target position offset in DS", certainty: STRONG}
+    return: "ax = bearing angle 14-bit"
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x27EE6"
+    key: sub_27EE6
+    name: record_queue_push
+    name_certainty: HYPOTHESIS
+    desc: >
+      Pushes a visual record into the render queue at CS:0x6360.
+      AL = state flag stored to cs:state_byte_1f72a; BX = type code; DS:SI = source record.
+      Copies initial words from DS:SI, builds line table (line_table_build_2796e),
+      optionally dispatches left/right bounds (uibounds_left_right_dispatch).
+      The render queue cursor is at cs:record_queue_cur (initially 0x5D1E).
+      Used by point_bits_record_push and record_queue_push_guard.
+    calling_convention: register
+    params:
+      - {reg: AL, name: state_flag, type: uint8, certainty: HYPOTHESIS}
+      - {reg: BX, name: record_type, type: uint16, certainty: HYPOTHESIS}
+      - {reg: SI, name: record_ptr, type: uint16, desc: "source record offset in DS", certainty: HYPOTHESIS}
+    return: "CF set on failure"
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:record_queue_cur", proposed_name: record_queue_cur, type: uint16,
+         desc: "current write offset in render record queue at CS:0x5D1E..0x603E", certainty: HYPOTHESIS}
+
+  - ea: "0x276C1"
+    key: sub_276C1
+    name: farptr_table_invoke
+    name_certainty: HYPOTHESIS
+    desc: >
+      Loads a far pointer from the invoke table at CS:0x7DF2+BX×4 (two separate words)
+      and invokes it via farptr_7b0e_43ba_const, then loads an overlay via sub_2BFC3.
+      DS = cs:word_27470 (saved DS). Used by param_table_init, far_op_execute.
+      The invoke table at CS:0x7DF2 may map operation IDs to far callback pointers.
+    calling_convention: register
+    params:
+      - {reg: BX, name: op_id, type: uint16, desc: "operation index (×4 for table offset)", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS

@@ -16810,3 +16810,13 @@ symbols:
 # --- S4 Level-1 additions (2026-11-12) ---
 # (sub_260AF already named stub_to_249d8 — kept, following stub_to_EA convention)
 # stub_to_249d8 = far wrapper for trig_table_lookup (near at 0x249D8), trig table at 0x7B0E:0x3868
+
+# --- S4 Level-2/3: op_dispatch targets + DOS services confirmed (2026-11-12) ---
+# All op_dispatch targets (sub_225F4..sub_227BF) were already named in existing ledger.
+# op_dispatch table at CS:0x22060 (seg020 base 0x1F6C0); BX = BYTE OFFSET (not index):
+#   BX=0  dos_mem_alloc  BX=2  dos_mem_free  BX=4  file_create  BX=6  file_open
+#   BX=8  file_close     BX=0A file_read     BX=0C file_write   BX=0E file_lseek
+#   BX=10 file_find_first BX=12 file_find_next BX=14 file_get_dta
+#   BX=16 mem_copy_fwd   BX=18 mem_store_fwd  BX=1A dos_print_str
+#   BX=1C file_delete    BX=1E file_size
+# (all entries already in existing ledger — duplicates removed)
