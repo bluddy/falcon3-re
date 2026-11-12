@@ -92,7 +92,13 @@ REBASE = [(0x106EEC, 0x106EE2, 0x106F3A, 0x106EE2, 0x706E), (0x10843D, 0x108430,
           (0x10CFA6, 0x10CE30, 0x10CFEC, 0x10CFA5, None),
           (0x4335A, 0x4334E, 0x43395, 0x4334E, None),
           (0x6EF31, 0x6EF30, 0x6F1CE, 0x6EF30, None, 0x6EF39), (0x69723, 0x69720, 0x69AC6, 0x69720, None, 0x6972B),
-          (0x16F4B5, 0x16F4B1, 0x16F507, 0x16F4B1, None)]
+          (0x16F4B5, 0x16F4B1, 0x16F507, 0x16F4B1, None),
+          # finding 178 P5a: r30_record_link real prologue `enter 6,0` at 0x6940B (3 bytes inside ui_loadout_menu_enter);
+          # full body clear so the garbled instructions from offset 0x6940E are all redeoded from scratch
+          (0x6940E, 0x6940B, 0x69462, 0x6940B, None),
+          # finding 179 P5b: ui_loadout_menu_enter starts mid-instruction (0x683C5 = last byte of push es:[0x14FA]);
+          # real start is 0x683C1; narrow clear_hi=0x683C6 to redecode only the 5-byte push prefix
+          (0x683C5, 0x683C1, 0x6940B, 0x683C1, None, 0x683C6)]
 # finding 161 P2 type-1 misdecodes: DEFERRED — these have external callers to the old null-byte head
 # (the REBASE stale-head check correctly flags them; they need sub-block fixup or individual analysis)
 # finding 161 P2 type-2a misdecodes:
@@ -129,7 +135,10 @@ TEXTFIX = [{"table": (0x105D90, 0x105DE6, 0x105D90), "text": (0x105DE6, 0x10626E
 # (ea, old_end, new_end, clear_hi): a function whose tail is really data (finding 137).  The end moves up to new_end,
 # [new_end, clear_hi) is cleared and the words in [new_end, words_hi) are made 2-byte data; whatever is left up to
 # clear_hi is re-decoded by the ADD entry that follows (so an ADD_CLEAR item must cover [words_hi, clear_hi)).
-TRIM = [(0x22C62, 0x22C8B, 0x22C71, 0x22C89, 0x22C91)]
+TRIM = [(0x22C62, 0x22C8B, 0x22C71, 0x22C89, 0x22C91),
+        # finding 178 P5a: trim ui_loadout_menu_enter tail to 0x6940B (retf at 0x6940A is last insn);
+        # zero-width word range so trim_state stays "applied" after r30_record_link REBASE reclaims the bytes
+        (0x683C5, 0x6940E, 0x6940B, 0x6940B, 0x6940E)]
 # (owner, frag, clear_lo, clear_hi, new_end): finding 138.  frag is a bogus function made of fragments of owner's own body;
 # it is deleted, [clear_lo, clear_hi) is redecoded from clear_lo, owner's tail chunks inside [main_end, new_end) are dropped
 # and owner's main chunk is extended to new_end.
@@ -1654,13 +1663,13 @@ def main():
             fds.append({"fn_ea": fn_ea, "head": head, "t": t, "insn_size": insn_size,
                         "head_sha256": sha(head, t)})
         add_all(items, exts, rebs, rms, tfs, xts, trs, abs_, dfs, gls, spls)  # fds verified in apply mode
-        MANIFEST.write_text(json.dumps({"finding": 174, "step": "S1c-4..P8 (findings 145-174): P8 secondary entries documented",
+        MANIFEST.write_bytes(json.dumps({"finding": 174, "step": "S1c-4..P8 (findings 145-174): P8 secondary entries documented",
                                         "extend_funcs": exts, "rebase_funcs": rebs, "remove_funcs": rms, "table_fix": tfs, "text_fix": xts, "trim_funcs": trs, "absorb_funcs": abs_, "data_fix": dfs, "glue_funcs": gls, "split_funcs": spls, "fix_decode_funcs": fds, "add_funcs": items},
-                                       indent=1).replace("\n", "\r\n"))
+                                       indent=1).replace("\n", "\r\n").encode("utf-8"))
         ida_loader.set_database_flag(ida_loader.DBFL_KILL)
         log.append("plan written: %s (not saved)" % MANIFEST.name)
         return
-    doc = json.loads(MANIFEST.read_text())
+    doc = json.loads(MANIFEST.read_text(encoding="utf-8"))
     exts = [norm(x) for x in doc.get("extend_funcs", [])]
     rebs = doc.get("rebase_funcs", [])
     rms = doc.get("remove_funcs", [])
@@ -1680,6 +1689,12 @@ def main():
     for i, it in enumerate(doc["add_funcs"]):
         if states[i] == "mismatch" and any(x["end"] <= it["ea"] < x["old_end"] for x in fresh_trims):
             states[i] = "fresh"
+    # REBASE entries whose new_ea falls in a fresh TRIM's freed tail are also valid pre-TRIM
+    n_adds_exts = len(doc["add_funcs"]) + len(exts)
+    for i, rb in enumerate(rebs):
+        si = n_adds_exts + i
+        if states[si] == "mismatch" and any(x["end"] <= rb["ea"] < x["old_end"] for x in fresh_trims):
+            states[si] = "fresh"
     log.append("manifest: %d entries (add + extend); live: %d fresh, %d applied, %d mismatched" % (
         len(states), states.count("fresh"), states.count("applied"), states.count("mismatch")))
     if all(s == "applied" for s in states):

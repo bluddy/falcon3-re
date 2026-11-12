@@ -247,6 +247,10 @@ DBFL_KILL).
      - **S1c-6e (finding 165):** P3 cont: far_mode_event_dispatch chain step 6 (COMPLETE); functions 4,002 → 4,003; backup `.bak_split165`.
      - **S1c-7a (finding 166):** P4 batch 1: 5 pure merged_fn splits; `log=[]` + `SPLIT_OWNERS` fixes; functions 4,003 → 4,008; backup `.bak_split166`.
      - **S1c-7b (finding 167):** P4 cont: r14_farptr_call_gate split 2; functions 4,008 → 4,009; backup `.bak_split167`.
+     - **Now (after finding 179, 2026-11-12):** 4,127 functions; P5a/P5b complete (r30_record_link and ui_loadout_menu_enter boundaries fixed).
+     - **P5b (finding 179):** REBASE `ui_loadout_menu_enter` 0x683C5→0x683C1 (absorb 4-byte orphan push prefix); `verify_rebuild.py` TRIM+REBASE combined path; backup `.bak_p5b179`.
+     - **P5a (finding 178):** TRIM `ui_loadout_menu_enter` tail to 0x6940B + REBASE `r30_record_link` 0x6940E→0x6940B (`enter 6,0` prologue); `apply_orphan_funcs.py` REBASE-after-TRIM bypass; backup `.bak_p5a178`.
+     - **S3 (finding 177):** 159 indirect xrefs from harvctl3 + debug_test trace files; backup `.bak_xrefs177`.
      - **Now (after finding 176, 2026-11-12):** 4,127 functions; S2 VGRAPH segment added.
      - **S2 (finding 176):** VGRAPH segment created at 0x85AE0; 40 entry-table slots named; 76 total VGRAPH functions (40 entry + 88 additional traced IPs); backup `.bak_vgraph176`.
      - **S1c-7f (finding 172):** P6 orphan ADD batch: 26 runs; functions 4,024 → 4,050; backup `.bak_add172`.

@@ -7645,3 +7645,68 @@ Scripts: `tools/add_vgraph_xrefs.py`, `tools/add_all_indirect_xrefs.py`.
 target xref — these are from other call-dispatch mechanisms not covered by the
 indirect_far traces. The function-to-function xrefs added here cover ~159 pairs.
 Full P10 would need the complete `memdump/trace_20261015_211031_fileio.jsonl` parsing.
+
+## 2026-11-12 178 - P5a: trim ui_loadout_menu_enter tail + rebase r30_record_link to enter 6,0 prologue
+
+**Found:** Probe of the R30 menu handler cluster at 0x67F00..0x69500 showed that
+`r30_record_link` (0x6940E..0x69462) starts mid-instruction: bytes at 0x6940B = `C8 06 00 00`
+= `enter 6, 0` are the real prologue, three bytes inside `ui_loadout_menu_enter`'s tail.
+The `retf` at 0x6940A is the last instruction of `ui_loadout_menu_enter`, making 0x6940B
+the natural function boundary.
+
+**Done:**
+- **TRIM** `ui_loadout_menu_enter` from 0x683C5..0x6940E to 0x683C5..0x6940B:
+  zero-width word range (words_hi = new_end) so `trim_state` stays "applied" even after
+  REBASE reclaims the freed bytes. `del_items(0x6940B, 3)` clears the 3-byte tail.
+- **REBASE** `r30_record_link` from 0x6940E → 0x6940B: full body clear+redecode (no
+  narrow clear_hi) so the garbled `add [bp-73h]` decode at 0x6940E is replaced by the
+  correct `enter 6, 0 / push si / lea ax, [bp-01] / ...` sequence.
+
+**Tool changes:** 
+- `apply_orphan_funcs.py`: added TRIM and REBASE entries; fixed manifest `write_text` →
+  `write_bytes(...encode('utf-8'))` to prevent double-CR/BOM mangling; fixed `read_text` →
+  `read_text(encoding='utf-8')`; added REBASE-after-TRIM state bypass (prevents "mismatch"
+  abort when REBASE's `[new, old)` bytes are still inside a not-yet-trimmed function).
+- `verify_rebuild.py`: extended `reg_size()` inside `reg_validate()` to adjust trimmed
+  functions back to their pre-trim size, matching the register manifest expectation.
+
+**Numbers:** functions 4127 → 4127 (boundaries only); no ledger entries changed.
+
+**Gates:** `integrity_178.log` VERDICT: INTACT; `naming.py check` OK; `verify_rebuild.py`
+faithful; idempotent replay dry-runs cleanly (note: trim/rebase entries show "2 fresh"
+in the idem due to plan-time sha recording order, but actual states are "applied" — debug
+confirmed; no functional impact).
+
+**Backup:** `FALCONCD.EXE.i64.bak_p5a178`.
+
+**Still open:** finding 179 (REBASE `ui_loadout_menu_enter` from 0x683C5 → 0x683C1 to
+absorb the 4-byte orphan push prefix); garbage fragments in 0x67F59..0x68290 (deferred).
+
+## 2026-11-12 179 - P5b: rebase ui_loadout_menu_enter to absorb orphan push prefix at 0x683C1
+
+**Found:** After finding 178 (TRIM), `ui_loadout_menu_enter` starts at 0x683C5 (byte `14` = last byte of a 5-byte
+`push word ptr es:[0x14FA]` instruction). The orphan 4 bytes at 0x683C1..0x683C4 (`26 FF 36 FA`) plus
+the byte at 0x683C5 (`14`) form the complete instruction. The real function start is 0x683C1.
+
+**Done:**
+- **REBASE** `ui_loadout_menu_enter` from 0x683C5 to 0x683C1 with `clear_hi=0x683C6` (narrow: clears
+  the 4 orphan bytes plus the existing 2-byte `adc al` head at 0x683C5, allowing `create_insn(0x683C1)`
+  to decode the full 5-byte `push word ptr es:[0x14FA]` unobstructed).
+  After rebase: `ui_loadout_menu_enter` = 0x683C1..0x6940B (4170 bytes).
+
+**Tool changes (`verify_rebuild.py`):**
+- `is_expected_rebase()`: added TRIM+REBASE combined path: when the size-check for the manifest's
+  post-TRIM old_size fails, check for a TRIM entry at the same ea whose pre-trim size matches HEAD.
+  Verify via TRIM's `sha256` (sha of full pre-trim range) against HEAD bytes.
+- `reg_key()` inside `reg_validate()`: for a REBASED function, check if there is a matching TRIM entry.
+  If `trims[old_ea][end] == x[end]`, return the pre-trim old_ea/size tuple so the register manifest
+  comparison uses the HEAD-committed (pre-trim) function boundaries.
+
+**Numbers:** functions 4127 -> 4127 (boundaries only); no ledger entries changed.
+
+**Gates:** integrity INTACT; naming OK; verify_rebuild faithful; dry replay shows the same PLAN-time
+sha quirk as finding 178 (3 fresh in idem) but actual states are confirmed applied; no functional impact.
+
+**Backup:** `FALCONCD.EXE.i64.bak_p5b179`.
+
+**Still open:** garbage fragments in 0x67F59..0x68290 (n_ext=0, deferred P6 cleanup).

@@ -140,11 +140,22 @@ def is_expected_remove(removes, a, now):
     return not any(v.get("ea") is not None and x["ea"] <= v["ea"] < x["end"] for v in now.values())
 
 
-def is_expected_rebase(rebases, a, b):
+def is_expected_rebase(rebases, trims, a, b):
     x = rebases.get(a.get("ea"))
     if not x or b.get("ea") != x["ea"]:
         return False
-    if (a.get("size"), b.get("size")) != (x["end"] - x["old_ea"], x["end"] - x["ea"]):
+    new_size = x["end"] - x["ea"]
+    if b.get("size") != new_size:
+        return False
+    old_size_manifest = x["end"] - x["old_ea"]
+    if a.get("size") != old_size_manifest:
+        # TRIM+REBASE: function was trimmed then rebased; HEAD has the pre-trim size.
+        # Accept when a TRIM entry for the same ea accounts for the size difference.
+        t = trims.get(x["old_ea"])
+        if t and t["end"] == x["end"] and a.get("size") == t["old_end"] - x["old_ea"]:
+            return (_sha(a.get("bytes")) == t.get("sha256")
+                    and _sha(b.get("bytes")) == x["sha256"]
+                    and (b.get("name") or None) == (a.get("name") or None))
         return False
     return (_sha(a.get("bytes")), _sha(b.get("bytes"))) == (x["old_sha256"], x["sha256"])         and (b.get("name") or None) == (a.get("name") or None)
 
@@ -347,7 +358,7 @@ def main():
             if a.get("size") != b.get("size"):
                 changed.append((k, "size %s->%s" % (a.get("size"), b.get("size"))))
             continue
-        if is_expected_rebase(rebases, a, b):
+        if is_expected_rebase(rebases, trims, a, b):
             rebased.append((k, "start 0x%X -> 0x%X (%dB -> %dB, real entry found in front of a misdecoded head)"
                             % (a["ea"], b["ea"], a["size"], b["size"])))
             continue
@@ -442,14 +453,26 @@ def main():
         # read back at its pre-extension size, the extension itself is verified above (appended-bytes sha256)
         def reg_size(v):
             x = extends.get(v["ea"])
-            return x["before_end"] - x["ea"] if x and v["size"] == x["end"] - x["ea"] else v["size"]
+            if x and v["size"] == x["end"] - x["ea"]:
+                return x["before_end"] - x["ea"]
+            # a trimmed function (finding 137) is read back at its pre-trim size
+            t = trims.get(v["ea"])
+            if t and v["size"] == t["end"] - t["ea"]:
+                return t["old_end"] - t["ea"]
+            return v["size"]
         # a rebased start (finding 132) is read back at its pre-rebase (ea, size); the rebase itself is verified above
         rb_new = {x["ea"]: x for x in rebases.values()}
 
         def reg_key(k, v):
             x = rb_new.get(v["ea"])
             if x and v["size"] == x["end"] - x["ea"]:
-                return (k, x["old_ea"], x["end"] - x["old_ea"])
+                # TRIM+REBASE: if the function was also trimmed, return pre-trim old_ea/size
+                # so the register manifest comparison uses the HEAD-committed (pre-trim) values.
+                old_ea = x["old_ea"]
+                t = trims.get(old_ea)
+                if t and t["end"] == x["end"]:
+                    return (k, old_ea, t["old_end"] - old_ea)
+                return (k, old_ea, x["end"] - old_ea)
             return (k, v["ea"], reg_size(v))
 
         # Expand want_base for functions split by later batches (P1/P3 splits).
