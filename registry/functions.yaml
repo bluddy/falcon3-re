@@ -1008,3 +1008,162 @@ functions:
     return: void
     return_certainty: HYPOTHESIS
     certainty: HYPOTHESIS
+
+  # --- Level 4-7 analysis (S4 2026-11-12) ---
+
+  - ea: "0x22598"
+    key: sub_22598
+    name: op_dispatch_far_entry
+    name_certainty: PROVEN
+    desc: >
+      Far-callable version of op_dispatch with ALL parameters on stack + explicit DS.
+      Takes BX(op), AX(handle), CX(count), DX(offset), DS(segment) from stack args.
+      54 static callers — the most-used op_dispatch wrapper; used heavily by
+      kb_record_commit and kb_record_slots_open (keyboard state file I/O).
+    calling_convention: far_cdecl
+    params:
+      - {stack_offset: "bp+6",  name: op_code, type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+8",  name: handle,  type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+0xA", name: count,  type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+0xC", name: offset, type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+0xE", name: seg,    type: uint16, desc: "DS segment for buffer/filename", certainty: PROVEN}
+    return: "ax = result from op_dispatch (handle, bytes read, etc.)"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x225B6"
+    key: sub_225B6
+    name: op_dispatch_far_wide
+    name_certainty: PROVEN
+    desc: >
+      Alternate far-callable op_dispatch wrapper with different arg order and
+      CH=BX_lo override (packs low byte of BX into CX high for file_lseek seek-method).
+      Used by mode_slot_index_build for double-seek operations (SEEK_SET offsets).
+    calling_convention: far_cdecl
+    params:
+      - {stack_offset: "bp+6",  name: op_code,    type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+8",  name: handle_ax,  type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+0xA", name: param_dx,  type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+0xC", name: param_cx,  type: uint16, certainty: PROVEN}
+      - {stack_offset: "bp+0xE", name: seek_method, type: uint8,
+         desc: "BX low byte → CH (seek method for file_lseek)", certainty: STRONG}
+    return: "ax = op result"
+    return_certainty: STRONG
+    certainty: PROVEN
+
+  - ea: "0x27703"
+    key: sub_27703
+    name: far_op_execute
+    name_certainty: HYPOTHESIS
+    desc: >
+      High-level data file executor. Opens a data file (op BX=6, mode 0=read),
+      reads 0x300 (768) bytes of data via op BX=0xA, dispatches to registered
+      callbacks (dispatch_22138_stub, dispatch_22140_stub, dispatch_220F0_stub,
+      far_cb_0, far_cb_1). Files are identified by CS-relative filename pointers
+      stored at cs:word_276FF/27701. Flag cs:byte_25484 controls dispatch path.
+    calling_convention: register
+    params:
+      - {reg: AL, name: flags,       type: uint8,  desc: "controls dispatch path (bit 3 = skip dispatch_22138)", certainty: HYPOTHESIS}
+      - {reg: DX, name: filename_seg, type: uint16, desc: "segment of filename string", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:word_27476", proposed_name: file_handle, type: uint16, desc: "current open file handle (set by far_op_execute open)", certainty: STRONG}
+      - {ea: "cs:byte_25484", proposed_name: op_flags, type: flags8, desc: "controls far_op_execute dispatch (bit 3 = bypass dispatch)", certainty: HYPOTHESIS}
+
+  - ea: "0x274E6"
+    key: sub_274E6
+    name: buffer_callback_api_block
+    name_certainty: HYPOTHESIS
+    desc: >
+      Multi-entry buffer/streaming API object. Contains 6+ entry points operating
+      on a shared set of CS globals forming a streaming buffer state:
+        word_2747C = callback/selector
+        word_27476 = file handle (from far_op_execute)
+        word_2748A/27488 = data buffer far pointer
+        word_27478 = another parameter
+        word_2747A = budget (bytes remaining to read)
+        word_27480/27482 = copy source pointer
+      Used for streaming large data files in budget-limited chunks.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "cs:word_2747A", proposed_name: stream_budget, type: uint16,
+         desc: "bytes remaining in current streaming budget; decremented by buffer_budget_entry_block", certainty: STRONG}
+      - {ea: "cs:word_27480", proposed_name: stream_src_offset, type: uint16, certainty: HYPOTHESIS}
+      - {ea: "cs:word_27482", proposed_name: stream_src_seg,    type: uint16, certainty: HYPOTHESIS}
+
+  - ea: "0x275D8"
+    key: sub_275D8
+    name: buffer_budget_entry_block
+    name_certainty: HYPOTHESIS
+    desc: >
+      Budgeted file read: reads up to cs:word_2747A (stream_budget) bytes from the
+      current file handle (cs:word_27476) via op_dispatch(BX=0xA=file_read).
+      Clamps count to budget, decrements budget. Two entry points:
+      entry 1: reads from file; entry 2: copies from DS:SI to ES:DI instead.
+    calling_convention: far_cdecl
+    params:
+      - {stack_offset: "bp+6", name: count_ptr, type: "far_ptr uint16", certainty: STRONG}
+      - {stack_offset: "bp+0xA", name: src_ptr,  type: "far_ptr uint8",  certainty: STRONG}
+    return: "ax = bytes actually read/copied (clamped to budget)"
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+
+  - ea: "0x1509E"
+    key: sub_1509E
+    name: entity_state_load
+    name_certainty: HYPOTHESIS
+    desc: >
+      Per-frame terrain/entity state computation. Called by game_frame_pipeline_step
+      each frame. NOT a disk file loader — it computes entity position state from
+      terrain grid data already in memory.
+      Copies 12 bytes of entity state to buffer at ES:0x71C1:0x0C57,
+      calls terrain_pos_grid_build to build the terrain position grid,
+      then computes matrix transforms, terrain attribute scans, and position step chains.
+      Input: DS:SI = entity state structure (FarObj-like), DS:BX = heading record.
+    calling_convention: far_cdecl
+    params:
+      - {reg: SI, name: entity_state, type: uint16, desc: "offset of entity state structure in DS", certainty: HYPOTHESIS}
+      - {reg: BX, name: heading_rec,  type: uint16, desc: "offset of heading record in DS", certainty: HYPOTHESIS}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x1B8EE"
+    key: sub_1B8EE
+    name: mode_slot_index_build
+    name_certainty: HYPOTHESIS
+    desc: >
+      Builds a 128-entry slot index table at ES:0x7894:0xDDA (all initialized to 0xFFFF).
+      Opens a data file via op_dispatch_far_entry (BX=6), seeks, reads slot index data.
+      Returns 1 on success. Used by mode_slot_masks for game mode/state slot management.
+      The 0x7894 segment contains game state/mode data.
+    calling_convention: far_cdecl
+    params: []
+    return: "ax = 1 on success, 0 on failure (file not found)"
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "0x7894:0xDDA", proposed_name: slot_index_table, type: "uint16[128]",
+         desc: "game mode slot index table; 0xFFFF = empty slot", certainty: HYPOTHESIS}
+
+  - ea: "0x276E9"
+    key: sub_276E9
+    name: far_op_execute_farptr
+    name_certainty: HYPOTHESIS
+    desc: >
+      Far wrapper for far_op_execute that takes the filename as a far pointer from stack.
+      Used by ui_loadout_menu_enter to load loadout/aircraft data files, and by
+      r27_table_copy_far_entry for overlay file operations.
+    calling_convention: far_cdecl
+    params:
+      - {stack_offset: "bp+6",  name: flags,     type: uint8,  certainty: HYPOTHESIS}
+      - {stack_offset: "bp+8",  name: filename_ptr, type: far_ptr, certainty: STRONG}
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS

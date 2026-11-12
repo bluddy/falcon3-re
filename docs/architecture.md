@@ -429,6 +429,26 @@ The `mode_session_state_reset` chain (findings 168-169) resets game state betwee
 
 **Entity loading pattern**: `entity_slot_create` (0x2EBCD) uses BX=6 (file_open) to open entity data files, BX=0xA (file_read) to load records, BX=0xE (file_lseek) to seek, and BX=8 (file_close) to release. FarObj entity instances are **loaded from disk at creation time**.
 
+### op_dispatch Calling Variants
+
+| Function | EA | Description |
+|---|---|---|
+| `op_dispatch` | 0x2257B | Register-based (AX=handle, BX=op, CX=count, DX=buf) |
+| `op_dispatch_far_entry` | 0x22598 | Far-callable with DS from stack; **54 callers** (kb subsystem) |
+| `op_dispatch_far_wide` | 0x225B6 | Far wrapper with CH=seek_method override |
+
+### Streaming Buffer API
+
+A multi-level file streaming API manages budget-limited reads from large data files:
+
+- `cs:word_27476` = current open file handle
+- `cs:word_2747A` = bytes remaining (stream budget)
+- `cs:word_27480/27482` = source copy pointer
+- **`far_op_execute` (0x27703)**: opens file → reads 768B → dispatches via callbacks → closes. The high-level file executor.
+- **`far_op_execute_farptr` (0x276E9)**: far wrapper; called by `ui_loadout_menu_enter` for loadout data files.
+- **`buffer_budget_entry_block` (0x275D8)**: reads up to `stream_budget` bytes from file; decrements budget.
+- **`buffer_callback_api_block` (0x274E6)**: multi-entry method dispatch table for buffer state management.
+
 ---
 
 ## 14. World / Terrain System
@@ -487,6 +507,9 @@ The `mode_session_state_reset` chain (findings 168-169) resets game state betwee
 | `cs:word_24BB8` | `frame_cb_arg` | uint16 | BP argument passed to `dword_220E0` frame callback |
 | `cs:dword_220E0` | `frame_cb_ptr` | far_ptr | Current frame update callback (set per mode) |
 | `cs:word_2547C/80/7E/82` | `viewport_x/y_min/max` | int16 | Clipping viewport bounds for `segment_clip_test` |
+| `cs:word_27476` | `file_handle` | uint16 | Current open file handle (set by `far_op_execute`) |
+| `cs:word_2747A` | `stream_budget` | uint16 | Bytes remaining in streaming read budget |
+| `cs:word_2748A/27488` | `stream_buf_ptr` | far_ptr | Buffer pointer for streaming file reads |
 | `0x7A32:0xAD50` | `opl_base_port` | uint16 | OPL I/O base port address (hypothesis: 0x388) |
 | `0x54AF:0x1734` | `farobj_scan_list` | far_ptr[16] | 16-entry active-object scan list |
 | `0x54AF:0x4ED` | `entity_accum_table` | EntityAccumEntry[40] | Motion sweep entries |
