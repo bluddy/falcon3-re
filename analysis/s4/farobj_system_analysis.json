@@ -1,0 +1,66 @@
+{
+  "system": "farobj (far object management)",
+  "purpose": "Visibility culling and LOD management for 3D scene",
+  "functions": [
+    {
+      "name": "farobj_record_step",
+      "address": "0x2142E",
+      "segoff": "seg020:1D6E",
+      "size": 393,
+      "caller_count": 2,
+      "callers": [
+        "view_projection",
+        "farobj_sort_and_step"
+      ]
+    },
+    {
+      "name": "farobj_record_push_7c054",
+      "address": "0x2128E",
+      "segoff": "seg020:1BCE",
+      "size": 72,
+      "caller_count": 1,
+      "callers": [
+        "view_projection"
+      ]
+    },
+    {
+      "name": "farobj_record_lookup_step",
+      "address": "0x213E6",
+      "segoff": "seg020:1D26",
+      "size": 72,
+      "caller_count": 2,
+      "callers": [
+        "view_projection",
+        "farobj_sort_and_step"
+      ]
+    },
+    {
+      "name": "farobj_record_push_7d0c6",
+      "address": "0x212D6",
+      "segoff": "seg020:1C16",
+      "size": 70,
+      "caller_count": 1,
+      "callers": [
+        "view_projection"
+      ]
+    }
+  ],
+  "data_structures": {
+    "queue_near": {
+      "address": "DGROUP:0x7C054",
+      "purpose": "Near objects (high detail)",
+      "push_function": "farobj_record_push_7c054"
+    },
+    "queue_far": {
+      "address": "DGROUP:0x7D0C6",
+      "purpose": "Far objects (LOD)",
+      "push_function": "farobj_record_push_7d0c6"
+    },
+    "separation": "4,210 bytes between queues"
+  },
+  "pipeline_stage": "Post-projection visibility and LOD determination",
+  "callers": {
+    "view_projection": "Main rendering pipeline",
+    "sub_2131C": "Secondary rendering path"
+  }
+}
