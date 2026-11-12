@@ -8314,3 +8314,136 @@ stosw
 - Finding 191: saves caller's SI:DS to CS-segment (import)
 - Finding 200: exports CS-segment state to caller's buffer (export)
 - Together: bidirectional state transfer patterns
+
+## 2026-11-12 201 - S4 Level-0 batch 6: Dispatcher parameter management infrastructure
+
+**What was found.** Level-0 batch 6 (ranks 66-80) discovered a three-function pattern for
+dispatcher state save/restore, confirming nested dispatch capability.
+
+**Three-function infrastructure:**
+
+1. **cs_dispatcher_params_save_54f8_to_5500** (sub_24CA4, 33 bytes, 2,463 calls)
+   - Backup CS:[0x54F8/FA/FB/FC] → CS:[0x5500/FD/FE/FF]
+   - Save dispatcher parameter block before nested call
+
+2. **cs_dispatcher_param_setup_bx_indexed** (sub_24D0D, 24 bytes, 2,440 calls)
+   - Extract top 2 bits of BX → CS:[0x54FC] (flags byte)
+   - Use lower 14 bits to index CS:[0x54F0+] table
+   - Store result → CS:[0x54F8] (BP parameter)
+   - Load segment 0x834A → DX
+
+3. **cs_dispatcher_params_restore_5500_to_54f8** (sub_24CC5, 33 bytes, 2,433 calls)
+   - Restore CS:[0x54F8/FA/FB/FC] ← CS:[0x5500/FD/FE/FF]
+   - Restore dispatcher parameters after nested return
+
+**Pattern:** Save → Setup/Call → Restore (nested dispatch)
+- Allows dispatcher to call another dispatcher without losing state
+- Similar to stack frame save/restore but using CS-segment storage
+- High call frequencies (2.4K-2.5K) confirm this is common pattern
+
+**CS-segment parameter block expanded:**
+- Original (finding 199): CS:[0x54F8-0x54FC] (5 bytes)
+- Extended (finding 201): CS:[0x54F8-0x54FF] (8 bytes)
+  - 0x54F8: word (BP parameter)
+  - 0x54FA, 0x54FB: bytes (AL parameters for dual calls)
+  - 0x54FC: flags byte (bits 6+7 control execution)
+  - 0x54FD-0x54FF: 3 additional bytes (extended parameters)
+
+**Backup storage:** CS:[0x5500-0x5503] (4 bytes)
+
+**Indexed param table:** CS:[0x54F0+] (indexed by BX lower 14 bits = up to 16K entries,
+likely much smaller in practice)
+
+**Architectural significance:** Confirms the game uses multi-level dispatch with
+state preservation. The indexed table (14-bit address space) suggests a large
+dispatch matrix or mode table driving game behavior.
+
+## 2026-11-12 202 - S4 Level-0 batch 6: Segment 0x7B0E indexed tables
+
+**What was found.** Two indexed table access patterns in segment 0x7B0E (view/projection
+space), confirming this segment stores structured parameter arrays.
+
+**Table 1: Dword table at 0x3052**
+- Function: `seg7b0e_table_3052_dword_get` (sub_1FE54, 20 bytes, 2,615 calls)
+- Index: BX * 4 (dword entries)
+- Access: read AX:DX from DS:[BX+0x3052]
+- Pattern: indexed lookup returning 32-bit value (fixed-point coordinate, timer, handle)
+
+**Table 2: 8-byte record table at 0x3FDA**
+- Function: `seg7b0e_table_3fda_copy_scale` (sub_260BF, 53 bytes, 2,792 calls)
+- Index: BX * 8 (8-byte entries)
+- Access: read 4 words from DS:[BX+0x3FDA], copy to DS:[0x3FD0-0x3FD6]
+- Special: scale 4th word by 16, store to DS:[0x3FD8]
+- Pattern: structured record copy with post-processing
+
+**Segment 0x7B0E context:**
+- Established as view/projection space (findings 185, 194, 198)
+- Buffer operations: clear, copy, save/restore (18-40 byte buffers)
+- Now: indexed parameter tables (dwords, 8-byte records)
+
+**Likely contents:**
+- Viewport parameters (position, size, scale)
+- Projection matrices (fixed-point transformation params)
+- Camera state (position, orientation, FOV)
+- View modes (cockpit, external, map, targeting)
+
+**Index range unknown:** BX values not yet traced, but 14-bit BX indexing (finding 201)
+suggests tables could have 100s of entries. More likely: 8-16 viewport slots or view modes.
+
+**Scaling factor (×16):** The 4th word scaled by 16 suggests fixed-point format conversion
+or zoom/FOV adjustment. 16 = 2^4 suggests 4-bit shift in fixed-point representation.
+
+**Architectural significance:** Confirms segment 0x7B0E is not just scratch space but
+structured storage for view subsystem state. The indexed access pattern (vs named offsets)
+suggests dynamic viewport management (multiple views, splitscreen, picture-in-picture).
+
+## 2026-11-12 203 - S4 Level-0 batch 6: Value cliff and pattern shift
+
+**What was observed.** Level-0 batch 6 (ranks 66-80) shows dramatic frequency drop and
+pattern shift away from simple accessors toward infrastructure functions.
+
+**Call frequency decline:**
+- Batch 1-3 (ranks 1-35): 18,041 → 8 calls (high-value zone)
+- Batch 4 (ranks 36-50): 13,287 → 9,698 calls (still high, some batch 1 duplicates)
+- Batch 5 (ranks 51-65): 9,210 → 4,580 calls (transition zone, 50% drop)
+- **Batch 6 (ranks 66-80): 3,267 → 1,706 calls (value cliff, 73% drop from batch 5 top)**
+
+**Pattern shift (batch 6 vs batches 1-5):**
+
+| Category                     | Batches 1-5  | Batch 6  | Change    |
+|------------------------------|--------------|----------|-----------|
+| CS-segment simple accessors  | 79%          | 29%      | -50 pts   |
+| Dispatch stubs               | 13%          | 43%      | +30 pts   |
+| Complex infrastructure       | 4%           | 21%      | +17 pts   |
+| Utilities/operations         | 4%           | 14%      | +10 pts   |
+
+**Entering specialized zone:**
+- Simple accessors dominated batches 1-5 (get/set CS-segment words/bytes)
+- Batch 6: infrastructure dominates (save/restore, indexed tables, nested dispatch)
+- Frequency drop + complexity increase = diminishing marginal returns
+
+**Remaining Level-0 functions:** 289 - 66 = 223 unnamed (77%)
+- If trend continues, remaining functions likely < 1K calls each
+- May include: low-frequency utilities, rarely-used modes, debug code, unused functions
+
+**Decision point reached:**
+- Continue Level-0 naming through value cliff (batches 7-N until exhaustion), OR
+- Pivot to Level-1 (callers of Level-0) where higher-level logic resides, OR
+- Address deferred boundary errors (4 merged functions, 9 total after splits)
+
+**Recommendation for next batch:**
+- Complete batch 7 (ranks 81-95) to confirm value cliff bottom
+- If batch 7 < 1K calls and still mostly infrastructure, declare Level-0 "good enough"
+- Pivot to Level-1 naming (327 endpoints → 911 nodes, many with dynamic evidence)
+
+**Architectural insight from pattern shift:** The value cliff location (after 66 functions,
+22.8% of Level-0) suggests the game has ~60-70 truly hot-path leaf functions. The remaining
+223 are likely:
+- Rarely-used modes (training, demo, multiplayer)
+- Low-frequency state updates (once per mission, per level load)
+- Debug/development code left in release build
+- Error handling paths
+- Compatibility shims
+
+The 66 named functions capture the "core loop" of the game: state management, dispatch,
+view rendering, input, random numbers, math, and string formatting.
