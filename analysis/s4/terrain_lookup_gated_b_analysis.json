@@ -1,0 +1,65 @@
+{
+  "name": "terrain_lookup_gated_b",
+  "address": "0x13162",
+  "size": 21,
+  "call_count": 2,
+  "calls": [
+    {
+      "address": "0x1316c",
+      "target": "0x14040",
+      "name": "terrain_attr_lookup_3840_b"
+    },
+    {
+      "address": "0x13171",
+      "target": "0x13177",
+      "name": "ds_swap_fail_ret"
+    }
+  ],
+  "xref_count": 1,
+  "unique_callers": 1,
+  "callers": {
+    "terrain_attr_walk_13110": 1
+  },
+  "disassembly": [
+    {
+      "address": "0x13162",
+      "disasm": "push    ax"
+    },
+    {
+      "address": "0x13163",
+      "disasm": "push    bx"
+    },
+    {
+      "address": "0x13164",
+      "disasm": "test    cs:byte_11C69, 3"
+    },
+    {
+      "address": "0x1316a",
+      "disasm": "jz      short loc_13171"
+    },
+    {
+      "address": "0x1316c",
+      "disasm": "call    terrain_attr_lookup_3840_b"
+    },
+    {
+      "address": "0x1316f",
+      "disasm": "jb      short loc_13174"
+    },
+    {
+      "address": "0x13171",
+      "disasm": "call    ds_swap_fail_ret"
+    },
+    {
+      "address": "0x13174",
+      "disasm": "pop     bx"
+    },
+    {
+      "address": "0x13175",
+      "disasm": "pop     ax"
+    },
+    {
+      "address": "0x13176",
+      "disasm": "retn"
+    }
+  ]
+}
