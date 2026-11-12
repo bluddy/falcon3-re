@@ -104,18 +104,42 @@ Borland C++ large model uses **far calls** between modules. Within a module: `pu
 
 ## 5. Main Frame Loop
 
-**HYPOTHESIS** (inferred from call graph, not fully traced).
+**STRONG** (main_frame_update_loop disassembly fully traced, 2026-11-12).
 
-The top-level frame pipeline is driven by `game_frame_pipeline_step` (resident, Level-6+). Each frame:
-1. `timer_tick_isr` (IRQ0 ~18.2 Hz) updates tick counters and optionally polls joystick
-2. `game_frame_update_chain` → `mode_frame_step_core` drives the per-frame update
-3. `game_frame_pipeline_step` calls:
-   - `farobj_scan_74_clear_b` — reset scan gate bits for 16 active objects
-   - `farobj_scan_74_gate_a` — set scan gate if visible/active condition met
-   - `farobj_scan_74_timer_c` — advance 8-frame animation timer
-   - `hud_terrain_strip_render` / `hud_draw_chain_step` — HUD and terrain strips
-4. `mode_frame_step_core` calls the registered frame callback via `cs:dword_220E0` (the opcode handler system below)
-5. `game_config_apply_init` (1,123B) is the top-level game initialization: sets mode, IRQ, joystick, entities, terrain.
+### Top-Level Loop: `main_frame_update_loop` (0x31319, 257B, R05_1F64)
+
+Dispatches on `word_54D2B` (the game mode indicator):
+- `<= 14` or `== 26`: **MENU PATH** — keyboard-only: `bda_kb_flag_get`, `flag_bits_dispatch`, loop if flag set
+- `word_54EFA == 0x0D`: **EXIT** game loop
+- else: **FLIGHT PATH** — full per-frame simulation:
+
+```
+1. farobj_slot_update_driver       farobj state update
+2. range_cb_dispatch_loop
+3. hud_state_rowtable_step  }
+4. hud_panel_transform_step }   HUD
+5. hud_readout_timer_render }
+6. farobj_move_accumulate_step     move all accumulating entities (CX=0x52 entries)
+7. aircraft_slot_cycle_step
+8. tile_object_interpreter, farobj_tile_key_cache
+9. farobj_slot_step_spawn, farobj_sweep_all
+10. game_frame_pipeline_step       ← main per-frame rendering pipeline
+11. viewport_rect_state_store
+12. tick_rate_compute               compute frame timing
+13. flag22220_clear                 reset tick counter
+14. view_terrain_frame_step
+15. hud_data_panel_draw, vga_dac_palette_upload
+16. flag_bits_dispatch (second pass)
+17. → back to loop start
+```
+
+### `game_frame_pipeline_step` (0x2FD42, 387B, Level-18)
+
+Called once per FLIGHT frame. Steps: `fn_table_dispatch` (view mode), `farobj_pos_wrap_update`, `pos_clamp_40`, `entity_update_batch`, `view_pos_cache_update`, terrain VM gating, `entity_state_load`, `terrain_frame_update_driver`, `viewlist_project_flagged`, `farobj_scan_74_timer_c`, `farobj_scan_74_gate_a`, `farobj_sort_and_step`. `ds:4EAh` = view mode flags.
+
+### `flag_bits_dispatch` (0x24FB9) — 88-event input dispatcher
+
+Scans CS:0x5762 (11 bytes = 88 event bits), calls `key_event_table_dispatch` for each active bit. Called twice per FLIGHT frame. 21K dynamic calls.
 
 ---
 
@@ -510,6 +534,9 @@ A multi-level file streaming API manages budget-limited reads from large data fi
 | `cs:word_27476` | `file_handle` | uint16 | Current open file handle (set by `far_op_execute`) |
 | `cs:word_2747A` | `stream_budget` | uint16 | Bytes remaining in streaming read budget |
 | `cs:word_2748A/27488` | `stream_buf_ptr` | far_ptr | Buffer pointer for streaming file reads |
+| `cs:0x5762` | `input_flag_bytes` | flags8[11] | 88-bit keyboard/button event flag bitmap |
+| `word_54D2B` | `game_mode` | uint16 | Game mode: ≤14 or =26 = menus; else = in-flight |
+| `word_54EFA` | `quit_flag` | uint16 | 13 = exit game loop |
 | `0x7A32:0xAD50` | `opl_base_port` | uint16 | OPL I/O base port address (hypothesis: 0x388) |
 | `0x54AF:0x1734` | `farobj_scan_list` | far_ptr[16] | 16-entry active-object scan list |
 | `0x54AF:0x4ED` | `entity_accum_table` | EntityAccumEntry[40] | Motion sweep entries |
@@ -546,14 +573,31 @@ Based on naming analysis and function organization (HYPOTHESIS unless noted):
 - Exact entity_class codes (0x12/0x14/0x33/0x38 → aircraft/vehicle/ground/naval?)
 - Asset format (PKWARE DCL compression — UNKNOWN, never exercised)
 - Full FarObj struct layout (fields 0x2E–0x73 and 0x7C–0xD0)
-- Full render pipeline (how objects go from FarObj to screen)
+- Full render pipeline (how objects go from FarObj to screen via view_projection)
 - Sound/music beyond OPL register writes
 - EMS/XMS overlay swapping details
 - Campaign state machine (session, mission, debrief)
 - Network/multiplayer support (if any)
-- The 15-slot `fn_table_dispatch` (0x231F0) table contents
-- The `op_dispatch` (0x2257B) 17-slot operation table targets
+- The 15-slot `fn_table_dispatch` (0x231F0) table contents (view mode functions)
+- The `event_state_machine` (0x1AB34) full 17-case breakdown
+- What `farobj_record_lookup_step` does in the depth-sorted farobj loop
+- How `view_projection` maps world coords to screen pixels (complete math)
+- The aircraft flight physics (sub_3A003 → mode_frame_step_core chain)
 
 ---
 
-*Evidence sources: `registry/game_knowledge.yaml`, `registry/structs.yaml`, `registry/functions.yaml`, `registry/naming.yaml`, `docs/structures.md`, `analysis/s4/farobj_callers.log`, findings 1–179.*
+## 20. Key Runtime Segments
+
+| Segment | Hypothesis | Evidence |
+|---|---|---|
+| DGROUP 0x7A32 | Main data/stack segment (DS=SS throughout) | PROVEN finding 121 |
+| 0x71C1 | Terrain/map data: entity positions relative to tile grid, slot data | STRONG (entity_update_batch, entity_state_load) |
+| 0x7772 | Event/sound/hardware state (sound card mode, event counters, IRQ state) | STRONG (event_state_machine, irq_unmask_and_query, state_mode_check) |
+| 0x7894 | Game entity state: slot index table, entity counters | HYPOTHESIS (entity_counters_update, mode_slot_index_build) |
+| 0x7B0E | Trig/projection math: sine table, view matrix, farobj sort arrays | STRONG (fixed_matrix_mul, farobj_sort_and_step, farobj_type_field_get) |
+| 0x834A | Frame callback ES segment (preset in far_cb_with_args) | HYPOTHESIS |
+| 0x5982 | Entity sweep / game-state table area | HYPOTHESIS (farobj_entity_accum_sweep) |
+
+---
+
+*Evidence sources: `registry/game_knowledge.yaml`, `registry/structs.yaml`, `registry/functions.yaml`, `registry/naming.yaml`, `docs/structures.md`, `analysis/s4/farobj_callers.log`, `analysis/s4/toplevel_disasm.log`, findings 1–179.*

@@ -1167,3 +1167,154 @@ functions:
     return: void
     return_certainty: HYPOTHESIS
     certainty: HYPOTHESIS
+
+  # --- Top-level game systems (S4 2026-11-12) ---
+
+  - ea: "0x31319"
+    key: sub_31319
+    name: main_frame_update_loop
+    name_certainty: STRONG
+    desc: >
+      The main game loop (257B, R05_1F64). Runs until byte_54F0C == 0 or game quit.
+      Dispatches based on word_54D2B (game mode indicator):
+        <= 0x0E or == 0x1A: SIMPLE PATH — keyboard-only processing (menus/setup)
+        word_54EFA == 0x0D: EXIT (quit condition)
+        else: FULL PATH — complete per-frame simulation update
+      FULL PATH sequence (called each frame in-flight):
+        farobj_slot_update_driver, range_cb_dispatch_loop, hud_state_rowtable_step,
+        hud_panel_transform_step, hud_readout_timer_render, farobj_move_accumulate_step,
+        aircraft_slot_cycle_step, mode_strip_frame_step, tile_object_interpreter,
+        farobj_tile_key_cache, farobj_slot_step_spawn, farobj_sweep_all,
+        game_frame_pipeline_step, viewport_rect_state_store, tick_rate_compute,
+        flag22220_clear, view_terrain_frame_step, hud_data_panel_draw,
+        vga_dac_palette_upload, flag_bits_dispatch (second pass).
+    calling_convention: near_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "word_54D2B", proposed_name: game_mode, type: uint16,
+         desc: "game mode indicator: <=14 or ==26 = menu, else = in-flight simulation", certainty: STRONG}
+      - {ea: "word_54EFA", proposed_name: quit_flag, type: uint16,
+         desc: "13 (0x0D) = exit game loop", certainty: HYPOTHESIS}
+      - {ea: "byte_54F0C", proposed_name: loop_continue_flag, type: uint8,
+         desc: "nonzero = continue main loop iteration", certainty: HYPOTHESIS}
+
+  - ea: "0x2FD42"
+    key: sub_2FD42
+    name: game_frame_pipeline_step
+    name_certainty: STRONG
+    desc: >
+      Main per-frame simulation pipeline (387B, R05_1F64, Level-18). Called by
+      main_frame_update_loop once per frame during in-flight simulation.
+      Sequence: fn_table_dispatch, near_fnptr_invoke, farobj_pos_wrap_update,
+      pos_clamp_40, entity_update_batch, view_pos_cache_update, terrain_vm_flag_gate,
+      flag_gate_zero_abc, [conditional] viewmode3_vector_project, entity_state_load,
+      terrain_frame_update_driver, viewlist_project_flagged, farobj_scan_74_timer_c,
+      farobj_scan_74_gate_a, farobj_sort_and_step.
+      DS:4EAh controls which rendering path runs (view mode selector byte).
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "ds:4EAh", proposed_name: view_mode_flags, type: flags8,
+         desc: "controls per-frame rendering path: bit 0=viewmode3, bit 1=skip terrain_frame_update", certainty: HYPOTHESIS}
+
+  - ea: "0x20BDB"
+    key: sub_20BDB
+    name: view_projection
+    name_certainty: STRONG
+    desc: >
+      Core 3D projection function (1076B, seg020, Level-9). THE most-called non-trivial
+      function: 282K dynamic calls per session.
+      Takes ES:BX = view origin position (8B int32 XY), DI = target FarObj to project.
+      Computes delta from target to view origin in XY, scales by 16 (4× shl),
+      divides by FarObj.slot_id [DI+20h] (SI register) to normalize,
+      then applies quadrant adjustments via angle math. FarObj.object_kind [DI+22h] is
+      used as an LOD accumulator (incremented by viewobj_project_advance for each step).
+      Returns projected screen coordinates (AX = screen X or depth).
+    calling_convention: register
+    params:
+      - {reg: "ES:BX", name: view_origin, type: "FarObj pos", desc: "viewer/camera position", certainty: STRONG}
+      - {reg: DI,      name: target_obj,  type: uint16, desc: "FarObj offset to project", certainty: STRONG}
+    return: "ax = projected value (screen coordinate or depth)"
+    return_certainty: HYPOTHESIS
+    certainty: STRONG
+
+  - ea: "0x1AB34"
+    key: sub_1AB34
+    name: event_state_machine
+    name_certainty: HYPOTHESIS
+    desc: >
+      Main event state machine (2266B, seg011, Level-10). 17-case switch on the event
+      state at ES:0x7772:word_at_offset_0x296. Cases 5-21 handle different event phases.
+      Manages countdown timers, event counters, and transitions between event states.
+      Uses segment 0x7772 as the primary event/sound/hardware state area.
+      Single static caller: sub_16C22 (the event loop driver). 42K dynamic calls.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+    globals:
+      - {ea: "0x7772:0x77B1F+0x296", proposed_name: event_state, type: uint16,
+         desc: "current event state (0-16); drives 17-case dispatch in event_state_machine", certainty: STRONG}
+
+  - ea: "0x2131C"
+    key: sub_2131C
+    name: farobj_sort_and_step
+    name_certainty: STRONG
+    desc: >
+      Depth-sorts two farobj pointer arrays by their depth field, then calls
+      farobj_record_lookup_step for each in sorted order. Uses bubble sort on
+      arrays at [2DF8h] (sorted by [+1FE8h]) and [1D8Ah] (sorted by [+0F7Ah]) in
+      the 0x7B0E segment. The two arrays probably hold terrain objects vs aircraft.
+      Called by game_frame_pipeline_step and farobj_batch_build_project.
+    calling_convention: register
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x270E0"
+    key: sub_270E0
+    name: viewobj_project_advance
+    name_certainty: STRONG
+    desc: >
+      Per-object LOD projection step. Checks FarObj.slot_id [+0x27] (bit 7 = active)
+      and FarObj.slot_flags [+0x26] (bits 6-7 rotated to 0-1 give 0/1/2/3 LOD level).
+      LOD 0 = skip; LOD 3 = mark only; LOD 1-2 = increment FarObj.object_kind [+0x22]
+      (by 1 or 2 depending on flags), then call view_projection.
+      NOTE: FarObj.object_kind [+0x22] IS an LOD accumulator, not just a type code!
+      Returns CF=0 on success (projected), CF=1 on skip.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+    return: "CF=0: projected; CF=1: skipped"
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x24FB9"
+    key: sub_24FB9
+    name: flag_bits_dispatch
+    name_certainty: STRONG
+    desc: >
+      Keyboard/button event dispatcher (97B, Level-18). Scans 11 flag bytes at CS:0x5762
+      (88 total bits) via flag_block_merge_zero_5c63, then for each active bit calls
+      key_event_table_dispatch. Returns CF=0 if any event was dispatched, CF=1 if none.
+      Called TWICE per main_frame_update_loop frame with different BX/DI selector args.
+      21K dynamic calls per session.
+    calling_convention: register
+    params:
+      - {reg: AX, name: selector, type: uint16, desc: "passed to flag_block_merge_zero_5c63", certainty: HYPOTHESIS}
+      - {reg: BX, name: event_base, type: uint16, desc: "event table base index", certainty: HYPOTHESIS}
+      - {reg: DI, name: event_limit, type: uint16, desc: "event table limit", certainty: HYPOTHESIS}
+    return: "CF=0: event dispatched; CF=1: no events"
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "cs:0x5762", proposed_name: input_flag_bytes, type: "flags8[11]",
+         desc: "88-bit keyboard/button event flag bitmap; each bit = one input event", certainty: STRONG}
