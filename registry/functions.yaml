@@ -381,3 +381,223 @@ functions:
     globals:
       - {ea: "cs:map_pos_y", proposed_name: map_pos_y, type: int16, desc: "current map tile Y position", certainty: HYPOTHESIS}
       - {ea: "cs:map_pos_x", proposed_name: map_pos_x, type: int16, desc: "current map tile X position", certainty: HYPOTHESIS}
+
+
+  # --- farobj dispatch system (S4 Level-1 analysis, 2026-11-12) ---
+
+  - ea: "0x2647E"
+    key: sub_2647E
+    name: farobj_type_field_get
+    name_certainty: STRONG
+    desc: >
+      Decodes the FarObj.object_kind index to a subtype code 0/1/2/3.
+      Looks up a far pointer in the type descriptor table at 0x7B0E:0x3052
+      (indexed by object_kind*4) to get a FarObjTypeDesc record.
+      If FarObjTypeDesc.type_category > 1: returns FarObjTypeDesc.subtype (byte).
+      Otherwise returns 0 (base type).
+      Called immediately after farptr_table_get to classify the object variant.
+    calling_convention: register
+    params:
+      - {reg: AX, name: object_kind, type: uint16, desc: "FarObj.object_kind index", certainty: STRONG}
+    return: "al = subtype 0..3 (0=base, 1/2/3=variant)"
+    return_certainty: STRONG
+    certainty: STRONG
+    globals:
+      - {ea: "0x7B0E:0x3052", proposed_name: farobj_typedesc_table, type: "far_ptr[N]",
+         desc: "table of far pointers to FarObjTypeDesc records, indexed by object_kind*4",
+         certainty: STRONG}
+
+  - ea: "0x26470"
+    key: sub_26470
+    name: far_obj_field_call       # already named, verify
+    name_certainty: HYPOTHESIS
+    desc: >
+      Calls a type-based dispatch: gets farobj at slot AX, reads object_kind [+0x22],
+      decodes subtype via farobj_type_field_get, then calls farobj_type_field_get result.
+      14B — the simplest farobj method dispatch pattern.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+    return: "whatever farobj_type_field_get returns in AX"
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x26690"
+    key: sub_26690
+    name: farobj_flag_set_scan_bit  # NEW NAME — sets bit 0x100 in state_flags
+    name_certainty: HYPOTHESIS
+    desc: >
+      Sets bit 8 (0x100) in FarObj.state_flags [+0x24] for slot AX.
+      Called with... 0 static callers? (orphan). Likely sets a "scan-requested" flag.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+    return: void
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+
+  - ea: "0x2E8BE"
+    key: sub_2E8BE
+    name: farptr_table_offset_apply
+    name_certainty: STRONG
+    desc: >
+      Applies orientation deltas to the 3D angle fields of a farobj slot.
+      Gets farobj at slot AX, then:
+        heading [+0x0C] += BX (masked to 0x3FFF via fixed_angle_mask_3fff)
+        pitch   [+0x0E] += CX (fold-masked via fixed_angle_fold_e000)
+        roll    [+0x10] += DX (masked)
+      Used by farobj_entity_accum_sweep for per-frame motion accumulation.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+      - {reg: BX, name: delta_heading, type: int16, certainty: STRONG}
+      - {reg: CX, name: delta_pitch,   type: int16, certainty: STRONG}
+      - {reg: DX, name: delta_roll,    type: int16, certainty: STRONG}
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x2E896"
+    key: sub_2E896
+    name: farptr_table_accum_fields
+    name_certainty: STRONG
+    desc: >
+      Accumulates (adds) signed 16-bit values into the 3D int32 position of a farobj slot.
+      Gets farobj at slot AX (called without push/pop CS wrapper — near-ish pattern).
+      Sign-extends BX/CX/DX to 32 bits via CWD and adds:
+        world_x += BX (sign-extended), world_y += CX, world_z += DX
+      Critical: each add uses ADC for carry propagation (true int32 add).
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+      - {reg: BX, name: delta_x,    type: int16, certainty: STRONG}
+      - {reg: CX, name: delta_y,    type: int16, certainty: STRONG}
+      - {reg: DX, name: delta_z,    type: int16, certainty: STRONG}
+    return: void
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x2E8F4"
+    key: sub_2E8F4
+    name: farptr_table_field20_get
+    name_certainty: STRONG
+    desc: >
+      Returns FarObj.cmd_field [+0x20] for slot AX in BX.
+      14B leaf: gets farobj, adds 0x20 to DI, loads word to BX.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+    return: "bx = FarObj.cmd_field (uint16 at [+0x20])"
+    return_certainty: STRONG
+    certainty: STRONG
+
+  - ea: "0x2E902"
+    key: sub_2E902
+    name: farptr_table_field_store
+    name_certainty: STRONG
+    desc: >
+      Writes BX to FarObj.cmd_field [+0x20] for slot AX.
+      14B leaf: gets farobj, stores BX at [DI+0x20].
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
+      - {reg: BX, name: value,      type: uint16, certainty: STRONG}
+    return: void
+    return_certainty: PROVEN
+    certainty: STRONG
+
+  - ea: "0x3415F"
+    key: sub_3415F
+    name: farobj_scan_74_gate_a
+    name_certainty: HYPOTHESIS
+    desc: >
+      Scans 16-entry active-object list at 0x54AF:0x1734. For each entry where
+      FarObj.active [+0x74] bit 0 is set AND FarObj.state_flags [+0x24] >= 0x3C (60):
+        gets the linked main-table farobj via FarObj.self_slot_idx [+0x7A]
+        sets bit 0x8000 in that farobj's state_flags [+0x24].
+      Called by game_frame_pipeline_step — sets visibility/scan gate for all active objects.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+
+  - ea: "0x34193"
+    key: sub_34193
+    name: farobj_scan_74_clear_b
+    name_certainty: HYPOTHESIS
+    desc: >
+      Scans 16-entry active-object list. For each active entry (FarObj.active bit 0):
+        gets linked farobj, clears bit 0x8000 in its state_flags [+0x24].
+      Companion to farobj_scan_74_gate_a — resets the scan gate bit each frame.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: STRONG
+    certainty: HYPOTHESIS
+
+  - ea: "0x341C0"
+    key: sub_341C0
+    name: farobj_scan_74_timer_c
+    name_certainty: HYPOTHESIS
+    desc: >
+      Scans 16-entry active-object list. For each active entry where timer_active [+0xD1] != 0:
+        increments and masks frame_timer [+0x1E] mod 8
+        packs the phase into state_flags [+0x24] via mask 0xF1FF
+      (If not timer_active: just clears the timer phase bits in state_flags.)
+      Drives 8-frame animation sequencing for entity objects.
+    calling_convention: far_cdecl
+    params: []
+    return: void
+    return_certainty: HYPOTHESIS
+    certainty: HYPOTHESIS
+
+  - ea: "0x24980"
+    key: sub_24980
+    name: fixed_angle_mask_3fff
+    name_certainty: STRONG
+    desc: "AND ax, 0x3FFF — masks to 14-bit unsigned angle range [0..16383]."
+    calling_convention: near_cdecl
+    params: [{reg: AX, name: angle, type: uint16, certainty: PROVEN}]
+    return: "ax = angle & 0x3FFF"
+    return_certainty: PROVEN
+    certainty: PROVEN
+
+  - ea: "0x24988"
+    key: sub_24988
+    name: fixed_angle_fold_e000
+    name_certainty: STRONG
+    desc: >
+      Folds a 14-bit value into the signed range approx [-8192..8191] using the pattern:
+      and ax, 0x3FFF; add ax, 0xE000; xor ax, 0xE000.
+      Net effect: maps 14-bit unsigned to signed (top bit of 14 bits = sign bit).
+      Used for pitch angle normalization.
+    calling_convention: near_cdecl
+    params: [{reg: AX, name: raw_angle, type: uint16, certainty: PROVEN}]
+    return: "ax = signed 14-bit angle"
+    return_certainty: PROVEN
+    certainty: STRONG
+
+  - ea: "0x49A5B"
+    key: sub_49A5B
+    name: farobj_kind_slot_reset     # NEW NAME
+    name_certainty: HYPOTHESIS
+    desc: >
+      Writes BX to FarObj.object_kind [+0x22] and clears bits 6+7 of FarObj.slot_flags [+0x26].
+      17B. Resets the kind index and clears extended-slot flags.
+      Called by obj_range_slot_activate.
+    calling_convention: register
+    params:
+      - {reg: AX, name: slot_index,  type: uint16, certainty: STRONG}
+      - {reg: BX, name: object_kind, type: uint16, certainty: STRONG}
+    return: void
+    return_certainty: PROVEN
+    certainty: HYPOTHESIS
+
+  # --- Global table summary ---
+  # Key globals discovered from farobj system analysis:
+  #
+  # R05_400C:0x34  farobj_main_table   far_ptr[N]  main farobj slot table (farptr_table_get indexed)
+  # 0x54AF:0x1734  farobj_scan_list    far_ptr[16] active-object scan list (16 entries, 4B each)
+  # 0x54AF:0x4ED   entity_accum_table  EntityAccumEntry[40]  motion accumulation entries
+  # 0x7B0E:0x3052  farobj_typedesc_table  far_ptr[N]  type descriptor table (FarObjTypeDesc records)

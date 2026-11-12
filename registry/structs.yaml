@@ -137,3 +137,89 @@ structs:
     source: docs/structures.md §ISLDAT + finding 105
     fields:
       - {offset: 0, size: 2, name: count, type: uint16, comment: "payload follows: (count+1) x uint16 offsets into line table (stride 0x10), last==first (closed)"}
+
+  # ---- S4 analysis findings (2026-11-12) ----
+
+  - name: FarObj
+    size: 210        # minimum confirmed; actual may be larger
+    status: hypothesis
+    source: "analysis/s4/farobj_callers.log — Level-0 farobj callers probe, S4 2026-11-12"
+    notes: >
+      Central game object instance record. Stored in a global slot table at
+      R05_400C:0x34 (4 bytes/entry = far pointer per slot). Also referenced from
+      scan list at 0x54AF:0x1734 (16 entries for active-object fast scan).
+      farptr_table_get(slot_index) loads ES:DI = pointer to this struct.
+      Struct is at least 210B; actual size unknown. Many fields confirmed by
+      farobj_entity_attr_setup (initialiser) + farptr_table_accum_fields (3D pos add).
+    fields:
+      # 3D world position: each axis is a 32-bit little-endian integer (lo:hi words)
+      - {offset: 0x00, size: 2, name: world_x_lo,     type: int16,  comment: "X position lo word (int32 split)"}
+      - {offset: 0x02, size: 2, name: world_x_hi,     type: int16,  comment: "X position hi word"}
+      - {offset: 0x04, size: 2, name: world_y_lo,     type: int16,  comment: "Y position lo word"}
+      - {offset: 0x06, size: 2, name: world_y_hi,     type: int16,  comment: "Y position hi word"}
+      - {offset: 0x08, size: 2, name: world_z_lo,     type: int16,  comment: "Z position lo word"}
+      - {offset: 0x0A, size: 2, name: world_z_hi,     type: int16,  comment: "Z position hi word"}
+      # 3D orientation: 14-bit angles masked with 0x3FFF (heading) or fold-to-signed
+      - {offset: 0x0C, size: 2, name: angle_heading,  type: uint16, comment: "heading angle (14-bit, 0x3FFF mask); 0xFFFF = uninit"}
+      - {offset: 0x0E, size: 2, name: angle_pitch,    type: int16,  comment: "pitch angle (14-bit signed, fold via stub_to_24988)"}
+      - {offset: 0x10, size: 2, name: angle_roll,     type: uint16, comment: "roll/yaw angle (14-bit)"}
+      # Type and category
+      - {offset: 0x12, size: 1, name: render_flags,   type: uint8,  comment: "render flags (HUD-related)"}
+      - {offset: 0x13, size: 1, name: type_flags,     type: flags8, comment: "type flags (AND 0x20 OR 5 pattern; bit 6 = range visibility)"}
+      - {offset: 0x14, size: 1, name: entity_class,   type: uint8,  comment: "entity class code: 0x12=aircraft, 0x14=?, 0x33=?, 0x38=?"}
+      - {offset: 0x15, size: 1, name: entity_class_hi, type: uint8, comment: "high byte of entity class word (usually 0 or sub-class)"}
+      - {offset: 0x16, size: 2, name: attr_a,         type: int16,  comment: "type-specific attribute A (from type descriptor +0xE)"}
+      - {offset: 0x18, size: 2, name: attr_b,         type: int16,  comment: "scaled attribute B (from type descriptor +0xC, shifted by DS:19B7)"}
+      - {offset: 0x1A, size: 2, name: attr_c,         type: int16,  comment: "scaled attribute C (from type descriptor +0x10)"}
+      - {offset: 0x1C, size: 2, name: field_1C,       type: uint16, comment: "unknown"}
+      - {offset: 0x1E, size: 2, name: frame_timer,    type: uint16, comment: "frame counter (mod 8 by scan_74_timer_c for animation step)"}
+      - {offset: 0x20, size: 2, name: cmd_field,      type: uint16, comment: "command/state field (farptr_table_field_store/_get at DI+0x20)"}
+      - {offset: 0x22, size: 2, name: object_kind,    type: uint16, comment: "object kind index → type descriptor (farobj_type_field_get -> 1/2/3)"}
+      - {offset: 0x24, size: 2, name: state_flags,    type: flags16, comment: "state flags: bit 0x0040=has_ext_slot; bit 0x8000=scan_gate_set; bits 0xF1FF=timer state"}
+      - {offset: 0x26, size: 1, name: slot_flags,     type: flags8, comment: "slot flags: bits 0–5 used; bits 6+7 cleared by sub_49A5B"}
+      - {offset: 0x27, size: 1, name: slot_id,        type: uint8,  comment: "0xFF = unassigned/uninit; entity slot id (entity_slot_create)"}
+      # Type-dependent data at 0x28..0x2D (layout depends on object_kind type 1/2/3)
+      - {offset: 0x28, size: 2, name: type_ext_0,    type: uint16, comment: "type-dependent (farobj_copy_invoke copies starting here)"}
+      - {offset: 0x2A, size: 2, name: type_base,     type: uint16, comment: "base type data (farobj_field_set writes here for type 1 & 3)"}
+      - {offset: 0x2C, size: 2, name: type_ext_A,    type: uint16, comment: "ext data A (farobj_field_set +2 for type 2)"}
+      # ... fields 0x2E..0x73 unknown ...
+      - {offset: 0x74, size: 1, name: active,         type: flags8, comment: "slot active/occupied flag: bit 0 = active (checked by scan_74 functions)"}
+      # ... fields 0x75..0x79 unknown ...
+      - {offset: 0x7A, size: 2, name: self_slot_idx,  type: uint16, comment: "this object's index in the main farobj table (R05_400C:0x34 slot N)"}
+      # ... fields 0x7C..0xD0 unknown ...
+      - {offset: 0xD1, size: 1, name: timer_active,   type: flags8, comment: "timer active flag: bit 0 = do timer update (farobj_scan_74_timer_c)"}
+
+  - name: FarObjTypeDesc
+    size: 18         # minimum; indexed via FarObj.object_kind*4 from table at 0x7B0E:0x3052
+    status: hypothesis
+    source: "farobj_type_field_get (0x2647E) + farobj_entity_attr_setup (0x44352)"
+    notes: >
+      Per-entity-class type descriptor. The global table at 0x7B0E:0x3052 holds far
+      pointers (4B each) to these records, indexed by FarObj.object_kind*4.
+      farobj_type_field_get reads bytes [0] and [1] to return a 1/2/3 subtype code.
+      farobj_entity_attr_setup reads offsets 0x0C/0x0E/0x10 as scaled entity attributes.
+    fields:
+      - {offset: 0x00, size: 1, name: type_category, type: uint8,  comment: "0 or 1 = simple; >1 = complex (has subtype in byte 1)"}
+      - {offset: 0x01, size: 1, name: subtype,        type: uint8,  comment: "subtype code (1/2/3) returned by farobj_type_field_get for complex types"}
+      - {offset: 0x0C, size: 2, name: scale_attr_b,   type: int16,  comment: "scaled attribute B source (attr_b = this << DS:0x19B7)"}
+      - {offset: 0x0E, size: 2, name: raw_attr_a,     type: int16,  comment: "raw attribute A copied to FarObj.attr_a"}
+      - {offset: 0x10, size: 2, name: scale_attr_c,   type: int16,  comment: "scaled attribute C source (attr_c = this << DS:0x19B7)"}
+
+  - name: EntityAccumEntry
+    size: 14         # 0x0E bytes; in sweep table at DS:0x54AF:0x4ED, up to 40 entries
+    status: hypothesis
+    source: "farobj_entity_accum_sweep (0x2E48C)"
+    notes: >
+      Per-motion-command entry for the entity sweep table.
+      farobj_entity_accum_sweep scans up to 39+1 entries (index 0..0x27),
+      advancing by 14B per entry. Entry [+6] is a countdown timer (decremented
+      each sweep; when 0, entry is idle). The BX/CX/DX words drive
+      farptr_table_accum_fields (position delta) and farptr_table_offset_apply (angle delta).
+    fields:
+      - {offset: 0x00, size: 2, name: count,     type: uint16, comment: "0 = empty entry; nonzero = active"}
+      - {offset: 0x02, size: 2, name: delta_x,   type: int16,  comment: "X position delta for farptr_table_accum_fields"}
+      - {offset: 0x04, size: 2, name: delta_y,   type: int16,  comment: "Y position delta"}
+      - {offset: 0x06, size: 2, name: countdown, type: uint16, comment: "timer countdown; decremented by 1 each sweep (at +1 to get 0-based next)"}
+      - {offset: 0x08, size: 2, name: delta_hdg, type: int16,  comment: "heading delta for farptr_table_offset_apply"}
+      - {offset: 0x0A, size: 2, name: delta_pit, type: int16,  comment: "pitch delta"}
+      - {offset: 0x0C, size: 2, name: delta_rol, type: int16,  comment: "roll delta"}

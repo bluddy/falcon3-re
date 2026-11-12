@@ -16791,3 +16791,18 @@ symbols:
     retf. 8B wrapper to make the near-only accumulate_b callable as a far function.'
   notes: 'Called by ui_slot_record_fill (x2) and ui_loadout_menu_enter (x3+). Returns
     accumulate_b result (was CX) in AX. HYPOTHESIS — verify fixed_vec3_accumulate_b.'
+
+# --- S4 Level-1: farobj dispatch system additions (2026-11-12) ---
+# (sub_2647E already named farobj_type_field_get in existing ledger; updated notes there)
+- ida: sub_26690
+  name: farobj_state_scan_bit_set
+  kind: function
+  sig: 'void far; AX=slot: sets bit 0x100 in FarObj.state_flags [+0x24]. 13B orphan.'
+  notes: 'Sets scan-requested bit. No static callers — may be called indirectly. S4.'
+
+- ida: sub_49A5B
+  name: farobj_kind_slot_reset
+  kind: function
+  sig: 'void near; AX=slot, BX=object_kind: writes BX->[+0x22], clears bits 6+7 of [+0x26].
+    17B. S4.'
+  notes: 'Resets kind index and clears extended-slot flags for a farobj. HYPOTHESIS.'
