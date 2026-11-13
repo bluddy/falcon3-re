@@ -184,35 +184,151 @@ If we can extract the algorithm at 0x38FAA:
 - Same divisors/coefficients?
 - Or completely different calculation?
 
-## UPDATED WITH USER KNOWLEDGE 🆕
+## BREAKTHROUGH: Configuration-Driven Dynamic Axis Mapping! 🎯
 
-**User confirmed:** Falcon 3.0 supports **4 hardware axes:**
-1. **Elevator** (pitch stick)
-2. **Aileron** (roll stick)
-3. **Throttle** (throttle axis)
-4. **Rudder** (rudder pedals/twist)
+**User Knowledge:** Setup menu configures which hardware is active:
+- Regular joystick: Only stick axes (elevator/aileron)
+- HOTAS setup: Throttle axis enabled
+- Rudder pedals: Rudder axis enabled
+- Keyboard fallback: Any axis can use keyboard
 
-**Famous for HOTAS support** - Thrustmaster and other multi-axis controllers of the era!
+**This explains:**
+1. Why only 3 axes stored in entity - it's CONFIGURABLE!
+2. Why `control_axis_value` is separate - it's DYNAMIC based on config
+3. Why we couldn't find "the 4th axis" - it depends on player setup!
 
-## NEW ANALYSIS
+## NEW UNDERSTANDING
 
-We now know `control_axes_read` returns **TWO** axes (plural):
-- Call 1 @ 0x2FD22 → [si+1Ah] = **Elevator**
-- Call 2 @ 0x2FD2D → [si+1Ch] = **Aileron**
+### Dynamic Axis Assignment
 
-And `control_axis_value` returns **ONE** axis (singular):
-- Call @ 0x2FD39 → [si+2Ah] = **Throttle OR Rudder**
+```c
+// Configuration determines what control_axis_value returns:
+int16_t control_axis_value() {
+    if (config.has_throttle_axis) {
+        return read_throttle_axis();      // Hardware throttle lever
+    } else if (config.has_rudder_axis) {
+        return read_rudder_axis();        // Hardware rudder pedals
+    } else if (config.throttle_keyboard) {
+        return read_keyboard_throttle();  // Keyboard throttle
+    } else if (config.rudder_keyboard) {
+        return read_keyboard_rudder();    // Keyboard rudder
+    }
+    // Fallback
+    return 0;
+}
+```
 
-**Question:** Where is the 4th hardware axis stored?
+### Entity Storage is Context-Dependent
 
-**Hypothesis Updated:**
-- [si+1Ah] = Elevator ✅
-- [si+1Ch] = Aileron ✅
-- [si+2Ah] = **Throttle** (85% confidence - used in aerodynamics @ 0x38FAA)
-- [si+??h] = **Rudder** - MISSING! Where is it stored?
+```c
+struct EntityControl {
+    int16_t axis_calc;           // +0x18h  Calculated
+    int16_t axis_elevator;       // +0x1Ah  Stick Y (always present)
+    int16_t axis_aileron;        // +0x1Ch  Stick X (always present)
+    // ...
+    int16_t axis_auxiliary;      // +0x2Ah  DYNAMIC: throttle OR rudder OR other
+                                 //         Depends on player configuration!
+};
+```
 
-**OR:**
-- [si+2Ah] = **Rudder** (15% confidence - but then where's throttle?)
+### Configuration Bytes
+
+Remember from earlier: DS:8994h-899Ah config bytes!
+- One byte probably: `control_mode` (simple/complex/hidef)
+- Another byte: `auxiliary_axis_type` (0=none, 1=throttle, 2=rudder, 3=keyboard...)
+- Hardware detection flags
+- Input mapping configuration
+
+### Usage at 0x38FAA
+
+Now it makes sense why [si+2Ah] is in aerodynamics:
+- **If throttle configured:** Affects thrust/drag aerodynamics
+- **If rudder configured:** Affects yaw moment aerodynamics
+- **If neither:** Zero value, no effect
+
+The SAME code path handles EITHER input!
+
+### Multiple Input Sources
+
+The game must support:
+1. **Joystick-only:** Stick X/Y, keyboard for throttle/rudder
+2. **Joystick + Throttle:** Stick X/Y, throttle axis, keyboard rudder
+3. **Joystick + Rudder:** Stick X/Y, keyboard throttle, rudder axis
+4. **Full HOTAS:** Stick X/Y, throttle axis, rudder axis
+5. **Keyboard-only:** All axes via keyboard
+
+All configurations use the SAME entity structure and physics code!
+
+## Implications
+
+### [si+2Ah] Purpose
+
+**IT DEPENDS ON CONFIGURATION!**
+
+Could be:
+- Throttle (most common HOTAS setup)
+- Rudder (if pedals but no throttle axis)
+- Trim setting (if neither hardware axis)
+- Any auxiliary control player configured
+
+### Why We Found 3 Reads Not 4
+
+Because not everyone HAS 4 hardware axes!
+
+**Minimum config (2-axis joystick):**
+- control_axes_read x2 → Elevator, Aileron
+- control_axis_value → 0 (no auxiliary hardware)
+- Throttle/rudder via keyboard (different code path)
+
+**Full HOTAS config:**
+- control_axes_read x2 → Elevator, Aileron
+- control_axis_value → Throttle
+- Rudder via... where? Different call? Or ALSO through control_axis_value but different setup?
+
+### The REAL Question
+
+**How does the game handle BOTH throttle AND rudder with only ONE auxiliary storage location?**
+
+**Possibility 1:** Only ONE can be a hardware axis
+- Player chooses: throttle axis OR rudder axis (not both)
+- The other uses keyboard
+- This was common in 1991 (before 4+ axis controllers)
+
+**Possibility 2:** Second auxiliary axis exists elsewhere
+- [si+2Ah] = primary auxiliary (throttle usually)
+- [si+??h] = secondary auxiliary (rudder usually)
+- We haven't found it yet
+
+**Possibility 3:** Rudder applied directly, not stored
+- Throttle stored in [si+2Ah]
+- Rudder applied immediately to heading without entity storage
+- Different processing pipeline
+
+## Config System Structure (Hypothesis)
+
+```c
+struct GameConfig {
+    // Flight model
+    uint8_t flight_model;        // 0=simple, 1=complex, 2=hidef
+    
+    // Hardware detection
+    uint8_t joystick_present;    // 0=no, 1=yes
+    uint8_t joystick_buttons;    // Number of buttons
+    uint8_t joystick_axes;       // Number of axes (2, 3, 4...)
+    
+    // Axis mapping
+    uint8_t axis0_function;      // PITCH (elevator)
+    uint8_t axis1_function;      // ROLL (aileron)  
+    uint8_t axis2_function;      // THROTTLE or RUDDER?
+    uint8_t axis3_function;      // RUDDER or unused?
+    
+    // Keyboard fallbacks
+    uint8_t throttle_input;      // 0=axis, 1=keyboard, 2=disabled
+    uint8_t rudder_input;        // 0=axis, 1=keyboard, 2=disabled
+    
+    // Sound, AI, etc...
+};
+```
 
 **Next Steps:**
 1. Extract assembly at 0x38FAA region (±100 lines)
