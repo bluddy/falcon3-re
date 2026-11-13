@@ -287,23 +287,107 @@ Keyboard-only:      All axes via keyboard
 
 ## ❓ NOT YET ANALYZED (0-30%)
 
-### 7. Weapons System
-**Status**: ~30% ANALYZED ❓  
+### 3. Weapons System (40% analyzed) 🔧
+**Status**: ~40% ANALYZED ⚠️  
+**Last Updated**: November 11, 2026 (Session 4)  
+**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`
 
 **What We Know**:
-- Weapons are entities (part of FarObj system)
-- Missiles have guidance logic
-- Guns use ballistic trajectories
-- Radar lock system exists
+- ✅ **Entity Type System (60%)**:
+  - Weapon types: 12h, 13h (missiles?), 14h (bombs?), 33h-37h (bullets?), 38h, 16h class
+  - Type/class dispatch system
+  - farobj_type_field_get @ sub_2647E - Type lookup via table @ 7B0E:3052
+  
+- ✅ **Entity Creation (60%)**:
+  - entity_slot_create @ sub_2ECAC (Level 6) - Main entity allocation
+  - farobj_slot_create_gate @ sub_3DC55 - FarObj creation guard
+  - farobj_slot_step_spawn @ sub_2FF24 - Spawn step in frame update
+  - entity_spawn_from_tile @ sub_301FB - Spawn from tile data
+
+- ✅ **Behavior Dispatcher (40%)**:
+  - farobj_behavior_dispatch_step @ sub_3CE92 (2580B, Level 19, DATA)
+  - 25 callees (guidance, physics, collision TBD)
+  - farobj_queue_drain_dispatch @ sub_4C19E (2500B) - Queue processor
+  - Class-range dispatch (12h/13h, 33h-37h)
+
+- ✅ **UI/Loadout (40%)**:
+  - ui_loadout_menu_enter (overlay-based, multiple thunks)
+  - Stores Control Panel (HUD lower-left, shows A-A/A-G mode, weapon selected)
+
+- ⚠️ **Ammo Tracking (25%)**:
+  - farobj_index_decrement_step - Weapon count decrement
+  - Storage location TBD
+
+- ⚠️ **Target Lock System (35%)**:
+  - **A-A Mode**: Diamond in reticle, auto-lock in visual range, reticle FLASHES on lock
+  - **A-G Mode**: Cross hairs auto-lock and follow (AGM-65, GBU-15), fire-and-forget
+  - Lock conditions: angle cone + distance threshold + LOS
+  - Implementation: angle check, distance check, frame-by-frame
+  - Functions TBD
+
+- ⚠️ **Input System (30%)**:
+  - Fire key: 'z'
+  - A-A weapon cycle: 'e'
+  - A-G weapon cycle / mode switch: 'B'
+  - key_input_state_reset @ sub_32C62 caller
+  - Fire handler function TBD
+
+- ⚠️ **Launch Flow (30%)**:
+  - Input → Fire command → Ammo check → Entity spawn → Behavior update → Collision → Damage
+  - Weapon fire dispatch function TBD
+  - Weapon state storage (selected, ammo) TBD
+
+- ⚠️ **Guidance Algorithms (20%)**:
+  - Hypothesis: Proportional navigation (classic missile guidance)
+  - Or: Lead pursuit (simpler, predict intercept point)
+  - Implementation in sub_3CE92 TBD
+  - Missile types: AIM-9 (heat-seeking), AIM-120 (radar-guided)?
+
+- ⚠️ **Ballistics (20%)**:
+  - Bombs: Gravity + drag, ground collision detection
+  - Bullets: High-speed, minimal drag, lifetime timeout
+  - Implementation TBD
+
+- ❓ **Collision Detection (5%)**:
+  - Hit detection function not found
+  - Bounding box/sphere TBD
+  - Spatial partitioning TBD
+
+- ❓ **Damage System (5%)**:
+  - Target health field TBD
+  - Damage calculation TBD
+  - Explosion spawn TBD
+  - Score tracking TBD
 
 **What's Missing**:
-- Weapon type definitions
-- Guidance algorithms (AIM-9, AIM-120)
-- Ballistic calculation functions
-- Damage calculation
+- Keyboard fire handler implementation
+- Weapon state storage (selected weapon, ammo counts)
+- Complete guidance algorithm code (proportional nav? lead pursuit?)
+- Collision detection system
+- Damage calculation and health tracking
+- Weapon data tables (speed, damage, range per type)
 - Countermeasures (flares, chaff)
 
+**Progress Breakdown**:
+- Entity spawn layer: 60% ✅
+- Behavior/AI layer: 40% ⚠️
+- Target lock system: 35% ⚠️
+- Input/UI: 35% ⚠️
+- Ammo tracking: 25% ⚠️
+- Guidance algorithms: 20% ⚠️
+- Ballistics: 20% ⚠️
+- Collision: 5% ❓
+- Damage: 5% ❓
+
 **Estimated Complexity**: HIGH (many weapon types, complex guidance)
+
+**Next Steps** (40% → 70%):
+1. Find keyboard fire handler (trace from z key)
+2. Extract sub_3CE92 disassembly (2580B behavior dispatcher)
+3. Find weapon state storage
+4. Trace target selection (T key)
+5. Find collision detection system
+6. Map damage calculation
 
 ### 8. Radar / Avionics
 **Status**: ~25% ANALYZED ❓  
