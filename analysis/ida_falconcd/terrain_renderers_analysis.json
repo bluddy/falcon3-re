@@ -1,0 +1,2277 @@
+{
+  "hud_terrain_strip_render": {
+    "name": "hud_terrain_strip_render",
+    "address": 225677,
+    "size": 988,
+    "instruction_count": 352,
+    "disassembly": [
+      {
+        "addr": 225677,
+        "disasm": "mov     byte ptr ds:105Dh, 0"
+      },
+      {
+        "addr": 225682,
+        "disasm": "cmp     byte ptr ds:82Ch, 1"
+      },
+      {
+        "addr": 225687,
+        "disasm": "jz      short loc_371E1"
+      },
+      {
+        "addr": 225689,
+        "disasm": "push    es"
+      },
+      {
+        "addr": 225690,
+        "disasm": "mov     di, ds"
+      },
+      {
+        "addr": 225692,
+        "disasm": "mov     es, di"
+      },
+      {
+        "addr": 225694,
+        "disasm": "mov     si, ds:48BAh"
+      },
+      {
+        "addr": 225698,
+        "disasm": "push    si"
+      },
+      {
+        "addr": 225699,
+        "disasm": "mov     di, 4816h"
+      },
+      {
+        "addr": 225702,
+        "disasm": "mov     ax, [si+0Ch]"
+      },
+      {
+        "addr": 225705,
+        "disasm": "mov     cx, [si+0Eh]"
+      },
+      {
+        "addr": 225708,
+        "disasm": "movsw"
+      },
+      {
+        "addr": 225709,
+        "disasm": "movsw"
+      },
+      {
+        "addr": 225710,
+        "disasm": "movsw"
+      },
+      {
+        "addr": 225711,
+        "disasm": "movsw"
+      },
+      {
+        "addr": 225712,
+        "disasm": "movsw"
+      },
+      {
+        "addr": 225713,
+        "disasm": "movsw"
+      },
+      {
+        "addr": 225714,
+        "disasm": "mov     bp, 100h"
+      },
+      {
+        "addr": 225717,
+        "disasm": "mov     dx, 100h"
+      },
+      {
+        "addr": 225720,
+        "disasm": "xor     bx, bx"
+      },
+      {
+        "addr": 225722,
+        "disasm": "mov     si, 4816h"
+      },
+      {
+        "addr": 225725,
+        "disasm": "call    farobj_step_terrain_clamp"
+      },
+      {
+        "addr": 225730,
+        "disasm": "pop     si"
+      },
+      {
+        "addr": 225731,
+        "disasm": "pop     es"
+      },
+      {
+        "addr": 225732,
+        "disasm": "jb      short loc_371E1"
+      },
+      {
+        "addr": 225734,
+        "disasm": "sub     ax, 100h"
+      },
+      {
+        "addr": 225737,
+        "disasm": "neg     ax"
+      },
+      {
+        "addr": 225739,
+        "disasm": "cwd"
+      },
+      {
+        "addr": 225740,
+        "disasm": "mov     dl, ah"
+      },
+      {
+        "addr": 225742,
+        "disasm": "mov     ah, al"
+      },
+      {
+        "addr": 225744,
+        "disasm": "xor     al, al"
+      },
+      {
+        "addr": 225746,
+        "disasm": "mov     si, [si+4Ch]"
+      },
+      {
+        "addr": 225749,
+        "disasm": "div     si"
+      },
+      {
+        "addr": 225751,
+        "disasm": "cmp     ax, 10h"
+      },
+      {
+        "addr": 225754,
+        "disasm": "jnb     short loc_371E1"
+      },
+      {
+        "addr": 225756,
+        "disasm": "mov     ds:105Dh, al"
+      },
+      {
+        "addr": 225759,
+        "disasm": "clc"
+      },
+      {
+        "addr": 225760,
+        "disasm": "retn"
+      },
+      {
+        "addr": 225761,
+        "disasm": "stc"
+      },
+      {
+        "addr": 225762,
+        "disasm": "retn"
+      },
+      {
+        "addr": 225763,
+        "disasm": "push    es"
+      },
+      {
+        "addr": 225764,
+        "disasm": "mov     ax, ds"
+      },
+      {
+        "addr": 225766,
+        "disasm": "mov     es, ax"
+      },
+      {
+        "addr": 225768,
+        "disasm": "mov     si, ds:48BAh"
+      },
+      {
+        "addr": 225772,
+        "disasm": "mov     ax, [si+0Ch]"
+      },
+      {
+        "addr": 225775,
+        "disasm": "mov     ds:80Ch, ax"
+      },
+      {
+        "addr": 225778,
+        "disasm": "mov     di, 83Ch"
+      },
+      {
+        "addr": 225781,
+        "disasm": "call    angle_xy_near"
+      },
+      {
+        "addr": 225786,
+        "disasm": "cmp     byte ptr ds:105Fh, 0"
+      },
+      {
+        "addr": 225791,
+        "disasm": "jz      short loc_37207"
+      },
+      {
+        "addr": 225793,
+        "disasm": "sub     ax, ds:848h"
+      },
+      {
+        "addr": 225797,
+        "disasm": "jmp     short loc_3720B"
+      },
+      {
+        "addr": 225799,
+        "disasm": "sub     ax, ds:80Ch"
+      },
+      {
+        "addr": 225803,
+        "disasm": "call    stub_to_24988"
+      },
+      {
+        "addr": 225808,
+        "disasm": "mov     word ptr ds:80Eh, 1"
+      },
+      {
+        "addr": 225814,
+        "disasm": "cwd"
+      },
+      {
+        "addr": 225815,
+        "disasm": "xor     ax, dx"
+      },
+      {
+        "addr": 225817,
+        "disasm": "sub     ax, dx"
+      },
+      {
+        "addr": 225819,
+        "disasm": "cmp     ax, 800h"
+      },
+      {
+        "addr": 225822,
+        "disasm": "jle     short loc_37224"
+      },
+      {
+        "addr": 225824,
+        "disasm": "dec     word ptr ds:80Eh"
+      },
+      {
+        "addr": 225828,
+        "disasm": "xor     ax, dx"
+      },
+      {
+        "addr": 225830,
+        "disasm": "sub     ax, dx"
+      },
+      {
+        "addr": 225832,
+        "disasm": "mov     ds:810h, ax"
+      },
+      {
+        "addr": 225835,
+        "disasm": "mov     si, ds:48BAh"
+      },
+      {
+        "addr": 225839,
+        "disasm": "mov     ax, [si+8]"
+      },
+      {
+        "addr": 225842,
+        "disasm": "mov     ds:81Ah, ax"
+      },
+      {
+        "addr": 225845,
+        "disasm": "mov     ax, [si+0Ah]"
+      },
+      {
+        "addr": 225848,
+        "disasm": "mov     ds:81Ch, ax"
+      },
+      {
+        "addr": 225851,
+        "disasm": "mov     di, 83Ch"
+      },
+      {
+        "addr": 225854,
+        "disasm": "call    angle_quad_norm_far"
+      },
+      {
+        "addr": 225859,
+        "disasm": "mov     ds:816h, ax"
+      },
+      {
+        "addr": 225862,
+        "disasm": "mov     ds:818h, dx"
+      },
+      {
+        "addr": 225866,
+        "disasm": "xor     ax, ax"
+      },
+      {
+        "addr": 225868,
+        "disasm": "mov     di, 81Eh"
+      },
+      {
+        "addr": 225871,
+        "disasm": "stosw"
+      },
+      {
+        "addr": 225872,
+        "disasm": "stosw"
+      },
+      {
+        "addr": 225873,
+        "disasm": "stosw"
+      },
+      {
+        "addr": 225874,
+        "disasm": "stosw"
+      },
+      {
+        "addr": 225875,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 225878,
+        "disasm": "mov     di, 816h"
+      },
+      {
+        "addr": 225881,
+        "disasm": "call    angle_xy_near"
+      },
+      {
+        "addr": 225886,
+        "disasm": "mov     word ptr ds:812h, 1"
+      },
+      {
+        "addr": 225892,
+        "disasm": "sub     ax, ds:84Ah"
+      },
+      {
+        "addr": 225896,
+        "disasm": "call    stub_to_24988"
+      },
+      {
+        "addr": 225901,
+        "disasm": "cwd"
+      },
+      {
+        "addr": 225902,
+        "disasm": "xor     ax, dx"
+      },
+      {
+        "addr": 225904,
+        "disasm": "sub     ax, dx"
+      },
+      {
+        "addr": 225906,
+        "disasm": "cmp     ax, 800h"
+      },
+      {
+        "addr": 225909,
+        "disasm": "jle     short loc_3727B"
+      },
+      {
+        "addr": 225911,
+        "disasm": "dec     word ptr ds:812h"
+      },
+      {
+        "addr": 225915,
+        "disasm": "xor     ax, dx"
+      },
+      {
+        "addr": 225917,
+        "disasm": "sub     ax, dx"
+      },
+      {
+        "addr": 225919,
+        "disasm": "mov     ds:814h, ax"
+      },
+      {
+        "addr": 225922,
+        "disasm": "pop     es"
+      },
+      {
+        "addr": 225923,
+        "disasm": "mov     si, ds:48BAh"
+      },
+      {
+        "addr": 225927,
+        "disasm": "mov     ax, [si+10h]"
+      },
+      {
+        "addr": 225930,
+        "disasm": "neg     ax"
+      },
+      {
+        "addr": 225932,
+        "disasm": "mov     bx, 7FCh"
+      },
+      {
+        "addr": 225935,
+        "disasm": "call    stub_to_249d8"
+      },
+      {
+        "addr": 225940,
+        "disasm": "mov     bx, 2D0h"
+      },
+      {
+        "addr": 225943,
+        "disasm": "mov     ax, ds:7FCh"
+      },
+      {
+        "addr": 225946,
+        "disasm": "imul    bx"
+      },
+      {
+        "addr": 225948,
+        "disasm": "mov     ds:7FCh, dx"
+      },
+      {
+        "addr": 225952,
+        "disasm": "mov     bp, dx"
+      },
+      {
+        "addr": 225954,
+        "disasm": "sar     dx, 1"
+      },
+      {
+        "addr": 225956,
+        "disasm": "mov     ds:800h, dx"
+      },
+      {
+        "addr": 225960,
+        "disasm": "sar     dx, 1"
+      },
+      {
+        "addr": 225962,
+        "disasm": "sar     dx, 1"
+      },
+      {
+        "addr": 225964,
+        "disasm": "mov     ds:804h, dx"
+      },
+      {
+        "addr": 225968,
+        "disasm": "mov     ax, ds:7FEh"
+      },
+      {
+        "addr": 225971,
+        "disasm": "imul    bx"
+      },
+      {
+        "addr": 225973,
+        "disasm": "mov     ds:7FEh, dx"
+      },
+      {
+        "addr": 225977,
+        "disasm": "mov     bx, dx"
+      },
+      {
+        "addr": 225979,
+        "disasm": "sar     dx, 1"
+      },
+      {
+        "addr": 225981,
+        "disasm": "mov     ds:802h, dx"
+      },
+      {
+        "addr": 225985,
+        "disasm": "sar     dx, 1"
+      },
+      {
+        "addr": 225987,
+        "disasm": "sar     dx, 1"
+      },
+      {
+        "addr": 225989,
+        "disasm": "mov     ds:806h, dx"
+      },
+      {
+        "addr": 225993,
+        "disasm": "cmp     word ptr ds:80Eh, 0"
+      },
+      {
+        "addr": 225998,
+        "disasm": "jnz     short loc_372F0"
+      },
+      {
+        "addr": 226000,
+        "disasm": "mov     ax, ds:810h"
+      },
+      {
+        "addr": 226003,
+        "disasm": "cwd"
+      },
+      {
+        "addr": 226004,
+        "disasm": "xor     bp, dx"
+      },
+      {
+        "addr": 226006,
+        "disasm": "sub     bp, dx"
+      },
+      {
+        "addr": 226008,
+        "disasm": "add     bp, ds:6C6h"
+      },
+      {
+        "addr": 226012,
+        "disasm": "mov     ds:818h, bp"
+      },
+      {
+        "addr": 226016,
+        "disasm": "xor     bx, dx"
+      },
+      {
+        "addr": 226018,
+        "disasm": "sub     bx, dx"
+      },
+      {
+        "addr": 226020,
+        "disasm": "add     bx, ds:6C4h"
+      },
+      {
+        "addr": 226024,
+        "disasm": "mov     ds:816h, bx"
+      },
+      {
+        "addr": 226028,
+        "disasm": "mov     ax, bp"
+      },
+      {
+        "addr": 226030,
+        "disasm": "jmp     short loc_37312"
+      },
+      {
+        "addr": 226032,
+        "disasm": "mov     si, 800h"
+      },
+      {
+        "addr": 226035,
+        "disasm": "mov     ax, ds:810h"
+      },
+      {
+        "addr": 226038,
+        "disasm": "mov     cx, ax"
+      },
+      {
+        "addr": 226040,
+        "disasm": "imul    bx"
+      },
+      {
+        "addr": 226042,
+        "disasm": "idiv    si"
+      },
+      {
+        "addr": 226044,
+        "disasm": "add     ax, ds:6C4h"
+      },
+      {
+        "addr": 226048,
+        "disasm": "mov     ds:816h, ax"
+      },
+      {
+        "addr": 226051,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226053,
+        "disasm": "mov     ax, cx"
+      },
+      {
+        "addr": 226055,
+        "disasm": "imul    bp"
+      },
+      {
+        "addr": 226057,
+        "disasm": "idiv    si"
+      },
+      {
+        "addr": 226059,
+        "disasm": "add     ax, ds:6C6h"
+      },
+      {
+        "addr": 226063,
+        "disasm": "mov     ds:818h, ax"
+      },
+      {
+        "addr": 226066,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 226069,
+        "disasm": "mov     dx, bx"
+      },
+      {
+        "addr": 226071,
+        "disasm": "add     dx, ds:7FCh"
+      },
+      {
+        "addr": 226075,
+        "disasm": "mov     ds:826h, dx"
+      },
+      {
+        "addr": 226079,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 226081,
+        "disasm": "adc     dx, 0"
+      },
+      {
+        "addr": 226084,
+        "disasm": "mov     ds:81Eh, dx"
+      },
+      {
+        "addr": 226088,
+        "disasm": "sub     bx, ds:7FCh"
+      },
+      {
+        "addr": 226092,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226094,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226097,
+        "disasm": "mov     ds:822h, bx"
+      },
+      {
+        "addr": 226101,
+        "disasm": "mov     dx, ax"
+      },
+      {
+        "addr": 226103,
+        "disasm": "sub     dx, ds:7FEh"
+      },
+      {
+        "addr": 226107,
+        "disasm": "mov     ds:828h, dx"
+      },
+      {
+        "addr": 226111,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 226113,
+        "disasm": "adc     dx, 0"
+      },
+      {
+        "addr": 226116,
+        "disasm": "mov     ds:820h, dx"
+      },
+      {
+        "addr": 226120,
+        "disasm": "add     ax, ds:7FEh"
+      },
+      {
+        "addr": 226124,
+        "disasm": "sar     ax, cl"
+      },
+      {
+        "addr": 226126,
+        "disasm": "adc     ax, 0"
+      },
+      {
+        "addr": 226129,
+        "disasm": "mov     ds:824h, ax"
+      },
+      {
+        "addr": 226132,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226135,
+        "disasm": "call    segment_clip_test"
+      },
+      {
+        "addr": 226140,
+        "disasm": "jb      short loc_373DD"
+      },
+      {
+        "addr": 226142,
+        "disasm": "mov     ax, 0FFFFh"
+      },
+      {
+        "addr": 226145,
+        "disasm": "add     ax, ds:80Eh"
+      },
+      {
+        "addr": 226149,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226152,
+        "disasm": "call    clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226157,
+        "disasm": "mov     cx, 5"
+      },
+      {
+        "addr": 226160,
+        "disasm": "mov     si, 826h"
+      },
+      {
+        "addr": 226163,
+        "disasm": "push    si"
+      },
+      {
+        "addr": 226164,
+        "disasm": "push    cx"
+      },
+      {
+        "addr": 226165,
+        "disasm": "mov     di, si"
+      },
+      {
+        "addr": 226167,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 226170,
+        "disasm": "lodsw"
+      },
+      {
+        "addr": 226171,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226173,
+        "disasm": "add     bx, ds:806h"
+      },
+      {
+        "addr": 226177,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226179,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226182,
+        "disasm": "mov     ds:81Eh, bx"
+      },
+      {
+        "addr": 226186,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226188,
+        "disasm": "sub     bx, ds:806h"
+      },
+      {
+        "addr": 226192,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226194,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226197,
+        "disasm": "mov     ds:822h, bx"
+      },
+      {
+        "addr": 226201,
+        "disasm": "sub     ax, ds:800h"
+      },
+      {
+        "addr": 226205,
+        "disasm": "mov     [di], ax"
+      },
+      {
+        "addr": 226207,
+        "disasm": "lodsw"
+      },
+      {
+        "addr": 226208,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226210,
+        "disasm": "add     bx, ds:804h"
+      },
+      {
+        "addr": 226214,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226216,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226219,
+        "disasm": "mov     ds:820h, bx"
+      },
+      {
+        "addr": 226223,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226225,
+        "disasm": "sub     bx, ds:804h"
+      },
+      {
+        "addr": 226229,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226231,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226234,
+        "disasm": "mov     ds:824h, bx"
+      },
+      {
+        "addr": 226238,
+        "disasm": "add     ax, ds:802h"
+      },
+      {
+        "addr": 226242,
+        "disasm": "mov     [di+2], ax"
+      },
+      {
+        "addr": 226245,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226248,
+        "disasm": "call    segment_clip_test"
+      },
+      {
+        "addr": 226253,
+        "disasm": "jb      short loc_373D9"
+      },
+      {
+        "addr": 226255,
+        "disasm": "xor     ax, ax"
+      },
+      {
+        "addr": 226257,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226260,
+        "disasm": "call    clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226265,
+        "disasm": "pop     cx"
+      },
+      {
+        "addr": 226266,
+        "disasm": "pop     si"
+      },
+      {
+        "addr": 226267,
+        "disasm": "loop    loc_37373"
+      },
+      {
+        "addr": 226269,
+        "disasm": "cmp     word ptr ds:812h, 0"
+      },
+      {
+        "addr": 226274,
+        "disasm": "jnz     short loc_37410"
+      },
+      {
+        "addr": 226276,
+        "disasm": "mov     ax, ds:814h"
+      },
+      {
+        "addr": 226279,
+        "disasm": "cwd"
+      },
+      {
+        "addr": 226280,
+        "disasm": "mov     bp, dx"
+      },
+      {
+        "addr": 226282,
+        "disasm": "xor     dx, ds:7FCh"
+      },
+      {
+        "addr": 226286,
+        "disasm": "sub     dx, bp"
+      },
+      {
+        "addr": 226288,
+        "disasm": "neg     dx"
+      },
+      {
+        "addr": 226290,
+        "disasm": "add     dx, ds:6C4h"
+      },
+      {
+        "addr": 226294,
+        "disasm": "mov     ds:816h, dx"
+      },
+      {
+        "addr": 226298,
+        "disasm": "mov     bx, dx"
+      },
+      {
+        "addr": 226300,
+        "disasm": "mov     dx, bp"
+      },
+      {
+        "addr": 226302,
+        "disasm": "xor     dx, ds:7FEh"
+      },
+      {
+        "addr": 226306,
+        "disasm": "sub     dx, bp"
+      },
+      {
+        "addr": 226308,
+        "disasm": "add     dx, ds:6C6h"
+      },
+      {
+        "addr": 226312,
+        "disasm": "mov     ds:818h, dx"
+      },
+      {
+        "addr": 226316,
+        "disasm": "mov     ax, dx"
+      },
+      {
+        "addr": 226318,
+        "disasm": "jmp     short loc_37438"
+      },
+      {
+        "addr": 226320,
+        "disasm": "mov     si, 0F800h"
+      },
+      {
+        "addr": 226323,
+        "disasm": "mov     ax, ds:814h"
+      },
+      {
+        "addr": 226326,
+        "disasm": "mov     cx, ax"
+      },
+      {
+        "addr": 226328,
+        "disasm": "imul    word ptr ds:7FCh"
+      },
+      {
+        "addr": 226332,
+        "disasm": "idiv    si"
+      },
+      {
+        "addr": 226334,
+        "disasm": "add     ax, ds:6C4h"
+      },
+      {
+        "addr": 226338,
+        "disasm": "mov     ds:816h, ax"
+      },
+      {
+        "addr": 226341,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226343,
+        "disasm": "mov     ax, cx"
+      },
+      {
+        "addr": 226345,
+        "disasm": "neg     ax"
+      },
+      {
+        "addr": 226347,
+        "disasm": "imul    word ptr ds:7FEh"
+      },
+      {
+        "addr": 226351,
+        "disasm": "idiv    si"
+      },
+      {
+        "addr": 226353,
+        "disasm": "add     ax, ds:6C6h"
+      },
+      {
+        "addr": 226357,
+        "disasm": "mov     ds:818h, ax"
+      },
+      {
+        "addr": 226360,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 226363,
+        "disasm": "mov     dx, bx"
+      },
+      {
+        "addr": 226365,
+        "disasm": "add     dx, ds:7FEh"
+      },
+      {
+        "addr": 226369,
+        "disasm": "mov     ds:826h, dx"
+      },
+      {
+        "addr": 226373,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 226375,
+        "disasm": "adc     dx, 0"
+      },
+      {
+        "addr": 226378,
+        "disasm": "mov     ds:81Eh, dx"
+      },
+      {
+        "addr": 226382,
+        "disasm": "sub     bx, ds:7FEh"
+      },
+      {
+        "addr": 226386,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226388,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226391,
+        "disasm": "mov     ds:822h, bx"
+      },
+      {
+        "addr": 226395,
+        "disasm": "mov     dx, ax"
+      },
+      {
+        "addr": 226397,
+        "disasm": "add     dx, ds:7FCh"
+      },
+      {
+        "addr": 226401,
+        "disasm": "mov     ds:828h, dx"
+      },
+      {
+        "addr": 226405,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 226407,
+        "disasm": "adc     dx, 0"
+      },
+      {
+        "addr": 226410,
+        "disasm": "mov     ds:820h, dx"
+      },
+      {
+        "addr": 226414,
+        "disasm": "sub     ax, ds:7FCh"
+      },
+      {
+        "addr": 226418,
+        "disasm": "sar     ax, cl"
+      },
+      {
+        "addr": 226420,
+        "disasm": "adc     ax, 0"
+      },
+      {
+        "addr": 226423,
+        "disasm": "mov     ds:824h, ax"
+      },
+      {
+        "addr": 226426,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226429,
+        "disasm": "call    segment_clip_test"
+      },
+      {
+        "addr": 226434,
+        "disasm": "jb      short loc_37503"
+      },
+      {
+        "addr": 226436,
+        "disasm": "mov     ax, 0FFFFh"
+      },
+      {
+        "addr": 226439,
+        "disasm": "add     ax, ds:812h"
+      },
+      {
+        "addr": 226443,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226446,
+        "disasm": "call    clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226451,
+        "disasm": "mov     cx, 5"
+      },
+      {
+        "addr": 226454,
+        "disasm": "mov     si, 826h"
+      },
+      {
+        "addr": 226457,
+        "disasm": "push    si"
+      },
+      {
+        "addr": 226458,
+        "disasm": "push    cx"
+      },
+      {
+        "addr": 226459,
+        "disasm": "mov     di, si"
+      },
+      {
+        "addr": 226461,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 226464,
+        "disasm": "lodsw"
+      },
+      {
+        "addr": 226465,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226467,
+        "disasm": "add     bx, ds:804h"
+      },
+      {
+        "addr": 226471,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226473,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226476,
+        "disasm": "mov     ds:81Eh, bx"
+      },
+      {
+        "addr": 226480,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226482,
+        "disasm": "sub     bx, ds:804h"
+      },
+      {
+        "addr": 226486,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226488,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226491,
+        "disasm": "mov     ds:822h, bx"
+      },
+      {
+        "addr": 226495,
+        "disasm": "sub     ax, ds:802h"
+      },
+      {
+        "addr": 226499,
+        "disasm": "mov     [di], ax"
+      },
+      {
+        "addr": 226501,
+        "disasm": "lodsw"
+      },
+      {
+        "addr": 226502,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226504,
+        "disasm": "sub     bx, ds:806h"
+      },
+      {
+        "addr": 226508,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226510,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226513,
+        "disasm": "mov     ds:820h, bx"
+      },
+      {
+        "addr": 226517,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 226519,
+        "disasm": "add     bx, ds:806h"
+      },
+      {
+        "addr": 226523,
+        "disasm": "sar     bx, cl"
+      },
+      {
+        "addr": 226525,
+        "disasm": "adc     bx, 0"
+      },
+      {
+        "addr": 226528,
+        "disasm": "mov     ds:824h, bx"
+      },
+      {
+        "addr": 226532,
+        "disasm": "sub     ax, ds:800h"
+      },
+      {
+        "addr": 226536,
+        "disasm": "mov     [di+2], ax"
+      },
+      {
+        "addr": 226539,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226542,
+        "disasm": "call    segment_clip_test"
+      },
+      {
+        "addr": 226547,
+        "disasm": "jb      short loc_374FF"
+      },
+      {
+        "addr": 226549,
+        "disasm": "xor     ax, ax"
+      },
+      {
+        "addr": 226551,
+        "disasm": "mov     si, 81Eh"
+      },
+      {
+        "addr": 226554,
+        "disasm": "call    clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226559,
+        "disasm": "pop     cx"
+      },
+      {
+        "addr": 226560,
+        "disasm": "pop     si"
+      },
+      {
+        "addr": 226561,
+        "disasm": "loop    loc_37499"
+      },
+      {
+        "addr": 226563,
+        "disasm": "mov     ax, ds:848h"
+      },
+      {
+        "addr": 226566,
+        "disasm": "and     ax, 3FFFh"
+      },
+      {
+        "addr": 226569,
+        "disasm": "cwd"
+      },
+      {
+        "addr": 226570,
+        "disasm": "mov     si, 1C7h"
+      },
+      {
+        "addr": 226573,
+        "disasm": "div     si"
+      },
+      {
+        "addr": 226575,
+        "disasm": "mov     byte ptr ds:101Fh, 30h ; '0'"
+      },
+      {
+        "addr": 226580,
+        "disasm": "mov     dl, 0Ah"
+      },
+      {
+        "addr": 226582,
+        "disasm": "div     dl"
+      },
+      {
+        "addr": 226584,
+        "disasm": "add     ah, 30h ; '0'"
+      },
+      {
+        "addr": 226587,
+        "disasm": "mov     ds:101Eh, ah"
+      },
+      {
+        "addr": 226591,
+        "disasm": "mov     byte ptr ds:101Dh, 20h ; ' '"
+      },
+      {
+        "addr": 226596,
+        "disasm": "or      al, al"
+      },
+      {
+        "addr": 226598,
+        "disasm": "jz      short loc_3752D"
+      },
+      {
+        "addr": 226600,
+        "disasm": "add     al, 30h ; '0'"
+      },
+      {
+        "addr": 226602,
+        "disasm": "mov     ds:101Dh, al"
+      },
+      {
+        "addr": 226605,
+        "disasm": "mov     si, 22h ; '\"'"
+      },
+      {
+        "addr": 226608,
+        "disasm": "mov     bx, 0CCh"
+      },
+      {
+        "addr": 226611,
+        "disasm": "mov     di, 51h ; 'Q'"
+      },
+      {
+        "addr": 226614,
+        "disasm": "sub     bl, ds:4A86h"
+      },
+      {
+        "addr": 226618,
+        "disasm": "mov     al, ds:4A85h"
+      },
+      {
+        "addr": 226621,
+        "disasm": "cbw"
+      },
+      {
+        "addr": 226622,
+        "disasm": "call    sprite_offset_dispatch_343e"
+      },
+      {
+        "addr": 226625,
+        "disasm": "retn"
+      },
+      {
+        "addr": 226626,
+        "disasm": "push    es"
+      },
+      {
+        "addr": 226627,
+        "disasm": "mov     al, ds:105Ah"
+      },
+      {
+        "addr": 226630,
+        "disasm": "call    sub_263F6"
+      },
+      {
+        "addr": 226635,
+        "disasm": "mov     si, 851h"
+      },
+      {
+        "addr": 226638,
+        "disasm": "add     si, 4"
+      },
+      {
+        "addr": 226641,
+        "disasm": "mov     bp, 5"
+      },
+      {
+        "addr": 226644,
+        "disasm": "mov     cx, 0Bh"
+      },
+      {
+        "addr": 226647,
+        "disasm": "mov     di, 32h ; '2'"
+      },
+      {
+        "addr": 226650,
+        "disasm": "mov     bx, 91h"
+      },
+      {
+        "addr": 226653,
+        "disasm": "call    dispatch_220d4_stub"
+      },
+      {
+        "addr": 226658,
+        "disasm": "call    dispatch_220dc_stub"
+      },
+      {
+        "addr": 226663,
+        "disasm": "pop     es"
+      },
+      {
+        "addr": 226664,
+        "disasm": "retn"
+      }
+    ],
+    "calls": [
+      {
+        "addr": 225725,
+        "target": 292743,
+        "target_name": "farobj_step_terrain_clamp"
+      },
+      {
+        "addr": 225781,
+        "target": 146314,
+        "target_name": "angle_xy_near"
+      },
+      {
+        "addr": 225803,
+        "target": 149892,
+        "target_name": "stub_to_24988"
+      },
+      {
+        "addr": 225854,
+        "target": 155202,
+        "target_name": "angle_quad_norm_far"
+      },
+      {
+        "addr": 225881,
+        "target": 146314,
+        "target_name": "angle_xy_near"
+      },
+      {
+        "addr": 225896,
+        "target": 149892,
+        "target_name": "stub_to_24988"
+      },
+      {
+        "addr": 225935,
+        "target": 155823,
+        "target_name": "stub_to_249d8"
+      },
+      {
+        "addr": 226135,
+        "target": 155539,
+        "target_name": "segment_clip_test"
+      },
+      {
+        "addr": 226152,
+        "target": 155801,
+        "target_name": "clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226248,
+        "target": 155539,
+        "target_name": "segment_clip_test"
+      },
+      {
+        "addr": 226260,
+        "target": 155801,
+        "target_name": "clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226429,
+        "target": 155539,
+        "target_name": "segment_clip_test"
+      },
+      {
+        "addr": 226446,
+        "target": 155801,
+        "target_name": "clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226542,
+        "target": 155539,
+        "target_name": "segment_clip_test"
+      },
+      {
+        "addr": 226554,
+        "target": 155801,
+        "target_name": "clip_or_draw_dispatch"
+      },
+      {
+        "addr": 226622,
+        "target": 219951,
+        "target_name": "sprite_offset_dispatch_343e"
+      },
+      {
+        "addr": 226630,
+        "target": 156662,
+        "target_name": "sub_263F6"
+      },
+      {
+        "addr": 226653,
+        "target": 156656,
+        "target_name": "dispatch_220d4_stub"
+      },
+      {
+        "addr": 226658,
+        "target": 151014,
+        "target_name": "dispatch_220dc_stub"
+      }
+    ],
+    "call_counts": {
+      "farobj_step_terrain_clamp": 1,
+      "angle_xy_near": 2,
+      "stub_to_24988": 2,
+      "angle_quad_norm_far": 1,
+      "stub_to_249d8": 1,
+      "segment_clip_test": 4,
+      "clip_or_draw_dispatch": 4,
+      "sprite_offset_dispatch_343e": 1,
+      "sub_263F6": 1,
+      "dispatch_220d4_stub": 1,
+      "dispatch_220dc_stub": 1
+    },
+    "loops": [],
+    "purpose_hints": [
+      "Drawing/rendering"
+    ],
+    "description": "Main terrain renderer"
+  },
+  "tile_strip_project_draw": {
+    "name": "tile_strip_project_draw",
+    "address": 221692,
+    "size": 331,
+    "instruction_count": 117,
+    "disassembly": [
+      {
+        "addr": 221692,
+        "disasm": "mov     ax, es:[si+8Eh]"
+      },
+      {
+        "addr": 221697,
+        "disasm": "mov     ds:4816h, ax"
+      },
+      {
+        "addr": 221700,
+        "disasm": "mov     bx, 4818h"
+      },
+      {
+        "addr": 221703,
+        "disasm": "call    stub_to_249d8"
+      },
+      {
+        "addr": 221708,
+        "disasm": "mov     bx, ds:44AAh"
+      },
+      {
+        "addr": 221712,
+        "disasm": "call    r08_farptr_load_thunk"
+      },
+      {
+        "addr": 221717,
+        "disasm": "jz      short loc_3621C"
+      },
+      {
+        "addr": 221719,
+        "disasm": "or      bx, bx"
+      },
+      {
+        "addr": 221721,
+        "disasm": "jnz     short loc_3621C"
+      },
+      {
+        "addr": 221723,
+        "disasm": "inc     bx"
+      },
+      {
+        "addr": 221724,
+        "disasm": "shl     bx, 1"
+      },
+      {
+        "addr": 221726,
+        "disasm": "mov     bx, [bx+7A0h]"
+      },
+      {
+        "addr": 221730,
+        "disasm": "mov     ax, bx"
+      },
+      {
+        "addr": 221732,
+        "disasm": "imul    word ptr ds:4818h"
+      },
+      {
+        "addr": 221736,
+        "disasm": "shl     ax, 1"
+      },
+      {
+        "addr": 221738,
+        "disasm": "rcl     dx, 1"
+      },
+      {
+        "addr": 221740,
+        "disasm": "mov     ax, dx"
+      },
+      {
+        "addr": 221742,
+        "disasm": "mov     dl, 0Dh"
+      },
+      {
+        "addr": 221744,
+        "disasm": "idiv    dl"
+      },
+      {
+        "addr": 221746,
+        "disasm": "cbw"
+      },
+      {
+        "addr": 221747,
+        "disasm": "mov     ds:4818h, ax"
+      },
+      {
+        "addr": 221750,
+        "disasm": "mov     ax, bx"
+      },
+      {
+        "addr": 221752,
+        "disasm": "imul    word ptr ds:481Ah"
+      },
+      {
+        "addr": 221756,
+        "disasm": "shl     ax, 1"
+      },
+      {
+        "addr": 221758,
+        "disasm": "rcl     dx, 1"
+      },
+      {
+        "addr": 221760,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 221763,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 221765,
+        "disasm": "neg     dx"
+      },
+      {
+        "addr": 221767,
+        "disasm": "mov     ds:481Ah, dx"
+      },
+      {
+        "addr": 221771,
+        "disasm": "mov     ax, ds:4816h"
+      },
+      {
+        "addr": 221774,
+        "disasm": "mov     bx, 481Ch"
+      },
+      {
+        "addr": 221777,
+        "disasm": "sub     ax, 555h"
+      },
+      {
+        "addr": 221780,
+        "disasm": "call    stub_to_249d8"
+      },
+      {
+        "addr": 221785,
+        "disasm": "mov     bx, 30h ; '0'"
+      },
+      {
+        "addr": 221788,
+        "disasm": "mov     ax, bx"
+      },
+      {
+        "addr": 221790,
+        "disasm": "imul    word ptr ds:481Ch"
+      },
+      {
+        "addr": 221794,
+        "disasm": "shl     ax, 1"
+      },
+      {
+        "addr": 221796,
+        "disasm": "rcl     dx, 1"
+      },
+      {
+        "addr": 221798,
+        "disasm": "mov     ax, dx"
+      },
+      {
+        "addr": 221800,
+        "disasm": "mov     dl, 0Dh"
+      },
+      {
+        "addr": 221802,
+        "disasm": "idiv    dl"
+      },
+      {
+        "addr": 221804,
+        "disasm": "cbw"
+      },
+      {
+        "addr": 221805,
+        "disasm": "mov     ds:481Ch, ax"
+      },
+      {
+        "addr": 221808,
+        "disasm": "mov     ax, bx"
+      },
+      {
+        "addr": 221810,
+        "disasm": "imul    word ptr ds:481Eh"
+      },
+      {
+        "addr": 221814,
+        "disasm": "shl     ax, 1"
+      },
+      {
+        "addr": 221816,
+        "disasm": "rcl     dx, 1"
+      },
+      {
+        "addr": 221818,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 221821,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 221823,
+        "disasm": "neg     dx"
+      },
+      {
+        "addr": 221825,
+        "disasm": "mov     ds:481Eh, dx"
+      },
+      {
+        "addr": 221829,
+        "disasm": "mov     ax, ds:4816h"
+      },
+      {
+        "addr": 221832,
+        "disasm": "mov     bx, 4820h"
+      },
+      {
+        "addr": 221835,
+        "disasm": "add     ax, 555h"
+      },
+      {
+        "addr": 221838,
+        "disasm": "call    stub_to_249d8"
+      },
+      {
+        "addr": 221843,
+        "disasm": "mov     bx, 30h ; '0'"
+      },
+      {
+        "addr": 221846,
+        "disasm": "mov     ax, bx"
+      },
+      {
+        "addr": 221848,
+        "disasm": "imul    word ptr ds:4820h"
+      },
+      {
+        "addr": 221852,
+        "disasm": "shl     ax, 1"
+      },
+      {
+        "addr": 221854,
+        "disasm": "rcl     dx, 1"
+      },
+      {
+        "addr": 221856,
+        "disasm": "mov     ax, dx"
+      },
+      {
+        "addr": 221858,
+        "disasm": "mov     dl, 0Dh"
+      },
+      {
+        "addr": 221860,
+        "disasm": "idiv    dl"
+      },
+      {
+        "addr": 221862,
+        "disasm": "cbw"
+      },
+      {
+        "addr": 221863,
+        "disasm": "mov     ds:4820h, ax"
+      },
+      {
+        "addr": 221866,
+        "disasm": "mov     ax, bx"
+      },
+      {
+        "addr": 221868,
+        "disasm": "imul    word ptr ds:4822h"
+      },
+      {
+        "addr": 221872,
+        "disasm": "shl     ax, 1"
+      },
+      {
+        "addr": 221874,
+        "disasm": "rcl     dx, 1"
+      },
+      {
+        "addr": 221876,
+        "disasm": "mov     cx, 4"
+      },
+      {
+        "addr": 221879,
+        "disasm": "sar     dx, cl"
+      },
+      {
+        "addr": 221881,
+        "disasm": "neg     dx"
+      },
+      {
+        "addr": 221883,
+        "disasm": "mov     ds:4822h, dx"
+      },
+      {
+        "addr": 221887,
+        "disasm": "mov     ax, ds:4818h"
+      },
+      {
+        "addr": 221890,
+        "disasm": "mov     bx, ds:481Ah"
+      },
+      {
+        "addr": 221894,
+        "disasm": "add     ax, 0A0h"
+      },
+      {
+        "addr": 221897,
+        "disasm": "add     bx, 32h ; '2'"
+      },
+      {
+        "addr": 221900,
+        "disasm": "add     ax, ds:6F8h"
+      },
+      {
+        "addr": 221904,
+        "disasm": "add     bx, ds:6FAh"
+      },
+      {
+        "addr": 221908,
+        "disasm": "cmp     ax, 4"
+      },
+      {
+        "addr": 221911,
+        "disasm": "jl      short locret_36346"
+      },
+      {
+        "addr": 221913,
+        "disasm": "cmp     ax, 13Bh"
+      },
+      {
+        "addr": 221916,
+        "disasm": "jg      short locret_36346"
+      },
+      {
+        "addr": 221918,
+        "disasm": "cmp     bx, 4"
+      },
+      {
+        "addr": 221921,
+        "disasm": "jl      short locret_36346"
+      },
+      {
+        "addr": 221923,
+        "disasm": "cmp     bx, 0C3h"
+      },
+      {
+        "addr": 221927,
+        "disasm": "jg      short locret_36346"
+      },
+      {
+        "addr": 221929,
+        "disasm": "mov     cx, ax"
+      },
+      {
+        "addr": 221931,
+        "disasm": "mov     dx, bx"
+      },
+      {
+        "addr": 221933,
+        "disasm": "mov     ds:6D8h, ax"
+      },
+      {
+        "addr": 221936,
+        "disasm": "mov     ds:6DAh, bx"
+      },
+      {
+        "addr": 221940,
+        "disasm": "add     ax, ds:481Ch"
+      },
+      {
+        "addr": 221944,
+        "disasm": "add     bx, ds:481Eh"
+      },
+      {
+        "addr": 221948,
+        "disasm": "mov     ds:6DCh, ax"
+      },
+      {
+        "addr": 221951,
+        "disasm": "mov     ds:6DEh, bx"
+      },
+      {
+        "addr": 221955,
+        "disasm": "add     ds:4820h, cx"
+      },
+      {
+        "addr": 221959,
+        "disasm": "add     ds:4822h, dx"
+      },
+      {
+        "addr": 221963,
+        "disasm": "xor     ax, ax"
+      },
+      {
+        "addr": 221965,
+        "disasm": "mov     es, word ptr ds:796h"
+      },
+      {
+        "addr": 221969,
+        "disasm": "mov     si, 6D8h"
+      },
+      {
+        "addr": 221972,
+        "disasm": "call    clip_or_draw_dispatch"
+      },
+      {
+        "addr": 221977,
+        "disasm": "mov     ax, ds:4820h"
+      },
+      {
+        "addr": 221980,
+        "disasm": "mov     bx, ds:4822h"
+      },
+      {
+        "addr": 221984,
+        "disasm": "cmp     ax, 4"
+      },
+      {
+        "addr": 221987,
+        "disasm": "jl      short locret_36346"
+      },
+      {
+        "addr": 221989,
+        "disasm": "cmp     ax, 13Bh"
+      },
+      {
+        "addr": 221992,
+        "disasm": "jg      short locret_36346"
+      },
+      {
+        "addr": 221994,
+        "disasm": "cmp     bx, 4"
+      },
+      {
+        "addr": 221997,
+        "disasm": "jl      short locret_36346"
+      },
+      {
+        "addr": 221999,
+        "disasm": "cmp     bx, 0C3h"
+      },
+      {
+        "addr": 222003,
+        "disasm": "jg      short locret_36346"
+      },
+      {
+        "addr": 222005,
+        "disasm": "mov     ds:6DCh, ax"
+      },
+      {
+        "addr": 222008,
+        "disasm": "mov     ds:6DEh, bx"
+      },
+      {
+        "addr": 222012,
+        "disasm": "xor     ax, ax"
+      },
+      {
+        "addr": 222014,
+        "disasm": "mov     si, 6D8h"
+      },
+      {
+        "addr": 222017,
+        "disasm": "call    clip_or_draw_dispatch"
+      },
+      {
+        "addr": 222022,
+        "disasm": "retn"
+      }
+    ],
+    "calls": [
+      {
+        "addr": 221703,
+        "target": 155823,
+        "target_name": "stub_to_249d8"
+      },
+      {
+        "addr": 221712,
+        "target": 326968,
+        "target_name": "r08_farptr_load_thunk"
+      },
+      {
+        "addr": 221780,
+        "target": 155823,
+        "target_name": "stub_to_249d8"
+      },
+      {
+        "addr": 221838,
+        "target": 155823,
+        "target_name": "stub_to_249d8"
+      },
+      {
+        "addr": 221972,
+        "target": 155801,
+        "target_name": "clip_or_draw_dispatch"
+      },
+      {
+        "addr": 222017,
+        "target": 155801,
+        "target_name": "clip_or_draw_dispatch"
+      }
+    ],
+    "call_counts": {
+      "stub_to_249d8": 3,
+      "r08_farptr_load_thunk": 1,
+      "clip_or_draw_dispatch": 2
+    },
+    "loops": [],
+    "purpose_hints": [
+      "Drawing/rendering"
+    ],
+    "description": "3D projection to 2D"
+  },
+  "tile_strip_sample_draw": {
+    "name": "tile_strip_sample_draw",
+    "address": 90208,
+    "size": 126,
+    "instruction_count": 49,
+    "disassembly": [
+      {
+        "addr": 90208,
+        "disasm": "mov     ax, cs:word_11C2A"
+      },
+      {
+        "addr": 90212,
+        "disasm": "sub     ax, cs:word_11C42"
+      },
+      {
+        "addr": 90217,
+        "disasm": "mov     word ptr cs:loc_1608D+1, ax"
+      },
+      {
+        "addr": 90221,
+        "disasm": "mov     ax, cs:word_11C28"
+      },
+      {
+        "addr": 90225,
+        "disasm": "sub     ax, cs:word_11C44"
+      },
+      {
+        "addr": 90230,
+        "disasm": "mov     word ptr cs:loc_1609C+1, ax"
+      },
+      {
+        "addr": 90234,
+        "disasm": "jmp     short $+2"
+      },
+      {
+        "addr": 90236,
+        "disasm": "mov     di, 46E9h"
+      },
+      {
+        "addr": 90239,
+        "disasm": "mov     bp, 47E9h"
+      },
+      {
+        "addr": 90242,
+        "disasm": "mov     cx, 40h ; '@'"
+      },
+      {
+        "addr": 90245,
+        "disasm": "sub     dx, dx"
+      },
+      {
+        "addr": 90247,
+        "disasm": "mov     si, ds:46E7h"
+      },
+      {
+        "addr": 90251,
+        "disasm": "mov     ax, [si]"
+      },
+      {
+        "addr": 90253,
+        "disasm": "add     ax, 0ABCDh"
+      },
+      {
+        "addr": 90256,
+        "disasm": "and     ax, 7FFh"
+      },
+      {
+        "addr": 90259,
+        "disasm": "mov     bx, ax"
+      },
+      {
+        "addr": 90261,
+        "disasm": "mov     ds:[bp+0], ax"
+      },
+      {
+        "addr": 90265,
+        "disasm": "mov     ax, [si+2]"
+      },
+      {
+        "addr": 90268,
+        "disasm": "add     ax, 0ABCDh"
+      },
+      {
+        "addr": 90271,
+        "disasm": "and     ax, 7FFh"
+      },
+      {
+        "addr": 90274,
+        "disasm": "mov     ds:[bp+2], ax"
+      },
+      {
+        "addr": 90278,
+        "disasm": "push    cx"
+      },
+      {
+        "addr": 90279,
+        "disasm": "push    dx"
+      },
+      {
+        "addr": 90280,
+        "disasm": "push    si"
+      },
+      {
+        "addr": 90281,
+        "disasm": "push    di"
+      },
+      {
+        "addr": 90282,
+        "disasm": "call    tile_quad_sample"
+      },
+      {
+        "addr": 90285,
+        "disasm": "pop     di"
+      },
+      {
+        "addr": 90286,
+        "disasm": "pop     si"
+      },
+      {
+        "addr": 90287,
+        "disasm": "pop     dx"
+      },
+      {
+        "addr": 90288,
+        "disasm": "pop     cx"
+      },
+      {
+        "addr": 90289,
+        "disasm": "cmp     al, 5Fh ; '_'"
+      },
+      {
+        "addr": 90291,
+        "disasm": "jbe     short loc_160B6"
+      },
+      {
+        "addr": 90293,
+        "disasm": "inc     dx"
+      },
+      {
+        "addr": 90294,
+        "disasm": "mov     [di], al"
+      },
+      {
+        "addr": 90296,
+        "disasm": "mov     [di+40h], ah"
+      },
+      {
+        "addr": 90299,
+        "disasm": "inc     di"
+      },
+      {
+        "addr": 90300,
+        "disasm": "add     si, 4"
+      },
+      {
+        "addr": 90303,
+        "disasm": "add     bp, 4"
+      },
+      {
+        "addr": 90306,
+        "disasm": "loop    loc_1608B"
+      },
+      {
+        "addr": 90308,
+        "disasm": "cmp     dx, 40h ; '@'"
+      },
+      {
+        "addr": 90311,
+        "disasm": "jnb     short locret_160DD"
+      },
+      {
+        "addr": 90313,
+        "disasm": "push    dx"
+      },
+      {
+        "addr": 90314,
+        "disasm": "mov     bx, 47E9h"
+      },
+      {
+        "addr": 90317,
+        "disasm": "mov     si, 46E9h"
+      },
+      {
+        "addr": 90320,
+        "disasm": "mov     di, 4AE9h"
+      },
+      {
+        "addr": 90323,
+        "disasm": "mov     cs:byte_11CAF, 1"
+      },
+      {
+        "addr": 90329,
+        "disasm": "call    tile_clip_draw_14200"
+      },
+      {
+        "addr": 90332,
+        "disasm": "pop     dx"
+      },
+      {
+        "addr": 90333,
+        "disasm": "retn"
+      }
+    ],
+    "calls": [
+      {
+        "addr": 90282,
+        "target": 84310,
+        "target_name": "tile_quad_sample"
+      },
+      {
+        "addr": 90329,
+        "target": 82432,
+        "target_name": "tile_clip_draw_14200"
+      }
+    ],
+    "call_counts": {
+      "tile_quad_sample": 1,
+      "tile_clip_draw_14200": 1
+    },
+    "loops": [],
+    "purpose_hints": [
+      "Drawing/rendering",
+      "Tile management"
+    ],
+    "description": "Pixel sampling and output"
+  }
+}
