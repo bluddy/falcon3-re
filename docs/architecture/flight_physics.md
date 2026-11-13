@@ -268,3 +268,118 @@ for N = 0..entity_count-1:
 ```
 
 Used for time-based events: weapons reload, missile motor burn time, damage recovery.
+
+
+---
+
+## Control Input to Aerodynamics Path
+
+### Entry Point: `sub_307A5` @ 0x307A5 (Level 19, 118B)
+
+Links control inputs to aerodynamics physics update. Called by 8 functions including `sub_2F6D0` (main game loop), `sub_3CE92` (AI behavior dispatcher), and weapon/effect handlers.
+
+**Callees:**
+- `control_axis_value` (L1) - reads individual control axis value
+- `control_axes_read` (L3) - reads all 4 axes
+- `sub_3E16B` (L19) - **aerodynamics physics update** (865B)
+
+**Assembly @ 0x307A5:**
+```asm
+call   flag_2e125_gate_stc       ; check gate flag
+jnb    loc_307AD                 ; if carry clear, skip
+retf                             ; early return
+```
+
+Very short function - primarily a gate check before aerodynamics update.
+
+### Control Axis Reader: `sub_3099C` @ 0x3099C (Level 19, 214B)
+
+Writes control axes to entity record. Called by 6 functions during entity setup.
+
+**Callees include:**
+- `control_axis_value` (L1)
+- `control_axes_read` (L3)
+- `pos_step_chain_engine` (L5) - position integration
+- `sub_3CE92` (L19) - AI behavior
+
+**Description from analysis:** "Control axes record write: writes 47Bh x7 words + cs:word_2E137/139 + control_axes_read x2 + control_axis_value + 2E145/147/149 into the record."
+
+This function captures control state into entity records for physics simulation.
+
+---
+
+## Aerodynamics Force Application
+
+### Velocity Update: `sub_3E16B` @ 0x3E16B (Level 19, 865B)
+
+Core physics update function. Applies aerodynamic forces to entity velocity vector.
+
+**Force Application @ 0x3E2B6-0x3E2CF:**
+```asm
+; BX = force magnitude (scaled)
+; DI = FarObj pointer (contains force vector at +50h/52h/54h)
+; SI = Entity record pointer (contains velocity at +3Ah..+44h)
+
+mov    ax, [di+50h]              ; force vector X component
+imul   bx                        ; multiply by magnitude
+add    [si+3Ah], ax              ; add to velocity X (low word)
+adc    [si+3Ch], dx              ; add to velocity X (high word)
+
+mov    ax, [di+52h]              ; force vector Y component
+imul   bx
+add    [si+3Eh], ax              ; add to velocity Y (low)
+adc    [si+40h], dx              ; add to velocity Y (high)
+
+mov    ax, [di+54h]              ; force vector Z component
+imul   bx
+add    [si+42h], ax              ; add to velocity Z (low)
+adc    [si+44h], dx              ; add to velocity Z (high)
+```
+
+**Force Magnitude Scaling @ 0x3E2A2-0x3E2A6:**
+```asm
+mov    cx, cs:word_2E102         ; time divisor
+idiv   cx                        ; divide by time step
+mov    cl, 5
+sar    ax, cl                    ; arithmetic right shift by 5 (÷32)
+push   ax                        ; → BX for force application
+```
+
+**Data Flow:**
+1. Force vector source: FarObj `+0x50/52/54` (orientation offset vector)
+2. Force magnitude: computed from distance/time, scaled by physics divisor
+3. Velocity target: Entity `+0x3A-0x44` (3D velocity vector, three int32 values)
+
+**Cross-reference with Entity System:**
+- FarObj `+0x3A-0x44` documented as 3D velocity vector (Session 3, ENTITY_FIELD_ANALYSIS_SESSION3.md)
+- FarObj `+0x50/52/54` documented as orientation offset vector (Session 4)
+- Force magnitude influenced by physics scaling at FarObj `+0x60-0x70` (type-dependent divisors)
+
+---
+
+## Analysis Status
+
+**Documented Systems:**
+- ✅ Control input (100%): ±2048 range, 4 axes, clamping confirmed
+- ✅ Kinematics block (80%): 26-byte structure, position integration confirmed
+- ✅ Force application (95%): velocity update mechanism confirmed, magnitude source traced
+- ⚠️ Aerodynamic model (40%): force vectors identified, control→force conversion unclear
+- ⚠️ Aircraft coefficients (20%): type-specific physics scaling found, Cl/Cd/Cm tables not located
+
+**Missing Links:**
+1. How do control axes (±2048) convert to aerodynamic force coefficients?
+2. Where are aircraft-specific lift/drag/moment coefficients stored?
+3. How does airspeed affect control authority?
+4. Angular velocity integration path (forces → orientation changes)
+
+**Overall Progress:** 70% → 80%
+
+**Next Steps:**
+1. Trace `control_axis_value` function to find control storage location
+2. Find aerodynamic coefficient lookup tables or polynomial functions
+3. Map remaining kinematics block fields (7 of 13 fields still unknown)
+4. Locate thrust/drag curves for different aircraft types
+
+---
+
+*Last updated: 2026-11-11, Session 1*

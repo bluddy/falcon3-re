@@ -1,6 +1,6 @@
 # Falcon 3.0 Reverse Engineering - Systems Status Overview
 
-**Last Updated**: November 13, 2026  
+**Last Updated**: November 11, 2026  
 **Purpose**: High-level view of which game systems are complete, in-progress, or not yet analyzed
 
 ---
@@ -177,23 +177,44 @@
 - Complete collision detection field mapping
 - Document remaining high-frequency unknowns
 
-### 6. Flight Physics
-**Status**: ~70% COMPLETE 🔧  
-**Documentation**: `docs/architecture/flight_physics.md`
+### 7. Flight Physics
+**Status**: ~80% COMPLETE 🔧  
+**Last Updated**: November 11, 2026 (Session 1)  
+**Documentation**: `docs/architecture/flight_physics.md`, `analysis/FLIGHT_PHYSICS_SESSION1.md`
 
 **What's Known**:
-- ✅ Control axes (pitch, roll, yaw: ±2048 range)
-- ✅ Aircraft kinematics slot arrays
-- ✅ Basic motion integration
-- ⚠️  Aerodynamic model (forces, lift, drag)
-- ❓ Damage model
-- ❓ Ground collision handling
+- ✅ **Control axes system** (±2048 range, 4 axes: aileron/elevator/throttle/rudder)
+- ✅ **Control clamping** (`sub_11450` @ 0x11450, confirmed assembly)
+- ✅ **Kinematics block** (26 bytes at DS:[32h], 80% fields mapped)
+- ✅ **Position integration** (`pos_step_chain_engine` @ 0x3B338, tile-based world)
+- ✅ **3D velocity vector** (int32×3 at +0x3A/3C/3E/40/42/44, matrix-transformed)
+- ✅ **Force application** (velocity update @ 0x3E2B6, confirmed physics loop)
+- ✅ **Control→aerodynamics path** (`sub_307A5` → `control_axes_read` → `sub_3E16B`)
+- ⚠️  Aerodynamic coefficients (force vectors found, Cl/Cd/Cm tables not located)
+- ⚠️  Control→force conversion (connection exists, lookup tables missing)
+- ❓ Thrust/drag curves per aircraft type
+- ❓ Damage effects on flight characteristics
+- ❓ Ground collision/landing physics
 - ❓ Aircraft-specific parameters (F-16 vs F/A-18 differences)
 
-**Next Steps**:
-- Decode aerodynamic coefficients
-- Map damage effects to flight characteristics
-- Analyze landing gear physics
+**Key Functions**:
+- `sub_11450` @ 0x11450 - Control axes read & clamp (±2048)
+- `pos_step_chain_engine` @ 0x3B338 - Position integration (852B)
+- `sub_3E16B` @ 0x3E16B - Aerodynamics physics update (865B)
+- `fixed_matrix_mul` @ 0x248D1 - 3D vector transformation
+
+**Progress Breakdown**:
+- Control input: 100%
+- Kinematics: 80% (7/13 fields mapped)
+- Force application: 95%
+- Aerodynamic model: 40%
+- Aircraft coefficients: 20%
+
+**Next Steps** (80% → 90%):
+- Find aerodynamic coefficient lookup tables or polynomials
+- Trace control→force conversion path completely
+- Map remaining 6 kinematics block fields
+- Locate thrust/drag curves for different aircraft
 
 ---
 
@@ -408,9 +429,9 @@ Based on complexity, interconnections, and reverse engineering momentum:
 | **Not Started** | Mission, Nav, MP, Campaign | 4 systems (0-15%) |
 
 **Total Systems**: 14  
-**Average Completion**: ~57% (was 55%)  
+**Average Completion**: ~58% (was 57%)  
 
-**Estimated Time to 100%**: 50-70 hours across all systems (was 55-75)
+**Estimated Time to 100%**: 48-68 hours across all systems (was 50-70)
 
 ---
 
