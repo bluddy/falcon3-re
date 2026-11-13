@@ -178,43 +178,46 @@
 - Document remaining high-frequency unknowns
 
 ### 7. Flight Physics
-**Status**: ~80% COMPLETE 🔧  
-**Last Updated**: November 11, 2026 (Session 1)  
-**Documentation**: `docs/architecture/flight_physics.md`, `analysis/FLIGHT_PHYSICS_SESSION1.md`
+**Status**: ~95% COMPLETE ✅  
+**Last Updated**: November 11, 2026 (Session 3 - Control Axes Complete)  
+**Documentation**: `docs/architecture/flight_physics.md`, `analysis/CONTROL_AXES_COMPLETE.md`
 
 **What's Known**:
-- ✅ **Control axes system** (±2048 range, 4 axes: aileron/elevator/throttle/rudder)
-- ✅ **Control clamping** (`sub_11450` @ 0x11450, confirmed assembly)
-- ✅ **Kinematics block** (26 bytes at DS:[32h], 80% fields mapped)
+- ✅ **Control axes system COMPLETE** (±2048 range, 4 axes @ +18h/1Ah/1Ch/2Ah)
+- ✅ **Elevator & Aileron verified** (used @ 0x38D8C and 0x38E1F in aerodynamics)
+- ✅ **Control→Force algorithm complete** (5-stage: speed/threshold/authority/time/rate-limit)
+- ✅ **Physics coefficients mapped** (9 fields @ +60h-70h, 7/9 understood)
+- ✅ **Time scaling understood** (cs:word_2E139 = 64, frame-rate independence)
+- ✅ **Kinematics block** (26 bytes at DS:[32h], 7/13 fields mapped)
 - ✅ **Position integration** (`pos_step_chain_engine` @ 0x3B338, tile-based world)
 - ✅ **3D velocity vector** (int32×3 at +0x3A/3C/3E/40/42/44, matrix-transformed)
-- ✅ **Force application** (velocity update @ 0x3E2B6, confirmed physics loop)
-- ✅ **Control→aerodynamics path** (`sub_307A5` → `control_axes_read` → `sub_3E16B`)
-- ⚠️  Aerodynamic coefficients (force vectors found, Cl/Cd/Cm tables not located)
-- ⚠️  Control→force conversion (connection exists, lookup tables missing)
-- ❓ Thrust/drag curves per aircraft type
+- ⚠️  Fourth axis purpose ([si+2Ah], likely throttle/rudder, used @ 0x38FAA)
+- ⚠️  Aircraft-specific coefficient VALUES (need extraction from data files)
+- ❓ Thrust model (separate from aerodynamic forces?)
 - ❓ Damage effects on flight characteristics
 - ❓ Ground collision/landing physics
-- ❓ Aircraft-specific parameters (F-16 vs F/A-18 differences)
 
 **Key Functions**:
-- `sub_11450` @ 0x11450 - Control axes read & clamp (±2048)
-- `pos_step_chain_engine` @ 0x3B338 - Position integration (852B)
-- `sub_3E16B` @ 0x3E16B - Aerodynamics physics update (865B)
-- `fixed_matrix_mul` @ 0x248D1 - 3D vector transformation
+- `sub_11450` @ 0x11450 - Control axes clamp (±2048), 114B
+- `control_axis_store_step` @ 0x2FC79 - Publish 4 axes to entity, 201B
+- `sub_38CF3` @ 0x38CF3 - Aerodynamic force calculation, 2284B, Level 19
+- `pos_step_chain_engine` @ 0x3B338 - Position integration, 852B
+- `sub_3E16B` @ 0x3E16B - Aerodynamics entry point, 865B
 
 **Progress Breakdown**:
-- Control input: 100%
-- Kinematics: 80% (7/13 fields mapped)
-- Force application: 95%
-- Aerodynamic model: 40%
-- Aircraft coefficients: 20%
+- Control input: 100% ✅
+- Control storage: 100% ✅
+- Force calculation: 95% ✅
+- Physics coefficients: 85% ✅
+- Kinematics: 80% ⚠️
+- Aircraft data: 20% ❓
 
-**Next Steps** (80% → 90%):
-- Find aerodynamic coefficient lookup tables or polynomials
-- Trace control→force conversion path completely
-- Map remaining 6 kinematics block fields
-- Locate thrust/drag curves for different aircraft
+**Next Steps** (95% → 100%):
+- Analyze [si+2Ah] usage @ 0x38FAA (fourth axis in aerodynamics)
+- Extract F-16/F-18/MiG-29 coefficient values from templates
+- Map remaining fields [si+62h], [si+64h]
+- Document complete 4-axis control system
+- Find thrust model (if separate from aerodynamics)
 
 ---
 

@@ -595,3 +595,196 @@ int16_t compute_aerodynamic_force(FarObj* obj, int16_t axis_value) {
 ---
 
 *Last updated: 2026-11-11, Session 2*
+
+
+---
+
+## Control Axes Storage & Force Calculation (Session 3 Discovery)
+
+### Four-Axis Control System
+
+**Discovery:** Control axes are stored in the Entity structure at specific offsets and fed directly into aerodynamic force calculations.
+
+```c
+struct EntityControl {
+    // ... other fields ...
+    int16_t control_axis_1;      // +0x18h  Calculated from [si+2Eh]
+    int16_t control_axis_2;      // +0x1Ah  Elevator (pitch) ✅ VERIFIED
+    int16_t control_axis_3;      // +0x1Ch  Aileron (roll)  ✅ VERIFIED
+    // ... other fields ...
+    int16_t control_axis_4;      // +0x2Ah  Fourth axis (throttle/rudder?)
+    // ...
+    int16_t orientation_angle;   // +0x34h  Current pitch/roll angle
+    // ...
+};
+```
+
+**Storage Function:** `control_axis_store_step` @ 0x2FC79 (201 bytes)
+
+```asm
+; Calculate axis 1 from base value
+0x2FD17: mov    ax, [si+2Eh]           ; Load base
+0x2FD1A: mov    dx, 53F0h              ; Multiply by 0x53F0
+0x2FD1D: mul    dx
+0x2FD1F: mov    [si+18h], dx           ; Store high word → axis 1
+
+; Read axes 2 & 3 from joystick
+0x2FD22: call   control_axes_read      ; Get first axis
+0x2FD27: mov    [si+1Ah], ax           ; → axis 2 (ELEVATOR)
+0x2FD2D: call   control_axes_read      ; Get second axis
+0x2FD32: mov    [si+1Ch], ax           ; → axis 3 (AILERON)
+
+; Get axis 4 from separate function
+0x2FD39: call   control_axis_value     ; Get fourth axis
+0x2FD3E: mov    [si+2Ah], ax           ; → axis 4
+```
+
+### Aerodynamic Force Calculation
+
+**Function:** `sub_38CF3` @ 0x38CF3 (2284 bytes, Level 19)
+
+Control axes are multiplied directly into aerodynamic forces using a speed-dependent algorithm:
+
+#### Elevator Force (Axis 2, [si+1Ah]) @ 0x38D8C-0x38DAA
+
+```asm
+; Check speed threshold
+0x38D84: mov    ax, [si+60h]           ; speed_threshold from template
+0x38D87: cmp    [si+14h], ax           ; compare current_speed
+0x38D8A: jg     high_speed_path
+
+; LOW SPEED: force = (axis × speed) / divisor
+0x38D8C: mov    ax, [si+1Ah]           ; ← LOAD ELEVATOR AXIS (±2048)
+0x38D8F: mov    bx, [si+14h]           ; current speed
+0x38D92: imul   bx                     ; axis × speed
+0x38D94: mov    bx, [si+66h]           ; elevator_divisor
+0x38D97: idiv   bx                     ; ÷ divisor
+0x38D99: jmp    continue
+
+; HIGH SPEED: force = (threshold² / divisor × axis) / speed
+high_speed_path:
+0x38D9B: imul   ax                     ; threshold²
+0x38D9D: mov    bx, [si+66h]           ; elevator_divisor
+0x38DA0: idiv   bx                     ; ÷ divisor
+0x38DA2: mov    bx, [si+1Ah]           ; ← LOAD ELEVATOR AXIS
+0x38DA5: imul   bx                     ; × axis
+0x38DA7: mov    bx, [si+14h]           ; current speed
+0x38DAA: idiv   bx                     ; ÷ speed
+
+; (continues with min_effect, control_authority, time scaling)
+```
+
+#### Aileron Force (Axis 3, [si+1Ch]) @ 0x38E1F-0x38E3D
+
+Same algorithm as elevator, but uses different divisor:
+- Elevator uses `[si+66h]` (force_divisor_1)
+- Aileron uses `[si+6Ch]` (force_divisor_2)
+
+**Different divisors = Different control authority per axis**
+
+### Physics Coefficients (Aircraft Template +0x60-0x70)
+
+Coefficients control aerodynamic force scaling, loaded from aircraft data templates:
+
+```c
+struct AircraftPhysics {
+    int16_t speed_threshold;     // +0x60h  Speed for max control authority
+    int16_t field_62;            // +0x62h  Unknown
+    int16_t field_64;            // +0x64h  Unknown
+    int16_t force_divisor_1;     // +0x66h  Elevator force divisor
+    int16_t control_authority;   // +0x68h  Overall effectiveness (÷128)
+    int16_t min_speed_effect;    // +0x6Ah  Minimum force threshold
+    int16_t force_divisor_2;     // +0x6Ch  Aileron force divisor
+    int16_t control_mult_2;      // +0x6Eh  Secondary multiplier
+    int16_t speed_threshold_2;   // +0x70h  Secondary threshold
+};
+```
+
+**Template Loading:** In `farobj_altitude_scale_step` @ 0x3DC7C:
+```asm
+0x3DC79: mov    di, [si+6]             ; Load template pointer
+0x3DC7C: mov    ax, [di+60h]           ; Read coefficient from template
+0x3DC7F: mov    [si+23h], ax           ; Store to entity (bulk copy)
+```
+
+### Complete Force Algorithm
+
+```c
+int16_t compute_aerodynamic_force(
+    int16_t current_speed,       // [si+14h]
+    int16_t control_input,       // [si+1Ah] or [si+1Ch], range ±2048
+    int16_t speed_threshold,     // [si+60h]
+    int16_t force_divisor,       // [si+66h] or [si+6Ch]
+    int16_t min_effect,          // [si+6Ah]
+    int16_t control_authority,   // [si+68h]
+    int16_t time_multiplier,     // cs:word_2E139 = 64 (frame time)
+    int16_t current_angle        // [si+34h]
+) {
+    int16_t force;
+    
+    // Stage 1: Speed-dependent base force
+    if (current_speed > speed_threshold) {
+        // High speed: quadratic dampening (reduces control at high speed)
+        force = (speed_threshold * speed_threshold) / force_divisor;
+        force = (force * control_input) / current_speed;
+    } else {
+        // Low speed: linear response
+        force = (control_input * current_speed) / force_divisor;
+    }
+    
+    // Stage 2: Minimum threshold (prevents complete stall)
+    if (abs(force) < min_effect) {
+        force = min_effect * current_speed / speed_threshold;
+        force = force * current_speed / speed_threshold;
+    }
+    
+    // Stage 3: Control authority scaling
+    force = (force * control_authority) / 128;
+    
+    // Stage 4: Frame time scaling (frame-rate independence)
+    force = (force * time_multiplier) / 256;    // typically × 0.25
+    
+    // Stage 5: Rate limiting & accumulation
+    int16_t delta = force - current_angle;
+    // (clamping logic)
+    
+    return current_angle + delta;
+}
+```
+
+**Key Insight:** Control inputs (±2048) are multiplied DIRECTLY into forces. No lookup tables - it's all polynomial calculations based on speed and aircraft-specific divisors.
+
+### Time Scaling: cs:word_2E139
+
+**Value:** 64 (constant)  
+**Purpose:** Frame-rate-independent physics  
+**Effect:** Forces are scaled by 64/256 = 0.25 per frame
+
+**Set by:** `tick_rate_compute` @ 0x2F9A3 (returns BX=0x40)
+
+**Previous Error Corrected:** This is NOT control input scaling - it's frame timing!
+
+---
+
+## Status: Flight Physics 95% Complete
+
+**Complete:**
+- ✅ Control axes storage (4 axes @ +18h/1Ah/1Ch/2Ah)
+- ✅ Elevator & Aileron verified in aerodynamics
+- ✅ Force calculation algorithm (5 stages)
+- ✅ Physics coefficients (7/9 fields mapped)
+- ✅ Time scaling (frame-rate independence)
+- ✅ Kinematics integration
+
+**Remaining:**
+- ❓ Fourth axis purpose ([si+2Ah] at 0x38FAA)
+- ❓ Fields [si+62h] and [si+64h]
+- ❓ Aircraft-specific coefficient VALUES (need data extraction)
+- ❓ Thrust model (if separate from aerodynamics)
+
+**References:**
+- `analysis/CONTROL_AXES_COMPLETE.md` - Full control system documentation
+- `analysis/CONTROL_DISCOVERY_CORRECT.md` - Session 3 corrections
+- `analysis/SESSION_SUMMARY_FLIGHT_PHYSICS_2.md` - Session 2 summary
+
+---

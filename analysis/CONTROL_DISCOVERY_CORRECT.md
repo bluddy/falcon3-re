@@ -94,11 +94,11 @@ struct EntityControl {
    - Control values stay as ±2048
    - word_2E139 (0x40 = 64) is TIME scaling, not control
 
-4. **Axis Mapping (HYPOTHESIS):**
-   - [si+18h] = ?
-   - [si+1Ah] = Elevator (pitch) - first aerodynamic axis
-   - [si+1Ch] = Aileron (roll) - second aerodynamic axis  
-   - [si+2Ah] = ?
+4. **Axis Mapping (Updated):**
+   - [si+18h] = Computed from [si+2Eh] via: `([si+2Eh] × 0x53F0) >> 16`
+   - [si+1Ah] = Elevator (pitch) - first aerodynamic axis, from `control_axes_read`
+   - [si+1Ch] = Aileron (roll) - second aerodynamic axis, from `control_axes_read`
+   - [si+2Ah] = Fourth control axis, from `control_axis_value` (likely throttle/rudder)
 
 ### Complete Force Calculation (CORRECTED)
 
