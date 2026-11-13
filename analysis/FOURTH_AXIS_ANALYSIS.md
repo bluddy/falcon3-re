@@ -184,16 +184,35 @@ If we can extract the algorithm at 0x38FAA:
 - Same divisors/coefficients?
 - Or completely different calculation?
 
-## Current Best Guess
+## UPDATED WITH USER KNOWLEDGE 🆕
 
-**THROTTLE (70% confidence)**
+**User confirmed:** Falcon 3.0 supports **4 hardware axes:**
+1. **Elevator** (pitch stick)
+2. **Aileron** (roll stick)
+3. **Throttle** (throttle axis)
+4. **Rudder** (rudder pedals/twist)
 
-**Reasoning:**
-1. Fourth major control input after pitch/roll/yaw
-2. Single continuous value (not paired)
-3. Affects aerodynamics (drag at high power, prop wash effects)
-4. Separate input method justifies separate function
-5. Name pattern: "control_axis_VALUE" (singular) = throttle value
+**Famous for HOTAS support** - Thrustmaster and other multi-axis controllers of the era!
+
+## NEW ANALYSIS
+
+We now know `control_axes_read` returns **TWO** axes (plural):
+- Call 1 @ 0x2FD22 → [si+1Ah] = **Elevator**
+- Call 2 @ 0x2FD2D → [si+1Ch] = **Aileron**
+
+And `control_axis_value` returns **ONE** axis (singular):
+- Call @ 0x2FD39 → [si+2Ah] = **Throttle OR Rudder**
+
+**Question:** Where is the 4th hardware axis stored?
+
+**Hypothesis Updated:**
+- [si+1Ah] = Elevator ✅
+- [si+1Ch] = Aileron ✅
+- [si+2Ah] = **Throttle** (85% confidence - used in aerodynamics @ 0x38FAA)
+- [si+??h] = **Rudder** - MISSING! Where is it stored?
+
+**OR:**
+- [si+2Ah] = **Rudder** (15% confidence - but then where's throttle?)
 
 **Next Steps:**
 1. Extract assembly at 0x38FAA region (±100 lines)
