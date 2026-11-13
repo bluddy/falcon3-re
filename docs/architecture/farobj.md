@@ -69,12 +69,18 @@ struct FarObj {
     // === Per-Frame State (0x1E-0x2D) ===
     uint16_t frame_timer;   // +0x1E  animation counter mod 8 (driven by scan_74_timer_c)
                             //         used as LOD/phase for 8-frame animation
+                            //         ** NOTE: byte +0x1F has 150 independent accesses **
+                            //         HYPOTHESIS: +0x1F = frame_timer_hi or dual-purpose timer
     uint16_t cmd_field;     // +0x20  command/state ID; also used as projection scale!
                             //         farptr_table_field_store/_get access this
                             //         MUST BE NEGATIVE for view_projection to proceed
+                            //         ** NOTE: byte +0x21 has 132 independent accesses **
+                            //         HYPOTHESIS: +0x21 = cmd_field_hi or state flags
     uint16_t object_kind;   // +0x22  index into farobj_typedesc_table (kind × 4)
                             //         decoded by farobj_type_field_get → subtype 0/1/2/3
                             //         ALSO used as LOD accumulator by viewobj_project_advance
+                            //         ** NOTE: byte +0x23 has 136 independent accesses **
+                            //         HYPOTHESIS: +0x23 = object_kind_hi or LOD_level
     uint16_t state_flags;   // +0x24  flags word:
                             //         bit 0x0040 = has_ext_slot
                             //         bit 0x8000 = scan gate set (by farobj_scan_74_gate_a)
@@ -88,26 +94,50 @@ struct FarObj {
     // Layout varies by object_kind subtype (1/2/3)
     uint16_t type_ext_0;    // +0x28
     uint16_t type_base;     // +0x2A  written by farobj_field_set for subtype 1 & 3
-    uint16_t type_ext_A;    // +0x2C  written for subtype 2
+    uint16_t type_ext_C;    // +0x2C  written for subtype 2
 
-    // === Extended Fields (0x2E-0x73) ===
-    // 70 bytes with varying access patterns (see probe results)
-    // Field access frequency (from DS:[SI+N] scan):
-    //   +0x2E: 56 accesses (alu/write/read) in 41 functions
-    //   +0x2F: 17 accesses (alu/inc) in 16 functions
-    //   +0x30: 31 accesses (mixed) in 25 functions
-    //   +0x31-0x33: 16-35 accesses each
-    //   +0x34-0x73: 1-40 accesses each (decreasing frequency)
+    // === AI / Behavior State (0x2E-0x30) ===
+    int16_t  behavior_timer;// +0x2E  (65 accesses) Signed AI state timer
+                            //         Counts up/down with threshold-based state transitions
+                            //         Range: -768..7680; thresholds at 0, 159, 305
+                            //         Used in sub_3CE92 (2580B behavior dispatcher)
+    uint16_t table_index;   // +0x30  (43 accesses) Polymorphic field offset/index
+                            //         Used as: add si,[si+30h] for indirect field access
+
+    // === 2D Tile-Based Spatial Partitioning (0x31-0x35) ===
+    // World divided into 256×256 tile grid, each tile = 13,108 × 13,108 units
+    // TILE_SIZE constant = 0x3334 = 13,108 decimal
+    int8_t   tile_x;        // +0x31  Tile zone X coordinate (-128..127)
+    int8_t   tile_y;        // +0x32  Tile zone Y coordinate (-128..127)
+    uint16_t local_pos_x;   // +0x33  Position within tile X (0..13107)
+    uint16_t field_34;      // +0x34  UNKNOWN (possibly local_pos_z or velocity_x)
+    uint16_t local_pos_y;   // +0x35  Position within tile Y (0..13107)
+                            //         Tile wrapping at boundaries triggers flag [+0x8] bit 0
+                            //         World coord = tile × TILE_SIZE + local_pos
+
+    // === Extended Fields (0x34-0x73) ===
+    // 64 bytes with varying access patterns (see probe results)
+    // Field access frequency (from DS:[SI+N] scan, 142 unique fields total):
+    //   +0x34-0x3B: medium frequency (20-40 accesses)
+    //   +0x3C: 52 accesses (rendering/orientation cluster)
+    //   +0x42: 48 accesses (orientation/velocity cluster)
+    //   +0x56: 39 accesses (physics/collision cluster)
+    //   +0x5A: 35 accesses (rendering/distance cluster)
+    //   +0x34-0x73: remainder 1-40 accesses each (decreasing frequency)
     // NOTE: Many fields accessed by terrain/rendering/physics functions
-    // Detailed mapping: see analysis/ida_falconcd/farobj_si_fields.json
+    // Detailed mapping: see analysis/FAROBJ_FIELD_DISCOVERIES.md
 
     // === Active/Scan (0x74-0x7B) ===
     uint8_t  active;        // +0x74  bit 0 = slot active/occupied (checked by scan_74 functions)
     // 5 bytes unknown
     uint16_t self_slot_idx; // +0x7A  this object's index in farobj_main_table
 
-    // === UNKNOWN (0x7C-0xD0) ===
-    // 85 bytes not yet mapped
+    // === UNKNOWN (0x7C-0xCA) ===
+    // 79 bytes not yet mapped (high-frequency fields at +0xCA: 74 accesses)
+
+    // === Rendering / LOD Data (0xCA-0xD0) ===
+    uint16_t render_lod_data; // +0xCA  (74 accesses) rendering/LOD field at offset 202
+    // 5 bytes unknown
 
     uint8_t  timer_active;  // +0xD1  bit 0 = include in scan_74_timer_c animation update
 };
@@ -115,6 +145,23 @@ struct FarObj {
 ```
 
 ### Key Field Notes
+
+**New field discoveries from assembly pattern analysis (2026-11-11):**
+- **+0x1F** (150 accesses): byte-level access distinct from +0x1E frame_timer; likely `frame_timer_hi` or independent timer
+- **+0x21** (132 accesses): byte-level access distinct from +0x20 cmd_field; likely `cmd_field_hi` or state flags
+- **+0x23** (136 accesses): byte-level access distinct from +0x22 object_kind; likely `object_kind_hi` or LOD_level accumulator
+- **+0x2E** (65 accesses): AI behavior timer, found in `farobj_behavior_dispatch_step` @ 0x3CE92
+- **+0x30** (43 accesses): table index/offset, used as `add si, [si+30h]` for struct field jumps
+- **+0x32** (64 accesses): tile zone/sector ID for spatial partitioning, found near tile-wrap at 0x3334
+- **+0x3C** (52 accesses): orientation/rendering cluster
+- **+0x42** (48 accesses): orientation/velocity cluster
+- **+0x56** (39 accesses): physics/collision cluster
+- **+0x5A** (35 accesses): rendering/distance cluster
+- **+0xCA** (74 accesses): rendering/LOD data at offset 202
+
+See `analysis/FAROBJ_FIELD_DISCOVERIES.md` for complete evidence and hypotheses.
+
+### Original Key Field Notes
 
 - **`cmd_field` [+0x20]**: dual purpose — command ID AND projection scale. `view_projection`
   uses this as the LOD distance denominator: must be NEGATIVE (high bit set) or projection is
@@ -219,6 +266,61 @@ struct EntityAccumEntry {
 
 Applied via: `farptr_table_accum_fields` (adds XYZ deltas to FarObj int32 position)
 and `farptr_table_offset_apply` (adds angle deltas to FarObj orientation).
+
+---
+
+## 2D Tile-Based Spatial Partitioning
+
+The game world uses a 2D tile grid for spatial partitioning and streaming:
+
+### Tile System Parameters
+
+- **Tile size:** 0x3334 = 13,108 units per tile
+- **Grid dimensions:** 256 × 256 tiles (signed -128..+127 range)
+- **Total world size:** 3,353,728 × 3,353,728 units
+- **Storage:** 4 bytes per entity (2 bytes tile coords + 2 words local position)
+
+### Tile Coordinate Calculation
+
+```c
+// World → Tile conversion (from 0x41B84):
+int32_t world_x = (world_x_hi << 16) | world_x_lo;
+int8_t tile_x = (int8_t)(world_x / TILE_SIZE);  // floor division for negatives
+uint16_t local_x = world_x % TILE_SIZE;         // always positive remainder
+
+// Tile → World conversion:
+int32_t world_x = (int32_t)tile_x * TILE_SIZE + local_x;
+```
+
+### Tile Boundary Crossing
+
+When an entity moves across tile boundaries (sub_3CE92 @ 0x3CEF4):
+
+```asm
+; Update position with velocity:
+local_x += velocity_x
+
+; Check underflow:
+if (local_x < 0) {
+    tile_x -= 1
+    local_x += TILE_SIZE      ; wrap to previous tile
+    boundary_crossed = true
+}
+
+; Check overflow:
+if (local_x >= TILE_SIZE) {
+    tile_x += 1
+    local_x -= TILE_SIZE      ; wrap to next tile
+    boundary_crossed = true
+}
+
+; Notify streaming system:
+if (boundary_crossed) {
+    FarObj.flags[+0x8] |= 0x0001
+}
+```
+
+**Purpose:** Enables efficient spatial queries (collision, visibility, AI awareness) by only checking entities in nearby tiles. Boundary flag triggers terrain/entity streaming.
 
 ---
 

@@ -121,30 +121,46 @@
 - ✅ Can modify geometry
 
 ### 6. Entity System (FarObj)
-**Status**: ~75% COMPLETE 🔧  
-**Documentation**: `docs/architecture/entity.md`, `docs/architecture/farobj.md`
+**Status**: ~87% COMPLETE 🔧  
+**Last Updated**: November 11, 2026  
+**Documentation**: `docs/architecture/entity.md`, `docs/architecture/farobj.md`, `analysis/ENTITY_FIELD_ANALYSIS_SESSION2.md`
 
 **What's Known**:
 - ✅ 4-layer entity architecture
-- ✅ FarObj struct (≥210 bytes, complete field map)
+- ✅ FarObj struct (210 bytes, ~87% fields mapped)
 - ✅ Global slot table (R05_400C:0x34)
 - ✅ Type descriptor table (0x7B0E:0x3052)
 - ✅ Lifecycle management (create, update, destroy)
 - ✅ Class codes and type system
-- ⚠️  Per-frame update chain (partially traced)
-- ❓ AI behavior state machines
+- ✅ **AI behavior timer system** (+0x2E: signed timer with state transitions)
+- ✅ **2D tile-based spatial partitioning** (+0x31/32/33/35: 256×256 grid, 13,108 units/tile)
+- ✅ Tile boundary wrapping algorithm (triggers streaming flag)
+- ✅ Per-frame update chain (3 scan functions verified)
+- ⚠️  Polymorphic field access system (+0x30: needs table structure)
+- ❓ Complete AI behavior state machines (partially traced)
 - ❓ Collision detection system
+- ❓ Remaining render/physics fields (+0x3C, +0x42, +0x56, +0x5A, +0xCA)
 
 **Key Functions**:
-- `farptr_table_get` @ 0x2703F (78 callers) - Load entity from slot
+- `farptr_table_get` @ 0x2703F (78 callers, 210K+ calls/session) - Load entity from slot
+- `sub_3CE92` @ 0x3CE92 (2580 bytes, 25 callees) - AI behavior dispatcher
 - `entity_slot_create` - Allocate new entity
 - `game_frame_update_chain` @ 0x2FEF2 - Entity simulation
 - `farobj_batch_build_project` @ 0x13CB0 - Batch rendering
 
-**Next Steps**:
-- Complete AI behavior analysis
-- Trace collision detection
-- Map inter-entity communication
+**Field Mapping Progress**:
+- **Position/orientation**: 18 bytes (100% complete)
+- **Type/category**: 12 bytes (100% complete)
+- **Per-frame state**: 16 bytes (100% complete)
+- **Spatial partitioning**: 6 bytes (100% complete)
+- **AI/behavior**: 6 bytes (75% complete)
+- **Physics/render**: ~140 bytes (60% complete)
+
+**Next Steps** (87% → 95%):
+- Disassemble orientation cluster functions (+0x3C, +0x42)
+- Analyze physics/collision code (+0x56)
+- Map rendering distance/LOD fields (+0x5A, +0xCA)
+- Complete AI state machine documentation
 
 ### 6. Flight Physics
 **Status**: ~70% COMPLETE 🔧  
@@ -372,14 +388,14 @@ Based on complexity, interconnections, and reverse engineering momentum:
 | Category | Systems | Completion |
 |----------|---------|------------|
 | **Complete** | Terrain, Input, HUD, Audio, 3D Objects | 5 systems (100%) |
-| **Near-Complete** | Entity, Physics | 2 systems (70-75%) |
+| **Near-Complete** | Entity (87%), Physics (70%) | 2 systems (78% avg) |
 | **Partially Analyzed** | Weapons, Radar, AI | 3 systems (20-30%) |
 | **Not Started** | Mission, Nav, MP, Campaign | 4 systems (0-15%) |
 
 **Total Systems**: 14  
-**Average Completion**: ~52%  
+**Average Completion**: ~55% (was 52%)  
 
-**Estimated Time to 100%**: 60-80 hours across all systems
+**Estimated Time to 100%**: 55-75 hours across all systems (was 60-80)
 
 ---
 
