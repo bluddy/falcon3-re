@@ -287,86 +287,85 @@ Keyboard-only:      All axes via keyboard
 
 ## ❓ NOT YET ANALYZED (0-30%)
 
-### 3. Weapons System (40% analyzed) 🔧
-**Status**: ~40% ANALYZED ⚠️  
-**Last Updated**: November 11, 2026 (Session 4)  
-**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`
+### 3. Weapons System (50% analyzed) 🔧
+**Status**: ~50% ANALYZED ⚠️  
+**Last Updated**: November 11, 2026 (Session 4 continued)  
+**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`
 
 **What We Know**:
 - ✅ **Entity Type System (60%)**:
   - Weapon types: 12h, 13h (missiles?), 14h (bombs?), 33h-37h (bullets?), 38h, 16h class
-  - Type/class dispatch system
-  - farobj_type_field_get @ sub_2647E - Type lookup via table @ 7B0E:3052
+  - **NEW: Type 0x33 = Special entity (player aircraft?)**
+  - **NEW: Type 0x10 = Special class**
+  - Type/class field: **[entity+0x75]** ✅ CONFIRMED
+  - Type dispatch system documented
   
-- ✅ **Entity Creation (60%)**:
+- ✅ **Entity Creation (70%)**:
   - entity_slot_create @ sub_2ECAC (Level 6) - Main entity allocation
-  - farobj_slot_create_gate @ sub_3DC55 - FarObj creation guard
-  - farobj_slot_step_spawn @ sub_2FF24 - Spawn step in frame update
-  - entity_spawn_from_tile @ sub_301FB - Spawn from tile data
+  - farobj_slot_create_gate @ sub_3DC55 - **Weapon spawn function!**
+  - **NEW: Weapon spawn called from sub_3CE92 @ 0x3D2D8** ✅
+  - farobj_slot_step_spawn @ sub_2FF24 - Frame update spawn
+  - entity_spawn_from_tile @ sub_301FB - Static objects
 
-- ✅ **Behavior Dispatcher (40%)**:
-  - farobj_behavior_dispatch_step @ sub_3CE92 (2580B, Level 19, DATA)
-  - 25 callees (guidance, physics, collision TBD)
-  - farobj_queue_drain_dispatch @ sub_4C19E (2500B) - Queue processor
-  - Class-range dispatch (12h/13h, 33h-37h)
+- ✅ **Behavior Dispatcher (55%)**:
+  - **ANALYZED: farobj_behavior_dispatch_step @ sub_3CE92** (2580B, Level 19)
+  - **Master entity behavior hub** - ALL entities (aircraft, weapons, AI)
+  - 19 entry points, 25 callees
+  - Type-based polymorphism (type @ +0x75)
+  - **Tile-based spatial** (13,108 unit tiles, wrapping @ +0x31/32/33/35)
+  - **State machines** (behavior flags @ +0x0Ah, +0x0Bh)
+  - **Collision flag** (0x400 in +0x08h)
+  - Queue processor: farobj_queue_drain_dispatch @ sub_4C19E (2500B)
 
-- ✅ **UI/Loadout (40%)**:
-  - ui_loadout_menu_enter (overlay-based, multiple thunks)
-  - Stores Control Panel (HUD lower-left, shows A-A/A-G mode, weapon selected)
+- ✅ **Target Lock System (50%)**:
+  - **Target slot field: [entity+0x29h]** ✅ CONFIRMED
+  - 0xFF = no target, other value = target entity slot
+  - **Lock validation logic** @ 0x3D180-0x3D203
+  - Target flags checked: [target+0x74h] bits 0, 3, 4, 5
+  - A-A Mode: Diamond reticle, auto-lock, reticle flashes
+  - A-G Mode: Cross hairs follow, fire-and-forget
+  - Lock conditions: angle + distance + LOS
+
+- ⚠️ **Guidance Algorithms (30%)**:
+  - **Pursuit pattern found** @ 0x3D1A8-0x3D1C4:
+    - Load target → sub_2F6D0 (pursuit) → Physics update → Altitude check
+  - sub_2F6D0 (1123B) - **Target pursuit/guidance function**
+  - Hypothesis: Proportional navigation or lead pursuit
+
+- ⚠️ **Collision Detection (25%)**:
+  - **sub_32453** - Collision check function ✅ FOUND
+  - Flag 0x400 in [entity+0x08h] = collision detected
+  - Collision response: sub_2EAA7 @ 0x3D25A
+  - Damage application: sub_32393 @ 0x3D27C
 
 - ⚠️ **Ammo Tracking (25%)**:
   - farobj_index_decrement_step - Weapon count decrement
   - Storage location TBD
 
-- ⚠️ **Target Lock System (35%)**:
-  - **A-A Mode**: Diamond in reticle, auto-lock in visual range, reticle FLASHES on lock
-  - **A-G Mode**: Cross hairs auto-lock and follow (AGM-65, GBU-15), fire-and-forget
-  - Lock conditions: angle cone + distance threshold + LOS
-  - Implementation: angle check, distance check, frame-by-frame
-  - Functions TBD
-
-- ⚠️ **Input System (30%)**:
-  - Fire key: 'z'
-  - A-A weapon cycle: 'e'
-  - A-G weapon cycle / mode switch: 'B'
-  - key_input_state_reset @ sub_32C62 caller
+- ⚠️ **Input System (35%)**:
+  - Fire key: 'z', A-A cycle: 'e', A-G cycle: 'B'
+  - key_input_state_reset @ sub_32C62
+  - **NEW: Fire doesn't spawn immediately**
+  - Instead: Fire button → Request flag → sub_3CE92 checks conditions → Spawn weapon
   - Fire handler function TBD
 
-- ⚠️ **Launch Flow (30%)**:
-  - Input → Fire command → Ammo check → Entity spawn → Behavior update → Collision → Damage
-  - Weapon fire dispatch function TBD
-  - Weapon state storage (selected, ammo) TBD
-
-- ⚠️ **Guidance Algorithms (20%)**:
-  - Hypothesis: Proportional navigation (classic missile guidance)
-  - Or: Lead pursuit (simpler, predict intercept point)
-  - Implementation in sub_3CE92 TBD
-  - Missile types: AIM-9 (heat-seeking), AIM-120 (radar-guided)?
-
 - ⚠️ **Ballistics (20%)**:
-  - Bombs: Gravity + drag, ground collision detection
-  - Bullets: High-speed, minimal drag, lifetime timeout
+  - Bombs: Gravity + drag hypothesis
+  - Bullets: High-speed, lifetime timeout
   - Implementation TBD
 
-- ❓ **Collision Detection (5%)**:
-  - Hit detection function not found
-  - Bounding box/sphere TBD
-  - Spatial partitioning TBD
-
-- ❓ **Damage System (5%)**:
-  - Target health field TBD
-  - Damage calculation TBD
+- ⚠️ **Damage System (15%)**:
+  - **sub_32393** - Damage calculation ✅ FOUND
+  - Health field TBD
   - Explosion spawn TBD
-  - Score tracking TBD
 
 **What's Missing**:
-- Keyboard fire handler implementation
-- Weapon state storage (selected weapon, ammo counts)
-- Complete guidance algorithm code (proportional nav? lead pursuit?)
-- Collision detection system
-- Damage calculation and health tracking
-- Weapon data tables (speed, damage, range per type)
-- Countermeasures (flares, chaff)
+- Complete guidance algorithm code (sub_2F6D0 internals)
+- Complete collision detection system (sub_32453 internals)
+- Damage calculation details (sub_32393 internals)
+- Fire button → request flag mechanism
+- Weapon data tables (speed, damage, range)
+- Other weapon types (12h, 13h, 14h identification)
 
 **Progress Breakdown**:
 - Entity spawn layer: 60% ✅
