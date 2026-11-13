@@ -287,10 +287,10 @@ Keyboard-only:      All axes via keyboard
 
 ## ❓ NOT YET ANALYZED (0-30%)
 
-### 3. Weapons System (50% analyzed) 🔧
-**Status**: ~50% ANALYZED ⚠️  
+### 3. Weapons System (55% analyzed) 🔧
+**Status**: ~55% ANALYZED ⚠️  
 **Last Updated**: November 11, 2026 (Session 4 continued)  
-**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`
+**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`
 
 **What We Know**:
 - ✅ **Entity Type System (60%)**:
@@ -300,12 +300,16 @@ Keyboard-only:      All axes via keyboard
   - Type/class field: **[entity+0x75]** ✅ CONFIRMED
   - Type dispatch system documented
   
-- ✅ **Entity Creation (70%)**:
+- ✅ **Entity Creation (75%)**:
   - entity_slot_create @ sub_2ECAC (Level 6) - Main entity allocation
-  - farobj_slot_create_gate @ sub_3DC55 - **Weapon spawn function!**
-  - **NEW: Weapon spawn called from sub_3CE92 @ 0x3D2D8** ✅
+  - **farobj_slot_create_gate @ sub_3DC55** - Weapon spawn gate
+  - **NEW: Spawn permission check @ loc_3DED9** ✅ DECODED
+  - **Friendly fire protection** - Type 0x16 entities (friendly aircraft)
+  - **Permission system** - ds:15B4h bits (bit 0: self fire, bit 6: target)
+  - **Game mode flag** - ds:15B3h (0=normal, 1+=restricted)
   - farobj_slot_step_spawn @ sub_2FF24 - Frame update spawn
   - entity_spawn_from_tile @ sub_301FB - Static objects
+  - object_farptr_dispatch @ loc_345FD - Entity creation dispatcher (TBD)
 
 - ✅ **Behavior Dispatcher (55%)**:
   - **ANALYZED: farobj_behavior_dispatch_step @ sub_3CE92** (2580B, Level 19)
