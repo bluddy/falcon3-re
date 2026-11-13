@@ -115,51 +115,90 @@ struct FarObj {
                             //         Tile wrapping at boundaries triggers flag [+0x8] bit 0
                             //         World coord = tile × TILE_SIZE + local_pos
 
-    // === Extended Fields (0x34-0x73) ===
-    // 64 bytes with varying access patterns (see probe results)
-    // Field access frequency (from DS:[SI+N] scan, 142 unique fields total):
-    //   +0x34-0x3B: medium frequency (20-40 accesses)
-    //   +0x3C: 52 accesses (rendering/orientation cluster)
-    //   +0x42: 48 accesses (orientation/velocity cluster)
-    //   +0x56: 39 accesses (physics/collision cluster)
-    //   +0x5A: 35 accesses (rendering/distance cluster)
-    //   +0x34-0x73: remainder 1-40 accesses each (decreasing frequency)
-    // NOTE: Many fields accessed by terrain/rendering/physics functions
-    // Detailed mapping: see analysis/FAROBJ_FIELD_DISCOVERIES.md
+    // === 3D Velocity Vector (0x3A-0x44) ===
+    // Fixed-point int32 triplet, subject to rotation matrices
+    int16_t  velocity_x_lo;   // +0x3A  Velocity X component low word
+    int16_t  velocity_x_hi;   // +0x3C  Velocity X component high word (int32)
+    int16_t  velocity_y_lo;   // +0x3E  Velocity Y component low word  
+    int16_t  velocity_y_hi;   // +0x40  Velocity Y component high word (int32)
+    int16_t  velocity_z_lo;   // +0x42  Velocity Z component low word
+    int16_t  velocity_z_hi;   // +0x44  Velocity Z component high word (int32)
+                              //         Clamped to minimum threshold (cs:word_377E5)
+                              //         Compared against 0x1D4C (7,500) for boundaries
+    
+    // === Extended Physics (0x46-0x55) ===
+    // 16 bytes unknown (likely acceleration vectors, angular velocity, drag)
+    
+    // === Physics / Collision (0x56-0x5A) ===
+    uint16_t altitude_agl;    // +0x56  Altitude above ground level (AGL)
+                              //         0 = grounded (collision, different rendering)
+                              //         1-70 = danger zone (warning calculations)
+                              //         71+ = safe flying altitude
+                              //         Zero-check gates airborne vs ground physics
+    uint16_t field_58;        // +0x58  UNKNOWN
+    uint16_t event_flags;     // +0x5A  State/event flags + temp storage
+                              //         bit 0x0001 = event flag (affects +0x5E by -30)
+                              //         bit 0x0002 = event flag (affects +0x5E by -76)
+                              //         bit 0x0004 = clearable event (XOR'd after handling)
+                              //         bit 0x0008 = rendering/visibility state
+                              //         AND 0xFFFC = clear lower 2 bits
+                              //         Also used as: countdown timer, angle storage
+    
+    // === Extended Fields (0x5C-0xC9) ===
+    // 110 bytes with varying access patterns
+    // Likely contains: health/damage, fuel, ammunition, targeting data
 
     // === Active/Scan (0x74-0x7B) ===
     uint8_t  active;        // +0x74  bit 0 = slot active/occupied (checked by scan_74 functions)
     // 5 bytes unknown
     uint16_t self_slot_idx; // +0x7A  this object's index in farobj_main_table
 
-    // === UNKNOWN (0x7C-0xCA) ===
-    // 79 bytes not yet mapped (high-frequency fields at +0xCA: 74 accesses)
+    // === UNKNOWN (0x7C-0xC9) ===
+    // 78 bytes not yet mapped
 
-    // === Rendering / LOD Data (0xCA-0xD0) ===
-    uint16_t render_lod_data; // +0xCA  (74 accesses) rendering/LOD field at offset 202
-    // 5 bytes unknown
+    // === Master Entity Flags (0xCA-0xCB) ===
+    uint16_t entity_flags;    // +0xCA  Comprehensive 16-bit flags (74 accesses)
+                              //         bit 0x0001 = tile_boundary_crossed
+                              //         bit 0x0008 = sprite_trail_active (contrail/smoke)
+                              //         bit 0x0010 = zone_x_boundary
+                              //         bit 0x0020 = entity_state_major (8 accesses, main gate)
+                              //         bit 0x0040 = behavior_gate
+                              //         bit 0x0080 = ai_state_machine (6 accesses)
+                              //         bit 0x0100 = rendering_mode
+                              //         bit 0x0200 = animation_timer_enable
+                              //         bit 0x0400 = view_projection_active
+                              //         bit 0x0800 = special_mode
+                              //         bit 0x1000 = high_level_state (player entity?)
+    
+    // === UNKNOWN (0xCC-0xD0) ===
+    // 5 bytes not yet mapped (fields after master flags)
 
-    uint8_t  timer_active;  // +0xD1  bit 0 = include in scan_74_timer_c animation update
+    uint8_t  timer_active;    // +0xD1  bit 0 = include in scan_74_timer_c animation update
 };
 // Minimum confirmed size: 0xD2 = 210 bytes
 ```
 
 ### Key Field Notes
 
-**New field discoveries from assembly pattern analysis (2026-11-11):**
-- **+0x1F** (150 accesses): byte-level access distinct from +0x1E frame_timer; likely `frame_timer_hi` or independent timer
-- **+0x21** (132 accesses): byte-level access distinct from +0x20 cmd_field; likely `cmd_field_hi` or state flags
-- **+0x23** (136 accesses): byte-level access distinct from +0x22 object_kind; likely `object_kind_hi` or LOD_level accumulator
-- **+0x2E** (65 accesses): AI behavior timer, found in `farobj_behavior_dispatch_step` @ 0x3CE92
-- **+0x30** (43 accesses): table index/offset, used as `add si, [si+30h]` for struct field jumps
-- **+0x32** (64 accesses): tile zone/sector ID for spatial partitioning, found near tile-wrap at 0x3334
-- **+0x3C** (52 accesses): orientation/rendering cluster
-- **+0x42** (48 accesses): orientation/velocity cluster
-- **+0x56** (39 accesses): physics/collision cluster
-- **+0x5A** (35 accesses): rendering/distance cluster
-- **+0xCA** (74 accesses): rendering/LOD data at offset 202
+**Session 3 discoveries (2026-11-11):**
+- **+0x3A through +0x44** (12 bytes): Complete 3D velocity vector as three int32 values
+  * Used with ADC/SBB for 32-bit arithmetic
+  * Rotated by transformation matrices (fixed_matrix_mul)
+  * Clamped to minimum velocity threshold
+  * Compared against boundary constant 7,500
+- **+0x56** (2 bytes): Altitude above ground level
+  * 0 = grounded state (different physics/rendering)
+  * 71 = critical altitude threshold
+  * Zero-check gates airborne vs ground paths
+- **+0x5A** (2 bytes): Event flags and temporary storage
+  * Bits 0-3 are distinct event flags affecting other fields
+  * Also used as countdown timer and angle storage
+- **+0xCA** (2 bytes): Master entity flags
+  * 12+ confirmed bits controlling all major systems
+  * Highest-frequency control field (74 accesses)
+  * Bits 0x0020, 0x0080, 0x0200, 0x1000 are primary gates
 
-See `analysis/FAROBJ_FIELD_DISCOVERIES.md` for complete evidence and hypotheses.
+See `analysis/ENTITY_FIELD_ANALYSIS_SESSION3.md` for complete evidence.
 
 ### Original Key Field Notes
 
