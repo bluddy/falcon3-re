@@ -19,7 +19,7 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | [entity.md](entity.md) | 4-layer entity architecture, lifecycle, class codes | STRONG–HYPOTHESIS |
 | [flight_physics.md](flight_physics.md) | Control axes, aircraft kinematics, slot arrays, motion | STRONG–HYPOTHESIS |
 | [rendering.md](rendering.md) | 3D projection pipeline, terrain renderer, VGRAPH, math | STRONG |
-| [terrain.md](terrain.md) | Tile world (512×512, 13,108 units/tile), terrain scripts | STRONG |
+| [terrain.md](terrain.md) | **COMPLETE**: Heightmap, ISLDAT+MAPOBJ vectors, rivers/roads | PROVEN |
 | [audio.md](audio.md) | OPL/FM sound, channel system, device types | PROVEN–STRONG |
 | [hardware_io.md](hardware_io.md) | IRQ0 timer, INT 33h mouse, joystick, keyboard, BDA | PROVEN |
 | [resource.md](resource.md) | op_dispatch (16 DOS services), streaming file API | PROVEN |
