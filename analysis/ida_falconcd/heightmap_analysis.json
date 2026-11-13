@@ -1,0 +1,924 @@
+{
+  "tile_quad_sample": {
+    "name": "tile_quad_sample",
+    "address": 84310,
+    "size": 114,
+    "disassembly": [
+      {
+        "addr": 84310,
+        "disasm": "push    es"
+      },
+      {
+        "addr": 84311,
+        "disasm": "mov     di, ax"
+      },
+      {
+        "addr": 84313,
+        "disasm": "and     di, 3"
+      },
+      {
+        "addr": 84316,
+        "disasm": "mov     dx, bx"
+      },
+      {
+        "addr": 84318,
+        "disasm": "sub     dx, 7FFh"
+      },
+      {
+        "addr": 84322,
+        "disasm": "neg     dx"
+      },
+      {
+        "addr": 84324,
+        "disasm": "and     dx, 3"
+      },
+      {
+        "addr": 84327,
+        "disasm": "shl     dx, 1"
+      },
+      {
+        "addr": 84329,
+        "disasm": "shl     dx, 1"
+      },
+      {
+        "addr": 84331,
+        "disasm": "add     dx, di"
+      },
+      {
+        "addr": 84333,
+        "disasm": "shl     dx, 1"
+      },
+      {
+        "addr": 84335,
+        "disasm": "mov     cs:word_11C74, dx"
+      },
+      {
+        "addr": 84340,
+        "disasm": "shr     ax, 1"
+      },
+      {
+        "addr": 84342,
+        "disasm": "shr     ax, 1"
+      },
+      {
+        "addr": 84344,
+        "disasm": "shr     bx, 1"
+      },
+      {
+        "addr": 84346,
+        "disasm": "shr     bx, 1"
+      },
+      {
+        "addr": 84348,
+        "disasm": "mov     si, ax"
+      },
+      {
+        "addr": 84350,
+        "disasm": "mov     di, bx"
+      },
+      {
+        "addr": 84352,
+        "disasm": "call    tile_index_resolve"
+      },
+      {
+        "addr": 84355,
+        "disasm": "cmp     al, 5Fh ; '_'"
+      },
+      {
+        "addr": 84357,
+        "disasm": "ja      short loc_14997"
+      },
+      {
+        "addr": 84359,
+        "disasm": "mov     cs:byte_11C61, al"
+      },
+      {
+        "addr": 84363,
+        "disasm": "mov     ax, si"
+      },
+      {
+        "addr": 84365,
+        "disasm": "mov     bx, di"
+      },
+      {
+        "addr": 84367,
+        "disasm": "inc     ax"
+      },
+      {
+        "addr": 84368,
+        "disasm": "call    tile_index_resolve"
+      },
+      {
+        "addr": 84371,
+        "disasm": "cmp     al, 5Fh ; '_'"
+      },
+      {
+        "addr": 84373,
+        "disasm": "jbe     short loc_1499C"
+      },
+      {
+        "addr": 84375,
+        "disasm": "mov     ax, 80h"
+      },
+      {
+        "addr": 84378,
+        "disasm": "pop     es"
+      },
+      {
+        "addr": 84379,
+        "disasm": "retn"
+      },
+      {
+        "addr": 84380,
+        "disasm": "mov     cs:byte_11C60, al"
+      },
+      {
+        "addr": 84384,
+        "disasm": "mov     ax, si"
+      },
+      {
+        "addr": 84386,
+        "disasm": "mov     bx, di"
+      },
+      {
+        "addr": 84388,
+        "disasm": "inc     ax"
+      },
+      {
+        "addr": 84389,
+        "disasm": "dec     bx"
+      },
+      {
+        "addr": 84390,
+        "disasm": "call    tile_index_resolve"
+      },
+      {
+        "addr": 84393,
+        "disasm": "cmp     al, 5Fh ; '_'"
+      },
+      {
+        "addr": 84395,
+        "disasm": "ja      short loc_14997"
+      },
+      {
+        "addr": 84397,
+        "disasm": "mov     cs:byte_11C5F, al"
+      },
+      {
+        "addr": 84401,
+        "disasm": "mov     ax, si"
+      },
+      {
+        "addr": 84403,
+        "disasm": "mov     bx, di"
+      },
+      {
+        "addr": 84405,
+        "disasm": "dec     bx"
+      },
+      {
+        "addr": 84406,
+        "disasm": "call    tile_index_resolve"
+      },
+      {
+        "addr": 84409,
+        "disasm": "cmp     al, 5Fh ; '_'"
+      },
+      {
+        "addr": 84411,
+        "disasm": "ja      short loc_14997"
+      },
+      {
+        "addr": 84413,
+        "disasm": "mov     cs:byte_11C5E, al"
+      },
+      {
+        "addr": 84417,
+        "disasm": "call    avg_pair_dispatch_149d2"
+      },
+      {
+        "addr": 84420,
+        "disasm": "xchg    ah, al"
+      },
+      {
+        "addr": 84422,
+        "disasm": "pop     es"
+      },
+      {
+        "addr": 84423,
+        "disasm": "retn"
+      }
+    ],
+    "calls": [
+      "tile_index_resolve",
+      "tile_index_resolve",
+      "tile_index_resolve",
+      "tile_index_resolve",
+      "avg_pair_dispatch_149d2"
+    ]
+  },
+  "terrain_height_lookup": {
+    "name": "terrain_height_lookup_11cc8",
+    "address": 73024,
+    "size": 142,
+    "calls": []
+  },
+  "vector_functions": [
+    {
+      "name": "mouse_driver_init",
+      "addr": 65626,
+      "size": 72,
+      "callers": 1,
+      "keyword": "river"
+    },
+    {
+      "name": "terrain_frame_update_driver",
+      "addr": 86949,
+      "size": 113,
+      "callers": 4,
+      "keyword": "river"
+    },
+    {
+      "name": "tile_strip_sample_draw",
+      "addr": 90208,
+      "size": 126,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "int8_vector_hook",
+      "addr": 95403,
+      "size": 86,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "int8_vector_unhook",
+      "addr": 95489,
+      "size": 33,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "device_path_build_mus",
+      "addr": 114203,
+      "size": 168,
+      "callers": 1,
+      "keyword": "path"
+    },
+    {
+      "name": "stream_accumulate_driver",
+      "addr": 114991,
+      "size": 87,
+      "callers": 1,
+      "keyword": "river"
+    },
+    {
+      "name": "vector_shutdown_chain",
+      "addr": 141760,
+      "size": 8,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "int0_vector_hook",
+      "addr": 141892,
+      "size": 53,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "vector_shutdown_restore",
+      "addr": 141945,
+      "size": 38,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "int8_vector_hook_343f",
+      "addr": 141983,
+      "size": 39,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "int8_vector_restore_2221c",
+      "addr": 142022,
+      "size": 22,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "int9_vector_hook_5c7d",
+      "addr": 152277,
+      "size": 56,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "int9_vector_unhook",
+      "addr": 152333,
+      "size": 22,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "far_cb_vector_invoke_entry",
+      "addr": 161911,
+      "size": 66,
+      "callers": 0,
+      "keyword": "vector"
+    },
+    {
+      "name": "cs_vector_22184_invoke_c",
+      "addr": 161990,
+      "size": 25,
+      "callers": 0,
+      "keyword": "vector"
+    },
+    {
+      "name": "cs_vector_2218c_invoke",
+      "addr": 162056,
+      "size": 22,
+      "callers": 0,
+      "keyword": "vector"
+    },
+    {
+      "name": "cs_vector_22190_invoke",
+      "addr": 162084,
+      "size": 22,
+      "callers": 0,
+      "keyword": "vector"
+    },
+    {
+      "name": "cs_vector_22194_invoke",
+      "addr": 162112,
+      "size": 22,
+      "callers": 0,
+      "keyword": "vector"
+    },
+    {
+      "name": "anim_line_object_draw",
+      "addr": 162336,
+      "size": 442,
+      "callers": 9,
+      "keyword": "line"
+    },
+    {
+      "name": "line_raster_diff_281",
+      "addr": 162778,
+      "size": 281,
+      "callers": 2,
+      "keyword": "line"
+    },
+    {
+      "name": "line_overlap_classify",
+      "addr": 163059,
+      "size": 108,
+      "callers": 2,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_build_2796e",
+      "addr": 163783,
+      "size": 384,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_record_flag_dispatch",
+      "addr": 165800,
+      "size": 204,
+      "callers": 2,
+      "keyword": "line"
+    },
+    {
+      "name": "line_draw_441e",
+      "addr": 166664,
+      "size": 409,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_record_draw_loop",
+      "addr": 167504,
+      "size": 136,
+      "callers": 4,
+      "keyword": "line"
+    },
+    {
+      "name": "line_flag_dispatch_28ed8",
+      "addr": 167640,
+      "size": 95,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_flag_patch_28f37",
+      "addr": 167735,
+      "size": 318,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_flag_patch_29075",
+      "addr": 168053,
+      "size": 316,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_flag_patch_291b1",
+      "addr": 168369,
+      "size": 323,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_scan_slope",
+      "addr": 168692,
+      "size": 321,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_scan_dispatch",
+      "addr": 169013,
+      "size": 51,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_scan_20",
+      "addr": 169064,
+      "size": 185,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_scan_40",
+      "addr": 169249,
+      "size": 185,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_draw_prepare_441e",
+      "addr": 169434,
+      "size": 436,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_build_dispatch",
+      "addr": 170882,
+      "size": 108,
+      "callers": 2,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_entry_clone",
+      "addr": 170990,
+      "size": 410,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_entry_clone_b",
+      "addr": 171400,
+      "size": 408,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_from_points",
+      "addr": 171808,
+      "size": 405,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "line_table_entry_clone_slope",
+      "addr": 172213,
+      "size": 403,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "far_callback_vector_walk",
+      "addr": 183117,
+      "size": 33,
+      "callers": 2,
+      "keyword": "vector"
+    },
+    {
+      "name": "drive_path_build",
+      "addr": 183631,
+      "size": 62,
+      "callers": 2,
+      "keyword": "path"
+    },
+    {
+      "name": "dos_handle_dup_path",
+      "addr": 183879,
+      "size": 216,
+      "callers": 1,
+      "keyword": "path"
+    },
+    {
+      "name": "interrupt_get_set_vector",
+      "addr": 185445,
+      "size": 38,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "interrupt_set_vector",
+      "addr": 185483,
+      "size": 23,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "viewmode3_vector_project",
+      "addr": 193845,
+      "size": 91,
+      "callers": 1,
+      "keyword": "vector"
+    },
+    {
+      "name": "game_frame_pipeline_step",
+      "addr": 195906,
+      "size": 387,
+      "callers": 2,
+      "keyword": "line"
+    },
+    {
+      "name": "rot_segment_strip_draw",
+      "addr": 220853,
+      "size": 298,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "tile_strip_project_draw",
+      "addr": 221692,
+      "size": 331,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "view_rect_strip_draw",
+      "addr": 222135,
+      "size": 128,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "sprite_trail_strip_draw",
+      "addr": 224679,
+      "size": 123,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "sprite_rect_strip_draw",
+      "addr": 224826,
+      "size": 328,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "hud_terrain_strip_render",
+      "addr": 225677,
+      "size": 988,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "tile_sprite_strip_project",
+      "addr": 235336,
+      "size": 179,
+      "callers": 2,
+      "keyword": "strip"
+    },
+    {
+      "name": "hud_track_label_strip",
+      "addr": 238236,
+      "size": 194,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "box_edge_strip_draw",
+      "addr": 239578,
+      "size": 109,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "cross_strip_draw",
+      "addr": 239687,
+      "size": 70,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "map_view_project_pipeline",
+      "addr": 239757,
+      "size": 36,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "farobj_slot_update_driver",
+      "addr": 246205,
+      "size": 348,
+      "callers": 2,
+      "keyword": "river"
+    },
+    {
+      "name": "viewport_strip_row_draw",
+      "addr": 286508,
+      "size": 136,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "hud_track_strip_pipeline",
+      "addr": 290114,
+      "size": 397,
+      "callers": 3,
+      "keyword": "line"
+    },
+    {
+      "name": "mode_strip_frame_step",
+      "addr": 304110,
+      "size": 141,
+      "callers": 2,
+      "keyword": "strip"
+    },
+    {
+      "name": "mode_strip_jump_stub",
+      "addr": 304341,
+      "size": 33,
+      "callers": 1,
+      "keyword": "strip"
+    },
+    {
+      "name": "r37_hud_strip_render_entry",
+      "addr": 1469150,
+      "size": 788,
+      "callers": 0,
+      "keyword": "strip"
+    },
+    {
+      "name": "r53_farobj_pipeline_body",
+      "addr": 1605288,
+      "size": 603,
+      "callers": 1,
+      "keyword": "line"
+    },
+    {
+      "name": "r54_vector_result_store",
+      "addr": 1616698,
+      "size": 291,
+      "callers": 0,
+      "keyword": "vector"
+    },
+    {
+      "name": "r55_far_vector_stub",
+      "addr": 1620176,
+      "size": 66,
+      "callers": 2,
+      "keyword": "vector"
+    },
+    {
+      "name": "r58_line_table_entry",
+      "addr": 1658539,
+      "size": 4237,
+      "callers": 0,
+      "keyword": "line"
+    },
+    {
+      "name": "slope_far_call_driver",
+      "addr": 1666368,
+      "size": 4900,
+      "callers": 0,
+      "keyword": "river"
+    },
+    {
+      "name": "r64_vector_field_select",
+      "addr": 1723722,
+      "size": 488,
+      "callers": 0,
+      "keyword": "vector"
+    }
+  ],
+  "polygon_functions": [
+    {
+      "name": "tile_clip_draw_14200",
+      "addr": 82432,
+      "size": 106,
+      "keyword": "clip"
+    },
+    {
+      "name": "tile_clip_draw_1426a",
+      "addr": 82538,
+      "size": 98,
+      "keyword": "clip"
+    },
+    {
+      "name": "rect_edge_dispatch_a",
+      "addr": 130256,
+      "size": 32,
+      "keyword": "edge"
+    },
+    {
+      "name": "rect_edge_dispatch_b",
+      "addr": 130288,
+      "size": 37,
+      "keyword": "edge"
+    },
+    {
+      "name": "rect_edge_skip_dispatch",
+      "addr": 130325,
+      "size": 38,
+      "keyword": "edge"
+    },
+    {
+      "name": "rect_clip_then_dispatch_2209c",
+      "addr": 131869,
+      "size": 34,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_pending_apply_gate",
+      "addr": 153545,
+      "size": 12,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_pending_apply_latch",
+      "addr": 153557,
+      "size": 16,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_pending_apply_record",
+      "addr": 153573,
+      "size": 100,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_bounds_save_far_thunk",
+      "addr": 153673,
+      "size": 4,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_bounds_save_2546c",
+      "addr": 153677,
+      "size": 33,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_bounds_restore_far_thunk",
+      "addr": 153710,
+      "size": 4,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_bounds_restore_25450",
+      "addr": 153714,
+      "size": 33,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_pending_atomic_apply",
+      "addr": 153759,
+      "size": 19,
+      "keyword": "clip"
+    },
+    {
+      "name": "mouse_record_clip_2590c",
+      "addr": 153868,
+      "size": 126,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_rect_compute_abs",
+      "addr": 154315,
+      "size": 251,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_rect_compute_si",
+      "addr": 154566,
+      "size": 237,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_rect_compute_frame",
+      "addr": 154803,
+      "size": 24,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_rect_compute_guard",
+      "addr": 154840,
+      "size": 39,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_rect_compute_shr1",
+      "addr": 154879,
+      "size": 217,
+      "keyword": "clip"
+    },
+    {
+      "name": "segment_clip_test",
+      "addr": 155539,
+      "size": 262,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_or_draw_dispatch",
+      "addr": 155801,
+      "size": 16,
+      "keyword": "clip"
+    },
+    {
+      "name": "trig_clip_project_entry",
+      "addr": 156289,
+      "size": 25,
+      "keyword": "clip"
+    },
+    {
+      "name": "anim_record_clip_step5",
+      "addr": 163383,
+      "size": 28,
+      "keyword": "clip"
+    },
+    {
+      "name": "anim_frame_step_clip",
+      "addr": 163411,
+      "size": 43,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_flags_batch",
+      "addr": 163454,
+      "size": 86,
+      "keyword": "clip"
+    },
+    {
+      "name": "ui_bounds_clip_entry",
+      "addr": 172616,
+      "size": 198,
+      "keyword": "clip"
+    },
+    {
+      "name": "uibounds_clip_horiz_body",
+      "addr": 173046,
+      "size": 290,
+      "keyword": "clip"
+    },
+    {
+      "name": "uibounds_clip_vert_body",
+      "addr": 173336,
+      "size": 321,
+      "keyword": "clip"
+    },
+    {
+      "name": "sprite_clip_bounds_check",
+      "addr": 188938,
+      "size": 95,
+      "keyword": "clip"
+    },
+    {
+      "name": "clip_flag_gated_callback",
+      "addr": 195592,
+      "size": 63,
+      "keyword": "clip"
+    },
+    {
+      "name": "map_overlay_clip_frame",
+      "addr": 239058,
+      "size": 223,
+      "keyword": "clip"
+    },
+    {
+      "name": "box_edge_strip_draw",
+      "addr": 239578,
+      "size": 109,
+      "keyword": "edge"
+    },
+    {
+      "name": "sprite_step_clip_project_body",
+      "addr": 308074,
+      "size": 350,
+      "keyword": "clip"
+    }
+  ]
+}
