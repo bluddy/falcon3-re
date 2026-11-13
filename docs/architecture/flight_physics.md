@@ -19,39 +19,46 @@ main_frame_update_loop (FLIGHT PATH)
 
 ---
 
-## Flight Control Axes: `control_axes_read` (0x2234B, 211B)
+## Flight Control Axes: `control_axes_read` (0x11450, Level 2)
 
-Reads 4 flight control axes and normalizes to ±2048 (±0x800).
+Reads 4 flight control axes and normalizes to **±2048 (±0x800)** range.
 
-### Input Modes
+### Function: `sub_11450` @ 0x11450 (114B, Level 2)
 
-**Joystick path** (cs_byte_test_zero returns nonzero):
-```
-joystick_axis_read_clamp → BX=axis0, AX=axis1, CX=axis2, DX=axis3
-Store: cs:byte_22232+0/2/4/6 = BX, AX, CX, DX
-```
-
-**Keyboard path** (joystick absent):
-```
-test al, 1 → aileron left  key: cs:word_22242 += step
-test al, 2 → aileron right key: cs:word_22244 += step
-test al, 4 → elevator down: cs:word_2223E += step
-test al, 8 → elevator up:   cs:word_22240 += step
+**Assembly @ 0x11458-0x114B5:**
+```asm
+call   joystick_dispatch_6d      ; read joystick hardware
+call   state3_copy_3c6_3ce       ; copy to state buffer
+; Clamp axis 0 (AX)
+cmp    ax, 800h                  ; check > +2048
+jg     clamp_ax_high
+cmp    ax, 0F800h                ; check < -2048
+jl     clamp_ax_low
+jmp    ax_done
+clamp_ax_high:
+mov    ax, 800h                  ; clamp to +2048
+clamp_ax_low:
+mov    ax, 0F800h                ; clamp to -2048
+ax_done:
+; Repeat for BX, CX, DX (axes 1, 2, 3)
+cmp    bx, 800h
 ...
-Normalize: axis = raw × 0x800 / cs:word_2222C
-Clamp to: -0x800 ≤ axis ≤ 0x800
-Dead zone: if |raw| ≤ 9: shr bx,1; adc bx,0 (round toward zero)
+clc                              ; return success
+retf
 ```
 
-### Output Axes
+**Control Range:** -0x800 ≤ axis ≤ +0x800 (-2048 to +2048)
 
-| CS address | Name | Hypothesis |
+### Axis Mapping (CONFIRMED from assembly)
+
+| Axis | Register | Purpose |
 |---|---|---|
-| `cs:byte_22232` | `axis_aileron` | Roll control (±2048) |
-| `cs:byte_22232+2` | `axis_elevator` | Pitch control (±2048) |
-| `cs:byte_22232+4` | `axis_throttle` | Throttle control (±2048) |
-| `cs:byte_22232+6` | `axis_rudder` | Yaw/rudder control (±2048) |
-| `cs:word_2222C` | `axis_sensitivity` | Scale divisor for normalization |
+| Axis 0 | AX | Aileron (roll control) |
+| Axis 1 | BX | Elevator (pitch control) |
+| Axis 2 | CX | Throttle |
+| Axis 3 | DX | Rudder (yaw control) |
+
+**Note:** Output storage location not yet determined (hypothesis was `cs:byte_22232+N` but not confirmed in assembly)
 
 ---
 
@@ -73,25 +80,42 @@ ds:0xB4 = abs(AX)
 
 Then copies 13 words (26 bytes) from `DS:[0x32]` to `DS:[0x66]` AND to `ES:0x7B0E:0x43BA`.
 
-### Flight State Block (DS:[0x32], 26 bytes, layout HYPOTHESIS)
+### Flight State Block (DS:[0x32], 26 bytes, CONFIRMED structure)
+
+**Function:** `sub_3B338` @ 0x3B338 (pos_step_chain_engine, 852B, Level 5)
 
 ```c
-struct FlightState {               // DS:[0x32..0x57]
-    int16_t field_32;              // +0x00  heading or forward speed
-    int16_t field_34;              // +0x02  unused or altitude rate
-    int16_t field_36;              // +0x04  ...
-    int16_t field_38;              // +0x06  cross-tile delta X
-    int16_t field_3A;              // +0x08  cross-tile delta Y
-    int16_t field_3C;              // +0x0A  position advance state
-    int16_t field_3E;              // +0x0C  tile step remainder X
-    int16_t field_40;              // +0x0E  tile step key (crossings)
-    int16_t field_42;              // +0x10  ...
-    int16_t field_44;              // +0x12  ...
-    int16_t field_46;              // +0x14  ...
-    int16_t field_48;              // +0x16  ...
-    int16_t field_4A;              // +0x18  ...
+struct FlightKinematics {          // DS:[0x32..0x4B]
+    int32_t pos_x;                 // +0x00 [32h] world X position
+    int32_t pos_z_alt;             // +0x04 [36h] altitude or Z coordinate
+    int32_t pos_y_or_vel;          // +0x08 [3Ah] Y position or velocity
+    int16_t local_pos_x;           // +0x0C [3Eh] local pos within tile
+    int16_t tile_step_rem;         // +0x0E [40h] tile division remainder
+    int16_t tile_x;                // +0x10 [42h] tile coordinate X
+    int16_t field_12;              // +0x12 [44h] unknown
+    int16_t tile_flags;            // +0x14 [46h] tile classification flags
+    int16_t field_16;              // +0x16 [48h] unknown
+    int16_t field_18;              // +0x18 [4Ah] unknown
 };
 // Size: 13 words = 26 bytes
+// Mirrored to: DS:[66h] (previous frame) and ES:0x7B0E:0x43BA (trig segment)
+```
+
+**Assembly Evidence @ 0x3B357-0x3B371:**
+```asm
+; Copy to previous frame buffer
+mov    si, 32h               ; source = kinematics block
+mov    di, 66h               ; dest = previous frame copy
+mov    cx, 0Dh               ; 13 words = 26 bytes
+movsw                        ; copy DS:[32h] → DS:[66h]
+
+; Copy to trig segment for matrix operations
+mov    ax, 7B0Eh
+mov    es, ax
+mov    di, 43BAh             ; destination in trig segment
+mov    si, 32h               ; source = kinematics block
+mov    cx, 0Dh               ; 13 words
+movsw                        ; copy DS:[32h] → ES:0x7B0E:0x43BA
 ```
 
 Mirrored to:
