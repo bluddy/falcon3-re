@@ -1,0 +1,156 @@
+﻿  0x33EBC: mov    [si+1Ch], ax
+  0x33EBF: call   module_slot0_gated_call  ->code ['module_slot0_gated_call']
+  0x33EC2: retf   
+  --- callers: sub_24EC4, sub_2FD42, sub_3001E, sub_30587, sub_3141A, sub_321DD, sub_32B39, sub_32B7F, sub_32C62, sub_3327A, sub_39748, sub_3C1BD, sub_3C4F2, sub_3E95E
+
+; ---- sub_38CF3 size=2284 ----
+sub_38CF3  ea=0x38CF3  size=2284  L19  in=15
+  --- callees (13): farobj_batch_build_project(L11), tile_quad_sample(L3), farobj_rect_ratio_build(L3), tile_strip_sample_draw(L4), fixed_matrix_mul(L1), stub_to_24980(L1), stub_to_24988(L1), angle_wrap(L1), stub_to_249d8(L1), obj_fuel_exhaust_step(L14), sub_39748(L19), sub_398A4(L19), farobj_height_gate_wrap(L5)
+  0x38CF3: call   farobj_height_gate_wrap  ->code ['farobj_height_gate_wrap']
+  0x38CF6: mov    ax, [si+24h]
+  0x38CF9: cmp    ax, [si+0CEh]
+  0x38CFD: jle    loc_38D03  ->code ['sub_38CF3']
+  0x38CFF: mov    [si+0CEh], ax
+  0x38D03: mov    ax, ds:135Ch
+  0x38D06: push   ax
+  0x38D07: mov    word ptr ds:135Ch, 2
+  0x38D0D: call   near ptr loc_38D2C+1  ->code ['sub_38CF3']
+  0x38D10: pop    ax
+  0x38D11: mov    ds:135Ch, ax
+  0x38D14: retf   
+  0x38D15: <undecodable 0x00>
+  0x38D16: <undecodable 0x00>
+  0x38D17: <undecodable 0x00>
+  0x38D18: <undecodable 0x00>
+  0x38D19: <undecodable 0x00>
+  0x38D1A: <undecodable 0x00>
+  0x38D1B: <undecodable 0x00>
+  0x38D1C: <undecodable 0x00>
+  0x38D1D: <undecodable 0x00>
+  0x38D1E: <undecodable 0x00>
+  0x38D1F: <undecodable 0x00>
+  0x38D20: <undecodable 0x00>
+  0x38D21: <undecodable 0x00>
+  0x38D22: <undecodable 0x00>
+  0x38D23: <undecodable 0x00>
+  0x38D24: <undecodable 0x00>
+  0x38D25: <undecodable 0x00>
+  0x38D26: <undecodable 0x00>
+  0x38D27: <undecodable 0x00>
+  0x38D28: <undecodable 0x00>
+  0x38D29: <undecodable 0x00>
+  0x38D2A: <undecodable 0x00>
+  0x38D2B: <undecodable 0x00>
+  0x38D2C: add    bh, bh
+  0x38D2E: jz     loc_38D3C  ->code ['sub_38CF3']
+  0x38D30: push   word ptr [si+0Eh]
+  0x38D33: push   word ptr [si+10h]
+  0x38D36: call   obj_fuel_exhaust_step  ->code ['obj_fuel_exhaust_step']
+  0x38D39: mov    ax, [si+10h]
+  0x38D3C: mov    bx, 1350h
+  0x38D3F: call   stub_to_249d8  ->code ['tile_strip_sample_draw', 'stub_to_249d8']
+  0x38D44: mov    ax, [si+0Eh]
+  0x38D47: mov    bx, 1354h
+  0x38D4A: call   stub_to_249d8  ->code ['tile_strip_sample_draw', 'stub_to_249d8']
+  0x38D4F: mov    ax, [si+10h]
+  0x38D52: sar    ax, 1
+  0x38D54: mov    bx, 1358h
+  0x38D57: call   stub_to_249d8  ->code ['tile_strip_sample_draw', 'stub_to_249d8']
+  0x38D5C: mov    cs:word_377E5, 0F000h
+  0x38D63: cmp    word ptr [si+56h], 0
+  0x38D67: jg     loc_38D84  ->code ['sub_38CF3']
+  0x38D69: mov    bx, si
+  0x38D6B: mov    ax, [si+0Ch]
+  0x38D6E: push   si
+  0x38D6F: mov    si, 241h
+  0x38D72: call   farobj_rect_ratio_build  ->code ['farobj_rect_ratio_build']
+  0x38D77: pop    si
+  0x38D78: mov    cs:word_377E5, ax
+  0x38D7C: mov    cs:word_377E7, dx
+  0x38D81: call   sub_39748  ->code ['sub_39748']
+  0x38D84: mov    ax, [si+60h]
+  0x38D87: cmp    [si+14h], ax
+  0x38D8A: jg     loc_38D9B  ->code ['sub_38CF3']
+  0x38D8C: mov    ax, [si+1Ah]
+  0x38D8F: mov    bx, [si+14h]
+  0x38D92: imul   bx
+  0x38D94: mov    bx, [si+66h]
+  0x38D97: idiv   bx
+  0x38D99: jmp    loc_38DAC  ->code ['sub_38CF3']
+  0x38D9B: imul   ax
+  0x38D9D: mov    bx, [si+66h]
+  0x38DA0: idiv   bx
+  0x38DA2: mov    bx, [si+1Ah]
+  0x38DA5: imul   bx
+  0x38DA7: mov    bx, [si+14h]
+  0x38DAA: idiv   bx
+  0x38DAC: cmp    word ptr ds:135Ch, 0
+  0x38DB1: jz     loc_38E10  ->code ['sub_38CF3']
+  0x38DB3: push   ax
+  0x38DB4: cwd    
+  0x38DB5: xor    ax, dx
+  0x38DB7: sub    ax, dx
+  0x38DB9: cmp    ax, [si+6Ah]
+  0x38DBC: jge    loc_38DD5  ->code ['sub_38CF3']
+  0x38DBE: mov    ax, [si+6Ah]
+  0x38DC1: mov    bx, [si+14h]
+  0x38DC4: imul   bx
+  0x38DC6: mov    bx, [si+60h]
+  0x38DC9: idiv   bx
+  0x38DCB: mov    bx, [si+14h]
+  0x38DCE: imul   bx
+  0x38DD0: mov    bx, [si+60h]
+  0x38DD3: idiv   bx
+  0x38DD5: mov    bx, [si+68h]
+  0x38DD8: imul   bx
+  0x38DDA: mov    bx, 80h
+  0x38DDD: cmp    word ptr ds:135Ch, 1
+  0x38DE2: jz     loc_38DE7  ->code ['sub_38CF3']
+  0x38DE4: mov    bx, 100h
+  0x38DE7: idiv   bx
+  0x38DE9: mov    bx, cs:word_2E139
+  0x38DEE: cmp    bx, 80h
+  0x38DF2: jl     loc_38DF7  ->code ['sub_38CF3']
+  0x38DF4: mov    bx, 7Fh
+  0x38DF7: imul   bx
+  0x38DF9: mov    al, ah
+  0x38DFB: mov    ah, dl
+  0x38DFD: pop    bx
+  0x38DFE: sub    bx, [si+34h]
+  0x38E01: cmp    bx, ax
+  0x38E03: jge    loc_38E0D  ->code ['sub_38CF3']
+  0x38E05: neg    ax
+  0x38E07: cmp    bx, ax
+  0x38E09: jle    loc_38E0D  ->code ['sub_38CF3']
+  0x38E0B: mov    ax, bx
+  0x38E0D: add    ax, [si+34h]
+  0x38E10: mov    [si+34h], ax
+  0x38E13: mov    word ptr cs:loc_377D4+1, ax
+  0x38E17: mov    ax, [si+60h]
+  0x38E1A: cmp    [si+14h], ax
+  0x38E1D: jg     loc_38E2E  ->code ['sub_38CF3']
+  0x38E1F: mov    ax, [si+1Ch]
+  0x38E22: mov    bx, [si+14h]
+  0x38E25: imul   bx
+  0x38E27: mov    bx, [si+6Ch]
+  0x38E2A: idiv   bx
+  0x38E2C: jmp    loc_38E3F  ->code ['sub_38CF3']
+  0x38E2E: imul   ax
+  0x38E30: mov    bx, [si+6Ch]
+  0x38E33: idiv   bx
+  0x38E35: mov    bx, [si+1Ch]
+  0x38E38: imul   bx
+  0x38E3A: mov    bx, [si+14h]
+  0x38E3D: idiv   bx
+  0x38E3F: cmp    word ptr ds:135Ch, 0
+  0x38E44: jnz    loc_38E4A  ->code ['sub_38CF3']
+  0x38E46: sar    ax, 1
+  0x38E48: jmp    loc_38EA7  ->code ['sub_38CF3']
+  0x38E4A: push   ax
+  0x38E4B: cwd    
+  0x38E4C: xor    ax, dx
+  0x38E4E: sub    ax, dx
+  0x38E50: cmp    ax, [si+70h]
+  0x38E53: jge    loc_38E6C  ->code ['sub_38CF3']
+  0x38E55: mov    ax, [si+70h]
+  0x38E58: mov    bx, [si+14h]
