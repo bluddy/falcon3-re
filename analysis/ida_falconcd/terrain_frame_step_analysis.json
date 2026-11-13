@@ -1,0 +1,1122 @@
+{
+  "view_terrain_frame_step": {
+    "name": "view_terrain_frame_step",
+    "address": 203937,
+    "size": 460,
+    "disassembly": [
+      {
+        "addr": 203937,
+        "disasm": "mov     bx, ds:23Bh"
+      },
+      {
+        "addr": 203941,
+        "disasm": "mov     bx, [bx+3ECh]"
+      },
+      {
+        "addr": 203945,
+        "disasm": "jmp     bx"
+      },
+      {
+        "addr": 203947,
+        "disasm": "cmp     cs:word_2F68F, 0"
+      },
+      {
+        "addr": 203953,
+        "disasm": "jz      short loc_31CBA"
+      },
+      {
+        "addr": 203955,
+        "disasm": "mov     cs:word_2F68F, 0"
+      },
+      {
+        "addr": 203962,
+        "disasm": "test    byte ptr ds:478h, 1"
+      },
+      {
+        "addr": 203967,
+        "disasm": "jz      short loc_31CC8"
+      },
+      {
+        "addr": 203969,
+        "disasm": "mov     cs:word_2F68F, 64h ; 'd'"
+      },
+      {
+        "addr": 203976,
+        "disasm": "call    view_limits_apply_33f38"
+      },
+      {
+        "addr": 203979,
+        "disasm": "test    byte ptr ds:478h, 1"
+      },
+      {
+        "addr": 203984,
+        "disasm": "jz      short loc_31CF4"
+      },
+      {
+        "addr": 203986,
+        "disasm": "mov     si, cs:word_2F669"
+      },
+      {
+        "addr": 203991,
+        "disasm": "mov     al, 0"
+      },
+      {
+        "addr": 203993,
+        "disasm": "mov     ah, 0FFh"
+      },
+      {
+        "addr": 203995,
+        "disasm": "call    mode_frame_step_core"
+      },
+      {
+        "addr": 203998,
+        "disasm": "cmp     byte ptr ds:44Bh, 0"
+      },
+      {
+        "addr": 204003,
+        "disasm": "jz      short locret_31CF3"
+      },
+      {
+        "addr": 204005,
+        "disasm": "mov     si, cs:word_2F669"
+      },
+      {
+        "addr": 204010,
+        "disasm": "mov     bx, 64h ; 'd'"
+      },
+      {
+        "addr": 204013,
+        "disasm": "call    view_limits_install_step"
+      },
+      {
+        "addr": 204016,
+        "disasm": "jmp     game_setup_half_accum"
+      },
+      {
+        "addr": 204019,
+        "disasm": "retn"
+      },
+      {
+        "addr": 204020,
+        "disasm": "call    view_limits_pair_apply"
+      },
+      {
+        "addr": 204023,
+        "disasm": "mov     ax, ds"
+      },
+      {
+        "addr": 204025,
+        "disasm": "mov     bx, 3B83h"
+      },
+      {
+        "addr": 204028,
+        "disasm": "mov     ds, bx"
+      },
+      {
+        "addr": 204030,
+        "disasm": "mov     bx, 8235h"
+      },
+      {
+        "addr": 204033,
+        "disasm": "mov     bl, [bx]"
+      },
+      {
+        "addr": 204035,
+        "disasm": "test    bl, 2"
+      },
+      {
+        "addr": 204038,
+        "disasm": "mov     ds, ax"
+      },
+      {
+        "addr": 204040,
+        "disasm": "jz      short loc_31D0B"
+      },
+      {
+        "addr": 204042,
+        "disasm": "retn"
+      },
+      {
+        "addr": 204043,
+        "disasm": "sub     ax, ax"
+      },
+      {
+        "addr": 204045,
+        "disasm": "mov     byte ptr ds:4FBh, 1"
+      },
+      {
+        "addr": 204050,
+        "disasm": "mov     ds:4, ax"
+      },
+      {
+        "addr": 204053,
+        "disasm": "cmp     ds:451h, al"
+      },
+      {
+        "addr": 204057,
+        "disasm": "jge     short loc_31D26"
+      },
+      {
+        "addr": 204059,
+        "disasm": "mov     ds:450h, al"
+      },
+      {
+        "addr": 204062,
+        "disasm": "mov     ds:44Fh, al"
+      },
+      {
+        "addr": 204065,
+        "disasm": "mov     ds:4FCh, al"
+      },
+      {
+        "addr": 204068,
+        "disasm": "jmp     short loc_31D34"
+      },
+      {
+        "addr": 204070,
+        "disasm": "inc     byte ptr ds:450h"
+      },
+      {
+        "addr": 204074,
+        "disasm": "cmp     byte ptr ds:450h, 2"
+      },
+      {
+        "addr": 204079,
+        "disasm": "jle     short loc_31D34"
+      },
+      {
+        "addr": 204081,
+        "disasm": "mov     ds:450h, al"
+      },
+      {
+        "addr": 204084,
+        "disasm": "cmp     ds:452h, ax"
+      },
+      {
+        "addr": 204088,
+        "disasm": "jz      short loc_31D40"
+      },
+      {
+        "addr": 204090,
+        "disasm": "mov     ds:450h, al"
+      },
+      {
+        "addr": 204093,
+        "disasm": "jmp     short loc_31D71"
+      },
+      {
+        "addr": 204095,
+        "disasm": "nop"
+      },
+      {
+        "addr": 204096,
+        "disasm": "mov     al, ds:450h"
+      },
+      {
+        "addr": 204099,
+        "disasm": "cmp     al, 1"
+      },
+      {
+        "addr": 204101,
+        "disasm": "jl      short loc_31D71"
+      },
+      {
+        "addr": 204103,
+        "disasm": "jg      short loc_31D65"
+      },
+      {
+        "addr": 204105,
+        "disasm": "neg     byte ptr ds:4FBh"
+      },
+      {
+        "addr": 204109,
+        "disasm": "mov     word ptr ds:4, 64h ; 'd'"
+      },
+      {
+        "addr": 204115,
+        "disasm": "cmp     byte ptr ds:451h, 0"
+      },
+      {
+        "addr": 204120,
+        "disasm": "jz      short loc_31D94"
+      },
+      {
+        "addr": 204122,
+        "disasm": "mov     di, 71h ; 'q'"
+      },
+      {
+        "addr": 204125,
+        "disasm": "mov     bx, 57h ; 'W'"
+      },
+      {
+        "addr": 204128,
+        "disasm": "call    dispatch_2211c_stub"
+      },
+      {
+        "addr": 204133,
+        "disasm": "sub     ax, ax"
+      },
+      {
+        "addr": 204135,
+        "disasm": "call    game_setup_frame_chain"
+      },
+      {
+        "addr": 204138,
+        "disasm": "neg     byte ptr ds:4FBh"
+      },
+      {
+        "addr": 204142,
+        "disasm": "jmp     loc_31DF8"
+      },
+      {
+        "addr": 204145,
+        "disasm": "cmp     byte ptr ds:451h, 0"
+      },
+      {
+        "addr": 204150,
+        "disasm": "jz      short loc_31D94"
+      },
+      {
+        "addr": 204152,
+        "disasm": "mov     si, 0Dh"
+      },
+      {
+        "addr": 204155,
+        "disasm": "mov     di, 71h ; 'q'"
+      },
+      {
+        "addr": 204158,
+        "disasm": "mov     bx, 57h ; 'W'"
+      },
+      {
+        "addr": 204161,
+        "disasm": "mov     ax, 1"
+      },
+      {
+        "addr": 204164,
+        "disasm": "mov     dx, 0"
+      },
+      {
+        "addr": 204167,
+        "disasm": "call    far_cb_4"
+      },
+      {
+        "addr": 204172,
+        "disasm": "mov     ax, 2"
+      },
+      {
+        "addr": 204175,
+        "disasm": "call    game_setup_frame_chain"
+      },
+      {
+        "addr": 204178,
+        "disasm": "jmp     short loc_31DF8"
+      },
+      {
+        "addr": 204180,
+        "disasm": "cmp     byte ptr ds:45Ch, 0"
+      },
+      {
+        "addr": 204185,
+        "disasm": "jnz     short loc_31DBA"
+      },
+      {
+        "addr": 204187,
+        "disasm": "mov     si, 0Dh"
+      },
+      {
+        "addr": 204190,
+        "disasm": "add     si, ds:4"
+      },
+      {
+        "addr": 204194,
+        "disasm": "mov     di, 71h ; 'q'"
+      },
+      {
+        "addr": 204197,
+        "disasm": "mov     cx, 60h ; '`'"
+      },
+      {
+        "addr": 204200,
+        "disasm": "mov     dx, cx"
+      },
+      {
+        "addr": 204202,
+        "disasm": "mov     bx, 57h ; 'W'"
+      },
+      {
+        "addr": 204205,
+        "disasm": "mov     bp, 88h"
+      },
+      {
+        "addr": 204208,
+        "disasm": "mov     al, ds:4FBh"
+      },
+      {
+        "addr": 204211,
+        "disasm": "mov     ah, 0"
+      },
+      {
+        "addr": 204213,
+        "disasm": "call    farwrap_25a1c"
+      },
+      {
+        "addr": 204218,
+        "disasm": "cmp     word ptr ds:4302h, 0"
+      },
+      {
+        "addr": 204223,
+        "disasm": "jnz     short loc_31DCE"
+      },
+      {
+        "addr": 204225,
+        "disasm": "cmp     byte ptr ds:4FCh, 1"
+      },
+      {
+        "addr": 204230,
+        "disasm": "jg      short loc_31DF2"
+      },
+      {
+        "addr": 204232,
+        "disasm": "inc     byte ptr ds:4FCh"
+      },
+      {
+        "addr": 204236,
+        "disasm": "jmp     short loc_31DD3"
+      },
+      {
+        "addr": 204238,
+        "disasm": "mov     byte ptr ds:4FCh, 0"
+      },
+      {
+        "addr": 204243,
+        "disasm": "mov     si, 0Dh"
+      },
+      {
+        "addr": 204246,
+        "disasm": "add     si, ds:4"
+      },
+      {
+        "addr": 204250,
+        "disasm": "mov     di, 71h ; 'q'"
+      },
+      {
+        "addr": 204253,
+        "disasm": "mov     cx, 28h ; '('"
+      },
+      {
+        "addr": 204256,
+        "disasm": "mov     dx, cx"
+      },
+      {
+        "addr": 204258,
+        "disasm": "mov     bx, 23h ; '#'"
+      },
+      {
+        "addr": 204261,
+        "disasm": "mov     bp, 30h ; '0'"
+      },
+      {
+        "addr": 204264,
+        "disasm": "mov     al, ds:4FBh"
+      },
+      {
+        "addr": 204267,
+        "disasm": "mov     ah, 0"
+      },
+      {
+        "addr": 204269,
+        "disasm": "call    farwrap_25a1c"
+      },
+      {
+        "addr": 204274,
+        "disasm": "mov     ax, 1"
+      },
+      {
+        "addr": 204277,
+        "disasm": "call    game_setup_frame_chain"
+      },
+      {
+        "addr": 204280,
+        "disasm": "cmp     byte ptr ds:45Ch, 0"
+      },
+      {
+        "addr": 204285,
+        "disasm": "jz      short loc_31E37"
+      },
+      {
+        "addr": 204287,
+        "disasm": "mov     si, ds:48BAh"
+      },
+      {
+        "addr": 204291,
+        "disasm": "test    word ptr [si+0CAh], 1000h"
+      },
+      {
+        "addr": 204297,
+        "disasm": "jnz     short loc_31E32"
+      },
+      {
+        "addr": 204299,
+        "disasm": "mov     byte ptr ds:4FBh, 0FFh"
+      },
+      {
+        "addr": 204304,
+        "disasm": "cmp     byte ptr ds:44Fh, 1"
+      },
+      {
+        "addr": 204309,
+        "disasm": "jle     short loc_31E29"
+      },
+      {
+        "addr": 204311,
+        "disasm": "cmp     byte ptr ds:44Fh, 7"
+      },
+      {
+        "addr": 204316,
+        "disasm": "jg      short loc_31E24"
+      },
+      {
+        "addr": 204318,
+        "disasm": "inc     byte ptr ds:44Fh"
+      },
+      {
+        "addr": 204322,
+        "disasm": "jmp     short loc_31E4B"
+      },
+      {
+        "addr": 204324,
+        "disasm": "mov     byte ptr ds:44Fh, 0FFh"
+      },
+      {
+        "addr": 204329,
+        "disasm": "inc     byte ptr ds:44Fh"
+      },
+      {
+        "addr": 204333,
+        "disasm": "call    terrain_menu_triple_step"
+      },
+      {
+        "addr": 204336,
+        "disasm": "jmp     short loc_31E4B"
+      },
+      {
+        "addr": 204338,
+        "disasm": "mov     byte ptr ds:45Ch, 0"
+      },
+      {
+        "addr": 204343,
+        "disasm": "cmp     byte ptr ds:44D4h, 0"
+      },
+      {
+        "addr": 204348,
+        "disasm": "jz      short loc_31E4B"
+      },
+      {
+        "addr": 204350,
+        "disasm": "call    map_view_entity_project"
+      },
+      {
+        "addr": 204355,
+        "disasm": "mov     byte ptr ds:4FBh, 0FFh"
+      },
+      {
+        "addr": 204360,
+        "disasm": "call    near ptr terrain_grid_cb_dispatch"
+      },
+      {
+        "addr": 204363,
+        "disasm": "mov     si, cs:word_2F669"
+      },
+      {
+        "addr": 204368,
+        "disasm": "mov     al, ds:4FBh"
+      },
+      {
+        "addr": 204371,
+        "disasm": "cbw"
+      },
+      {
+        "addr": 204372,
+        "disasm": "xor     al, al"
+      },
+      {
+        "addr": 204374,
+        "disasm": "call    mode_frame_step_core"
+      },
+      {
+        "addr": 204377,
+        "disasm": "xor     bx, bx"
+      },
+      {
+        "addr": 204379,
+        "disasm": "cmp     ds:44Bh, bl"
+      },
+      {
+        "addr": 204383,
+        "disasm": "jz      short locret_31E6C"
+      },
+      {
+        "addr": 204385,
+        "disasm": "mov     si, cs:word_2F669"
+      },
+      {
+        "addr": 204390,
+        "disasm": "call    view_limits_install_step"
+      },
+      {
+        "addr": 204393,
+        "disasm": "jmp     game_setup_half_accum"
+      },
+      {
+        "addr": 204396,
+        "disasm": "retn"
+      }
+    ],
+    "calls": [
+      {
+        "addr": 203976,
+        "target": 212792,
+        "target_name": "view_limits_apply_33f38"
+      },
+      {
+        "addr": 203995,
+        "target": 238550,
+        "target_name": "mode_frame_step_core"
+      },
+      {
+        "addr": 204013,
+        "target": 219971,
+        "target_name": "view_limits_install_step"
+      },
+      {
+        "addr": 204020,
+        "target": 212695,
+        "target_name": "view_limits_pair_apply"
+      },
+      {
+        "addr": 204128,
+        "target": 155196,
+        "target_name": "dispatch_2211c_stub"
+      },
+      {
+        "addr": 204135,
+        "target": 227850,
+        "target_name": "game_setup_frame_chain"
+      },
+      {
+        "addr": 204167,
+        "target": 155144,
+        "target_name": "far_cb_4"
+      },
+      {
+        "addr": 204175,
+        "target": 227850,
+        "target_name": "game_setup_frame_chain"
+      },
+      {
+        "addr": 204213,
+        "target": 154118,
+        "target_name": "farwrap_25a1c"
+      },
+      {
+        "addr": 204269,
+        "target": 154118,
+        "target_name": "farwrap_25a1c"
+      },
+      {
+        "addr": 204277,
+        "target": 227850,
+        "target_name": "game_setup_frame_chain"
+      },
+      {
+        "addr": 204333,
+        "target": 204397,
+        "target_name": "terrain_menu_triple_step"
+      },
+      {
+        "addr": 204350,
+        "target": 292977,
+        "target_name": "map_view_entity_project"
+      },
+      {
+        "addr": 204360,
+        "target": 240473,
+        "target_name": "terrain_grid_cb_dispatch"
+      },
+      {
+        "addr": 204374,
+        "target": 238550,
+        "target_name": "mode_frame_step_core"
+      },
+      {
+        "addr": 204390,
+        "target": 219971,
+        "target_name": "view_limits_install_step"
+      }
+    ],
+    "data_refs": [
+      {
+        "addr": 203947,
+        "target": 194191,
+        "name": "word_2F68F"
+      },
+      {
+        "addr": 203955,
+        "target": 194191,
+        "name": "word_2F68F"
+      },
+      {
+        "addr": 203969,
+        "target": 194191,
+        "name": "word_2F68F"
+      },
+      {
+        "addr": 203986,
+        "target": 194153,
+        "name": "word_2F669"
+      },
+      {
+        "addr": 204005,
+        "target": 194153,
+        "name": "word_2F669"
+      },
+      {
+        "addr": 204363,
+        "target": 194153,
+        "name": "word_2F669"
+      },
+      {
+        "addr": 204385,
+        "target": 194153,
+        "name": "word_2F669"
+      }
+    ],
+    "callers": [
+      {
+        "name": "game_config_apply_init",
+        "addr": 194256,
+        "call_site": 195039
+      },
+      {
+        "name": "main_frame_update_loop",
+        "addr": 201497,
+        "call_site": 201656
+      }
+    ],
+    "instruction_count": 142,
+    "call_count": 16,
+    "data_ref_count": 7
+  },
+  "subsystems": {
+    "height_lookup": [
+      {
+        "name": "terrain_height_lookup_11cc8",
+        "addr": 73024,
+        "size": 142
+      },
+      {
+        "name": "terrain_attr_lookup_3840",
+        "addr": 77607,
+        "size": 157
+      },
+      {
+        "name": "terrain_lookup_gated_b",
+        "addr": 78178,
+        "size": 21
+      },
+      {
+        "name": "terrain_attr_lookup_3840_b",
+        "addr": 81984,
+        "size": 42
+      },
+      {
+        "name": "farobj_height_gate_wrap",
+        "addr": 235938,
+        "size": 80
+      },
+      {
+        "name": "terrain_vm_entry_lookup",
+        "addr": 327170,
+        "size": 44
+      }
+    ],
+    "tile_management": [
+      {
+        "name": "tile_base_set_stream",
+        "addr": 73962,
+        "size": 45
+      },
+      {
+        "name": "tile_base_search_11caa",
+        "addr": 74729,
+        "size": 47
+      },
+      {
+        "name": "farobj_tile_align_project",
+        "addr": 74932,
+        "size": 128
+      },
+      {
+        "name": "tile_base_set_11c26",
+        "addr": 75276,
+        "size": 138
+      },
+      {
+        "name": "tile_record_search_bl",
+        "addr": 75414,
+        "size": 109
+      },
+      {
+        "name": "tile_record_count",
+        "addr": 75523,
+        "size": 55
+      },
+      {
+        "name": "tile_pos_store_ccd",
+        "addr": 75649,
+        "size": 83
+      },
+      {
+        "name": "map_tile_pos_get",
+        "addr": 75937,
+        "size": 10
+      },
+      {
+        "name": "farobj_tile_stream_build",
+        "addr": 78220,
+        "size": 234
+      },
+      {
+        "name": "tile_base_batch_build",
+        "addr": 78578,
+        "size": 15
+      },
+      {
+        "name": "tile_base_set_11bc6",
+        "addr": 78593,
+        "size": 167
+      },
+      {
+        "name": "slot3_tile3x3_load",
+        "addr": 79701,
+        "size": 139
+      },
+      {
+        "name": "slot3_tile_record_load",
+        "addr": 79984,
+        "size": 483
+      },
+      {
+        "name": "tile_quad_sample_group",
+        "addr": 80959,
+        "size": 113
+      },
+      {
+        "name": "tile_clip_draw_14200",
+        "addr": 82432,
+        "size": 106
+      },
+      {
+        "name": "tile_clip_draw_1426a",
+        "addr": 82538,
+        "size": 98
+      },
+      {
+        "name": "tile_world_index_3334",
+        "addr": 82650,
+        "size": 124
+      },
+      {
+        "name": "tile_quad_sample",
+        "addr": 84310,
+        "size": 114
+      },
+      {
+        "name": "farobj_tile_copy_align",
+        "addr": 85586,
+        "size": 91
+      },
+      {
+        "name": "farobj_tile_copy_resolve",
+        "addr": 85678,
+        "size": 470
+      },
+      {
+        "name": "tile_base_opcode_interpreter",
+        "addr": 87902,
+        "size": 421
+      },
+      {
+        "name": "tile_strip_sample_draw",
+        "addr": 90208,
+        "size": 126
+      },
+      {
+        "name": "tile_index_clamp_5f",
+        "addr": 91503,
+        "size": 10
+      },
+      {
+        "name": "tile_index_resolve",
+        "addr": 91518,
+        "size": 48
+      },
+      {
+        "name": "tile_strip_project_draw",
+        "addr": 221692,
+        "size": 331
+      },
+      {
+        "name": "record_script_tilepos_dispatch",
+        "addr": 228602,
+        "size": 138
+      },
+      {
+        "name": "tile_sample_script_dispatch",
+        "addr": 231154,
+        "size": 105
+      },
+      {
+        "name": "tile_sprite_strip_project",
+        "addr": 235336,
+        "size": 179
+      },
+      {
+        "name": "tile_quad_classify",
+        "addr": 243387,
+        "size": 39
+      },
+      {
+        "name": "tile_grid_scan_step",
+        "addr": 298695,
+        "size": 210
+      },
+      {
+        "name": "entity_spawn_from_tile",
+        "addr": 301748,
+        "size": 335
+      },
+      {
+        "name": "tile_object_interpreter",
+        "addr": 308877,
+        "size": 46
+      },
+      {
+        "name": "tile_object_init_opstream",
+        "addr": 310736,
+        "size": 386
+      },
+      {
+        "name": "farobj_tile_key_cache",
+        "addr": 311224,
+        "size": 40
+      }
+    ],
+    "attribute_system": [
+      {
+        "name": "terrain_attr_default_60",
+        "addr": 77597,
+        "size": 10
+      },
+      {
+        "name": "terrain_attr_walk_13110",
+        "addr": 78096,
+        "size": 82
+      },
+      {
+        "name": "terrain_attr_unpack_11c2c",
+        "addr": 82774,
+        "size": 129
+      },
+      {
+        "name": "terrain_attr_quadrant_dispatch",
+        "addr": 82903,
+        "size": 69
+      },
+      {
+        "name": "terrain_attr_store_11c8e_c",
+        "addr": 82972,
+        "size": 144
+      },
+      {
+        "name": "terrain_attr_store_11c8e",
+        "addr": 83116,
+        "size": 146
+      },
+      {
+        "name": "terrain_attr_store_11c8e_d",
+        "addr": 83262,
+        "size": 145
+      },
+      {
+        "name": "terrain_attr_store_11c8e_b",
+        "addr": 83407,
+        "size": 143
+      },
+      {
+        "name": "terrain_attr_quadrant_dispatch_b",
+        "addr": 83550,
+        "size": 60
+      },
+      {
+        "name": "terrain_attr_block_scan_inc",
+        "addr": 83610,
+        "size": 157
+      },
+      {
+        "name": "terrain_attr_block_scan_axdec",
+        "addr": 83767,
+        "size": 157
+      },
+      {
+        "name": "terrain_attr_block_scan_dec",
+        "addr": 83924,
+        "size": 156
+      },
+      {
+        "name": "terrain_attr_block_scan",
+        "addr": 84080,
+        "size": 156
+      },
+      {
+        "name": "terrain_attr_scan_4",
+        "addr": 84236,
+        "size": 74
+      },
+      {
+        "name": "terrain_attr_scan_draw_a",
+        "addr": 90334,
+        "size": 70
+      },
+      {
+        "name": "terrain_attr_scan_draw_b",
+        "addr": 90404,
+        "size": 88
+      },
+      {
+        "name": "terrain_attr_project_point",
+        "addr": 221211,
+        "size": 81
+      },
+      {
+        "name": "terrain_attr_scan_clamp",
+        "addr": 221292,
+        "size": 400
+      }
+    ],
+    "rendering": [
+      {
+        "name": "terrain_point_label_draw",
+        "addr": 222023,
+        "size": 112
+      },
+      {
+        "name": "terrain_point_project_store",
+        "addr": 222263,
+        "size": 45
+      },
+      {
+        "name": "hud_terrain_strip_render",
+        "addr": 225677,
+        "size": 988
+      }
+    ],
+    "vm_system": [
+      {
+        "name": "terrain_vm_sweep_sample",
+        "addr": 193536,
+        "size": 309
+      },
+      {
+        "name": "terrain_stream_pos_update",
+        "addr": 200887,
+        "size": 66
+      },
+      {
+        "name": "terrain_stream_counter_step",
+        "addr": 200953,
+        "size": 38
+      },
+      {
+        "name": "terrain_vm_blend_gate",
+        "addr": 232593,
+        "size": 26
+      },
+      {
+        "name": "terrain_vm_buffer_decay",
+        "addr": 324588,
+        "size": 188
+      },
+      {
+        "name": "terrain_vm_blend_apply",
+        "addr": 325560,
+        "size": 56
+      },
+      {
+        "name": "terrain_vm_flag_gate",
+        "addr": 325820,
+        "size": 168
+      },
+      {
+        "name": "terrain_vm_sweep_kick",
+        "addr": 326846,
+        "size": 38
+      }
+    ],
+    "grid_system": [
+      {
+        "name": "terrain_pos_grid_build",
+        "addr": 91053,
+        "size": 429
+      },
+      {
+        "name": "terrain_grid_cb_dispatch",
+        "addr": 240473,
+        "size": 37
+      }
+    ],
+    "frame_update": [
+      {
+        "name": "terrain_frame_update_driver",
+        "addr": 86949,
+        "size": 113
+      },
+      {
+        "name": "view_terrain_frame_step",
+        "addr": 203937,
+        "size": 460
+      },
+      {
+        "name": "terrain_menu_triple_step",
+        "addr": 204397,
+        "size": 82
+      },
+      {
+        "name": "terrain_angle_time_step",
+        "addr": 227352,
+        "size": 145
+      },
+      {
+        "name": "terrain_ratio_wrap_step",
+        "addr": 230405,
+        "size": 203
+      },
+      {
+        "name": "terrain_field_sample_step",
+        "addr": 230711,
+        "size": 118
+      },
+      {
+        "name": "farobj_step_terrain_clamp",
+        "addr": 292743,
+        "size": 234
+      },
+      {
+        "name": "cmd_terrain_decay_step",
+        "addr": 424308,
+        "size": 24
+      }
+    ]
+  }
+}
