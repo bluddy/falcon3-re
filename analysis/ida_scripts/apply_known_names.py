@@ -17,8 +17,11 @@ import json
 from pathlib import Path
 
 # All known function names from our analysis
+# CRITICAL: Keep this updated as we learn more!
 KNOWN_FUNCTIONS = {
-    # File I/O System (from FILE_IO_ANALYSIS.md)
+    # ===================================================================
+    # FILE I/O SYSTEM (from FILE_IO_ANALYSIS.md)
+    # ===================================================================
     0x226BD: "file_open",           # DOS INT 21h AH=3D wrapper
     0x226E4: "file_close",          # DOS INT 21h AH=3E wrapper
     0x226F5: "file_read",           # DOS INT 21h AH=3F wrapper
@@ -31,7 +34,13 @@ KNOWN_FUNCTIONS = {
     0x6A651: "squad_file_handler",  # SQUAD file handler (46 refs!)
     0x1779A6: "harpoon_dat_loader", # HARPOON.DAT loader
     
-    # Menu System (from MENU_SYSTEM_CODE_STRUCTURE.md)
+    # Overlay system (from FILE_IO_ANALYSIS.md)
+    0x2AEA9: "overlay_file_open",   # Overlay file opener
+    0x2AC4C: "overlay_segment_load", # Overlay loader
+    
+    # ===================================================================
+    # MENU SYSTEM (from MENU_SYSTEM_CODE_STRUCTURE.md)
+    # ===================================================================
     0x683C5: "ui_menu_controller",  # Main menu controller (4169 bytes)
     0x66E62: "ui_menu_panel_init",  # Common panel initialization
     0x6A5BD: "ui_menu_page_setup",  # Page setup routine
@@ -39,17 +48,53 @@ KNOWN_FUNCTIONS = {
     0x67BAF: "ui_menu_transition_step", # Menu transitions
     0x4AEC4: "farobj_pos_move_angle_step", # 3D model rotation
     
-    # Graphics (from MENU_SYSTEM_CODE_STRUCTURE.md)
+    # ===================================================================
+    # AI SYSTEM (from AI_SYSTEM_STATUS.md, docs/architecture/ai.md)
+    # ===================================================================
+    0x3CE92: "ai_behavior_dispatcher",    # Master entity behavior dispatcher (2580B)
+    0x495DF: "ai_entity_batch_processor", # Processes 40 AI contexts (1165B)
+    0x3CFAA: "ai_behavior_state_machine", # Behavior state machine (entry)
+    0x3D180: "ai_target_tracking",        # Target tracking sequence
+    0x3D1C5: "ai_behavior_mirroring",     # Target sync mechanism
+    0x3DC55: "ai_weapon_spawn_gate",      # Weapon spawn validation gate
+    0x307A5: "ai_load_target_entity",     # Load target entity data
+    
+    # ===================================================================
+    # WEAPONS SYSTEM (from WEAPONS_FINAL_ASSESSMENT.md)
+    # ===================================================================
+    0x4C19E: "weapon_type_dispatcher",    # Weapon type initialization (2500B)
+    0x2EAA7: "damage_event_orchestrator", # Damage event handler (190B)
+    0x32453: "entity_coord_transform",    # Coordinate transform (216B)
+    0x32393: "explosion_visual_update",   # Explosion graphics (192B)
+    0x327BE: "explosion_audio_trigger",   # Explosion sound (499B, 24 entries)
+    
+    # ===================================================================
+    # TERRAIN SYSTEM (from TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md)
+    # ===================================================================
+    0x14956: "tile_quad_sample",          # Heightmap sampling (114B)
+    0x361FC: "tile_strip_project_draw",   # 3D→2D projection (331B)
+    0x16060: "tile_strip_sample_draw",    # Strip sampling with self-mod code
+    # Note: Many more terrain functions exist, see TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md
+    
+    # ===================================================================
+    # GRAPHICS SYSTEM (from MENU_SYSTEM_CODE_STRUCTURE.md)
+    # ===================================================================
     0x4F271: "vga_dac_palette_upload", # VGA palette upload (11 callers)
-    0x4F3EC: "sub_4F3EC",           # Unknown graphics function
+    0x4F3EC: "sub_4F3EC",           # Unknown graphics function (TODO: identify)
     
-    # Overlay system (from FILE_IO_ANALYSIS.md)
-    0x2AEA9: "overlay_file_open",   # Overlay file opener
-    0x2AC4C: "overlay_segment_load", # Overlay loader
+    # ===================================================================
+    # GAME LOOP (from WEAPONS_FINAL_ASSESSMENT.md)
+    # ===================================================================
+    0x2F6D0: "main_game_loop",      # Main game loop (1123B, 85 callees)
+    0x30882: "ems_file_io_handler", # EMS/file I/O operations (282B)
     
-    # Note: Add more as we discover them!
-    # Check: AI_SYSTEM_STATUS.md for AI functions
-    # Check: docs/architecture/*.md for more systems
+    # ===================================================================
+    # TODO: Add more systems
+    # - Physics system (from docs/architecture/flight_physics.md)
+    # - HUD system (from HUD_SYSTEM_100_PERCENT_COMPLETE.md)
+    # - Audio system (from docs/architecture/audio.md)
+    # - Input system (from INPUT_SYSTEM.md)
+    # ===================================================================
 }
 
 # Known data structures and globals
@@ -136,13 +181,33 @@ def add_comments(functions):
     print("="*80)
     
     comments = {
+        # File I/O
         0x1297F0: "Loads .IDX and .DAT file pairs. Template for all .IDX/.DAT loading. Uses op_dispatch_far_entry.",
         0x226BD: "DOS INT 21h AH=3D - Open file. Returns handle in AX.",
         0x226F5: "DOS INT 21h AH=3F - Read from file handle.",
         0x2274D: "DOS INT 21h AH=42 - Seek to file offset.",
+        0x6A651: "SQUAD file handler. 46 references! Likely loads campaign/AI data.",
+        
+        # Menu System
         0x683C5: "Menu controller hub (4169 bytes). Contains multiple entry points for different menus.",
         0x66E62: "Common menu panel initialization. Called via tail-jump from menu entry points.",
-        0x6A651: "SQUAD file handler. 46 references! Likely loads campaign/AI data.",
+        
+        # AI System  
+        0x3CE92: "Master AI behavior dispatcher (2580B, 25 callees). Routes by entity type, handles state machine.",
+        0x495DF: "AI batch processor (1165B). Processes 40 AI contexts (24 bytes each) at 0x65A7:0x000C.",
+        0x3D1C5: "AI behavior mirroring. Target sync mechanism for missiles tracking.",
+        0x3DC55: "Weapon spawn gate. Validates friendly fire, game mode, ammo before spawning.",
+        
+        # Weapons
+        0x4C19E: "Weapon type dispatcher (2500B). Initializes AIM-9, AIM-120, M61A1, etc. by type byte.",
+        0x2EAA7: "Damage event orchestrator (190B). Dispatches damage handlers by entity type.",
+        
+        # Terrain
+        0x14956: "Tile heightmap sampling (114B). Bilinear filter over 31x31 grid.",
+        0x361FC: "Tile strip 3D→2D projection (331B). Perspective with LOD scaling.",
+        
+        # Game Loop
+        0x2F6D0: "Main game loop (1123B, 85 callees). Input, timing, rendering, entity management.",
     }
     
     added_count = 0
