@@ -55,6 +55,38 @@
 
 ---
 
+## Waypoint Structure (21 bytes)
+
+### Evidence 1: Add 0x15 (21 decimal) stride with aircraft_record_load_step
+
+**Location**: level19_batch3.txt:3029  
+**Function**: sub_4AEC4 (aircraft state processing)
+
+```asm
+0x4B2A0: mov    dl, 0Eh
+0x4B2A2: mov    dh, 32h
+0x4B2A4: add    di, 15h                    ; Add 21 bytes to di
+0x4B2A7: call   aircraft_record_load_step  ; Load aircraft record
+0x4B2AC: pop    di
+```
+
+**Interpretation**:
+- Code adds 0x15 (21) to index register di
+- 21 matches our waypoint structure size (11-byte + 10-byte duplicate)
+- Function name "aircraft_record_load_step" suggests loading mission data
+- Called from sub_4AEC4 which has 1146 bytes and calls many position/angle functions
+
+**Additional context**:
+```
+sub_4AEC4 callees: farobj_tile_copy_resolve, fixed_vec3_accumulate_a, 
+  angle_aux_far, angle_xy_far, map_view_project_pipeline, 
+  pos_move_angle_step, pos_step_chain_engine, aircraft_record_load_step
+```
+
+This function appears to process aircraft movement along waypoints!
+
+---
+
 ## Action Code Strings
 
 ### Evidence 1: String data in segment
@@ -247,19 +279,20 @@ mov  si, word ptr [bx+STRING_TABLE]
 
 ### CONFIRMED by code:
 1. ✓ Altitude uses ×100 encoding (0x64 constant widespread)
-2. ✓ 23-byte structure exists (0x17 stride found)
-3. ✓ Aircraft type codes (initialization code found)
-4. ✓ Action code strings exist (string table found)
+2. ✓ 23-byte flight param structure exists (0x17 stride found)
+3. ✓ 21-byte waypoint structure exists (0x15 stride found in aircraft_record_load_step)
+4. ✓ Aircraft type codes (initialization code found)
+5. ✓ Action code strings exist (string table found)
 
 ### PARTIALLY CONFIRMED:
 1. ~ Flight parameter structure layout (size confirmed, field meanings from binary analysis)
 2. ~ File loading code exists (module_open_3d00 found, need to trace data flow)
 
 ### NOT YET FOUND:
-1. ✗ Direct waypoint coordinate reading code
+1. ✗ Direct waypoint coordinate reading code (but 21-byte stride confirmed!)
 2. ✗ Action code dispatch/switch table
 3. ✗ Speed parameter loading or defaulting
-4. ✗ Direct memory structure access showing our exact field offsets
+4. ✗ Direct memory structure access showing our exact field offsets (+0x02 altitude, +0x06 action)
 
 ---
 
