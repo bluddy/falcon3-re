@@ -1,44 +1,51 @@
 # Falcon 3.0 AI System - Final Status
 
 **Last Updated:** November 11, 2026  
-**Total Sessions:** 4  
-**Total Time:** ~7-8 hours  
-**Completion:** 80%  
-**Status:** ✅ Architecturally Complete
+**Total Sessions:** 5  
+**Total Time:** ~9-10 hours  
+**Completion:** 90%  
+**Status:** ✅ Behavior Flags Fully Decoded
 
 ---
 
 ## Executive Summary
 
-The Falcon 3.0 AI system has been reverse engineered to **80% completion**, with all major architectural components understood and documented. The system is **data-driven** (tactical behaviors loaded from external tables), uses a **two-layer flag system** (tactical + status), and processes **40 entities in batch** with **24-byte contexts**.
+The Falcon 3.0 AI system has been reverse engineered to **90% completion**, with all major architectural components understood and **behavior flags fully decoded from 66 disassembly test instructions**. The system is **data-driven** (tactical behaviors loaded from external tables), uses a **two-layer flag system** (tactical bits 0-4 + runtime status bits 5-7), and processes **40 entities in batch** with **24-byte contexts**.
 
-**Key discovery:** AI behaviors are NOT hardcoded - they're loaded from external data files at runtime, making the system highly moddable.
+**Key discovery:** AI behaviors are NOT hardcoded - they're loaded from external data files at runtime, making the system highly moddable. Behavior flags follow a **priority cascade** (Special > Combat > Cruise > Landing > Ground) with **composite tests** enabling hybrid missions.
 
 ---
 
 ## Completion Breakdown
 
-### Architecture: 80% ✅
+### Architecture: 90% ✅
 
 **Completed:**
 - ✅ Behavior dispatcher (sub_3CE92, 2,580 bytes) - Routes by entity type
 - ✅ Batch processor (sub_495DF, 1,165 bytes) - Processes 40 contexts
+- ✅ **Behavior flags fully decoded (66 test instructions analyzed)**
+- ✅ **Bit definitions: 0x01=Ground, 0x02=Landing, 0x04=Cruise, 0x08=Combat, 0x10=Special**
+- ✅ **Runtime flags: 0x20=Temp, 0x40=Armed, 0x80=TargetSync**
+- ✅ **Priority cascade: Special > Combat > Cruise > Landing > Ground**
+- ✅ **Composite tests: 0x03=Ground+Landing, 0x0C=Cruise+Combat, 0x18=Combat+Special**
 - ✅ Behavior state machine (sub_3CFAA-sub_3D180) - 4-5 states
 - ✅ Behavior mirroring (sub_3D1C5) - Target sync mechanism
 - ✅ Entity type system (11 types identified, loaded from data[+0x26])
 - ✅ State transitions (bit 0x20, 0x40, 0x80 modifications)
 - ✅ Tactical state loading (from external data[+6])
+- ✅ Waypoint action → behavior flag mapping documented
 - ✅ Memory layout (0x65A7:0x000C, 960 bytes verified)
 
 **Remaining:**
-- ⏳ farptr_table_get implementation (~20 lines)
-- ⏳ Complete data table structure
-- ⏳ Data file format (.TAC, .CAM, .DAT)
-- ⏳ All behavior flag value mappings
+- ⏳ farptr_table_get implementation (not found in available IDA files)
+- ⏳ Complete data table structure (format unknown)
+- ⏳ Data file format analysis (.CAM, .DAT files)
+- ⏳ Runtime validation of all 10 action codes (only 0,2 confirmed)
+- ⏳ Speed parameter storage location
 
-### Documentation: 85% ✅
+### Documentation: 90% ✅
 
-**Created (4,708 lines total):**
+**Created (5,115+ lines total):**
 1. AI_SYSTEM_INITIAL.md (337 lines) - Session 1 investigation
 2. AI_BEHAVIOR_STATE_MACHINE.md (526 lines) - State machine analysis
 3. AI_SYSTEM_SESSION1_SUMMARY.md (369 lines) - Session 1 summary
@@ -50,7 +57,9 @@ The Falcon 3.0 AI system has been reverse engineered to **80% completion**, with
 9. AI_DATA_EXTRACTION_GUIDE.md (334 lines) - Extraction guide
 10. AI_SYSTEM_COMPLETE_SUMMARY.md (636 lines) - Comprehensive summary
 11. AI_IMPLEMENTATION_TRACED.md (636 lines) - Assembly code trace
-12. AI_SESSION4_DATA_EXTRACTION.md (this session)
+12. **AI_WAYPOINT_ACTION_MAPPING.md (406 lines) - Mission integration**
+13. **AI_BEHAVIOR_FLAGS_DECODED.md (407 lines) - Complete flag decode**
+14. **behavior_flag_tests.txt (extracted from 66 test instructions)**
 
 ### Tools: 100% ✅
 
@@ -59,15 +68,19 @@ The Falcon 3.0 AI system has been reverse engineered to **80% completion**, with
 2. extract_ai_from_memdump.py (187 lines) - Memory dump extractor
 3. parse_ai_contexts.py (263 lines) - Context parser & decoder
 
-### Data: 75% ✅
+### Data: 85% ✅
 
 **Extracted:**
 - ✅ Runtime memory dumps (4 files, 960 bytes each)
 - ✅ 5 active AI contexts from MEMDUMP_sim.BIN
-- ✅ Behavior flag values (0x00, 0x16, 0x1F observed)
+- ✅ **Behavior flag bit definitions (from 66 disassembly tests)**
+- ✅ **Behavior flag test patterns across 8+ functions**
+- ✅ **Priority cascade identified: Special > Combat > Cruise > Landing > Ground**
+- ✅ **Composite test masks: 0x03, 0x0C, 0x18 for hybrid missions**
 - ✅ Data table indices (0x2600-0xF92C range)
-- ⏳ Complete data table contents
-- ⏳ Waypoint action mappings
+- ✅ Waypoint action → behavior flag mapping (10 actions documented)
+- ⏳ Complete data table contents (format unknown)
+- ⏳ Runtime validation with test missions
 
 ---
 
@@ -96,16 +109,22 @@ The Falcon 3.0 AI system has been reverse engineered to **80% completion**, with
 - Loaded from data table at initialization
 - Defines mission role: 0x01=Ground, 0x02=Landing, 0x04=Cruise, 0x08=Combat, 0x10=Special
 - Rarely changes during mission
+- **Priority cascade: Special > Combat > Cruise > Landing > Ground**
 
 **Layer 2: Runtime Status (bits 5-7)**
 - Modified by game code during mission
 - 0x20=Temporary state, 0x40=Armed, 0x80=Target sync
 - Changes frequently based on combat state
 
-**Verified from real data:**
-- 0x00: Idle (2 entities)
-- 0x16: Special+Armed (1 entity)
-- 0x1F: All tactical + All status (2 entities)
+**Composite Tests (Hybrid Missions):**
+- 0x03 (bits 0-1): Ground OR Landing
+- 0x0C (bits 2-3): Cruise OR Combat  
+- 0x18 (bits 3-4): Combat OR Special
+
+**Verified from disassembly:**
+- 66 test instructions across 8+ functions
+- Priority cascade implemented in behavior_dispatcher (0x3CE92)
+- Runtime flags control HUD, targeting, and weapon systems
 
 ### 3. Batch Processing Architecture
 

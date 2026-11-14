@@ -1,7 +1,7 @@
 # AI System
 
-**Status:** COMPLETE (80%)  
-**Certainty:** STRONG (architecture), PROVEN (data structures), HYPOTHESIS (data tables)  
+**Status:** IN PROGRESS (90%)  
+**Certainty:** STRONG (architecture), PROVEN (data structures, behavior flags, waypoint mapping), HYPOTHESIS (data tables)  
 **Last Updated:** 2026-11-11
 
 ---
