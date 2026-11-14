@@ -41,15 +41,18 @@ When analyzing code:
 
 ### 3. Rename (Synchronize with IDA)
 
-**Location**: `analysis/ida_scripts/apply_known_names.py`
+**Location**: `registry/functions.yaml` (SINGLE SOURCE OF TRUTH)
 
-**Immediately add discovered functions**:
+**Immediately add discovered functions** to YAML registry:
 
-```python
-KNOWN_FUNCTIONS = {
-    # System name in comment
-    0x11450: "flight_control_axes_read_normalize",  # Description
-}
+```yaml
+functions:
+  - address: 0x011450
+    name: flight_control_axes_read_normalize
+    system: flight_physics
+    size: 114
+    doc: Reads 4 flight control axes and normalizes to ±2048 range
+    source: docs/architecture/flight_physics.md
 ```
 
 **Naming convention**: `<system>_<component>_<action>_<detail>`
@@ -66,6 +69,8 @@ cd c:\Users\ybarnoy\projects\falcon3
 & "C:\Program Files\IDA Professional 9.1\idat.exe" -A -S"analysis\ida_scripts\apply_known_names.py" "analysis\ida_falconcd\FALCONCD.EXE.i64"
 ```
 
+**Note**: The `apply_known_names.py` script reads from `registry/functions.yaml` automatically. No need to edit Python code!
+
 **Verify**: Check `analysis/ida_naming_report.json` for results
 
 ### 4. Commit (Version Control)
@@ -73,7 +78,7 @@ cd c:\Users\ybarnoy\projects\falcon3
 **Always commit together**:
 ```bash
 git add docs/<system>/<file>.md
-git add analysis/ida_scripts/apply_known_names.py
+git add registry/functions.yaml
 git add analysis/ida_naming_report.json
 git commit -m "System: Added <function_name> - <one line description>"
 ```
@@ -90,6 +95,17 @@ Results: X renamed, Y already correct
 ```
 
 ## Directory Structure
+
+### Registry (Single Source of Truth)
+
+```
+registry/
+├── functions.yaml      # ALL function names (1,892 functions)
+├── globals.yaml        # Global variable names (32 globals)
+└── structs.yaml        # Data structure definitions (TODO)
+```
+
+**Critical**: `registry/*.yaml` files are the ONLY place to add new function/global names!
 
 ### Documentation (Permanent Knowledge)
 
@@ -115,7 +131,7 @@ docs/
 ```
 analysis/
 ├── ida_scripts/        # IDA automation scripts
-│   ├── apply_known_names.py      # MASTER: All function names
+│   ├── apply_known_names.py      # Reads registry/*.yaml and applies to IDA
 │   ├── extract_function.py       # Template for extraction
 │   └── README.md                 # Quick reference
 ├── ida_falconcd/       # IDA database and exports
@@ -147,6 +163,12 @@ game/
 
 ## When to Use Each Location
 
+### Use `registry/*.yaml`
+- ✅ **ALL function names** (edit `registry/functions.yaml`)
+- ✅ **ALL global variables** (edit `registry/globals.yaml`)
+- ✅ **ALL data structures** (edit `registry/structs.yaml`)
+- ⚠️ This is the ONLY place to add names - they sync to IDA automatically
+
 ### Use `docs/<system>/`
 - ✅ System architecture (complete understanding)
 - ✅ Stable APIs and interfaces
@@ -160,9 +182,9 @@ game/
 - ✅ Temporary hypotheses
 
 ### Use `analysis/ida_scripts/`
-- ✅ IDA automation scripts
-- ✅ Function name registry (apply_known_names.py)
+- ✅ IDA automation scripts (DO NOT edit Python dicts directly)
 - ✅ Reusable extraction templates
+- ⚠️ Scripts READ from `registry/*.yaml` - edit YAML, not Python!
 
 ### Use `analysis/data_samples/`
 - ✅ Extracted binary data
@@ -176,22 +198,22 @@ game/
 ❌ **WRONG**:
 ```
 "I discovered ai_target_tracking at 0x3D180"
-[moves on without updating apply_known_names.py]
+[moves on without updating registry/functions.yaml]
 ```
 
 ✅ **RIGHT**:
 ```
 "I discovered ai_target_tracking at 0x3D180"
-[immediately adds to apply_known_names.py]
+[immediately adds to registry/functions.yaml]
 [runs synchronization script]
-[commits both documentation and script]
+[commits both documentation and registry]
 ```
 
-### 2. Keep Documentation and Code in Sync
+### 2. Keep Documentation and Registry in Sync
 
-❌ **WRONG**: Documentation says "flight_control_axes_read" but IDA has "sub_11450"
+❌ **WRONG**: Documentation says "flight_control_axes_read" but `registry/functions.yaml` is missing it
 
-✅ **RIGHT**: Documentation, apply_known_names.py, and IDA all use "flight_control_axes_read_normalize"
+✅ **RIGHT**: Documentation, registry/functions.yaml, and IDA all use "flight_control_axes_read_normalize"
 
 ### 3. Promote Session Notes to Permanent Docs
 
@@ -243,22 +265,26 @@ cd c:\Users\ybarnoy\projects\falcon3
 Check `analysis/ida_naming_report.json`:
 ```json
 {
-  "total_functions": 63,
-  "renamed": 56,
-  "already_correct": 6,
-  "failed": 1
+  "total_functions": 1892,
+  "renamed": 51,
+  "already_correct": 1835,
+  "failed": 6
 }
 ```
 
 ## Common Mistakes to Avoid
 
 ### ❌ Documenting Without Renaming
-**Problem**: Knowledge exists in markdown but not in IDA  
-**Solution**: Always update apply_known_names.py
+**Problem**: Knowledge exists in markdown but not in registry/functions.yaml  
+**Solution**: Always update registry/functions.yaml
 
 ### ❌ Renaming Without Documenting
-**Problem**: IDA has names but no explanation of what they do  
+**Problem**: Registry has names but no explanation of what they do  
 **Solution**: Always write docs with function descriptions
+
+### ❌ Editing Python Instead of YAML
+**Problem**: Edited apply_known_names.py Python dict, YAML registry not updated  
+**Solution**: Edit registry/functions.yaml ONLY - Python reads from it!
 
 ### ❌ Messy Session Notes Everywhere
 **Problem**: Can't find anything, duplicate work  
@@ -269,8 +295,16 @@ Check `analysis/ida_naming_report.json`:
 **Solution**: Follow naming convention: `<system>_<component>_<action>_<detail>`
 
 ### ❌ Not Committing Together
-**Problem**: Documentation and IDA database get out of sync  
-**Solution**: Always commit docs + script + report together
+**Problem**: Documentation and registry get out of sync  
+**Solution**: Always commit docs + registry + report together
+
+## Project Statistics
+
+**Current Status** (as of 2026-11-15):
+- **1,892 functions** named in registry
+- **32 global variables** documented
+- **9 major systems** fully documented (100%)
+- **YAML-based** single source of truth architecture
 
 ## Questions?
 
@@ -287,4 +321,4 @@ If this workflow doesn't cover your situation:
 
 ---
 
-*Last updated: 2026-11-11*
+*Last updated: 2026-11-15*
