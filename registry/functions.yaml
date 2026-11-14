@@ -9340,6 +9340,70 @@ functions:
     size: 19
     doc: Checks AI field flag/condition. Tiny leaf function (19B) with 1 comparison. Called by 17 functions. Flag testing helper.
     source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  # AI Final 9 functions (completing AI system, 2026-11-15)
+  - address: 0x03ded9
+    name: ai_weapon_fire_check
+    system: ai
+    size: 69
+    doc: Validates weapon firing conditions. Checks weapon_game_mode (DS:15B3h), entity type 0x16 (friendly aircraft), and friendly fire flags (DS:15B4h). 5 comparisons. Called by ai_state_processor_core and ai_entity_update_step.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x03f5b4
+    name: ai_field_pair_compare
+    system: ai
+    size: 19
+    doc: Compares AI field pair values. Calls ai_field_offset_calc, then compares [si+31h] and [si+32h] with [di]. Returns match status. Called by ai_state_processor_core.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x03f700
+    name: ai_rect_ratio_check
+    system: ai
+    size: 24
+    doc: Conditionally updates rectangle ratio. Compares [di+56h] with [si+4Ah], calls ai_rect_ratio_update if condition met. Wrapper function.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x03f788
+    name: ai_rect_ratio_update
+    system: ai
+    size: 25
+    doc: Updates rectangle ratio for AI entity. Gets heading from [bx+0Ch], calls farobj_rect_ratio_build with SI=241h, stores result to [si+1Fh]. For rendering/HUD calculations.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x0408e7
+    name: ai_distance_range_check
+    system: ai
+    size: 24
+    doc: Checks distance range threshold. Calls sub_40DC5, compares DX:AX against 0x7D0 (2000 decimal). Called by ai_state_processor_core and weapon_spawn_gate_validate.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x040c6a
+    name: ai_angle_from_offset
+    system: ai
+    size: 9
+    doc: Calculates angle from offset values. Tiny wrapper (9B) that pushes [si+1Dh] and [si+1Fh] as arguments, then calls ai_angle_calculate. Called by ai_state_processor_core.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x040d26
+    name: ai_position_scale_calculate
+    system: ai
+    size: 81
+    doc: Calculates scaled position values. Complex fixed-point math - multiplies bytes by 0x3334, adds 0x199Ah, stores to [si+3Ah/3Ch/3Eh]. Calls far_obj_field_call. Called by 9 functions including ai_state_processor_core.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x042838
+    name: ai_state_flag_validate
+    system: ai
+    size: 64
+    doc: Validates AI state flags. Tests word_55E4E against bits 0x40 and 0x10, calls ai_field_check_flag. WIDELY USED (22 callers) including ai_state_processor_core and ai_entity_update_step.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+  
+  - address: 0x049982
+    name: ai_viewobj_project_update
+    system: ai
+    size: 21
+    doc: Updates view projection for AI entity. Sets up ES:54AFh segment, BX=20h, calls viewobj_project_select. For AI entity visibility/rendering. Called by ai_context_batch_processor.
+    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
 
   # STATE SYSTEM
   - address: 0x03e109
