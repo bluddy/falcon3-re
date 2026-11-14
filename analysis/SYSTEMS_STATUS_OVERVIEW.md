@@ -292,6 +292,21 @@ Keyboard-only:      All axes via keyboard
 **Last Updated**: November 11, 2026 (Session 4 - COMPLETE)  
 **Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`, `analysis/WEAPON_TYPES_DECODED.md`
 
+**🎯 DOCUMENTATION EXTRACT COMPLETE** (November 11, 2026):
+- ✅ Falcon 3.0 manual extracted and organized (487KB, 13 major sections)
+- ✅ Weapons Manual Summary created (`manual/WEAPONS_MANUAL_SUMMARY.md`)
+- ✅ **Key findings from manual**:
+  - AIM-9P/M Sidewinder (heat-seeking, rear/all-aspect)
+  - AIM-120 AMRAAM (radar-guided, long-range)
+  - M61A1 Vulcan 20mm cannon (512 rounds)
+  - Lock-on system (blinking reticle, audio tone, target diamond)
+  - Countermeasures (chaff, flares)
+- ✅ **Code-to-manual mapping**:
+  - Type 0x12 likely = AIM-9 Sidewinder (12× burst = ripple fire?)
+  - Type 0x13 likely = AIM-120 AMRAAM (single shot, high velocity)
+  - Type 0x33 likely = M61A1 gun (6× burst)
+- ✅ Priority chapters identified for continued analysis (Sections IX, XIII, VI)
+
 **What We Know**:
 - ✅ **Entity Type System (85%)**:
   - **DUAL TYPE CLASSIFICATION SYSTEM** ✅ DISCOVERED
