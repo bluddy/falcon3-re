@@ -37,8 +37,9 @@ struct SquadronFile {
     // Pilot Records (1,980 bytes, 0x3C-0x7F7)
     PilotRecord pilots[30];          // 30 pilots × 66 bytes each
     
-    // Supply/Aircraft Data (663 bytes, 0x7F8-0xA8E)
-    uint8_t  supply_data[663];       // Weapons, fuel, aircraft count
+    // Extended Pilot Data (663 bytes, 0x7F8-0xA8E)
+    ExtendedPilotRecord extended_pilots[10];  // Last 10 pilots (indices 20-29)
+    uint8_t  footer[3];              // FF 1E 00
 };  // Total: 2,703 bytes
 ```
 
@@ -55,6 +56,22 @@ struct PilotRecord {
 };  // Total: 66 bytes (0x42)
 ```
 
+**Extended Pilot Record (66 bytes, for pilots 20-29 only):**
+```c
+struct ExtendedPilotRecord {
+    uint8_t  marker;                 // +0x00: Always 0xFF
+    uint8_t  pilot_index;            // +0x01: 0x1D=29 down to 0x14=20
+    uint8_t  status;                 // +0x02: Status flags (0x00/0x01)
+    char     callsign[15];           // +0x03: Duplicate of main record
+    uint8_t  pad1;                   // +0x12: Padding (0x00)
+    char     nickname[15];           // +0x13: Duplicate of main record
+    uint8_t  pad2;                   // +0x22: Padding (0x00)
+    char     id_code[4];             // +0x23: Duplicate of main record
+    uint8_t  extended_state[14];     // +0x27: Mission-specific pilot state
+    uint8_t  separator[13];          // +0x35: All zeros
+};  // Total: 66 bytes
+```
+
 **Rank values:**
 - 4 = Squadron Commander (Lt Col)
 - 3 = Executive Officer (Major)
@@ -69,6 +86,19 @@ struct PilotRecord {
 - Fatigue level (0-100)
 
 **Evidence:** `analysis/parse_squadron.py` successfully parses all 30 pilots from SQUAD0.SQU
+
+**Extended Pilot Records:**
+
+The last 663 bytes (0x7F8-0xA8E) contain extended data for the **last 10 pilots only** (pilot indices 20-29). This appears to be mission-specific runtime state that gets updated during gameplay.
+
+Key findings:
+- Each extended record duplicates the callsign, nickname, and ID from the main pilot record
+- The 14-byte `extended_state` field (+0x27) is mostly zeros in fresh squadron files
+- This field likely tracks: current aircraft assignment, mission status (flying/available/KIA/POW), kill counts, combat rating
+- The pilot_index field counts down from 0x1D (29) to 0x14 (20)
+- 3-byte footer (FF 1E 00) terminates the file
+
+**Why only 10 pilots?** Falcon 3.0 supports up to 10 simultaneous flights per mission. The extended records likely track the pilots currently assigned to these flight slots.
 
 ---
 
@@ -234,9 +264,12 @@ struct Waypoint {
 Each squadron is an independent campaign save with its own:
 - Pilot roster
 - Aircraft inventory
-- Supply levels
+- Supply levels (likely in .CAM file, not .SQU - see note below)
 - Campaign progress
 - War state
+
+**Note on Supply Data:**  
+The Strategic Falcon documentation mentions "supply data" (weapons, fuel, aircraft count) as being in the .SQU file, but our analysis shows the final 663 bytes contain **extended pilot records** for the last 10 pilots, not supply data. The actual supply/inventory data is likely stored in the .CAM (campaign) file instead.
 
 ### Pilot System
 
