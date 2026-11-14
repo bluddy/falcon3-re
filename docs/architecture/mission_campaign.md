@@ -1,7 +1,7 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (65% complete)  
-**Certainty:** STRONG (squadron, campaign, mission waypoints), HYPOTHESIS (flight records, mission header)  
+**Status:** IN PROGRESS (70% complete)  
+**Certainty:** STRONG (squadron, campaign, mission waypoints fully decoded), HYPOTHESIS (flight records, mission header)  
 **Last Updated:** 2026-11-11
 
 ---
@@ -240,11 +240,11 @@ Each waypoint is stored as a 21-byte pair: an 11-byte version with prefix, follo
 // 11-byte version (with prefix marker)
 struct Waypoint11 {
     uint8_t  marker;          // +0x00: Always 0x01
-    uint8_t  x_coord;         // +0x01: 0-255 (1/256 theater width)
-    uint8_t  unknown_1;       // +0x02: Unknown (varies 198-208)
+    uint8_t  x_low;           // +0x01: X coordinate LOW byte
+    uint8_t  x_high;          // +0x02: X coordinate HIGH byte
     int16_t  marker_1;        // +0x03: Constant (-8 or -2 observed)
-    uint8_t  y_coord;         // +0x05: 0-255 (1/256 theater height)
-    uint8_t  unknown_2;       // +0x06: Unknown (varies 198-210)
+    uint8_t  y_low;           // +0x05: Y coordinate LOW byte
+    uint8_t  y_high;          // +0x06: Y coordinate HIGH byte
     int16_t  marker_2;        // +0x07: Constant (-12 or -9 observed)
     uint16_t constant;        // +0x09: Always 16 (0x0010)
 };  // 11 bytes
@@ -253,10 +253,18 @@ struct Waypoint11 {
 // Same structure minus the leading 0x01 marker byte
 ```
 
-**Waypoint Coordinate System:**
-- X, Y use single bytes (0-255) = position as 1/256 of theater size
-- Example: X=200 → 200/256 ≈ 78.1% across theater width
-- Resolution: ~1.25 nautical miles per grid unit (varies by theater)
+**16-Bit Coordinate System — PROVEN:**
+
+Waypoints use 16-bit coordinates (0-65535) for high precision:
+- **X coordinate** = (x_high << 8) | x_low  (uint16)
+- **Y coordinate** = (y_high << 8) | y_low  (uint16)
+
+The coordinate bytes are split non-contiguously in the structure, which initially made them appear to be separate "unknown" fields.
+
+**Coordinate precision:** Full 16-bit range likely represents entire theater/world map
+- Range: 0-65,535 units
+- Estimated scale: ~120-240 feet per unit (assuming 250-400nm theater)
+- Example: 300 unit spacing ≈ 6.7-13.5 nautical miles
 
 **Waypoint Marker Patterns:**
 
@@ -272,23 +280,35 @@ Possible interpretations:
 
 **Unknown Bytes:**
 
-- `unknown_1` and `unknown_2` vary per waypoint (range: 198-210 observed)
-- May encode: altitude component, speed setting, formation spacing, threat level
-- Requires IDA analysis of waypoint loading code to decode
+All previously "unknown" bytes are now decoded:
+- Bytes at +0x02 and +0x06 are the HIGH bytes of 16-bit X/Y coordinates
+- No unknown fields remain in the waypoint structure
 
 **Waypoint Examples:**
 
-SQUAD0.MIS (10 waypoints, 210 bytes total):
+SQUAD0.MIS (11 waypoints, 231 bytes total):
 ```
-WP0: (  0, 144) = (  0.0%,  56.2%) unknown=(198,198) markers=(-8,-12)
-WP1: ( 44, 188) = ( 17.2%,  73.4%) unknown=(199,199) markers=(-8,-12)
-WP2: ( 88, 232) = ( 34.4%,  90.6%) unknown=(200,200) markers=(-8,-12)
-...
+WP  | X_16bit | Y_16bit | Spacing | Pattern
+----|---------|---------|---------|---------------------------
+ 0  |  50,688 |  50,832 |    -    | Perfect diagonal line
+ 1  |  50,988 |  51,132 |   300   | Each waypoint exactly 300
+ 2  |  51,288 |  51,432 |   300   | units in X and Y from the
+ 3  |  51,588 |  51,732 |   300   | previous waypoint
+ 4  |  51,888 |  52,032 |   300   | 
+ 5  |  52,188 |  52,332 |   300   | Diagonal distance: 424.3
+ 6  |  52,488 |  52,632 |   300   | units between waypoints
+ 7  |  52,788 |  52,932 |   300   |
+ 8  |  53,088 |  53,232 |   300   | Markers: -8, -12
+ 9  |  53,388 |  53,532 |   300   |
+10  |  53,688 |  53,832 |   300   |
 ```
 
 SQUAD1.MIS (1 waypoint, 21 bytes total):
 ```
-WP0: (184, 216) = ( 71.9%,  84.4%) unknown=(148,218) markers=(-2,-9)
+WP  | X_16bit | Y_16bit | Markers | Notes
+----|---------|---------|---------|------------------------
+ 0  |  38,072 |  56,024 | -2, -9  | Different coordinate
+                                    range from SQUAD0
 ```
 
 **Flight Records — IN PROGRESS:**
@@ -317,8 +337,8 @@ First few bytes show mission-level parameters:
 Requires further analysis to decode complete structure.
 
 **Next Steps:**
-1. Search IDA for waypoint loading code using marker values (-8, -12, -2, -9)
-2. Decode unknown bytes in waypoint structure
+1. ~~Decode unknown bytes in waypoint structure~~ ✓ COMPLETE (16-bit coordinates)
+2. Search IDA for waypoint loading code using marker values (-8, -12, -2, -9)
 3. Parse flight record section (first ~200-600 bytes)
 4. Identify mission header format
 5. Compare multiple mission files to understand variations

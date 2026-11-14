@@ -25,11 +25,57 @@ Offset | Size | Type   | Description
 ### 10-Byte Format (duplicate, no prefix)
 Same as above but without the leading `0x01` byte.
 
+## Waypoint Structure
+
+### 11-Byte Format (with prefix)
+```
+Offset | Size | Type   | Description
+-------|------|--------|--------------------------------
+0x00   | 1    | uint8  | Marker (always 0x01)
+0x01   | 1    | uint8  | X coordinate LOW byte
+0x02   | 1    | uint8  | X coordinate HIGH byte
+0x03   | 2    | int16  | Marker 1 (constant: -8 or -2)
+0x05   | 1    | uint8  | Y coordinate LOW byte
+0x06   | 1    | uint8  | Y coordinate HIGH byte
+0x07   | 2    | int16  | Marker 2 (constant: -12 or -9)
+0x09   | 2    | uint16 | Constant (always 16 / 0x0010)
+```
+
+### 10-Byte Format (duplicate, no prefix)
+Same as above but without the leading `0x01` byte.
+
 ## Coordinate System
 
-Coordinates use single bytes (0-255) representing position as 1/256 of theater size:
-- `X = 200` → 200/256 ≈ 78.1% across theater width
-- `Y = 144` → 144/256 ≈ 56.3% down theater height
+**PROVEN: Waypoints use 16-bit coordinates (0-65535)**
+
+The bytes previously labeled "unknown" are actually the HIGH bytes of 16-bit little-endian coordinates. The coordinate bytes are split non-contiguously in the structure:
+
+- **X coordinate** = (byte[2] << 8) | byte[1]  = uint16 (0-65535)
+- **Y coordinate** = (byte[6] << 8) | byte[5]  = uint16 (0-65535)
+
+This provides much higher precision than the 8-bit coordinates (0-255) mentioned in Strategic Falcon documentation.
+
+### Coordinate Range Examples
+
+**SQUAD0.MIS** (11 waypoints forming diagonal line):
+- X range: 50,688 - 53,688 (span: 3,000 units)
+- Y range: 50,832 - 53,832 (span: 3,000 units)  
+- Spacing: Exactly 300 units between consecutive waypoints
+- Pattern: Perfect diagonal with equal X and Y increments
+
+**SQUAD1.MIS** (1 waypoint):
+- X: 38,072
+- Y: 56,024
+- Different coordinate range suggests different theater or mission area
+
+### Coordinate Scale
+
+The full 16-bit range (0-65535) likely represents the entire theater map or game world. Assuming a typical theater size of ~200-400 nautical miles:
+
+- 65535 units ≈ 250-400nm → ~120-240 feet per unit
+- 300 unit spacing (SQUAD0) ≈ 6.7-13.5nm between waypoints
+
+This matches realistic tactical flight planning distances.
 
 ## Marker Variations
 
@@ -65,46 +111,51 @@ Total storage per waypoint: 21 bytes
 
 ### SQUAD0.MIS (11 waypoints, 231 bytes total)
 ```
-WP  0 @ 0x0251: X=  0, Y=144  (markers: -8, -12)
-WP  1 @ 0x0266: X= 44, Y=188  (markers: -8, -12)
-WP  2 @ 0x027B: X= 88, Y=232  (markers: -8, -12)
-WP  3 @ 0x0290: X=132, Y= 20  (markers: -8, -12)
-WP  4 @ 0x02A5: X=176, Y= 64  (markers: -8, -12)
-WP  5 @ 0x02BA: X=220, Y=108  (markers: -8, -12)
-WP  6 @ 0x02CF: X=  8, Y=152  (markers: -8, -12)
-WP  7 @ 0x02E4: X= 52, Y=196  (markers: -8, -12)
-WP  8 @ 0x02F9: X= 96, Y=240  (markers: -8, -12)
-WP  9 @ 0x030E: X=140, Y= 28  (markers: -8, -12)
-WP 10 @ 0x0323: X=184, Y= 72  (markers: -8, -12)
+WP  | X_16bit | Y_16bit | Spacing | Markers
+----|---------|---------|---------|----------
+ 0  |  50,688 |  50,832 |    -    | -8, -12
+ 1  |  50,988 |  51,132 |   300   | -8, -12
+ 2  |  51,288 |  51,432 |   300   | -8, -12
+ 3  |  51,588 |  51,732 |   300   | -8, -12
+ 4  |  51,888 |  52,032 |   300   | -8, -12
+ 5  |  52,188 |  52,332 |   300   | -8, -12
+ 6  |  52,488 |  52,632 |   300   | -8, -12
+ 7  |  52,788 |  52,932 |   300   | -8, -12
+ 8  |  53,088 |  53,232 |   300   | -8, -12
+ 9  |  53,388 |  53,532 |   300   | -8, -12
+10  |  53,688 |  53,832 |   300   | -8, -12
 ```
+
+Perfect diagonal line: Each waypoint is exactly 300 units in X and 300 in Y from the previous (424.3 unit diagonal distance).
 
 ### SQUAD1.MIS (1 waypoint, 21 bytes total)
 ```
-WP  0 @ 0x01AE: X=184, Y=216  (markers: -2, -9)
+WP  | X_16bit | Y_16bit | Markers
+----|---------|---------|----------
+ 0  |  38,072 |  56,024 | -2, -9
 ```
 
 ## Questions Remaining
 
-1. **Unknown bytes**: What do bytes at offsets +0x02 and +0x06 represent?
-   - Altitude component?
-   - Speed setting?
-   - Formation spacing?
-   - Threat level?
+1. **Marker significance**: Why do the int16 markers vary between files?
+   - Pattern A (-8, -12): SQUAD0.MIS
+   - Pattern B (-2, -9): SQUAD1.MIS
+   - Could indicate: waypoint action types, mission types, or theater-specific encoding
 
-2. **Marker significance**: Why do the int16 markers vary between files?
-   - Are they waypoint action types?
-   - Do they encode altitude/speed offsets?
-   - Mission type dependent?
-
-3. **Duplication purpose**: Why store each waypoint twice?
-   - Performance optimization (pre-computed format)?
+2. **Duplication purpose**: Why store each waypoint twice?
+   - Performance optimization (different access patterns)?
    - Different game phases use different formats?
    - Historical artifact from development?
 
-4. **Constant value**: Why is the uint16 at +0x09 always 16?
-   - Waypoint structure version?
-   - Default radius/tolerance?
+3. **Constant value**: Why is the uint16 at +0x09 always 16?
+   - Waypoint structure version identifier?
+   - Default radius/tolerance value?
    - Bitfield with standard settings?
+
+4. **Coordinate origin**: Where is (0, 0) in the game world?
+   - Southwest corner of map?
+   - Center of theater?
+   - Absolute world coordinates?
 
 ## Next Steps
 
