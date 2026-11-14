@@ -1,0 +1,247 @@
+# Flight Physics Functions to Add to Registry
+# 33 new functions discovered via call graph expansion
+# Date: 2026-11-15
+
+functions:
+  # Group 1: Motion Accumulation Helpers (13 functions)
+  - address: 0x04D35A
+    name: flight_motion_record_append_a
+    system: flight_physics
+    size: 50
+    confidence: HIGH
+    doc: "Appends 5-byte motion record to CS segment buffer, packs coordinate data"
+    
+  - address: 0x04D38C
+    name: flight_motion_record_append_b
+    system: flight_physics
+    size: 59
+    confidence: HIGH
+    doc: "Variant of append_a, reads from [DI+10h] offset instead of [DI+4]"
+    
+  - address: 0x04D143
+    name: flight_motion_helper_1
+    system: flight_physics
+    size: 29
+    confidence: MEDIUM
+    doc: "Motion accumulation helper, 4 call sites"
+    
+  - address: 0x04D160
+    name: flight_motion_helper_2
+    system: flight_physics
+    size: 28
+    confidence: MEDIUM
+    doc: "Motion accumulation helper, 3 call sites"
+    
+  - address: 0x04D17C
+    name: flight_motion_helper_3
+    system: flight_physics
+    size: 32
+    confidence: MEDIUM
+    doc: "Motion accumulation helper with 2 comparisons"
+    
+  - address: 0x04D19C
+    name: flight_motion_helper_4
+    system: flight_physics
+    size: 42
+    confidence: MEDIUM
+    doc: "Motion accumulation helper with 1 comparison"
+    
+  - address: 0x04D1C6
+    name: flight_motion_helper_5
+    system: flight_physics
+    size: 38
+    confidence: MEDIUM
+    doc: "Motion accumulation helper with 2 comparisons"
+    
+  - address: 0x04D1EC
+    name: flight_motion_state_update
+    system: flight_physics
+    size: 68
+    confidence: MEDIUM
+    doc: "Updates motion state, iterative, 2 comparisons"
+    
+  - address: 0x04D230
+    name: flight_motion_physics_step
+    system: flight_physics
+    size: 290
+    confidence: MEDIUM
+    doc: "Main physics computation step, 15 comparisons, complex logic"
+    
+  - address: 0x04D35A
+    name: flight_motion_record_buffer_write
+    system: flight_physics
+    size: 50
+    confidence: HIGH
+    doc: "Writes motion record to buffer, called by 3 functions"
+    
+  - address: 0x04D3EC
+    name: flight_motion_velocity_update
+    system: flight_physics
+    size: 109
+    confidence: MEDIUM
+    doc: "Updates velocity components, 6 comparisons, iterative"
+    
+  - address: 0x04D55F
+    name: flight_motion_accumulate_coordinator
+    system: flight_physics
+    size: 512
+    confidence: LOW
+    doc: "Large coordinator (512B), 24 comparisons, 16 function calls, 2 callers"
+    
+  # Group 2: Kinematics Helpers (12 functions)
+  - address: 0x03B256
+    name: flight_kinematics_state_copy_update
+    system: flight_physics
+    size: 201
+    confidence: MEDIUM
+    doc: "Copies 26-byte kinematic record, updates coordinates, 2 callers"
+    
+  - address: 0x03B503
+    name: flight_kinematics_buffer_scan
+    system: flight_physics
+    size: 70
+    confidence: MEDIUM
+    doc: "Scans through 26-byte records in kinematic buffer, 3 callers"
+    
+  - address: 0x03B5D1
+    name: flight_kinematics_flag_gate
+    system: flight_physics
+    size: 10
+    confidence: HIGH
+    doc: "Tests byte_3AD1D bit 0x80, conditional gate, 5 callers"
+    
+  - address: 0x03B5DB
+    name: flight_fixed_mul_scale_4
+    system: flight_physics
+    size: 14
+    confidence: HIGH
+    doc: "Fixed-point: (AX*CX)*4, returns high word, 2 callers"
+    
+  - address: 0x03B6E2
+    name: flight_position_record_build
+    system: flight_physics
+    size: 74
+    confidence: MEDIUM
+    doc: "Builds multi-field position/velocity record, 3 callers"
+    
+  - address: 0x03B72C
+    name: flight_fixed_ratio_13108
+    system: flight_physics
+    size: 16
+    confidence: HIGH
+    doc: "Fixed-point: (AX*CX)/0x3334, widely used, 5 callers"
+    
+  - address: 0x03B549
+    name: flight_kinematics_record_compare
+    system: flight_physics
+    size: TBD
+    confidence: MEDIUM
+    doc: "Compares kinematic records in buffer scan loop"
+    
+  - address: 0x03B57F
+    name: flight_kinematics_record_validate
+    system: flight_physics
+    size: TBD
+    confidence: MEDIUM
+    doc: "Validates kinematic record before comparison"
+    
+  - address: 0x03B5E9
+    name: flight_kinematics_coord_transform
+    system: flight_physics
+    size: TBD
+    confidence: MEDIUM
+    doc: "Transforms coordinates for kinematic state"
+    
+  - address: 0x03B73C
+    name: flight_position_component_calc
+    system: flight_physics
+    size: TBD
+    confidence: MEDIUM
+    doc: "Calculates position component for record building"
+    
+  - address: 0x03B7B2
+    name: flight_position_angle_calc
+    system: flight_physics
+    size: TBD
+    confidence: MEDIUM
+    doc: "Calculates angle component for position record"
+    
+  - address: 0x03B7C3
+    name: flight_position_init_calc
+    system: flight_physics
+    size: TBD
+    confidence: MEDIUM
+    doc: "Initial calculation for position record building"
+    
+  # Group 3: Farobj/Entity Slot Management (2 functions)
+  - address: 0x0445A6
+    name: farobj_slot_target_bind
+    system: flight_physics
+    size: 105
+    confidence: MEDIUM
+    doc: "Binds entity slot to target, sets pointers, 7 callers"
+    
+  - address: 0x04478D
+    name: farobj_slot_target_search
+    system: flight_physics
+    size: 222
+    confidence: MEDIUM
+    doc: "Searches farobj slots for target match, 27 comparisons, 2 callers"
+    
+  # Group 4: Aircraft Slot Management (2 functions)
+  - address: 0x0496D3
+    name: flight_aircraft_slot_physics_step
+    system: flight_physics
+    size: 538
+    confidence: LOW
+    doc: "Main physics step for aircraft slot, velocity damping, 34 comparisons"
+    
+  - address: 0x049A1F
+    name: flight_aircraft_slot_state_check
+    system: flight_physics
+    size: 60
+    confidence: MEDIUM
+    doc: "Checks aircraft slot state, 5 comparisons, iterative"
+    
+  # Group 5: Simulation Frame Helpers (6 functions)
+  - address: 0x02C121
+    name: overlay_load_dispatch_r06
+    system: flight_physics
+    size: 8
+    confidence: HIGH
+    doc: "Loads overlay and dispatches to r06, 3 callers"
+    
+  - address: 0x02C1E9
+    name: overlay_dispatch_stub_1
+    system: flight_physics
+    size: 8
+    confidence: HIGH
+    doc: "Overlay dispatch stub"
+    
+  - address: 0x02C207
+    name: overlay_dispatch_stub_2
+    system: flight_physics
+    size: 8
+    confidence: HIGH
+    doc: "Overlay dispatch stub"
+    
+  - address: 0x02C24D
+    name: overlay_dispatch_stub_3
+    system: flight_physics
+    size: 8
+    confidence: HIGH
+    doc: "Overlay dispatch stub"
+    
+  - address: 0x06CDFA
+    name: flight_simulation_state_update
+    system: flight_physics
+    size: 64
+    confidence: MEDIUM
+    doc: "Updates simulation state, 8 comparisons, iterative"
+    
+  - address: 0x06D126
+    name: flight_simulation_flag_check
+    system: flight_physics
+    size: 23
+    confidence: MEDIUM
+    doc: "Checks simulation flags, 8 comparisons"

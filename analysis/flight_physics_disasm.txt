@@ -1,0 +1,977 @@
+================================================================================
+Function: sub_4D35A @ 0x04d35a
+Size: 50 bytes
+Calls: 0 functions
+Called by: 1 functions
+================================================================================
+
+CALLED BY:
+  0x04cd1d: flight_entity_motion_accumulate (call site: 0x04cf7b)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x04d35a (+  0): push    es
+0x04d35b (+  1): push    ax
+0x04d35c (+  2): push    si
+0x04d35d (+  3): mov     ax, cs:word_4C0D2
+0x04d361 (+  7): mov     es, ax
+0x04d363 (+  9): mov     si, cs:word_4C0D4
+0x04d368 (+  e): mov     ax, [di]
+0x04d36a (+ 10): mov     es:[si], ax
+0x04d36d (+ 13): mov     ax, [di+2]
+0x04d370 (+ 16): and     al, 0FCh
+0x04d372 (+ 18): and     ah, 3
+0x04d375 (+ 1b): or      al, ah
+0x04d377 (+ 1d): mov     es:[si+2], al
+0x04d37b (+ 21): mov     ax, [di+4]
+0x04d37e (+ 24): mov     es:[si+3], ax
+0x04d382 (+ 28): add     cs:word_4C0D4, 5
+0x04d388 (+ 2e): pop     si
+0x04d389 (+ 2f): pop     ax
+0x04d38a (+ 30): pop     es
+0x04d38b (+ 31): retn
+================================================================================
+
+================================================================================
+Function: sub_4D38C @ 0x04d38c
+Size: 59 bytes
+Calls: 0 functions
+Called by: 1 functions
+================================================================================
+
+CALLED BY:
+  0x04cd1d: flight_entity_motion_accumulate (call site: 0x04cfd5)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x04d38c (+  0): push    es
+0x04d38d (+  1): push    ax
+0x04d38e (+  2): push    si
+0x04d38f (+  3): mov     ax, cs:word_4C0D2
+0x04d393 (+  7): mov     es, ax
+0x04d395 (+  9): mov     si, cs:word_4C0D4
+0x04d39a (+  e): mov     ax, [di]
+0x04d39c (+ 10): mov     es:[si], ax
+0x04d39f (+ 13): mov     ax, [di+2]
+0x04d3a2 (+ 16): and     al, 0FCh
+0x04d3a4 (+ 18): and     ah, 3
+0x04d3a7 (+ 1b): or      al, ah
+0x04d3a9 (+ 1d): mov     es:[si+2], al
+0x04d3ad (+ 21): mov     ax, [di+10h]
+0x04d3b0 (+ 24): mov     es:[si+3], ax
+0x04d3b4 (+ 28): add     cs:word_4C0D4, 5
+0x04d3ba (+ 2e): pop     si
+0x04d3bb (+ 2f): pop     ax
+0x04d3bc (+ 30): pop     es
+0x04d3bd (+ 31): retn
+0x04d3be (+ 32): dw 0
+0x04d3c0 (+ 34): dw 0
+0x04d3c2 (+ 36): dw 0
+0x04d3c4 (+ 38): dw 0
+0x04d3c6 (+ 3a): db 0
+================================================================================
+
+================================================================================
+Function: sub_445A6 @ 0x0445a6
+Size: 105 bytes
+Calls: 2 functions
+Called by: 7 functions
+================================================================================
+
+CALLS:
+  0x02c0db: sub_2C0DB
+  0x02703f: ai_farptr_table_get
+
+CALLED BY:
+  0x046b66: sub_46B66 (call site: 0x046bc0)
+  0x046bd6: sub_46BD6 (call site: 0x046c0a)
+  0x048571: sub_48571 (call site: 0x048587)
+  0x04cb0a: sub_4CB0A (call site: 0x04cb57)
+  0x04cb62: farobj_record_flag_ops (call site: 0x04cc46)
+  0x04cc50: sub_4CC50 (call site: 0x04cc96)
+  0x04cd1d: flight_entity_motion_accumulate (call site: 0x04cddb)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x0445a6 (+  0): push    si
+0x0445a7 (+  1): push    ds
+0x0445a8 (+  2): push    es
+0x0445a9 (+  3): mov     si, 63FDh
+0x0445ac (+  6): mov     ds, si
+0x0445ae (+  8): mov     si, ax
+0x0445b0 (+  a): sub     si, 85h
+0x0445b4 (+  e): shl     si, 1
+0x0445b6 (+ 10): mov     si, [si+1834h]
+0x0445ba (+ 14): test    cs:word_43B22, 1
+0x0445c1 (+ 1b): jz      short loc_445DA
+0x0445c3 (+ 1d): test    byte ptr [si+13h], 40h
+0x0445c7 (+ 21): stc
+0x0445c8 (+ 22): jnz     short loc_4460B
+0x0445ca (+ 24): pusha
+0x0445cb (+ 25): sub     ax, 85h
+0x0445ce (+ 28): shl     ax, 1
+0x0445d0 (+ 2a): shr     cl, 1
+0x0445d2 (+ 2c): rcr     al, 1
+0x0445d4 (+ 2e): call    sub_2C0DB
+0x0445d9 (+ 33): popa
+0x0445da (+ 34): cmp     bx, [si+10h]
+0x0445dd (+ 37): stc
+0x0445de (+ 38): jnz     short loc_4460B
+0x0445e0 (+ 3a): mov     [si+0Ch], dx
+0x0445e3 (+ 3d): or      cl, cl
+0x0445e5 (+ 3f): mov     cx, di
+0x0445e7 (+ 41): jz      short loc_445F2
+0x0445e9 (+ 43): mov     [si+0Ah], cx
+0x0445ec (+ 46): or      byte ptr [si+13h], 20h
+0x0445f0 (+ 4a): jmp     short loc_4460B
+0x0445f2 (+ 4c): and     byte ptr [si+13h], 0DFh
+0x0445f6 (+ 50): mov     di, dx
+0x0445f8 (+ 52): cmp     di, 0FFFFh
+0x0445fb (+ 55): jz      short loc_44604
+0x0445fd (+ 57): mov     ax, dx
+0x0445ff (+ 59): call    ai_farptr_table_get
+0x044604 (+ 5e): mov     [si+8], di
+0x044607 (+ 61): mov     word ptr [si+0Ah], es
+0x04460a (+ 64): clc
+0x04460b (+ 65): pop     es
+0x04460c (+ 66): pop     ds
+0x04460d (+ 67): pop     si
+0x04460e (+ 68): retf
+================================================================================
+
+================================================================================
+Function: sub_3B5D1 @ 0x03b5d1
+Size: 10 bytes
+Calls: 0 functions
+Called by: 5 functions
+================================================================================
+
+CALLED BY:
+  0x03af9f: sub_3AF9F (call site: 0x03b115)
+  0x03b1b9: sub_3B1B9 (call site: 0x03b21d)
+  0x03b256: sub_3B256 (call site: 0x03b2ba)
+  0x03b338: flight_kinematics_position_step (call site: 0x03b45e)
+  0x03b68d: shared_tail_pop_es_b (call site: 0x03b69a)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x03b5d1 (+  0): test    cs:byte_3AD1D, 80h
+0x03b5d7 (+  6): jz      short sub_3B5DB
+0x03b5d9 (+  8): jmp     short sub_3B5E9
+================================================================================
+
+================================================================================
+Function: sub_3B72C @ 0x03b72c
+Size: 16 bytes
+Calls: 0 functions
+Called by: 5 functions
+================================================================================
+
+CALLED BY:
+  0x03af9f: sub_3AF9F (call site: 0x03b0fa)
+  0x03b1b9: sub_3B1B9 (call site: 0x03b200)
+  0x03b256: sub_3B256 (call site: 0x03b29d)
+  0x03b338: flight_kinematics_position_step (call site: 0x03b443)
+  0x03b645: sub_3B645 (call site: 0x03b66a)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x03b72c (+  0): sub     al, al
+0x03b72e (+  2): sub     bl, bl
+0x03b730 (+  4): sub     ax, bx
+0x03b732 (+  6): imul    cx
+0x03b734 (+  8): mov     cx, 3334h
+0x03b737 (+  b): idiv    cx
+0x03b739 (+  d): add     ax, bx
+0x03b73b (+  f): retn
+================================================================================
+
+================================================================================
+Function: sub_3B6E2 @ 0x03b6e2
+Size: 74 bytes
+Calls: 3 functions
+Called by: 3 functions
+================================================================================
+
+CALLS:
+  0x03b7c3: sub_3B7C3
+  0x03b7b2: sub_3B7B2
+  0x03b73c: sub_3B73C
+
+CALLED BY:
+  0x03adda: pos_move_angle_step (call site: 0x03af17)
+  0x03b1b9: sub_3B1B9 (call site: 0x03b1f4)
+  0x03b256: sub_3B256 (call site: 0x03b291)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x03b6e2 (+  0): call    sub_3B7C3
+0x03b6e5 (+  3): mov     [si+10h], bx
+0x03b6e8 (+  6): mov     [si+0Ch], cx
+0x03b6eb (+  9): mov     [si+12h], ax
+0x03b6ee (+  c): mov     [si+0Eh], dx
+0x03b6f1 (+  f): mov     ax, cx
+0x03b6f3 (+ 11): mov     bx, dx
+0x03b6f5 (+ 13): call    sub_3B7B2
+0x03b6f8 (+ 16): push    ax
+0x03b6f9 (+ 17): mov     bx, [si+10h]
+0x03b6fc (+ 1a): mov     ax, [si+12h]
+0x03b6ff (+ 1d): push    si
+0x03b700 (+ 1e): call    sub_3B73C
+0x03b703 (+ 21): pop     si
+0x03b704 (+ 22): or      ax, ax
+0x03b706 (+ 24): pop     ax
+0x03b707 (+ 25): jnz     short loc_3B70C
+0x03b709 (+ 27): or      ax, 2
+0x03b70c (+ 2a): mov     [si+18h], ax
+0x03b70f (+ 2d): mov     al, cs:byte_3ACF0
+0x03b713 (+ 31): mov     [si+14h], al
+0x03b716 (+ 34): mov     al, cs:byte_3ACF1
+0x03b71a (+ 38): mov     [si+15h], al
+0x03b71d (+ 3b): mov     al, cs:byte_3ACF2
+0x03b721 (+ 3f): mov     [si+16h], al
+0x03b724 (+ 42): mov     al, cs:byte_3ACF3
+0x03b728 (+ 46): mov     [si+17h], al
+0x03b72b (+ 49): retn
+================================================================================
+
+================================================================================
+Function: sub_2C121 @ 0x02c121
+Size: 8 bytes
+Calls: 1 functions
+Called by: 3 functions
+================================================================================
+
+CALLS:
+  0x02afbd: tail_bridge_overlay_load
+
+CALLED BY:
+  0x039b67: stream_reset_gate_4a83 (call site: 0x039b8f)
+  0x03a3d6: flight_entity_simulation_frame_step (call site: 0x03a594)
+  0x048864: sub_48864 (call site: 0x0488f7)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x02c121 (+  0): call    near ptr tail_bridge_overlay_load
+0x02c124 (+  3): jmp     r06_farptr_dispatch
+================================================================================
+
+================================================================================
+Function: sub_3B503 @ 0x03b503
+Size: 70 bytes
+Calls: 2 functions
+Called by: 3 functions
+================================================================================
+
+CALLS:
+  0x03b57f: sub_3B57F
+  0x03b549: sub_3B549
+
+CALLED BY:
+  0x03af9f: sub_3AF9F (call site: 0x03afeb)
+  0x03b31f: farobj_init_43ba (call site: 0x03b332)
+  0x03b338: flight_kinematics_position_step (call site: 0x03b4f8)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x03b503 (+  0): mov     si, 4F72h
+0x03b506 (+  3): mov     di, 4F8Ch
+0x03b509 (+  6): call    sub_3B57F
+0x03b50c (+  9): jz      short loc_3B542
+0x03b50e (+  b): mov     dx, cx
+0x03b510 (+  d): mov     ax, 1Ah
+0x03b513 (+ 10): mul     dx
+0x03b515 (+ 12): add     ax, 4F72h
+0x03b518 (+ 15): mov     di, ax
+0x03b51a (+ 17): sub     ax, 1Ah
+0x03b51d (+ 1a): mov     si, ax
+0x03b51f (+ 1c): call    sub_3B57F
+0x03b522 (+ 1f): jz      short loc_3B542
+0x03b524 (+ 21): sub     cx, 2
+0x03b527 (+ 24): jle     short loc_3B542
+0x03b529 (+ 26): mov     si, 4F8Ch
+0x03b52c (+ 29): mov     di, 4FA6h
+0x03b52f (+ 2c): push    cx
+0x03b530 (+ 2d): push    si
+0x03b531 (+ 2e): push    di
+0x03b532 (+ 2f): call    sub_3B549
+0x03b535 (+ 32): pop     di
+0x03b536 (+ 33): pop     si
+0x03b537 (+ 34): pop     cx
+0x03b538 (+ 35): jz      short loc_3B542
+0x03b53a (+ 37): add     si, 1Ah
+0x03b53d (+ 3a): add     di, 1Ah
+0x03b540 (+ 3d): loop    loc_3B52F
+0x03b542 (+ 3f): mov     ax, cs:word_3ADA8
+0x03b546 (+ 43): or      ax, ax
+0x03b548 (+ 45): retn
+================================================================================
+
+================================================================================
+Function: sub_4478D @ 0x04478d
+Size: 222 bytes
+Calls: 1 functions
+Called by: 2 functions
+================================================================================
+
+CALLS:
+  0x02703f: ai_farptr_table_get
+
+CALLED BY:
+  0x04cb62: farobj_record_flag_ops (call site: 0x04cc26)
+  0x04cd1d: flight_entity_motion_accumulate (call site: 0x04cdbe)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x04478d (+  0): push    ds
+0x04478e (+  1): mov     si, 63FDh
+0x044791 (+  4): mov     ds, si
+0x044793 (+  6): mov     si, ax
+0x044795 (+  8): sub     si, 85h
+0x044799 (+  c): shl     si, 1
+0x04479b (+  e): mov     si, [si+1834h]
+0x04479f (+ 12): mov     al, 0FFh
+0x0447a1 (+ 14): cmp     dx, [si+10h]
+0x0447a4 (+ 17): jnz     short loc_447B3
+0x0447a6 (+ 19): mov     al, [si+13h]
+0x0447a9 (+ 1c): mov     dx, [si+0Ch]
+0x0447ac (+ 1f): test    al, 20h
+0x0447ae (+ 21): jz      short loc_447B3
+0x0447b0 (+ 23): mov     cx, [si+0Ah]
+0x0447b3 (+ 26): pop     ds
+0x0447b4 (+ 27): retf
+0x0447b5 (+ 28): push    ds
+0x0447b6 (+ 29): mov     dl, al
+0x0447b8 (+ 2b): mov     ax, 54AFh
+0x0447bb (+ 2e): mov     ds, ax
+0x0447bd (+ 30): mov     bx, 48BAh
+0x0447c0 (+ 33): mov     bx, [bx+7Ah]
+0x0447c3 (+ 36): mov     ax, 63FDh
+0x0447c6 (+ 39): mov     ds, ax
+0x0447c8 (+ 3b): mov     si, 131Eh
+0x0447cb (+ 3e): mov     cx, 14h
+0x0447ce (+ 41): mov     al, [si+13h]
+0x0447d1 (+ 44): test    al, 4
+0x0447d3 (+ 46): jz      short loc_447EC
+0x0447d5 (+ 48): test    al, 20h
+0x0447d7 (+ 4a): jnz     short loc_447EC
+0x0447d9 (+ 4c): test    al, 10h
+0x0447db (+ 4e): jnz     short loc_447EC
+0x0447dd (+ 50): cmp     [si+0Ch], bx
+0x0447e0 (+ 53): jnz     short loc_447EC
+0x0447e2 (+ 55): or      dl, dl
+0x0447e4 (+ 57): jz      short loc_4482D
+0x0447e6 (+ 59): cmp     cx, ds:word_65630
+0x0447ea (+ 5d): jnz     short loc_4482D
+0x0447ec (+ 5f): add     si, 28h ; '('
+0x0447ef (+ 62): loop    loc_447CE
+0x0447f1 (+ 64): mov     ax, ds:word_65630
+0x0447f4 (+ 67): sub     ax, 20h ; ' '
+0x0447f7 (+ 6a): neg     ax
+0x0447f9 (+ 6c): mov     cx, ax
+0x0447fb (+ 6e): mov     dx, 28h ; '('
+0x0447fe (+ 71): mul     dx
+0x044800 (+ 73): add     ax, 113Eh
+0x044803 (+ 76): mov     si, ax
+0x044805 (+ 78): mov     al, [si+13h]
+0x044808 (+ 7b): test    al, 4
+0x04480a (+ 7d): jz      short loc_44828
+0x04480c (+ 7f): test    al, 20h
+0x04480e (+ 81): jnz     short loc_44828
+0x044810 (+ 83): and     al, 10h
+0x044812 (+ 85): mov     dl, al
+0x044814 (+ 87): cmp     [si+0Ch], bx
+0x044817 (+ 8a): jnz     short loc_44828
+0x044819 (+ 8c): mov     ax, cx
+0x04481b (+ 8e): add     ax, 85h
+0x04481e (+ 91): call    ai_farptr_table_get
+0x044823 (+ 96): add     dl, 0F0h
+0x044826 (+ 99): pop     ds
+0x044827 (+ 9a): retf
+0x044828 (+ 9b): mov     di, 0FFFFh
+0x04482b (+ 9e): pop     ds
+0x04482c (+ 9f): retf
+0x04482d (+ a0): mov     ds:1660h, cx
+0x044831 (+ a4): mov     ax, cx
+0x044833 (+ a6): sub     ax, 20h ; ' '
+0x044836 (+ a9): neg     ax
+0x044838 (+ ab): add     ax, 85h
+0x04483b (+ ae): call    ai_farptr_table_get
+0x044840 (+ b3): clc
+0x044841 (+ b4): pop     ds
+0x044842 (+ b5): retf
+0x044843 (+ b6): push    ds
+0x044844 (+ b7): mov     si, 63FDh
+0x044847 (+ ba): mov     ds, si
+0x044849 (+ bc): mov     si, 113Eh
+0x04484c (+ bf): mov     cx, 20h ; ' '
+0x04484f (+ c2): test    byte ptr [si+13h], 4
+0x044853 (+ c6): jz      short loc_44860
+0x044855 (+ c8): test    byte ptr [si+13h], 20h
+0x044859 (+ cc): jnz     short loc_44860
+0x04485b (+ ce): cmp     [si+0Ch], ax
+0x04485e (+ d1): jz      short loc_44868
+0x044860 (+ d3): add     si, 28h ; '('
+0x044863 (+ d6): loop    loc_4484F
+0x044865 (+ d8): clc
+0x044866 (+ d9): pop     ds
+0x044867 (+ da): retf
+0x044868 (+ db): stc
+0x044869 (+ dc): pop     ds
+0x04486a (+ dd): retf
+================================================================================
+
+================================================================================
+Function: sub_3B256 @ 0x03b256
+Size: 201 bytes
+Calls: 4 functions
+Called by: 2 functions
+================================================================================
+
+CALLS:
+  0x03b5e9: sub_3B5E9
+  0x03b6e2: sub_3B6E2
+  0x03b72c: sub_3B72C
+  0x03b5d1: sub_3B5D1
+
+CALLED BY:
+  0x03b31f: farobj_init_43ba (call site: 0x03b32a)
+  0x03b338: flight_kinematics_position_step (call site: 0x03b4e1)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x03b256 (+  0): push    si
+0x03b257 (+  1): mov     si, di
+0x03b259 (+  3): sub     si, 1Ah
+0x03b25c (+  6): mov     cx, 0Dh
+0x03b25f (+  9): rep movsw
+0x03b261 (+  b): pop     si
+0x03b262 (+  c): sub     di, 1Ah
+0x03b265 (+  f): mov     ax, [di+0Ch]
+0x03b268 (+ 12): neg     ax
+0x03b26a (+ 14): cmp     cs:word_3AD12, 0
+0x03b270 (+ 1a): js      short loc_3B278
+0x03b272 (+ 1c): mov     ax, 3334h
+0x03b275 (+ 1f): sub     ax, [di+0Ch]
+0x03b278 (+ 22): cwd
+0x03b279 (+ 23): add     [di], ax
+0x03b27b (+ 25): adc     [di+2], dx
+0x03b27e (+ 28): mov     cx, cs:word_3AD18
+0x03b283 (+ 2d): call    sub_3B5E9
+0x03b286 (+ 30): add     [di+4], ax
+0x03b289 (+ 33): adc     [di+6], dx
+0x03b28c (+ 36): push    si
+0x03b28d (+ 37): push    di
+0x03b28e (+ 38): push    ax
+0x03b28f (+ 39): mov     si, di
+0x03b291 (+ 3b): call    sub_3B6E2
+0x03b294 (+ 3e): mov     ah, [si+16h]
+0x03b297 (+ 41): mov     bh, [si+14h]
+0x03b29a (+ 44): mov     cx, [si+0Eh]
+0x03b29d (+ 47): call    sub_3B72C
+0x03b2a0 (+ 4a): mov     cs:word_3AD9E, ax
+0x03b2a4 (+ 4e): mov     ax, [si+8]
+0x03b2a7 (+ 51): mov     dx, [si+0Ah]
+0x03b2aa (+ 54): pop     cx
+0x03b2ab (+ 55): test    cs:byte_3AD1C, 4
+0x03b2b1 (+ 5b): jnz     short loc_3B2C9
+0x03b2b3 (+ 5d): mov     ax, cx
+0x03b2b5 (+ 5f): mov     cx, cs:word_3AD1A
+0x03b2ba (+ 64): call    sub_3B5D1
+0x03b2bd (+ 67): add     ax, [si+8]
+0x03b2c0 (+ 6a): adc     dx, [si+0Ah]
+0x03b2c3 (+ 6d): mov     [si+8], ax
+0x03b2c6 (+ 70): mov     [si+0Ah], dx
+0x03b2c9 (+ 73): sub     ax, cs:word_3AD9E
+0x03b2ce (+ 78): sbb     dx, 0
+0x03b2d1 (+ 7b): jns     short loc_3B2E3
+0x03b2d3 (+ 7d): mov     cs:word_3ADA8, 0
+0x03b2da (+ 84): pop     di
+0x03b2db (+ 85): pop     si
+0x03b2dc (+ 86): mov     ax, cs:word_3ADA8
+0x03b2e0 (+ 8a): or      ax, ax
+0x03b2e2 (+ 8c): retn
+0x03b2e3 (+ 8d): pop     di
+0x03b2e4 (+ 8e): pop     si
+0x03b2e5 (+ 8f): add     di, 1Ah
+0x03b2e8 (+ 92): mov     cx, 0Dh
+0x03b2eb (+ 95): rep movsw
+0x03b2ed (+ 97): mov     ax, 1
+0x03b2f0 (+ 9a): or      ax, ax
+0x03b2f2 (+ 9c): retn
+0x03b2f3 (+ 9d): mov     si, 32h ; '2'
+0x03b2f6 (+ a0): mov     di, 4Ch ; 'L'
+0x03b2f9 (+ a3): mov     ax, [di+12h]
+0x03b2fc (+ a6): sub     ax, [si+12h]
+0x03b2ff (+ a9): jnz     short flight_kinematics_position_step
+0x03b301 (+ ab): push    ds
+0x03b302 (+ ac): push    es
+0x03b303 (+ ad): mov     ax, 7B0Eh
+0x03b306 (+ b0): mov     es, ax
+0x03b308 (+ b2): mov     si, 32h ; '2'
+0x03b30b (+ b5): mov     di, 43BAh
+0x03b30e (+ b8): mov     cx, 0Dh
+0x03b311 (+ bb): rep movsw
+0x03b313 (+ bd): mov     si, 4Ch ; 'L'
+0x03b316 (+ c0): mov     cx, 0Dh
+0x03b319 (+ c3): rep movsw
+0x03b31b (+ c5): mov     ax, es
+0x03b31d (+ c7): mov     ds, ax
+================================================================================
+
+================================================================================
+Function: sub_3B5DB @ 0x03b5db
+Size: 14 bytes
+Calls: 0 functions
+Called by: 2 functions
+================================================================================
+
+CALLED BY:
+  0x03af9f: sub_3AF9F (call site: 0x03b0c2)
+  0x03b338: flight_kinematics_position_step (call site: 0x03b408)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x03b5db (+  0): imul    cx
+0x03b5dd (+  2): shl     ax, 1
+0x03b5df (+  4): rcl     dx, 1
+0x03b5e1 (+  6): shl     ax, 1
+0x03b5e3 (+  8): rcl     dx, 1
+0x03b5e5 (+  a): mov     ax, dx
+0x03b5e7 (+  c): cwd
+0x03b5e8 (+  d): retn
+================================================================================
+
+================================================================================
+Function: sub_496D3 @ 0x0496d3
+Size: 538 bytes
+Calls: 10 functions
+Called by: 1 functions
+================================================================================
+
+CALLS:
+  0x02703f: ai_farptr_table_get
+  0x02497c: stub_to_24980
+  0x024984: stub_to_24988
+  0x049a5b: farobj_kind_slot_reset
+  0x049997: ai_movement_vector_accumulate
+  0x0416ec: sub_416EC
+  0x0498ed: sub_498ED
+  0x014eae: terrain_farobj_tile_copy_resolve
+  0x0494b2: obj_range_slot_activate
+  0x022c91: fixed_vec3_accumulate_a
+
+CALLED BY:
+  0x049546: flight_aircraft_slot_cycle_update (call site: 0x049593)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x0496d3 (+  0): test    byte ptr [si], 10h
+0x0496d6 (+  3): jnz     short loc_496DB
+0x0496d8 (+  5): jmp     loc_497F8
+0x0496db (+  8): cmp     word ptr [si+10h], 0
+0x0496df (+  c): jz      short loc_496EB
+0x0496e1 (+  e): mov     ax, [si+10h]
+0x0496e4 (+ 11): mov     cl, 6
+0x0496e6 (+ 13): sar     ax, cl
+0x0496e8 (+ 15): sub     [si+10h], ax
+0x0496eb (+ 18): cmp     word ptr [si+12h], 0
+0x0496ef (+ 1c): jz      short loc_496FB
+0x0496f1 (+ 1e): mov     ax, [si+12h]
+0x0496f4 (+ 21): mov     cl, 6
+0x0496f6 (+ 23): sar     ax, cl
+0x0496f8 (+ 25): sub     [si+12h], ax
+0x0496fb (+ 28): mov     ax, [si+5]
+0x0496fe (+ 2b): cwd
+0x0496ff (+ 2c): xor     ax, dx
+0x049701 (+ 2e): sub     ax, dx
+0x049703 (+ 30): cmp     ax, 42h ; 'B'
+0x049706 (+ 33): jle     short loc_49714
+0x049708 (+ 35): mov     ax, [si+5]
+0x04970b (+ 38): mov     cl, 6
+0x04970d (+ 3a): sar     ax, cl
+0x04970f (+ 3c): sub     [si+5], ax
+0x049712 (+ 3f): jmp     short loc_49723
+0x049714 (+ 41): add     word ptr [si+5], 0FFFFh
+0x049718 (+ 45): cmp     word ptr [si+5], 0FFBEh
+0x04971c (+ 49): jge     short loc_49723
+0x04971e (+ 4b): mov     word ptr [si+5], 0FFBEh
+0x049723 (+ 50): push    es
+0x049724 (+ 51): mov     ax, [si+1]
+0x049727 (+ 54): call    ai_farptr_table_get
+0x04972c (+ 59): mov     ax, [si+10h]
+0x04972f (+ 5c): cwd
+0x049730 (+ 5d): add     es:[di], ax
+0x049733 (+ 60): adc     es:[di+2], dx
+0x049737 (+ 64): mov     ax, [si+12h]
+0x04973a (+ 67): cwd
+0x04973b (+ 68): add     es:[di+4], ax
+0x04973f (+ 6c): adc     es:[di+6], dx
+0x049743 (+ 70): mov     ax, [si+5]
+0x049746 (+ 73): cwd
+0x049747 (+ 74): add     es:[di+8], ax
+0x04974b (+ 78): adc     es:[di+0Ah], dx
+0x04974f (+ 7c): mov     ax, [si+7]
+0x049752 (+ 7f): add     ax, es:[di+0Ch]
+0x049756 (+ 83): call    stub_to_24980
+0x04975b (+ 88): mov     es:[di+0Ch], ax
+0x04975f (+ 8c): mov     ax, [si+9]
+0x049762 (+ 8f): add     ax, es:[di+0Eh]
+0x049766 (+ 93): call    stub_to_24988
+0x04976b (+ 98): mov     es:[di+0Eh], ax
+0x04976f (+ 9c): mov     ax, [si+0Bh]
+0x049772 (+ 9f): add     ax, es:[di+10h]
+0x049776 (+ a3): call    stub_to_24980
+0x04977b (+ a8): mov     es:[di+10h], ax
+0x04977f (+ ac): test    word ptr es:[di+0Ah], 8000h
+0x049785 (+ b2): jz      short loc_4978A
+0x049787 (+ b4): jmp     loc_49885
+0x04978a (+ b7): cmp     byte ptr [si+0Dh], 0
+0x04978e (+ bb): ja      short loc_497F3
+0x049790 (+ bd): cmp     word ptr es:[di+0Ah], 0
+0x049795 (+ c2): jnz     short loc_497F6
+0x049797 (+ c4): cmp     word ptr es:[di+8], 2710h
+0x04979d (+ ca): ja      short loc_497F6
+0x04979f (+ cc): cmp     word ptr [si+5], 0
+0x0497a3 (+ d0): jg      short loc_497F6
+0x0497a5 (+ d2): mov     word ptr es:[di+0Ch], 0
+0x0497ab (+ d8): mov     word ptr es:[di+0Eh], 0
+0x0497b1 (+ de): mov     word ptr es:[di+10h], 0
+0x0497b7 (+ e4): xor     byte ptr [si], 10h
+0x0497ba (+ e7): or      byte ptr [si], 2
+0x0497bd (+ ea): mov     word ptr [si+5], 0
+0x0497c2 (+ ef): mov     word ptr [si+7], 0
+0x0497c7 (+ f4): mov     word ptr [si+9], 0
+0x0497cc (+ f9): mov     word ptr [si+0Bh], 0
+0x0497d1 (+ fe): mov     bx, 0Dh
+0x0497d4 (+101): test    byte ptr [si], 8
+0x0497d7 (+104): jz      short loc_497DC
+0x0497d9 (+106): mov     bx, 17h
+0x0497dc (+109): mov     ax, [si+1]
+0x0497df (+10c): call    near ptr farobj_kind_slot_reset
+0x0497e2 (+10f): call    near ptr ai_movement_vector_accumulate
+0x0497e5 (+112): mov     ax, [si+1]
+0x0497e8 (+115): xor     bx, bx
+0x0497ea (+117): push    si
+0x0497eb (+118): call    sub_416EC
+0x0497f0 (+11d): pop     si
+0x0497f1 (+11e): pop     es
+0x0497f2 (+11f): retn
+0x0497f3 (+120): dec     byte ptr [si+0Dh]
+0x0497f6 (+123): pop     es
+0x0497f7 (+124): retn
+0x0497f8 (+125): test    byte ptr [si], 2
+0x0497fb (+128): jnz     short loc_49800
+0x0497fd (+12a): call    near ptr sub_498ED
+0x049800 (+12d): push    es
+0x049801 (+12e): mov     ax, [si+1]
+0x049804 (+131): call    ai_farptr_table_get
+0x049809 (+136): mov     bx, cs:word_49542
+0x04980e (+13b): mov     ax, [si+10h]
+0x049811 (+13e): imul    bx
+0x049813 (+140): mov     al, ah
+0x049815 (+142): mov     ah, dl
+0x049817 (+144): cwd
+0x049818 (+145): add     es:[di], ax
+0x04981b (+148): adc     es:[di+2], dx
+0x04981f (+14c): mov     ax, [si+12h]
+0x049822 (+14f): imul    bx
+0x049824 (+151): mov     al, ah
+0x049826 (+153): mov     ah, dl
+0x049828 (+155): cwd
+0x049829 (+156): add     es:[di+4], ax
+0x04982d (+15a): adc     es:[di+6], dx
+0x049831 (+15e): push    ds
+0x049832 (+15f): push    es
+0x049833 (+160): push    si
+0x049834 (+161): push    di
+0x049835 (+162): push    es
+0x049836 (+163): pop     ds
+0x049837 (+164): mov     si, di
+0x049839 (+166): call    terrain_farobj_tile_copy_resolve
+0x04983e (+16b): pop     di
+0x04983f (+16c): pop     si
+0x049840 (+16d): pop     es
+0x049841 (+16e): pop     ds
+0x049842 (+16f): test    byte ptr [si], 2
+0x049845 (+172): jnz     short loc_4984A
+0x049847 (+174): jmp     loc_498E1
+0x04984a (+177): test    word ptr es:[di+0Ah], 8000h
+0x049850 (+17d): jnz     short loc_49873
+0x049852 (+17f): cmp     es:[di+8], ax
+0x049856 (+183): jle     short loc_49873
+0x049858 (+185): xor     ah, ah
+0x04985a (+187): mov     al, [si+0Eh]
+0x04985d (+18a): mov     bx, cs:word_49542
+0x049862 (+18f): imul    bx
+0x049864 (+191): mov     al, ah
+0x049866 (+193): mov     ah, dl
+0x049868 (+195): cwd
+0x049869 (+196): sub     es:[di+8], ax
+0x04986d (+19a): sbb     es:[di+0Ah], dx
+0x049871 (+19e): pop     es
+0x049872 (+19f): retn
+0x049873 (+1a0): mov     al, [si+0Eh]
+0x049876 (+1a3): xor     ah, ah
+0x049878 (+1a5): sub     ax, 16h
+0x04987b (+1a8): cwd
+0x04987c (+1a9): xor     ax, dx
+0x04987e (+1ab): sub     ax, dx
+0x049880 (+1ad): cmp     ax, 4
+0x049883 (+1b0): jbe     short loc_498A2
+0x049885 (+1b2): and     byte ptr [si], 0FDh
+0x049888 (+1b5): mov     ax, [si+1]
+0x04988b (+1b8): mov     bx, 2
+0x04988e (+1bb): push    si
+0x04988f (+1bc): call    sub_416EC
+0x049894 (+1c1): pop     si
+0x049895 (+1c2): mov     ax, [si+1]
+0x049898 (+1c5): mov     bl, 1
+0x04989a (+1c7): mov     bh, 64h ; 'd'
+0x04989c (+1c9): push    cs
+0x04989d (+1ca): call    near ptr obj_range_slot_activate
+0x0498a0 (+1cd): pop     es
+0x0498a1 (+1ce): retn
+0x0498a2 (+1cf): and     byte ptr [si], 0FDh
+0x0498a5 (+1d2): mov     ax, [si+1]
+0x0498a8 (+1d5): mov     bx, 1
+0x0498ab (+1d8): push    si
+0x0498ac (+1d9): push    di
+0x0498ad (+1da): call    sub_416EC
+0x0498b2 (+1df): pop     di
+0x0498b3 (+1e0): pop     si
+0x0498b4 (+1e1): mov     word ptr [si+10h], 0
+0x0498b9 (+1e6): mov     word ptr [si+12h], 0
+0x0498be (+1eb): push    ax
+0x0498bf (+1ec): call    fixed_vec3_accumulate_a
+0x0498c4 (+1f1): and     cl, 3Fh
+0x0498c7 (+1f4): add     cl, 20h ; ' '
+0x0498ca (+1f7): mov     [si+0Eh], cl
+0x0498cd (+1fa): mov     bx, 0Eh
+0x0498d0 (+1fd): test    byte ptr [si], 8
+0x0498d3 (+200): jz      short loc_498D8
+0x0498d5 (+202): mov     bx, 18h
+0x0498d8 (+205): mov     ax, [si+1]
+0x0498db (+208): push    di
+0x0498dc (+209): call    near ptr farobj_kind_slot_reset
+0x0498df (+20c): pop     di
+0x0498e0 (+20d): pop     ax
+0x0498e1 (+20e): mov     es:[di+8], ax
+0x0498e5 (+212): mov     word ptr es:[di+0Ah], 0
+0x0498eb (+218): pop     es
+0x0498ec (+219): retn
+================================================================================
+
+================================================================================
+Function: sub_4D55F @ 0x04d55f
+Size: 512 bytes
+Calls: 12 functions
+Called by: 2 functions
+================================================================================
+
+CALLS:
+  0x04fd47: r08_farptr_load_thunk
+  0x041b32: r12_farptr_load_thunk
+  0x04bf8b: farobj_type_gate_test
+  0x04f0cb: sub_4F0CB
+  0x02c149: sub_2C149
+  0x02703f: ai_farptr_table_get
+  0x022c91: fixed_vec3_accumulate_a
+  0x048db0: farobj_project_request_clear
+  0x03480a: sub_3480A
+  0x034770: nullsub_35
+  0x04113c: sub_4113C
+  0x02e20a: sprite_clip_bounds_check
+
+CALLED BY:
+  0x04cd1d: flight_entity_motion_accumulate (call site: 0x04cefb)
+  0x04d544: farobj_class16_record_ops (call site: 0x04d559)
+
+DISASSEMBLY:
+--------------------------------------------------------------------------------
+0x04d55f (+  0): mov     cx, ax
+0x04d561 (+  2): call    loc_4FD47
+0x04d566 (+  7): or      al, al
+0x04d568 (+  9): jz      short loc_4D5A4
+0x04d56a (+  b): test    cs:word_4CD1B, 40h
+0x04d571 (+ 12): jnz     short loc_4D5A4
+0x04d573 (+ 14): push    es
+0x04d574 (+ 15): mov     ax, cx
+0x04d576 (+ 17): call    r12_farptr_load_thunk
+0x04d57b (+ 1c): mov     di, es:[di+6]
+0x04d57f (+ 20): mov     al, es:[di+75h]
+0x04d583 (+ 24): pop     es
+0x04d584 (+ 25): cmp     al, 16h
+0x04d586 (+ 27): jnz     short loc_4D5A4
+0x04d588 (+ 29): mov     ax, [si]
+0x04d58a (+ 2b): call    farobj_type_gate_test
+0x04d58f (+ 30): jb      short loc_4D592
+0x04d591 (+ 32): retn
+0x04d592 (+ 33): push    ds
+0x04d593 (+ 34): mov     ax, 54AFh
+0x04d596 (+ 37): mov     ds, ax
+0x04d598 (+ 39): or      word_560A4, 40h
+0x04d59d (+ 3e): pop     ds
+0x04d59e (+ 3f): or      cs:word_4CD1B, 40h
+0x04d5a4 (+ 45): mov     ax, [si]
+0x04d5a6 (+ 47): call    sub_4F0CB
+0x04d5ab (+ 4c): test    ax, 1
+0x04d5ae (+ 4f): jz      short loc_4D5B7
+0x04d5b0 (+ 51): mov     ax, [si]
+0x04d5b2 (+ 53): call    sub_2C149
+0x04d5b7 (+ 58): mov     ax, cx
+0x04d5b9 (+ 5a): mov     cs:word_4D53D, ax
+0x04d5bd (+ 5e): mov     ax, [si]
+0x04d5bf (+ 60): mov     cs:word_4D53F, ax
+0x04d5c3 (+ 64): dec     word ptr [si+21h]
+0x04d5c6 (+ 67): mov     cl, [si+23h]
+0x04d5c9 (+ 6a): mov     [si+24h], cl
+0x04d5cc (+ 6d): mov     cl, [si+2]
+0x04d5cf (+ 70): mov     cs:byte_4D543, cl
+0x04d5d4 (+ 75): push    es
+0x04d5d5 (+ 76): push    dx
+0x04d5d6 (+ 77): mov     ax, cs:word_4D53D
+0x04d5da (+ 7b): call    r12_farptr_load_thunk
+0x04d5df (+ 80): mov     di, es:[di+6]
+0x04d5e3 (+ 84): mov     ax, es:[di+24h]
+0x04d5e7 (+ 88): cwd
+0x04d5e8 (+ 89): xor     ax, dx
+0x04d5ea (+ 8b): sub     ax, dx
+0x04d5ec (+ 8d): mov     dx, ax
+0x04d5ee (+ 8f): mov     cl, 2
+0x04d5f0 (+ 91): shl     ax, cl
+0x04d5f2 (+ 93): add     ax, dx
+0x04d5f4 (+ 95): mov     dx, es:[di+14h]
+0x04d5f8 (+ 99): shr     dx, 1
+0x04d5fa (+ 9b): add     ax, dx
+0x04d5fc (+ 9d): shr     dx, 1
+0x04d5fe (+ 9f): add     ax, dx
+0x04d600 (+ a1): pop     dx
+0x04d601 (+ a2): pop     es
+0x04d602 (+ a3): add     ax, 300h
+0x04d605 (+ a6): sub     ax, [si+12h]
+0x04d608 (+ a9): mov     cx, dx
+0x04d60a (+ ab): mul     bx
+0x04d60c (+ ad): div     cx
+0x04d60e (+ af): xor     ch, ch
+0x04d610 (+ b1): mov     cl, cs:byte_4D543
+0x04d615 (+ b6): mul     cx
+0x04d617 (+ b8): mov     cx, ds:1594h
+0x04d61b (+ bc): and     cx, 0Ch
+0x04d61e (+ bf): shr     cx, 1
+0x04d620 (+ c1): add     cx, 2
+0x04d623 (+ c4): test    word ptr [si+6], 8
+0x04d628 (+ c9): jnz     short loc_4D633
+0x04d62a (+ cb): test    word ptr [si+6], 20h
+0x04d62f (+ d0): jz      short loc_4D633
+0x04d631 (+ d2): shr     cx, 1
+0x04d633 (+ d4): div     cx
+0x04d635 (+ d6): test    ax, 8000h
+0x04d638 (+ d9): jz      short loc_4D63D
+0x04d63a (+ db): mov     ax, 7FFFh
+0x04d63d (+ de): mov     cs:word_4D541, ax
+0x04d641 (+ e2): push    ds
+0x04d642 (+ e3): push    es
+0x04d643 (+ e4): mov     ax, cs:word_4D53D
+0x04d647 (+ e8): call    ai_farptr_table_get
+0x04d64c (+ ed): mov     ax, es
+0x04d64e (+ ef): mov     ds, ax
+0x04d650 (+ f1): mov     si, di
+0x04d652 (+ f3): pop     es
+0x04d653 (+ f4): mov     di, 1528h
+0x04d656 (+ f7): mov     cx, 6
+0x04d659 (+ fa): rep movsw
+0x04d65b (+ fc): pop     ds
+0x04d65c (+ fd): mov     di, 1528h
+0x04d65f (+100): mov     cx, 3
+0x04d662 (+103): push    cx
+0x04d663 (+104): call    fixed_vec3_accumulate_a
+0x04d668 (+109): mov     ax, cx
+0x04d66a (+10b): xor     dx, dx
+0x04d66c (+10d): mov     cx, cs:word_4D541
+0x04d671 (+112): div     cx
+0x04d673 (+114): call    fixed_vec3_accumulate_a
+0x04d678 (+119): test    cx, 1
+0x04d67c (+11d): jz      short loc_4D680
+0x04d67e (+11f): neg     dx
+0x04d680 (+121): mov     ax, dx
+0x04d682 (+123): cwd
+0x04d683 (+124): add     [di], ax
+0x04d685 (+126): adc     [di+2], dx
+0x04d688 (+129): add     di, 4
+0x04d68b (+12c): pop     cx
+0x04d68c (+12d): loop    loc_4D662
+0x04d68e (+12f): mov     ax, 1
+0x04d691 (+132): xor     bh, bh
+0x04d693 (+134): mov     bl, cs:byte_4D543
+0x04d698 (+139): add     bx, 3
+0x04d69b (+13c): mov     cl, 5
+0x04d69d (+13e): shl     bx, cl
+0x04d69f (+140): mov     cx, 10h
+0x04d6a2 (+143): mov     si, 1534h
+0x04d6a5 (+146): mov     di, 1528h
+0x04d6a8 (+149): call    farobj_project_request_clear
+0x04d6ad (+14e): cmp     cs:byte_4D543, 2
+0x04d6b3 (+154): jnz     short loc_4D6BF
+0x04d6b5 (+156): call    sub_3480A
+0x04d6ba (+15b): cmp     ax, 0
+0x04d6bd (+15e): jz      short loc_4D6E5
+0x04d6bf (+160): mov     al, cs:byte_4D543
+0x04d6c3 (+164): xor     ah, ah
+0x04d6c5 (+166): mov     bx, ax
+0x04d6c7 (+168): neg     bx
+0x04d6c9 (+16a): add     bx, 0Fh
+0x04d6cc (+16d): mov     cl, 4
+0x04d6ce (+16f): shl     bx, cl
+0x04d6d0 (+171): add     bx, 0C0h
+0x04d6d4 (+175): mov     cx, ax
+0x04d6d6 (+177): mul     cx
+0x04d6d8 (+179): mul     cx
+0x04d6da (+17b): mov     dx, 10Fh
+0x04d6dd (+17e): mov     si, 1528h
+0x04d6e0 (+181): call    nullsub_35
+0x04d6e5 (+186): mov     ax, cs:word_4D53D
+0x04d6e9 (+18a): call    sub_4113C
+0x04d6ee (+18f): mov     di, 1528h
+0x04d6f1 (+192): mov     bp, 4
+0x04d6f4 (+195): imul    bp
+0x04d6f6 (+197): add     [di], ax
+0x04d6f8 (+199): adc     [di+2], dx
+0x04d6fb (+19c): mov     ax, bx
+0x04d6fd (+19e): imul    bp
+0x04d6ff (+1a0): add     [di+4], ax
+0x04d702 (+1a3): adc     [di+6], dx
+0x04d705 (+1a6): mov     ax, cx
+0x04d707 (+1a8): imul    bp
+0x04d709 (+1aa): add     [di+8], ax
+0x04d70c (+1ad): adc     [di+0Ah], dx
+0x04d70f (+1b0): mov     bl, cs:byte_4D543
+0x04d714 (+1b5): mov     bh, 11h
+0x04d716 (+1b7): sub     bh, bl
+0x04d718 (+1b9): mov     cx, 0Eh
+0x04d71b (+1bc): xor     dx, dx
+0x04d71d (+1be): xor     bp, bp
+0x04d71f (+1c0): xor     di, di
+0x04d721 (+1c2): mov     si, 1528h
+0x04d724 (+1c5): call    sprite_clip_bounds_check
+0x04d729 (+1ca): mov     cx, 10h
+0x04d72c (+1cd): mov     si, 1534h
+0x04d72f (+1d0): cmp     byte ptr [si], 0
+0x04d732 (+1d3): jz      short locret_4D75E
+0x04d734 (+1d5): mov     ax, [si+1]
+0x04d737 (+1d8): call    sub_4F0CB
+0x04d73c (+1dd): test    ax, 2
+0x04d73f (+1e0): jz      short loc_4D759
+0x04d741 (+1e2): push    cx
+0x04d742 (+1e3): push    si
+0x04d743 (+1e4): mov     ax, [si+1]
+0x04d746 (+1e7): mov     bl, cs:byte_4D543
+0x04d74b (+1ec): mov     bh, [si]
+0x04d74d (+1ee): mov     bp, cs:word_4D53F
+0x04d752 (+1f3): call    loc_41167
+0x04d757 (+1f8): pop     si
+0x04d758 (+1f9): pop     cx
+0x04d759 (+1fa): add     si, 3
+0x04d75c (+1fd): loop    loc_4D72F
+0x04d75e (+1ff): retn
+================================================================================

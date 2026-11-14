@@ -11951,3 +11951,208 @@ functions:
     system: r59
     doc: '[Finding 118 remapped r59_e177 -> sub_19EBFB] 281B, ASM, in=0, 3 callees overlay slope/slot update entry. conf: medium'
     source: old_registry (was: r59_slope_slot_update_entry)
+
+  # FLIGHT_PHYSICS SYSTEM - Call graph expansion (33 new functions, 2026-11-15)
+  
+  # Motion Accumulation Helpers
+  - address: 0x04D35A
+    name: flight_motion_record_append_a
+    system: flight_physics
+    size: 50
+    doc: "Appends 5-byte motion record to CS segment buffer, packs coordinate data. conf: HIGH"
+    
+  - address: 0x04D38C
+    name: flight_motion_record_append_b
+    system: flight_physics
+    size: 59
+    doc: "Variant of append_a, reads from [DI+10h] offset. conf: HIGH"
+    
+  - address: 0x04D143
+    name: flight_motion_helper_1
+    system: flight_physics
+    size: 29
+    doc: "Motion accumulation helper, 4 call sites. conf: MEDIUM"
+    
+  - address: 0x04D160
+    name: flight_motion_helper_2
+    system: flight_physics
+    size: 28
+    doc: "Motion accumulation helper, 3 call sites. conf: MEDIUM"
+    
+  - address: 0x04D17C
+    name: flight_motion_helper_3
+    system: flight_physics
+    size: 32
+    doc: "Motion accumulation helper with 2 comparisons. conf: MEDIUM"
+    
+  - address: 0x04D19C
+    name: flight_motion_helper_4
+    system: flight_physics
+    size: 42
+    doc: "Motion accumulation helper with 1 comparison. conf: MEDIUM"
+    
+  - address: 0x04D1C6
+    name: flight_motion_helper_5
+    system: flight_physics
+    size: 38
+    doc: "Motion accumulation helper with 2 comparisons. conf: MEDIUM"
+    
+  - address: 0x04D1EC
+    name: flight_motion_state_update
+    system: flight_physics
+    size: 68
+    doc: "Updates motion state, iterative, 2 comparisons. conf: MEDIUM"
+    
+  - address: 0x04D230
+    name: flight_motion_physics_step
+    system: flight_physics
+    size: 290
+    doc: "Main physics computation step, 15 comparisons. conf: MEDIUM"
+    
+  - address: 0x04D3EC
+    name: flight_motion_velocity_update
+    system: flight_physics
+    size: 109
+    doc: "Updates velocity components, 6 comparisons. conf: MEDIUM"
+    
+  - address: 0x04D55F
+    name: flight_motion_accumulate_coordinator
+    system: flight_physics
+    size: 512
+    doc: "Large coordinator, 24 comparisons, 16 function calls. conf: LOW"
+    
+  # Kinematics Helpers
+  - address: 0x03B256
+    name: flight_kinematics_state_copy_update
+    system: flight_physics
+    size: 201
+    doc: "Copies 26-byte kinematic record, updates coordinates. conf: MEDIUM"
+    
+  - address: 0x03B503
+    name: flight_kinematics_buffer_scan
+    system: flight_physics
+    size: 70
+    doc: "Scans through 26-byte records in kinematic buffer. conf: MEDIUM"
+    
+  - address: 0x03B5D1
+    name: flight_kinematics_flag_gate
+    system: flight_physics
+    size: 10
+    doc: "Tests byte_3AD1D bit 0x80, conditional gate, 5 callers. conf: HIGH"
+    
+  - address: 0x03B5DB
+    name: flight_fixed_mul_scale_4
+    system: flight_physics
+    size: 14
+    doc: "Fixed-point: (AX*CX)*4, returns high word. conf: HIGH"
+    
+  - address: 0x03B6E2
+    name: flight_position_record_build
+    system: flight_physics
+    size: 74
+    doc: "Builds multi-field position/velocity record. conf: MEDIUM"
+    
+  - address: 0x03B72C
+    name: flight_fixed_ratio_13108
+    system: flight_physics
+    size: 16
+    doc: "Fixed-point: (AX*CX)/0x3334, widely used, 5 callers. conf: HIGH"
+    
+  - address: 0x03B549
+    name: flight_kinematics_record_compare
+    system: flight_physics
+    size: 50
+    doc: "Compares kinematic records in buffer scan loop. conf: MEDIUM"
+    
+  - address: 0x03B57F
+    name: flight_kinematics_record_validate
+    system: flight_physics
+    size: 60
+    doc: "Validates kinematic record before comparison. conf: MEDIUM"
+    
+  - address: 0x03B5E9
+    name: flight_kinematics_coord_transform
+    system: flight_physics
+    size: 40
+    doc: "Transforms coordinates for kinematic state. conf: MEDIUM"
+    
+  - address: 0x03B73C
+    name: flight_position_component_calc
+    system: flight_physics
+    size: 118
+    doc: "Calculates position component for record building. conf: MEDIUM"
+    
+  - address: 0x03B7B2
+    name: flight_position_angle_calc
+    system: flight_physics
+    size: 17
+    doc: "Calculates angle component for position record. conf: MEDIUM"
+    
+  - address: 0x03B7C3
+    name: flight_position_init_calc
+    system: flight_physics
+    size: 31
+    doc: "Initial calculation for position record building. conf: MEDIUM"
+    
+  # Farobj/Entity Slot Management
+  - address: 0x0445A6
+    name: farobj_slot_target_bind
+    system: flight_physics
+    size: 105
+    doc: "Binds entity slot to target, sets pointers, 7 callers. conf: MEDIUM"
+    
+  - address: 0x04478D
+    name: farobj_slot_target_search
+    system: flight_physics
+    size: 222
+    doc: "Searches farobj slots for target match, 2 callers. conf: MEDIUM"
+    
+  # Aircraft Slot Management
+  - address: 0x0496D3
+    name: flight_aircraft_slot_physics_step
+    system: flight_physics
+    size: 538
+    doc: "Main physics step for aircraft slot, velocity damping. conf: LOW"
+    
+  - address: 0x049A1F
+    name: flight_aircraft_slot_state_check
+    system: flight_physics
+    size: 60
+    doc: "Checks aircraft slot state, 5 comparisons. conf: MEDIUM"
+    
+  # Simulation Frame Helpers
+  - address: 0x02C121
+    name: overlay_load_dispatch_r06
+    system: flight_physics
+    size: 8
+    doc: "Loads overlay and dispatches to r06, 3 callers. conf: HIGH"
+    
+  - address: 0x02C1E9
+    name: overlay_dispatch_stub_1
+    system: flight_physics
+    size: 8
+    doc: "Overlay dispatch stub. conf: HIGH"
+    
+  - address: 0x02C207
+    name: overlay_dispatch_stub_2
+    system: flight_physics
+    size: 8
+    doc: "Overlay dispatch stub. conf: HIGH"
+    
+  - address: 0x02C24D
+    name: overlay_dispatch_stub_3
+    system: flight_physics
+    size: 8
+    doc: "Overlay dispatch stub. conf: HIGH"
+    
+  - address: 0x06CDFA
+    name: flight_simulation_state_update
+    system: flight_physics
+    size: 64
+    doc: "Updates simulation state, 8 comparisons. conf: MEDIUM"
+    
+  - address: 0x06D126
+    name: flight_simulation_flag_check
+    system: flight_physics
+    size: 23
+    doc: "Checks simulation flags, 8 comparisons. conf: MEDIUM"
