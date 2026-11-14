@@ -1,1688 +1,511 @@
-# S4 Function Evidence — structured analysis of Falcon 3 functions
-#
-# CERTAINTY (inherits game_knowledge.yaml scale):
-#   PROVEN    — byte-level proof (sha, exact disasm match, documented API)
-#   STRONG    — 2+ independent signals agree (disasm + trace/callers)
-#   HYPOTHESIS — plausible from code reading, single signal
-#   UNKNOWN   — not yet analysed
-#   DISPROVEN — previous name/understanding was wrong; kept for history
-#
-# API format: "return_type name(params...)" — C-ish, real-mode callers
-#   calling_conv: far_cdecl | near_cdecl | register | isr
-#   register: params in AX, BX, CX, DX, SI, DI, ES, DS, ... ; return in AX/DX:AX/ES:DI
-#   stack args use BP+4 (near) or BP+6 (far, because far retaddr = 4B) offsets
-#
-# first analysis pass (S4): 2026-11-12, findings derived from Level-0 disassembly probe
+# Falcon 3.0 Function Registry
+# 
+# This is the SINGLE source of truth for all function names.
+# Format: YAML for readability and tool compatibility
+# 
+# Schema:
+#   address: hex address (e.g., 0x11450)
+#   name: descriptive function name (system_component_action_detail)
+#   system: which system it belongs to
+#   size: size in bytes (optional)
+#   doc: description of what it does
+#   source: where we learned about it (optional)
 
 schema: 1
 
 functions:
-
-  - ea: "0x1018F"
-    key: sub_1018F
-    name: mouse_int33_dispatch          # already in naming.yaml; name is accurate
-    name_certainty: STRONG
-    desc: >
-      Far function called by the DOS INT 33h mouse driver as an event callback.
-      Receives a pointer to a mouse-event record (DS:SI = seg:offset of the record,
-      ES = an extra segment).  First word of the record is the INT 33h function number
-      (move=1, left-btn=2/4, right=8/0x10, etc.; specific tests for 9, 0xC, 0x10,
-      0x14, 0x16-0x19, 0x1F-0x21).  Dispatches to the game's mouse state update.
-    calling_convention: far_cdecl
-    params:
-      - {stack_offset: "bp+6", name: event_offset, type: uint16, reg_hint: SI, certainty: STRONG,
-         notes: "offset of the mouse event record; function number at [SI+0], buttons at [SI+2], delta at [SI+4]"}
-      - {stack_offset: "bp+8", name: event_seg, type: uint16, reg_hint: DS, certainty: STRONG,
-         notes: "segment of the mouse event record"}
-      - {stack_offset: "bp+0xC", name: extra_seg, type: uint16, reg_hint: ES, certainty: HYPOTHESIS}
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-    globals: []
-
-  - ea: "0x112A1"
-    key: sub_112A1
-    name: input_status_pack
-    name_certainty: HYPOTHESIS
-    desc: >
-      Packs the current joystick/mouse button state into a single byte returned in AL.
-      Uses CS:word_11102 (two bytes, in the input-driver CS segment) as a latch.
-      The 0xF0 mask in AH and the nibble shifts suggest 4-bit joystick button fields.
-      Called only by mouse_buttons_get and mouse_buttons_get_2.
-    calling_convention: register
-    params: []
-    return: "al = packed input status byte"
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:word_11102", proposed_name: joy_btn_latch, type: uint16,
-         desc: "joystick/mouse button state latch — high nibble and low nibble packed separately",
-         certainty: HYPOTHESIS}
-
-  - ea: "0x24E5D"
-    key: sub_24E5D
-    name: bda_kb_flag_get              # RENAME from bda_equipment_flag_get
-    old_name: bda_equipment_flag_get
-    old_name_verdict: DISPROVEN
-    name_certainty: PROVEN
-    desc: >
-      Reads the BIOS Data Area keyboard flags byte at ES:0x417 (ES=0).
-      0x417 = keyboard status flags byte 1 (Caps/Num/Scroll-Lock states, Shift/Alt/Ctrl pressed).
-      NOT the equipment flags (which are at 0x410-0x411).
-      Returns zero-extended 8-bit value in AX.
-    calling_convention: far_cdecl
-    params: []
-    return: "ax = BDA keyboard flags byte (uint16, upper byte = 0)"
-    return_certainty: PROVEN
-    certainty: PROVEN
-    globals:
-      - {ea: "0:0x417", name: bda_keyboard_flags, type: uint8, desc: "BDA keyboard status flags (Shift/Alt/Ctrl/Lock states)", certainty: PROVEN}
-
-  - ea: "0x22AFF"
-    key: sub_22AFF
-    name: timer_tick_isr
-    name_certainty: PROVEN
-    desc: >
-      IRQ0 (PIT timer) interrupt service routine. Runs at ~18.2 Hz.
-      Maintains two counters: word_22220 (increments every tick if gate byte_2224B != 1)
-      and word_22222 (always increments). Every 4th tick (word_22222 AND 3 == 0):
-      either chains to original BIOS timer vector (loc_22B27) or just sends EOI.
-      Also chains to joystick polling when byte_22246 != 0 and gate not set.
-    calling_convention: isr
-    params: []
-    return: "IRET"
-    return_certainty: PROVEN
-    certainty: PROVEN
-    globals:
-      - {ea: "cs:byte_2224B", proposed_name: timer_gate_flag, type: uint8, desc: "ISR gate: 1 = skip tick counter increment", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22220", proposed_name: tick_counter, type: uint16, desc: "gated tick counter; increments each IRQ0 when gate=0", certainty: STRONG}
-      - {ea: "cs:word_22222", proposed_name: timer_divider, type: uint16, desc: "ungated tick counter; AND 3 drives 4-tick chain to BIOS", certainty: STRONG}
-      - {ea: "cs:byte_22246", proposed_name: joystick_timer_flag, type: uint8, desc: "enables joystick polling chain in timer ISR", certainty: HYPOTHESIS}
-
-  - ea: "0x2703F"
-    key: sub_2703F
-    name: farobj_vtable_get            # RENAME from farptr_table_get
-    old_name: farptr_table_get
-    old_name_verdict: DISPROVEN
-    name_certainty: STRONG
-    desc: >
-      Looks up an entry in the farobj virtual-dispatch table stored in R05_400C.
-      Table starts at offset 0x34 within the R05 segment; each entry is a 4-byte
-      far pointer (selector:offset).  Input AX = 0-based slot index.
-      Returns ES:DI = far pointer to the function/data for that slot.
-      78 static callers include far_obj_field_call, farobj_field_set,
-      farobj_copy_invoke — this is the central farobj dispatch mechanism.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-    return: "ES:DI = far pointer from vtable entry"
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "R05_400C:0x34", proposed_name: farobj_vtable, type: "far_ptr[N]",
-         desc: "farobj virtual dispatch table; AX*4+0x34 is the entry offset in R05_400C segment",
-         certainty: STRONG}
-
-  - ea: "0x2228F"
-    key: sub_2228F
-    name: active_farptr_restore
-    name_certainty: HYPOTHESIS
-    desc: >
-      Copies the saved far pointer (word_22214:word_22216) over the active far pointer
-      (word_22210:word_22212).  Used to restore a previously-saved working context pointer
-      (likely the current 3D projection object or batch context).
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:word_22210", proposed_name: active_farptr_offset, type: uint16, desc: "offset half of the current active farobj context pointer", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22212", proposed_name: active_farptr_seg,    type: uint16, desc: "segment half of the current active farobj context pointer", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22214", proposed_name: saved_farptr_offset,  type: uint16, desc: "offset half of the saved farobj context pointer (save/restore pair)", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22216", proposed_name: saved_farptr_seg,     type: uint16, desc: "segment half of the saved farobj context pointer", certainty: HYPOTHESIS}
-
-  - ea: "0x22285"
-    key: sub_22285
-    name: active_farptr_set
-    name_certainty: HYPOTHESIS
-    desc: >
-      Sets the active far pointer to AX (offset) : DX (segment).
-      These are stored in CS:word_22210 and CS:word_22212 respectively.
-    calling_convention: register
-    params:
-      - {reg: AX, name: ptr_offset, type: uint16, certainty: STRONG}
-      - {reg: DX, name: ptr_seg,    type: uint16, certainty: STRONG}
-    return: void
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-
-  - ea: "0x215B7"
-    key: sub_215B7
-    name: flag_byte_get                # TODO: more specific after callers studied
-    name_certainty: HYPOTHESIS
-    desc: >
-      Returns cs:byte_1F743 in AL.  Called by record_xform_apply, farobj_record_step,
-      view_proj_ring_shift, state_bits_pack.  Likely a render/batch active flag byte
-      read by multiple pipeline stages.  Name needs refinement once byte_1F743 role is clear.
-    calling_convention: register
-    params: []
-    return: "al = byte_1F743"
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:byte_1F743", proposed_name: render_batch_flag, type: uint8,
-         desc: "flag read by multiple render pipeline stages; exact role unknown", certainty: HYPOTHESIS}
-
-  - ea: "0x1FCC9"
-    key: sub_1FCC9
-    name: flag_clear                   # TODO: more specific
-    name_certainty: HYPOTHESIS
-    desc: >
-      Clears cs:byte_1F734 to 0.  Called only by farobj_batch_build_project.
-      Companion to flag_set_lowbit (0x1FCBD).  Likely clears a batch-active flag.
-    calling_convention: register
-    params: []
-    return: void
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:byte_1F734", proposed_name: batch_active_flag, type: uint8,
-         desc: "batch active flag; set/cleared by farobj_batch_build_project", certainty: HYPOTHESIS}
-
-  - ea: "0x1FCBD"
-    key: sub_1FCBD
-    name: flag_set_lowbit
-    name_certainty: HYPOTHESIS
-    desc: >
-      Sets cs:byte_1F734 = bit-0 of cs:byte_1F733.
-      Effect: batch_active_flag = 1 if lsb of byte_1F733 is set, else 0.
-      Called only by farobj_batch_build_project (same caller as flag_clear).
-    calling_convention: register
-    params: []
-    return: void
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:byte_1F733", proposed_name: batch_mode_bits, type: uint8,
-         desc: "batch mode bits; lsb drives batch_active_flag", certainty: HYPOTHESIS}
-
-  - ea: "0x22C91"
-    key: sub_22C91
-    name: fixed_vec3_accumulate_a
-    name_certainty: HYPOTHESIS
-    desc: >
-      Per-component fixed-point accumulate for a 3-component vector stored in CS globals.
-      For each axis i: accum[i] = (accum[i] * scale[i]) % divisor[i]; CX += remainder.
-      Returns CX = sum of all three remainders (fractional accumulation).
-      Three component pairs: (word_22C71, 22C7D/22C83), (22C73, 22C7F/22C85), (22C75, 22C81/22C87).
-      Likely position/rotation fractional step accumulation for physics (called from mode_frame_step_core).
-    calling_convention: register
-    params: []
-    return: "cx = sum of axis remainders"
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:word_22C71", proposed_name: vec3_accum_x, type: int16, desc: "X-axis accumulator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C73", proposed_name: vec3_accum_y, type: int16, desc: "Y-axis accumulator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C75", proposed_name: vec3_accum_z, type: int16, desc: "Z-axis accumulator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C7D", proposed_name: vec3_scale_x,  type: int16, desc: "X scale numerator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C7F", proposed_name: vec3_scale_y,  type: int16, desc: "Y scale numerator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C81", proposed_name: vec3_scale_z,  type: int16, desc: "Z scale numerator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C83", proposed_name: vec3_div_x,    type: int16, desc: "X scale denominator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C85", proposed_name: vec3_div_y,    type: int16, desc: "Y scale denominator", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22C87", proposed_name: vec3_div_z,    type: int16, desc: "Z scale denominator", certainty: HYPOTHESIS}
-
-  - ea: "0x24DB8"
-    key: sub_24DB8
-    name: far_cb_with_args
-    name_certainty: HYPOTHESIS
-    desc: >
-      Invokes the registered callback at cs:dword_220E0 with ES pre-set to 0x834A
-      and BP = cs:word_24BB8.  The 0x834A segment is a fixed runtime heap location.
-      The BP value is a callback argument (struct pointer or similar).
-      Called by mode_ratio_dispatch, far_cb_rect_bounds, mode_frame_step_core.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:dword_220E0", proposed_name: frame_cb_ptr, type: far_ptr, desc: "current frame callback pointer; set by mode system", certainty: HYPOTHESIS}
-      - {ea: "cs:word_24BB8", proposed_name: frame_cb_arg,  type: uint16, desc: "BP argument passed to the frame callback", certainty: HYPOTHESIS}
-
-  - ea: "0x26099"
-    key: sub_26099
-    name: clip_or_draw_dispatch        # NEW NAME
-    name_certainty: HYPOTHESIS
-    desc: >
-      If AX >= 0: calls cs:opcode_handler_5 (draw path).
-      If AX < 0 (clipped / off-screen): calls cs:dword_220C8 (clip path).
-      Called by hud_draw_chain_step, rot_segment_strip_draw, tile_strip_project_draw.
-      AX is likely a projected screen coordinate; negative = off-screen / clipped.
-    calling_convention: register
-    params:
-      - {reg: AX, name: screen_coord_or_flag, type: int16, desc: "projected screen X (or similar); negative = off-screen", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:opcode_handler_5", proposed_name: draw_handler, type: far_ptr, desc: "draw path handler", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_220C8",        proposed_name: clip_handler,  type: far_ptr, desc: "clip/skip path handler", certainty: HYPOTHESIS}
-
-  - ea: "0x22C89"
-    key: sub_22C89
-    name: farobj_vec3_accum_b_ret      # NEW NAME
-    name_certainty: HYPOTHESIS
-    desc: >
-      8B wrapper: calls fixed_vec3_accumulate_b via a CS-relative near call,
-      then returns CX in AX.  This is the far-callable version of the B accumulate step.
-      Called from ui_slot_record_fill and ui_loadout_menu_enter.
-    calling_convention: register
-    params: []
-    return: "ax = result from fixed_vec3_accumulate_b (was CX)"
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x22EE8"
-    key: sub_22EE8
-    name: abs_i16                      # RENAME from fixed_abs_div4
-    old_name: fixed_abs_div4
-    old_name_verdict: DISPROVEN
-    name_certainty: STRONG
-    desc: >
-      Computes absolute value of AX as a 16-bit integer.
-      Trick: ax*=4, abs(ax*4), ax/=4 — net effect is abs(ax) for |input| < 8192.
-      Returns the result in AX.  Called by hud_readout_render, farobj_entity_attr_setup.
-    calling_convention: register
-    params:
-      - {reg: AX, name: value, type: int16, certainty: PROVEN}
-    return: "ax = |value| (uint16)"
-    return_certainty: PROVEN
-    certainty: STRONG
-
-  - ea: "0x16F10"
-    key: sub_16F10
-    name: opl_reg_write                # RENAME from hw_reg_write_pair
-    old_name: hw_reg_write_pair
-    old_name_verdict: DISPROVEN
-    name_certainty: STRONG
-    desc: >
-      Writes an OPL (FM synthesis) register address+data pair with timing delays.
-      Loads the OPL base I/O port from [0x7A32:0xAD50].
-      Writes arg_0 (register address) to port N, delays via 6 reads, then
-      writes arg_2 (data value) to port N+1 with 18+ read delays.
-      The delay loops are required by the OPL2/OPL3 chip timing specs.
-    calling_convention: far_cdecl
-    params:
-      - {stack_offset: "bp+6", name: reg_addr, type: uint8,  certainty: STRONG, desc: "OPL register index to write"}
-      - {stack_offset: "bp+8", name: reg_data, type: uint8,  certainty: STRONG, desc: "value to write to that register"}
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "0x7A32:0xAD50", proposed_name: opl_base_port, type: uint16,
-         desc: "I/O port number for the OPL chip address register (typically 0x388)", certainty: HYPOTHESIS}
-
-  - ea: "0x24CF7"
-    key: sub_24CF7
-    name: cs_word_store
-    name_certainty: HYPOTHESIS
-    desc: >
-      Stores AL to cs:byte_24BBA and AH to cs:byte_24BBB — effectively stores AX
-      as two separate bytes at a fixed CS location.  Called by clip_flag_gated_callback,
-      hud_data_panel_draw, hud_metric_rows_draw — suggests these are HUD display parameters.
-    calling_convention: register
-    params:
-      - {reg: AX, name: packed_params, type: uint16, desc: "AL=byte_24BBA, AH=byte_24BBB; exact roles unknown", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:byte_24BBA", proposed_name: hud_param_lo, type: uint8, desc: "HUD display parameter (low byte)", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_24BBB", proposed_name: hud_param_hi, type: uint8, desc: "HUD display parameter (high byte)", certainty: HYPOTHESIS}
-
-  - ea: "0x263F6"
-    key: sub_263F6
-    name: dispatch_220d0_stub          # just the initial call; rest is table data
-    name_certainty: HYPOTHESIS
-    desc: >
-      6-byte callable stub at 0x263F6: calls cs:dword_220D0 (a far pointer) and returns.
-      Followed by alignment bytes and a named far-pointer table (the farobj render vtable
-      covering object_quad_proj_draw through flag_1f733_gate — 14 entries).
-      IDA merges the stub and the data table as one 122B 'function'; they are separate.
-      Called by mode_axis_state_select, hud_draw_chain_step, hud_terrain_strip_render.
-    calling_convention: register
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    notes: >
-      The table of 14 far pointers embedded after the RETF at 0x263FB
-      is farobj_render_vtable. Its entries cover the main per-frame object
-      processing operations (project, draw, advance, etc.).
-
-  - ea: "0x128A1"
-    key: sub_128A1
-    name: map_tile_pos_get             # RENAME from state_farptr_get (WRONG)
-    old_name: state_farptr_get
-    old_name_verdict: DISPROVEN
-    name_certainty: HYPOTHESIS
-    desc: >
-      Returns the current map tile position: AX = map_pos_y, BX = map_pos_x.
-      These are named globals (CS-relative) in seg005 overlay.
-      Called by tile_object_interpreter, farobj_tile_key_cache, r12 state-record entries.
-      Original name 'state_farptr_get' was completely wrong — it doesn't return a far pointer.
-    calling_convention: register
-    params: []
-    return: "ax = map_pos_y (tile Y), bx = map_pos_x (tile X)"
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:map_pos_y", proposed_name: map_pos_y, type: int16, desc: "current map tile Y position", certainty: HYPOTHESIS}
-      - {ea: "cs:map_pos_x", proposed_name: map_pos_x, type: int16, desc: "current map tile X position", certainty: HYPOTHESIS}
-
-
-  # --- farobj dispatch system (S4 Level-1 analysis, 2026-11-12) ---
-
-  - ea: "0x2647E"
-    key: sub_2647E
-    name: farobj_type_field_get
-    name_certainty: STRONG
-    desc: >
-      Decodes the FarObj.object_kind index to a subtype code 0/1/2/3.
-      Looks up a far pointer in the type descriptor table at 0x7B0E:0x3052
-      (indexed by object_kind*4) to get a FarObjTypeDesc record.
-      If FarObjTypeDesc.type_category > 1: returns FarObjTypeDesc.subtype (byte).
-      Otherwise returns 0 (base type).
-      Called immediately after farptr_table_get to classify the object variant.
-    calling_convention: register
-    params:
-      - {reg: AX, name: object_kind, type: uint16, desc: "FarObj.object_kind index", certainty: STRONG}
-    return: "al = subtype 0..3 (0=base, 1/2/3=variant)"
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "0x7B0E:0x3052", proposed_name: farobj_typedesc_table, type: "far_ptr[N]",
-         desc: "table of far pointers to FarObjTypeDesc records, indexed by object_kind*4",
-         certainty: STRONG}
-
-  - ea: "0x26470"
-    key: sub_26470
-    name: far_obj_field_call       # already named, verify
-    name_certainty: HYPOTHESIS
-    desc: >
-      Calls a type-based dispatch: gets farobj at slot AX, reads object_kind [+0x22],
-      decodes subtype via farobj_type_field_get, then calls farobj_type_field_get result.
-      14B — the simplest farobj method dispatch pattern.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-    return: "whatever farobj_type_field_get returns in AX"
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x26690"
-    key: sub_26690
-    name: farobj_flag_set_scan_bit  # NEW NAME — sets bit 0x100 in state_flags
-    name_certainty: HYPOTHESIS
-    desc: >
-      Sets bit 8 (0x100) in FarObj.state_flags [+0x24] for slot AX.
-      Called with... 0 static callers? (orphan). Likely sets a "scan-requested" flag.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-    return: void
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-
-  - ea: "0x2E8BE"
-    key: sub_2E8BE
-    name: farptr_table_offset_apply
-    name_certainty: STRONG
-    desc: >
-      Applies orientation deltas to the 3D angle fields of a farobj slot.
-      Gets farobj at slot AX, then:
-        heading [+0x0C] += BX (masked to 0x3FFF via fixed_angle_mask_3fff)
-        pitch   [+0x0E] += CX (fold-masked via fixed_angle_fold_e000)
-        roll    [+0x10] += DX (masked)
-      Used by farobj_entity_accum_sweep for per-frame motion accumulation.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-      - {reg: BX, name: delta_heading, type: int16, certainty: STRONG}
-      - {reg: CX, name: delta_pitch,   type: int16, certainty: STRONG}
-      - {reg: DX, name: delta_roll,    type: int16, certainty: STRONG}
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x2E896"
-    key: sub_2E896
-    name: farptr_table_accum_fields
-    name_certainty: STRONG
-    desc: >
-      Accumulates (adds) signed 16-bit values into the 3D int32 position of a farobj slot.
-      Gets farobj at slot AX (called without push/pop CS wrapper — near-ish pattern).
-      Sign-extends BX/CX/DX to 32 bits via CWD and adds:
-        world_x += BX (sign-extended), world_y += CX, world_z += DX
-      Critical: each add uses ADC for carry propagation (true int32 add).
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-      - {reg: BX, name: delta_x,    type: int16, certainty: STRONG}
-      - {reg: CX, name: delta_y,    type: int16, certainty: STRONG}
-      - {reg: DX, name: delta_z,    type: int16, certainty: STRONG}
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x2E8F4"
-    key: sub_2E8F4
-    name: farptr_table_field20_get
-    name_certainty: STRONG
-    desc: >
-      Returns FarObj.cmd_field [+0x20] for slot AX in BX.
-      14B leaf: gets farobj, adds 0x20 to DI, loads word to BX.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-    return: "bx = FarObj.cmd_field (uint16 at [+0x20])"
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x2E902"
-    key: sub_2E902
-    name: farptr_table_field_store
-    name_certainty: STRONG
-    desc: >
-      Writes BX to FarObj.cmd_field [+0x20] for slot AX.
-      14B leaf: gets farobj, stores BX at [DI+0x20].
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-      - {reg: BX, name: value,      type: uint16, certainty: STRONG}
-    return: void
-    return_certainty: PROVEN
-    certainty: STRONG
-
-  - ea: "0x3415F"
-    key: sub_3415F
-    name: farobj_scan_74_gate_a
-    name_certainty: HYPOTHESIS
-    desc: >
-      Scans 16-entry active-object list at 0x54AF:0x1734. For each entry where
-      FarObj.active [+0x74] bit 0 is set AND FarObj.state_flags [+0x24] >= 0x3C (60):
-        gets the linked main-table farobj via FarObj.self_slot_idx [+0x7A]
-        sets bit 0x8000 in that farobj's state_flags [+0x24].
-      Called by game_frame_pipeline_step — sets visibility/scan gate for all active objects.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-
-  - ea: "0x34193"
-    key: sub_34193
-    name: farobj_scan_74_clear_b
-    name_certainty: HYPOTHESIS
-    desc: >
-      Scans 16-entry active-object list. For each active entry (FarObj.active bit 0):
-        gets linked farobj, clears bit 0x8000 in its state_flags [+0x24].
-      Companion to farobj_scan_74_gate_a — resets the scan gate bit each frame.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-
-  - ea: "0x341C0"
-    key: sub_341C0
-    name: farobj_scan_74_timer_c
-    name_certainty: HYPOTHESIS
-    desc: >
-      Scans 16-entry active-object list. For each active entry where timer_active [+0xD1] != 0:
-        increments and masks frame_timer [+0x1E] mod 8
-        packs the phase into state_flags [+0x24] via mask 0xF1FF
-      (If not timer_active: just clears the timer phase bits in state_flags.)
-      Drives 8-frame animation sequencing for entity objects.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x24980"
-    key: sub_24980
-    name: fixed_angle_mask_3fff
-    name_certainty: STRONG
-    desc: "AND ax, 0x3FFF — masks to 14-bit unsigned angle range [0..16383]."
-    calling_convention: near_cdecl
-    params: [{reg: AX, name: angle, type: uint16, certainty: PROVEN}]
-    return: "ax = angle & 0x3FFF"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x24988"
-    key: sub_24988
-    name: fixed_angle_fold_e000
-    name_certainty: STRONG
-    desc: >
-      Folds a 14-bit value into the signed range approx [-8192..8191] using the pattern:
-      and ax, 0x3FFF; add ax, 0xE000; xor ax, 0xE000.
-      Net effect: maps 14-bit unsigned to signed (top bit of 14 bits = sign bit).
-      Used for pitch angle normalization.
-    calling_convention: near_cdecl
-    params: [{reg: AX, name: raw_angle, type: uint16, certainty: PROVEN}]
-    return: "ax = signed 14-bit angle"
-    return_certainty: PROVEN
-    certainty: STRONG
-
-  - ea: "0x49A5B"
-    key: sub_49A5B
-    name: farobj_kind_slot_reset     # NEW NAME
-    name_certainty: HYPOTHESIS
-    desc: >
-      Writes BX to FarObj.object_kind [+0x22] and clears bits 6+7 of FarObj.slot_flags [+0x26].
-      17B. Resets the kind index and clears extended-slot flags.
-      Called by obj_range_slot_activate.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index,  type: uint16, certainty: STRONG}
-      - {reg: BX, name: object_kind, type: uint16, certainty: STRONG}
-    return: void
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-
-  # --- Global table summary ---
-  # Key globals discovered from farobj system analysis:
-  #
-  # R05_400C:0x34  farobj_main_table   far_ptr[N]  main farobj slot table (farptr_table_get indexed)
-  # 0x54AF:0x1734  farobj_scan_list    far_ptr[16] active-object scan list (16 entries, 4B each)
-  # 0x54AF:0x4ED   entity_accum_table  EntityAccumEntry[40]  motion accumulation entries
-  # 0x7B0E:0x3052  farobj_typedesc_table  far_ptr[N]  type descriptor table (FarObjTypeDesc records)
-
-  # --- Level-1 analysis (S4 2026-11-12) ---
-
-  - ea: "0x1016C"
-    key: sub_1016C
-    name: mouse_buttons_get
-    name_certainty: STRONG
-    desc: >
-      Returns the current mouse/joystick button state as a 3-bit mask in AX.
-      If cs:byte_10000 ≠ 0: calls INT 33h (mouse driver) AX=3 (get position+buttons),
-      returns BX & 7 (button bits 0-2). Otherwise falls back to joystick via
-      input_status_pack: returns ~(input_status_pack()) & 0xF0 >> 4 (inverted high nibble).
-    calling_convention: far_cdecl
-    params: []
-    return: "ax = button mask (bits 0-2 for left/right/middle buttons; 0=none pressed)"
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x24984"
-    key: sub_24984
-    name: stub_to_24988
-    name_certainty: PROVEN
-    desc: "4B far stub — calls fixed_angle_fold_e000 (0x24988) and returns."
-    calling_convention: far_cdecl
-    params: [{reg: AX, name: raw_angle, type: uint16, certainty: PROVEN}]
-    return: "ax = signed 14-bit angle"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x2497C"
-    key: sub_2497C
-    name: stub_to_24980
-    name_certainty: PROVEN
-    desc: "4B far stub — calls fixed_angle_mask_3fff (0x24980) and returns."
-    calling_convention: far_cdecl
-    params: [{reg: AX, name: angle, type: uint16, certainty: PROVEN}]
-    return: "ax = angle & 0x3FFF"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x260AF"
-    key: sub_260AF
-    name: stub_to_trig_lookup     # was stub_to_249d8 — NEW NAME
-    name_certainty: HYPOTHESIS
-    desc: >
-      4B far stub — calls trig_table_lookup (near, at 0x249D8) and returns.
-      Used as a far-callable wrapper for the trigonometry table lookup.
-      192K dynamic calls; callers include rot_segment_strip_draw, tile_strip_project_draw.
-    calling_convention: far_cdecl
-    params: [{reg: BX, name: table_offset, type: uint16, certainty: HYPOTHESIS,
-              desc: "offset into the trig table at 0x7B0E:0x3868"}]
-    return: "ax = trig value; cx = secondary trig value (from trig_table_lookup)"
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x248CD"
-    key: sub_248CD
-    name: stub_to_248d1
-    name_certainty: PROVEN
-    desc: "4B far stub — calls fixed_vec3_transform_es (0x248D1) and returns."
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x23D2B"
-    key: sub_23D2B
-    name: fixed_matrix_mul
-    name_certainty: STRONG
-    desc: >
-      Fixed-point 2×2 matrix multiply using trig table values.
-      Loads DS=0x7B0E (trig/matrix segment). Looks up two trig values at 0x3868/0x386C,
-      then performs 4 fixed-point multiplications with 16.16 rounding:
-        (add ax, 0x4000; adc dx, 0; shl ax, 1; rcl dx, 1) = round-and-normalize.
-      Input matrix elements from ds:word_7E948/7E94A, ds:word_7E94C/7E94E.
-      Returns: AX = result (hi word of 16.16 product sum), BX/CX/DI = intermediates.
-      Part of the 3D projection pipeline; called by view_proj_matmul_3896 et al.
-    calling_convention: register
-    params:
-      - {reg: DI, name: scale_factor, type: int16, desc: "scale applied to all 4 multiplications", certainty: HYPOTHESIS}
-    return: "ax = final hi-word result"
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "0x7B0E:0x3868", proposed_name: trig_sin_table, type: "int16[N]",
-         desc: "sine lookup table (trig_table_lookup reads from here)", certainty: HYPOTHESIS}
-      - {ea: "0x7B0E:0x7E948", proposed_name: view_matrix, type: "int16[4]",
-         desc: "2×2 view/rotation matrix coefficients", certainty: HYPOTHESIS}
-
-  - ea: "0x24992"
-    key: sub_24992
-    name: angle_wrap
-    name_certainty: HYPOTHESIS
-    desc: >
-      Wraps a 3-component angle structure at DS:SI when the pitch component is out of range.
-      If [SI+2] is between 0xF000 and 0x1000 (stable range): returns unchanged.
-      Otherwise: wraps [SI+2] via negate+0x2000 step; also wraps [SI+0] and [SI+4]
-      (heading and roll) with fixed_angle_mask_3fff(+0x2000).
-    calling_convention: register
-    params:
-      - {reg: SI, name: angle_struct_ptr, type: "uint16*", desc: "pointer to 3-word angle struct: [0]=heading, [2]=pitch, [4]=roll", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x25F64"
-    key: sub_25F64
-    name: view_limits_wrap
-    name_certainty: HYPOTHESIS
-    desc: >
-      Two-entry dispatch for view/frustum limits.
-      Entry 1 (0x25F64): calls cs:dword_220E4 (a view-limits callback pointer) and returns.
-      Entry 2 (0x25F6A): frame-based, loads DS:SI from stack [bp+6], calls view_limits_load.
-      Part of the visible-bounds / window-clipping pipeline.
-      Reveals dword_220E4 as another opcode handler pointer (view limits mode).
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:dword_220E4", proposed_name: view_limits_cb_ptr, type: far_ptr,
-         desc: "view/frustum limits callback (per-mode); another entry in the 0x220xx handler family",
-         certainty: HYPOTHESIS}
-
-  - ea: "0x22996"
-    key: sub_22996
-    name: flag22220_clear
-    name_certainty: HYPOTHESIS
-    desc: >
-      Two entries:
-      Entry 1 (0x22996): resets tick_counter (cs:word_22220) to 0.
-      Entry 2 (0x2299E): waits until tick_counter reaches BX (via tick_wait_until_22220).
-      Used at game init, mode transitions, and synchronization points.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: PROVEN
-    certainty: HYPOTHESIS
-
-  - ea: "0x2257B"
-    key: sub_2257B
-    name: op_dispatch
-    name_certainty: STRONG
-    desc: >
-      17-slot DOS/memory operation shim. Clears lower 7 bits of cs:byte_22248 (status byte),
-      dispatches via cs:op_dispatch_table[BX] (a 17-entry function pointer table),
-      checks cs:byte_2224A for error flag (calls error_display_terminate if set),
-      and returns cs:byte_22248 & 0x7F as status.
-      BX values observed: 0=free?, 2=alloc?, 6=alloc_seg, 8=close?, 0xA=resize, 0xE=write, 0x10=read, 0x12=seek.
-      Used by entity_slot_create, isldat_state_load, param_table_init, etc.
-      Very likely wraps DOS INT 21h memory/file operations (allocate segment = AH=0x48, etc.).
-    calling_convention: register
-    params:
-      - {reg: AX, name: handle_or_seg, type: uint16, certainty: HYPOTHESIS}
-      - {reg: BX, name: op_code, type: uint16, desc: "operation index into op_dispatch_table", certainty: STRONG}
-      - {reg: CX, name: param_cx, type: uint16, certainty: HYPOTHESIS}
-      - {reg: DX, name: param_dx, type: uint16, certainty: HYPOTHESIS}
-    return: "ax = result (segment handle, byte count, etc. — op-dependent)"
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "cs:op_dispatch_table", proposed_name: op_dispatch_table, type: "near_ptr[17]",
-         desc: "17-entry table of near function pointers for DOS/memory operations", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_22248", proposed_name: op_status, type: flags8, desc: "operation status/mode byte", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_2224A", proposed_name: op_error_flag, type: uint8, desc: "set on error; triggers error_display_terminate", certainty: HYPOTHESIS}
-
-  - ea: "0x231F0"
-    key: sub_231F0
-    name: fn_table_dispatch
-    name_certainty: STRONG
-    desc: >
-      View/projection mode dispatcher. Saves DS:DI to cs:word_22DBC/22DBA.
-      Dispatches via cs:fn_table_dispatch_table[BX] (15 targets sub_23235..sub_235BB
-      — one per projection/view mode). After dispatch: rebuilds angle matrix from
-      ES:0x7B0E:0x3884, copies matrix constants. Returns:
-        BX = es:word_7E968, CX = es:word_7E966, DX = es:word_7E94C+0x18.
-      These are projection matrix values used by the 3D rendering pipeline.
-      Called by entity_setup_step, game_frame_pipeline_step, terrain_state_reinit.
-    calling_convention: register
-    params:
-      - {reg: BX, name: view_mode_index, type: uint16, desc: "current view/projection mode index", certainty: HYPOTHESIS}
-    return: "BX/CX/DX = projection matrix output values"
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "cs:fn_table_dispatch_table", proposed_name: view_mode_dispatch_table, type: "near_ptr[15]",
-         desc: "15-entry table of view/projection mode functions; index in cs:word_22D28", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22D28", proposed_name: view_mode_index, type: uint16, desc: "current view mode index (0-14)", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22DBC", proposed_name: saved_ds, type: uint16, desc: "DS saved during fn_table_dispatch", certainty: HYPOTHESIS}
-      - {ea: "cs:word_22DBA", proposed_name: saved_di, type: uint16, desc: "DI saved during fn_table_dispatch", certainty: HYPOTHESIS}
-      - {ea: "0x7B0E:0x7E948", proposed_name: view_matrix, type: "int16[4]", desc: "2×2 view rotation matrix", certainty: HYPOTHESIS}
-      - {ea: "0x7B0E:0x7E966", proposed_name: proj_z_scale, type: int16, desc: "projection Z scale factor", certainty: HYPOTHESIS}
-      - {ea: "0x7B0E:0x7E968", proposed_name: proj_z_offset, type: int16, desc: "projection Z offset", certainty: HYPOTHESIS}
-
-  # --- Level-2/3 analysis (S4 2026-11-12) ---
-
-  - ea: "0x225F4"
-    key: sub_225F4
-    name: dos_mem_alloc
-    name_certainty: PROVEN
-    desc: >
-      DOS INT 21h AH=48h — allocate memory paragraph block.
-      Input: AX = size (probably in paragraphs). Returns AX = segment.
-      op_dispatch entry BX=0 (byte offset 0 in table at 0x22060).
-    calling_convention: register
-    params: [{reg: AX, name: size_paras, type: uint16, certainty: HYPOTHESIS}]
-    return: "ax = allocated segment paragraph (or 0xFFFF on fail)"
-    return_certainty: STRONG
-    certainty: PROVEN
-
-  - ea: "0x22626"
-    key: sub_22626
-    name: dos_mem_free
-    name_certainty: PROVEN
-    desc: >
-      DOS INT 21h AH=49h — free memory segment.
-      Input: AX = segment to free. op_dispatch entry BX=2.
-    calling_convention: register
-    params: [{reg: AX, name: segment, type: uint16, certainty: PROVEN}]
-    return: void
-    return_certainty: STRONG
-    certainty: PROVEN
-
-  - ea: "0x22699"
-    key: sub_22699
-    name: file_create
-    name_certainty: PROVEN
-    desc: "DOS INT 21h AH=3Ch — create file. op_dispatch BX=4."
-    calling_convention: register
-    params:
-      - {reg: AX, name: attribs, type: uint16, certainty: HYPOTHESIS}
-      - {reg: DX, name: filename_off, type: uint16, desc: "near offset of filename string in DS", certainty: STRONG}
-    return: "ax = file handle or error code"
-    return_certainty: STRONG
-    certainty: PROVEN
-
-  - ea: "0x226B6"
-    key: sub_226B6
-    name: file_open
-    name_certainty: PROVEN
-    desc: "DOS INT 21h AH=3Dh — open file. op_dispatch BX=6. AX=access_mode (0=read,1=write,2=rdwr)."
-    calling_convention: register
-    params:
-      - {reg: AX, name: access_mode, type: uint16, desc: "0=read, 1=write, 2=rdwr", certainty: STRONG}
-      - {reg: DX, name: filename_off, type: uint16, certainty: STRONG}
-    return: "ax = file handle"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x226DF"
-    key: sub_226DF
-    name: file_close
-    name_certainty: PROVEN
-    desc: "DOS INT 21h AH=3Eh — close file handle. op_dispatch BX=8."
-    calling_convention: register
-    params: [{reg: AX, name: handle, type: uint16, certainty: PROVEN}]
-    return: void
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x226E8"
-    key: sub_226E8
-    name: file_read
-    name_certainty: PROVEN
-    desc: "DOS INT 21h AH=3Fh — read from file. op_dispatch BX=0xA. Sets timer_gate_flag before INT."
-    calling_convention: register
-    params:
-      - {reg: AX, name: handle, type: uint16, certainty: PROVEN}
-      - {reg: CX, name: bytes,  type: uint16, certainty: PROVEN}
-      - {reg: DX, name: buffer, type: uint16, desc: "near offset of buffer", certainty: PROVEN}
-    return: "ax = bytes read"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x22712"
-    key: sub_22712
-    name: file_write
-    name_certainty: PROVEN
-    desc: "DOS INT 21h AH=40h — write to file. op_dispatch BX=0xC."
-    calling_convention: register
-    params:
-      - {reg: AX, name: handle, type: uint16, certainty: PROVEN}
-      - {reg: CX, name: bytes,  type: uint16, certainty: PROVEN}
-      - {reg: DX, name: buffer, type: uint16, certainty: PROVEN}
-    return: "ax = bytes written"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x2273C"
-    key: sub_2273C
-    name: file_lseek
-    name_certainty: PROVEN
-    desc: "DOS INT 21h AH=42h — seek file. op_dispatch BX=0xE. CH=seek_method."
-    calling_convention: register
-    params:
-      - {reg: AX, name: handle, type: uint16, certainty: PROVEN}
-      - {reg: CH, name: method, type: uint8, desc: "0=SEEK_SET, 1=SEEK_CUR, 2=SEEK_END", certainty: PROVEN}
-      - {reg: CX, name: offset_hi, type: uint16, desc: "high word of seek offset", certainty: PROVEN}
-      - {reg: DX, name: offset_lo, type: uint16, desc: "low word of seek offset", certainty: PROVEN}
-    return: "dx:ax = new file position"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x227BF"
-    key: sub_227BF
-    name: mem_copy_fwd
-    name_certainty: PROVEN
-    desc: "Copy CX bytes from DS:SI to ES:DI (REP MOVSW+MOVSB). op_dispatch BX=0x16."
-    calling_convention: register
-    params:
-      - {reg: CX, name: count, type: uint16, certainty: PROVEN}
-      - {reg: SI, name: src,   type: uint16, desc: "source offset in DS", certainty: PROVEN}
-      - {reg: DI, name: dst,   type: uint16, desc: "destination offset in ES", certainty: PROVEN}
-    return: void
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x227C8"
-    key: sub_227C8
-    name: mem_store_fwd
-    name_certainty: PROVEN
-    desc: "Fill CX bytes at ES:DI with AL (REP STOSW+STOSB). op_dispatch BX=0x18."
-    calling_convention: register
-    params:
-      - {reg: AL, name: fill_byte, type: uint8, certainty: PROVEN}
-      - {reg: CX, name: count, type: uint16, certainty: PROVEN}
-      - {reg: DI, name: dst,   type: uint16, certainty: PROVEN}
-    return: void
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x23C9B"
-    key: sub_23C9B
-    name: angle_xy_far
-    name_certainty: STRONG
-    desc: >
-      Computes the 2D bearing angle (atan2) from ES:DI (source position, int32 XY)
-      to DS:SI (target position, int32 XY). Uses angle_delta_quadrant (quadrant from
-      sign of delta-X and delta-Y), then fixed_ratio_blend (arctangent via ratio).
-      Adjusts by ±0x2000 or ±0x4000 based on quadrant.
-      Returns AX = bearing in 14-bit angle system (0=north, 0x1000=east, 0x2000=south).
-      ES:DI and DS:SI have 4-word (8-byte) XY int32 fields (like FarObj world_x/y).
-    calling_convention: register
-    params:
-      - {reg: "ES:DI", name: src_pos, type: "FarObj*",
-         desc: "source position (fields [+0,2]=X int32, [+4,6]=Y int32)", certainty: STRONG}
-      - {reg: "DS:SI", name: dst_pos, type: "FarObj*",
-         desc: "target position (same layout)", certainty: STRONG}
-    return: "ax = bearing angle 14-bit (0=north CW)"
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x23B8A"
-    key: sub_23B8A
-    name: angle_xy_near
-    name_certainty: STRONG
-    desc: >
-      Near version of angle_xy_far: computes bearing from DS:DI (not ES:DI) to DS:SI.
-      Otherwise identical algorithm. Used when both positions are in the same segment.
-    calling_convention: register
-    params:
-      - {reg: DI, name: src_pos_off, type: uint16, desc: "source position offset in DS", certainty: STRONG}
-      - {reg: SI, name: dst_pos_off, type: uint16, desc: "target position offset in DS", certainty: STRONG}
-    return: "ax = bearing angle 14-bit"
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x27EE6"
-    key: sub_27EE6
-    name: record_queue_push
-    name_certainty: HYPOTHESIS
-    desc: >
-      Pushes a visual record into the render queue at CS:0x6360.
-      AL = state flag stored to cs:state_byte_1f72a; BX = type code; DS:SI = source record.
-      Copies initial words from DS:SI, builds line table (line_table_build_2796e),
-      optionally dispatches left/right bounds (uibounds_left_right_dispatch).
-      The render queue cursor is at cs:record_queue_cur (initially 0x5D1E).
-      Used by point_bits_record_push and record_queue_push_guard.
-    calling_convention: register
-    params:
-      - {reg: AL, name: state_flag, type: uint8, certainty: HYPOTHESIS}
-      - {reg: BX, name: record_type, type: uint16, certainty: HYPOTHESIS}
-      - {reg: SI, name: record_ptr, type: uint16, desc: "source record offset in DS", certainty: HYPOTHESIS}
-    return: "CF set on failure"
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:record_queue_cur", proposed_name: record_queue_cur, type: uint16,
-         desc: "current write offset in render record queue at CS:0x5D1E..0x603E", certainty: HYPOTHESIS}
-
-  - ea: "0x276C1"
-    key: sub_276C1
-    name: farptr_table_invoke
-    name_certainty: HYPOTHESIS
-    desc: >
-      Loads a far pointer from the invoke table at CS:0x7DF2+BX×4 (two separate words)
-      and invokes it via farptr_7b0e_43ba_const, then loads an overlay via sub_2BFC3.
-      DS = cs:word_27470 (saved DS). Used by param_table_init, far_op_execute.
-      The invoke table at CS:0x7DF2 may map operation IDs to far callback pointers.
-    calling_convention: register
-    params:
-      - {reg: BX, name: op_id, type: uint16, desc: "operation index (×4 for table offset)", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  # --- Level 4-7 analysis (S4 2026-11-12) ---
-
-  - ea: "0x22598"
-    key: sub_22598
-    name: op_dispatch_far_entry
-    name_certainty: PROVEN
-    desc: >
-      Far-callable version of op_dispatch with ALL parameters on stack + explicit DS.
-      Takes BX(op), AX(handle), CX(count), DX(offset), DS(segment) from stack args.
-      54 static callers — the most-used op_dispatch wrapper; used heavily by
-      kb_record_commit and kb_record_slots_open (keyboard state file I/O).
-    calling_convention: far_cdecl
-    params:
-      - {stack_offset: "bp+6",  name: op_code, type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+8",  name: handle,  type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+0xA", name: count,  type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+0xC", name: offset, type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+0xE", name: seg,    type: uint16, desc: "DS segment for buffer/filename", certainty: PROVEN}
-    return: "ax = result from op_dispatch (handle, bytes read, etc.)"
-    return_certainty: PROVEN
-    certainty: PROVEN
-
-  - ea: "0x225B6"
-    key: sub_225B6
-    name: op_dispatch_far_wide
-    name_certainty: PROVEN
-    desc: >
-      Alternate far-callable op_dispatch wrapper with different arg order and
-      CH=BX_lo override (packs low byte of BX into CX high for file_lseek seek-method).
-      Used by mode_slot_index_build for double-seek operations (SEEK_SET offsets).
-    calling_convention: far_cdecl
-    params:
-      - {stack_offset: "bp+6",  name: op_code,    type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+8",  name: handle_ax,  type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+0xA", name: param_dx,  type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+0xC", name: param_cx,  type: uint16, certainty: PROVEN}
-      - {stack_offset: "bp+0xE", name: seek_method, type: uint8,
-         desc: "BX low byte → CH (seek method for file_lseek)", certainty: STRONG}
-    return: "ax = op result"
-    return_certainty: STRONG
-    certainty: PROVEN
-
-  - ea: "0x27703"
-    key: sub_27703
-    name: far_op_execute
-    name_certainty: HYPOTHESIS
-    desc: >
-      High-level data file executor. Opens a data file (op BX=6, mode 0=read),
-      reads 0x300 (768) bytes of data via op BX=0xA, dispatches to registered
-      callbacks (dispatch_22138_stub, dispatch_22140_stub, dispatch_220F0_stub,
-      far_cb_0, far_cb_1). Files are identified by CS-relative filename pointers
-      stored at cs:word_276FF/27701. Flag cs:byte_25484 controls dispatch path.
-    calling_convention: register
-    params:
-      - {reg: AL, name: flags,       type: uint8,  desc: "controls dispatch path (bit 3 = skip dispatch_22138)", certainty: HYPOTHESIS}
-      - {reg: DX, name: filename_seg, type: uint16, desc: "segment of filename string", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:word_27476", proposed_name: file_handle, type: uint16, desc: "current open file handle (set by far_op_execute open)", certainty: STRONG}
-      - {ea: "cs:byte_25484", proposed_name: op_flags, type: flags8, desc: "controls far_op_execute dispatch (bit 3 = bypass dispatch)", certainty: HYPOTHESIS}
-
-  - ea: "0x274E6"
-    key: sub_274E6
-    name: buffer_callback_api_block
-    name_certainty: HYPOTHESIS
-    desc: >
-      Multi-entry buffer/streaming API object. Contains 6+ entry points operating
-      on a shared set of CS globals forming a streaming buffer state:
-        word_2747C = callback/selector
-        word_27476 = file handle (from far_op_execute)
-        word_2748A/27488 = data buffer far pointer
-        word_27478 = another parameter
-        word_2747A = budget (bytes remaining to read)
-        word_27480/27482 = copy source pointer
-      Used for streaming large data files in budget-limited chunks.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "cs:word_2747A", proposed_name: stream_budget, type: uint16,
-         desc: "bytes remaining in current streaming budget; decremented by buffer_budget_entry_block", certainty: STRONG}
-      - {ea: "cs:word_27480", proposed_name: stream_src_offset, type: uint16, certainty: HYPOTHESIS}
-      - {ea: "cs:word_27482", proposed_name: stream_src_seg,    type: uint16, certainty: HYPOTHESIS}
-
-  - ea: "0x275D8"
-    key: sub_275D8
-    name: buffer_budget_entry_block
-    name_certainty: HYPOTHESIS
-    desc: >
-      Budgeted file read: reads up to cs:word_2747A (stream_budget) bytes from the
-      current file handle (cs:word_27476) via op_dispatch(BX=0xA=file_read).
-      Clamps count to budget, decrements budget. Two entry points:
-      entry 1: reads from file; entry 2: copies from DS:SI to ES:DI instead.
-    calling_convention: far_cdecl
-    params:
-      - {stack_offset: "bp+6", name: count_ptr, type: "far_ptr uint16", certainty: STRONG}
-      - {stack_offset: "bp+0xA", name: src_ptr,  type: "far_ptr uint8",  certainty: STRONG}
-    return: "ax = bytes actually read/copied (clamped to budget)"
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-
-  - ea: "0x1509E"
-    key: sub_1509E
-    name: entity_state_load
-    name_certainty: HYPOTHESIS
-    desc: >
-      Per-frame terrain/entity state computation. Called by game_frame_pipeline_step
-      each frame. NOT a disk file loader — it computes entity position state from
-      terrain grid data already in memory.
-      Copies 12 bytes of entity state to buffer at ES:0x71C1:0x0C57,
-      calls terrain_pos_grid_build to build the terrain position grid,
-      then computes matrix transforms, terrain attribute scans, and position step chains.
-      Input: DS:SI = entity state structure (FarObj-like), DS:BX = heading record.
-    calling_convention: far_cdecl
-    params:
-      - {reg: SI, name: entity_state, type: uint16, desc: "offset of entity state structure in DS", certainty: HYPOTHESIS}
-      - {reg: BX, name: heading_rec,  type: uint16, desc: "offset of heading record in DS", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x1B8EE"
-    key: sub_1B8EE
-    name: mode_slot_index_build
-    name_certainty: HYPOTHESIS
-    desc: >
-      Builds a 128-entry slot index table at ES:0x7894:0xDDA (all initialized to 0xFFFF).
-      Opens a data file via op_dispatch_far_entry (BX=6), seeks, reads slot index data.
-      Returns 1 on success. Used by mode_slot_masks for game mode/state slot management.
-      The 0x7894 segment contains game state/mode data.
-    calling_convention: far_cdecl
-    params: []
-    return: "ax = 1 on success, 0 on failure (file not found)"
-    return_certainty: STRONG
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "0x7894:0xDDA", proposed_name: slot_index_table, type: "uint16[128]",
-         desc: "game mode slot index table; 0xFFFF = empty slot", certainty: HYPOTHESIS}
-
-  - ea: "0x276E9"
-    key: sub_276E9
-    name: far_op_execute_farptr
-    name_certainty: HYPOTHESIS
-    desc: >
-      Far wrapper for far_op_execute that takes the filename as a far pointer from stack.
-      Used by ui_loadout_menu_enter to load loadout/aircraft data files, and by
-      r27_table_copy_far_entry for overlay file operations.
-    calling_convention: far_cdecl
-    params:
-      - {stack_offset: "bp+6",  name: flags,     type: uint8,  certainty: HYPOTHESIS}
-      - {stack_offset: "bp+8",  name: filename_ptr, type: far_ptr, certainty: STRONG}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  # --- Top-level game systems (S4 2026-11-12) ---
-
-  - ea: "0x31319"
-    key: sub_31319
-    name: main_frame_update_loop
-    name_certainty: STRONG
-    desc: >
-      The main game loop (257B, R05_1F64). Runs until byte_54F0C == 0 or game quit.
-      Dispatches based on word_54D2B (game mode indicator):
-        <= 0x0E or == 0x1A: SIMPLE PATH — keyboard-only processing (menus/setup)
-        word_54EFA == 0x0D: EXIT (quit condition)
-        else: FULL PATH — complete per-frame simulation update
-      FULL PATH sequence (called each frame in-flight):
-        farobj_slot_update_driver, range_cb_dispatch_loop, hud_state_rowtable_step,
-        hud_panel_transform_step, hud_readout_timer_render, farobj_move_accumulate_step,
-        aircraft_slot_cycle_step, mode_strip_frame_step, tile_object_interpreter,
-        farobj_tile_key_cache, farobj_slot_step_spawn, farobj_sweep_all,
-        game_frame_pipeline_step, viewport_rect_state_store, tick_rate_compute,
-        flag22220_clear, view_terrain_frame_step, hud_data_panel_draw,
-        vga_dac_palette_upload, flag_bits_dispatch (second pass).
-    calling_convention: near_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "word_54D2B", proposed_name: game_mode, type: uint16,
-         desc: "game mode indicator: <=14 or ==26 = menu, else = in-flight simulation", certainty: STRONG}
-      - {ea: "word_54EFA", proposed_name: quit_flag, type: uint16,
-         desc: "13 (0x0D) = exit game loop", certainty: HYPOTHESIS}
-      - {ea: "byte_54F0C", proposed_name: loop_continue_flag, type: uint8,
-         desc: "nonzero = continue main loop iteration", certainty: HYPOTHESIS}
-
-  - ea: "0x2FD42"
-    key: sub_2FD42
-    name: game_frame_pipeline_step
-    name_certainty: STRONG
-    desc: >
-      Main per-frame simulation pipeline (387B, R05_1F64, Level-18). Called by
-      main_frame_update_loop once per frame during in-flight simulation.
-      Sequence: fn_table_dispatch, near_fnptr_invoke, farobj_pos_wrap_update,
-      pos_clamp_40, entity_update_batch, view_pos_cache_update, terrain_vm_flag_gate,
-      flag_gate_zero_abc, [conditional] viewmode3_vector_project, entity_state_load,
-      terrain_frame_update_driver, viewlist_project_flagged, farobj_scan_74_timer_c,
-      farobj_scan_74_gate_a, farobj_sort_and_step.
-      DS:4EAh controls which rendering path runs (view mode selector byte).
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "ds:4EAh", proposed_name: view_mode_flags, type: flags8,
-         desc: "controls per-frame rendering path: bit 0=viewmode3, bit 1=skip terrain_frame_update", certainty: HYPOTHESIS}
-
-  - ea: "0x20BDB"
-    key: sub_20BDB
-    name: view_projection
-    name_certainty: STRONG
-    desc: >
-      Core 3D projection function (1076B, seg020, Level-9). THE most-called non-trivial
-      function: 282K dynamic calls per session.
-      Takes ES:BX = view origin position (8B int32 XY), DI = target FarObj to project.
-      Computes delta from target to view origin in XY, scales by 16 (4× shl),
-      divides by FarObj.slot_id [DI+20h] (SI register) to normalize,
-      then applies quadrant adjustments via angle math. FarObj.object_kind [DI+22h] is
-      used as an LOD accumulator (incremented by viewobj_project_advance for each step).
-      Returns projected screen coordinates (AX = screen X or depth).
-    calling_convention: register
-    params:
-      - {reg: "ES:BX", name: view_origin, type: "FarObj pos", desc: "viewer/camera position", certainty: STRONG}
-      - {reg: DI,      name: target_obj,  type: uint16, desc: "FarObj offset to project", certainty: STRONG}
-    return: "ax = projected value (screen coordinate or depth)"
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-
-  - ea: "0x1AB34"
-    key: sub_1AB34
-    name: event_state_machine
-    name_certainty: HYPOTHESIS
-    desc: >
-      Main event state machine (2266B, seg011, Level-10). 17-case switch on the event
-      state at ES:0x7772:word_at_offset_0x296. Cases 5-21 handle different event phases.
-      Manages countdown timers, event counters, and transitions between event states.
-      Uses segment 0x7772 as the primary event/sound/hardware state area.
-      Single static caller: sub_16C22 (the event loop driver). 42K dynamic calls.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "0x7772:0x77B1F+0x296", proposed_name: event_state, type: uint16,
-         desc: "current event state (0-16); drives 17-case dispatch in event_state_machine", certainty: STRONG}
-
-  - ea: "0x2131C"
-    key: sub_2131C
-    name: farobj_sort_and_step
-    name_certainty: STRONG
-    desc: >
-      Depth-sorts two farobj pointer arrays by their depth field, then calls
-      farobj_record_lookup_step for each in sorted order. Uses bubble sort on
-      arrays at [2DF8h] (sorted by [+1FE8h]) and [1D8Ah] (sorted by [+0F7Ah]) in
-      the 0x7B0E segment. The two arrays probably hold terrain objects vs aircraft.
-      Called by game_frame_pipeline_step and farobj_batch_build_project.
-    calling_convention: register
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x270E0"
-    key: sub_270E0
-    name: viewobj_project_advance
-    name_certainty: STRONG
-    desc: >
-      Per-object LOD projection step. Checks FarObj.slot_id [+0x27] (bit 7 = active)
-      and FarObj.slot_flags [+0x26] (bits 6-7 rotated to 0-1 give 0/1/2/3 LOD level).
-      LOD 0 = skip; LOD 3 = mark only; LOD 1-2 = increment FarObj.object_kind [+0x22]
-      (by 1 or 2 depending on flags), then call view_projection.
-      NOTE: FarObj.object_kind [+0x22] IS an LOD accumulator, not just a type code!
-      Returns CF=0 on success (projected), CF=1 on skip.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_index, type: uint16, certainty: STRONG}
-    return: "CF=0: projected; CF=1: skipped"
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x24FB9"
-    key: sub_24FB9
-    name: flag_bits_dispatch
-    name_certainty: STRONG
-    desc: >
-      Keyboard/button event dispatcher (97B, Level-18). Scans 11 flag bytes at CS:0x5762
-      (88 total bits) via flag_block_merge_zero_5c63, then for each active bit calls
-      key_event_table_dispatch. Returns CF=0 if any event was dispatched, CF=1 if none.
-      Called TWICE per main_frame_update_loop frame with different BX/DI selector args.
-      21K dynamic calls per session.
-    calling_convention: register
-    params:
-      - {reg: AX, name: selector, type: uint16, desc: "passed to flag_block_merge_zero_5c63", certainty: HYPOTHESIS}
-      - {reg: BX, name: event_base, type: uint16, desc: "event table base index", certainty: HYPOTHESIS}
-      - {reg: DI, name: event_limit, type: uint16, desc: "event table limit", certainty: HYPOTHESIS}
-    return: "CF=0: event dispatched; CF=1: no events"
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "cs:0x5762", proposed_name: input_flag_bytes, type: "flags8[11]",
-         desc: "88-bit keyboard/button event flag bitmap; each bit = one input event", certainty: STRONG}
-
-  # --- Rendering pipeline (S4 2026-11-12) ---
-
-  - ea: "0x13CB0"
-    key: sub_13CB0
-    name: farobj_batch_build_project
-    name_certainty: STRONG
-    desc: >
-      Main terrain tile batch renderer (346B, seg005). Processes a stream of tile
-      drawing commands from DS:SI, projecting each tile patch via coord_point_group_project.
-      Computes world-space offsets from view center:
-        offset_x = (cs:word_11BCC - 0x7FF) × (-0xCCD) / 0x400
-        offset_y = (cs:word_11BCA - 0x400) × (-0xCCD) / 0x400
-      Stores offsets to cs:word_11BD6/BD8 (X) and cs:word_11BD2/BD4 (Y).
-      Command stream: lodsb reads command byte; bit 7 or top 2 bits = special.
-      After projection: calls flag_set_lowbit, es_ptr_slots_init.
-      Callers: farobj_tile_stream_build, tile_base_batch_build.
-    calling_convention: register
-    params:
-      - {reg: SI, name: cmd_stream, type: uint16, desc: "offset of tile command stream in DS", certainty: STRONG}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-
-  - ea: "0x13A71"
-    key: sub_13A71
-    name: coord_point_group_project
-    name_certainty: STRONG
-    desc: >
-      Projects a group of coordinate points from tile-space to screen-space (288B, seg005).
-      Called by farobj_batch_build_project for each tile patch.
-      Sets up world position offsets in DS:0x7EA..0x7F0 from CS globals (word_11BD6..BD4).
-      Uses active_farptr_set to register the view context, calls tile_quad_sample_group
-      to build the tile quad, then projects each point via view_projection.
-    calling_convention: register
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-
-  - ea: "0x124B4"
-    key: sub_124B4
-    name: farobj_tile_align_project
-    name_certainty: HYPOTHESIS
-    desc: >
-      Aligns a view object to the tile grid and projects it (128B, seg005).
-      Writes int32 world XY (from cs:word_11BBA + cs:word_11BD6/BD8/BD2/BD4 offsets)
-      into ES:DI view record [+0..7], then calls view_projection with that record as DI.
-      The view record at ES:DI is a temporary 16-byte buffer for the projection.
-    calling_convention: register
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x2F535"
-    key: sub_2F535
-    name: viewmode3_vector_project
-    name_certainty: HYPOTHESIS
-    desc: >
-      Projects view vectors for mode 3 (cockpit / forward view?) — 91B, R05_1F40.
-      Only runs when state_word_44d3d_get() == 3. Loops through word_62D6A entries
-      starting at DS:0x66, copies 3 XY components to DS:0x2E+offsets, sets ES=0x54AF,
-      BX=0x20 (view origin from that segment), and calls view_projection.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  # --- Sound device initialization (confirmed) ---
-  - ea: "0x1740D"
-    key: sub_1740D
-    name: sound_device_init
-    name_certainty: PROVEN
-    desc: >
-      Initializes sound hardware based on device type AX:
-        AX=1: PC speaker (always_true — no-op)
-        AX=2: AdLib/OPL2 at I/O port 0x388 (calls adlib_device_init(0x388))  PROVEN
-        AX=3: SoundBlaster auto-detect (calls sbi_port_discover_aa)
-        AX=4: SBI reset/verify (calls sbi_reset_verify)
-        other: returns 0 (not supported)
-      Confirms OPL base port = 0x388 (AdLib standard port). PROVEN.
-    calling_convention: far_cdecl
-    params:
-      - {reg: AX, name: device_type, type: uint16,
-         desc: "1=PC speaker, 2=AdLib/OPL at 0x388, 3=SoundBlaster, 4=SBI verify",
-         certainty: PROVEN}
-    return: "ax = nonzero on success"
-    return_certainty: STRONG
-    certainty: PROVEN
-    globals:
-      - {ea: "0x0388", proposed_name: opl_port_388, type: uint16,
-         desc: "AdLib OPL2/OPL3 standard I/O port 0x388 (address register)", certainty: PROVEN}
-
-  # --- Entity lifecycle system (S4 2026-11-12) ---
-
-  - ea: "0x213E6"
-    key: sub_213E6
-    name: farobj_record_lookup_step
-    name_certainty: HYPOTHESIS
-    desc: >
-      Per-farobj step dispatcher: looks up the type descriptor record stream for a
-      farobj's object_kind, advances to the right record, then executes it.
-      Uses FarObj.object_kind [+0x22] (the LOD accumulator): index = object_kind×4 + 0x3052,
-      then loads a far ptr from the type desc table at 0x7B0E:0x3052+index.
-      Skips bytes in the record stream (first byte = skip distance), then scans for
-      0xFFFF sentinel at 8-byte intervals. Sets cs:byte_1F742 = 0 on completion.
-      Called by view_projection (each projected object) and farobj_sort_and_step.
-    calling_convention: register
-    params:
-      - {reg: "ES:DI", name: farobj_ptr, type: "FarObj*", certainty: STRONG}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x3C1BD"
-    key: sub_3C1BD
-    name: farobj_slot_update_driver
-    name_certainty: STRONG
-    desc: >
-      Drives the per-frame update of 16 farobj entity slot records stored at
-      DS:0x54AF:0x386F (each 92 bytes = stride 0x5C). Runs 3 passes over all 16 slots:
-        Pass 1: if [si+0xA] & 1 (active): call sub_40BC5+1, sub_3C62C, sub_4355B
-        Pass 2: if [si+0xA] & 1: call sub_428A1; if result != 0: call sub_4355B
-        Pass 3: different per-slot operations
-      Called by game_frame_update_chain (another entry in the main update chain).
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "0x54AF:0x386F", proposed_name: entity_slot_records, type: "EntitySlotRec[16]",
-         desc: "16 entity slot records, each 92B; [+0xA] bit 0 = active", certainty: STRONG}
-
-  - ea: "0x2E2D0"
-    key: sub_2E2D0
-    name: farobj_sweep_all
-    name_certainty: STRONG
-    desc: >
-      Three-phase per-frame sweep of all farobj data structures:
-        1. farobj_slot_sweep — sweeps farobj slot states
-        2. farobj_cmd_sweep  — sweeps command queues
-        3. farobj_entity_accum_sweep — applies motion accumulation entries
-      Called by game_frame_update_chain and main_frame_update_loop each flight frame.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-
-  - ea: "0x2E6C2"
-    key: sub_2E6C2
-    name: farobj_cmd_interp
-    name_certainty: HYPOTHESIS
-    desc: >
-      Advances the command field (FarObj.cmd_field [+0x20]) for a farobj slot.
-      AX += 0x1B9 (441), reads current cmd_field via farptr_table_field20_get,
-      computes delta with [di+4], stores new value via farptr_table_field_store.
-      Called by farobj_cmd_sweep.
-    calling_convention: register
-    params:
-      - {reg: AX, name: slot_base, type: uint16, desc: "farobj slot index (before +0x1B9 offset)", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x4D8A7"
-    key: sub_4D8A7
-    name: farobj_slot_step_spawn
-    name_certainty: HYPOTHESIS
-    desc: >
-      Entity spawning: creates new entities from a spawn queue. Checks spawn-active
-      flag at DS:0x6B58:byte_6B58A bit 0. Iterates up to 10 spawn entries (stride 6)
-      starting at DS:[0x33]. For each active entry, accumulates position via
-      fixed_vec3_accumulate_b with jitter (cx & 7 - 3), then spawns the entity.
-      Likely spawns missiles, explosions, or aircraft from engagement events.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-    globals:
-      - {ea: "0x6B58:byte_6B58A", proposed_name: spawn_active_flag, type: flags8,
-         desc: "bit 0 = spawn system active", certainty: HYPOTHESIS}
-
-  - ea: "0x2EA78"
-    key: sub_2EA78
-    name: entity_slot_pair_create
-    name_certainty: HYPOTHESIS
-    desc: >
-      Creates a pair of linked entity slots from two type IDs at DS:SI.
-      Reads two type IDs (lodsw × 2). For each non-0xFFFF value: calls
-      entity_slot_create(BX=0 or 1) to create the slot. Used for linked entities
-      like weapon + launching platform, or aircraft + wingman pairs.
-    calling_convention: register
-    params:
-      - {reg: SI, name: type_id_pair, type: uint16, desc: "offset of [type_a, type_b] in DS; 0xFFFF = skip", certainty: STRONG}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  - ea: "0x3BB8F"
-    key: sub_3BB8F
-    name: farobj_record_ops_exec
-    name_certainty: HYPOTHESIS
-    desc: >
-      Large 860B per-farobj operations executor (R05_2B83). Called by farobj_process_386f.
-      From entity record at DS:SI:
-        SI[0] = farobj slot index → farptr_table_get → ES:DI = farobj
-        SI[6] = offset of entity state buffer (DI)
-        DI[0xC0] = 0x1E (30); DI[0xC1] = 0x1E — initializes two state bytes to 30
-      Uses ds:0x135E & 3 (mod 3) × 25 for some periodic computation.
-      Then loads from 0x7894 and 0x54AF segments, reading entity position data.
-      The 0x1E (30) values at [DI+0xC0/0xC1] likely initialize hit points or fuel.
-    calling_convention: register
-    params:
-      - {reg: SI, name: entity_record, type: uint16, desc: "entity slot record offset in DS", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: HYPOTHESIS
-
-  # --- Flight physics and aircraft systems (S4 2026-11-12) ---
-
-  - ea: "0x2FEF2"
-    key: sub_2FEF2
-    name: game_frame_update_chain
-    name_certainty: STRONG
-    desc: >
-      The actual per-frame entity/aircraft update chain (300B, R05_1F64).
-      Called by game_config_apply_init and sub_30D5F (not main_frame_update_loop!).
-      Sequence:
-        farobj_slot_update_driver, farobj_move_accumulate_step(CX=82, SI=0x44DD),
-        entity_timer_row_scan(CX=82, DI=0x4677), aircraft_slot_cycle_step,
-        mode_strip_frame_step, tile_object_interpreter, farobj_tile_key_cache,
-        farobj_slot_step_spawn, farobj_sweep_all, range_cb_dispatch_loop,
-        hud_state_rowtable_step, hud_panel_transform_step, hud_readout_timer_render,
-        entity_timer2e_dec_14, sprite_project_gate_c5, entity_proj_depth_class,
-        entity_timer_dec_2e, angle_matrix_far_invoke(SI=aircraft+0xC),
-        fixed_matrix_load_7b0e(DI=0x430C).
-      DS:0x48BAh = current aircraft entity pointer (SI). DS:0x44AAh = aircraft index (0-2).
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: STRONG
-    certainty: STRONG
-    globals:
-      - {ea: "ds:0x48BAh", proposed_name: current_aircraft_ptr, type: uint16,
-         desc: "current aircraft entity record offset (SI for angle_matrix_far_invoke)", certainty: STRONG}
-      - {ea: "ds:0x44AAh", proposed_name: aircraft_index, type: uint16,
-         desc: "current aircraft index 0-2 (player + wingmen?); drives DS:0x48C2/0x48C8 table lookup", certainty: HYPOTHESIS}
-      - {ea: "ds:0x44DDh", proposed_name: entity_array_base, type: uint16,
-         desc: "base of entity array (82 entries max, stride varies by function)", certainty: STRONG}
-
-  - ea: "0x3A3D6"
-    key: sub_3A3D6
-    name: mode_frame_step_core
-    name_certainty: STRONG
-    desc: >
-      Per-mode per-entity simulation core (508B, R05_1F64). Called each frame for each
-      active entity when in flight mode. SI = entity state record (struct at DS:0x706).
-      Checks gate: ds:0x44C (paused?) + [si+0xCA] bit 0x100 → skip if set.
-      Operations: steerpoint_scan_update (navigation), entity_table_walk_49a3 (entity AI),
-      farobj active gate check ([bx+0x74] from farobj scan list), mode phase tracking
-      (ds:0x4AC2), dispatch_220d8_via_24bba (render callbacks), far_cb_2, farobj vtable.
-      Phase counter ds:0x4AC2: when >= 4 → alternate path (ds:0x4AC5 mode).
-    calling_convention: register
-    params:
-      - {reg: SI, name: entity_record, type: uint16, desc: "entity state record offset in DS", certainty: STRONG}
-      - {reg: AH, name: entity_flags, type: uint8, certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "ds:0x706h", proposed_name: sim_entity_ptr, type: uint16,
-         desc: "current simulation entity pointer (set from SI on entry)", certainty: STRONG}
-      - {ea: "ds:0x4AC2h", proposed_name: mode_phase, type: uint8,
-         desc: "simulation mode phase counter; >= 4 = alternate rendering path", certainty: HYPOTHESIS}
-
-  - ea: "0x2234B"
-    key: sub_2234B
-    name: control_axes_read
-    name_certainty: STRONG
-    desc: >
-      Reads flight control axis values (211B). Two modes:
-        Joystick: calls joystick_axis_read_clamp, stores BX/AX/CX/DX = 4 axes
-        Keyboard: accumulates axis presses from cs:word_22242/44/3E/40, with dead zone
-      Normalizes all axes to range ±0x800 (±2048) via: `axis = raw × 0x800 / cs:word_2222C`.
-      Stores to cs:byte_22232+0/2/4/6 (4 axis words).
-      Axis mapping: BX=aileron/roll, AX=elevator/pitch, CX=throttle?, DX=rudder?
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "cs:byte_22232",   proposed_name: axis_aileron,  type: int16, desc: "aileron axis ±2048", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_22232+2", proposed_name: axis_elevator, type: int16, desc: "elevator axis ±2048", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_22232+4", proposed_name: axis_throttle, type: int16, desc: "throttle axis ±2048", certainty: HYPOTHESIS}
-      - {ea: "cs:byte_22232+6", proposed_name: axis_rudder,   type: int16, desc: "rudder axis ±2048", certainty: HYPOTHESIS}
-      - {ea: "cs:word_2222C",   proposed_name: axis_sensitivity, type: uint16, desc: "axis scale divisor", certainty: HYPOTHESIS}
-
-  - ea: "0x3B338"
-    key: sub_3B338
-    name: pos_step_chain_engine
-    name_certainty: STRONG
-    desc: >
-      Core aircraft position step engine (459B, R05_2ACF). Converts a heading/speed
-      value (AX) into a world position delta:
-        IF AX=0: AX=1 (minimum motion); ELSE AX = sign×2+1
-        ds:0xB0 = step coefficient; ds:0xB2 = AX × 0x3334 (tile units per step)
-        ds:0xB4 = abs(AX)
-      Copies 13-word flight state from DS:[0x32] to DS:[0x66] AND to ES:0x7B0E:0x43BA.
-      Uses SELF-MODIFYING CODE (patches loc_3B494+1 and others with new constants each frame).
-      The 13-word (26B) flight state block at DS:[0x32] holds the core aircraft kinematics:
-        heading, speed, altitude, roll, pitch, and position deltas.
-    calling_convention: register
-    params:
-      - {reg: AX, name: speed_or_heading, type: int16, desc: "current speed/step magnitude; 0=stopped", certainty: STRONG}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "ds:0x32h",  proposed_name: flight_state_block, type: "int16[13]",
-         desc: "13-word aircraft kinematics block (heading, speed, altitude, roll, pitch, pos deltas)", certainty: HYPOTHESIS}
-      - {ea: "ds:0x66h",  proposed_name: flight_state_prev,  type: "int16[13]",
-         desc: "previous frame flight state (copy of flight_state_block)", certainty: HYPOTHESIS}
-      - {ea: "0x7B0E:0x43BAh", proposed_name: flight_state_trig, type: "int16[13]",
-         desc: "flight state copy in trig segment for matrix computation", certainty: HYPOTHESIS}
-
-  - ea: "0x49546"
-    key: sub_49546
-    name: aircraft_slot_cycle_step
-    name_certainty: STRONG
-    desc: >
-      Cycles through 40 (0x28) aircraft/entity slots at DS:[0xC] stride 24B (R05_393C).
-      For each active slot ([+0] ≠ 0): calls sub_496D3, farptr_table_get([+1]),
-      sub_49A1F; checks [+0] bits; updates via callback at [+14h]:[+16h]; clears slot.
-      This likely handles: AI aircraft respawn, missile flight, explosion lifecycle.
-      Counter cs:word_49544 cycles 0..50 (0x33 max) using word_4A3E8 as step size.
-    calling_convention: far_cdecl
-    params: []
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
-    globals:
-      - {ea: "0x49AB:0x000Ch", proposed_name: aircraft_slot_array, type: "AircraftSlot[40]",
-         desc: "40 × 24B aircraft/entity slot records; [+0]=flags, [+1]=farobj_slot, [+D]=type, [+14/16]=callback", certainty: STRONG}
-
-  - ea: "0x4CD1D"
-    key: sub_4CD1D
-    name: farobj_move_accumulate_step
-    name_certainty: STRONG
-    desc: >
-      Per-entity motion accumulation for all active entities (1062B, R05_3C0D).
-      DS = 0x69FF; entity table at DS:[4] stride 27B (0x1B), up to 40 entries (0..0x27).
-      Each entry: [+3]=entity_class, [+6]=flags (bit 0x200=skip, bit 0x1=active),
-      [+21h/+25h]=slot identification. For active, non-skipped entities with valid slots:
-      checks flag table at DI stride 27B, processes motion (bit 0x21 of flag word).
-      CX=0x52 and SI=0x44DD passed from game_frame_update_chain (iterator state).
-    calling_convention: register
-    params:
-      - {reg: CX, name: entity_count, type: uint16, desc: "max entities to process (82)", certainty: HYPOTHESIS}
-      - {reg: SI, name: entity_array, type: uint16, desc: "entity array base offset in DS", certainty: HYPOTHESIS}
-    return: void
-    return_certainty: HYPOTHESIS
-    certainty: STRONG
+  # ===========================================================================
+  # FILE I/O SYSTEM
+  # ===========================================================================
+  
+  - address: 0x226BD
+    name: dos_file_open
+    system: file_io
+    size: 39
+    doc: DOS INT 21h AH=3D wrapper - Open file, returns handle in AX
+    
+  - address: 0x226E4
+    name: dos_file_close
+    system: file_io
+    size: 17
+    doc: DOS INT 21h AH=3E wrapper - Close file handle
+    
+  - address: 0x226F5
+    name: dos_file_read
+    system: file_io
+    size: 42
+    doc: DOS INT 21h AH=3F wrapper - Read from file, CX=bytes, returns AX=bytes read
+    
+  - address: 0x2271F
+    name: dos_file_write
+    system: file_io
+    size: 46
+    doc: DOS INT 21h AH=40 wrapper - Write to file
+    
+  - address: 0x2274D
+    name: dos_file_lseek
+    system: file_io
+    size: 53
+    doc: DOS INT 21h AH=42 wrapper - Seek to offset, AL=method (0=start,1=current,2=end)
+    
+  - address: 0x1297F0
+    name: picfont_idx_dat_loader
+    system: file_io
+    size: 187
+    doc: Loads PICFONT.IDX/.DAT pair. Template pattern for all .IDX/.DAT loaders
+    source: FILE_IO_ANALYSIS.md, extracted assembly
+    
+  - address: 0x1397CE
+    name: madfont_idx_dat_loader
+    system: file_io
+    doc: Loads madfont.idx/.dat font file pair
+    
+  - address: 0x6A651
+    name: squad_campaign_file_loader
+    system: file_io
+    doc: SQUAD campaign file loader. 46 references! Loads mission/campaign data from SQUAD*.CAM
+    
+  - address: 0x1779A6
+    name: harpoon_missile_dat_loader
+    system: file_io
+    doc: Loads HARPOON.DAT missile data. AGM-84 Harpoon parameters
+    
+  - address: 0x2AEA9
+    name: overlay_file_open
+    system: file_io
+    doc: Overlay file opener for RTLink overlay system
+    
+  - address: 0x2AC4C
+    name: overlay_segment_load
+    system: file_io
+    doc: Overlay segment loader - loads overlay into memory
+    
+  # ===========================================================================
+  # MENU SYSTEM
+  # ===========================================================================
+  
+  - address: 0x683C5
+    name: ui_loadout_menu_controller
+    system: menu
+    size: 4169
+    doc: |
+      Loadout menu controller hub. Multiple entry points:
+      ui_loadout_menu_enter, ui_stores_menu_enter, etc.
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x66E62
+    name: ui_menu_panel_initialize
+    system: menu
+    doc: Common menu panel initialization. Sets up UI state, clears buffers
+    
+  - address: 0x6A5BD
+    name: ui_menu_page_setup
+    system: menu
+    doc: Menu page setup routine
+    
+  - address: 0x6798C
+    name: ui_loadout_slot_record_fill
+    system: menu
+    doc: Fill aircraft loadout record with selected weapons/fuel
+    
+  - address: 0x67BAF
+    name: ui_menu_transition_animate
+    system: menu
+    doc: Menu transition animation step (fade/slide effects)
+    
+  - address: 0x4AEC4
+    name: farobj_3d_model_rotate_step
+    system: menu
+    doc: 3D model rotation for menu aircraft preview. Animates selected aircraft
+    
+  # ===========================================================================
+  # AI SYSTEM
+  # ===========================================================================
+  
+  - address: 0x3CE92
+    name: ai_entity_behavior_dispatcher
+    system: ai
+    size: 2580
+    doc: |
+      Master AI behavior dispatcher. Routes by entity type (player, AI, missiles, bullets).
+      Handles state machine, 25 callees, type-based polymorphism via [entity+0x75]
+    source: AI_SYSTEM_STATUS.md, docs/architecture/ai.md
+    
+  - address: 0x495DF
+    name: ai_context_batch_processor
+    system: ai
+    size: 1165
+    doc: |
+      AI batch processor. Processes 40×24B AI contexts at DS:0x49AB:[0xC].
+      Called every frame to update all AI entities
+    
+  - address: 0x3CFAA
+    name: ai_behavior_state_machine
+    system: ai
+    doc: Behavior state machine entry point. Handles state transitions
+    
+  - address: 0x3D180
+    name: ai_target_tracking_update
+    system: ai
+    doc: Target tracking sequence update. Updates pursuit calculations
+    
+  - address: 0x3D1C5
+    name: ai_behavior_mirror_to_target
+    system: ai
+    doc: |
+      AI target mirroring for missile tracking. Copies target orientation
+      to missile instead of calculating pursuit (target sync mechanism)
+    
+  - address: 0x3DC55
+    name: weapon_spawn_gate_validate
+    system: ai
+    doc: |
+      Weapon spawn validation gate. Checks friendly fire rules,
+      game mode flags, ammo count before spawning weapons
+    
+  - address: 0x307A5
+    name: ai_entity_data_load_prepare
+    system: ai
+    size: 118
+    doc: Load and prepare entity data for AI processing
+    
+  - address: 0x398A4
+    name: ai_farptr_table_data_loader
+    system: ai
+    doc: |
+      Loads behavior flags from external data tables during entity update.
+      Data source: entity data table at offset +6 (word value)
+    source: AI_TACTICAL_STATE_INITIALIZATION.md
+    
+  - address: 0x2703F
+    name: ai_farptr_table_get
+    system: ai
+    doc: Get far pointer from table. Returns ES:DI = far pointer for table index
+    source: Finally found! Referenced in multiple AI docs
+    
+  - address: 0x30CB8
+    name: ai_state_check_function
+    system: ai
+    doc: AI state validation checks. Used by state machine
+    
+  # ===========================================================================
+  # WEAPONS SYSTEM
+  # ===========================================================================
+  
+  - address: 0x4C19E
+    name: weapon_type_initialize_dispatch
+    system: weapons
+    size: 2500
+    doc: |
+      Weapon type initialization dispatcher. Routes to type-specific init:
+      AIM-9, AIM-120, AGM-65, M61A1 cannon, bombs. Type byte determines parameters
+    source: WEAPONS_FINAL_ASSESSMENT.md, WEAPON_TYPES_DECODED.md
+    
+  - address: 0x2EAA7
+    name: damage_event_dispatch_handler
+    system: weapons
+    size: 190
+    doc: |
+      Damage event dispatcher. Routes damage by entity type:
+      aircraft, ground unit, building, terrain
+    
+  - address: 0x32453
+    name: entity_world_coord_transform
+    system: weapons
+    size: 216
+    doc: World coordinate transform for entity positioning
+    
+  - address: 0x32393
+    name: explosion_visual_effect_update
+    system: weapons
+    size: 192
+    doc: Explosion graphics frame update. Updates explosion sprite/animation
+    
+  - address: 0x327BE
+    name: explosion_sound_effect_trigger
+    system: weapons
+    size: 499
+    doc: |
+      Explosion sound effect trigger (24 audio entries).
+      Selects explosion sound by weapon type and size
+    
+  - address: 0x3BB8F
+    name: aircraft_motion_step
+    system: weapons
+    doc: Aircraft motion context handler. Called by behavior dispatcher
+    
+  # ===========================================================================
+  # TERRAIN SYSTEM
+  # ===========================================================================
+  
+  - address: 0x14956
+    name: terrain_tile_heightmap_sample
+    system: terrain
+    size: 114
+    doc: |
+      Bilinear heightmap sampling. Samples 31×31 tile grid,
+      returns interpolated height for smooth terrain
+    source: TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x361FC
+    name: terrain_strip_project_to_screen
+    system: terrain
+    size: 331
+    doc: |
+      3D terrain strip projection to 2D. Perspective projection
+      with LOD distance scaling for terrain rendering
+    
+  - address: 0x16060
+    name: terrain_strip_sample_and_draw
+    system: terrain
+    doc: |
+      Terrain strip sampling with self-modifying code.
+      Runtime-patches comparison immediates for sky detection
+    
+  - address: 0x14B4F
+    name: terrain_pos_neighbor_scan
+    system: terrain
+    doc: |
+      Main terrain rendering per frame. Grid lookup → coastline/river index
+      → coordinate list → project to 2D → Bresenham lines
+    source: docs/architecture/terrain.md
+    
+  - address: 0x14EAE
+    name: terrain_farobj_tile_copy_resolve
+    system: terrain
+    doc: |
+      World → Tile coordinate conversion. Handles 512×512 tile grid,
+      tile size 0x3334 (13,108) world units, bias 0x003400
+    
+  - address: 0x27A20
+    name: terrain_anim_line_object_draw
+    system: terrain
+    size: 442
+    doc: Animated lines rendering (tracers, missiles). Vector drawing
+    
+  # ===========================================================================
+  # FLIGHT PHYSICS SYSTEM
+  # ===========================================================================
+  
+  - address: 0x11450
+    name: flight_control_axes_read_normalize
+    system: flight_physics
+    size: 114
+    doc: |
+      Read 4 flight control axes and normalize to ±2048 range.
+      Clamps to prevent overflow. Hardware joystick → normalized values
+    source: docs/architecture/flight_physics.md
+    
+  - address: 0x3099C
+    name: flight_control_axes_write_to_entity
+    system: flight_physics
+    size: 214
+    doc: |
+      Write control axes to entity record. Stores at entity offsets
+      +0x18h (axis1), +0x1Ah (elevator), +0x1Ch (aileron), +0x2Ah (axis4)
+    
+  - address: 0x3B338
+    name: flight_kinematics_position_step
+    system: flight_physics
+    size: 852
+    doc: |
+      Position integration, 26B kinematics block at DS:[0x32].
+      Mirrors to DS:[0x66] (previous frame) and ES:0x7B0E:0x43BA (trig segment)
+    
+  - address: 0x49546
+    name: flight_aircraft_slot_cycle_update
+    system: flight_physics
+    doc: 40×24B aircraft slot array processor. Iterates all active aircraft
+    
+  - address: 0x4CD1D
+    name: flight_entity_motion_accumulate
+    system: flight_physics
+    doc: 40-entry motion accumulation table (27B stride at DS:0x69FF:[4])
+    
+  - address: 0x3A3D6
+    name: flight_entity_simulation_frame_step
+    system: flight_physics
+    size: 508
+    doc: |
+      Per-entity simulation step. Called by game loop for each entity.
+      Handles input, AI, physics, rendering gates
+    
+  - address: 0x3E16B
+    name: flight_aerodynamics_force_update
+    system: flight_physics
+    size: 865
+    doc: |
+      Aerodynamic force application to velocity. Applies force vector
+      [FarObj+50h/52h/54h] to velocity [Entity+3Ah-44h]
+    
+  - address: 0x38CF3
+    name: flight_aerodynamics_speed_authority
+    system: flight_physics
+    size: 2284
+    doc: |
+      Speed-dependent control authority. Linear at low speed,
+      quadratic dampening at high speed. 5-stage calculation
+    
+  - address: 0x1CEA3
+    name: flight_entity_countdown_timers
+    system: flight_physics
+    size: 453
+    doc: |
+      Entity countdown timers update. Weapons reload, missile motor
+      burn time, damage recovery. At ES:0x7772:0x506+N
+    
+  # ===========================================================================
+  # HUD SYSTEM
+  # ===========================================================================
+  
+  - address: 0x36785
+    name: hud_readout_render_coordinator
+    system: hud
+    size: 908
+    doc: |
+      Main HUD rendering coordinator. 23 calls, 90 data refs.
+      Calls all instrument draw functions
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x36B11
+    name: hud_field_value_draw_0c
+    system: hud
+    doc: HUD field value display at offset 0x0C
+    
+  - address: 0x36C0E
+    name: hud_field_value_draw_14
+    system: hud
+    doc: HUD field value display at offset 0x14
+    
+  - address: 0x36CCF
+    name: hud_value_format_and_draw
+    system: hud
+    doc: Format numeric value and draw to HUD
+    
+  - address: 0x3708F
+    name: hud_heading_tape_draw
+    system: hud
+    doc: Heading tape instrument drawing (compass heading indicator)
+    
+  - address: 0x35BCE
+    name: hud_draw_chain_step
+    system: hud
+    doc: HUD rendering chain step. 4 calls to cs:dword_35920
+    
+  - address: 0x35971
+    name: hud_cockpit_mode_ratio_dispatch
+    system: hud
+    size: 126
+    doc: Cockpit HUD mode renderer. Text positioning for instrumented view
+    
+  - address: 0x25A56
+    name: hud_cockpit_rect_arg_store
+    system: hud
+    size: 28
+    doc: Cockpit shape drawing. Rectangle argument storage
+    
+  - address: 0x24DB8
+    name: hud_external_far_callback
+    system: hud
+    size: 18
+    doc: External view mode renderer (full-screen terrain)
+    
+  - address: 0x263F0
+    name: hud_external_vector_dispatch
+    system: hud
+    size: 6
+    doc: External vector overlay dispatcher
+    
+  - address: 0x11AE7
+    name: font_glyph_bitmap_render
+    system: hud
+    size: 62
+    doc: |
+      Bitmap font glyph renderer. Variable-width fonts,
+      atlas lookup, kerning. Called by 62 functions
+    
+  - address: 0x11B6A
+    name: font_glyph_atlas_lookup
+    system: hud
+    size: 38
+    doc: Font atlas character lookup. Atlas navigation, string width calculation
+    
+  - address: 0x28B08
+    name: graphics_line_draw_bresenham
+    system: hud
+    size: 409
+    doc: |
+      Bresenham line drawing algorithm. Table-based octant selection
+      for optimized line rendering. ~15-20 cycles per pixel
+    
+  - address: 0x14200
+    name: graphics_rect_fill_tiled
+    system: hud
+    size: 106
+    doc: Rectangle fill with 8×8 tile patterns. Clipping against viewport
+    
+  - address: 0x35B2F
+    name: graphics_sprite_offset_dispatch
+    system: hud
+    size: 20
+    doc: Sprite coordinate transform bridge. Offset computation
+    
+  - address: 0x24D64
+    name: graphics_pixel_plot_gateway
+    system: hud
+    size: 60
+    doc: |
+      Pixel plotting gateway with shadow. Two-pass rendering:
+      shadow (1-pixel offset) + main character
+    
+  - address: 0x2D11A
+    name: video_mode_13h_initialize
+    system: hud
+    size: 111
+    doc: |
+      VGA Mode 13h initialization. 320×200×256 color setup.
+      Disables chain-4, configures sequencer/CRT controller
+    
+  - address: 0x359B2
+    name: view_cockpit_hud_initialize
+    system: hud
+    size: 381
+    doc: |
+      Cockpit view initialization. Sets mode flag, installs
+      cockpit renderers, configures 85×20 viewport
+    
+  - address: 0x35B43
+    name: view_external_limits_install
+    system: hud
+    size: 139
+    doc: |
+      External view initialization. Sets mode flag, installs
+      external renderers, configures full-screen viewport
+    
+  # ===========================================================================
+  # GRAPHICS/VIDEO SYSTEM
+  # ===========================================================================
+  
+  - address: 0x4F271
+    name: vga_dac_palette_upload
+    system: graphics
+    doc: VGA DAC palette upload. 11 callers. Sets 256-color palette
+    
+  # ===========================================================================
+  # GAME LOOP
+  # ===========================================================================
+  
+  - address: 0x2F6D0
+    name: main_game_loop_update
+    system: game_loop
+    size: 1123
+    doc: |
+      Main game loop frame update. 85 callees.
+      Input → AI → Physics → Rendering → Audio pipeline coordinator
+    source: WEAPONS_FINAL_ASSESSMENT.md
+    
+  - address: 0x30882
+    name: ems_extended_memory_handler
+    system: game_loop
+    size: 282
+    doc: EMS extended memory I/O handler. INT 67h bring-up and operations
