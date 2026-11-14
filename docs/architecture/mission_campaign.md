@@ -1,7 +1,7 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (70% complete)  
-**Certainty:** STRONG (squadron, campaign, mission waypoints fully decoded), HYPOTHESIS (flight records, mission header)  
+**Status:** IN PROGRESS (75% complete)  
+**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records), HYPOTHESIS (flight plans, mission header)  
 **Last Updated:** 2026-11-11
 
 ---
@@ -313,18 +313,39 @@ WP  | X_16bit | Y_16bit | Markers | Notes
 
 **Flight Records — IN PROGRESS:**
 
-Mission files contain flight definitions before the waypoint section. Size difference between files (373 bytes) exceeds waypoint difference (189 bytes), indicating variable flight record data.
+Mission files contain aircraft records after the header, before waypoints.
 
-Structure hypothesis (from Strategic Falcon docs):
+**Aircraft Record Format (6 bytes) — STRONG:**
 ```c
-struct Flight {
-    uint8_t   aircraft_count;
-    uint8_t   aircraft_type;
-    uint8_t   weapon_loadout[aircraft_count];
-    Waypoint  waypoints[n];      // Waypoint references or count
-    // ... other flight parameters
-};
+struct AircraftRecord {
+    uint8_t  flags;           // +0x00: 0x00, 0x80, or 0x81
+    uint8_t  aircraft_id;     // +0x01: Sequential ID (2-27)
+    uint8_t  zero1;           // +0x02: Always 0x00
+    uint8_t  type_code;       // +0x03: Aircraft/role type
+    uint8_t  zero2;           // +0x04: Always 0x00
+    uint8_t  subtype;         // +0x05: Variant/loadout/group
+};  // 6 bytes
 ```
+
+**SQUAD0.MIS Example:**
+- 26 aircraft records at 0x0008-0x00A3 (156 bytes)
+- IDs: 2-27 (sequential)
+- Type codes: 0x01, 0x07-0x0B, 0x34-0x36
+- Flags: 0x00 (player), 0x80 (allied?), 0x81 (enemy?)
+
+**Type Distribution:**
+- Type 0x01: 5 aircraft (IDs 2-6) - Player flight?
+- Types 0x34-0x36: 10 aircraft (IDs 7-16) - Allied flights?
+- Types 0x07-0x0B: 11 aircraft (IDs 17-27) - Enemy flights?
+
+**Flags hypothesis:**
+- 0x00: Player aircraft (first only)
+- 0x80: Allied AI
+- 0x81: Enemy AI
+
+**Between aircraft and waypoints:** 429 bytes of unknown data (0x00A4-0x0250) - likely flight plans, loadouts, AI parameters.
+
+**Next:** Decode type codes (map to aircraft names), understand flag bits, parse middle section.
 
 **Header — IN PROGRESS:**
 
