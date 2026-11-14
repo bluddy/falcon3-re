@@ -1,7 +1,7 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (80% complete)  
-**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records), HYPOTHESIS (flight plans, target assignments)  
+**Status:** IN PROGRESS (85% complete)  
+**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records, type codes), HYPOTHESIS (flight plan details)  
 **Last Updated:** 2026-11-11
 
 ---
@@ -334,16 +334,22 @@ struct AircraftRecord {
 - Flags: 0x00 (player), 0x80 (allied?), 0x81 (enemy?)
 
 **Type Distribution:**
-- Type 0x01: 5 aircraft (IDs 2-6) - Player flight?
-- Types 0x34-0x36: 10 aircraft (IDs 7-16) - Allied flights?
-- Types 0x07-0x0B: 11 aircraft (IDs 17-27) - Enemy flights?
+- Type 0x01 (F-16 Player): 5 aircraft (IDs 2-6)
+- Types 0x34-0x36 (F-15, F-111, F-4): 10 aircraft (IDs 7-16) - Allied
+- Types 0x07-0x0B (MiG-29, MiG-23, MiG-21, Su-25, Su-27): 11 aircraft (IDs 17-27) - Enemy
 
-**Flags hypothesis:**
-- 0x00: Player aircraft (first only)
-- 0x80: Allied AI
-- 0x81: Enemy AI
+**Type Code Mapping (Hypothesis from IDA):**
+- 0x01: F-16 (player flight)
+- 0x34: F-15 Eagle (air superiority)
+- 0x35: F-111 Aardvark (strike/bomber)
+- 0x36: F-4 Phantom II (fighter)
+- 0x07: MiG-29 Fulcrum
+- 0x08: MiG-23 Flogger
+- 0x09: MiG-21 Fishbed
+- 0x0A: Su-25 Frogfoot
+- 0x0B: Su-27 Flanker
 
-**Between aircraft and waypoints:** 429 bytes of flight plan data (0x00A4-0x0250 in SQUAD0.MIS)
+Each type initializes unique performance characteristics (speed, turn rate, weapons).
 
 **Flight Plan Section — HYPOTHESIS:**
 
