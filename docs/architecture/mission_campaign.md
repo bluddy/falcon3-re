@@ -1,7 +1,7 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (30% complete)  
-**Certainty:** STRONG (file formats), HYPOTHESIS (code structures)  
+**Status:** IN PROGRESS (65% complete)  
+**Certainty:** STRONG (squadron, campaign, mission waypoints), HYPOTHESIS (flight records, mission header)  
 **Last Updated:** 2026-11-11
 
 ---
@@ -226,60 +226,102 @@ struct SupplyInventory {
 
 **Size:** Variable (451-824 bytes observed)  
 **Location:** Game directory (SQUAD0.MIS - SQUAD5.MIS)  
-**Purpose:** Current mission definition
+**Purpose:** Current mission definition  
+**Progress:** 25% decoded (waypoints confirmed, flight records in progress)
 
-**Contents (from Strategic Falcon documentation):**
+**Overview:**  
+Mission files define the current mission including allied/enemy flights, waypoints, loadouts, and mission parameters. Size varies based on number of flights and waypoints. Uses highly compact encoding with 1-byte coordinates.
+
+**Waypoint Storage Format — PROVEN:**
+
+Each waypoint is stored as a 21-byte pair: an 11-byte version with prefix, followed by a 10-byte duplicate.
+
 ```c
-struct MissionFile {
-    // Allied Flights
-    Flight    allied_flights[n];
-    
-    // Enemy Flights
-    Flight    enemy_flights[n];
-    
-    // Support Flights (AWACS, tankers, etc.)
-    Flight    support_flights[n];
-    
-    // ILS Configuration
-    uint8_t   ils_enabled[n_airbases];
-    
-    // Mission Parameters
-    uint8_t   mission_type;
-    uint8_t   time_of_day;
-    uint8_t   weather;
-};
+// 11-byte version (with prefix marker)
+struct Waypoint11 {
+    uint8_t  marker;          // +0x00: Always 0x01
+    uint8_t  x_coord;         // +0x01: 0-255 (1/256 theater width)
+    uint8_t  unknown_1;       // +0x02: Unknown (varies 198-208)
+    int16_t  marker_1;        // +0x03: Constant (-8 or -2 observed)
+    uint8_t  y_coord;         // +0x05: 0-255 (1/256 theater height)
+    uint8_t  unknown_2;       // +0x06: Unknown (varies 198-210)
+    int16_t  marker_2;        // +0x07: Constant (-12 or -9 observed)
+    uint16_t constant;        // +0x09: Always 16 (0x0010)
+};  // 11 bytes
+
+// 10-byte version (duplicate without prefix)
+// Same structure minus the leading 0x01 marker byte
 ```
 
-**Flight definition:**
+**Waypoint Coordinate System:**
+- X, Y use single bytes (0-255) = position as 1/256 of theater size
+- Example: X=200 → 200/256 ≈ 78.1% across theater width
+- Resolution: ~1.25 nautical miles per grid unit (varies by theater)
+
+**Waypoint Marker Patterns:**
+
+Two marker patterns observed (purpose unknown):
+- **Pattern A:** marker_1 = -8, marker_2 = -12 (seen in SQUAD0.MIS)
+- **Pattern B:** marker_1 = -2, marker_2 = -9 (seen in SQUAD1.MIS)
+
+Possible interpretations:
+- Different waypoint action types (nav, attack, threat, patrol)
+- Mission type indicators
+- Altitude/speed encoding offsets
+- Flight behavior modifiers
+
+**Unknown Bytes:**
+
+- `unknown_1` and `unknown_2` vary per waypoint (range: 198-210 observed)
+- May encode: altitude component, speed setting, formation spacing, threat level
+- Requires IDA analysis of waypoint loading code to decode
+
+**Waypoint Examples:**
+
+SQUAD0.MIS (10 waypoints, 210 bytes total):
+```
+WP0: (  0, 144) = (  0.0%,  56.2%) unknown=(198,198) markers=(-8,-12)
+WP1: ( 44, 188) = ( 17.2%,  73.4%) unknown=(199,199) markers=(-8,-12)
+WP2: ( 88, 232) = ( 34.4%,  90.6%) unknown=(200,200) markers=(-8,-12)
+...
+```
+
+SQUAD1.MIS (1 waypoint, 21 bytes total):
+```
+WP0: (184, 216) = ( 71.9%,  84.4%) unknown=(148,218) markers=(-2,-9)
+```
+
+**Flight Records — IN PROGRESS:**
+
+Mission files contain flight definitions before the waypoint section. Size difference between files (373 bytes) exceeds waypoint difference (189 bytes), indicating variable flight record data.
+
+Structure hypothesis (from Strategic Falcon docs):
 ```c
 struct Flight {
     uint8_t   aircraft_count;
     uint8_t   aircraft_type;
-    Waypoint  waypoints[n];
     uint8_t   weapon_loadout[aircraft_count];
+    Waypoint  waypoints[n];      // Waypoint references or count
+    // ... other flight parameters
 };
 ```
 
-**Waypoint (1-byte coordinates!):**
-```c
-struct Waypoint {
-    uint8_t   x;              // 0-255 (1/256 theater width)
-    uint8_t   y;              // 0-255 (1/256 theater width)
-    uint8_t   altitude;       // Encoded altitude
-    uint8_t   speed;          // Speed setting
-    uint8_t   action;         // CAP, CAS, INTERCEPT, etc.
-    uint8_t   loiter_time;    // Minutes to loiter
-};
-```
+**Header — IN PROGRESS:**
 
-**Waypoint precision:** 1 byte per coordinate = 1/256 of theater width ≈ 1.25 nm grid
+First few bytes show mission-level parameters:
+- Byte 0: Flight count? (3 in SQUAD0, 2 in SQUAD1)
+- Bytes 1-2: uint16 value (256 vs 1792 observed)
+- Byte 3: Unknown (20 vs 17)
+- Byte 4: Unknown (30 vs 1)
 
-**Waypoint actions:**
-- 0x01 = Ground Attack (CAS, STRIKE)
-- 0x02 = Landing Approach
-- 0x04 = Cruise/Patrol (CAP, LOITER)
-- 0x08 = Combat Mode (INTERCEPT, SWEEP)
-- 0x10 = Special Mission
+Requires further analysis to decode complete structure.
+
+**Next Steps:**
+1. Search IDA for waypoint loading code using marker values (-8, -12, -2, -9)
+2. Decode unknown bytes in waypoint structure
+3. Parse flight record section (first ~200-600 bytes)
+4. Identify mission header format
+5. Compare multiple mission files to understand variations
 - 0x09 = Combat + Ground (SEARCH & DESTROY)
 
 **Evidence:** Action codes match AI behavior flags (see [ai.md](ai.md)), 1-byte storage documented by Strategic Falcon
