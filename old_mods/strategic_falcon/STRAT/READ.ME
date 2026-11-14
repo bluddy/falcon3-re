@@ -1,0 +1,289 @@
+
+This file is divided into three parts:  the first section explains 
+features of Strategic Falcon that were included too late to make it 
+into the manual, the second corrects some errata in the manual, and 
+the third part offers troubleshooting advice.
+
+
+                     -----------------------
+                     "Undocumented Features"
+                     -----------------------
+
+Mission Description:
+
+If you would like to refresh your memory about the description for 
+the current mission, press <F2> at any time (<F1> is "reserved for 
+future use").
+
+If you want to change the mission description, you can do so with 
+any text editor.  Just edit the SQUAD?.MTV file of the appropriate 
+squad (use the technique described below in the second trouble-
+shooting question to find out which squad number belongs in place of 
+the "?").  Keep any descriptions short!
+
+
+Timing Trace:
+
+In order to allow you to get a better feel for how a mission should
+pan out, the Map screen in the "Other" mode includes a button 
+called "Timing."  If you press this button, symbols move along the 
+flight paths.  The symbols' speed is tied to the speed setting of 
+the applicable waypoint.  Therefore, in a "pure" mission, your 
+aircraft (and the enemy aircraft) will be in the positions 
+indicated relative to each other.  This allows you to time your 
+flights with a great deal of precision.
+
+To speed up the trace speed, press the "+" button;  to slow it 
+down, press the "-" button.
+
+To freeze the display at any point, press the "Pause" button and 
+hold it down;  when you release it, the trace will resume.  To 
+abort the trace before it finishes, press the "Timing" button 
+again. 
+
+Of course, this screen doesn't take into account any random 
+aircraft, nor does it compensate for the reaction of the enemy to 
+your presence!  Also, "Loiter" waypoints are not supported--which 
+means when a flight reaches the end of its path, it'll stop, 
+regardless of the action assigned to the final waypoint. 
+
+If you're interested, each time a symbol "jumps," it repesents 
+four seconds of flight time.
+
+
+Fuller Backups:
+
+In addition to backing up the MIS, CAM, and WAR files for the 
+current campaign, StratFalc also backs up the SQU and MTV files.
+This allows the RESTRCAM batch file (explained below) to fully 
+restore your campaign, even if you've moved on to another mission.  
+For instance, "SQUAD0.MTV" becomes "SQU0MTV.BAK," and "SQUAD0.SQU" 
+becomes "SQU0SQU.BAK." 
+
+
+
+                         ---------------
+                         "Manual Errata"
+                         ---------------                          
+                          
+On Pg. 32, the second paragraph, sentence 3 should read:  
+"If you want to fly the current mission from the new base, you'll 
+have to manually move your F-16s' staring waypoint over to it."
+
+Also on page 32, in the fifth paragraph, the first sentence 
+should read: 
+"On a similar note, if you ever have a problem getting
+your F-16 onto a strip (you start out above the runway or in the 
+center of the theater away from all runways), you can force 
+StratFalc to fix the situation:  turn on the "Show ILSs"
+option and then move your F-16 Flight 1, Waypoint 0 to any 
+airbase that does not have an ILS.  Press "Save."  Now move 
+that waypoint back to the strip that you want to start from 
+and press "Save" again." 
+
+Throughout the manual, where the "+" sign is used with respect
+to flight numbers or waypoints, it normally means the "ñ" symbol.
+
+
+
+           ---------------------------------------------
+           "Troubleshooting & Tips for Strategic Falcon"
+           ---------------------------------------------
+ 
+Q.   I'm trying to fly a mission in Falcon 3.0 and it hangs up 
+     before I can get into the cockpit. 
+ 
+A.   This mainly occurs if you do NOT load STRTSPRT.COM prior to 
+     running Falcon--or it might occur if you abandon a campaign 
+     and don't run the "CLEAR.BAT" afterwards.  Just run the file 
+     "CLEAR.BAT" from either your F-16 or Strategic Falcon 
+     directory (type "CLEAR" <Enter>).  This will clear all the 
+     read-only bits on the mission files and allow Falcon 3.0 to 
+     create new ones.  Try to get into the cockpit again. 
+ 
+ 
+Q.   All right, I've run "CLEAR.BAT" and it still doesn't work. 
+     Now what? 
+ 
+A.   It's time to restore your previous campaign files.  Switch 
+     to your Falcon directory and do the following: 
+      
+     a.)  Type "DIR SQU*.* /OD" <Enter> 
+ 
+     b.)  Note which CAM file is last on the list (It'll look     
+          like "SQUAD0.CAM" or "SQUAD1.CAM").  The important 
+          information is the number after the word "SQUAD." 
+ 
+     c.)  Copy the file "RESTRCAM.BAT" (which is located in 
+          your Strategic Falcon directory) into your Falcon3 
+          directory.
+     
+     d.)  From your Falcon directory, type "RESTRCAM ? <Enter>"  
+          where the "?" must be replaced by the squad number 
+          you discovered in step b, above.  
+ 
+     e.)  Your files have been restored to the previous mission. 
+ 
+ 
+Q.   It still didn't work. 
+ 
+A.   Sorry, your campaign is gone.  Little consolation to you, 
+     but make *sure* STRTSPRT.COM is loaded when you're using 
+     StratFalc with any version of Falcon after 3.01.1.  Either 
+     load it from your AUTOEXEC.BAT or use "CALL LOADTSR.BAT" 
+     command (qualify that with your path to Strategic Falcon, 
+     e.g., "CALL C:\STRAT\LOADTSR.BAT") from the batch file 
+     you use to run Falcon 3.0. 
+ 
+ 
+Q.   That wasn't very nice.  I was on day twelve and I had the 
+     Iraqis on the ropes. 
+ 
+A.   I said I was sorry. 
+
+
+Q.   I'm confused.  When exactly do I have to use ILSRESET? 
+ 
+A.   Probably never.  You should only use ILSRESET if you begin  
+     a new campaign and, on the first mission, you find your F-16  
+     away from all airstrips, limping above the center of the  
+     theater.  This indicates that the airstrip where Falcon 3.0  
+     wanted to place you has had it's ILS removed by a previous run  
+     of Strategic Falcon.  Just exit Falcon 3.0, run "ILSRESET," 
+     and start Falcon 3.0 again.
+ 
+     You can also fix this problem simply by running Strategic 
+     Falcon and using the technique described in the manual to
+     "force" an ILS onto the desired strip--this will make sure 
+     there's an ILS at the airstrip closest to your F-16 
+     Flight 1, Waypoint 0. 
+
+
+Q.   The allied and enemy flight waypoints are always jumping 
+     all over the place.  How come they don't stay where I put 
+     them?  
+
+A.   The data storage for these waypoints in the *.MIS file is 
+     only one byte;  they weren't designed to be user-movable,
+     hence their storage space was optimized.  Any waypoint has 
+     to be at a location that's an even multiple of 1/256 of the 
+     width of a theater (1.25 nm).  Strategic Falcon places the 
+     waypoint at the nearest such spot to the right and down.
+
+
+Q.   I've read through the documentation and reached the 
+     conclusion that I want to return to Falcon version 3.01.1. 
+     Am I correct in understanding that I do *not* need to load 
+     the STRTSPRT.COM TSR if I do this? 
+ 
+A.   Yes, you are correct:  if you use Falcon 3.01.1, you never 
+     have to worry about loading the TSR again.  But MAKE SURE 
+     you do NOT disable version-checking inside Strategic Falcon 
+     if you use Falcon 3.01.1!  If you disable version checking, 
+     you're in for a heap of trouble. (StratFalc has safety 
+     features in place to prevent such trouble, but people can 
+     be *extremely* resourceful when defeating safety features.)
+ 
+ 
+Q.   I'm using Falcon 3.01.1 and I own the Falcon Commander 
+     Utilities from Keyboard Commander Corps.  Your program 
+     "FalcCalc" from this set of utilities only supports Falcon 
+     versions 3.02 and later.  I want my reports back and I want 
+     to be able to print the map! 
+ 
+A.   For the reports, use FalcCalc version 2.51 (the 
+     "postcardware" version available on quality BBSs everywhere, 
+     as well as in CompuServe's FSFORUM lib 8).  For the maps, 
+     you're going to have to get a little tricky. 
+ 
+     Follow this procedure: 
+ 
+     a.)  First, change to your FCU directory. 
+      
+     b.)  Then create a batch file called "MAP.BAT" that contains 
+          only this line: 
+      
+                    FALCSPRT %1 0 C:\FALCON3\ 
+      
+          -Substitute your Falcon 3.01.1 directory for 
+           "C:\FALCON3\".  DON'T FORGET THE BACKSLASH AT THE END! 
+      
+          -If your printer is dot-matrix 24-pin, leave the "0" as 
+           it is. 
+           
+          -If your printer is laser, change the "0" to "1". 
+           
+          -If your printer is dot-matrix 9-pin, change the "0" to 
+           "2". 
+                
+          -If you don't have a printer, change "0" to "3". 
+      
+     c.)  Start the batch file with the number of the squad you're 
+          using (you can discover this using the technique from 
+          the second question, above).  If it was 0, for example, 
+          you'd type "MAP 0" <Enter>. 
+ 
+
+Q.   What is "FalcCalc," anyway?
+
+A.   FalcCalc is a utility for Falcon 3.0 that enhances
+     campaign play.  It has several features, but the major 
+     ones are:
+
+ -It automatically calculates fuel burn for every F-16 on a
+  mission, taking into account the jet's weight, armament, and
+  drag, as well as the speed, altitudes, and distances of the
+  waypoints.  (Version 1.0 of the software did only this;  the
+  name "FalcCalc" is kind of a pun on "Fuel Calc."
+
+ -It calculates waypoint timings for every flight/every waypoint,
+  so you can plan a mission to hit a target with split-second
+  precision (in theory, anyway:  Falcon 3.0 is a lot like real
+  life--it tends to throw you a lot of curves once you're off the
+  ground!).
+
+ -It prints "Kneeboard Sheets" for each mission, which detail
+  (a) every waypoint's distance, speed, and action, and
+  time-on-target; (b) who's flying which planes, by callsign
+  and name; and (c) location of potential bingo fields, relative
+  to one of your preset waypoints.
+
+ -It is an intelligence gathering tool.  It tells you all about
+  enemy flights, where they're located and what they're carrying;
+  it tells you about allied flights involved in your mission;  it
+  breaks down every site in the theater and tells you its
+  strength and occupation;  it tells you which sites are the victory
+  sites and which are defeat sites.
+
+ All of the above features are available in FalcCalc 2.51, which
+ is "postcardware" and is available on better BBSs everywhere, as 
+ well as in lib 8 of the CompuServe FSFORUM.  Unfortunately,
+ version 2.51 *only* supports Falcon 3.01/3.01.1.  (You can sense
+ the hook coming, can't you?)
+
+ With version 3.0, FalcCalc improved the format of several of its
+ reports, but besides just supporting the newer versions of Falcon
+ (3.02 through 3.04), it added a map, which shows you all the
+ intelligence information for the flights and the theater
+ graphically, and is printable so you can add it to your knee
+ board.
+
+ As of version 3.0, FalcCalc went "to the show" (it's now
+ commercial).  It's one of many utilities included in the
+ Keyboard Commander Corps "Falcon Commander Utilities."
+ The other utilities are an updated "F3Maps" the famous Red 
+ Flag mission generator and much more; "ShowF3," which allows 
+ you to capture screen shots from Falcon3 and manipulate them; 
+ "F3 Requisition," a squadron and supply management utility;
+ "KCCMenu," which runs your entire Falcon suite of utilities  
+ (it can run your entire computer, as well!);  and 30 
+ professional Red Flag missions.
+ 
+ That's just the tip of the lawndart--these all do much more!
+
+ You can reach KCC by phone at (800) 262-6066 or online (CIS) at
+ 72370,2375.
+
+ Thanks for asking!
+
+

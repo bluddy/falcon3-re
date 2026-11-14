@@ -1,0 +1,134 @@
+         
+
+      
+                      Flying Muffin Enterprises
+                               presents
+      
+      
+                           Strategic FALCON
+                         
+                         Version 1.11 Update
+         
+         
+         Version 1.11 is mainly a bug fix for version 1.1, but there 
+         are a couple of added features to make it worth the time 
+         to download. 
+
+                                      
+         Adjusting SA-7s:
+                                      
+         The most notable new feature is the ability to automatically 
+         adjust the quantity of SA-7s in the theater and in the 
+         missions. You do this in the Config submode of the Other
+         screen. 
+         
+         A new check box has been added.  It looks a little like
+         this:
+                                      
+                   [ ]  Adjust SA-7s-Total: [     ]
+                   
+         If you check the box, StratFalc will run through all the 
+         enemy ground paths and all the enemy sites and make sure 
+         that none of them have more than the number you place in 
+         the "Total" box.
+         
+         For example, if you place "2" in the Total box, no single 
+         enemy site will be allowed to have more than 2 SA-7 squads 
+         (any SA-7s in excess of this number are magically turned 
+         into newts, er, transports.) In addition, no single enemy 
+         ground path will have more than 2 SA-7s. Here the extra is 
+         disarmed and become simple infantry squads. When you decide 
+         on a quantity for this box, bear in mind that a single SA-7 
+         squad has unlimited missiles. If you put "2" here, all it 
+         is specifying is you'll have a maximum of 2 Grails coming at 
+         you at once; you'll probably see another 2 if you make 
+         another pass or stick around too long.
+         
+         Only values in the range of 0 to 15 are allowed. If you want 
+         to eliminate SA-7s, just put the number "0" in the Total box.
+
+         Quantities can only be adjusted down. So if you put 2 in 
+         the box, all sites will drop down to 2 SA-7s, bit if you 
+         then put the number 12 in the box, nothing will happen 
+         immediately. With future enemy troop movements and site 
+         growth, some nodes may eventually get to a strength level of 
+         12.
+         
+         You can override the effects of this box manually using the 
+         Strat/Strength submode for sites and the Tact/Enmy Ground 
+         submode for paths.
+
+         Don't forget to hit the "Save Config" button if you want 
+         your settings here to be permanent.
+
+         
+         Running a User Batch File:
+         
+         Version 1.1 allows you to hit <F4> to run Falcon 
+         immediately.  With version 1.11, you can also hit <F6> to 
+         run any program(s) you desire. You define the program in a 
+         batch file which you create and save as "USER.BAT"; 
+         StratFalc runs USER.BAT after it exits. This feature is 
+         included because many users like to run other utility 
+         programs or manipulate TSRs before loading Falcon.
+                                                 
+         USER.BAT must be placed in the StratFalc directory or, if 
+         you hit <F6>, you'll just get an error message and StratFalc 
+         will dump you to DOS. 
+                                                          
+         If you want to return to StratFalc after the batch file 
+         finishes, place the following lines in USER.BAT as the final 
+         commands:        
+         
+                 CD \STRAT
+                 STRAT.BAT %1 %2 %3 %4 %5 %6 %7 %8 %9
+         
+         (Change "CD \STRAT" to point to your Strategic Falcon 
+         directory if you've installed it somewhere other than 
+         "\STRAT.")  
+                 
+         For example, the following USER.BAT would exit, run 
+         FalcCalc, F3 Requisition (if you own these programs), and 
+         then Falcon, before returning to StratFalc: 
+                            
+                 CD \FCU
+                 FALCCALC.EXE
+                 F3REQ.EXE           
+                 CD \FALCON3
+                 FALCON3.EXE
+                 CD \STRAT
+                 STRAT.BAT %1 %2 %3 %4 %5 %6 %7 %8 %9
+
+                       
+         Bug Fixes:
+
+         There weren't really that many!  The big one: sometimes  
+         your Sim Mode aircraft wouldn't be released after a mission. 
+         That's fixed.  In the Kuriles, sometimes Falcon wouldn't 
+         accept new F-16 flights created with StratFalc;  that's 
+         also fixed.
+         
+         Also, I changed the color of the background in the plane 
+         description section of the loadout screen because several 
+         users stated that the lack of contrast made it hard to see 
+         the words (oh, you actually wanted to *read* that stuff?). 
+         
+         You may notice the strengths of your brigades drift a bit.
+         They can go up or down, but normally they just go down. This 
+         occurs because occasionally the brigades "borrow" units from 
+         your sites and vice versa. It's most evident whan you send a 
+         brigade into an enemy site to capture it. The original 
+         strengths of brigades and squadrons have been tweaked to 
+         better match the strength of the enemy Order of Battle.
+         
+         Finally, the docs in version 1.1 are incorrect as far as 
+         RESTRCAM.BAT's implementation. Whenever StratFalc is run, it 
+         checks both its own directory and the whatever directory 
+         Falcon is in for RESTRCAM.BAT. If it doesn't find it, it 
+         creates a new one, customized for your setup. Take a peek 
+         inside RESTRCAM.BAT and you'll see what I mean.
+        
+         That's it.  Hope you enjoy the new features!
+         
+         -Bill White
+          74650.746@compuserve.com

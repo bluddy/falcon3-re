@@ -1,0 +1,1 @@
+ATTRIB -R -H C:\SQUAD*.MIS

@@ -1,0 +1,2019 @@
+
+
+      
+                          Flying Muffin Enterprises
+                                  presents
+      
+      
+                              Strategic FALCON
+                              
+      
+                     Typically Exhaustive Documentation 
+                                     for
+                         New Features in Version 1.1
+                        
+      
+         It is heartily recommended that you print out this file, as 
+         well as NEW!.TXT, and keep it with your Strategic Falcon 
+         manual. 
+      
+         
+         The following topics are discussed herein:
+
+              Technical Support                        2
+              Important Notes                          2
+              Falcon 3.05                              3
+              Simulation Mode                          3
+                 Introduction                          3
+                 Aircraft                              4
+                   Overview                            4
+                    Controls Available                 6
+                    Details                            7
+                       Mixed Aircraft Types            7
+                       Evacuation                      7
+                       Aircraft Placed by Falcon       8
+                       The Enemy Squadrons             9
+                 Ground Units                          10
+                    Overview                           10
+                    Controls Available                 11
+                    Details                            12
+                       Capturing Enemy Sites           12
+                       Energy and Fatigue              13
+                       Brigade Movement                14
+                       Energy Cost                     15
+                       Roads                           16
+                       The Front Line                  16
+                       Water                           16
+                       Falcon CAS Missions             17
+              Loadouts                                 17
+                 Using                                 18
+                 Saving                                19
+                 Editing                               20
+                 More Information                      20
+
+
+                   
+
+
+      Strategic FALCON            Version 1.1 Update                Page 2
+      --------------------------------------------------------------------
+
+                 A Special Note about BUFFs            20
+              Speed Limits                             21
+              Fuel Replacement                         21
+              One Key to Flight                        22
+              Choose Your Flight with Ease             22
+              More Reliable Aircraft                   22
+              (Almost) Unnecessary Reading             22
+                 Sim Mode                              23
+                 Loadouts                              26
+                 Kill Boxes                            27
+                 Troubleshooting                       29
+                 Attacking Enemy Sites                 33
+      
+      
+      
+                              TECHNICAL SUPPORT
+                                                       
+         If Strategic Falcon is giving you trouble, I want to know about 
+         it! (Please read the manual first, though!) Don't call KCC or 
+         whomever your distributor might be--they don't know nuthin'. You 
+         can reach Flying Muffin Enterprises at (203) 443-3380, that's: 
+                                              
+                          Flying Muffin Enterprises
+                      24-Hour Technical Support Hotline
+                             (203) 443-3380
+      
+         I keep very strange hours (all 24 of them), so if I'm not around
+         leave a message on the machine and I'll get back to you.
+      
+      
+                               IMPORTANT NOTES
+      
+         There are a couple very important notes that must be 
+         mentioned before we get into this doc. They concern 
+         successful completion of Falcon missions and campaigns.
+      
+         First, when you fly a mission in Falcon, at least one F-16 
+         must survive or the mission will be a failure. This means if 
+         your wingmen pilot aircraft other than F-16s, and you're in 
+         the *ONLY* F-16, you'd better survive the mission. If you 
+         don't, it's either abort or fail!
+      
+         Second, when you're closing in on victory in a campaign, 
+         don't move your home base right up to the front (and if it is 
+         there, move it back a little--you should have at least one 
+         friendly site as a buffer).  Falcon has a tendency to get 
+         confused and hang up if it has to move your home base *and* 
+         declare victory at the start of the same 0600 mission.  (You'll 
+         recognize the problem: first you'll get the announcement that 
+         your base is being moved, and then Falcon will hang.) If it 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update                Page 3
+      --------------------------------------------------------------------
+
+         happens, run RESTRCAM and create a buffer site manually 
+         before reflying the 2300 hr mission.
+      
+      
+                        FALCON 3.05 & FALCON GOLD CD
+      
+         If you're using the Falcon GOLD CD and using the CD (not the 
+         full Hard Drive installation), you'll have to copy the 
+         following files from the "\F3CD" directory on the CD to the
+         "\FALCONCD" directory on your hard drive:
+      
+                                   ILS.BOS
+                                   ILS.HOK 
+                                   ILS.IRQ 
+                                   ILS.ISR 
+                                   ILS.KOR 
+                                   ILS.NEL 
+                                   ILS.PAK 
+                                   ILS.PAN 
+                                   BOSNIA.STR 
+                                   INDIA.STR 
+                                   ISRAEL.STR
+                                   JAPAN.STR 
+                                   KOREA.STR 
+                                   KUWAIT.STR 
+                                   NELLIS.STR 
+                                   PANAMA.STR 
+                                   SQDNAMES.STR    
+                      (In other words, ILS.* and *.STR)
+                                   
+         Also, the new STRTSPRT.COM TSR (ver 1.3) works differently 
+         with Falcon version 3.05. Instead of clearing read-only bits, 
+         it clears the hidden bits of files. Because of this, NEVER 
+         override version checking in StratFalc if you're using Falcon 
+         version 3.05!
+      
+         It is highly recommended that you search your hard drive for 
+         all instances of STRTSPRT ver 1.2 and remove them.  Version 
+         1.3 is backward compatible with earlier versions of 
+         StratFalc.
+      
+                               SIMULATION MODE
+      
+         The biggest new feature in Strategic Falcon version 1.1 is 
+         almost invisible, yet has a tremendous impact upon how you wage 
+         war. It's called "Simulation Mode" ("Sim Mode"). 
+         
+         Introduction:
+         
+         The purpose of Strategic Falcon has been, since the outset, to 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update                Page 4
+      --------------------------------------------------------------------
+
+         add a dimension of strategy to Falcon 3.0. That's where its name 
+         came from. Up to this point, however, the strategic elements of 
+         game play have been vague and elusive. For example, it's been 
+         hard to see any direct correlation between persistent strikes on 
+         a specific site and future capture of that site (although this 
+         correlation does indeed exist!). These strategic elements have 
+         remained elusive for one major reason: there have been no 
+         features in StratFalc that would override any of Falcon's own 
+         strategic theater decisions. It's one thing to allow you to 
+         place units that would weaken an enemy site and, after the 
+         attack, let Falcon 3.0 decide whether that site would become 
+         yours; it's a whole different animal to let StratFalc make the 
+         decision and override Falcon.
+         
+         With its new Simulation Mode, StratFalc has taken the plunge, 
+         and done so in a rather large way. While leaving Falcon's 
+         "mission to mission" functions totally alone, and still allowing 
+         it to carry out its own strategic theater operations (that is, 
+         deciding at 0600 every day what is yours and what is the 
+         enemy's), you now have a method to strategically capture a site.
+         
+         That's not all. Allied aircraft are now grouped into their own 
+         squadrons and assigned to specific bases, and any ground units 
+         you use for site attacks must come from one of the three 
+         brigades that you are assigned at the outset of a campaign.
+         
+         Bear in mind that you do not have to use Sim Mode at all. You 
+         can go back to the previous mode of operation simply by checking 
+         the "Sim Mode--Off" box in the Other/Config submode. Don't 
+         forget to press "Save Configuration" if you want it to stay off 
+         for future StratFalc sessions. 
+         
+         Everything detailed in this section only occurs if you have Sim 
+         Mode enabled.
+         
+         When you start a new campaign, StratFalc will calculate the 
+         quantity of all aircraft and ground units that you have at your 
+         disposal to prosecute your various attacks. It bases this total 
+         on how many units are at each of your sites, but also considers 
+         the appropriate Order of Battle given in the Falcon 
+         documentation, as well as the difficulty level currently set in 
+         Falcon 3.0 itself. 
+         
+         
+         Aircraft:
+         
+                              Aircraft: Overview
+         
+         Based on its calculations, Strategic Falcon generates specific 
+         quantities of each aircraft type. This quantity is all you get 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update                Page 5
+      --------------------------------------------------------------------
+
+         for the entire campaign; unlike Falcon 3.0, there are no 
+         *direct* replacements at any time! Use them wisely!
+         
+         StratFalc assigns all aircraft types to their own squadron and 
+         each squadron to its own base. In other words, if the order of 
+         battle includes a squadron of 12 F-15s, 8 B-52s, 10 A-10s, and 8 
+         F-111s (the list would continue--you receive some of each type 
+         of available aircraft), and the allies currently hold three 
+         active airbases--call them, in order of distance from the enemy, 
+         Airbase A, Airbase B, and Airbase C--then StratFalc might place 
+         the F-15s and A-10s at A, the F-111s at B, and the B-52s at C.
+         (Thanks to Chuck Corway, Dom Killers, and the others in 
+         FSFORUM who helped with the appropriate squadron names.)
+         
+         When you add a flight of friendly aircraft to a mission, 
+         StratFalc will automatically place its starting waypoint 
+         (waypoint 0) at the appropriate base, and will place waypoint 
+         1 in the current center of the map. (You will be free to move 
+         waypoint 0, but wouldn't do so if you were playing 
+         realistically.)
+         
+         You can transfer the squadrons between airbases after this 
+         initial setup, but doing so will take anywhere from two to 
+         twenty-four hours (depending on distance between the two bases 
+         involved, how busy they are, and the state of your campaign), 
+         and the aircraft in that squadron will be unavailable during the 
+         move.
+         
+         After you fly the mission and return to Strategic Falcon at the 
+         beginning of the next one, StratFalc calculates the losses of 
+         any aircraft that were placed "at risk" in the previous 
+         mission. THE LOSSES DEPEND DIRECTLY UPON YOUR SUCCESS IN 
+         ACCOMPLISHING *YOUR* MISSION, as well as the current campaign 
+         difficulty setting in Falcon3. In other words, if you succeed 
+         in your primary goal, aircraft losses will be minimal or nil. 
+         If you fail, you'll lose some or all of the aircraft that you 
+         sent out on missions. If you lose aircraft, StratFalc will 
+         tell you so; if you don't see any such announcement, you can 
+         safely assume all your StratFalc aircraft survived.
+         
+         There are also many degrees of success. While accomplishing the 
+         primary goal is the main criterion, StratFalc also tracks how 
+         many of your F-16s were destroyed during the mission, how many 
+         enemy aircraft were shot down and their types, and how many 
+         ground units and installations were destroyed and their type. 
+         Generally speaking, though, if you succeed in your primary 
+         mission and lose none of your own (F-16 slot) planes, you'll 
+         lose none of the StratFalc planes, either.
+         
+         (The losses are calculated in this manner because there is no 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update                Page 6
+      --------------------------------------------------------------------
+
+         way available to directly collect the Falcon3 "debrief" info 
+         from each mission.)
+         
+                         Aircraft: Controls Available
+         
+         All controls for the Sim Mode are grouped in the STRAT mode 
+         under the SIM submode (it used to be "Attk"). You'll see there 
+         are now four radio buttons at the bottom of the control panel: 
+         "Attk," "Grnd," "Air," and "Bases." (If Sim Mode is turned off, 
+         the latter 3 radio buttons will be grayed out.)
+         
+         For air operations, the two controls that concern us are the 
+         "Air" and "Bases" buttons. 
+         
+         If you select "Air," the squadron controls fill the top part of 
+         the panel. You'll notice that the map returns to zoom factor one 
+         and 0,0 origin, in order to give you a view of the entire 
+         theater. Any airbases that you occupy will show up in yellow.
+         
+         Using the "" button, you can cycle through all your 
+         squadrons and discover their names, aircraft type, quantity, 
+         and current base. On the map, an icon will appear at the 
+         appropriate place. 
+         
+         You can also cycle through the squadrons at any base by 
+         right-clicking the mouse on that base. You can jump to a base 
+         by left-clicking directly on it. If the base has no 
+         squadrons, you'll hear a beep.
+         
+         To transfer a squadron, simply grab its icon with the left mouse 
+         button and drag the mouse to the base desired. (You'll only be 
+         able to transfer squadrons to those sites shown in yellow, 
+         with the exception of the carrier, which you won't be able 
+         to transfer to at all.) A line will extend from the squadron 
+         icon to the new base.
+         
+         You'll be informed how long the transfer will take and asked to 
+         confirm the move. If you do confirm it, a number will appear 
+         below the base name. This number indicates how many hours 
+         remain until the squadron transfer is completed. A blue "D" 
+         will appear at the destination base for any squadrons being 
+         transferred. Once you give the order to transfer a squadron, 
+         the squadron will be unavailable until it reaches its new 
+         base. You won't be able to change its destination once the 
+         order has been confirmed.
+         
+         There's also an aircraft carrier involved; you'll see it as a 
+         yellow square off the shore in those theaters that have water 
+         (that's all but Pakistan). Your F-14, F/A-18, and F-4 
+         squadrons will be based on the carrier. You'll be able to 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update                Page 7
+      --------------------------------------------------------------------
+
+         transfer squadrons off the carrier, but never *to* it. (And 
+         no, you *can't* move the carrier!) 
+      
+         At the bottom of the "Air" screen is a "Summary" button. This 
+         gives you an overall view of your air force. For each 
+         squadron it will tell you the aircraft type, quantity, how 
+         many are already committed to missions, the name of the base, 
+         and the squadron name.
+         
+         If you select "Bases" from the Strat/Sim submode, you get 
+         information about each airbase. This information includes 
+         which squadrons are based there: the type of plane and how 
+         many of that type are available.
+         
+         Also included is an "Evacuate!" button. If you're afraid the 
+         enemy may be about to take over one of your bases, it's a good 
+         idea to evacuate it. More information is given in the "Details" 
+         section below.
+         
+                              Aircraft: Details
+         
+         -Mixed Aircraft Types-
+         
+         Use of squadrons is largely automatic. If you add a flight of 
+         aircraft, its starting waypoint will automatically be placed 
+         on the proper base.
+         
+         A wrinkle appears when you mix aircraft types in the same 
+         flight. What StratFalc does in this case is assign the flight to 
+         the airbase of the lead plane. For instance, if you have a 
+         flight of two A-10s led by an F-15, the flight will originate at 
+         the F-15 squadron's base, not the A-10s'. It is assumed that the 
+         A-10s have flown to the leader's base before the mission begins. 
+         Note, however, that the A-10s are not "free"--they still come 
+         from the A-10 squadron, wherever it is!
+         
+         Another twist is F-16 flight slots. If you assign another 
+         aircraft type to be the leader of an F-16 flight (meaning your 
+         wingmen are flying other types of aircraft), StratFalc will ask 
+         you if you want to move that flight to the proper base. What 
+         this means is your pilots are temporarily flying out of that 
+         base. Again, you can override this setup and move the starting 
+         waypoint wherever you want it.
+         
+         What happens when you change a lead aircraft type AFTER a flight 
+         has already been laid out? Well, StratFalc asks you what you 
+         want to do. You can either leave the flight like it is or have 
+         StratFalc move its first waypoint to the proper base.
+
+         -Evacuation-
+         If the enemy is closing in on one of your bases and you want to
+
+
+
+
+      Strategic FALCON            Version 1.1 Update                Page 8
+      --------------------------------------------------------------------
+
+
+         get all your planes out, you should hit the "Evacuate!" button.
+         If you do this, all squadrons at that base become unavailable
+         and they scatter to any other available bases. You have no say
+         over where they're going.
+
+         You may wonder why this would be necessary--why not just
+         transfer the squadrons manually? Because there's no guarantee
+         that a manual transfer order will be carried out within the next
+         six hours. A transfer can sometimes take a full day to complete
+         (and here StratFalc is being easy on you!). An evacuation is
+         basically a scramble: everyone fuels up and flies, with whatever
+         JP-5 they can get in their plane and whatever stores they can
+         get on its wings.
+
+         If a base is captured while squadrons are still there, you WILL
+         lose those squadrons!  An exception:  any squadrons with units
+         currently committed will not evacuate.
+         
+         -Aircraft Placed by Falcon-
+         
+         When you begin a new mission, StratFalc examines the flights 
+         that are generated by Falcon. If it determines that any of these 
+         flights is an escort or support flight for your F-16s, it will 
+         ask if you want to move that flight to its proper base. 
+         
+         If you answer "No," the starting waypoints of these (which 
+         normally start very close to your airbase) will remain where 
+         they are.
+         
+         If StratFalc determines that the flight in question is directly 
+         related to your mission (B-52s to be escorted, for instance), 
+         it will leave them alone (it is assumed that they've flown to 
+         their starting waypoints and are just reaching your base when 
+         the mission starts). StratFalc does this to avoid interfering 
+         with Falcon's mission-generating logic--especially when an 
+         escort mission is involved. However, these aircraft still come 
+         out of your squadrons! For instance, if Falcon gives you four
+         B-52s, those Buffs come from your B-52 squadron, and if you lose
+         the mission, you'll (probably) also lose those B-52s.
+         
+         There's a flip side to this. It is also the only way to get 
+         aircraft "replacements" in Strategic Falcon. Say your F-15 
+         squadron is wiped out in the course of the war. If, in a future 
+         mission, Falcon allots a flight of 2 F-15s to you, these F-15s 
+         become your replacements, as long as you don't change their 
+         aircraft type to something else before flying the mission (in 
+         other words, keep the F-15s as F-15s, don't make them A-10s or 
+         something). If you succeed in this mission and all the F-15s 
+         don't get destroyed, then the surviving F-15s become your newly 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update                Page 9
+      --------------------------------------------------------------------
+
+         revived F-15 squadron.
+         
+         Note that this only applies to Falcon-supplied aircraft when 
+         your own squadron of that type is either destroyed or doesn't 
+         have enough of that aircraft type to satisfy Falcon. In the 
+         above example, if you had 2 F-15s in your F-15 squadron, the 
+         Falcon aircraft are taken from there. If you had only one F-15, 
+         then you have a chance to add a second one.
+         
+         -The Enemy Squadrons-
+         
+         With all this tracking of aircraft, you might wonder: what about 
+         the enemy squadrons? Is anybody keeping track of those? I could 
+         lie to you and say yes (you might even believe me!). But no, the 
+         enemy aircraft aren't tracked--and there's a reason why 
+         StratFalc doesn't bother: keeping tabs on who's been destroyed 
+         implies that StratFalc would do something about it. 
+         
+         In other words, if StratFalc decided at the beginning of a 
+         campaign that the enemy had 16 MiG-29s and kept count of them, 
+         then when you had destroyed all those MiG-29s you'd expect to 
+         see no more (logically enough). For StratFalc to do that, 
+         however, it would have to step in and directly alter any future 
+         Falcon-generated mission that used MiG-29s. Other than moving 
+         the starting waypoints of some flights as discussed above, 
+         Strategic Falcon will never directly alter any Falcon mission 
+         (it leaves that up to you!). To do so is just asking for 
+         trouble, as well as angry calls to technical support.
+         
+         If this bothers you, just keep tabs on the enemy yourself 
+         and, when appropriate, change the aircraft types accordingly. 
+         Falcon does seem to track them itself to some degree; the 
+         enemy aircraft seem to get "easier" as a campaign goes on.
+         
+      
+         Ground Units:
+         
+                            Ground Units: Overview
+         
+         In addition to calculating the available air units, StratFalc 
+         will track your ground units. At the beginning of the campaign, 
+         SF tallies up all the ground units at all sites you occupy. 
+         Again depending upon the Falcon3 campaign difficulty setting, it 
+         adds an additional quantity of units that become the brigades of 
+         the "1st Armored Division." These are all the units that you 
+         have available to carry out ground attacks. 
+         
+         The 1st Armored Division begins the campaign at your home air 
+         base. For the purposes of Strategic Falcon, the battalions of 
+         the Division are grouped into three brigades--two armor and one 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 10
+      --------------------------------------------------------------------
+
+         mechanized infantry. The brigades are stand-alone units inside 
+         the 1st Armored Division and so move independently.
+         
+         Although the smallest unit that you can move is the brigade 
+         itself, the brigades are each (internally) further broken down 
+         into four battalions. An armored brigade will have two armored 
+         battalions, one mech infantry battalion, and one artillery 
+         battalion. A mechanized infantry battalion is the same, but one 
+         of the armored battalions is replaced with a second mech 
+         infantry battalion.             
+         
+         The movement of brigades is fully discussed in "Details" below, 
+         but to give you an overview of the way they move: missions in 
+         Falcon occur at six hour intervals. It just so happens that 
+         "turns," for brigade movement purposes, are also based on a six 
+         hour interval. To keep a close eye on your brigades, therefore, 
+         it's best to come back into StratFalc after every Falcon 
+         mission. 
+         
+         If you want to launch a ground strike against an enemy site, 
+         the site must be within 15 miles of one of your brigades. 
+         Each time you place a ground path--commit to a 
+         strike--StratFalc will ask you which brigade you want to use. 
+         You can place up to sixty units in up to four ground paths, 
+         depending on what else is going on in the current mission. 
+         These units are placed "at risk."
+         
+         If you use the "Attk" screen to place the units, StratFalc will
+         only allow you to attack sites that are within 15 miles of a 
+         brigade; if more than one brigade is within that distance, 
+         StratFalc will take the units from the closest one.
+         
+         Just as with "at risk" aircraft, after you fly the current 
+         mission and return to Strategic Falcon at the beginning of the 
+         next one, StratFalc calculates the losses of your ground units. 
+         Again, the losses depend directly upon your success in 
+         accomplishing *your* mission, as well as the other factors 
+         discussed in the "aircraft" section above.  StratFalc will 
+         report any losses.
+         
+         To commit to an all out assault in an attempt to capture a site, 
+         you simply make the site the destination of one of your 
+         brigades. StratFalc examines the situation and calculates the 
+         outcome of the battle. If you are victorious, you will occupy 
+         the site.
+         
+         What about the enemy brigades? They're there, but you'll won't 
+         see them until it's too late! The only time you'll discover 
+         their presence is when you run into them while you're behind 
+         enemy lines--and you'll take heavy losses if you do! The enemy 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 11
+      --------------------------------------------------------------------
+
+         tends to keep his brigades entrenched in his own territory, and 
+         he normally only uses them for reinforcement of his strategic 
+         sites. They'll rarely cross over into your territory. 
+         
+         However, if you stray too deeply into the red zone, you can very 
+         easily find yourself facing his units. They'll be well dug in 
+         and they won't even start shooting until your flank passes their 
+         forward elements. Entire brigades have been known to be wiped 
+         out before they have a chance to extricate! The lesson here: 
+         don't go beyond the forward edge of the battle area unless you 
+         need to! And if you need to, make the foray as short as 
+         possible--your chances of running into the enemy increase with 
+         each mission that you remain behind the lines. (As a rule, 
+         attack the sites on the front line and capture them--only 
+         advance as you push the enemy back. Although it is often *very* 
+         tempting to make an end run for one or two sites that you 
+         need to meet victory conditions, if you get bogged down back 
+         there, you'll be ambushed and very likely will lose your 
+         brigade.)
+         
+         If you do get entangled with an enemy brigade, the *only* way 
+         to get away from it is to get your brigade back into friendly 
+         territory. Unfortunately, your units will move very slowly 
+         once they're engaged.
+      
+                       Ground Units: Controls Available
+         
+         The controls available to assist your command of the ground 
+         forces are found in the "Grnd" screen in the "Strat/Sim" 
+         submode. These include radio buttons to select the brigade to 
+         which you wish to issue orders, radio buttons to set the 
+         brigade's speed, a button to bring up the "Order of Battle" 
+         box (this box details the current strength of the brigade), 
+         and a box which informs you if the brigade is currently in 
+         enemy territory.
+         
+         If a brigade has been destroyed, its name next to the radio 
+         buttons will be grayed out and will be unselectable. If all of 
+         your brigades are wiped out, StratFalc won't let you into the 
+         "Grnd" screen at all. (You can always turn off "Sim Mode" in 
+         configuration if you want to place a ground attack but have lost 
+         all your brigades.)
+         
+         To move a brigade, either select the radio button of the one you 
+         want or click on its icon on the map. Next, "drag" it to its 
+         destination. A line will extend from the brigade to the point 
+         you indicated.
+         
+         To reset the destination, click inside the small box at the end 
+         of the destination line and move it to the new location. To 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 12
+      --------------------------------------------------------------------
+
+         clear any motion of the brigade, click on the brigade's icon 
+         itself.
+         
+         The circle around the brigade shows its striking 
+         distance--it's the fifteen mile radius inside of which you 
+         can carry out "Attrition Attacks" (explained below).
+         
+         To set the brigade's speed, click on the appropriate radio 
+         button. Please read the "Details" section below for some 
+         important information on how brigades move.
+         
+       
+                            Ground Units: Details
+         
+         -Capturing Enemy Sites-
+         
+         One thing has to be made clear: with the addition of Sim Mode, 
+         you now have two kinds of attacks at your disposal. First, you 
+         have the old type, where you place ground units at an enemy site 
+         and they go in and blast it out with the bad guys. This is 
+         called an "Attrition Attack" and is used to weaken an enemy site 
+         in support of future or current air operations, as well as to 
+         put the odds in your favor for future capture of the site.
+         
+         To carry out an Attrition Attack, just do what you've always 
+         done in StratFalc: you either use the "Attk" screen in the 
+         Strat/Sim submode or you place units manually using the 
+         Tact/Alld Ground submode. This is fully explained in the 
+         Strategic Falcon manual. Remember to use one of the site 
+         "activation" methods! Again, in "Sim Mode" you won't be able 
+         to place an attack any greater than fifteen miles from one of 
+         your brigades.
+         
+         The new kind of attack occurs when you set an enemy site as the 
+         explicit destination of one of your brigades. This is the only 
+         way to capture a site directly and strategically with StratFalc 
+         (you can occupy a site NONstrategically by simply using the 
+         Strat/Occupy submode). This new method of attack is called, 
+         logically enough, a "Capture Attack."
+         
+         To accomplish a Capture Attack, you use only the Strat/Sim 
+         submode's "Grnd" screen. Instead of moving one of your brigades 
+         *near* an enemy site, you move it right *on to* a site. A dialog 
+         box will confirm that you want to attempt to capture the site. 
+         Unlike an Attrition Attack, in a Capture Attack you don't have 
+         to activate any sites inside Falcon 3.0: the battle is fought 
+         totally inside Strategic Falcon's little brain.
+         
+         When you commit to this type of attack, StratFalc examines the 
+         situation and calculates the outcome of the battle. You will 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 13
+      --------------------------------------------------------------------
+
+         discover this outcome after you fly the current mission and come 
+         back to StratFalc. If you are victorious, your brigade may take 
+         some casualties but you will occupy the site. If you lose, YOUR 
+         BRIGADE WILL BE WIPED OUT!
+        
+         Did that get your attention? Good. You probably would like to 
+         know a little more about how StratFalc decides the outcome of 
+         the battle, so you can maximize your chances for success. 
+         
+         The first and foremost consideration is (you guessed it!) 
+         how well you do in your current Falcon mission. (This all 
+         depends on you!) If you accomplish your mission, the brigade 
+         will fight *much* more effectively.
+         
+         The second most important consideration is the quantity 
+         and type of units involved. If you've got a brigade 
+         with 40 tanks going up against a bridge that only has 
+         10 BMPs for defense, you can rest assured you're going 
+         to mop it up with little trouble. However, if that same 
+         brigade goes up against a site garrisoned with 60 tanks 
+         and artillery, the outcome is doubtful.
+         
+         The third consideration is the energy level of your brigade 
+         (which will be discussed in the next section). It pays to rest 
+         your troops before sending them into battle. Generally, any 
+         troops whose energy level is below 10 will suffer degradation of 
+         battle effectiveness. However, the adverse effect doesn't really 
+         become pronounced until the energy level hits 5 or 6: after 
+         that, their ability to fight falls off sharply--sending in 
+         troops with energy levels of 1 or 2 is almost certain suicide!
+         
+         The final factor in deciding these battles is whether the site 
+         in question is a victory node for either side. The enemy will 
+         fight harder to hold onto one of its victory sites or to keep 
+         you from capturing one of yours.
+         
+         So, taking these considerations into account, you might discern 
+         a prudent manner of attack against an important site: whittle 
+         it down before committing to the final offensive! Move your 
+         brigade to within 15 miles of the site but don't attempt to 
+         occupy it just yet. While the brigade rests up for the 
+         Capture Attack, send a few Attrition Attacks against the site 
+         to weaken it. Only when you have an overwhelming numerical 
+         advantage should you finally order your brigade to move in. 
+         (Of course, it's up to you--you may not be this type of 
+         commander!)
+         
+         -Energy and Fatigue-
+         
+         Energy and Fatigue are the same thing looked at from opposite 
+         sides. At the beginning of a campaign, your brigades are fully 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 14
+      --------------------------------------------------------------------
+
+         rested and have a perfect Energy level of 15. As they carry out 
+         operations in the theater, they burn up this energy.
+         
+         You can tell any of your brigades' current energy level from the 
+         Strat/Sim Grnd screen. If this number gets to zero, the brigade 
+         can't move or carry out any form of attack. If you manage to get 
+         this number below 0 (which is entirely possible!), you'll wish 
+         you hadn't!
+         
+         Everything costs energy, from moving along the back roads to 
+         carrying out attacks against the enemy. But you gain energy as 
+         well. Every six hours, you regain 2 energy points--back up to 
+         the maximum of 15. If you leave the brigade in an allied city or 
+         at an allied base, it gains 3 points. But if a brigade is 
+         trapped behind enemy lines, it will only gets back only 1 
+         point in those same six hours.
+         
+         Any "Attrition Attack" costs one point of energy for the entire
+         brigade. The cost of a "Capturing Attack" varies from one to 
+         three points, depending on the status of the adversary. 
+         
+         -Brigade Movement-
+         
+         The movement rate of each brigade depends on several factors. 
+         These include the terrain it travels over (roads or non-roads), 
+         the speed you set for it, and its energy level.
+         
+         A fully rested brigade moving along roads, at normal speed, and 
+         encountering no resistance will cover 40 miles in six hours. (We 
+         have to make allowances for logistics and constant mechanical 
+         breakdowns.) The same brigade moving at doubletime speed will 
+         move 60 miles, and at maximum speed it will cover 80 miles.
+         
+         If the brigade is off the roads, cut each of the above distances 
+         in half.
+         
+         In addition, movement tires your units and costs them energy 
+         points. Normal travel along roads uses energy at a level of 3 
+         points every six hours.
+         
+         However, as mentioned above, every six hours your units regain 2 
+         points of energy. So, while moving at normal speed over roads,
+         they lose a net energy of only 1 point. At this rate, they could 
+         travel for more than three days before they collapse from 
+         exhaustion.
+         
+         Things change when you press them too hard. Energy costs go up a 
+         point for each increase in speed rate, and moving off-road 
+         costs another point. If you put your units at top speed 
+         off-road, they'll burn up 6 units of energy. Since they only 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 15
+      --------------------------------------------------------------------
+
+         recoup 2, they'll lose a net of 4. They'll start dropping like 
+         flies soon after one day of this treatment!
+         
+         The tables below summarize movement, its rates, and associated 
+         energy costs.
+         
+         -Energy Cost-
+                                 Points
+                        Normal Dbl-Time Maximum
+         On-Road           3       4       5 
+         Off-Road          4       5       6
+         
+         -Energy Recuperation-
+                             Points Regained 
+                    Normal   In City/Base   Enemy Terr 
+                      2            3             1
+         
+         -Movement Rates-
+         
+         Beginning energy level 11 to 15: 
+                              Distance 
+                      Normal Dbl-Time Maximum 
+         On-Road        40      60      80 
+         Off-Road       20      30      40
+         
+         Beginning energy level 6 to 10: 
+                              Distance 
+                      Normal Dbl-Time Maximum 
+         On-Road        30      50      70 
+         Off-Road       15      25      35
+         
+                             
+         Beginning energy level 1 to 5: 
+                              Distance
+                       Normal Dbl-Time Maximum 
+         On-Road         20      40      60 
+         Off-Road        10      20      30 
+                             
+         Do you see the trouble? Strategic Falcon doesn't tell you how to 
+         command your troops--it only tells you what happens when you 
+         issue certain commands. There is nothing to stop you from, say, 
+         ordering a brigade whose current energy level is 2 to move at 
+         maximum speed off-road. 
+         
+         As you can see from the first table, doing so will cost you 6 
+         energy points! You'll end up with your troops in a negative 
+         energy state--which means they're beyond exhaustion. Disaster 
+         will occur! If you ever do anything that would leave you below 0 
+         in energy, your brigades will start self-destructing: traffic 
+         accidents will flare up, friendly fire massacres will break out, 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 16
+      --------------------------------------------------------------------
+
+         and people will, in general, be very testy. As mentioned in the 
+         "Fatigue" section, if a brigade's energy state is at or below 
+         zero, you won't be able to issue it any commands, so this
+         danger occurs when it is very close to, but above, zero.
+      
+         -Roads-
+         
+         The "roads" in Falcon are the links between the sites. If you 
+         assign a brigade to move forward, it will try to do so by moving 
+         along these roads. To stay on the road, you must figure a 
+         site-to-site path to your eventual destination, and put the 
+         brigade's destination marker directly on the either the next 
+         friendly site in that path or somewhere on the gray line leading 
+         to it. 
+         
+         If StratFalc decides that you're ordering a brigade to leave the 
+         road, it will ask you to confirm this. If you keep getting a 
+         confirmation dialog box but you're placing a destination marker 
+         on the gray line, first check that the site you're aiming for is 
+         indeed a neighbor of the site you're leaving. Bear in mind 
+         that some roads are "one-way." You can see these roads in the 
+         "Lines" submode--if you highlight the site which holds your 
+         brigade, the bright yellow lines show all the possible 
+         "on-road" destinations.
+         
+         An important note: Once you leave the road, the ONLY way to
+         get back on it is to move the brigade to a site (any site).
+         
+         -The Front Line-
+         
+         Every six hours your brigades stop and do a complete 
+         reconnaissance. They look in all directions. If one is 
+         surrounded on three sides by the enemy, it will move forward, 
+         but will do so very slowly. It may also begin to take 
+         casualties because it is making an opposed move. (These 
+         casualties are not as drastic as they would be if it runs into 
+         an enemy brigade, however!)
+         
+         Very often you must advance into enemy territory to conquer 
+         sites. Try to minimize the number of turns you spend back 
+         there. Beside being sniped at by the enemy, yoou brigade will 
+         also regain strength at the rate of only 1 point per turn. 
+         
+         -Water-
+         
+         Water was problematic in writing the movement code. I decided 
+         either I'd have to constantly compare the brigades' locations to 
+         those of the Falcon shorelines, and so add in specific (and 
+         extremely slow) code for each theater, or simplify matters and 
+         speed things up. I chose to simplify matters, so here's how it 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 17
+      --------------------------------------------------------------------
+
+         works:
+         
+         When a brigade does its reconnaissance, it looks north, east, 
+         south, and west of its present location. If it doesn't see any 
+         sites at all in a particular direction, it won't go that way, 
+         period. This method has its drawbacks. In Bosnia, for instance, 
+         the airbase at Brindisi, Italy, in the southwest corner of the 
+         theater, is across the Adriatic from Bosnia. However, because of 
+         these movement rules, if you have a brigade on the coast of 
+         Bosnia and order it to go west, into the sea, it will see no 
+         problem with that and will happily oblige--like a bunch of 
+         lemmings! It does this because it sees those bases to the west 
+         and says "okay." Maybe they found some transports somewhere.
+         
+         On the other hand, these same movement rules allow you to move
+         your brigades onto the rocky beaches of the Kurile Islands.
+         
+         The point is, it's up to you to order your brigades to move 
+         sensibly.
+      
+         -Falcon CAS Missions-
+         
+         Units which are placed by Falcon 3.0 in support of the current 
+         mission come out of your Division. They will be taken from the 
+         nearest brigade unless that brigade doesn't have enough 
+         units. If StratFalc has raided all three of your brigades and 
+         still doesn't have enough units to satisfy Falcon's placement 
+         (a *very* rare occurrence!) it will take units from your 
+         sites to make up the difference.
+         
+         The fifteen mile rule is overridden in this case; it's assumed 
+         one or two of your companies got lost somehow and ended up 
+         in the mission's target area (fog of war and all that).
+         
+         This puts a whole new slant on Falcon itself. Successfully 
+         completing a CAS mission is now *extremely* important. If you 
+         fail, your brigades will lose most--and maybe all--of the 
+         allied units that are involved in the mission. 
+         
+         For this reason, you should feel free to tweak those missions 
+         where Falcon places two opposing columns too close to each other 
+         and by so doing makes the mission impossible to accomplish (see 
+         "2-columnn CAS missions" under "Impossible Missions" in your 
+         StratFalc manual).
+      
+                                  
+                                  LOADOUTS
+      
+         Another major new feature in StratFalc version 1.1 is the 
+         addition of "Loadouts" to the Aircraft Arming Dialog. With 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 18
+      --------------------------------------------------------------------
+
+         these controls, you can automatically save and load the 
+         appropriate weapons to any aircraft.
+          
+         Each aircraft type has its own (individual) set of 18 loadouts. 
+         Default loadouts for each plane are provided, but these are 
+         only roughed in and can be adjusted or renamed to suit your 
+         needs.
+      
+         Using Loadouts:
+      
+         The first thing you'll probably notice in the Arming Dialog 
+         box (you get to this box by pressing the "Arms" button in any 
+         Tactical/Air submode) is the red section at the bottom of the 
+         box. This contains a very brief description of the aircraft's 
+         normal loads and available hard points. If you wish to change 
+         the notes in this box, use a text editor to alter the 
+         appropriate "*.NFO" file (e.g., the one for A-10s is 
+         A-10.NFO). Here are the rules: the file size cannot be 
+         greater than 350 bytes when you're finished and StratFalc 
+         will ignore carriage return/linefeeds. (Thanks to Miles 
+         Constable for supplying the appropriate notes!)
+         
+         To use a loadout, simply click on the "Use..." button in the 
+         Arming Dialog box. A new dialog box will pop up. You'll see 
+         18 radio buttons, each labeled with either some cryptic 
+         designation or the word "Unused." An explanation of the 
+         labels is given below. 
+         
+         To examine the contents of a loadout, just click on the 
+         appropriate radio button. The bottom of the dialog will fill 
+         with a description of that particular loadout. To load the 
+         weapons you're viewing, click the "use" button. The dialog 
+         will close and the Arming Dialog will now contain the desired 
+         weapons. Adjust the weapon quantities if desired, then click 
+         on "OK" to finalize loading the aircraft.
+         
+         One thing should be mentioned. To use these loadouts effectively 
+         (indeed, to load any aircraft effectively with StratFalc), you 
+         should be comfortable with the alphanumeric designation of the 
+         various ordnance. For instance, you should know off the top of 
+         your head that an AGM-88A is a HARM (High-speed Anti-Radiation 
+         Missile). If you don't, please do some studying of the reference 
+         section of the Falcon manual; it will be time well spent.
+         
+         The default labels follow these conventions (up to a point):
+         
+         The first 3 or 4 letters tell you the suitable mission types for 
+         the weaponry.               
+         
+            ATA      Air to Air 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 19
+      --------------------------------------------------------------------
+
+            CAS      Combat Air Strike 
+            BOMB     Stationary Target Strike 
+            SEAD     Suppression of Enemy Air Defense
+      
+         After the hyphen come any amplification of weapon types.
+         
+         For example, for ATA loadouts:       
+             BVR Exclusively beyond visual range missiles (AMRAAMS) 
+             WVR Exclusively within visual range missiles (Sidewinders)
+         
+         For CAS or Bomb:
+             PGM Precision Guided Munitions 
+             UG Unguided Munitions
+         
+         (If there is no designator the loadout is a mix.)
+         
+         An extra letter after the slash signifies the size of the 
+         individual munitions. "/H" is Heavy; "/L" is Light; "/M" is 
+         Medium. Again, no slash letter indicates a mix.
+         
+         Finally, the last section designates the aircraft's relative 
+         range and hence, is a rough indicator of how much firepower it's 
+         carrying.
+         
+         LR     Long Range--some weapons will be replaced by fuel tanks 
+         SR     Short Range--no fuel tanks and extra weapons
+         
+         (If there is no designator, there is no extra fuel. Neither are 
+         there any extra weapons.)
+         
+         As an example, a loadout of ATA-BVR-SR on an F-15 would signify 
+         a jet that is loaded down with 8 AMRAAMs. ATA-BVR-LR might mean 
+         6 AMRAAMs and external fuel.
+         
+         On a B-52, a loadout of BOMB-UG/H would mean 24 Mk-84 (2000 lb.) 
+         iron bombs.
+         
+         
+         Saving Loadouts:
+         
+         To save a loadout, first you must have the appropriate aircraft 
+         type as the active one. Then click on the "Arms" button. Then 
+         you simply fill in the Arming Dialog with the weapon loadout you 
+         want to save and click the "Save..." button. A new dialog will 
+         appear and will ask you the slot in which you want to save this 
+         loadout. (The first slot labeled "Unused," if there is one, will 
+         be preselected for you. Otherwise the first slot will be 
+         preselected.) Select the slot you prefer and click "OK."
+         
+         If the slot you choose is already named, you will get one more 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 20
+      --------------------------------------------------------------------
+
+         chance to abort the process; otherwise you'll be prompted for 
+         the name of the new loadout.
+         
+         
+         Editing Loadouts:
+         
+         To change a loadout, first you need to fill the Arming Dialog 
+         box with the weapons you wish to place in the loadout. The 
+         fastest way to do this is to bring up the dialog box, press 
+         "Use...", and then select the loadout that you want to alter. 
+         Click "OK" to fill the boxes in the Arming Dialog. Alter the 
+         loadout however you want, and then click "Save...". Select the 
+         same loadout name as the one you were altering, and click "OK." 
+         
+         
+         More information on Loadouts:
+         
+         The reason for the addition of the Loadout features is the 
+         difficulty in arming aircraft and the ease with which they 
+         can be overloaded. Each default loadout has been tested to 
+         make sure the aircraft will fly properly. This saves you the 
+         aggravation of precision-planning a mission only to see your 
+         pilots do a series of low speed stalls into a hillside (and 
+         why don't they just dump their stores, anyway?).
+         
+         Also, feel free to share your loadout files with others.  
+         You'll notice that I've supplied only 3 or 4 loadouts for 
+         most aircraft. That's because building these is a very 
+         time-consuming operation. Each loadout data file has the 
+         extension LOD (for example, the F-14 loadout is "F-14.LOD"). 
+         If you build up some nice sets, put them up on CIS or any 
+         other board. ONLY THE LOADOUT FILES, of course, none of the 
+         money stuff (not the EXEs)!
+      
+         There is more to creating a successful loadout than arming 
+         the aircraft and keeping the weight below that in the "Max" 
+         box.  Drag affects loadouts too.  You might be able to place 
+         20,000 lbs of Mk-84 bombs on a plane, but 20,000 lbs of 
+         Sidewinders would cause trouble. For this reason, its a good 
+         idea to test any new loadouts that may be large enough to 
+         cause problems.
+      
+         A special note about BUFFs:
+      
+         Heavier aircraft in general and B-52s in particular are very 
+         easy to crash. A good rule of thumb is to never assign a 
+         wingman in the first F-16 flight to a B-52, because no matter 
+         what you do, they start too close to the ground. If you must 
+         put one in your own flight, make him "extra light" and get 
+         off the ground as soon as you can. That first racetrack turn 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 21
+      --------------------------------------------------------------------
+
+         while he's waiting for you to get airborne is a killer!
+      
+         Also, be *very* careful with waypoint altitudes. A B-52 is
+         not going to climb too steeply, but it'll try like hell to 
+         get where you tell it to go. If you place waypoint 2 at 9000 
+         feet and only two miles from waypoint 1 at 2000 feet, your 
+         B-52s will actually end up at waypoint 1.5 at 0 feet (and in 
+         a twisted mass of metal).
+                                
+         
+                                SPEED LIMITS
+      
+         Speed limits will now be enforced! If you change an aircraft 
+         type in a flight, and the speed of any of that flight's 
+         waypoints are greater than the maximum speed of that aircraft, 
+         then the offending waypoint(s) speed will be lowered to the max 
+         speed of the aircraft. In other words, the flight won't be able 
+         to go faster than the slowest flier. If you don't like this, you 
+         can disable the feature with the "/NOSPEEDCHECK" switch. 
+      
+         This can cause a problem if you add a slow aircraft and 
+         subsequently remove it: the waypoints will all be "too slow." To 
+         alleviate this problem a bit, I've made it easier to enter the 
+         value "450" (which seems to be the most common waypoint speed) 
+         in the speed box. If you click on the speed box, then hit the 
+         <n> key ("n" for "normal"), then hit <Enter>, "450" will 
+         automatically take the place of that "n" in the speed box.
+         
+         The smart thing to do to avoid frustration is assign all 
+         aircraft to a flight *first*, before you start tweaking 
+         waypoints.
+         
+         Also, because of some limitations with storage in the data 
+         files, the fastest speed for any aircraft in Falcon3 is 1275 
+         knots. 
+      
+         Please note that the maximum speeds are taken from various 
+         sources (Falcon manuals, Jane's, etc.) and that the actual top 
+         speeds of aircraft may be less in the simulation, depending on 
+         weapon loads, altitude, etc.  For this reason, the "Timing Trace"
+         feature may mislead you:  you can still *set* a speed higher than 
+         the aircraft may actually fly, although you can't set it higher 
+         than the aircraft's *absolute* limit.
+                                
+      
+                                FUEL REPLACEMENT
+      
+         As you may have noticed by now, Falcon 3.0 robs your
+         fuel.  If you exit from the cockpit in Falcon by using the 
+         "ALT-X" method or by pulling down the menu and hitting 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 22
+      --------------------------------------------------------------------
+
+         "Quit to DOS," the fuel currently loaded in your F-16s does 
+         not return to your inventory.  To make Falcon put it back in 
+         the storage tanks, you have to use "Abort Mission" and then 
+         exit to DOS from the mission planning screens.
+      
+         However, with StratFalc 1.1, this problem is just about solved.
+         First, though, YOU MUST HAVE SIM MODE ACTIVE for this feature 
+         to work (otherwise StratFalc has no way of tracking your fuel 
+         mission to mission).  If StratFalc sees your fuel inventory
+         drop suspiciously, it'll boost it back up to its previous 
+         level.  It knows real use, though, so you still have to 
+         manage your fuel--this isn't a panacea!
+      
+      
+                              ONE KEY TO FLIGHT
+      
+         If you hit the <F4> key, StratFalc will exit and start Falcon, 
+         and when you exit, you'll be back in StratFalc again (this 
+         even works while in the KCC menu program!). This feature 
+         works through batch file processing, so it uses none of the 
+         system's memory. Okay, virtually none.
+      
+                                                    
+                        CHOOSE YOUR FLIGHT WITH EASE
+      
+         You can now instantly switch your first Falcon flight with any 
+         other flight. Just hit <F3>.
+                        
+         This feature will let you swap F-16 flight 1 automatically with 
+         any other F-16 flight. If, for example, you draw a CAS missions 
+         and you want fly CAP instead of hitting the column, you don't 
+         have to painstakingly swap all Flight 2's waypoints for flight
+         1's--you just swap the flights. 
+      
+                            
+                           MORE RELIABLE AIRCRAFT
+                                
+         There's a new limiter on StratFalc flights to better reflect 
+         what Falcon actually places in the theater--total aircraft is 
+         now 14, not 16 as stated in the manual.  It turns out that 
+         Falcon almost always keeps two aircraft in reserve in 
+         campaigns (those randoms gotta come from somewhere!). 
+      
+      
+                        (ALMOST) UNNECESSARY READING
+      
+         The snippets below elaborate on some of the finer points of 
+         using StratFalc. They consist of questions and observations 
+         that came up in using and testing StratFalc 1.1 in general 
+         and Sim Mode in particular.
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 23
+      --------------------------------------------------------------------
+
+      
+                                  Sim Mode:
+      
+      Q. The documentation states that number of forces is calculated 
+         depending on the configuration campaign setting, i.e. "easy 
+         etc.". What happens if you change that setting in the middle 
+         of a campaign?
+      
+      A. Nothing. Your forces are set at the beginning and that's what 
+         they'll stay. However, changing the difficulty in midstream 
+         *will* change the formula used to determine wins/losses. For 
+         example, if you go to easier, less of your guys will get blown 
+         away.
+      
+      Q. While it may be more realistic to start the allied flights
+         from their respective bases, it's also a major pain. Realism 
+         is great, but we don't have any control to launch the allied 
+         flights early to rendezvous. For example: CAS mission in 
+         Pakistan. I got to move the mud, but my escort was 75 nmi 
+         away, while my target was 17 nmi from my own base. Lost 3 
+         Vipers on that one.
+      
+      A. Well, that's where the management aspect comes in! Your 
+         *default* escort is 75 miles away--but you're the commander now 
+         and you can override this obvious error of an underling!
+      
+         I think the thing to do is examine what squadrons are stationed 
+         nearby (or at your base), and then change the aircraft type of 
+         the escort flight to an appropriate, nearby aircraft type. 
+         StratFalc will offer to move the first waypoint to the proper 
+         base for you.
+         
+         Meanwhile, see if it's worthwhile to transfer that distant 
+         squadron somewhere closer. StratFalc initially places all 
+         aircraft at bases depending on (1) the type of aircraft and (2) 
+         the bases' distance from the front (for example, E-3s always 
+         start out pretty far from the action). What I've been doing 
+         personally is, at the outset of a campaign, juggling my 
+         squadrons. Most of the time I just ignore Falcon's "suggestion" 
+         of a support flight and change it to something I think is more 
+         appropriate for logistic or strategic reasons.
+         
+         Another option is to delay your F-16s (fly around and wait for a 
+         while?), until the help gets there. But, of course, then the 
+         enemy randoms will show up like FOD on a hangar deck!
+      
+      Q. F3 doesn't recognize StratFalc site captures in its Theater 
+         Updates even though the icons show up blue in F3. Is there any 
+         way that the changes could be written into the code to modify 
+         the file to reflect the actual changes?
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 24
+      --------------------------------------------------------------------
+
+      
+      A. In a word, no. Falcon has it's own routine going on and I 
+         don't want to mess with it. (It took a while to decide to 
+         change site-capture at all!) The "capture" announcement that 
+         StratFalc gives you was the best I could come up with. 
+      
+      Q. Am I correct in assuming that F3 *does* recognize the sites 
+         you've captured with SF, but doesn't add them to the allied 
+         gains list?
+      
+      A. Oh sure, Falcon recognizes them. When you fly over the sites, 
+         there are friendly units down there (with the exception of 
+         "transcendentals" discussed in a later question), and when F3 
+         does its victory checks, they count as yours (which is really 
+         all that counts!). They just don't get added to the 0600 
+         "captured" list because Falcon didn't capture them using it's 
+         own routine. Falcon thinks the sites were either captured 
+         earlier in the campaign or they were always yours.
+         
+         In a related vein, one of my fears is that StratFalc's sim mode 
+         makes it just too easy to win a campaign. Making the brigades 
+         work in the manner they're intended is a fine balance, and I 
+         honestly don't know if I've got it right. I know one thing: if 
+         one gets ambushed behind enemy lines, it's hell to extract it!
+      
+      Q. Is it true that you can issue an attack order for a site 
+         that you already call your own?
+      
+      A. Yep, you can issue the order. Won't do you any good, of 
+         course, but there's nothing to stop you! It could be changed, 
+         I suppose, but why bother? (For some perverse reason, I like 
+         it!)
+      
+      Q. What happens to the StratFalc planes that were shot down 
+         during the mission? Are they lost, or not?
+      
+      A. The short answer is: they might be! 
+      
+         The long answer is:
+         
+         StratFalc has no way to see *directly* what happened during the 
+         mission to any planes other than F-16s (and even then, it 
+         doesn't know if F-16s were shot down or another type that was in 
+         an F-16 slot). What it does is see how well (or poorly) the 
+         mission went and the extrapolate that for any StratFalc planes 
+         (or ground units) that were placed "At Risk" before the mission 
+         began. 
+         
+         Say you have 4 F-16s flying, with 2 F-15s in StratFalc (Allied) 
+         slots for support. In this case, the F-15s are placed "At Risk." 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 25
+      --------------------------------------------------------------------
+
+         You fly the mission and lose two F-16s and the two F-15s *in 
+         Falcon*, but still succeed in accomplishing the mission.
+         
+         Then you return to StratFalc, which sees (1) that you succeeded 
+         in your mission but (2) that you lost 2 F-16s in the process 
+         (again, it doesn't see that the F-15s were lost). It checks the 
+         difficulty, looks to see how many enemy planes you shot down, 
+         looks to see how many ground targets you destroyed, etc., and 
+         comes up with a percentage--a probability--that all units that 
+         were placed "at risk" survived the mission. Then it "rolls" 
+         against the units at risk using that percentage. If the unit is 
+         destroyed, it tells you so.
+         
+         So you can see, then, what you lose in Falcon for the StratFalc 
+         planes doesn't matter. Therefore...
+      
+      Q. Does Stratfalc incur extra losses over what was lost in the 
+         mission if the mission is not successful?
+      
+      A. No, not extra. You lose F-16s in Falcon. You lose the 
+         StratFalc (or Allied) planes in StratFalc. And...
+      
+      Q. Is StratFalc rewriting the mission history based solely on my 
+         success or failure?
+      
+      A. Yes, but again, only regarding the StratFalc (Allied) planes. 
+         Whatever happened to the aircraft in your F-16 slots in the 
+         mission remains as it happened.
+      
+         Just to make this explicit: only the StratFalc (Allied) flights 
+         are placed "At Risk." F-16 slots are left alone, no matter what 
+         aircraft type you put in them. This is to prevent "double 
+         jeopardy." If F-16 slot aircraft were put in the "At Risk" pool, 
+         as well as the StratFalc planes, then you'd face losing them 
+         both as available F-16s in Falcon and in StratFalc.
+         
+         Also, this offers an additional indirect method of resupplying 
+         StratFalc aircraft. As one user put it:
+      
+                             ----------------- 
+             In a real campaign, would F16s be the only A/C that are 
+             replaced and resupplied? Hell no! Granted, even in real 
+             life the quantities of allied A/C are finite, but I'm 
+             sure that there would be *some* replacements in the 
+             pipeline. So in a roundabout way, by *not* taking my A10s 
+             away from me even though I lost them (when they were in 
+             wingmen slots) you are resupplying me. Geez, that's thin, 
+             isn't it? 
+             
+             I use A10s for this example because I can't recall when 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 26
+      --------------------------------------------------------------------
+
+             I've ever had them for an escort <g>, or when I ever had 
+             to escort them somewhere. So, basically, according to 
+             your docs, they will *never* get resupplied by StratFalc 
+             like, say, a pair of Eagles would (to use your example). 
+             Call it a gift from Uncle Bill or something. The allied 
+             squadrons *appear* to get resupplied and you shouldn't 
+             have to do alot (if any) programming to get there. 
+                             ----------------- 
+      
+         Well, Mark, I like the reasoning. The code has been altered 
+         to do exactly this. In any case, other than being the only 
+         real option, it's nice to have some additional 
+         "justification" for it!
+      
+                                  Loadouts:
+      
+      Q. The canned loadouts are a great feature, but when started up 
+         cold many of the planes have really crazy loads, like 37 wing 
+         tanks and 22 bombs on a MiG 19. If one never bothers to check 
+         the loadouts, like on an enemy plane, it could be disaster. I 
+         wonder if this is causing a lot of crashing of planes that goes 
+         unnoticed.
+      
+      A. Whatever StratFalc shows you for weapons, when you first look 
+         at a mission after coming out of Falcon, is indeed what 
+         is on the plane (however crazy that may be). I have 
+         seen the 22 bombs before, but I've never seen the 37 
+         wing tanks!
+      
+      Q. All planes seem to have the same gun ammo loadout. I note 
+         this does not count against the weight.
+      
+      A. Yeah--in Falcon, ammo has no weight!
+      
+      Q. Are there upper limits to this number?
+      
+      A. I believe it's 999 rounds--at least for F-16s.
+      
+      Q. What about limits on flares and chaff?
+      
+      A. For F-16s, 30 and 30, respectively, no matter what number you 
+         put in the box.
+      
+      Q. When F-16 slots are filled with a different plane, is the 
+         fuel load and use calculated as if it were an F-16, or is this 
+         different for different planes?
+      
+      A. For the purpose of filling the fuel box, StratFalc assumes 
+         every aircraft is an F-16, so the calculations only apply to 
+         F-16s. It does seem to hold pretty close for similar aircraft. 
+         Otherwise, I have no idea how valid it is.
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 27
+      --------------------------------------------------------------------
+
+      
+      Q. As an aside, can FalcCalc also deal with this?
+      
+      A. FalcCalc thinks anything in an F-16 slot is an F-16. So it 
+         deals with it by ignoring it!
+      
+      Q. About loadouts: I assume you got the max weight from Falcon 
+         or other sources, and I also assume that this max weight is 
+         not really related to the flyable load. Or is it? If this is 
+         also complicated by drag, I think the documentation should 
+         indicate that home brew loadouts need to be tested for 
+         flyability.
+      
+      A. Max weight is definitely related to the flyable load--and 
+         closely, too. It's just that, in this case, a pound of feathers 
+         weighs more than a pound of lead. You can have X pounds of iron 
+         bombs and fly fine, but X pounds of Sidewinders may be 
+         unflyable. Good point--all loadouts should be tested. This will 
+         be in the docs!
+       
+      Q. I'm using B-52s. The Max Weight given is 488,000. After 
+         loading the MK84s the weight is 485,863. But it lights up in 
+         red and beeps like it's saying it's too heavy.
+      
+      A. The box turns red if you go over 98% of max weight. It is 
+         confusing (especially since it's undocumented!) and has been 
+         changed to 100% for the release version. If you go over 95%, 
+         it'll now turn yellow!
+      
+                                 Kill Boxes:
+      
+      Q. About Kill Boxes--does a second F-16 flight in a different 
+         box need to have the point of view focused on it to wake up 
+         the ambient ground forces?
+      
+      A. Yes. The big point is this: only one kill box is active at a 
+         time--and that's the one where *you* are. If the second F-16 
+         flight is out of your kill box, the ground forces there are 
+         inactive. When you jump to that wingman view, though, they wake 
+         up--often right underneath the flight. (This surprises the hell 
+         out of those pilots!) That's why you have to watch the other 
+         flight "all the way in" from about 7 miles out: they'll have 
+         time to properly set up attacks that way.
+      
+      Q. If Falcon 3.0 creates enemy ground forces, are they active 
+         independent of point of view?
+      
+      A. Yes, they're active all the time. Kill boxes only apply to 
+         the units at a *site*.
+      
+      
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 28
+      --------------------------------------------------------------------
+
+      Q. I've conquered a site but when I fly near it, I still get locked 
+         up by enemy SAMs, with a TWI code of 5. The site shows up as 
+         blue in both StratFalc and Falcon. What gives? Do I own the 
+         site or not?
+      
+      A. Congratulations! You've run into a "transcendental." You own 
+         the site, all right, but there are some weird visitors 
+         sharing it with your units. "Transcendental" units are the 
+         fixed SAM emplacements. On the Allied side, they're Patriot 
+         missile batteries. On the Enemy side, they're the SA-2 
+         missile sites.
+         
+         I call them "transcendentals" because they're active ground 
+         units, associated with a site, that transcend Falcon's normal
+         Kill Box activation scheme. They're always active and they're 
+         not limited to one kill box (they're also the only ground 
+         units active in Red Flag). They don't exist in the original 
+         three theaters (Kuwait, Israel and Panama), only in Pakistan, 
+         Japan, Korea and Bosnia. Technically, they're *active* map 
+         objects, not site objects. (The ships in Japan are also 
+         transcendentals.) 
+         
+         They live by some very strange rules. Enemy ground units
+         don't "see" them, so when a transcendental is at a site, and 
+         that site is captured by the other side, the transcendental 
+         may peacefully coexist with the site's new tenants. It will 
+         still lock up and fire on aircraft. It's like they exist in a 
+         separate dimension than the other ground units, which is 
+         another reason to call them transcendental. (Actually, the 
+         ground units are treating them just as if they were any other 
+         structure at the site.)
+         
+         However, while ground units can't "see" them, your aircraft 
+         surely can, and a SEAD flight will knock them out once and 
+         for all, for the remainder of the campaign.
+         
+         How do you deal with them? Well, since the ground units won't 
+         do the dirty work of destroying them, you'll have to. If, 
+         after your side captures a site, you're still getting locked 
+         up (and launched at) from that site (as your question 
+         indicates you are), then you've got to take action to knock 
+         out the transcendentals yourself. The sites are, namely, the 
+         fixed "missile sites." Their icon in Falcon shows a missile.
+         
+         There is one nice part to all this: When performing a strike 
+         on transcendentals, you don't have to wake up the site, so 
+         AGM-88s are perfect for this type of attack--they're long 
+         range/standoff, and in this instance there's no artificial 
+         restriction on their use caused by Kill Box boundaries. Not 
+         only that, but you don't have to go with the strike force or
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 29
+      --------------------------------------------------------------------
+
+         view it--you can even task a StratFalc/Allied flight to do 
+         the job while you're using your F-16 flights to perform the 
+         current mission. You then have no risk of losing your own 
+         aircraft (cowardly as that sounds!).
+         
+         Since these units exist no matter who occupies the site, you 
+         can attack them at any time. SA-2 sites are easily spotted, 
+         but if the enemy still owns the site, a SEAD flight may spend 
+         its ordnance on other SAMs without destroying the 
+         transcendentals. For this reason, you may want to avoid 
+         attacking these units until you capture the site, when your 
+         strike force will have no problem picking them out (they'll 
+         be the only enemy units to hit!).
+         
+         If you're set on destroying them before you capture the 
+         site, though, there is a way. Since they transcend Kill Box 
+         rules, just approach the site from the closest kill box 
+         border, but don't cross the border. The transcendentals will 
+         light up (SA-2s will track you from 45 miles away or more!) 
+         while the other units at the site will remain asleep. Let 
+         loose a HARM or two at the offending SAMs.
+         
+         And a final note about transcendentals. As map objects,
+         they're immune to the "Zoom" level you set in Falcon's 
+         "Options" menu. They will always be 1X size, which may make 
+         attacking them even harder.
+      
+                              Troubleshooting:
+      
+      Q. Sometimes when I'm changing something with the mouse, I 
+         have to keep clicking it to make it change.
+       
+      A. You have to wait for SF to finish redrawing the screen before 
+         you hit another control. The code doesn't get back to polling 
+         the mouse until the screen is in place, because otherwise it 
+         wouldn't know which controls were "in focus." 
+      
+      Q. I want to be sure that I understand Primary Warning Number 5 
+         ("THOU SHALT FORCE FALCON 3.0 TO CREATE A NEW *.MIS FILE FOR 
+         EACH NEW MISSION.") completely. My understanding after 
+         reading the manual would be that you would enter Falcon 3, 
+         look at the mission and determine what changes to make, then 
+         start StratFalc, make the changes, and save them. Here is 
+         where I want to be sure that I have it correct, now when I 
+         start Falcon 3 after I have made the StratFalc changes, DO I 
+         EXIT THE PROGRAM AFTER HITTING THE "TAKEOFF" BUTTON AT THIS 
+         TIME, AND THEN RESTART THE GAME AND THE MISSION? In other 
+         words enter the program, leave and then enter the program 
+         again?
+      
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 30
+      --------------------------------------------------------------------
+
+      A. OK, warning 5 means that you have to get into the cockpit (or 
+         more correctly, press the "Takeoff" button) at least once for 
+         each mission before entering StratFalc. This is because 
+         StratFalc needs access to the "squad?.mis" file which is only 
+         created when you press the "Takeoff" button. A typical session 
+         would go like this:
+         
+         1.) Start Falcon, and either start or continue a campaign. Go 
+             through all the screens--look at the mission description, 
+             but don't bother memorizing it. It's always available in 
+             StratFalc if you hit <F2>. 
+      
+         2.) Continue through the Falcon screens and press the "Takeoff" 
+             button. Once you're in the cockpit, exit to DOS.
+      
+         3.) Start Strategic Falcon. Open the campaign you were using in 
+             Falcon. Adjust all flights, F-16 and otherwise, and 
+             everything else the way you want it.
+      
+         4.) Start Falcon again and go through into the cockpit. You 
+             don't need to pause in any mission screens--you've done all 
+             this in StratFalc. All you have to do is choose the pilots 
+             for the aircraft in your F-16 slots. Fly the mission.
+      
+         5.) At the end of the mission, go through the debrief. Press 
+             "Next Mission," and hurry through to the cockpit again. 
+             Return to step #2 above.
+         
+         So you can see, you only exit Falcon *once* between missions. 
+         When you're done fighting for the night, just make sure you 
+         leave Falcon from the cockpit (and so create a new 
+         squad*.mis), and for your next session, start by modifying 
+         that mission with StratFalc.
+      
+      
+      Q. I just purchased Strategic Falcon recently, and I'm very 
+         frustrated in trying to get the Strat flights to do what 
+         they've been tasked to do. Maybe if I give you an example of 
+         a mission, you can tell me what I'm doing wrong. 
+       
+         Falcon has given me one flight of two F16s to sweep enemy 
+         territory. From Strategic Falcon I can see that I also have 
+         one flight of F14s that are flying along almost the same 
+         flight path. The flight path takes both flights over an enemy 
+         base which has tons of SAMs, so I add two more flights from 
+         Strategic Falcon. I make the first additional flight an F16 
+         flight, but I replace them with F4s loaded with HARMs and 
+         Mavericks, set their waypoint over the enemy base, set their 
+         altitude at 9000, and set their action to SEAD. 
+         
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 31
+      --------------------------------------------------------------------
+
+         I make the other additional flight an Allied flight of F111s 
+         with HARMS, Mavericks and MK82s, set their waypoint over the 
+         enemy base, set their altitude at 3000, and set their action 
+         to S&D. I fiddle with the speeds of all the flights so that 
+         the F4s and the F111s reach the enemy base about a minute 
+         before my flight does, and from slightly different angles. I 
+         save the file in Strategic Falcon, load the STRTSPRT.COM 
+         program, go into Falcon, and start the mission.
+       
+         Since we're all basically in the same area, I can jump back and
+         forth between the flights using the Wingman View key. About 20
+         miles before the enemy base, I turn on the autopilot, and jump to
+         the F4s and the F111s just to make sure they're set up. I use the
+         F3/F4 keys to see the enemy base coming up, and sure enough they
+         start firing SAMs at these flights. But instead of doing anything
+         about it, I watch as first the F4s and then the F111s dump all
+         their air/ground stores and try to outrun/outmaneuver the
+         incoming SAMS. The F4s and F111s all get clobbered by the SAMs,
+         which then proceed to destroy my flight also.
+         
+         I've tried this mission (and others like it) several times,
+         changing the pilot Skill Level, the pilot Temperament, using SEAD
+         or CAS or S&D as waypoint actions, putting the attack waypoint
+         nearer or further away from the enemy base.....and the additional
+         flights always dump their stores and try to act like they weren't
+         supposed to be on an air/ground mission. I've read thru the
+         manual, but that didn't help; what am I doing wrong?
+      
+      A. Okay, it looks like you've done everything right, but this:
+      
+         >> Since we're all basically in the same area, I can jump back 
+         >> and forth between the flights using the Wingman View key. 
+         >> About 20 miles before the enemy base, I turn on the 
+         >> autopilot, and jump to the F4s and the F111s just to make 
+         >> sure they're set up.
+      
+         Here's where I suspect the problem lies. First off, it's 
+         possible (and probable) that your F-16s are not in the kill box 
+         *with* the ground attack flights while you're jumping back and 
+         forth. 
+         
+         Once you jump to the wingman view to watch the SF planes, 
+         *leave the view there until the sf flights complete their 
+         attack!*
+         
+         Every time you jump back to your F-16, you're probably 
+         leaving the kill box and so "turning off" the enemy SAMs--so 
+         the ground attack flight have nothing to line up on. Then, when 
+         you jump *back* to their view, you reenter the kill box and 
+         *suddenly* "switch on" the SAMs there, which find your SF 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 32
+      --------------------------------------------------------------------
+
+         flights (who have not set up any attacks on them, because 
+         they're "off" when you're not there!) and toast your planes.
+         
+         First, make sure you start the mission with the ground attack 
+         (StratFalc flights) *at least* 7-10 miles from their target, 
+         and when they get to about that point, set your autopilot and 
+         jump to the wingman view of the StratFalc flight that is 
+         closest. 
+         
+         Also, if the site is close to the edge of a kill box, make 
+         sure you're not coming in over that edge.  If the aircraft 
+         are too close to the SAMs when they wake up, the planes 
+         won't have time to set up attacks.
+         
+         These are the keys:
+         
+         * Give your SF aircraft plenty of room to set up.
+         
+         * Make sure they don't come at a site that's close to the edge 
+           of a kill box from over that near edge (try to get at 
+           least 7 miles).
+         
+         * Once the ground strike craft get close to the site (within 
+           about 7-10 miles), watch the attack all the way in.
+         
+         * If you can't watch the site all the way in with the wingman 
+           view (as you know, sometimes StratFalc flights go "out of 
+           range"), use the Transporter Room method described on  Page 21 
+           of the manual to activate the site and keep it activated until 
+           your attack can hit it.
+         
+         When all else fails, the Transporter room usually comes through.
+      
+      Q. The game will hang up short after I pushed the Take Off-Button.
+      
+      A. Do the following:
+      
+         * The first thing to do is get into your \FALCON3 directory.
+      
+         * Then type "CLEAR" and hit <Enter>.
+         
+         * Then start Falcon3, go into the campaign, and get into the
+           cockpit.
+         
+         * If Falcon3 hangs again, then this campaign is damaged and 
+           you'll have to start a new one. (Sorry! You can try running 
+           RESTRCAM.BAT; it might help.)
+         
+         * If Falcon lets you into the cockpit, quit to DOS from the 
+           cockpit.
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 33
+      --------------------------------------------------------------------
+
+         
+         * Start StratFalc (by typing "STRAT", *not* "SF"), alter the 
+           mission and save it. Go into Falcon. The mission should fly 
+           normally with your changes.
+         
+         The number one cause of this kind of problem is not having the
+         STRTSPRT TSR loaded when playing Falcon3.  The number two cause is
+         abandoning a campaign before its conclusion.  If you ever abandon
+         a campaign, run "CLEAR" before starting a new one.
+      
+      
+      
+      
+               And finally, here's a tip from your Uncle Bill.       
+      
+      
+            Attacking Enemy Sites:  How to Live to Tell About It.  
+      
+      
+         A successful strike against a well-defended site is more 
+         than just placing a waypoint and sending in some heavily 
+         loaded F-111s. Doing this will destroy some enemy units, but 
+         it will also, inevitably, lose the bombers. That is not a 
+         successful strike!
+         
+         The first thing you have to do to pull off this type of 
+         attack is "honor the threat." For our purposes, we'll assume 
+         that the site we're going to destroy is a full-capacity, 
+         full-strength site. In Falcon 3.0, that means 60 units--more 
+         than half of which are anti-air of some form. Even though no 
+         more than about 35 will appear at one time, this is more than 
+         4 F-111s can handle; it is probably more than any amount of 
+         aircraft you have to spare can handle in one attack.
+         
+         So here's the first rule:
+         
+         * Don't attempt to destroy all units at a full-strength site 
+           with a single attack. 
+           
+         "Well, great," you say, "then how do I tell my fully-armed 
+         bombers to break off? There's no way to tell them to hit only 
+         a few units each and then go home."
+         
+         Yes there is. To make the aircraft only commit to a limited 
+         attack, you have to do two things: make their attack waypoint 
+         easy to achieve and limit the load of the lead plane.
+         
+         It helps if you try to "think" like a computer pilot (who is 
+         really just a robot following your orders). He is going to do 
+         what you tell him to do, or he's going to die trying. When 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 34
+      --------------------------------------------------------------------
+
+         you set a waypoint, you are telling his little silicon brain 
+         to fly to that waypoint--this much is obvious. However, if 
+         that waypoint is in the center of the site in question, he 
+         has to fly over quite a few nasty items to get to it.
+         
+         This isn't exactly what you have in mind--flying *over* the 
+         nasty items--what you want him to do is *destroy* those 
+         items. But he's flying fast; he can only destroy so many bad 
+         guys before he starts flying over the rest of them.
+         
+         And as he flies over the ones he cannot destroy, they start 
+         locking him up with radar and then start shooting at him. 
+         Avoiding an incoming missile has priority in his little brain 
+         (we said he was a robot--we didn't say he was stupid!), so he 
+         dodges the missile and in so doing he turns away from the 
+         waypoint. After he's defeated that threat, he goes for the 
+         waypoint again--only to be locked up once more and shot at. 
+         Sooner or later, if he keeps dancing around up there, he's 
+         going to get dead. And by this time, he's too busy dodging 
+         missiles to pull off any meaningful attacks. He should have 
+         called it quits by now.
+         
+         That's why you should make the waypoint easy to achieve. Once 
+         he has flown to the point in space where you told him to fly, 
+         he's free to go to the next waypoint. Exit, stage left. 
+         
+         In Falcon, ground units are generally distributed to the 
+         northwest of the site to which they're assigned. A site with 
+         sixty units will have those units scattered throughout an 
+         area of about seven square miles, with the site itself 
+         (normally) in the southeast corner, about a mile inside the 
+         perimeter. The attack waypoint should be placed *just 
+         outside* the perimeter--not in the center of it!--on the same 
+         side as the direction from which the aircraft are attacking.
+         
+         For example, if your aircraft are coming in from the 
+         northwest, the attack waypoint should be placed about 8.5 
+         miles northwest (6 miles north, 6 miles west) of the site; if 
+         they're coming in from the southeast, the waypoint would be 
+         about 1.5 miles southeast of the site.
+         
+         As the planes come in, they'll start shooting. Once they 
+         reach their waypoint, don't worry, they'll keep shooting--but 
+         now they're free to leave once they've used up their weapons 
+         or if things get too tough.
+                                                                      
+         The second thing you have to do to keep an attack under 
+         control is limit the quantity of weapons on the lead plane. 
+         This is really to safeguard the wingmen--they don't fly to 
+         waypoints; they fly to a specific point in space that's 
+
+
+                                                                          
+
+
+      Strategic FALCON            Version 1.1 Update               Page 35
+      --------------------------------------------------------------------
+
+         relative to the leader. (If the leader is destroyed, the 
+         first wingman takes his place.) If the leader is still 
+         circling over the site trying to shoot targets after his 
+         wingmen have gone winchester, then the wingmen are taking a 
+         large and nonproductive risk (it's one thing to risk getting 
+         shot down while you're actively destroying the enemy--it's 
+         quite another to risk getting shot down just because your 
+         programming tells you to stay on the wing of your leader!). 
+         It behooves you to try to make the lead plane run out of 
+         ordnance first.
+         
+         Don't worry that the wingmen will bug out immediately once 
+         the leader goes--they'll stay and take good shots while they 
+         can, but just as you want the leader to be free to leave, you 
+         want the wingmen to be free to leave.
+         
+         Using these pointers, you can increase the survivability of 
+         your planes and hence increase your chances of winning the 
+         campaign.
+                        -----------------------------
+
+         Copyright 1994 by Bill White
+         
+         All rights reserved. Although every precaution has been 
+         taken in the preparation of this manual, the author 
+         assumes no responsibility for errors or omissions. 
+         Neither is any liability assumed for damages resulting 
+         from the use of the information contained herein. 
+         
+         "Falcon 3.0," "MiG-29: Deadly Adversary of Falcon 3.0," 
+         "Falcon GOLD" are trademarks of Spectrum Holobyte, 
+         which is itself a registered trademark; "Keyboard 
+         Commander Corps" is a trademark of Keyboard Commander 
+         Corps.; "Flying Muffin," "Strategic Falcon," "F3 
+         Requisition," and "FalcCalc" are trademarks and/or 
+         copyrights of Bill White. The author is not affiliated 
+         with Spectrum Holobyte.
+
+         I'd like to express my sincere thanks to everyone who 
+         took time to write. Unless fatal bugs rear their tiny 
+         hideous heads, this will do it for StratFalc. StratMiG 
+         is next! 
+

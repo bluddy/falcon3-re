@@ -1,0 +1,190 @@
+
+			  Falcon Campaign Editor
+				Version 1.3
+		 For Falcon 3.05, MiG-29 1.04, Hornet 1.02
+		   Copyright 9 July 95 by Frank W. Racis
+
+Falcon Campaign Editor (FCE) is a program which allows you to change the 
+characteristics of the pilots in your Falcon/MiG/Hornet squadrons, as well 
+as control the supply status of an ongoing campaign.  You can also get
+reports on fuel usage, print out squadron information, or generate a
+Red Flag mission which matches your next campaign mission.
+
+IMPORTANT ===> FCE modifies data files essential to the proper operation 
+of Falcon 3.  It is highly recommended that you make a backup copy of 
+your squadron files (SQUAD?.*) before running FCE.
+
+FCE officially supports only the latest version of the Falcon series.
+There really isn't a good reason for NOT having the latest version,
+anyway.  FCE will NOT work with Falcon versions 3.00, 3.0a, 3.0c, and
+3.0d.  It should work with all other versions, although they are not
+explicitly supported.
+
+FCE is a dual mode DOS/Windows program.  It will sense which environment 
+you are using and run the appropriate version.  The DOS version is very 
+simple - it only allows for a few basic commands which affect all the  
+pilots or supplies of your squadron.  The Windows version is very nice, 
+and allows editing of individual pilots and campaign data. 
+
+USING THE DOS VERSION OF FCE
+----------------------------
+Copy FCE.EXE into your FALCON3 directory, and make this your current 
+directory.  To edit Falcon data, type FCE.  To edit MiG-29 data, type 
+FCE /M.  Likewise, for Hornet, use FCE /H.
+
+If you are using Falcon Gold with the "limited installation" option,
+you must include the /Cx option, where x is your CD-ROM drive.  For
+instance, if your CD is drive E, use FCE /CE.  You can combine this
+with /M or /H (leave a space between the commands).
+
+You will be presented a list of squadrons available for editing.  Only 
+squadrons currently involved in a campaign may be edited.  Just enter 
+the number of the squadron you wish to edit.
+
+Once you select the squadron, you will get a fuel status report showing 
+each plane and whether it has enough fuel to complete it's mission.
+
+After the fuel report, the menu appears.  There are 10 possible choices, 
+and you can use any or all of them before exiting.  Entering an invalid 
+number (0 works well) will cause FCE to exit and save data.  If you do 
+not wish to save the data, pressing <ctrl>-<break> at the menu will 
+discard any changes.  The options are as follows:
+
+1.) Un-Fatigue all pilots
+     This sets the "Fatigue" factor of all pilots to 100, bringing them
+     up to full rested status.
+
+2.) Make all pilots perfect
+     This sets the Dogfighting, Bombing, Flying Ability, and Fatigue
+     factors of all pilots to 100.  Highly recommended - the last thing
+     your wingmen need is artificial stupidity.
+
+3.) Resurrect all dead pilots
+     This brings back any pilots which are KIA, MIA, or court martialed.
+     It also sorts the pilot roster by rank.  All 30 pilots will be
+     available.  Note that when pilots are "killed" their ability or
+     fatigue scores often suffer.  It's a good idea to run option 2 
+     after option 3.
+       
+4.) Increase all ordnance by 20
+     This will add 20 items to each type of weapon you have, to a
+     maximum of 250 of each type.  It also gives you 50 ECM pods 
+     total, an additional 4000 bullets, and an additional 150 chaff
+     and flares.
+
+5.) Resupply fuel
+     Gives you a total of 280000 lbs of fuel.
+
+6.) Return number of planes to 18
+     Gives you a total of 18 planes for your campaign.
+
+7.) Print Squadron Roster
+     Print a list of pilots, with abilities.
+
+8.) Print flight data
+     Print a quick overview of your next mission
+
+9.) Generate Emeny Report (Red Flag)
+     Create a Red Flag mission that looks just like your next
+     campaign mission.  You can take a look at what the enemy
+     has, or fly a practice run.
+
+A.) Make next campaign mission from RF
+     After creating a Red Flag mission using option 9, and editing
+     it in Falcon, use it as your next campaign mission.  
+     IMPORTANT:  Read the Windows Help file for limitation of this option!
+
+There is also the /S command line option.  (Think of it as "Squadron").  
+This selects menu items for you, so you don't have to hit any keys.  The 
+syntax is:
+	FCE /Sabbbb
+The "a" is the squadron number.  The "b"s are the menu items you with to 
+select.  For instance:
+
+FCE /S232
+Loads squadron 2, resurrects the dead pilots, and makes everyone perfect
+
+FCE /S4
+Gives the fuel report for Squadron 4
+
+FCE /M /S0446
+Using MiG campaign 0, resupplies it twice, and fills it with fuel
+
+This feature is handy if you want to set up a batch file to 
+automatically make all your pilots alive, or perfect, or whatever, 
+before running Falcon.
+
+
+USING THE WINDOWS VERSION OF FCE
+--------------------------------
+Start Windows (duh!) and create a new icon for FCE.  You can keep 
+FCE.EXE wherever you want, but the "Working Directory" must be your 
+Falcon directory.  Double-click on the icon, and you're at the main 
+menu.  
+
+If you're using Falcon Gold and the limited installation, you must 
+choose File-Setup to select the CD-ROM drive.  
+
+If you intend to print any reports, choose File-Setup, click the
+FONTS button, and choose a font.  If you don't do this, FCE tries to
+guess at an appropriate font.
+
+Choose File-Open to open a squadron.  If you get a message about being 
+unable to open the squadron names file, your working directory is not 
+set correctly, or your CD-ROM drive is incorrect (or has the wrong disk).  
+
+From the File-Open Dialog box, select Falcon, Mig, or Hornet, then the 
+squadron name you want to edit.  Items on the QuickEdit menu are the same 
+as those available from the DOS menu.  The Reports menu allows you to 
+view the fuel status report, 
+
+You can do lots of detailed editing with FCE, including:
+	* Change ability and fatigue for each pilot
+	* Change any pilot's rank
+	* Rename pilots 
+	* Resurrect dead pilots (change status)
+	* Choose a new name for your squadron
+	* Create new squadron names
+	* Edit your campaign supply status
+	* Change ownership or force strength of strategic targets
+	* See fuel status (with graphs)
+
+If you make any changes, you will be prompted to save before exiting or 
+loading another squadron.  
+
+Falcon 3 *CAN* be run in a DOS Window, as long as it's full screen.  I 
+wouldn't recommend this with less than 8MB of memory.  Switching out of 
+Falcon into FCE with Alt-Tab isn't too good of an idea.  Falcon is pretty 
+unpredictable about disk saves, so I wouldn't trust this.
+
+More Information
+----------------
+You can get more detailed information about FCE by looking at the 
+Windows Help file.
+
+
+Legal stuff
+-----------
+This program is free, and you may distribute as many copies as you wish, 
+as long as all the files are distributed together, without modifications.  
+It cannot be sold as commercial software, but a small charge for shareware 
+distribution is acceptable.  If included in a CD-ROM compilation, I get
+a free copy of the CD-ROM.
+
+You have been warned to back up your campaign files.  If FCE kills your 
+campaign data, it's your own fault.  No warranties are expressed or 
+implied.
+
+Falcon, MiG-29, and Hornet are products of Spectrum Holobyte.  FCE 
+is not.  I am in no way related to Spectrum Holobyte, except that I 
+purchase their games.
+
+Registration
+------------
+It's free.  Send me an E-Mail saying what you like, what you don't like,
+etc.  Many of the ideas for FCE came from net-people, so don't be shy.
+
+Send comments, etc. to:
+racis@psu.edu
+
+Please include the version number (it's 1.3).
