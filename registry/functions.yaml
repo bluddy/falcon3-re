@@ -1188,7 +1188,7 @@ functions:
     name: graphics_rect_fill_tiled
     system: hud
     size: 106
-    doc: Rectangle fill with 8×8 tile patterns. Clipping against viewport
+    doc: Rectangle fill with 8ï¿½8 tile patterns. Clipping against viewport
     source: old_registry (was: tile_clip_draw_14200)
 
   # TILE SYSTEM
@@ -9193,12 +9193,82 @@ functions:
     doc: '511B span, in=9, undecodable mid-body. Big overlay dispatch routine (R05 region); many far calls. conf: low'
     source: old_registry (was: r05_farptr_dispatch_big)
 
-  # AI SYSTEM
+  # AI SYSTEM (newly discovered via call graph analysis 2026-11-15)
+  - address: 0x03cf9d
+    name: ai_state_processor_core
+    system: ai
+    size: 886
+    doc: Core AI state processing logic shared by state machine, tracking, and mirroring. Processes entity state with 29 helper calls. Accesses central AI state data (word_3B830).
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x03d37f
+    name: ai_entity_update_step
+    system: ai
+    size: 1319
+    doc: Main AI entity update/step function. Largest AI function (1319B). Decrements timers, checks state fields, dispatches to 29 helpers. Heavy use of SI-based structure access.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
   - address: 0x03dc55
     name: weapon_spawn_gate_validate
     system: ai
     doc: |
     source: old_registry (was: farobj_altitude_scale_step)
+  
+  - address: 0x03eb4e
+    name: ai_state_value_dispatcher
+    system: ai
+    size: 87
+    doc: AI state value dispatcher/checker. Leaf function with 11 comparisons forming state machine or dispatch table. No callees (pure computation). Called by 5 functions.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x03f3a8
+    name: ai_state_calculate_helper
+    system: ai
+    size: 256
+    doc: Common AI calculation helper function. Called by 5 functions, calls 11 helpers. Performs state calculations with array iteration (SI/DI).
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x0407c0
+    name: ai_entity_terrain_position_update
+    system: ai
+    size: 131
+    doc: Updates AI entity position relative to terrain. Calls terrain_farobj_tile_copy_resolve for coordinate conversion and fixed_matrix_mul for transforms.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x040884
+    name: ai_angle_calculate_helper
+    system: ai
+    size: 99
+    doc: AI angle/heading calculation helper. Calls angle operation stubs (stub_to_24980, stub_to_249d8) for orientation updates.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x0423a9
+    name: ai_target_pursuit_update
+    system: ai
+    size: 178
+    doc: AI target pursuit/tracking behavior update. Calls 9 helper functions for pursuit calculations. Array iteration pattern for entity processing.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x042503
+    name: ai_state_condition_check
+    system: ai
+    size: 80
+    doc: AI state condition checker/gate. 7 comparisons forming dispatch or validation logic. Called by 6 functions. Accesses word_55E50, word_3B834, word_55E4E.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x0425a2
+    name: hud_ai_target_tracking_draw
+    system: hud
+    size: 88
+    doc: Draws AI target tracking overlay on HUD. Calls 4 HUD draw functions (hud_project_gate_draw, hud_track_gate_draw, hud_track_distance_draw, hud_track_marker_draw). Actually belongs to HUD system not AI!
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  - address: 0x049997
+    name: ai_movement_vector_accumulate
+    system: ai
+    size: 130
+    doc: Accumulates AI entity movement vectors. Calls fixed_vec3_accumulate_a for position delta accumulation. Called by ai_context_batch_processor.
+    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
 
   # STATE SYSTEM
   - address: 0x03e109
@@ -9836,7 +9906,7 @@ functions:
   - address: 0x049546
     name: flight_aircraft_slot_cycle_update
     system: flight_physics
-    doc: 40×24B aircraft slot array processor. Iterates all active aircraft
+    doc: 40ï¿½24B aircraft slot array processor. Iterates all active aircraft
     source: old_registry (was: aircraft_slot_cycle_step)
 
   # AI SYSTEM
