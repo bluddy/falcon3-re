@@ -13,8 +13,8 @@ import sys
 from pathlib import Path
 
 # Default range if no args
-START_RANK = 151
-END_RANK = 250
+START_RANK = 501
+END_RANK = 700
 
 def get_caller_count(func_addr):
     callers = set()
