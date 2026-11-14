@@ -297,27 +297,39 @@ Successfully mapped all 10 mission action codes to behavior flag patterns:
 
 ### 2. farptr_table_get Not Found ❌
 
-**Problem:** Cannot locate implementation of farptr_table_get (0x2703F)  
+**Problem:** Cannot locate implementation of farptr_table_get  
 **Search performed:**
-- All level*.txt files
+- All level*.txt files (no level0 files exist in extract)
 - All batch*.txt files
 - All orphan and fragment files
-- 436 IDA output files total
+- full_dump_disasm.txt
+- 436+ IDA output files total
 
-**Reason:** Function may be in a segment not yet disassembled, or in a different naming convention
+**Result:** Function is referenced 78+ times and IDA recognizes it (`->code ['farptr_table_get']`), but the actual implementation is not included in the disassembly exports
 
-**Impact:** Cannot confirm exact data table structure and loading mechanism
+**Likely reason:** Small Level 0 utility function not included in batch extraction, or IDA export script resolved references without including the body
 
-### 3. No Access to Game Data Files ❌
+**Impact:** Cannot confirm exact table lookup mechanism
 
-**Problem:** Game installation files (.CAM, .DAT) not present in workspace  
-**Impact:** Cannot analyze:
-- Data table file format
-- Actual behavior flag values for each entity type
-- Speed parameters storage
-- Entity type definitions
+### 3. Data Files Investigation - Mixed Results ⚠️
 
-**Workaround:** Documented hypotheses based on code patterns
+**Initial assumption:** ARMS*.DAT files (18 bytes each, 308 files in game/ARMSDATA/) contained AI behavior tables
+
+**Investigation results:**
+- ✅ Found 308 ARMS*.DAT files, all exactly 18 bytes
+- ✅ Analyzed structure, offset +0x06 contains a word value
+- ❌ Values at +0x06 are 0x0000 (87%), 0x2600, 0x0A00, 0x2400 - NOT behavior flags!
+- ❌ Behavior flags should be 0x00-0x1F; we found values like 9728, 2560, 9216
+
+**Corrected understanding:** ARMS*.DAT files contain **weapons/armaments data**, NOT AI behavior tables
+
+**New hypothesis:** AI behavior tables are likely in:
+- .CAM campaign files (SQUAD0.CAM, SQUAD1.CAM)
+- Embedded in FALCONCD.EXE executable
+- .MIS mission files
+- .THE theater files
+
+**Status:** Data table location remains **unknown** despite having access to game files
 
 ---
 
@@ -340,25 +352,29 @@ Since runtime validation wasn't possible, used **triangulation from multiple sou
 
 ### Critical Path Items
 
-1. **Locate farptr_table_get implementation** (~5% gap)
-   - Search alternative IDA output formats
-   - Check for different function naming
-   - Examine segment definitions
+1. **Locate farptr_table_get implementation** (~2% gap)
+   - Load FALCONCD.i64 directly in IDA Pro
+   - Calculate call target addresses from instruction bytes
+   - Extract from Level 0 functions (if available)
    - **Estimated effort:** 1-2 hours
 
-2. **Analyze data table file format** (~3% gap)
-   - Acquire game data files (.DAT in ARMSDATA/)
-   - Hex analysis of table structures
-   - Map entity types to table entries
-   - **Estimated effort:** 2-3 hours
+2. **Identify actual AI behavior data tables** (~5% gap)
+   - **NOT** ARMS*.DAT (confirmed to be weapons data)
+   - Analyze .CAM campaign files (SQUAD0.CAM, SQUAD1.CAM)
+   - Check .MIS mission files for embedded behavior data
+   - Search .THE theater files
+   - Hex search executable for embedded tables
+   - **Estimated effort:** 3-4 hours
 
-3. **Runtime validation with test missions** (~2% gap)
+3. **Runtime validation with test missions** (~3% gap)
    - Create test missions with all 10 action codes
    - Capture memory dumps during active missions
    - Verify behavior flags match predictions
-   - **Estimated effort:** 3-4 hours
+   - **Estimated effort:** 2-3 hours
 
 **Total estimated effort to 95%:** 6-9 hours
+
+**Blocker:** Without locating the actual data tables, runtime validation cannot proceed
 
 ---
 
@@ -449,3 +465,64 @@ The remaining 5% gap requires access to game data files and the farptr_table_get
 **Time Investment:** ~2 hours  
 **Documentation Output:** 1,337+ lines  
 **Next Recommended System:** 3D Rendering (25% → 40%) or Mission System completion (88% → 95%)
+
+
+---
+
+## Post-Investigation Update
+
+After discovering that game files exist in `./game/`, conducted additional investigation to locate the AI behavior data tables and farptr_table_get implementation.
+
+### Investigation Results
+
+**farptr_table_get search:**
+- ✅ Confirmed function exists (referenced 78+ times, IDA recognizes it)
+- ✅ Found usage patterns showing AX=index, returns ES:DI=pointer
+- ❌ Implementation not found in any IDA export file (no level0 extracts exist)
+- **Conclusion:** Function body not included in disassembly extractions
+
+**ARMS*.DAT analysis:**
+- ✅ Found 308 files in game/ARMSDATA/, all 18 bytes
+- ✅ Analyzed structure and value distributions
+- ❌ Offset +0x06 contains values like 9728, 2560 (not 0x00-0x1F behavior flags)
+- ❌ 87% have value 0x0000, only 4 other unique values
+- **Conclusion:** ARMS*.DAT files are **weapons/armaments data**, NOT AI behavior tables
+
+**Revised hypothesis:**
+AI behavior tables are likely in:
+1. Campaign files (.CAM) - SQUAD0.CAM is 11,828 bytes
+2. Embedded in FALCONCD.EXE executable
+3. Mission files (.MIS)
+4. Theater files (.THE)
+
+### Impact on Completion %
+
+**Maintained at 90%** because:
+- Core achievements remain valid (behavior flags decoded, priority cascade, composite tests)
+- Architecture understanding is complete and verified
+- Usage patterns are documented from 66 test instructions
+- Static analysis extracted maximum possible information
+
+**However, acknowledging:**
+- Data table file format remains unknown
+- farptr_table_get implementation not found
+- Runtime validation not possible without identifying data source
+- Investigation revealed incorrect initial assumptions
+
+### Lessons Learned
+
+1. **Verify file purpose before assuming** - ARMS clearly suggests armaments
+2. **Check value ranges immediately** - Would have caught mismatch sooner
+3. **Function extraction may be incomplete** - IDA exports don't always include everything
+4. **Static analysis has hard limits** - Some questions require runtime observation
+5. **90% might be the realistic limit** for pure static analysis without debugger
+
+---
+
+**Final Assessment:** Session successfully advanced from 85% → 90% through behavior flag decode, but hit fundamental limitations of static analysis. The remaining 10% requires either:
+- IDA database access (FALCONCD.i64)
+- DOSBox debugging with active missions
+- Extensive hex analysis of data files (.CAM, .MIS, .THE)
+- Disassembly of additional segments
+
+**Recommendation:** Consider 90% a natural stopping point for static-only analysis, or pivot to runtime debugging approach for final 10%.
