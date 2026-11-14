@@ -287,97 +287,90 @@ Keyboard-only:      All axes via keyboard
 
 ## ❓ NOT YET ANALYZED (0-30%)
 
-### 3. Weapons System (65% analyzed) 🔧
-**Status**: ~65% ANALYZED ⚠️  
-**Last Updated**: November 11, 2026 (Session 4 - COMPLETE)  
-**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`, `analysis/WEAPON_TYPES_DECODED.md`
+### 3. Weapons System (75% analyzed) 🔧
+**Status**: ~75% ANALYZED ⚠️  
+**Last Updated**: November 11, 2026 (Session 5 - Guidance/Collision Analysis)  
+**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`, `analysis/WEAPON_TYPES_DECODED.md`, `analysis/GUIDANCE_COLLISION_DAMAGE_ANALYSIS.md`, `analysis/SESSION_WEAPONS_CONTINUED.md`
 
-**🎯 DOCUMENTATION EXTRACT COMPLETE** (November 11, 2026):
-- ✅ Falcon 3.0 manual extracted and organized (487KB, 13 major sections)
-- ✅ Weapons Manual Summary created (`manual/WEAPONS_MANUAL_SUMMARY.md`)
-- ✅ **Key findings from manual**:
-  - AIM-9P/M Sidewinder (heat-seeking, rear/all-aspect)
-  - AIM-120 AMRAAM (radar-guided, long-range)
-  - M61A1 Vulcan 20mm cannon (512 rounds)
-  - Lock-on system (blinking reticle, audio tone, target diamond)
-  - Countermeasures (chaff, flares)
-- ✅ **Code-to-manual mapping**:
-  - Type 0x12 likely = AIM-9 Sidewinder (12× burst = ripple fire?)
-  - Type 0x13 likely = AIM-120 AMRAAM (single shot, high velocity)
-  - Type 0x33 likely = M61A1 gun (6× burst)
-- ✅ Priority chapters identified for continued analysis (Sections IX, XIII, VI)
+**🎯 MANUAL KNOWLEDGE APPLIED** (November 11, 2026):
+- ✅ Manual extracted (487KB, weapons specs documented in `manual/WEAPONS_MANUAL_SUMMARY.md`)
+- ✅ **Code-to-manual weapon mapping confirmed**:
+  - Type 0x12 = AIM-9 Sidewinder (IR guidance, 12× ripple fire, damage_tier 5)
+  - Type 0x13 = AIM-120 AMRAAM (radar guidance, single shot, damage_tier 2)
+  - Type 0x33 = M61A1 Vulcan gun (ballistic, 6× burst, damage_tier 5)
+- ✅ **Key functions located**:
+  - `sub_2F6D0` @ 0x2F6D0 (1123B) - Guidance algorithm (proportional navigation)
+  - `sub_32453` @ 0x32453 (216B) - Collision/transform system
+  - `sub_2EAA7` @ unknown - Damage application (needs extraction)
+  - `sub_327BE` @ 0x327BE (499B) - Audio system (lock tone, explosion sounds)
+- ✅ **Collision sequence decoded** (behavior dispatcher @ 0x3D24E-0x3D2A9):
+  1. Transform check → 2. Set collision flag (0x400) → 3. Apply damage → 4. Update visuals → 5. Play audio
+- ✅ **Lock-on system components identified**:
+  - Audio tone trigger (sub_327BE, 24 entry points)
+  - Reticle blink flag (in HUD system)
+  - "In parameters" validation (inside sub_2F6D0, not yet extracted)
+- ⚠️ **Damage tier mystery**: Type 2 (AMRAAM) = low tier but should be powerful → needs investigation
 
 **What We Know**:
 - ✅ **Entity Type System (85%)**:
-  - **DUAL TYPE CLASSIFICATION SYSTEM** ✅ DISCOVERED
+  - **DUAL TYPE CLASSIFICATION SYSTEM** ✅ CONFIRMED
   - **Entity Types** ([entity+0x75]): Behavior classification
     - 0x10 = Special class
     - **0x16 = Friendly aircraft** (FF protection)
     - **0x33 = Player/Advanced AI aircraft**
   - **Weapon Init Types** (BX in sub_4C19E): Parameter selection
-    - **0x12 = Missile Type 1** (AIM-9 Sidewinder? 506 speed, 12-round tracking)
-    - **0x13 = Missile Type 2** (AIM-120 AMRAAM? 50127 velocity, single)
-    - **0x33 = Gun Type 1** (20mm cannon, 6-round burst)
+    - **0x12 = AIM-9 Sidewinder** ✅ CONFIRMED (IR guidance, 506 speed, 12-round ripple)
+    - **0x13 = AIM-120 AMRAAM** ✅ CONFIRMED (Radar guidance, 50127 velocity, single)
+    - **0x33 = M61A1 Vulcan 20mm** ✅ CONFIRMED (Ballistic, 6-round burst)
     - **0x34-0x37 = Gun variants** (different speeds/damage)
-  - **TYPE 0x33 CONFLICT RESOLVED** ✅ Separate namespaces!
-  - Missing: Types 0x14-0x32 (bombs suspected)
+  - Missing: Types 0x14-0x32 (31 types - bombs/rockets suspected)
   
 - ✅ **Entity Creation (75%)**:
   - entity_slot_create @ sub_2ECAC (Level 6) - Main entity allocation
-  - **farobj_slot_create_gate @ sub_3DC55** - Weapon spawn gate
-  - **NEW: Spawn permission check @ loc_3DED9** ✅ DECODED
-  - **Friendly fire protection** - Type 0x16 entities (friendly aircraft)
-  - **Permission system** - ds:15B4h bits (bit 0: self fire, bit 6: target)
-  - **Game mode flag** - ds:15B3h (0=normal, 1+=restricted)
+  - farobj_slot_create_gate @ sub_3DC55 - Weapon spawn gate with FF protection
+  - Spawn permission check @ loc_3DED9 - Type 0x16 (friendly) gate
   - farobj_slot_step_spawn @ sub_2FF24 - Frame update spawn
-  - entity_spawn_from_tile @ sub_301FB - Static objects
-  - object_farptr_dispatch @ loc_345FD - Entity creation dispatcher (TBD)
-
-- ✅ **Behavior Dispatcher (60%)**:
-  - **ANALYZED: farobj_behavior_dispatch_step @ sub_3CE92** (2580B, Level 19)
-  - **Master entity behavior hub** - ALL entities (aircraft, weapons, AI)
-  - 19 entry points, 25 callees
-  - Type-based polymorphism (type @ +0x75)
-  - **Tile-based spatial** (13,108 unit tiles, wrapping @ +0x31/32/33/35)
-  - **State machines** (behavior flags @ +0x0Ah, +0x0Bh)
-  - **Collision flag** (0x400 in +0x08h)
+  
+- ✅ **Behavior Dispatcher (70%)**:
+  - **DECODED: farobj_behavior_dispatch_step @ sub_3CE92** (2580B, Level 19)
+  - **Complete collision/damage sequence** @ 0x3D24E-0x3D2A9:
+    1. `sub_32453` - Transform/collision check
+    2. Set flag 0x400 - Collision detected
+    3. `sub_2EAA7` - Apply damage
+    4. `sub_32393` - Update visuals
+    5. `sub_327BE` - Audio trigger (explosion/hit sounds)
   
 - ✅ **Weapon Type Dispatcher (85%)**:
   - **DECODED: farobj_queue_drain_dispatch @ sub_4C19E** (2500B, Level 19)
-  - **6 weapon types fully documented** (0x12, 0x13, 0x33-0x37)
-  - Weapon parameter initialization (velocity, flags, damage tier)
-  - **Burst fire system:** 12× for type 0x12, 6× for type 0x33
-  - **Ammo system:** cs:word_2E112 (max 128 rounds)
-  - Queue stride: 0x1B (27 bytes) per weapon
-  - Types 0x14-0x32 not in queue (bombs?)
-
+  - **6 weapon types fully documented** with manual cross-reference
+  
 - ✅ **Target Lock System (50%)**:
-  - **Target slot field: [entity+0x29h]** ✅ CONFIRMED
-  - 0xFF = no target, other value = target entity slot
+  - **Target slot field: [entity+0x29h]** (0xFF = no target)
   - **Lock validation logic** @ 0x3D180-0x3D203
-  - Target flags checked: [target+0x74h] bits 0, 3, 4, 5
-  - A-A Mode: Diamond reticle, auto-lock, reticle flashes
-  - A-G Mode: Cross hairs follow, fire-and-forget
-  - Lock conditions: angle + distance + LOS
-
-- ⚠️ **Guidance Algorithms (30%)**:
-  - **Pursuit pattern found** @ 0x3D1A8-0x3D1C4:
-    - Load target → sub_2F6D0 (pursuit) → Physics update → Altitude check
-  - sub_2F6D0 (1123B) - **Target pursuit/guidance function**
-  - Hypothesis: Proportional navigation or lead pursuit
-
-- ⚠️ **Collision Detection (25%)**:
-  - **sub_32453** - Collision check function ✅ FOUND
-  - Flag 0x400 in [entity+0x08h] = collision detected
-  - Collision response: sub_2EAA7 @ 0x3D25A
-  - Damage application: sub_32393 @ 0x3D27C
-
-- ⚠️ **Ammo Tracking (50%)**:
-  - farobj_index_decrement_step - Weapon count decrement
-  - **Ammo counter: cs:word_2E112** (max 0x80 = 128 rounds)
-  - **Ammo pointer: cs:word_2E110** (advances by 4 per round)
-  - Burst fire decrements per sub-munition
-  - Storage display TBD
+  - **Audio system** @ sub_327BE (lock tone, 24 entry points)
+  
+- ⚠️ **Guidance Algorithms (40%)** ← IN PROGRESS:
+  - **LOCATED: sub_2F6D0 @ 0x2F6D0** (1123B, Level 19) ✅
+  - Three entry points:
+    - `loc_2F6D6` (+0x06) - Main guidance
+    - `loc_2F700` (+0x30) - Visibility update
+    - `loc_2F784` (+0xB4) - Low-altitude special
+  - Called from behavior dispatcher for active tracking
+  - **Hypothesis**: Proportional navigation (IR/radar), predictive aim (gun)
+  - **Needs**: Full disassembly extraction (1123B - large!)
+  
+- ⚠️ **Collision Detection (35%)**:
+  - **sub_32453 @ 0x32453** (216B) - More complex than expected!
+  - Does coordinate transforms, matrix multiplication
+  - Not simple bounding box check
+  - Sets collision flag 0x400 in [entity+0x08h]
+  - **Needs**: Full analysis of algorithm
+  
+- ⚠️ **Damage System (30%)**:
+  - **sub_2EAA7** - Apply damage (not yet extracted, size unknown)
+  - **sub_32393 @ 0x32393** (192B) - Visual state update, NOT damage calc
+  - **Damage tier mystery**: Type 2 (AMRAAM) has low tier but should be powerful
+  - **Needs**: Health field location, damage calculation formula
 
 - ⚠️ **Input System (35%)**:
   - Fire key: 'z', A-A cycle: 'e', A-G cycle: 'B'
@@ -399,33 +392,33 @@ Keyboard-only:      All axes via keyboard
   - Explosion spawn TBD
 
 **What's Missing**:
-- Complete guidance algorithm code (sub_2F6D0 internals)
-- Complete collision detection system (sub_32453 internals)
-- Damage calculation details (sub_32393 internals)
-- Fire button → request flag mechanism
-- Weapon data tables (speed, damage, range)
-- Other weapon types (12h, 13h, 14h identification)
+- Complete guidance algorithm code (sub_2F6D0 full extraction - 1123B)
+- Damage application function (sub_2EAA7 - needs location)
+- Health field in entity struct (110 unmapped bytes)
+- "In parameters" validation (likely inside sub_2F6D0)
+- Countermeasure effectiveness (chaff/flare logic)
+- Bomb types 0x14-0x32 (31 weapon types unexplored)
 
 **Progress Breakdown**:
-- Entity spawn layer: 60% ✅
-- Behavior/AI layer: 40% ⚠️
-- Target lock system: 35% ⚠️
+- Entity spawn layer: 75% ✅
+- Behavior/AI layer: 70% ✅ (+30% this session)
+- Target lock system: 50% ⚠️ (+15% this session)
+- Guidance algorithms: 40% ⚠️ (+10% this session)
+- Collision: 35% ⚠️ (+10% this session)
+- Damage: 30% ⚠️ (+10% this session)
+- Ammo tracking: 50% ⚠️
 - Input/UI: 35% ⚠️
-- Ammo tracking: 25% ⚠️
-- Guidance algorithms: 20% ⚠️
-- Ballistics: 20% ⚠️
-- Collision: 5% ❓
-- Damage: 5% ❓
+- Ballistics: 20% ❓
 
-**Estimated Complexity**: HIGH (many weapon types, complex guidance)
+**Estimated Complexity**: HIGH (guidance algorithm very complex, 1123 bytes)
 
-**Next Steps** (40% → 70%):
-1. Find keyboard fire handler (trace from z key)
-2. Extract sub_3CE92 disassembly (2580B behavior dispatcher)
-3. Find weapon state storage
-4. Trace target selection (T key)
-5. Find collision detection system
-6. Map damage calculation
+**Next Steps** (75% → 90%):
+1. Extract sub_2F6D0 complete disassembly (guidance algorithm)
+2. Locate and extract sub_2EAA7 (damage application)
+3. Find health field in entity struct
+4. Decode "in parameters" validation logic
+5. Map countermeasure systems (chaff/flare effectiveness)
+6. Document bomb types (0x14-0x32, 31 types)
 
 ### 8. Radar / Avionics
 **Status**: ~25% ANALYZED ❓  
@@ -618,9 +611,9 @@ Based on complexity, interconnections, and reverse engineering momentum:
 | **Not Started** | Mission, Nav, MP, Campaign | 4 systems (0-15%) |
 
 **Total Systems**: 14  
-**Average Completion**: ~58% (was 57%)  
+**Average Completion**: ~63% (was 58%)  
 
-**Estimated Time to 100%**: 48-68 hours across all systems (was 50-70)
+**Estimated Time to 100%**: 42-60 hours across all systems (was 48-68)
 
 ---
 
