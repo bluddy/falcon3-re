@@ -1,7 +1,7 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (75% complete)  
-**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records), HYPOTHESIS (flight plans, mission header)  
+**Status:** IN PROGRESS (80% complete)  
+**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records), HYPOTHESIS (flight plans, target assignments)  
 **Last Updated:** 2026-11-11
 
 ---
@@ -343,9 +343,35 @@ struct AircraftRecord {
 - 0x80: Allied AI
 - 0x81: Enemy AI
 
-**Between aircraft and waypoints:** 429 bytes of unknown data (0x00A4-0x0250) - likely flight plans, loadouts, AI parameters.
+**Between aircraft and waypoints:** 429 bytes of flight plan data (0x00A4-0x0250 in SQUAD0.MIS)
 
-**Next:** Decode type codes (map to aircraft names), understand flag bits, parse middle section.
+**Flight Plan Section — HYPOTHESIS:**
+
+Sparse data format (53.8% zeros) containing:
+- **Flight plan blocks:** 20-50 byte structures with waypoint routes
+- **Target assignments:** 7-byte pattern `XX YY ZZ FF ID 40 11`
+  - Appears 6 times in SQUAD0.MIS
+  - ID field (byte 4) references aircraft IDs: 6, 9, 12, 14
+  - Could assign targets/waypoints to flight leaders
+- **AI parameters:** Sparse 2-4 byte blocks in trailing section
+
+**7-Byte Target Pattern:**
+```c
+struct TargetAssignment {  // 7 bytes, hypothesis
+    uint8_t  coord_or_id[3];   // Coordinates or target IDs
+    uint8_t  marker;           // Always 0xFF
+    uint8_t  aircraft_id;      // References aircraft record
+    uint16_t flags;            // Always 0x4011
+};
+```
+
+**Example Flight Plan Block (32 bytes at 0x00C1):**
+- Starts with 0x0A (10 - possibly waypoint count)
+- Contains coordinate-like uint16 values
+- Includes `10 5A` pattern repeated 4 times (altitude/speed markers?)
+- Ends with 7-byte target assignment
+
+Section organization suggests 3 flight plan blocks (correlating with header byte 0 = 3 flights).
 
 **Header — IN PROGRESS:**
 
