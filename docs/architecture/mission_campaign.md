@@ -1,7 +1,7 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (85% complete)  
-**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records, type codes), HYPOTHESIS (flight plan details)  
+**Status:** IN PROGRESS (88% complete)  
+**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records, type codes, flight parameters altitude/action)  
 **Last Updated:** 2026-11-11
 
 ---
