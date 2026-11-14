@@ -102,38 +102,123 @@ Key findings:
 
 ---
 
-### Campaign Files (.CAM) — STRONG
+### Campaign Files (.CAM) — STRONG (50% decoded)
 
 **Size:** 11,828 bytes  
 **Location:** Game directory (SQUAD0.CAM - SQUAD5.CAM)  
-**Purpose:** Campaign state and war progression
+**Purpose:** Campaign state, strategic targets, and supply inventory
 
-**Contents (from Strategic Falcon documentation):**
-- Theater selection (Kuwait, Israel, Panama)
-- Campaign day counter
-- Strategic target array (ownership, force strength)
-- Victory/defeat conditions tracking
-- Political objectives
-- War progression state
+**File Structure:**
+```
+0x0000 - 0x185D   Strategic Target Array (~6,200 bytes)
+                  - 24 full targets (70-73 bytes each)
+                  - 20+ simplified targets (16-20 bytes each)
+                  - Heavy 0xFF padding between blocks
+                  
+0x185E - 0x2D8D   Reserved Space (~4,700 bytes)
+                  - Filled with 0x20 (space characters)
+                  - Purpose: Text buffer or memory alignment
+                  
+0x2D8E - 0x2DCD   Supply & Inventory (~64 bytes)
+                  - Weapon stockpiles (8+ types)
+                  - Aircraft count (18 F-16s initially)
+                  - Fuel reserves (6,030 units)
+                  - Campaign counters
+                  
+0x2DCE - 0x2E33   Campaign State (~102 bytes)
+                  - Target counts by type
+                  - Victory/defeat tracking
+                  - Mission statistics
+                  - Status flags
+```
 
-**Strategic targets:**
+**Strategic Target Record (70-73 bytes):**
 ```c
 struct StrategicTarget {
-    uint8_t  ownership;      // Allied/Enemy/Neutral
-    uint8_t  strength;       // 0-100 (percent operational)
-    uint8_t  type;           // Airbase, C3, Supply, Factory, etc.
-    uint8_t  victory_flag;   // Is victory site?
-    uint8_t  defeat_flag;    // Is defeat site?
-    // ... more fields
+    uint16_t target_id;          // +0x00: 0-863 (sparse IDs)
+    uint8_t  byte_2;             // +0x02: Unknown
+    uint8_t  byte_3;             // +0x03: 0-16 (ownership/type?)
+    uint8_t  byte_4;             // +0x04: Usually 0x00
+    uint8_t  byte_5;             // +0x05: 0-3 (subtype?)
+    uint8_t  separator;          // +0x06: Always 0x3C (marker)
+    uint8_t  field_7;            // +0x07: Varies 6-60
+    uint8_t  array1[8];          // +0x08: Values 0-10 (strength/counts)
+    uint8_t  array2[8];          // +0x10: High consistency (coordinates?)
+    uint8_t  array3[8];          // +0x18: Range 190-218 (coordinates?)
+    uint8_t  data[8];            // +0x20: More arrays
+    // ... additional fields
+    uint16_t refs[];             // +0x30+: Cross-references to other targets
+};  // Total: 70-73 bytes
+```
+
+**Simplified Target Record (16-20 bytes):**
+- Same structure as full targets but truncated
+- Represents minor objectives (SAM sites, supply depots)
+- Has 0x3C marker at byte +6
+
+**Supply & Inventory Section (0x2D8E+, ~64 bytes):**
+```c
+struct SupplyInventory {
+    uint8_t  header[4];          // +0x00: Unknown
+    uint16_t unknown1;           // +0x04: Large value
+    uint16_t flags;              // +0x06: Campaign flags
+    
+    // Weapon stockpiles
+    uint16_t aim9_sidewinder;    // +0x08: IR missiles (258)
+    uint16_t aim120_amraam;      // +0x0A: Radar missiles (188)
+    uint16_t agm65_maverick;     // +0x0C: AG missiles (175)
+    uint16_t agm88_harm;         // +0x0E: Anti-radar (150)
+    uint16_t mk82_bombs;         // +0x10: 500lb bombs (150)
+    uint16_t secondary1;         // +0x12: Unknown (302)
+    uint16_t mk84_bombs;         // +0x14: 2000lb bombs (250)
+    uint16_t cbu_cluster;        // +0x16: Cluster bombs (200)
+    uint16_t rockets;            // +0x18: Rockets (175)
+    uint16_t secondary2;         // +0x1A: Unknown (150)
+    uint16_t secondary3;         // +0x1C: Unknown (250)
+    uint16_t secondary4;         // +0x1E: Unknown (232)
+    uint16_t secondary5;         // +0x20: Unknown (100)
+    uint16_t secondary6;         // +0x22: Unknown (100)
+    uint16_t secondary7;         // +0x24: Unknown (100)
+    uint16_t secondary8;         // +0x26: Unknown (100)
+    
+    // Fuel
+    uint16_t fuel1;              // +0x28: 6030 units
+    uint16_t fuel2;              // +0x2A: 6030 (duplicate)
+    
+    // Campaign state
+    uint16_t counter1;           // +0x2C: 50
+    uint16_t unknown2;           // +0x2E: 52407
+    uint16_t campaign_day;       // +0x30: Day 5
+    uint16_t counter2;           // +0x32: 10
+    
+    // Aircraft inventory
+    uint16_t f16_count;          // +0x34: 18 F-16s *** PRIMARY ***
+    uint16_t aircraft_damaged;   // +0x36: 1
+    uint16_t pilots_available;   // +0x38: 9
+    uint16_t counter3;           // +0x3A: 9
+    uint16_t counter4;           // +0x3C: 6
+    uint16_t status_flag;        // +0x3E: 1
+    
+    uint16_t counter5;           // +0x42: 4
 };
 ```
 
-**Theater-specific strength files:**
-- ISRAEL.STR, KUWAIT.STR, PANAMA.STR
-- BOSNIA.STR, INDIA.STR, JAPAN.STR, KOREA.STR, NELLIS.STR
-- Define initial strategic target layout per theater
+**Campaign State Section (0x2DCE+, ~102 bytes):**
+- Target counts by type (8-10 values)
+- Values: 29, 22, 12, 6, 2, 18, 12, 12, 13
+- Likely theater-wide target counts
+- Victory/defeat tracking
+- Mission statistics
+- Multiple 0xFF markers as boundaries
 
-**Evidence:** File sizes confirmed, structure documented by Strategic Falcon editor
+**Key Findings:**
+- Target IDs are sparse (0-863 range, only 44 exist)
+- Targets reference other targets (dependency network)
+- Supply data was misidentified in Strategic Falcon docs
+- First block is Target ID 0, not a separate header
+- Heavy use of 0xFF padding between structures
+
+**Evidence:** Successfully parsed all targets and supply data from SQUAD0.CAM
 
 ---
 
