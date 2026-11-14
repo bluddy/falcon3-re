@@ -223,3 +223,115 @@ structs:
       - {offset: 0x08, size: 2, name: delta_hdg, type: int16,  comment: "heading delta for farptr_table_offset_apply"}
       - {offset: 0x0A, size: 2, name: delta_pit, type: int16,  comment: "pitch delta"}
       - {offset: 0x0C, size: 2, name: delta_rol, type: int16,  comment: "roll delta"}
+
+  # ---- AI System (docs/architecture/ai.md) ----
+
+  - name: AIContext
+    size: 24         # 0x18 bytes; 40 contexts at DS:0x65A7:0x000C
+    status: confirmed
+    source: "docs/architecture/ai.md; ai_context_batch_processor (0x495DF)"
+    notes: >
+      AI entity context for behavior processing. Array of 40 at segment 0x65A7,
+      offset 0x000C (linear 0x065A7C). Processed every frame by ai_context_batch_processor.
+      Contains entity state, behavior flags, target tracking, and movement parameters.
+    fields:
+      - {offset: 0x00, size: 2, name: entity_slot_idx, type: uint16, comment: "Index to main entity slot table"}
+      - {offset: 0x02, size: 2, name: farobj_slot_idx, type: uint16, comment: "Index to farobj main table"}
+      - {offset: 0x04, size: 2, name: behavior_flags,  type: flags16, comment: "Behavior state flags (loaded from external tables)"}
+      - {offset: 0x06, size: 2, name: target_slot_idx, type: uint16, comment: "Target entity index for tracking/mirroring"}
+      - {offset: 0x08, size: 2, name: state_word,      type: uint16, comment: "AI state machine state"}
+      - {offset: 0x0A, size: 2, name: timer,           type: uint16, comment: "Behavior timer/countdown"}
+      - {offset: 0x0C, size: 2, name: angle_to_target, type: int16,  comment: "Angle to target (for weapon firing)"}
+      - {offset: 0x0E, size: 2, name: distance,        type: uint16, comment: "Distance to target or waypoint"}
+      - {offset: 0x10, size: 2, name: velocity_x,      type: int16,  comment: "Movement parameter X"}
+      - {offset: 0x12, size: 2, name: velocity_y,      type: int16,  comment: "Movement parameter Y"}
+      - {offset: 0x14, size: 4, name: reserved,        type: bytes,  comment: "Last 4 bytes (purpose unknown)"}
+
+  # ---- Flight Physics System (docs/architecture/flight_physics.md) ----
+
+  - name: FlightKinematics
+    size: 26         # 13 words = 26 bytes
+    status: confirmed
+    source: "docs/architecture/flight_physics.md; flight_kinematics_position_step (0x3B338)"
+    notes: >
+      26-byte flight state block at DS:[0x32]. Contains position, velocity, tile
+      coordinates, and angles. Mirrored to DS:[0x66] (previous frame) and
+      ES:0x7B0E:0x43BA (trig segment). Updated every frame by position integration.
+    fields:
+      - {offset: 0x00, size: 2, name: world_x_lo,      type: int16,  comment: "World X position lo word"}
+      - {offset: 0x02, size: 2, name: world_x_hi,      type: int16,  comment: "World X position hi word (int32 split)"}
+      - {offset: 0x04, size: 2, name: world_y_lo,      type: int16,  comment: "World Y position lo word"}
+      - {offset: 0x06, size: 2, name: world_y_hi,      type: int16,  comment: "World Y position hi word"}
+      - {offset: 0x08, size: 2, name: world_z_lo,      type: int16,  comment: "World Z position lo word (altitude)"}
+      - {offset: 0x0A, size: 2, name: world_z_hi,      type: int16,  comment: "World Z position hi word"}
+      - {offset: 0x0C, size: 2, name: tile_x,          type: int16,  comment: "Tile coordinate X"}
+      - {offset: 0x0E, size: 2, name: tile_y,          type: int16,  comment: "Tile coordinate Y"}
+      - {offset: 0x10, size: 2, name: velocity_x,      type: int16,  comment: "Velocity X component"}
+      - {offset: 0x12, size: 2, name: velocity_y,      type: int16,  comment: "Velocity Y component"}
+      - {offset: 0x14, size: 2, name: velocity_z,      type: int16,  comment: "Velocity Z component"}
+      - {offset: 0x16, size: 2, name: angle_pitch,     type: int16,  comment: "Pitch angle (14-bit)"}
+      - {offset: 0x18, size: 2, name: field_18,        type: uint16, comment: "Unknown field"}
+
+  - name: AircraftSlot
+    size: 24         # 0x18 bytes; stride in 40-slot array
+    status: confirmed
+    source: "docs/architecture/flight_physics.md; flight_aircraft_slot_cycle_update (0x49546)"
+    notes: >
+      Aircraft/entity slot record processed by flight system. Array of 40 slots
+      processed in cycle by flight_aircraft_slot_cycle_update. Links to farobj
+      and entity systems.
+    fields:
+      - {offset: 0x00, size: 1, name: flags,           type: flags8,  comment: "0=inactive; bit 2=collision; bit 4=respawn"}
+      - {offset: 0x01, size: 2, name: farobj_slot,     type: uint16,  comment: "FarObj main table index"}
+      - {offset: 0x03, size: 2, name: entity_type,     type: uint16,  comment: "Entity type/class code"}
+      - {offset: 0x05, size: 2, name: state_flags,     type: flags16, comment: "State/behavior flags"}
+      - {offset: 0x07, size: 2, name: timer,           type: uint16,  comment: "Countdown timer"}
+      - {offset: 0x09, size: 15, name: data,           type: bytes,   comment: "Type-specific data (15 bytes)"}
+
+  - name: EntitySlotRecord
+    size: 92         # 0x5C bytes; 16 slots at 0x54AF:0x386F
+    status: confirmed
+    source: "docs/architecture/entity.md; farobj_slot_update_driver"
+    notes: >
+      Active entity slot record. 16 slots at segment 0x54AF, offset 0x386F.
+      Updated 3-pass every frame by farobj_slot_update_driver. Contains per-frame
+      processing state, update flags, and links to farobj instances.
+    fields:
+      - {offset: 0x00, size: 6, name: header,          type: bytes,   comment: "Unknown header fields"}
+      - {offset: 0x06, size: 2, name: farobj_slot,     type: uint16,  comment: "FarObj main table slot index"}
+      - {offset: 0x08, size: 2, name: update_flags,    type: flags16, comment: "Per-frame update flags"}
+      - {offset: 0x0A, size: 2, name: state_word,      type: uint16,  comment: "Entity state"}
+      - {offset: 0x0C, size: 80, name: data,           type: bytes,   comment: "Entity-specific data (80 bytes)"}
+
+  # ---- 3D Object Model Format (docs/architecture/3d_objects.md) ----
+
+  - name: ObjectModelHeader
+    size: 12         # minimum; variable size
+    status: confirmed
+    source: "docs/architecture/3d_objects.md"
+    notes: >
+      Header for .3D object model files (aircraft, ground units, etc.).
+      Followed by vertex array, edge array, and rendering data.
+    fields:
+      - {offset: 0x00, size: 2, name: file_size_minus_10, type: uint16, comment: "Total file size - 10"}
+      - {offset: 0x02, size: 2, name: vertex_count,       type: uint16, comment: "Number of vertices in vertex array"}
+      - {offset: 0x04, size: 2, name: edge_count,         type: uint16, comment: "Number of edges in edge array"}
+      - {offset: 0x06, size: 6, name: header_data,        type: bytes,  comment: "Additional header data"}
+
+  - name: ObjectModelVertex
+    size: 6          # 3x int16
+    status: confirmed
+    source: "docs/architecture/3d_objects.md"
+    fields:
+      - {offset: 0x00, size: 2, name: x, type: int16, comment: "Signed X coordinate"}
+      - {offset: 0x02, size: 2, name: y, type: int16, comment: "Signed Y coordinate"}
+      - {offset: 0x04, size: 2, name: z, type: int16, comment: "Signed Z coordinate"}
+
+  - name: ObjectModelEdge
+    size: 4          # 2x int16
+    status: confirmed
+    source: "docs/architecture/3d_objects.md"
+    fields:
+      - {offset: 0x00, size: 2, name: v1, type: int16, comment: "Vertex index 1 (signed)"}
+      - {offset: 0x02, size: 2, name: v2, type: int16, comment: "Vertex index 2 (signed)"}
+
