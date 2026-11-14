@@ -60,21 +60,21 @@ def parse_squadron(filepath, verbose=False):
     if theater_end > offset:
         theater = data[offset:theater_end].decode('ascii', errors='replace')
         print(f"Theater: {theater}")
-        offset = theater_end + 1
     
-    # Calculate pilot data start
-    # Based on observations: pilots start around offset 64
-    # With 30 pilots and ~2640 bytes remaining, that's 88 bytes per pilot
+    # Pilot records start at offset 0x3C (60 bytes)
+    # Each pilot record is 66 bytes (0x42)
     
-    pilot_start = 64
-    pilot_size = 88
+    pilot_start = 0x3C
+    pilot_size = 0x42  # 66 bytes
     pilot_count = 30
     
     print()
-    print(f"PILOTS (estimated {pilot_count} pilots @ {pilot_size} bytes each)")
+    print(f"PILOTS ({pilot_count} records @ {pilot_size} bytes each)")
     print("-"*70)
-    print(f"{'#':>2} {'Callsign':<16} {'Nickname':<16} {'ID':>4} {'Stats'}")
+    print(f"{'#':>2} {'Callsign':<16} {'Nickname':<16} {'ID':>5} {'Rank':>4} Stats")
     print("-"*70)
+    
+    pilots_found = 0
     
     for i in range(pilot_count):
         offset = pilot_start + (i * pilot_size)
@@ -85,59 +85,74 @@ def parse_squadron(filepath, verbose=False):
         
         pilot_data = data[offset:offset+pilot_size]
         
-        # Try different field offsets based on hex dump patterns
-        # Callsign appears to be at start of record
-        callsign_bytes = pilot_data[2:18]  # Skip 2 bytes, read 16
+        # Structure (66 bytes):
+        # +0x00-0x01: Unknown (status flags?)
+        # +0x02:      Rank or type byte
+        # +0x03-0x12: Callsign (first byte at +0x03, rest follows)
+        # +0x13-0x21: Nickname
+        # +0x22-0x25: ID code (3 letters + 'd')
+        # +0x26-0x29: Stats? (abilities/fatigue?)
+        # +0x2A+:     More data
+        
+        status_bytes = pilot_data[0:2]
+        rank_byte = pilot_data[2]
+        
+        # Callsign: starts at +0x03, ~15 bytes
+        callsign_bytes = pilot_data[3:3+15]
         null_pos = callsign_bytes.find(b'\x00')
         if null_pos > 0:
-            callsign = callsign_bytes[:null_pos].decode('ascii', errors='replace')
+            callsign = callsign_bytes[:null_pos].decode('ascii', errors='ignore')
         else:
-            callsign = callsign_bytes.decode('ascii', errors='replace').rstrip('\x00')
+            callsign = callsign_bytes.decode('ascii', errors='ignore').rstrip('\x00')
         
-        # Nickname/name appears after callsign
-        name_bytes = pilot_data[18:34]
+        # Nickname: starts at +0x13 (19), ~15 bytes
+        name_bytes = pilot_data[0x13:0x13+15]
         null_pos = name_bytes.find(b'\x00')
         if null_pos > 0:
-            name = name_bytes[:null_pos].decode('ascii', errors='replace')
+            name = name_bytes[:null_pos].decode('ascii', errors='ignore')
         else:
-            name = name_bytes.decode('ascii', errors='replace').rstrip('\x00')
+            name = name_bytes.decode('ascii', errors='ignore').rstrip('\x00')
         
-        # 3-letter ID code (appears after name, followed by 'd')
-        id_bytes = pilot_data[34:38]
-        pilot_id = id_bytes.decode('ascii', errors='replace').rstrip('\x00').rstrip('d')
+        # ID code: starts at +0x22 (34), 4 bytes
+        id_bytes = pilot_data[0x22:0x26]
+        pilot_id = id_bytes.decode('ascii', errors='ignore').rstrip('\x00').rstrip('d').strip()
         
-        # Stats (abilities and fatigue) - location unclear, try around offset 40
-        stats_offset = 40
-        stats = pilot_data[stats_offset:stats_offset+8]
+        # Stats (guess): around +0x26-0x2A
+        stats = pilot_data[0x26:0x2A]
         
-        # Only print if callsign looks valid (has letters)
+        # Only print if callsign has letters
         if callsign.strip() and any(c.isalpha() for c in callsign):
-            stats_hex = ' '.join(f'{b:02X}' for b in stats[:4])
-            print(f"{i+1:2d} {callsign:<16} {name:<16} {pilot_id:>4} {stats_hex}")
+            stats_hex = ' '.join(f'{b:02X}' for b in stats)
+            print(f"{i+1:2d} {callsign:<16} {name:<16} {pilot_id:>5} {rank_byte:4d} {stats_hex}")
+            pilots_found += 1
             
-            if verbose and i < 5:  # Show first 5 in detail
+            if verbose and i < 3:  # Show first 3 in detail
                 print(f"    Raw data @ 0x{offset:04X}:")
-                for j in range(0, min(pilot_size, 64), 16):
+                for j in range(0, min(pilot_size, 66), 16):
                     row = pilot_data[j:j+16]
                     hex_str = ' '.join(f'{b:02X}' for b in row)
                     ascii_str = ''.join(chr(b) if 32 <= b < 127 else '.' for b in row)
                     print(f"      {j:04X}: {hex_str:47s}  {ascii_str}")
                 print()
     
-    # Try to find supply/aircraft data at end of file
     print()
-    print("SUPPLY/AIRCRAFT DATA (estimated location)")
+    print(f"Found {pilots_found} valid pilots")
+    
+    # Supply/aircraft data
+    print()
+    print("SUPPLY/AIRCRAFT DATA")
     print("-"*70)
     
     supply_offset = pilot_start + (pilot_count * pilot_size)
-    if supply_offset < len(data):
-        remaining = len(data) - supply_offset
-        print(f"Remaining bytes: {remaining}")
-        print(f"Location: 0x{supply_offset:04X} - 0x{len(data):04X}")
-        
-        # Show last 128 bytes
+    remaining = len(data) - supply_offset
+    
+    print(f"Pilots end at:    0x{supply_offset:04X} ({supply_offset})")
+    print(f"File ends at:     0x{len(data):04X} ({len(data)})")
+    print(f"Remaining bytes:  {remaining}")
+    
+    if remaining > 0:
         print()
-        print("Last 128 bytes of file:")
+        print("Last 128 bytes of file (supply/aircraft data):")
         tail_data = data[-128:]
         for j in range(0, len(tail_data), 16):
             row = tail_data[j:j+16]
