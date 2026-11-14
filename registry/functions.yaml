@@ -9269,6 +9269,77 @@ functions:
     size: 130
     doc: Accumulates AI entity movement vectors. Calls fixed_vec3_accumulate_a for position delta accumulation. Called by ai_context_batch_processor.
     source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+  
+  # AI Helper Functions (leaf functions - widely used, 2026-11-15)
+  - address: 0x03e1c2
+    name: ai_state_range_check
+    system: ai
+    size: 52
+    doc: AI state value range checker/validator. Leaf function with 6 comparisons. Array iteration (SI/DI). Called by 7 functions including ai_state_processor_core.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x03e8c5
+    name: ai_farobj_flag_check
+    system: ai
+    size: 13
+    doc: Checks farobj flags for AI. Calls farobj_flag_gate_check. Tiny wrapper function (13B).
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x03f603
+    name: ai_index_bounds_check
+    system: ai
+    size: 35
+    doc: AI array index bounds checker. Leaf function with 2 comparisons. Called by farobj_index_decrement_step and ai update functions.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x03f6d6
+    name: ai_angle_calculate
+    system: ai
+    size: 42
+    doc: Calculates AI angles/heading. Calls angle_xy_far and angle_aux_far. Called by 11 functions including ai_state_processor_core and ai_entity_update_step.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x0407b0
+    name: ai_record_field_read
+    system: ai
+    size: 14
+    doc: Reads AI record field. Tiny leaf function (14B), no comparisons. Called by 13 functions across AI system.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x040db5
+    name: ai_field_offset_calc
+    system: ai
+    size: 16
+    doc: Calculates AI field offset. Tiny leaf function (16B), no comparisons. Called by 17 functions. Likely simple offset calculation or field accessor.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x040e38
+    name: ai_vector_accumulate
+    system: ai
+    size: 14
+    doc: AI vector accumulation wrapper. Calls fixed_vec3_accumulate_a. EXTREMELY widely used (39 callers!). Core 3D vector accumulation for AI.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x040e46
+    name: ai_vector_accumulate_alt
+    system: ai
+    size: 14
+    doc: Alternative AI vector accumulation. Calls fixed_vec3_accumulate_a (same as ai_vector_accumulate). Called by 12 functions. Likely accumulates different vector type (position vs velocity?).
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x0428a1
+    name: ai_state_value_get
+    system: ai
+    size: 32
+    doc: Gets/calculates core AI state value. MOST WIDELY USED leaf function (21 callers!). Leaf with 3 comparisons. Fundamental AI helper.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+  
+  - address: 0x0428c1
+    name: ai_field_check_flag
+    system: ai
+    size: 19
+    doc: Checks AI field flag/condition. Tiny leaf function (19B) with 1 comparison. Called by 17 functions. Flag testing helper.
+    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
 
   # STATE SYSTEM
   - address: 0x03e109
