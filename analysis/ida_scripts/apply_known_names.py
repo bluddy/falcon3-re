@@ -58,6 +58,9 @@ KNOWN_FUNCTIONS = {
     0x3D1C5: "ai_behavior_mirror_to_target",    # Target sync for missile tracking
     0x3DC55: "ai_weapon_spawn_gate_check",      # Weapon spawn validation (friendly fire)
     0x307A5: "ai_entity_data_load_prepare",     # Load and prepare entity data for AI
+    0x398A4: "ai_farptr_table_data_loader",     # Load behavior flags from external data tables
+    0x2703F: "ai_farptr_table_get",             # Get far pointer from table (NOT FOUND YET)
+    0x30CB8: "ai_state_check_function",         # State validation checks
     
     # ===================================================================
     # WEAPONS SYSTEM (from WEAPONS_FINAL_ASSESSMENT.md)
@@ -67,13 +70,19 @@ KNOWN_FUNCTIONS = {
     0x32453: "entity_world_coord_transform",    # World coordinate transform (216B)
     0x32393: "explosion_visual_effect_update",  # Explosion graphics frame update (192B)
     0x327BE: "explosion_sound_effect_trigger",  # Explosion audio handler (499B, 24 entries)
+    0x3DC55: "weapon_spawn_gate_validate",      # Weapon spawn gate (friendly fire, ammo check)
+    0x3BB8F: "aircraft_motion_step",            # Aircraft motion context handler
     
     # ===================================================================
-    # TERRAIN SYSTEM (from TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md)
+    # TERRAIN SYSTEM (from TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md, docs/architecture/terrain.md)
     # ===================================================================
     0x14956: "terrain_tile_heightmap_sample",   # Bilinear heightmap sampling (114B)
     0x361FC: "terrain_strip_project_to_screen", # 3D terrain strip projection to 2D (331B)
     0x16060: "terrain_strip_sample_and_draw",   # Terrain strip sampling with self-modifying code
+    0x14B4F: "terrain_pos_neighbor_scan",       # Main terrain rendering per frame (coastlines, rivers)
+    0x14EAE: "terrain_farobj_tile_copy_resolve", # World → Tile coordinate conversion
+    0x11CC8: "terrain_height_lookup",           # Raw height fetch from 31×31 grid
+    0x27A20: "terrain_anim_line_object_draw",   # Animated lines (tracers) 442B
     
     # ===================================================================
     # FLIGHT PHYSICS SYSTEM (from docs/architecture/flight_physics.md)
@@ -151,6 +160,46 @@ KNOWN_DATA = {
     "str_harpoon_dat": 0x151402,   # "f..`HARPOON.DAT"
     "str_madfont_idx": 0x151AC4,   # "(5.`madfont.idx"
     "str_madfont_dat": 0x151AD4,   # "(5.`madfont.dat"
+}
+
+# Known global variables (DS-relative addresses)
+KNOWN_GLOBALS = {
+    # Terrain System
+    0x3840: ("terrain_heightmap_31x31", 1922, "31×31 height samples for terrain"),
+    0x7A0: ("terrain_lod_scale_table", 16, "8-level LOD distance scaling table"),
+    
+    # Flight Physics / Entity System
+    0x32: ("flight_kinematics_block", 26, "26-byte flight state (pos, vel, tile)"),
+    0x66: ("flight_kinematics_prev", 26, "Previous frame kinematics for delta"),
+    
+    # AI System
+    0xC: ("ai_slot_array_base", 960, "40×24B AI/aircraft slot records"),
+    
+    # HUD/View System
+    0x102: ("view_temp_record", 16, "Temporary view record for projection"),
+    0x810: ("view_horizontal_angle", 2, "Camera horizontal angle"),
+    0x814: ("view_vertical_angle", 2, "Camera vertical angle"),
+    0x80E: ("view_h_direction", 1, "Horizontal direction (0=left, 1=right)"),
+    0x812: ("view_v_direction", 1, "Vertical direction (0=down, 1=up)"),
+    0xC55: ("view_mode_attribute", 1, "Current view mode/attribute index"),
+    
+    # Audio System
+    0xAF90: ("audio_sbi_mode", 1, "SBI mode: 0=OPL2/AdLib, 1=SoundBlaster"),
+    0xAE78: ("audio_channel_limit", 2, "Maximum audio channels"),
+    0x99A7: ("audio_opl_register_table", 18, "OPL2 register table (2B per entry)"),
+    0x99B9: ("audio_sb_register_table", 18, "SoundBlaster register table"),
+    
+    # Entity/FarObj System
+    0x386F: ("entity_slot_records", 1472, "16×92B active entity slots (at segment 0x54AF)"),
+    0x16F4: ("entity_type_class_table", None, "Entity type→class mapping table"),
+    0x4E: ("entity_filename_buffer", 16, "Entity type filename (e.g. 'F4', 'SA')"),
+    
+    # Weapons/Combat
+    0x15B3: ("weapon_game_mode", 1, "Game mode: 0=normal, 1+=restricted fire"),
+    0x15B4: ("weapon_friendly_fire_flags", 2, "Friendly fire permission flags"),
+    
+    # Coordinate/World Transform
+    0x7EA: ("coord_world_offset_x", 6, "World position offsets (3×word)"),
 }
 
 def apply_function_names(functions):
