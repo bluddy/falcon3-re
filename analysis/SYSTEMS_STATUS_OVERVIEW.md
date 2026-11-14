@@ -287,29 +287,36 @@ Keyboard-only:      All axes via keyboard
 
 ## ❓ NOT YET ANALYZED (0-30%)
 
-### 3. Weapons System (75% analyzed) 🔧
-**Status**: ~75% ANALYZED ⚠️  
-**Last Updated**: November 11, 2026 (Session 5 - Guidance/Collision Analysis)  
-**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`, `analysis/WEAPON_TYPES_DECODED.md`, `analysis/GUIDANCE_COLLISION_DAMAGE_ANALYSIS.md`, `analysis/SESSION_WEAPONS_CONTINUED.md`
+### 3. Weapons System (70% analyzed - REALIGNED) 🔧
+**Status**: ~70% ANALYZED ⚠️  
+**Last Updated**: November 11, 2026 (Session 6 - Function Extraction & Realignment)  
+**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`, `analysis/WEAPON_TYPES_DECODED.md`, `analysis/GUIDANCE_COLLISION_DAMAGE_ANALYSIS.md`, `analysis/SESSION_WEAPONS_CONTINUED.md`, `analysis/WEAPONS_PROGRESS_REALIGNMENT.md`
 
-**🎯 MANUAL KNOWLEDGE APPLIED** (November 11, 2026):
-- ✅ Manual extracted (487KB, weapons specs documented in `manual/WEAPONS_MANUAL_SUMMARY.md`)
-- ✅ **Code-to-manual weapon mapping confirmed**:
-  - Type 0x12 = AIM-9 Sidewinder (IR guidance, 12× ripple fire, damage_tier 5)
-  - Type 0x13 = AIM-120 AMRAAM (radar guidance, single shot, damage_tier 2)
-  - Type 0x33 = M61A1 Vulcan gun (ballistic, 6× burst, damage_tier 5)
-- ✅ **Key functions located**:
-  - `sub_2F6D0` @ 0x2F6D0 (1123B) - Guidance algorithm (proportional navigation)
-  - `sub_32453` @ 0x32453 (216B) - Collision/transform system
-  - `sub_2EAA7` @ unknown - Damage application (needs extraction)
-  - `sub_327BE` @ 0x327BE (499B) - Audio system (lock tone, explosion sounds)
-- ✅ **Collision sequence decoded** (behavior dispatcher @ 0x3D24E-0x3D2A9):
-  1. Transform check → 2. Set collision flag (0x400) → 3. Apply damage → 4. Update visuals → 5. Play audio
-- ✅ **Lock-on system components identified**:
-  - Audio tone trigger (sub_327BE, 24 entry points)
-  - Reticle blink flag (in HUD system)
-  - "In parameters" validation (inside sub_2F6D0, not yet extracted)
-- ⚠️ **Damage tier mystery**: Type 2 (AMRAAM) = low tier but should be powerful → needs investigation
+**⚠️ MAJOR CORRECTION** (November 11, 2026):
+- **sub_2F6D0 is NOT guidance** - It's the main game loop (1123B, 85 callees)
+- **sub_32453 is NOT collision check** - It's coordinate transformation (216B)
+- **sub_2EAA7 is damage orchestrator** (190B), not direct calculation
+- **Actual guidance likely in sub_30882** (physics update function)
+
+**✅ CONFIRMED SYSTEMS** (70% overall):
+- Weapon types: AIM-9 (0x12), AIM-120 (0x13), M61A1 (0x33) ✅ 95%
+- Entity spawn system ✅ 80%
+- Behavior orchestration ✅ 75%
+- Collision flagging (0x400) ✅ 75%
+- Audio system (sub_327BE, 24 entry points) ✅ 70%
+- Target tracking ([entity+0x29h]) ✅ 80%
+- Friendly fire protection (type 0x16) ✅ 85%
+- Burst fire (6×, 12×) ✅ 90%
+- Ammo tracking (cs:word_2E112) ✅ 85%
+
+**❌ NOT YET FOUND** (need to locate):
+- Actual guidance algorithm (was misidentified) ❌ 0%
+- Health field in entity struct ❌ 10%
+- Damage calculation formula ❌ 20%
+- Collision detection logic ❌ 30%
+- Lock state machine ❌ 0%
+- "In parameters" validation ❌ 0%
+- Countermeasure logic ❌ 0%
 
 **What We Know**:
 - ✅ **Entity Type System (85%)**:
@@ -392,33 +399,39 @@ Keyboard-only:      All axes via keyboard
   - Explosion spawn TBD
 
 **What's Missing**:
-- Complete guidance algorithm code (sub_2F6D0 full extraction - 1123B)
-- Damage application function (sub_2EAA7 - needs location)
-- Health field in entity struct (110 unmapped bytes)
-- "In parameters" validation (likely inside sub_2F6D0)
+- **Actual guidance algorithm** (sub_30882 suspected, was misidentified in sub_2F6D0)
+- Health field in entity struct (110 unmapped bytes @ +0x5C-0xC9)
+- Damage calculation formula (tier → damage mapping)
+- Collision detection logic (transform found, check not found)
+- Lock state machine (seeking → tracking → locked transitions)
+- "In parameters" validation (range, aspect, closure checks)
 - Countermeasure effectiveness (chaff/flare logic)
 - Bomb types 0x14-0x32 (31 weapon types unexplored)
 
-**Progress Breakdown**:
-- Entity spawn layer: 75% ✅
-- Behavior/AI layer: 70% ✅ (+30% this session)
-- Target lock system: 50% ⚠️ (+15% this session)
-- Guidance algorithms: 40% ⚠️ (+10% this session)
-- Collision: 35% ⚠️ (+10% this session)
-- Damage: 30% ⚠️ (+10% this session)
-- Ammo tracking: 50% ⚠️
-- Input/UI: 35% ⚠️
-- Ballistics: 20% ❓
+**Progress Breakdown** (CORRECTED):
+- Weapon type system: 95% ✅
+- Entity spawn layer: 80% ✅
+- Behavior orchestration: 75% ✅
+- Collision flagging: 75% ✅
+- Audio integration: 70% ✅
+- Target tracking: 80% ✅
+- Damage orchestration: 60% ⚠️
+- Collision detection: 30% ⚠️
+- Damage calculation: 20% ⚠️
+- Guidance algorithms: 0% ❌ (was misidentified)
+- Health tracking: 10% ❌
+- Lock state machine: 0% ❌
+- "In parameters": 0% ❌
+- Countermeasures: 0% ❌
 
-**Estimated Complexity**: HIGH (guidance algorithm very complex, 1123 bytes)
+**Estimated Complexity**: VERY HIGH (guidance still not found, functions misidentified)
 
-**Next Steps** (75% → 90%):
-1. Extract sub_2F6D0 complete disassembly (guidance algorithm)
-2. Locate and extract sub_2EAA7 (damage application)
-3. Find health field in entity struct
-4. Decode "in parameters" validation logic
-5. Map countermeasure systems (chaff/flare effectiveness)
-6. Document bomb types (0x14-0x32, 31 types)
+**Next Steps** (70% → 85%):
+1. Extract sub_30882 (physics update - actual guidance likely here)
+2. Locate health field (trace damage writes from sub_2EAA7)
+3. Find actual collision check (not just transform)
+4. Decode damage tier formula
+5. Document corrected function purposes
 
 ### 8. Radar / Avionics
 **Status**: ~25% ANALYZED ❓  
@@ -611,9 +624,9 @@ Based on complexity, interconnections, and reverse engineering momentum:
 | **Not Started** | Mission, Nav, MP, Campaign | 4 systems (0-15%) |
 
 **Total Systems**: 14  
-**Average Completion**: ~63% (was 58%)  
+**Average Completion**: ~61% (was 63%, corrected down due to misidentification)  
 
-**Estimated Time to 100%**: 42-60 hours across all systems (was 48-68)
+**Estimated Time to 100%**: 45-65 hours across all systems (was 42-60)
 
 ---
 
