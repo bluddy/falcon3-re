@@ -1,0 +1,236 @@
+FALCONCD.EXE String and File I/O Analysis
+============================================================
+
+String References Found: 6
+
+0x14e771: ".`PICFONT.IDX"
+  Referenced by: sub_1297F0 at 0x129809
+
+0x14e781: ".`PICFONT.DAT"
+  Referenced by: sub_1297F0 at 0x12985b
+
+0x1512ef: "S-.`SQUAD"
+  Referenced by: sub_6A651 at 0x6a6be
+  Referenced by: sub_6A651 at 0x6a7ae
+  Referenced by: sub_6A651 at 0x6a8a3
+  Referenced by: sub_6A651 at 0x6a998
+  Referenced by: sub_6A651 at 0x6aa8d
+  Referenced by: sub_6A651 at 0x6ab82
+  Referenced by: sub_6A651 at 0x6ac77
+  Referenced by: sub_6A651 at 0x6ad6c
+  Referenced by: sub_132012 at 0x132041
+  Referenced by: sub_1320CC at 0x1320f7
+  Referenced by: sub_132182 at 0x1321b9
+  Referenced by: sub_1581E5 at 0x158224
+  Referenced by: sub_15A8B0 at 0x15a94e
+  Referenced by: sub_15A8B0 at 0x15afab
+  Referenced by: sub_15B457 at 0x15b4be
+  Referenced by: sub_15B457 at 0x15b574
+  Referenced by: sub_15B457 at 0x15b6b4
+  Referenced by: sub_15B80D at 0x15c3b5
+  Referenced by: sub_16042A at 0x1605eb
+  Referenced by: sub_1623FE at 0x162454
+  Referenced by: r35_field_scale_op_step at 0x164356
+  Referenced by: overlay_undecoded_body_166313 at 0x16634b
+  Referenced by: sub_1744B0 at 0x175458
+  Referenced by: sub_1744B0 at 0x17625e
+  Referenced by: sub_1744B0 at 0x176369
+  Referenced by: r48_arg_forward_stub at 0x176b3a
+  Referenced by: r48_mouse_event_entry at 0x17720e
+  Referenced by: overlay_undecoded_body_178ba9 at 0x178bf5
+  Referenced by: overlay_undecoded_body_178ba9 at 0x178c9c
+  Referenced by: sub_1793C0 at 0x179789
+  Referenced by: sub_1793C0 at 0x1798ee
+  Referenced by: sub_1793C0 at 0x179a5c
+  Referenced by: sub_1793C0 at 0x179b4a
+  Referenced by: sub_1793C0 at 0x179c4e
+  Referenced by: sub_1793C0 at 0x179d52
+  Referenced by: sub_1793C0 at 0x179eb0
+  Referenced by: sub_1793C0 at 0x179fa4
+  Referenced by: sub_1793C0 at 0x17a088
+  Referenced by: sub_1793C0 at 0x17a171
+  Referenced by: sub_17B437 at 0x17b53c
+  Referenced by: sub_17B437 at 0x17b5d2
+  Referenced by: sub_17B437 at 0x17b6a1
+  Referenced by: sub_17B437 at 0x17c4d1
+  Referenced by: overlay_undecoded_body_190f at 0x190fd3
+  Referenced by: r56_head_fragment at 0x1914aa
+  Referenced by: sub_1A0E10 at 0x1a15bb
+
+0x151402: "f..`HARPOON.DAT"
+  Referenced by: sub_1779A6 at 0x1779ba
+
+0x151ac4: "(5.`madfont.idx"
+  Referenced by: sub_1397CE at 0x139909
+  Referenced by: overlay_data_table_18b6 at 0x18b70f
+
+0x151ad4: "85.`madfont.dat"
+  Referenced by: sub_1397CE at 0x139953
+  Referenced by: overlay_data_table_18b6 at 0x18b754
+
+============================================================
+
+DOS INT 21h Calls Found: 139
+
+AH=0x1 (Unknown): 1 calls
+  0x110e4: mscdex_drive_string_setup - int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+
+AH=0x10 (Unknown): 1 calls
+  0x227d8: file_delete - int     21h; DOS - 2+ - DELETE A FILE (UNLINK)
+
+AH=0x19 (Unknown): 2 calls
+  0x2cd5a: drive_path_build - int     21h; DOS - GET DEFAULT DISK NUMBER
+  0x2cee1: dos_handle_dup_path - int     21h; DOS - GET DEFAULT DISK NUMBER
+
+AH=0x25 (Unknown): 8 calls
+  0x174fa: int8_vector_hook - int     21h; DOS - SET INTERRUPT VECTOR
+  0x1751d: int8_vector_unhook - int     21h; DOS - SET INTERRUPT VECTOR
+  0x106311: sub_10626E - int     21h; DOS - SET INTERRUPT VECTOR
+  0x106321: sub_10626E - int     21h; DOS - SET INTERRUPT VECTOR
+  0x12ba51: interrupt_dma - int     21h; DOS - SET INTERRUPT VECTOR
+  0x12ba63: interrupt_dma - int     21h; DOS - SET INTERRUPT VECTOR
+  0x12c5e6: sub_12C518 - int     21h; DOS - SET INTERRUPT VECTOR
+  0x12c5f7: sub_12C518 - int     21h; DOS - SET INTERRUPT VECTOR
+
+AH=0x2c (Unknown): 2 calls
+  0x37801: mode_toggle_105f - int     21h; DOS - GET CURRENT TIME
+  0x37832: terrain_angle_time_step - int     21h; DOS - GET CURRENT TIME
+
+AH=0x2f (Unknown): 1 calls
+  0x227b7: file_get_dta - int     21h; DOS - GET DISK TRANSFER AREA ADDRESS
+
+AH=0x35 (Unknown): 3 calls
+  0x174e0: int8_vector_hook - int     21h; DOS - 2+ - GET INTERRUPT VECTOR
+  0x12c5ba: sub_12C518 - int     21h; DOS - 2+ - GET INTERRUPT VECTOR
+  0x12c5c8: sub_12C518 - int     21h; DOS - 2+ - GET INTERRUPT VECTOR
+
+AH=0x3c (Unknown): 4 calls
+  0x226a1: file_create - int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)
+  0x2cf9e: r01_file_create_3ch - int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)
+  0x2cfcc: r01_file_create_3ch - int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)
+  0x2cfed: r01_file_create_3ch - int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)
+
+AH=0x3d (Open File): 7 calls
+  0x226bd: file_open - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x226c5: file_open - int     21h; DOS -
+  0x2aedc: overlay_file_open - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x2af3a: overlay_file_open - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x2ce05: fname_open_3d00 - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x2d001: r01_file_create_3ch - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x2d00e: r01_file_create_3ch - int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)
+
+AH=0x3e (Close File): 8 calls
+  0x1060c: ems_ems_detect_3d44 - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x226e4: file_close - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x226f5: file_read - int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x2a724: module_open_3d00 - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x2aec9: overlay_file_open - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x2b442: sub_2B424 - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x2d0bf: r01_file_create_3ch - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x12c4fe: sub_12C4F2 - int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)
+
+AH=0x3f (Read File): 8 calls
+  0x2ad9a: overlay_segment_load - int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x2ae49: overlay_segment_load - int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x2d0ad: r01_file_create_3ch - int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x2d0b6: r01_file_create_3ch - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x30966: ems_window_load_snapshot - int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x3096c: ems_window_load_snapshot - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x12c4e9: sub_12C4DE - int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x12c4ee: sub_12C4DE - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+
+AH=0x40 (Write File): 8 calls
+  0x2271f: file_write - int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x2d01c: r01_file_create_3ch - int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x2d028: r01_file_create_3ch - int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x2d02d: r01_file_create_3ch - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x2d045: r01_file_create_3ch - int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x2d08d: r01_file_create_3ch - int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x12c50f: fwrite - int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x12c514: fwrite - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+
+AH=0x41 (Unknown): 1 calls
+  0x6e5f3: r69_pending_session_step - int     21h; DOS - 2+ - DELETE A FILE (UNLINK)
+
+AH=0x42 (Seek File): 2 calls
+  0x2274d: file_lseek - int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)
+  0x2d09e: r01_file_create_3ch - int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)
+
+AH=0x45 (Unknown): 3 calls
+  0x2ce4b: dos_handle_dup_path - int     21h; DOS - 2+ - CREATE DUPLICATE HANDLE (DUP)
+  0x2ce53: dos_handle_dup_path - int     21h; DOS - 2+ - CREATE DUPLICATE HANDLE (DUP)
+  0x2ce5d: dos_handle_dup_path - int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)
+
+AH=0x46 (Unknown): 8 calls
+  0x2c9cd: dos_indirect_dispatch_2c9ba - int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)
+  0x2c9db: dos_indirect_dispatch_2c9ba - int     21h; DOS - PRINT STRING
+  0x2ce67: dos_handle_dup_path - int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)
+  0x2ce73: dos_handle_dup_path - int     21h; DOS - PRINT STRING
+  0x2cf0a: dos_handle_dup_path - int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)
+  0x2cf0e: dos_handle_dup_path - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x2cf15: dos_handle_dup_path - int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)
+  0x2cf19: dos_handle_dup_path - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+
+AH=0x47 (Unknown): 1 calls
+  0x2cd6f: drive_path_build - int     21h; DOS - 2+ - GET CURRENT DIRECTORY
+
+AH=0x48 (Unknown): 5 calls
+  0x10862: alloc_read_mscdex - int     21h; DOS - 2+ - ALLOCATE MEMORY
+  0x10c88: malloc - int     21h; DOS - 2+ - ALLOCATE MEMORY
+  0x10dc1: sub_10DA7 - int     21h; DOS - 2+ - ALLOCATE MEMORY
+  0x22611: dos_mem_alloc - int     21h; DOS - 2+ - ALLOCATE MEMORY
+  0x2a748: module_open_3d00 - int     21h; DOS - 2+ - ALLOCATE MEMORY
+
+AH=0x49 (Unknown): 2 calls
+  0x2262b: dos_mem_free - int     21h; DOS - 2+ - FREE MEMORY
+  0x2a775: ems_seg_free_21_49 - int     21h; DOS - 2+ - FREE MEMORY
+
+AH=0x4a (Unknown): 2 calls
+  0x2d365: stack_switch_7a32 - int     21h; DOS - 2+ - ADJUST MEMORY BLOCK SIZE (SETBLOCK)
+  0x2d373: stack_switch_7a32 - int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+
+AH=0x4c (Unknown): 1 calls
+  0x22267: program_terminate - int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+
+AH=0x4e (Unknown): 2 calls
+  0x22771: file_find_first - int     21h; DOS - 2+ - FIND FIRST ASCIZ (FINDFIRST)
+  0x2277e: file_find_first - int     21h; DOS - 2+ - FIND FIRST ASCIZ (FINDFIRST)
+
+AH=0x4f (Unknown): 1 calls
+  0x227a1: file_find_next - int     21h; DOS - 2+ - FIND NEXT ASCIZ (FINDNEXT)
+
+AH=0x9 (Unknown): 18 calls
+  0x10874: alloc_read_mscdex - int     21h; DOS - PRINT STRING
+  0x10878: alloc_read_mscdex - int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+  0x10886: alloc_read_mscdex - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x10899: quit_with_msg - int     21h; DOS - PRINT STRING
+  0x1089d: quit_with_msg - int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+  0x108a4: alloc_read_mscdex - int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x110cd: mscdex_drive_string_setup - int     21h; DOS - PRINT STRING
+  0x224ef: error_display_terminate - int     21h; DOS - PRINT STRING
+  0x224fe: error_display_terminate - int     21h; DOS - PRINT STRING
+  0x22505: error_display_terminate - int     21h; DOS - PRINT STRING
+
+AH=0xa (Unknown): 1 calls
+  0x2ceae: dos_handle_dup_path - int     21h; DOS - PRINT STRING
+
+AH=0xdc (Unknown): 1 calls
+  0x12d652: sub_12D650 - int     21h; DOS - Novell NetWare 4.0, Banyan VINES - GET STATION NUMBER
+
+AH=0xe3 (Unknown): 1 calls
+  0x12d6ae: sub_12D692 - int     21h; DOS - Novell NetWare 4.0 - CONNECTION CONTROL
+
+AH=0xf (Unknown): 1 calls
+  0x2ca0c: dos_indirect_dispatch_2c9ba - int     21h; DOS - PRINT STRING
+
+AH=unknown (Unknown): 36 calls
+  0x10062: mouse_driver_init - int     21h; DOS - 2+ - GET INTERRUPT VECTOR
+  0x105ec: ems_ems_detect_3d44 - int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x105f5: ems_ems_detect_3d44 - int     21h; DOS - 2+ - IOCTL - GET DEVICE INFORMATION
+  0x10602: ems_ems_detect_3d44 - int     21h; DOS - 2+ - IOCTL -
+  0x108c4: alloc_read_mscdex - int     21h; DOS - 3+ - GET/SET MEMORY ALLOCATION STRATEGY
+  0x108d5: alloc_read_mscdex - int     21h; DOS - 3+ - GET/SET MEMORY ALLOCATION STRATEGY
+  0x10b3f: sub_10B1C - int     21h; DOS - 3+ - GET/SET MEMORY ALLOCATION STRATEGY
+  0x16e5d: sbi_pit_period_gate_1 - int     21h; DOS - 2+ - GET INTERRUPT VECTOR
+  0x16e7c: sbi_pit_period_gate_1 - int     21h; DOS - SET INTERRUPT VECTOR
+  0x16eb7: sbi_pit_period_gate_0 - int     21h; DOS - SET INTERRUPT VECTOR
