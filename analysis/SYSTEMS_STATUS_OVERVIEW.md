@@ -287,18 +287,25 @@ Keyboard-only:      All axes via keyboard
 
 ## ❓ NOT YET ANALYZED (0-30%)
 
-### 3. Weapons System (55% analyzed) 🔧
-**Status**: ~55% ANALYZED ⚠️  
-**Last Updated**: November 11, 2026 (Session 4 continued)  
-**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`
+### 3. Weapons System (65% analyzed) 🔧
+**Status**: ~65% ANALYZED ⚠️  
+**Last Updated**: November 11, 2026 (Session 4 - COMPLETE)  
+**Documentation**: `analysis/WEAPONS_SYSTEM_INITIAL.md`, `analysis/WEAPONS_LAUNCH_MECHANISM.md`, `analysis/BEHAVIOR_DISPATCHER_ANALYSIS.md`, `analysis/WEAPON_SPAWN_ANALYSIS.md`, `analysis/WEAPON_TYPES_DECODED.md`
 
 **What We Know**:
-- ✅ **Entity Type System (60%)**:
-  - Weapon types: 12h, 13h (missiles?), 14h (bombs?), 33h-37h (bullets?), 38h, 16h class
-  - **NEW: Type 0x33 = Special entity (player aircraft?)**
-  - **NEW: Type 0x10 = Special class**
-  - Type/class field: **[entity+0x75]** ✅ CONFIRMED
-  - Type dispatch system documented
+- ✅ **Entity Type System (85%)**:
+  - **DUAL TYPE CLASSIFICATION SYSTEM** ✅ DISCOVERED
+  - **Entity Types** ([entity+0x75]): Behavior classification
+    - 0x10 = Special class
+    - **0x16 = Friendly aircraft** (FF protection)
+    - **0x33 = Player/Advanced AI aircraft**
+  - **Weapon Init Types** (BX in sub_4C19E): Parameter selection
+    - **0x12 = Missile Type 1** (AIM-9 Sidewinder? 506 speed, 12-round tracking)
+    - **0x13 = Missile Type 2** (AIM-120 AMRAAM? 50127 velocity, single)
+    - **0x33 = Gun Type 1** (20mm cannon, 6-round burst)
+    - **0x34-0x37 = Gun variants** (different speeds/damage)
+  - **TYPE 0x33 CONFLICT RESOLVED** ✅ Separate namespaces!
+  - Missing: Types 0x14-0x32 (bombs suspected)
   
 - ✅ **Entity Creation (75%)**:
   - entity_slot_create @ sub_2ECAC (Level 6) - Main entity allocation
@@ -311,7 +318,7 @@ Keyboard-only:      All axes via keyboard
   - entity_spawn_from_tile @ sub_301FB - Static objects
   - object_farptr_dispatch @ loc_345FD - Entity creation dispatcher (TBD)
 
-- ✅ **Behavior Dispatcher (55%)**:
+- ✅ **Behavior Dispatcher (60%)**:
   - **ANALYZED: farobj_behavior_dispatch_step @ sub_3CE92** (2580B, Level 19)
   - **Master entity behavior hub** - ALL entities (aircraft, weapons, AI)
   - 19 entry points, 25 callees
@@ -319,7 +326,15 @@ Keyboard-only:      All axes via keyboard
   - **Tile-based spatial** (13,108 unit tiles, wrapping @ +0x31/32/33/35)
   - **State machines** (behavior flags @ +0x0Ah, +0x0Bh)
   - **Collision flag** (0x400 in +0x08h)
-  - Queue processor: farobj_queue_drain_dispatch @ sub_4C19E (2500B)
+  
+- ✅ **Weapon Type Dispatcher (85%)**:
+  - **DECODED: farobj_queue_drain_dispatch @ sub_4C19E** (2500B, Level 19)
+  - **6 weapon types fully documented** (0x12, 0x13, 0x33-0x37)
+  - Weapon parameter initialization (velocity, flags, damage tier)
+  - **Burst fire system:** 12× for type 0x12, 6× for type 0x33
+  - **Ammo system:** cs:word_2E112 (max 128 rounds)
+  - Queue stride: 0x1B (27 bytes) per weapon
+  - Types 0x14-0x32 not in queue (bombs?)
 
 - ✅ **Target Lock System (50%)**:
   - **Target slot field: [entity+0x29h]** ✅ CONFIRMED
@@ -342,9 +357,12 @@ Keyboard-only:      All axes via keyboard
   - Collision response: sub_2EAA7 @ 0x3D25A
   - Damage application: sub_32393 @ 0x3D27C
 
-- ⚠️ **Ammo Tracking (25%)**:
+- ⚠️ **Ammo Tracking (50%)**:
   - farobj_index_decrement_step - Weapon count decrement
-  - Storage location TBD
+  - **Ammo counter: cs:word_2E112** (max 0x80 = 128 rounds)
+  - **Ammo pointer: cs:word_2E110** (advances by 4 per round)
+  - Burst fire decrements per sub-munition
+  - Storage display TBD
 
 - ⚠️ **Input System (35%)**:
   - Fire key: 'z', A-A cycle: 'e', A-G cycle: 'B'
@@ -358,9 +376,11 @@ Keyboard-only:      All axes via keyboard
   - Bullets: High-speed, lifetime timeout
   - Implementation TBD
 
-- ⚠️ **Damage System (15%)**:
+- ⚠️ **Damage System (20%)**:
   - **sub_32393** - Damage calculation ✅ FOUND
+  - **Damage tier system:** Values 2, 4, 5, 6 in weapon init
   - Health field TBD
+  - Damage lookup table TBD
   - Explosion spawn TBD
 
 **What's Missing**:
