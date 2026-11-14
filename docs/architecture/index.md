@@ -24,6 +24,8 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | [hardware_io.md](hardware_io.md) | IRQ0 timer, INT 33h mouse, joystick, keyboard, BDA | PROVEN |
 | [resource.md](resource.md) | op_dispatch (16 DOS services), streaming file API | PROVEN |
 | [globals.md](globals.md) | Key globals, runtime segments, subsystem map, unknowns | STRONG |
+| [ai.md](ai.md) | **80% COMPLETE**: AI contexts, behavior flags, data-driven system | STRONG–PROVEN |
+| [mission_campaign.md](mission_campaign.md) | **30% COMPLETE**: Squadron/campaign/mission files, save system | STRONG–HYPOTHESIS |
 
 ---
 
@@ -55,6 +57,10 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | 0x2FD42 | `game_frame_pipeline_step` | Rendering pipeline entry |
 | 0x13CB0 | `farobj_batch_build_project` | Terrain tile batch renderer |
 | 0x1740D | `sound_device_init` | Sound hardware initialization |
+| 0x3CE92 | `behavior_dispatcher` | AI master dispatch hub (2,580B) |
+| 0x495DF | `entity_batch_processor` | AI context batch processor (40 entities) |
+| 0x33443 | `master_state_machine` | Main menu/game state coordinator (2,688B) |
 | R05_400C:0x34 | `farobj_main_table` | Main entity slot table |
+| 0x65A7:0x000C | `ai_context_array` | 40 AI contexts × 24 bytes = 960 bytes |
 | 0x7B0E:0x3868 | `trig_sin_table` | Sine lookup table |
 | 0x7B0E:0x3052 | `farobj_typedesc_table` | Entity type descriptor table |
