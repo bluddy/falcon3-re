@@ -1,22 +1,28 @@
 """
-Extract callee functions from Flight Physics seed functions in IDA.
+Extract callee functions from seed functions in IDA.
 
-This script reads seeds from flight_physics_seeds.json and extracts all functions
+This script reads seeds from a JSON file and extracts all functions
 they call (callees), generating a comprehensive report with caller counts.
 
 Usage:
-    idat.exe -A -S"extract_physics_callees.py" FALCONCD.EXE.i64
+    idat.exe -A -S"extract_callees_generic.py <seeds_file>" FALCONCD.EXE.i64
+    
+Or default to flight_physics_seeds.json if no argument provided.
 """
 
 import idc
 import idaapi
 import idautils
 import json
+import sys
 from pathlib import Path
 
-def load_seeds():
+def load_seeds(seeds_filename=None):
     """Load seed functions from JSON file."""
-    seeds_path = Path(__file__).parent.parent / "flight_physics_seeds.json"
+    if seeds_filename is None:
+        seeds_filename = "flight_physics_seeds.json"
+    
+    seeds_path = Path(__file__).parent.parent / seeds_filename
     
     if not seeds_path.exists():
         print(f"ERROR: {seeds_path} not found!")
