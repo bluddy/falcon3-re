@@ -1,0 +1,245 @@
+# Falcon 3.0 Global Variables Registry
+# 
+# This is the SINGLE source of truth for all global variable names.
+# Format: YAML for readability and tool compatibility
+# 
+# Schema:
+#   address: DS-relative offset (e.g., 0x3840)
+#   name: descriptive variable name (system_component_purpose)
+#   segment: segment number if not DS (optional)
+#   size: size in bytes
+#   type: data type (array, struct, word, byte, etc.)
+#   doc: description of what it stores
+#   source: where we learned about it (optional)
+
+schema: 1
+
+globals:
+  # ===========================================================================
+  # TERRAIN SYSTEM
+  # ===========================================================================
+  
+  - address: 0x3840
+    name: terrain_heightmap_31x31
+    size: 1922
+    type: array[31x31]
+    doc: 31×31 height samples for terrain tile rendering, bilinear interpolation source
+    source: TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x7A0
+    name: terrain_lod_scale_table
+    size: 16
+    type: array[8]
+    doc: 8-level LOD distance scaling table for terrain detail
+    source: docs/architecture/terrain.md
+  
+  # ===========================================================================
+  # FLIGHT PHYSICS / ENTITY SYSTEM
+  # ===========================================================================
+  
+  - address: 0x32
+    name: flight_kinematics_block
+    size: 26
+    type: struct
+    doc: 26-byte flight state block (position, velocity, tile coordinates)
+    source: docs/architecture/flight_physics.md
+    
+  - address: 0x66
+    name: flight_kinematics_prev
+    size: 26
+    type: struct
+    doc: Previous frame kinematics for delta calculations
+    source: docs/architecture/flight_physics.md
+  
+  # ===========================================================================
+  # AI SYSTEM
+  # ===========================================================================
+  
+  - address: 0xC
+    name: ai_slot_array_base
+    size: 960
+    type: array[40]
+    doc: 40×24B AI/aircraft slot records, processed every frame
+    source: AI_SYSTEM_STATUS.md
+  
+  # ===========================================================================
+  # HUD / VIEW SYSTEM
+  # ===========================================================================
+  
+  - address: 0x102
+    name: view_temp_record
+    size: 16
+    type: struct
+    doc: Temporary view record for 3D projection calculations
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x810
+    name: view_horizontal_angle
+    size: 2
+    type: word
+    doc: Camera horizontal angle (yaw)
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x814
+    name: view_vertical_angle
+    size: 2
+    type: word
+    doc: Camera vertical angle (pitch)
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x80E
+    name: view_h_direction
+    size: 1
+    type: byte
+    doc: Horizontal direction flag (0=left, 1=right)
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x812
+    name: view_v_direction
+    size: 1
+    type: byte
+    doc: Vertical direction flag (0=down, 1=up)
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0xC55
+    name: view_mode_attribute
+    size: 1
+    type: byte
+    doc: Current view mode/attribute index for rendering
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+  
+  # ===========================================================================
+  # AUDIO SYSTEM
+  # ===========================================================================
+  
+  - address: 0xAF90
+    name: audio_sbi_mode
+    size: 1
+    type: byte
+    doc: SBI mode flag (0=OPL2/AdLib, 1=SoundBlaster)
+    source: docs/architecture/audio.md
+    
+  - address: 0xAE78
+    name: audio_channel_limit
+    size: 2
+    type: word
+    doc: Maximum number of simultaneous audio channels
+    source: docs/architecture/audio.md
+    
+  - address: 0x99A7
+    name: audio_opl_register_table
+    size: 18
+    type: array[9]
+    doc: OPL2 register table (2 bytes per entry)
+    source: docs/architecture/audio.md
+    
+  - address: 0x99B9
+    name: audio_sb_register_table
+    size: 18
+    type: array[9]
+    doc: SoundBlaster register table (2 bytes per entry)
+    source: docs/architecture/audio.md
+  
+  # ===========================================================================
+  # ENTITY / FAROBJ SYSTEM
+  # ===========================================================================
+  
+  - address: 0x386F
+    name: entity_slot_records
+    segment: 0x54AF
+    size: 1472
+    type: array[16]
+    doc: 16×92B active entity slots at segment 0x54AF
+    source: WEAPONS_FINAL_ASSESSMENT.md
+    
+  - address: 0x16F4
+    name: entity_type_class_table
+    type: table
+    doc: Entity type→class mapping table
+    source: WEAPONS_FINAL_ASSESSMENT.md
+    
+  - address: 0x4E
+    name: entity_filename_buffer
+    size: 16
+    type: char[16]
+    doc: Entity type filename buffer (e.g., 'F4', 'SA', 'MIG29')
+    source: FILE_IO_ANALYSIS.md
+  
+  # ===========================================================================
+  # WEAPONS / COMBAT SYSTEM
+  # ===========================================================================
+  
+  - address: 0x15B3
+    name: weapon_game_mode
+    size: 1
+    type: byte
+    doc: Game mode flag (0=normal combat, 1+=restricted fire modes)
+    source: WEAPONS_FINAL_ASSESSMENT.md
+    
+  - address: 0x15B4
+    name: weapon_friendly_fire_flags
+    size: 2
+    type: word
+    doc: Friendly fire permission flags
+    source: WEAPONS_FINAL_ASSESSMENT.md
+  
+  # ===========================================================================
+  # COORDINATE / WORLD TRANSFORM
+  # ===========================================================================
+  
+  - address: 0x7EA
+    name: coord_world_offset_x
+    size: 6
+    type: array[3]
+    doc: World position offsets (3×word for X, Y, Z)
+    source: WEAPONS_FINAL_ASSESSMENT.md
+  
+  # ===========================================================================
+  # MENU SYSTEM (Segment-based)
+  # ===========================================================================
+  
+  - address: 0x4FD5E
+    segment: 0x4FC2
+    name: menu_current_id
+    size: 2
+    type: word
+    doc: Current menu ID
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x4FD60
+    segment: 0x4FC2
+    name: menu_previous_id
+    size: 2
+    type: word
+    doc: Previous menu ID (for back navigation)
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x4FD74
+    segment: 0x4FC2
+    name: menu_state_1
+    size: 2
+    type: word
+    doc: Menu state variable
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x4FD72
+    segment: 0x4FC2
+    name: menu_state_2
+    size: 2
+    type: word
+    doc: Saved menu state
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x79E60
+    segment: 0x7894
+    name: menu_loadout_data
+    type: struct
+    doc: Aircraft loadout record data for menu
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x79B66
+    segment: 0x7894
+    name: menu_selection_state
+    type: word
+    doc: Current menu selection state
+    source: MENU_SYSTEM_CODE_STRUCTURE.md

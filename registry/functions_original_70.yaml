@@ -1,0 +1,511 @@
+# Falcon 3.0 Function Registry
+# 
+# This is the SINGLE source of truth for all function names.
+# Format: YAML for readability and tool compatibility
+# 
+# Schema:
+#   address: hex address (e.g., 0x11450)
+#   name: descriptive function name (system_component_action_detail)
+#   system: which system it belongs to
+#   size: size in bytes (optional)
+#   doc: description of what it does
+#   source: where we learned about it (optional)
+
+schema: 1
+
+functions:
+  # ===========================================================================
+  # FILE I/O SYSTEM
+  # ===========================================================================
+  
+  - address: 0x226BD
+    name: dos_file_open
+    system: file_io
+    size: 39
+    doc: DOS INT 21h AH=3D wrapper - Open file, returns handle in AX
+    
+  - address: 0x226E4
+    name: dos_file_close
+    system: file_io
+    size: 17
+    doc: DOS INT 21h AH=3E wrapper - Close file handle
+    
+  - address: 0x226F5
+    name: dos_file_read
+    system: file_io
+    size: 42
+    doc: DOS INT 21h AH=3F wrapper - Read from file, CX=bytes, returns AX=bytes read
+    
+  - address: 0x2271F
+    name: dos_file_write
+    system: file_io
+    size: 46
+    doc: DOS INT 21h AH=40 wrapper - Write to file
+    
+  - address: 0x2274D
+    name: dos_file_lseek
+    system: file_io
+    size: 53
+    doc: DOS INT 21h AH=42 wrapper - Seek to offset, AL=method (0=start,1=current,2=end)
+    
+  - address: 0x1297F0
+    name: picfont_idx_dat_loader
+    system: file_io
+    size: 187
+    doc: Loads PICFONT.IDX/.DAT pair. Template pattern for all .IDX/.DAT loaders
+    source: FILE_IO_ANALYSIS.md, extracted assembly
+    
+  - address: 0x1397CE
+    name: madfont_idx_dat_loader
+    system: file_io
+    doc: Loads madfont.idx/.dat font file pair
+    
+  - address: 0x6A651
+    name: squad_campaign_file_loader
+    system: file_io
+    doc: SQUAD campaign file loader. 46 references! Loads mission/campaign data from SQUAD*.CAM
+    
+  - address: 0x1779A6
+    name: harpoon_missile_dat_loader
+    system: file_io
+    doc: Loads HARPOON.DAT missile data. AGM-84 Harpoon parameters
+    
+  - address: 0x2AEA9
+    name: overlay_file_open
+    system: file_io
+    doc: Overlay file opener for RTLink overlay system
+    
+  - address: 0x2AC4C
+    name: overlay_segment_load
+    system: file_io
+    doc: Overlay segment loader - loads overlay into memory
+    
+  # ===========================================================================
+  # MENU SYSTEM
+  # ===========================================================================
+  
+  - address: 0x683C5
+    name: ui_loadout_menu_controller
+    system: menu
+    size: 4169
+    doc: |
+      Loadout menu controller hub. Multiple entry points:
+      ui_loadout_menu_enter, ui_stores_menu_enter, etc.
+    source: MENU_SYSTEM_CODE_STRUCTURE.md
+    
+  - address: 0x66E62
+    name: ui_menu_panel_initialize
+    system: menu
+    doc: Common menu panel initialization. Sets up UI state, clears buffers
+    
+  - address: 0x6A5BD
+    name: ui_menu_page_setup
+    system: menu
+    doc: Menu page setup routine
+    
+  - address: 0x6798C
+    name: ui_loadout_slot_record_fill
+    system: menu
+    doc: Fill aircraft loadout record with selected weapons/fuel
+    
+  - address: 0x67BAF
+    name: ui_menu_transition_animate
+    system: menu
+    doc: Menu transition animation step (fade/slide effects)
+    
+  - address: 0x4AEC4
+    name: farobj_3d_model_rotate_step
+    system: menu
+    doc: 3D model rotation for menu aircraft preview. Animates selected aircraft
+    
+  # ===========================================================================
+  # AI SYSTEM
+  # ===========================================================================
+  
+  - address: 0x3CE92
+    name: ai_entity_behavior_dispatcher
+    system: ai
+    size: 2580
+    doc: |
+      Master AI behavior dispatcher. Routes by entity type (player, AI, missiles, bullets).
+      Handles state machine, 25 callees, type-based polymorphism via [entity+0x75]
+    source: AI_SYSTEM_STATUS.md, docs/architecture/ai.md
+    
+  - address: 0x495DF
+    name: ai_context_batch_processor
+    system: ai
+    size: 1165
+    doc: |
+      AI batch processor. Processes 40×24B AI contexts at DS:0x49AB:[0xC].
+      Called every frame to update all AI entities
+    
+  - address: 0x3CFAA
+    name: ai_behavior_state_machine
+    system: ai
+    doc: Behavior state machine entry point. Handles state transitions
+    
+  - address: 0x3D180
+    name: ai_target_tracking_update
+    system: ai
+    doc: Target tracking sequence update. Updates pursuit calculations
+    
+  - address: 0x3D1C5
+    name: ai_behavior_mirror_to_target
+    system: ai
+    doc: |
+      AI target mirroring for missile tracking. Copies target orientation
+      to missile instead of calculating pursuit (target sync mechanism)
+    
+  - address: 0x3DC55
+    name: weapon_spawn_gate_validate
+    system: ai
+    doc: |
+      Weapon spawn validation gate. Checks friendly fire rules,
+      game mode flags, ammo count before spawning weapons
+    
+  - address: 0x307A5
+    name: ai_entity_data_load_prepare
+    system: ai
+    size: 118
+    doc: Load and prepare entity data for AI processing
+    
+  - address: 0x398A4
+    name: ai_farptr_table_data_loader
+    system: ai
+    doc: |
+      Loads behavior flags from external data tables during entity update.
+      Data source: entity data table at offset +6 (word value)
+    source: AI_TACTICAL_STATE_INITIALIZATION.md
+    
+  - address: 0x2703F
+    name: ai_farptr_table_get
+    system: ai
+    doc: Get far pointer from table. Returns ES:DI = far pointer for table index
+    source: Finally found! Referenced in multiple AI docs
+    
+  - address: 0x30CB8
+    name: ai_state_check_function
+    system: ai
+    doc: AI state validation checks. Used by state machine
+    
+  # ===========================================================================
+  # WEAPONS SYSTEM
+  # ===========================================================================
+  
+  - address: 0x4C19E
+    name: weapon_type_initialize_dispatch
+    system: weapons
+    size: 2500
+    doc: |
+      Weapon type initialization dispatcher. Routes to type-specific init:
+      AIM-9, AIM-120, AGM-65, M61A1 cannon, bombs. Type byte determines parameters
+    source: WEAPONS_FINAL_ASSESSMENT.md, WEAPON_TYPES_DECODED.md
+    
+  - address: 0x2EAA7
+    name: damage_event_dispatch_handler
+    system: weapons
+    size: 190
+    doc: |
+      Damage event dispatcher. Routes damage by entity type:
+      aircraft, ground unit, building, terrain
+    
+  - address: 0x32453
+    name: entity_world_coord_transform
+    system: weapons
+    size: 216
+    doc: World coordinate transform for entity positioning
+    
+  - address: 0x32393
+    name: explosion_visual_effect_update
+    system: weapons
+    size: 192
+    doc: Explosion graphics frame update. Updates explosion sprite/animation
+    
+  - address: 0x327BE
+    name: explosion_sound_effect_trigger
+    system: weapons
+    size: 499
+    doc: |
+      Explosion sound effect trigger (24 audio entries).
+      Selects explosion sound by weapon type and size
+    
+  - address: 0x3BB8F
+    name: aircraft_motion_step
+    system: weapons
+    doc: Aircraft motion context handler. Called by behavior dispatcher
+    
+  # ===========================================================================
+  # TERRAIN SYSTEM
+  # ===========================================================================
+  
+  - address: 0x14956
+    name: terrain_tile_heightmap_sample
+    system: terrain
+    size: 114
+    doc: |
+      Bilinear heightmap sampling. Samples 31×31 tile grid,
+      returns interpolated height for smooth terrain
+    source: TERRAIN_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x361FC
+    name: terrain_strip_project_to_screen
+    system: terrain
+    size: 331
+    doc: |
+      3D terrain strip projection to 2D. Perspective projection
+      with LOD distance scaling for terrain rendering
+    
+  - address: 0x16060
+    name: terrain_strip_sample_and_draw
+    system: terrain
+    doc: |
+      Terrain strip sampling with self-modifying code.
+      Runtime-patches comparison immediates for sky detection
+    
+  - address: 0x14B4F
+    name: terrain_pos_neighbor_scan
+    system: terrain
+    doc: |
+      Main terrain rendering per frame. Grid lookup → coastline/river index
+      → coordinate list → project to 2D → Bresenham lines
+    source: docs/architecture/terrain.md
+    
+  - address: 0x14EAE
+    name: terrain_farobj_tile_copy_resolve
+    system: terrain
+    doc: |
+      World → Tile coordinate conversion. Handles 512×512 tile grid,
+      tile size 0x3334 (13,108) world units, bias 0x003400
+    
+  - address: 0x27A20
+    name: terrain_anim_line_object_draw
+    system: terrain
+    size: 442
+    doc: Animated lines rendering (tracers, missiles). Vector drawing
+    
+  # ===========================================================================
+  # FLIGHT PHYSICS SYSTEM
+  # ===========================================================================
+  
+  - address: 0x11450
+    name: flight_control_axes_read_normalize
+    system: flight_physics
+    size: 114
+    doc: |
+      Read 4 flight control axes and normalize to ±2048 range.
+      Clamps to prevent overflow. Hardware joystick → normalized values
+    source: docs/architecture/flight_physics.md
+    
+  - address: 0x3099C
+    name: flight_control_axes_write_to_entity
+    system: flight_physics
+    size: 214
+    doc: |
+      Write control axes to entity record. Stores at entity offsets
+      +0x18h (axis1), +0x1Ah (elevator), +0x1Ch (aileron), +0x2Ah (axis4)
+    
+  - address: 0x3B338
+    name: flight_kinematics_position_step
+    system: flight_physics
+    size: 852
+    doc: |
+      Position integration, 26B kinematics block at DS:[0x32].
+      Mirrors to DS:[0x66] (previous frame) and ES:0x7B0E:0x43BA (trig segment)
+    
+  - address: 0x49546
+    name: flight_aircraft_slot_cycle_update
+    system: flight_physics
+    doc: 40×24B aircraft slot array processor. Iterates all active aircraft
+    
+  - address: 0x4CD1D
+    name: flight_entity_motion_accumulate
+    system: flight_physics
+    doc: 40-entry motion accumulation table (27B stride at DS:0x69FF:[4])
+    
+  - address: 0x3A3D6
+    name: flight_entity_simulation_frame_step
+    system: flight_physics
+    size: 508
+    doc: |
+      Per-entity simulation step. Called by game loop for each entity.
+      Handles input, AI, physics, rendering gates
+    
+  - address: 0x3E16B
+    name: flight_aerodynamics_force_update
+    system: flight_physics
+    size: 865
+    doc: |
+      Aerodynamic force application to velocity. Applies force vector
+      [FarObj+50h/52h/54h] to velocity [Entity+3Ah-44h]
+    
+  - address: 0x38CF3
+    name: flight_aerodynamics_speed_authority
+    system: flight_physics
+    size: 2284
+    doc: |
+      Speed-dependent control authority. Linear at low speed,
+      quadratic dampening at high speed. 5-stage calculation
+    
+  - address: 0x1CEA3
+    name: flight_entity_countdown_timers
+    system: flight_physics
+    size: 453
+    doc: |
+      Entity countdown timers update. Weapons reload, missile motor
+      burn time, damage recovery. At ES:0x7772:0x506+N
+    
+  # ===========================================================================
+  # HUD SYSTEM
+  # ===========================================================================
+  
+  - address: 0x36785
+    name: hud_readout_render_coordinator
+    system: hud
+    size: 908
+    doc: |
+      Main HUD rendering coordinator. 23 calls, 90 data refs.
+      Calls all instrument draw functions
+    source: HUD_SYSTEM_100_PERCENT_COMPLETE.md
+    
+  - address: 0x36B11
+    name: hud_field_value_draw_0c
+    system: hud
+    doc: HUD field value display at offset 0x0C
+    
+  - address: 0x36C0E
+    name: hud_field_value_draw_14
+    system: hud
+    doc: HUD field value display at offset 0x14
+    
+  - address: 0x36CCF
+    name: hud_value_format_and_draw
+    system: hud
+    doc: Format numeric value and draw to HUD
+    
+  - address: 0x3708F
+    name: hud_heading_tape_draw
+    system: hud
+    doc: Heading tape instrument drawing (compass heading indicator)
+    
+  - address: 0x35BCE
+    name: hud_draw_chain_step
+    system: hud
+    doc: HUD rendering chain step. 4 calls to cs:dword_35920
+    
+  - address: 0x35971
+    name: hud_cockpit_mode_ratio_dispatch
+    system: hud
+    size: 126
+    doc: Cockpit HUD mode renderer. Text positioning for instrumented view
+    
+  - address: 0x25A56
+    name: hud_cockpit_rect_arg_store
+    system: hud
+    size: 28
+    doc: Cockpit shape drawing. Rectangle argument storage
+    
+  - address: 0x24DB8
+    name: hud_external_far_callback
+    system: hud
+    size: 18
+    doc: External view mode renderer (full-screen terrain)
+    
+  - address: 0x263F0
+    name: hud_external_vector_dispatch
+    system: hud
+    size: 6
+    doc: External vector overlay dispatcher
+    
+  - address: 0x11AE7
+    name: font_glyph_bitmap_render
+    system: hud
+    size: 62
+    doc: |
+      Bitmap font glyph renderer. Variable-width fonts,
+      atlas lookup, kerning. Called by 62 functions
+    
+  - address: 0x11B6A
+    name: font_glyph_atlas_lookup
+    system: hud
+    size: 38
+    doc: Font atlas character lookup. Atlas navigation, string width calculation
+    
+  - address: 0x28B08
+    name: graphics_line_draw_bresenham
+    system: hud
+    size: 409
+    doc: |
+      Bresenham line drawing algorithm. Table-based octant selection
+      for optimized line rendering. ~15-20 cycles per pixel
+    
+  - address: 0x14200
+    name: graphics_rect_fill_tiled
+    system: hud
+    size: 106
+    doc: Rectangle fill with 8×8 tile patterns. Clipping against viewport
+    
+  - address: 0x35B2F
+    name: graphics_sprite_offset_dispatch
+    system: hud
+    size: 20
+    doc: Sprite coordinate transform bridge. Offset computation
+    
+  - address: 0x24D64
+    name: graphics_pixel_plot_gateway
+    system: hud
+    size: 60
+    doc: |
+      Pixel plotting gateway with shadow. Two-pass rendering:
+      shadow (1-pixel offset) + main character
+    
+  - address: 0x2D11A
+    name: video_mode_13h_initialize
+    system: hud
+    size: 111
+    doc: |
+      VGA Mode 13h initialization. 320×200×256 color setup.
+      Disables chain-4, configures sequencer/CRT controller
+    
+  - address: 0x359B2
+    name: view_cockpit_hud_initialize
+    system: hud
+    size: 381
+    doc: |
+      Cockpit view initialization. Sets mode flag, installs
+      cockpit renderers, configures 85×20 viewport
+    
+  - address: 0x35B43
+    name: view_external_limits_install
+    system: hud
+    size: 139
+    doc: |
+      External view initialization. Sets mode flag, installs
+      external renderers, configures full-screen viewport
+    
+  # ===========================================================================
+  # GRAPHICS/VIDEO SYSTEM
+  # ===========================================================================
+  
+  - address: 0x4F271
+    name: vga_dac_palette_upload
+    system: graphics
+    doc: VGA DAC palette upload. 11 callers. Sets 256-color palette
+    
+  # ===========================================================================
+  # GAME LOOP
+  # ===========================================================================
+  
+  - address: 0x2F6D0
+    name: main_game_loop_update
+    system: game_loop
+    size: 1123
+    doc: |
+      Main game loop frame update. 85 callees.
+      Input → AI → Physics → Rendering → Audio pipeline coordinator
+    source: WEAPONS_FINAL_ASSESSMENT.md
+    
+  - address: 0x30882
+    name: ems_extended_memory_handler
+    system: game_loop
+    size: 282
+    doc: EMS extended memory I/O handler. INT 67h bring-up and operations
