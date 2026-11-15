@@ -140,7 +140,7 @@ def main():
     potential_decompressors = []
     
     depth = 0
-    max_depth = 5
+    max_depth = 10  # Increased from 5 to 10
     
     while to_analyze and depth < max_depth:
         print(f"\n{'#' * 80}")
