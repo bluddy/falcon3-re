@@ -127,10 +127,17 @@ def main():
     print("SYSTEMATIC ANALYSIS EXPANSION FROM FONT LOADERS")
     print("=" * 80)
     
-    # Starting points
+    # Starting points - include original loaders plus high-scoring far pointer targets
     seeds = [
         (0x1297F0, "picfont_idx_dat_loader"),
         (0x1397CE, "madfont_idx_dat_loader"),
+        # High-scoring far pointer targets
+        (0x001820B0, "r53_sbi_stream_dispatch"),  # score 12
+        (0x001031C0, "r08_farptr_load_gate_entry"),  # score 10
+        (0x00017F50, "hw_seq_step"),  # score 9
+        (0x0002F400, "terrain_vm_sweep_sample"),  # score 9
+        (0x0013280B, "undoc_13280B"),  # score 9
+        (0x001A57F0, "overlay_r57_processor"),  # score 9
     ]
     
     analyzed = set()
@@ -140,7 +147,7 @@ def main():
     potential_decompressors = []
     
     depth = 0
-    max_depth = 10  # Increased from 5 to 10
+    max_depth = 6  # Reduce depth since we're starting from more seeds
     
     while to_analyze and depth < max_depth:
         print(f"\n{'#' * 80}")
