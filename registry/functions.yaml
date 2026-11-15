@@ -10994,7 +10994,10 @@ functions:
   - address: 0x06a651
     name: squad_campaign_file_loader
     system: file_io
-    doc: 'SQUAD campaign file loader. 46 references! Loads mission/campaign data from SQUAD*.CAM'
+    size: 2056
+    callers: 88
+    doc: 'Squadron and campaign file loader. 42 string refs, 46 file I/O ops. Loads: .SQUAD, .CAM, .SQU, .MIS, .MTV files. Uses int_to_string_converter (8x) for squadron numbers, string_concatenate (16x) for paths. Pattern: OPEN(6) → READ(10/8/12). Similar to squadron_mission_file_loader (Rank #10) and theater_campaign_file_loader (Rank #11). Part of campaign data loading subsystem.'
+    source: 'Rank #14 analysis - campaign/squad file loader'
   - address: 0x06ae59
     name: ui_slot_list_mode_enter
     system: ui
@@ -12191,9 +12194,12 @@ functions:
     doc: 'Large overlay, 78 callees (heavy dispatcher). conf: LOW'
 
   - address: 0x1A6F30
-    name: overlay_r57_handler
+    name: r57_loadout_display_handler
+    system: ui
     size: 4549
-    doc: 'Large overlay, 32 callees, 104 comparisons. conf: LOW'
+    callers: 88
+    doc: 'R57 LOADOUT DISPLAY HANDLER: Companion to r57_menu_state_machine. Builds UI display from flight data. String: "NELLIS" (Nellis AFB). 7-state FSM matching menu states. Converts 130-byte flight records (dword_79BEC) to 23-byte display records (dword_79E6C). Filters by word_78910. Calls ui_slot_scan_step 7x. Pattern: Separate display rendering from menu logic. Renders aircraft slots, pilot names, weapon icons.'
+    source: 'Rank #13 analysis - R57 loadout display companion'
 
   - address: 0x17B437
     name: overlay_r4B_logic
@@ -12242,9 +12248,12 @@ functions:
     doc: '3105B, 6 callees, 73 comparisons, 2 callers. conf: LOW'
 
   - address: 0x1A57F0
-    name: overlay_r57_processor
+    name: r57_menu_state_machine
+    system: ui
     size: 3083
-    doc: '3083B, 31 callees, 123 comparisons. conf: LOW'
+    callers: 95
+    doc: 'R57 WEAPONS LOADOUT MENU: 7-state FSM for mission planning loadout configuration. String evidence: "CLEAR ALL WEAPONS", "DEFAULT LOAD", "ASSIGN PILOTS", "TAKEOFF", "F-16", "FA-18". Uses 130-byte flight records (4 aircraft each) at dword_79BEC. States: 0=flight select, 1=aircraft select, 2=weapon config (20 hardpoints), 3=pilot assign, 4-6=validation/prep/exit. Keyboard: 2/4/6 keys. Calls input_sync_and_wait 14x, ui_menu_transition_animate 7x. Core campaign mission planning interface.'
+    source: 'Rank #12 deep dive - confirmed weapons loadout menu via string analysis'
 
   - address: 0x17F4E6
     name: overlay_r4F_logic_1

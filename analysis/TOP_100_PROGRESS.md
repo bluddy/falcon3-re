@@ -10,9 +10,9 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 54 | 54% |
+| ✅ Completed | 56 | 56% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 46 | 46% |
+| ⏳ Pending | 44 | 44% |
 
 **Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
@@ -121,6 +121,16 @@
     - Builds .TEMP.DAT file paths
     - Opens for read/write (operation 4)
     - Used during campaign initialization
+40. ✅ **`squad_campaign_file_loader` (0x6A651)** - **Rank #14, 88 callers, 2,056 bytes** ⭐
+    - Squadron and campaign file loader
+    - **File types**: .SQUAD, .CAM, .SQU, .MIS, .MTV (5 types, 42 string refs!)
+    - **46 file I/O operations** via op_dispatch_far_entry
+    - Uses int_to_string_converter (8x) for squadron numbers
+    - Uses string_concatenate (16x) for path building
+    - Pattern: OPEN(6) → READ(10/8/12) → process
+    - Similar to squadron_mission_file_loader (Rank #10) and theater_campaign_file_loader (Rank #11)
+    - Part of campaign data loading subsystem (3rd file loader in top 14!)
+    - Added 19 inline comments
 40. ✅ **`event_irq_sync_handler` (0x13D6E4)** - 55 bytes, 4 callers
     - Polls IRQ status, sets event mode, checks state mode
     - Ensures clean state transitions between overlays
@@ -134,7 +144,7 @@
     - Loads *.MSC files (mission-specific resources)
     - Calls madfont_idx_dat_loader for font loading
 
-### Menu State Machines (1 function)
+### Menu State Machines (2 functions - R57 Loadout Pair)
 43. ✅ **`r57_menu_state_machine` (0x1A57F0)** - **Rank #12, 95 callers, 3,083 bytes, 31 callees** ⭐ **WEAPONS LOADOUT MENU**
     - **IDENTIFIED**: This is the **weapons loadout configuration menu** for mission planning!
     - String evidence from callee: "CLEAR ALL WEAPONS", "DEFAULT LOAD", "ASSIGN PILOTS", "TAKEOFF"
@@ -156,8 +166,23 @@
     - Added 27 inline comments documenting state machine flow
     - **Created**: R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md (comprehensive deep dive)
 
+44. ✅ **`r57_loadout_display_handler` (0x1A6F30)** - **Rank #13, 88 callers, 4,549 bytes, 32 callees** ⭐ **LOADOUT DISPLAY COMPANION**
+    - **IDENTIFIED**: Display/UI handler companion to r57_menu_state_machine
+    - String: "NELLIS" (Nellis Air Force Base - campaign location)
+    - Parallel 7-state FSM matching menu state machine
+    - **Data transformation**: 130-byte flight records → 23-byte display records
+    - Source: dword_79BEC (flight data table)
+    - Destination: dword_79E6C (display record table)
+    - Display record: 23 bytes (0x17) with color/attribute flags
+    - Filters records by word_78910 (selection criteria)
+    - Calls ui_slot_scan_step 7x (once per state - UI slot rendering)
+    - Sets multiple display attributes to 0x63 ('c' - color value)
+    - Pattern: **Separation of concerns** - menu logic vs display rendering
+    - Purpose: Renders aircraft slots, pilot names, weapon icons on screen
+    - Added 23 inline comments documenting display building logic
+
 ### UI Text Rendering Chain (11 functions discovered from ui_campaign_render_coordinator)
-44. ✅ **`ui_text_render_single_mode` (0x1293F0)** - 120 bytes, called 4x by coordinator
+45. ✅ **`ui_text_render_single_mode` (0x1293F0)** - 120 bytes, called 4x by coordinator
     - Single character renderer with mode checking
     - Checks byte_7A302 (rendering mode), byte_14E5A0 (display mode 1/2/3)
     - Routes to palette or simple renderer based on flags
@@ -213,8 +238,8 @@
 | 10 | 0x17B437 | 104 | 4516B | **squadron_mission_file_loader** | ✅ **DEEP DIVE COMPLETE** (📄 12K word analysis) |
 | 11 | 0x15A8B0 | 102 | 2553B | **theater_campaign_file_loader** | ✅ **COMPLETE** (📊 6 file types, 42 I/O ops) |
 | 12 | 0x1A57F0 | 95 | 3083B | **r57_menu_state_machine** | ✅ **COMPLETE** (🔄 7-state menu, 130-byte records) |
-| 13 | 0x1A6F30 | 88 | 4549B | sub_1A6F30 | ⏳ Pending |
-| 14 | 0x6A651 | 88 | 2056B | sub_6A651 | ⏳ Pending |
+| 13 | 0x1A6F30 | 88 | 4549B | **r57_loadout_display_handler** | ✅ **COMPLETE** (🖥️ display companion, 23-byte UI records) |
+| 14 | 0x6A651 | 88 | 2056B | **squad_campaign_file_loader** | ✅ **COMPLETE** (📁 .SQUAD/.CAM/.MIS files, 46 I/O ops) |
 | 15 | 0x1734EC | 86 | 2456B | sub_1734EC | ⏳ Pending |
 | 16 | 0x108BAC | 83 | 717B | r15_flag_107762_body | ⏳ Pending |
 | 17 | 0x34C31 | 81 | 1929B | mode_axis_state_select | ⏳ Pending |
