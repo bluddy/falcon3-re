@@ -1,0 +1,496 @@
+{
+  "vga_upload": {
+    "address": "0x4f271",
+    "callers": 4
+  },
+  "caller_analysis": [
+    {
+      "address": "0x2f6d0",
+      "name": "main_game_loop_update",
+      "size": 1123,
+      "patterns": {
+        "loops": 1,
+        "memset_calls": 0,
+        "byte_compares": 27,
+        "header_checks": [
+          {
+            "address": 194600,
+            "instruction": "cmp     ds:byte_7A320+532h, 0"
+          },
+          {
+            "address": 194641,
+            "instruction": "cmp     ax, 0FFFFh"
+          },
+          {
+            "address": 194688,
+            "instruction": "cmp     ax, 0FFFFh"
+          },
+          {
+            "address": 194817,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 194854,
+            "instruction": "cmp     word ptr ds:44AAh, 4"
+          },
+          {
+            "address": 194884,
+            "instruction": "cmp     ds:byte_70A31, 0"
+          },
+          {
+            "address": 194905,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 194934,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 195026,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 195042,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 195050,
+            "instruction": "cmp     word ptr ds:23Bh, 0"
+          },
+          {
+            "address": 195091,
+            "instruction": "cmp     byte ptr ds:451h, 0"
+          },
+          {
+            "address": 195098,
+            "instruction": "cmp     byte ptr ds:451h, 0FFh"
+          },
+          {
+            "address": 195183,
+            "instruction": "cmp     byte ptr ds:4FFh, 0"
+          },
+          {
+            "address": 195230,
+            "instruction": "test    bx, 200h"
+          },
+          {
+            "address": 195331,
+            "instruction": "cmp     cs:byte_2F6BA, 0"
+          },
+          {
+            "address": 195344,
+            "instruction": "cmp     cs:byte_2F6BA, 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 3,
+        "rle_likelihood_score": 7
+      }
+    },
+    {
+      "address": "0x31138",
+      "name": "terrain_state_reinit",
+      "size": 481,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 7,
+        "header_checks": [
+          {
+            "address": 201094,
+            "instruction": "cmp     ds:byte_7A320+45Fh, 0"
+          },
+          {
+            "address": 201306,
+            "instruction": "cmp     ds:byte_7A320+45Fh, 0"
+          },
+          {
+            "address": 201355,
+            "instruction": "cmp     ax, 64h ; 'd'"
+          },
+          {
+            "address": 201419,
+            "instruction": "cmp     ax, 64h ; 'd'"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 1,
+        "rle_likelihood_score": 5
+      }
+    },
+    {
+      "address": "0x31319",
+      "name": "main_frame_update_loop",
+      "size": 257,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 6,
+        "header_checks": [
+          {
+            "address": 201497,
+            "instruction": "cmp     word_54D2B, 0Eh"
+          },
+          {
+            "address": 201511,
+            "instruction": "cmp     word_54EFA, 0Dh"
+          },
+          {
+            "address": 201539,
+            "instruction": "cmp     byte_54F0C, 0"
+          },
+          {
+            "address": 201558,
+            "instruction": "cmp     byte_54FDB, 0"
+          },
+          {
+            "address": 201719,
+            "instruction": "cmp     byte_54F0C, 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 0,
+        "rle_likelihood_score": 5
+      }
+    },
+    {
+      "address": "0x322e5",
+      "name": "mode_extent_recompute",
+      "size": 174,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 0,
+        "header_checks": [],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 0,
+        "rle_likelihood_score": 0
+      }
+    }
+  ],
+  "dat_file_readers": [
+    {
+      "address": "0x1397ce",
+      "name": "madfont_idx_dat_loader",
+      "size": 1463,
+      "score": 6,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 23,
+        "header_checks": [
+          {
+            "address": 1284084,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1284106,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1284131,
+            "instruction": "cmp     byte ptr es:[bx], 0Dh"
+          },
+          {
+            "address": 1284212,
+            "instruction": "cmp     byte ptr es:[bx], 20h ; ' '"
+          },
+          {
+            "address": 1284234,
+            "instruction": "cmp     byte ptr es:[bx], 0"
+          },
+          {
+            "address": 1284523,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1284569,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1284719,
+            "instruction": "cmp     [bp+var_12], 0"
+          },
+          {
+            "address": 1284738,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1284787,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1285031,
+            "instruction": "cmp     [bp+var_19], 0"
+          },
+          {
+            "address": 1285151,
+            "instruction": "cmp     [bp+var_18], 0"
+          },
+          {
+            "address": 1285201,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1285250,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1285304,
+            "instruction": "cmp     [bp+arg_0], 0"
+          },
+          {
+            "address": 1285356,
+            "instruction": "cmp     [bp+var_1C], 0"
+          },
+          {
+            "address": 1285365,
+            "instruction": "cmp     [bp+var_1E], 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 38,
+        "rle_likelihood_score": 6
+      }
+    },
+    {
+      "address": "0x1297f0",
+      "name": "picfont_idx_dat_loader",
+      "size": 187,
+      "score": 3,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 1,
+        "header_checks": [
+          {
+            "address": 1218553,
+            "instruction": "cmp     es:word_78940, 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 2,
+        "rle_likelihood_score": 3
+      }
+    },
+    {
+      "address": "0x1779a6",
+      "name": "harpoon_missile_dat_loader",
+      "size": 511,
+      "score": 3,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 4,
+        "header_checks": [
+          {
+            "address": 1538568,
+            "instruction": "cmp     [bp+arg_0], 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 2,
+        "rle_likelihood_score": 3
+      }
+    },
+    {
+      "address": "0x18b689",
+      "name": "overlay_data_table_18b6",
+      "size": 567,
+      "score": 3,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 1,
+        "header_checks": [
+          {
+            "address": 1620057,
+            "instruction": "cmp     byte ptr es:[bx], 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 6,
+        "rle_likelihood_score": 3
+      }
+    }
+  ],
+  "summary": {
+    "top_vga_caller": {
+      "address": "0x2f6d0",
+      "name": "main_game_loop_update",
+      "size": 1123,
+      "patterns": {
+        "loops": 1,
+        "memset_calls": 0,
+        "byte_compares": 27,
+        "header_checks": [
+          {
+            "address": 194600,
+            "instruction": "cmp     ds:byte_7A320+532h, 0"
+          },
+          {
+            "address": 194641,
+            "instruction": "cmp     ax, 0FFFFh"
+          },
+          {
+            "address": 194688,
+            "instruction": "cmp     ax, 0FFFFh"
+          },
+          {
+            "address": 194817,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 194854,
+            "instruction": "cmp     word ptr ds:44AAh, 4"
+          },
+          {
+            "address": 194884,
+            "instruction": "cmp     ds:byte_70A31, 0"
+          },
+          {
+            "address": 194905,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 194934,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 195026,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 195042,
+            "instruction": "cmp     cs:byte_2F6B8, 0"
+          },
+          {
+            "address": 195050,
+            "instruction": "cmp     word ptr ds:23Bh, 0"
+          },
+          {
+            "address": 195091,
+            "instruction": "cmp     byte ptr ds:451h, 0"
+          },
+          {
+            "address": 195098,
+            "instruction": "cmp     byte ptr ds:451h, 0FFh"
+          },
+          {
+            "address": 195183,
+            "instruction": "cmp     byte ptr ds:4FFh, 0"
+          },
+          {
+            "address": 195230,
+            "instruction": "test    bx, 200h"
+          },
+          {
+            "address": 195331,
+            "instruction": "cmp     cs:byte_2F6BA, 0"
+          },
+          {
+            "address": 195344,
+            "instruction": "cmp     cs:byte_2F6BA, 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 3,
+        "rle_likelihood_score": 7
+      }
+    },
+    "top_dat_reader": {
+      "address": "0x1397ce",
+      "name": "madfont_idx_dat_loader",
+      "size": 1463,
+      "score": 6,
+      "patterns": {
+        "loops": 0,
+        "memset_calls": 0,
+        "byte_compares": 23,
+        "header_checks": [
+          {
+            "address": 1284084,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1284106,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1284131,
+            "instruction": "cmp     byte ptr es:[bx], 0Dh"
+          },
+          {
+            "address": 1284212,
+            "instruction": "cmp     byte ptr es:[bx], 20h ; ' '"
+          },
+          {
+            "address": 1284234,
+            "instruction": "cmp     byte ptr es:[bx], 0"
+          },
+          {
+            "address": 1284523,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1284569,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1284719,
+            "instruction": "cmp     [bp+var_12], 0"
+          },
+          {
+            "address": 1284738,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1284787,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1285031,
+            "instruction": "cmp     [bp+var_19], 0"
+          },
+          {
+            "address": 1285151,
+            "instruction": "cmp     [bp+var_18], 0"
+          },
+          {
+            "address": 1285201,
+            "instruction": "cmp     es:byte_151B41, 0"
+          },
+          {
+            "address": 1285250,
+            "instruction": "cmp     byte ptr es:[bx+si], 0"
+          },
+          {
+            "address": 1285304,
+            "instruction": "cmp     [bp+arg_0], 0"
+          },
+          {
+            "address": 1285356,
+            "instruction": "cmp     [bp+var_1C], 0"
+          },
+          {
+            "address": 1285365,
+            "instruction": "cmp     [bp+var_1E], 0"
+          }
+        ],
+        "has_rep_stosb": false,
+        "has_rep_movsb": false,
+        "buffer_writes": 38,
+        "rle_likelihood_score": 6
+      }
+    }
+  }
+}
