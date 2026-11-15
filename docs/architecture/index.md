@@ -24,6 +24,7 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | [hardware_io.md](hardware_io.md) | IRQ0 timer, INT 33h mouse, joystick, keyboard, BDA | PROVEN |
 | [resource.md](resource.md) | op_dispatch (16 DOS services), streaming file API | PROVEN |
 | [globals.md](globals.md) | Key globals, runtime segments, subsystem map, unknowns | STRONG |
+| [ui_menu_system.md](ui_menu_system.md) | **COMPLETE**: Input handling (K/M/J), rendering pipeline, menu state | STRONG–PROVEN |
 | [ai.md](ai.md) | **80% COMPLETE**: AI contexts, behavior flags, data-driven system | STRONG–PROVEN |
 | [mission_campaign.md](mission_campaign.md) | **30% COMPLETE**: Squadron/campaign/mission files, save system | STRONG–HYPOTHESIS |
 
@@ -60,6 +61,10 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | 0x3CE92 | `behavior_dispatcher` | AI master dispatch hub (2,580B) |
 | 0x495DF | `entity_batch_processor` | AI context batch processor (40 entities) |
 | 0x33443 | `master_state_machine` | Main menu/game state coordinator (2,688B) |
+| 0x12FC43 | `input_poll_handler` | Input processing (K/M/J, 3,814B, 56 callers) |
+| 0x130A2F | `input_sync_and_wait` | Universal input sync (42B, **194 callers**) |
+| 0x128518 | `ui_text_render_engine` | Core text rendering (1,282B, 70 callers) |
+| 0x128D5A | `ui_render_coordinator` | Rendering dispatcher (900B, 22 callers) |
 | R05_400C:0x34 | `farobj_main_table` | Main entity slot table |
 | 0x65A7:0x000C | `ai_context_array` | 40 AI contexts × 24 bytes = 960 bytes |
 | 0x7B0E:0x3868 | `trig_sin_table` | Sine lookup table |
