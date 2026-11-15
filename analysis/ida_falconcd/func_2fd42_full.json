@@ -1,0 +1,904 @@
+{
+  "address": "0x2fd42",
+  "name": "game_frame_pipeline_step",
+  "start": "0x2fd42",
+  "end": "0x2fec5",
+  "size": 387,
+  "disassembly": [
+    {
+      "address": "0x2fd42",
+      "bytes": "BE 2C 00",
+      "disasm": "mov     si, 2Ch ; ','"
+    },
+    {
+      "address": "0x2fd45",
+      "bytes": "BF 20 00",
+      "disasm": "mov     di, 20h ; ' '"
+    },
+    {
+      "address": "0x2fd48",
+      "bytes": "9A 30 3B 6C 1F",
+      "disasm": "call    fn_table_dispatch"
+    },
+    {
+      "address": "0x2fd4d",
+      "bytes": "89 1E 30 00",
+      "disasm": "mov     ds:30h, bx"
+    },
+    {
+      "address": "0x2fd51",
+      "bytes": "89 0E 2E 00",
+      "disasm": "mov     ds:2Eh, cx"
+    },
+    {
+      "address": "0x2fd55",
+      "bytes": "89 16 2C 00",
+      "disasm": "mov     ds:2Ch, dx"
+    },
+    {
+      "address": "0x2fd59",
+      "bytes": "9A 6B 39 6C 1F",
+      "disasm": "call    near_fnptr_invoke"
+    },
+    {
+      "address": "0x2fd5e",
+      "bytes": "BB 2C 00",
+      "disasm": "mov     bx, 2Ch ; ','"
+    },
+    {
+      "address": "0x2fd61",
+      "bytes": "BE 20 00",
+      "disasm": "mov     si, 20h ; ' '"
+    },
+    {
+      "address": "0x2fd64",
+      "bytes": "9A 37 30 BA 11",
+      "disasm": "call    farobj_pos_wrap_update"
+    },
+    {
+      "address": "0x2fd69",
+      "bytes": "BE 20 00",
+      "disasm": "mov     si, 20h ; ' '"
+    },
+    {
+      "address": "0x2fd6c",
+      "bytes": "BF 14 00",
+      "disasm": "mov     di, 14h"
+    },
+    {
+      "address": "0x2fd6f",
+      "bytes": "9A D7 30 BA 11",
+      "disasm": "call    pos_clamp_40"
+    },
+    {
+      "address": "0x2fd74",
+      "bytes": "BE 14 00",
+      "disasm": "mov     si, 14h"
+    },
+    {
+      "address": "0x2fd77",
+      "bytes": "9A BA 49 BA 11",
+      "disasm": "call    entity_update_batch"
+    },
+    {
+      "address": "0x2fd7c",
+      "bytes": "A1 28 00",
+      "disasm": "mov     ax, ds:28h"
+    },
+    {
+      "address": "0x2fd7f",
+      "bytes": "8B 16 2A 00",
+      "disasm": "mov     dx, ds:2Ah"
+    },
+    {
+      "address": "0x2fd83",
+      "bytes": "2E 80 3E 7A 00 00",
+      "disasm": "cmp     cs:byte_2F6BA, 0"
+    },
+    {
+      "address": "0x2fd89",
+      "bytes": "75 05",
+      "disasm": "jnz     short loc_2FD90"
+    },
+    {
+      "address": "0x2fd8b",
+      "bytes": "9A AE 02 25 4F",
+      "disasm": "call    view_pos_cache_update"
+    },
+    {
+      "address": "0x2fd90",
+      "bytes": "BE 20 00",
+      "disasm": "mov     si, 20h ; ' '"
+    },
+    {
+      "address": "0x2fd93",
+      "bytes": "BB 2C 00",
+      "disasm": "mov     bx, 2Ch ; ','"
+    },
+    {
+      "address": "0x2fd96",
+      "bytes": "A1 4D 02",
+      "disasm": "mov     ax, ds:24Dh"
+    },
+    {
+      "address": "0x2fd99",
+      "bytes": "9A 6C 06 25 4F",
+      "disasm": "call    terrain_vm_flag_gate"
+    },
+    {
+      "address": "0x2fd9e",
+      "bytes": "9A A8 01 FE 2E",
+      "disasm": "call    flag_gate_zero_abc"
+    },
+    {
+      "address": "0x2fda3",
+      "bytes": "A2 EA 04",
+      "disasm": "mov     ds:4EAh, al"
+    },
+    {
+      "address": "0x2fda6",
+      "bytes": "A8 01",
+      "disasm": "test    al, 1"
+    },
+    {
+      "address": "0x2fda8",
+      "bytes": "75 04",
+      "disasm": "jnz     short loc_2FDAE"
+    },
+    {
+      "address": "0x2fdaa",
+      "bytes": "A8 02",
+      "disasm": "test    al, 2"
+    },
+    {
+      "address": "0x2fdac",
+      "bytes": "75 10",
+      "disasm": "jnz     short loc_2FDBE"
+    },
+    {
+      "address": "0x2fdae",
+      "bytes": "9A 35 01 40 2F",
+      "disasm": "call    viewmode3_vector_project"
+    },
+    {
+      "address": "0x2fdb3",
+      "bytes": "BB 20 00",
+      "disasm": "mov     bx, 20h ; ' '"
+    },
+    {
+      "address": "0x2fdb6",
+      "bytes": "A1 4D 02",
+      "disasm": "mov     ax, ds:24Dh"
+    },
+    {
+      "address": "0x2fdb9",
+      "bytes": "9A E3 5F 6C 1F",
+      "disasm": "call    indexed_table_dispatch_7b0e_4287"
+    },
+    {
+      "address": "0x2fdbe",
+      "bytes": "BB 2C 00",
+      "disasm": "mov     bx, 2Ch ; ','"
+    },
+    {
+      "address": "0x2fdc1",
+      "bytes": "BE 14 00",
+      "disasm": "mov     si, 14h"
+    },
+    {
+      "address": "0x2fdc4",
+      "bytes": "9A FE 34 BA 11",
+      "disasm": "call    entity_state_load"
+    },
+    {
+      "address": "0x2fdc9",
+      "bytes": "9A EA 13 6C 1F",
+      "disasm": "call    es_word_zero"
+    },
+    {
+      "address": "0x2fdce",
+      "bytes": "F6 06 EA 04 02",
+      "disasm": "test    byte ptr ds:4EAh, 2"
+    },
+    {
+      "address": "0x2fdd3",
+      "bytes": "74 07",
+      "disasm": "jz      short loc_2FDDC"
+    },
+    {
+      "address": "0x2fdd5",
+      "bytes": "F6 06 EA 04 01",
+      "disasm": "test    byte ptr ds:4EAh, 1"
+    },
+    {
+      "address": "0x2fdda",
+      "bytes": "75 13",
+      "disasm": "jnz     short loc_2FDEF"
+    },
+    {
+      "address": "0x2fddc",
+      "bytes": "A1 2C 00",
+      "disasm": "mov     ax, ds:2Ch"
+    },
+    {
+      "address": "0x2fddf",
+      "bytes": "BB 14 00",
+      "disasm": "mov     bx, 14h"
+    },
+    {
+      "address": "0x2fde2",
+      "bytes": "9A 05 38 BA 11",
+      "disasm": "call    terrain_frame_update_driver"
+    },
+    {
+      "address": "0x2fde7",
+      "bytes": "BB 20 00",
+      "disasm": "mov     bx, 20h ; ' '"
+    },
+    {
+      "address": "0x2fdea",
+      "bytes": "9A 00 00 59 2F",
+      "disasm": "call    viewlist_project_flagged"
+    },
+    {
+      "address": "0x2fdef",
+      "bytes": "9A D9 49 BA 11",
+      "disasm": "call    state_word_11cc8_get"
+    },
+    {
+      "address": "0x2fdf4",
+      "bytes": "B3 01",
+      "disasm": "mov     bl, 1"
+    },
+    {
+      "address": "0x2fdf6",
+      "bytes": "9A 10 00 AD 4D",
+      "disasm": "call    r39_farptr_gate_big"
+    },
+    {
+      "address": "0x2fdfb",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fdfc",
+      "bytes": "E8 C1 43",
+      "disasm": "call    near ptr farobj_scan_74_timer_c"
+    },
+    {
+      "address": "0x2fdff",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fe00",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fe01",
+      "bytes": "E8 5B 43",
+      "disasm": "call    near ptr farobj_scan_74_gate_a"
+    },
+    {
+      "address": "0x2fe04",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fe05",
+      "bytes": "F6 06 EA 04 02",
+      "disasm": "test    byte ptr ds:4EAh, 2"
+    },
+    {
+      "address": "0x2fe0a",
+      "bytes": "74 07",
+      "disasm": "jz      short loc_2FE13"
+    },
+    {
+      "address": "0x2fe0c",
+      "bytes": "F6 06 EA 04 01",
+      "disasm": "test    byte ptr ds:4EAh, 1"
+    },
+    {
+      "address": "0x2fe11",
+      "bytes": "75 58",
+      "disasm": "jnz     short loc_2FE6B"
+    },
+    {
+      "address": "0x2fe13",
+      "bytes": "9A A6 1B 6C 1F",
+      "disasm": "call    es_ptr_slots_init"
+    },
+    {
+      "address": "0x2fe18",
+      "bytes": "9A 1F 02 3C 49",
+      "disasm": "call    ai_context_batch_processor"
+    },
+    {
+      "address": "0x2fe1d",
+      "bytes": "9A CB 09 AB 49",
+      "disasm": "call    entity_move_project_step"
+    },
+    {
+      "address": "0x2fe22",
+      "bytes": "F6 06 EA 04 01",
+      "disasm": "test    byte ptr ds:4EAh, 1"
+    },
+    {
+      "address": "0x2fe27",
+      "bytes": "75 2F",
+      "disasm": "jnz     short loc_2FE58"
+    },
+    {
+      "address": "0x2fe29",
+      "bytes": "F6 06 EA 04 02",
+      "disasm": "test    byte ptr ds:4EAh, 2"
+    },
+    {
+      "address": "0x2fe2e",
+      "bytes": "75 07",
+      "disasm": "jnz     short loc_2FE37"
+    },
+    {
+      "address": "0x2fe30",
+      "bytes": "B0 04",
+      "disasm": "mov     al, 4"
+    },
+    {
+      "address": "0x2fe32",
+      "bytes": "9A C2 0C 83 3B",
+      "disasm": "call    farobj_slot_project_step"
+    },
+    {
+      "address": "0x2fe37",
+      "bytes": "9A 5C 1C 6C 1F",
+      "disasm": "call    farobj_sort_and_step"
+    },
+    {
+      "address": "0x2fe3c",
+      "bytes": "9A 7F 00 FE 2E",
+      "disasm": "call    loc_2F05F"
+    },
+    {
+      "address": "0x2fe41",
+      "bytes": "9A A6 1B 6C 1F",
+      "disasm": "call    es_ptr_slots_init"
+    },
+    {
+      "address": "0x2fe46",
+      "bytes": "B0 01",
+      "disasm": "mov     al, 1"
+    },
+    {
+      "address": "0x2fe48",
+      "bytes": "F6 06 EA 04 02",
+      "disasm": "test    byte ptr ds:4EAh, 2"
+    },
+    {
+      "address": "0x2fe4d",
+      "bytes": "75 02",
+      "disasm": "jnz     short loc_2FE51"
+    },
+    {
+      "address": "0x2fe4f",
+      "bytes": "0C 02",
+      "disasm": "or      al, 2"
+    },
+    {
+      "address": "0x2fe51",
+      "bytes": "9A C2 0C 83 3B",
+      "disasm": "call    farobj_slot_project_step"
+    },
+    {
+      "address": "0x2fe56",
+      "bytes": "EB 2D",
+      "disasm": "jmp     short loc_2FE85"
+    },
+    {
+      "address": "0x2fe58",
+      "bytes": "F6 06 EA 04 02",
+      "disasm": "test    byte ptr ds:4EAh, 2"
+    },
+    {
+      "address": "0x2fe5d",
+      "bytes": "75 07",
+      "disasm": "jnz     short loc_2FE66"
+    },
+    {
+      "address": "0x2fe5f",
+      "bytes": "B0 01",
+      "disasm": "mov     al, 1"
+    },
+    {
+      "address": "0x2fe61",
+      "bytes": "9A C2 0C 83 3B",
+      "disasm": "call    farobj_slot_project_step"
+    },
+    {
+      "address": "0x2fe66",
+      "bytes": "9A 5C 1C 6C 1F",
+      "disasm": "call    farobj_sort_and_step"
+    },
+    {
+      "address": "0x2fe6b",
+      "bytes": "9A 7F 00 FE 2E",
+      "disasm": "call    loc_2F05F"
+    },
+    {
+      "address": "0x2fe70",
+      "bytes": "9A A6 1B 6C 1F",
+      "disasm": "call    es_ptr_slots_init"
+    },
+    {
+      "address": "0x2fe75",
+      "bytes": "B0 04",
+      "disasm": "mov     al, 4"
+    },
+    {
+      "address": "0x2fe77",
+      "bytes": "F6 06 EA 04 02",
+      "disasm": "test    byte ptr ds:4EAh, 2"
+    },
+    {
+      "address": "0x2fe7c",
+      "bytes": "75 02",
+      "disasm": "jnz     short loc_2FE80"
+    },
+    {
+      "address": "0x2fe7e",
+      "bytes": "0C 02",
+      "disasm": "or      al, 2"
+    },
+    {
+      "address": "0x2fe80",
+      "bytes": "9A C2 0C 83 3B",
+      "disasm": "call    farobj_slot_project_step"
+    },
+    {
+      "address": "0x2fe85",
+      "bytes": "E8 3D 00",
+      "disasm": "call    viewobj_self_copy_project"
+    },
+    {
+      "address": "0x2fe88",
+      "bytes": "9A 6E 2E AE 43",
+      "disasm": "call    viewobj_table32_flag_project"
+    },
+    {
+      "address": "0x2fe8d",
+      "bytes": "9A 0F 2E AE 43",
+      "disasm": "call    viewobj_table64_project"
+    },
+    {
+      "address": "0x2fe92",
+      "bytes": "9A 3E 2E AE 43",
+      "disasm": "call    viewobj_table72_flag_project"
+    },
+    {
+      "address": "0x2fe97",
+      "bytes": "9A E0 01 10 2E",
+      "disasm": "call    viewobj_5982_scan_all"
+    },
+    {
+      "address": "0x2fe9c",
+      "bytes": "9A 5C 1C 6C 1F",
+      "disasm": "call    farobj_sort_and_step"
+    },
+    {
+      "address": "0x2fea1",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fea2",
+      "bytes": "E8 EE 42",
+      "disasm": "call    near ptr farobj_scan_74_clear_b"
+    },
+    {
+      "address": "0x2fea5",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fea6",
+      "bytes": "9A BB 3F AE 43",
+      "disasm": "call    r32_hud_phase_dispatch"
+    },
+    {
+      "address": "0x2feab",
+      "bytes": "9A AD 3F AE 43",
+      "disasm": "call    entity_table_gate_47a8d"
+    },
+    {
+      "address": "0x2feb0",
+      "bytes": "2B C0",
+      "disasm": "sub     ax, ax"
+    },
+    {
+      "address": "0x2feb2",
+      "bytes": "9A 95 31 6C 1F",
+      "disasm": "call    state_dispatch_cb"
+    },
+    {
+      "address": "0x2feb7",
+      "bytes": "9A 38 82 83 3B",
+      "disasm": "call    undoc_43A68"
+    },
+    {
+      "address": "0x2febc",
+      "bytes": "9A 51 96 64 2F",
+      "disasm": "call    terrain_vm_blend_gate"
+    },
+    {
+      "address": "0x2fec1",
+      "bytes": "E8 AF 7D",
+      "disasm": "call    ems_terrain_pos_gate"
+    },
+    {
+      "address": "0x2fec4",
+      "bytes": "C3",
+      "disasm": "retn"
+    }
+  ],
+  "xrefs_to": [
+    {
+      "from": "0x2f99b",
+      "type": 17
+    },
+    {
+      "from": "0x3139f",
+      "type": 17
+    }
+  ],
+  "xrefs_from": [
+    {
+      "from": "0x2fd48",
+      "to": "0x231f0",
+      "to_name": "fn_table_dispatch",
+      "type": 16
+    },
+    {
+      "from": "0x2fd59",
+      "to": "0x2302b",
+      "to_name": "near_fnptr_invoke",
+      "type": 16
+    },
+    {
+      "from": "0x2fd64",
+      "to": "0x14bd7",
+      "to_name": "farobj_pos_wrap_update",
+      "type": 16
+    },
+    {
+      "from": "0x2fd6f",
+      "to": "0x14c77",
+      "to_name": "pos_clamp_40",
+      "type": 16
+    },
+    {
+      "from": "0x2fd77",
+      "to": "0x1655a",
+      "to_name": "entity_update_batch",
+      "type": 16
+    },
+    {
+      "from": "0x2fd83",
+      "to": "0x2f6ba",
+      "to_name": "byte_2F6BA",
+      "type": 3
+    },
+    {
+      "from": "0x2fd89",
+      "to": "0x2fd90",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fd8b",
+      "to": "0x4f4fe",
+      "to_name": "view_pos_cache_update",
+      "type": 16
+    },
+    {
+      "from": "0x2fd99",
+      "to": "0x4f8bc",
+      "to_name": "terrain_vm_flag_gate",
+      "type": 16
+    },
+    {
+      "from": "0x2fd9e",
+      "to": "0x2f188",
+      "to_name": "flag_gate_zero_abc",
+      "type": 16
+    },
+    {
+      "from": "0x2fda8",
+      "to": "0x2fdae",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fdac",
+      "to": "0x2fdbe",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fdae",
+      "to": "0x2f535",
+      "to_name": "viewmode3_vector_project",
+      "type": 16
+    },
+    {
+      "from": "0x2fdb9",
+      "to": "0x256a3",
+      "to_name": "indexed_table_dispatch_7b0e_4287",
+      "type": 16
+    },
+    {
+      "from": "0x2fdc4",
+      "to": "0x1509e",
+      "to_name": "entity_state_load",
+      "type": 16
+    },
+    {
+      "from": "0x2fdc9",
+      "to": "0x20aaa",
+      "to_name": "es_word_zero",
+      "type": 16
+    },
+    {
+      "from": "0x2fdd3",
+      "to": "0x2fddc",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fdda",
+      "to": "0x2fdef",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fde2",
+      "to": "0x153a5",
+      "to_name": "terrain_frame_update_driver",
+      "type": 16
+    },
+    {
+      "from": "0x2fdea",
+      "to": "0x2f590",
+      "to_name": "viewlist_project_flagged",
+      "type": 16
+    },
+    {
+      "from": "0x2fdef",
+      "to": "0x16579",
+      "to_name": "state_word_11cc8_get",
+      "type": 16
+    },
+    {
+      "from": "0x2fdf6",
+      "to": "0x4dae0",
+      "to_name": "r39_farptr_gate_big",
+      "type": 16
+    },
+    {
+      "from": "0x2fdfc",
+      "to": "0x341c0",
+      "to_name": "farobj_scan_74_timer_c",
+      "type": 17
+    },
+    {
+      "from": "0x2fe01",
+      "to": "0x3415f",
+      "to_name": "farobj_scan_74_gate_a",
+      "type": 17
+    },
+    {
+      "from": "0x2fe0a",
+      "to": "0x2fe13",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe11",
+      "to": "0x2fe6b",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe13",
+      "to": "0x21266",
+      "to_name": "es_ptr_slots_init",
+      "type": 16
+    },
+    {
+      "from": "0x2fe18",
+      "to": "0x495df",
+      "to_name": "ai_context_batch_processor",
+      "type": 16
+    },
+    {
+      "from": "0x2fe1d",
+      "to": "0x4a47b",
+      "to_name": "entity_move_project_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe27",
+      "to": "0x2fe58",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe2e",
+      "to": "0x2fe37",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe32",
+      "to": "0x3c4f2",
+      "to_name": "farobj_slot_project_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe37",
+      "to": "0x2131c",
+      "to_name": "farobj_sort_and_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe3c",
+      "to": "0x2f05f",
+      "to_name": "farobj_config_state_entry",
+      "type": 16
+    },
+    {
+      "from": "0x2fe41",
+      "to": "0x21266",
+      "to_name": "es_ptr_slots_init",
+      "type": 16
+    },
+    {
+      "from": "0x2fe4d",
+      "to": "0x2fe51",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe51",
+      "to": "0x3c4f2",
+      "to_name": "farobj_slot_project_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe56",
+      "to": "0x2fe85",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe5d",
+      "to": "0x2fe66",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe61",
+      "to": "0x3c4f2",
+      "to_name": "farobj_slot_project_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe66",
+      "to": "0x2131c",
+      "to_name": "farobj_sort_and_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe6b",
+      "to": "0x2f05f",
+      "to_name": "farobj_config_state_entry",
+      "type": 16
+    },
+    {
+      "from": "0x2fe70",
+      "to": "0x21266",
+      "to_name": "es_ptr_slots_init",
+      "type": 16
+    },
+    {
+      "from": "0x2fe7c",
+      "to": "0x2fe80",
+      "to_name": "game_frame_pipeline_step",
+      "type": 19
+    },
+    {
+      "from": "0x2fe80",
+      "to": "0x3c4f2",
+      "to_name": "farobj_slot_project_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fe85",
+      "to": "0x2fec5",
+      "to_name": "viewobj_self_copy_project",
+      "type": 17
+    },
+    {
+      "from": "0x2fe88",
+      "to": "0x4694e",
+      "to_name": "viewobj_table32_flag_project",
+      "type": 16
+    },
+    {
+      "from": "0x2fe8d",
+      "to": "0x468ef",
+      "to_name": "viewobj_table64_project",
+      "type": 16
+    },
+    {
+      "from": "0x2fe92",
+      "to": "0x4691e",
+      "to_name": "viewobj_table72_flag_project",
+      "type": 16
+    },
+    {
+      "from": "0x2fe97",
+      "to": "0x2e2e0",
+      "to_name": "viewobj_5982_scan_all",
+      "type": 16
+    },
+    {
+      "from": "0x2fe9c",
+      "to": "0x2131c",
+      "to_name": "farobj_sort_and_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fea2",
+      "to": "0x34193",
+      "to_name": "farobj_scan_74_clear_b",
+      "type": 17
+    },
+    {
+      "from": "0x2fea6",
+      "to": "0x47a9b",
+      "to_name": "r32_hud_phase_dispatch",
+      "type": 16
+    },
+    {
+      "from": "0x2feab",
+      "to": "0x47a8d",
+      "to_name": "entity_table_gate_47a8d",
+      "type": 16
+    },
+    {
+      "from": "0x2feb2",
+      "to": "0x22855",
+      "to_name": "state_dispatch_cb",
+      "type": 16
+    },
+    {
+      "from": "0x2feb7",
+      "to": "0x43a68",
+      "to_name": "undoc_43A68",
+      "type": 16
+    },
+    {
+      "from": "0x2febc",
+      "to": "0x38c91",
+      "to_name": "terrain_vm_blend_gate",
+      "type": 16
+    },
+    {
+      "from": "0x2fec1",
+      "to": "0x37c73",
+      "to_name": "ems_terrain_pos_gate",
+      "type": 17
+    }
+  ]
+}

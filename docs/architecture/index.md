@@ -1,11 +1,13 @@
 # Falcon 3.0 — Architecture Specification
 
-*Last updated 2026-11-12. Findings 1–179 + S4 bottom-up analysis (Levels 0–18+).*
+*Last updated 2026-11-11. Findings 1–179 + S4 bottom-up analysis (Levels 0–18+) + **Top 100 Analysis COMPLETE (100%)**.*
 *Certainty: **PROVEN** (byte-level) · **STRONG** (multi-signal) · **HYPOTHESIS** (single-signal) · **UNKNOWN***
 
 This directory replaces `docs/architecture.md` with focused sub-documents.
 See `docs/structures.md` for binary file format structs, `registry/functions.yaml` for
 function signatures, `registry/structs.yaml` for data structure definitions.
+
+**NEW**: Top 100 most-called functions systematically analyzed. See `analysis/TOP_100_COMPLETE.md` for full report.
 
 ---
 
@@ -54,6 +56,7 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | 0x2703F | `farptr_table_get` | Load FarObj from main slot table (78 callers) |
 | 0x20BDB | `view_projection` | Core 3D projection (282K calls, 1076B) |
 | 0x31319 | `main_frame_update_loop` | Top-level game loop |
+| 0x108BAC | `r15_simulation_loop` | **MAIN SIMULATION LOOP** (717B, 83 callers, dual-path: cockpit/external view) |
 | 0x2FEF2 | `game_frame_update_chain` | Entity simulation chain |
 | 0x2FD42 | `game_frame_pipeline_step` | Rendering pipeline entry |
 | 0x13CB0 | `farobj_batch_build_project` | Terrain tile batch renderer |

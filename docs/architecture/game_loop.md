@@ -1,5 +1,58 @@
 # Game Loop & Mode State Machine
 
+**NEW**: Main simulation loop identified at 0x108BAC. See `analysis/R15_SIMULATION_LOOP_ANALYSIS.md` for complete analysis.
+
+---
+
+## Main Simulation Loop: `r15_simulation_loop` (0x108BAC, 717B, R15_4400)
+
+**Status**: IDENTIFIED - The core simulation loop (Rank #16, 83 callers)  
+**Deep Dive**: See `analysis/R15_SIMULATION_LOOP_ANALYSIS.md` (400+ lines)  
+**Certainty**: STRONG (comprehensive disassembly analysis)
+
+### Architecture: Dual-Path Design
+
+```
+r15_simulation_loop:
+    if cs:r15_external_view_flag == 0:  → PATH A (Cockpit View)
+    else:                                → PATH B (External View)
+```
+
+**Key Flag**: `cs:0x107762` (`r15_external_view_flag`)
+- `0` = Cockpit view (first-person)
+- `1` = External view (chase camera)
+
+### Path A - Cockpit View (37 calls)
+Standard simulation path without far pointer context switching.
+
+### Path B - External View (46 calls)
+Uses EMS far pointer save/restore for overlay context switching:
+1. `active_farptr_set()` - Save current EMS context
+2. Execute 13 unique external view functions
+3. `active_farptr_restore()` - Restore EMS context
+
+**Phase structure** (both paths):
+1. Pre-simulation input processing
+2. Core simulation (37 or 46 calls depending on path)
+3. Post-simulation rendering finalization
+4. Callback iteration loop (controlled by `cs:word_10788C`)
+
+### Discovered Globals
+
+| Address | Name | Type | Purpose |
+|---------|------|------|---------|
+| cs:0x107762 | r15_external_view_flag | uint8 | View mode: 0=cockpit, 1=external |
+| cs:0x107759 | word_107759 | uint16 | Frame tick rate |
+| cs:0x10788C | word_10788C | uint16 | Callback iteration count |
+| cs:0x10788B | byte_10788B | uint8 | Early exit flag |
+
+### Status
+- ✓ Function renamed in IDA with 63 inline comments
+- ✓ All 83 calls documented
+- ✓ Dual-path architecture identified
+- ☐ Path B unique functions need investigation (bookmarked)
+- ☐ far_cb_3 and far_cb_7 dispatchers need analysis
+
 ---
 
 ## Top-Level Loop: `main_frame_update_loop` (0x31319, 257B, R05_1F64)

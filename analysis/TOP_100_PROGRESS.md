@@ -10,9 +10,9 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 76 | 76% |
+| ✅ Completed | 91 | 91% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 24 | 24% |
+| ⏳ Pending | 9 | 9% |
 
 **Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
@@ -303,6 +303,16 @@
 | 33 | 0x185878 | 60 | 2026B | **overlay_r52_handler** | ✅ **COMPLETE** (📦 R52 handler, 0 self-calls) |
 | 34 | 0x19FEB0 | 59 | 2837B | **overlay_r56_handler** | ✅ **COMPLETE** (📦 R56 handler, 105 self-calls) |
 | 35 | 0x156945 | 59 | 2614B | **overlay_r45_logic** | ✅ **COMPLETE** (📦 R45 logic, 94 self-calls) |
+| 36 | 0x17816A | 56 | 2072B | **overlay_r4B_logic_2** | ✅ **COMPLETE** (📦 R4B logic, 62 self-calls) |
+| 37 | 0x15B80D | 55 | 3231B | **overlay_r46_handler** | ✅ **COMPLETE** (📦 R46 handler, 102 self-calls) |
+| 38 | 0x176B0E | 55 | 1749B | **r48_arg_forward_stub** | ✅ **COMPLETE** (📦 R48 stub, 17 self-calls) |
+| 39 | 0x160780 | 54 | 4477B | **menu_cmd_store_and_record_scan** | ✅ **COMPLETE** (📋 MENU BEAST, 215 self-calls!) |
+| 40 | 0x170340 | 53 | 2567B | **overlay_r49_handler** | ✅ **COMPLETE** (📦 R49 handler, 69 self-calls) |
+| 41 | 0x121512 | 52 | 4227B | **overlay_handler_4227** | ✅ **COMPLETE** (📦 generic handler, 162 self-calls) |
+| 42 | 0x3CF9D | 51 | 886B | **ai_state_processor_core** | ✅ **COMPLETE** (🤖 AI core, 65 self-calls) |
+| 43 | 0x17C650 | 51 | 3512B | **overlay_r4C_coordinator** | ✅ **COMPLETE** (📦 R4C coord, 96 self-calls) |
+| 44 | 0x186062 | 50 | 994B | **r53_head_garbage_fragment** | ✅ **COMPLETE** (📦 R53 cleanup, 29 self-calls) |
+| 45 | 0x13B243 | ??? | ???B | sub_13B243 | ⏳ Pending |
 
 *(Ranks 23-100 available in top_100_functions.json)*
 
