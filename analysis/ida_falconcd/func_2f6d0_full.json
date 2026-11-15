@@ -1,0 +1,2830 @@
+{
+  "address": "0x2f6d0",
+  "name": "main_game_loop_update",
+  "start": "0x2f6d0",
+  "end": "0x2fb33",
+  "size": 1123,
+  "disassembly": [
+    {
+      "address": "0x2f6d0",
+      "bytes": "2E C6 06 30 51 B9",
+      "disasm": "mov     byte ptr cs:nullsub_35, 0B9h"
+    },
+    {
+      "address": "0x2f6d6",
+      "bytes": "2E C6 06 CD 50 1E",
+      "disasm": "mov     byte ptr cs:range_key_event_dispatch, 1Eh"
+    },
+    {
+      "address": "0x2f6dc",
+      "bytes": "2E A3 3F 00",
+      "disasm": "mov     word ptr cs:dword_2F67F, ax"
+    },
+    {
+      "address": "0x2f6e0",
+      "bytes": "2E 89 16 41 00",
+      "disasm": "mov     word ptr cs:dword_2F67F+2, dx"
+    },
+    {
+      "address": "0x2f6e5",
+      "bytes": "1E",
+      "disasm": "push    ds"
+    },
+    {
+      "address": "0x2f6e6",
+      "bytes": "BB 6C 1F",
+      "disasm": "mov     bx, 1F6Ch"
+    },
+    {
+      "address": "0x2f6e9",
+      "bytes": "8E DB",
+      "disasm": "mov     ds, bx"
+    },
+    {
+      "address": "0x2f6eb",
+      "bytes": "BB 79 5C",
+      "disasm": "mov     bx, 5C79h"
+    },
+    {
+      "address": "0x2f6ee",
+      "bytes": "8C 4F 02",
+      "disasm": "mov     word ptr [bx+2], cs"
+    },
+    {
+      "address": "0x2f6f1",
+      "bytes": "C7 07 F9 34",
+      "disasm": "mov     word ptr [bx], 34F9h"
+    },
+    {
+      "address": "0x2f6f5",
+      "bytes": "1F",
+      "disasm": "pop     ds"
+    },
+    {
+      "address": "0x2f6f6",
+      "bytes": "BB 20 00",
+      "disasm": "mov     bx, 20h ; ' '"
+    },
+    {
+      "address": "0x2f6f9",
+      "bytes": "9A A2 05 84 10",
+      "disasm": "call    overlay_seg_word_read"
+    },
+    {
+      "address": "0x2f6fe",
+      "bytes": "2C 03",
+      "disasm": "sub     al, 3"
+    },
+    {
+      "address": "0x2f700",
+      "bytes": "F6 D8",
+      "disasm": "neg     al"
+    },
+    {
+      "address": "0x2f702",
+      "bytes": "98",
+      "disasm": "cbw"
+    },
+    {
+      "address": "0x2f703",
+      "bytes": "50",
+      "disasm": "push    ax"
+    },
+    {
+      "address": "0x2f704",
+      "bytes": "9A AC 5E 6C 1F",
+      "disasm": "call    state_word_25499_set_clamp"
+    },
+    {
+      "address": "0x2f709",
+      "bytes": "58",
+      "disasm": "pop     ax"
+    },
+    {
+      "address": "0x2f70a",
+      "bytes": "3D 03 00",
+      "disasm": "cmp     ax, 3"
+    },
+    {
+      "address": "0x2f70d",
+      "bytes": "75 10",
+      "disasm": "jnz     short loc_2F71F"
+    },
+    {
+      "address": "0x2f70f",
+      "bytes": "B0 00",
+      "disasm": "mov     al, 0"
+    },
+    {
+      "address": "0x2f711",
+      "bytes": "9A E2 5D 6C 1F",
+      "disasm": "call    state_byte_2549e_set"
+    },
+    {
+      "address": "0x2f716",
+      "bytes": "B0 00",
+      "disasm": "mov     al, 0"
+    },
+    {
+      "address": "0x2f718",
+      "bytes": "9A BA 13 6C 1F",
+      "disasm": "call    state_set_1f6e2_gated_2222a"
+    },
+    {
+      "address": "0x2f71d",
+      "bytes": "EB 0E",
+      "disasm": "jmp     short loc_2F72D"
+    },
+    {
+      "address": "0x2f71f",
+      "bytes": "B0 FF",
+      "disasm": "mov     al, 0FFh"
+    },
+    {
+      "address": "0x2f721",
+      "bytes": "9A E2 5D 6C 1F",
+      "disasm": "call    state_byte_2549e_set"
+    },
+    {
+      "address": "0x2f726",
+      "bytes": "B0 02",
+      "disasm": "mov     al, 2"
+    },
+    {
+      "address": "0x2f728",
+      "bytes": "9A BA 13 6C 1F",
+      "disasm": "call    state_set_1f6e2_gated_2222a"
+    },
+    {
+      "address": "0x2f72d",
+      "bytes": "B0 01",
+      "disasm": "mov     al, 1"
+    },
+    {
+      "address": "0x2f72f",
+      "bytes": "9A FC 1E 6C 1F",
+      "disasm": "call    state_byte_1f743_set"
+    },
+    {
+      "address": "0x2f734",
+      "bytes": "9A 68 35 6C 1F",
+      "disasm": "call    pit_channel0_latch_read"
+    },
+    {
+      "address": "0x2f739",
+      "bytes": "9A CF 15 A3 2A",
+      "disasm": "call    far ptr sub_2BFFF"
+    },
+    {
+      "address": "0x2f73e",
+      "bytes": "B0 00",
+      "disasm": "mov     al, 0"
+    },
+    {
+      "address": "0x2f740",
+      "bytes": "E8 DB 08",
+      "disasm": "call    near ptr game_state_load_apply"
+    },
+    {
+      "address": "0x2f743",
+      "bytes": "9A C1 14 A3 2A",
+      "disasm": "call    sub_2BEF1"
+    },
+    {
+      "address": "0x2f748",
+      "bytes": "33 C0",
+      "disasm": "xor     ax, ax"
+    },
+    {
+      "address": "0x2f74a",
+      "bytes": "9A 18 00 D2 4F",
+      "disasm": "call    r08_farptr_load_thunk"
+    },
+    {
+      "address": "0x2f74f",
+      "bytes": "74 01",
+      "disasm": "jz      short loc_2F752"
+    },
+    {
+      "address": "0x2f751",
+      "bytes": "48",
+      "disasm": "dec     ax"
+    },
+    {
+      "address": "0x2f752",
+      "bytes": "A2 31 05",
+      "disasm": "mov     ds:byte_7A320+531h, al"
+    },
+    {
+      "address": "0x2f755",
+      "bytes": "E8 5E 1F",
+      "disasm": "call    param454_apply_tableinit"
+    },
+    {
+      "address": "0x2f758",
+      "bytes": "C6 06 5F 04 00",
+      "disasm": "mov     ds:byte_7A320+45Fh, 0"
+    },
+    {
+      "address": "0x2f75d",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2f75e",
+      "bytes": "E8 EB 4D",
+      "disasm": "call    near ptr view_block4287_angles"
+    },
+    {
+      "address": "0x2f761",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2f762",
+      "bytes": "9A 87 01 25 4F",
+      "disasm": "call    hw_cfg_scan_22158"
+    },
+    {
+      "address": "0x2f767",
+      "bytes": "A1 4D 02",
+      "disasm": "mov     ax, word ptr ds:byte_7A320+24Dh"
+    },
+    {
+      "address": "0x2f76a",
+      "bytes": "9A 58 02 25 4F",
+      "disasm": "call    r37_farptr_store_gate"
+    },
+    {
+      "address": "0x2f76f",
+      "bytes": "9A 9C 01 25 4F",
+      "disasm": "call    terrain_vm_buffer_decay"
+    },
+    {
+      "address": "0x2f774",
+      "bytes": "9A 06 00 25 4F",
+      "disasm": "call    hw_config_copy_85061"
+    },
+    {
+      "address": "0x2f779",
+      "bytes": "E8 BC 19",
+      "disasm": "call    terrain_state_reinit"
+    },
+    {
+      "address": "0x2f77c",
+      "bytes": "9A 86 57 6C 1F",
+      "disasm": "call    cs_buffer_5762_clear"
+    },
+    {
+      "address": "0x2f781",
+      "bytes": "BA 02 00",
+      "disasm": "mov     dx, 2"
+    },
+    {
+      "address": "0x2f784",
+      "bytes": "9A 48 0C 52 4E",
+      "disasm": "call    entity_record_build_gate"
+    },
+    {
+      "address": "0x2f789",
+      "bytes": "2E 8B 36 29 00",
+      "disasm": "mov     si, cs:word_2F669"
+    },
+    {
+      "address": "0x2f78e",
+      "bytes": "9A 82 00 D8 4F",
+      "disasm": "call    terrain_vm_entry_lookup"
+    },
+    {
+      "address": "0x2f793",
+      "bytes": "B8 03 00",
+      "disasm": "mov     ax, 3"
+    },
+    {
+      "address": "0x2f796",
+      "bytes": "9A 06 3B 6C 1F",
+      "disasm": "call    cs_word_3666_set_clamped"
+    },
+    {
+      "address": "0x2f79b",
+      "bytes": "B0 10",
+      "disasm": "mov     al, 10h"
+    },
+    {
+      "address": "0x2f79d",
+      "bytes": "9A BB 57 6C 1F",
+      "disasm": "call    bda_417_mask_clear"
+    },
+    {
+      "address": "0x2f7a2",
+      "bytes": "9A 5F 31 6C 1F",
+      "disasm": "call    state_byte_22246_set_ff"
+    },
+    {
+      "address": "0x2f7a7",
+      "bytes": "C6 06 79 04 01",
+      "disasm": "mov     ds:byte_7A320+479h, 1"
+    },
+    {
+      "address": "0x2f7ac",
+      "bytes": "BB 00 00",
+      "disasm": "mov     bx, 0"
+    },
+    {
+      "address": "0x2f7af",
+      "bytes": "E8 2B 2A",
+      "disasm": "call    mode_phase_apply_core"
+    },
+    {
+      "address": "0x2f7b2",
+      "bytes": "C6 06 50 04 02",
+      "disasm": "mov     ds:byte_7A320+450h, 2"
+    },
+    {
+      "address": "0x2f7b7",
+      "bytes": "C6 06 51 04 FF",
+      "disasm": "mov     ds:byte_7A320+451h, 0FFh"
+    },
+    {
+      "address": "0x2f7bc",
+      "bytes": "C7 06 AB 04 77 39",
+      "disasm": "mov     word ptr ds:byte_7A320+4ABh, (offset loc_31A77 - offset funcs_4E5C0)"
+    },
+    {
+      "address": "0x2f7c2",
+      "bytes": "8C 0E AD 04",
+      "disasm": "mov     word ptr ds:byte_7A320+4ADh, cs"
+    },
+    {
+      "address": "0x2f7c6",
+      "bytes": "9A F9 05 84 10",
+      "disasm": "call    mode_flags_apply"
+    },
+    {
+      "address": "0x2f7cb",
+      "bytes": "2E C6 06 7B 00 00",
+      "disasm": "mov     cs:byte_2F6BB, 0"
+    },
+    {
+      "address": "0x2f7d1",
+      "bytes": "2E C6 06 7C 00 00",
+      "disasm": "mov     cs:byte_2F6BC, 0"
+    },
+    {
+      "address": "0x2f7d7",
+      "bytes": "C7 06 02 00 00 00",
+      "disasm": "mov     word ptr ds:byte_7A320+2, 0"
+    },
+    {
+      "address": "0x2f7dd",
+      "bytes": "2E 8B 36 29 00",
+      "disasm": "mov     si, cs:word_2F669"
+    },
+    {
+      "address": "0x2f7e2",
+      "bytes": "C6 84 D2 00 04",
+      "disasm": "mov     byte ptr [si+0D2h], 4"
+    },
+    {
+      "address": "0x2f7e7",
+      "bytes": "BF 20 00",
+      "disasm": "mov     di, 20h ; ' '"
+    },
+    {
+      "address": "0x2f7ea",
+      "bytes": "B9 09 00",
+      "disasm": "mov     cx, 9"
+    },
+    {
+      "address": "0x2f7ed",
+      "bytes": "F3 A5",
+      "disasm": "rep movsw"
+    },
+    {
+      "address": "0x2f7ef",
+      "bytes": "88 0E FD 04",
+      "disasm": "mov     ds:byte_7A320+4FDh, cl"
+    },
+    {
+      "address": "0x2f7f3",
+      "bytes": "88 0E FF 04",
+      "disasm": "mov     ds:byte_7A320+4FFh, cl"
+    },
+    {
+      "address": "0x2f7f7",
+      "bytes": "B0 01",
+      "disasm": "mov     al, 1"
+    },
+    {
+      "address": "0x2f7f9",
+      "bytes": "E8 9D 50",
+      "disasm": "call    state_byte_4fe_set"
+    },
+    {
+      "address": "0x2f7fc",
+      "bytes": "BB 26 00",
+      "disasm": "mov     bx, 26h ; '&'"
+    },
+    {
+      "address": "0x2f7ff",
+      "bytes": "9A A2 05 84 10",
+      "disasm": "call    overlay_seg_word_read"
+    },
+    {
+      "address": "0x2f804",
+      "bytes": "48",
+      "disasm": "dec     ax"
+    },
+    {
+      "address": "0x2f805",
+      "bytes": "99",
+      "disasm": "cwd"
+    },
+    {
+      "address": "0x2f806",
+      "bytes": "2B C2",
+      "disasm": "sub     ax, dx"
+    },
+    {
+      "address": "0x2f808",
+      "bytes": "2E A3 71 00",
+      "disasm": "mov     cs:word_2F6B1, ax"
+    },
+    {
+      "address": "0x2f80c",
+      "bytes": "9A 7C 00 10 11",
+      "disasm": "call    int15_joystick_detect"
+    },
+    {
+      "address": "0x2f811",
+      "bytes": "9A D6 32 6C 1F",
+      "disasm": "call    flag22220_clear"
+    },
+    {
+      "address": "0x2f816",
+      "bytes": "8C D8",
+      "disasm": "mov     ax, ds"
+    },
+    {
+      "address": "0x2f818",
+      "bytes": "BB 83 3B",
+      "disasm": "mov     bx, 3B83h"
+    },
+    {
+      "address": "0x2f81b",
+      "bytes": "8E DB",
+      "disasm": "mov     ds, bx"
+    },
+    {
+      "address": "0x2f81d",
+      "bytes": "BB 35 82",
+      "disasm": "mov     bx, 8235h"
+    },
+    {
+      "address": "0x2f820",
+      "bytes": "8A 1F",
+      "disasm": "mov     bl, [bx]"
+    },
+    {
+      "address": "0x2f822",
+      "bytes": "8E D8",
+      "disasm": "mov     ds, ax"
+    },
+    {
+      "address": "0x2f824",
+      "bytes": "88 1E 33 05",
+      "disasm": "mov     ds:byte_7A320+533h, bl"
+    },
+    {
+      "address": "0x2f828",
+      "bytes": "80 3E 32 05 00",
+      "disasm": "cmp     ds:byte_7A320+532h, 0"
+    },
+    {
+      "address": "0x2f82d",
+      "bytes": "74 04",
+      "disasm": "jz      short loc_2F833"
+    },
+    {
+      "address": "0x2f82f",
+      "bytes": "FE 0E 32 05",
+      "disasm": "dec     ds:byte_7A320+532h"
+    },
+    {
+      "address": "0x2f833",
+      "bytes": "E8 20 0B",
+      "disasm": "call    range_scale_step_handler"
+    },
+    {
+      "address": "0x2f836",
+      "bytes": "E8 8B 0B",
+      "disasm": "call    key_range_wheel_handler"
+    },
+    {
+      "address": "0x2f839",
+      "bytes": "2E A1 39 00",
+      "disasm": "mov     ax, cs:word_2F679"
+    },
+    {
+      "address": "0x2f83d",
+      "bytes": "29 06 60 10",
+      "disasm": "sub     word ptr ds:byte_7B328+58h, ax"
+    },
+    {
+      "address": "0x2f841",
+      "bytes": "79 0B",
+      "disasm": "jns     short loc_2F84E"
+    },
+    {
+      "address": "0x2f843",
+      "bytes": "C7 06 60 10 00 00",
+      "disasm": "mov     word ptr ds:byte_7B328+58h, 0"
+    },
+    {
+      "address": "0x2f849",
+      "bytes": "C6 06 3F 13 00",
+      "disasm": "mov     ds:byte_7B328+337h, 0"
+    },
+    {
+      "address": "0x2f84e",
+      "bytes": "A1 91 04",
+      "disasm": "mov     ax, word ptr ds:byte_7A320+491h"
+    },
+    {
+      "address": "0x2f851",
+      "bytes": "3D FF FF",
+      "disasm": "cmp     ax, 0FFFFh"
+    },
+    {
+      "address": "0x2f854",
+      "bytes": "74 27",
+      "disasm": "jz      short loc_2F87D"
+    },
+    {
+      "address": "0x2f856",
+      "bytes": "C6 06 49 04 00",
+      "disasm": "mov     ds:byte_7A320+449h, 0"
+    },
+    {
+      "address": "0x2f85b",
+      "bytes": "1E",
+      "disasm": "push    ds"
+    },
+    {
+      "address": "0x2f85c",
+      "bytes": "06",
+      "disasm": "push    es"
+    },
+    {
+      "address": "0x2f85d",
+      "bytes": "9A 7F 79 6C 1F",
+      "disasm": "call    ai_farptr_table_get"
+    },
+    {
+      "address": "0x2f862",
+      "bytes": "8B F7",
+      "disasm": "mov     si, di"
+    },
+    {
+      "address": "0x2f864",
+      "bytes": "BF AF 04",
+      "disasm": "mov     di, 4AFh"
+    },
+    {
+      "address": "0x2f867",
+      "bytes": "2E 89 3E 43 00",
+      "disasm": "mov     cs:word_2F683, di"
+    },
+    {
+      "address": "0x2f86c",
+      "bytes": "8C DB",
+      "disasm": "mov     bx, ds"
+    },
+    {
+      "address": "0x2f86e",
+      "bytes": "8C C1",
+      "disasm": "mov     cx, es"
+    },
+    {
+      "address": "0x2f870",
+      "bytes": "8E D9",
+      "disasm": "mov     ds, cx"
+    },
+    {
+      "address": "0x2f872",
+      "bytes": "8E C3",
+      "disasm": "mov     es, bx"
+    },
+    {
+      "address": "0x2f874",
+      "bytes": "B9 09 00",
+      "disasm": "mov     cx, 9"
+    },
+    {
+      "address": "0x2f877",
+      "bytes": "F3 A5",
+      "disasm": "rep movsw"
+    },
+    {
+      "address": "0x2f879",
+      "bytes": "07",
+      "disasm": "pop     es"
+    },
+    {
+      "address": "0x2f87a",
+      "bytes": "1F",
+      "disasm": "pop     ds"
+    },
+    {
+      "address": "0x2f87b",
+      "bytes": "EB 3C",
+      "disasm": "jmp     short loc_2F8B9"
+    },
+    {
+      "address": "0x2f87d",
+      "bytes": "A1 93 04",
+      "disasm": "mov     ax, ds:493h"
+    },
+    {
+      "address": "0x2f880",
+      "bytes": "3D FF FF",
+      "disasm": "cmp     ax, 0FFFFh"
+    },
+    {
+      "address": "0x2f883",
+      "bytes": "74 2A",
+      "disasm": "jz      short loc_2F8AF"
+    },
+    {
+      "address": "0x2f885",
+      "bytes": "1E",
+      "disasm": "push    ds"
+    },
+    {
+      "address": "0x2f886",
+      "bytes": "06",
+      "disasm": "push    es"
+    },
+    {
+      "address": "0x2f887",
+      "bytes": "9A 7F 79 6C 1F",
+      "disasm": "call    ai_farptr_table_get"
+    },
+    {
+      "address": "0x2f88c",
+      "bytes": "2E 8C 06 55 00",
+      "disasm": "mov     cs:word_2F695, es"
+    },
+    {
+      "address": "0x2f891",
+      "bytes": "2E 89 3E 53 00",
+      "disasm": "mov     cs:word_2F693, di"
+    },
+    {
+      "address": "0x2f896",
+      "bytes": "8C C0",
+      "disasm": "mov     ax, es"
+    },
+    {
+      "address": "0x2f898",
+      "bytes": "8E D8",
+      "disasm": "mov     ds, ax"
+    },
+    {
+      "address": "0x2f89a",
+      "bytes": "8B F7",
+      "disasm": "mov     si, di"
+    },
+    {
+      "address": "0x2f89c",
+      "bytes": "07",
+      "disasm": "pop     es"
+    },
+    {
+      "address": "0x2f89d",
+      "bytes": "BF 95 04",
+      "disasm": "mov     di, 495h"
+    },
+    {
+      "address": "0x2f8a0",
+      "bytes": "B9 09 00",
+      "disasm": "mov     cx, 9"
+    },
+    {
+      "address": "0x2f8a3",
+      "bytes": "F3 A5",
+      "disasm": "rep movsw"
+    },
+    {
+      "address": "0x2f8a5",
+      "bytes": "1F",
+      "disasm": "pop     ds"
+    },
+    {
+      "address": "0x2f8a6",
+      "bytes": "2E C7 06 43 00 95 04",
+      "disasm": "mov     cs:word_2F683, 495h"
+    },
+    {
+      "address": "0x2f8ad",
+      "bytes": "EB 0A",
+      "disasm": "jmp     short loc_2F8B9"
+    },
+    {
+      "address": "0x2f8af",
+      "bytes": "2E 8B 36 29 00",
+      "disasm": "mov     si, cs:word_2F669"
+    },
+    {
+      "address": "0x2f8b4",
+      "bytes": "2E 89 36 43 00",
+      "disasm": "mov     cs:word_2F683, si"
+    },
+    {
+      "address": "0x2f8b9",
+      "bytes": "F6 06 60 04 81",
+      "disasm": "test    byte ptr ds:460h, 81h"
+    },
+    {
+      "address": "0x2f8be",
+      "bytes": "74 1B",
+      "disasm": "jz      short loc_2F8DB"
+    },
+    {
+      "address": "0x2f8c0",
+      "bytes": "80 26 60 04 FE",
+      "disasm": "and     byte ptr ds:460h, 0FEh"
+    },
+    {
+      "address": "0x2f8c5",
+      "bytes": "B9 0A 00",
+      "disasm": "mov     cx, 0Ah"
+    },
+    {
+      "address": "0x2f8c8",
+      "bytes": "51",
+      "disasm": "push    cx"
+    },
+    {
+      "address": "0x2f8c9",
+      "bytes": "E8 26 06",
+      "disasm": "call    game_frame_update_chain"
+    },
+    {
+      "address": "0x2f8cc",
+      "bytes": "2E 8B 36 29 00",
+      "disasm": "mov     si, cs:word_2F669"
+    },
+    {
+      "address": "0x2f8d1",
+      "bytes": "B0 00",
+      "disasm": "mov     al, 0"
+    },
+    {
+      "address": "0x2f8d3",
+      "bytes": "B4 FF",
+      "disasm": "mov     ah, 0FFh"
+    },
+    {
+      "address": "0x2f8d5",
+      "bytes": "E8 FE AA",
+      "disasm": "call    flight_entity_simulation_frame_step"
+    },
+    {
+      "address": "0x2f8d8",
+      "bytes": "59",
+      "disasm": "pop     cx"
+    },
+    {
+      "address": "0x2f8d9",
+      "bytes": "E2 ED",
+      "disasm": "loop    loc_2F8C8"
+    },
+    {
+      "address": "0x2f8db",
+      "bytes": "E8 14 06",
+      "disasm": "call    game_frame_update_chain"
+    },
+    {
+      "address": "0x2f8de",
+      "bytes": "E8 BF 4C",
+      "disasm": "call    sbi_int8_shutdown_hook"
+    },
+    {
+      "address": "0x2f8e1",
+      "bytes": "2E 8B 36 43 00",
+      "disasm": "mov     si, cs:word_2F683"
+    },
+    {
+      "address": "0x2f8e6",
+      "bytes": "BF 20 00",
+      "disasm": "mov     di, 20h ; ' '"
+    },
+    {
+      "address": "0x2f8e9",
+      "bytes": "B9 09 00",
+      "disasm": "mov     cx, 9"
+    },
+    {
+      "address": "0x2f8ec",
+      "bytes": "F3 A5",
+      "disasm": "rep movsw"
+    },
+    {
+      "address": "0x2f8ee",
+      "bytes": "BE 20 00",
+      "disasm": "mov     si, 20h ; ' '"
+    },
+    {
+      "address": "0x2f8f1",
+      "bytes": "BF 32 00",
+      "disasm": "mov     di, 32h ; '2'"
+    },
+    {
+      "address": "0x2f8f4",
+      "bytes": "B9 09 00",
+      "disasm": "mov     cx, 9"
+    },
+    {
+      "address": "0x2f8f7",
+      "bytes": "F3 A5",
+      "disasm": "rep movsw"
+    },
+    {
+      "address": "0x2f8f9",
+      "bytes": "9A 9D 57 6C 1F",
+      "disasm": "call    bda_kb_flag_get"
+    },
+    {
+      "address": "0x2f8fe",
+      "bytes": "A2 7D 04",
+      "disasm": "mov     ds:47Dh, al"
+    },
+    {
+      "address": "0x2f901",
+      "bytes": "2E 80 3E 78 00 00",
+      "disasm": "cmp     cs:byte_2F6B8, 0"
+    },
+    {
+      "address": "0x2f907",
+      "bytes": "75 30",
+      "disasm": "jnz     short loc_2F939"
+    },
+    {
+      "address": "0x2f909",
+      "bytes": "2B C0",
+      "disasm": "sub     ax, ax"
+    },
+    {
+      "address": "0x2f90b",
+      "bytes": "BF 7E 04",
+      "disasm": "mov     di, 47Eh"
+    },
+    {
+      "address": "0x2f90e",
+      "bytes": "AB",
+      "disasm": "stosw"
+    },
+    {
+      "address": "0x2f90f",
+      "bytes": "AB",
+      "disasm": "stosw"
+    },
+    {
+      "address": "0x2f910",
+      "bytes": "AB",
+      "disasm": "stosw"
+    },
+    {
+      "address": "0x2f911",
+      "bytes": "AB",
+      "disasm": "stosw"
+    },
+    {
+      "address": "0x2f912",
+      "bytes": "AB",
+      "disasm": "stosw"
+    },
+    {
+      "address": "0x2f913",
+      "bytes": "AA",
+      "disasm": "stosb"
+    },
+    {
+      "address": "0x2f914",
+      "bytes": "B8 01 00",
+      "disasm": "mov     ax, 1"
+    },
+    {
+      "address": "0x2f917",
+      "bytes": "83 3E AA 44 05",
+      "disasm": "cmp     word ptr ds:44AAh, 5"
+    },
+    {
+      "address": "0x2f91c",
+      "bytes": "74 10",
+      "disasm": "jz      short loc_2F92E"
+    },
+    {
+      "address": "0x2f91e",
+      "bytes": "48",
+      "disasm": "dec     ax"
+    },
+    {
+      "address": "0x2f91f",
+      "bytes": "83 3E AA 44 03",
+      "disasm": "cmp     word ptr ds:44AAh, 3"
+    },
+    {
+      "address": "0x2f924",
+      "bytes": "7C 08",
+      "disasm": "jl      short loc_2F92E"
+    },
+    {
+      "address": "0x2f926",
+      "bytes": "83 3E AA 44 04",
+      "disasm": "cmp     word ptr ds:44AAh, 4"
+    },
+    {
+      "address": "0x2f92b",
+      "bytes": "7F 01",
+      "disasm": "jg      short loc_2F92E"
+    },
+    {
+      "address": "0x2f92d",
+      "bytes": "40",
+      "disasm": "inc     ax"
+    },
+    {
+      "address": "0x2f92e",
+      "bytes": "9A 34 01 00 10",
+      "disasm": "call    mouse_buttons_get_2"
+    },
+    {
+      "address": "0x2f933",
+      "bytes": "A3 7B 04",
+      "disasm": "mov     ds:47Bh, ax"
+    },
+    {
+      "address": "0x2f936",
+      "bytes": "E8 00 32",
+      "disasm": "call    view_mode_bits_step"
+    },
+    {
+      "address": "0x2f939",
+      "bytes": "C6 06 7A 04 00",
+      "disasm": "mov     byte ptr ds:47Ah, 0"
+    },
+    {
+      "address": "0x2f93e",
+      "bytes": "1E",
+      "disasm": "push    ds"
+    },
+    {
+      "address": "0x2f93f",
+      "bytes": "B8 9F 70",
+      "disasm": "mov     ax, 709Fh"
+    },
+    {
+      "address": "0x2f942",
+      "bytes": "8E D8",
+      "disasm": "mov     ds, ax"
+    },
+    {
+      "address": "0x2f944",
+      "bytes": "80 3E 41 00 00",
+      "disasm": "cmp     ds:byte_70A31, 0"
+    },
+    {
+      "address": "0x2f949",
+      "bytes": "1F",
+      "disasm": "pop     ds"
+    },
+    {
+      "address": "0x2f94a",
+      "bytes": "74 07",
+      "disasm": "jz      short loc_2F953"
+    },
+    {
+      "address": "0x2f94c",
+      "bytes": "9A D9 15 A3 2A",
+      "disasm": "call    sub_2C009"
+    },
+    {
+      "address": "0x2f951",
+      "bytes": "72 20",
+      "disasm": "jb      short loc_2F973"
+    },
+    {
+      "address": "0x2f953",
+      "bytes": "BB 56 00",
+      "disasm": "mov     bx, 56h ; 'V'"
+    },
+    {
+      "address": "0x2f956",
+      "bytes": "BF EA 00",
+      "disasm": "mov     di, 0EAh"
+    },
+    {
+      "address": "0x2f959",
+      "bytes": "2E 80 3E 78 00 00",
+      "disasm": "cmp     cs:byte_2F6B8, 0"
+    },
+    {
+      "address": "0x2f95f",
+      "bytes": "74 06",
+      "disasm": "jz      short loc_2F967"
+    },
+    {
+      "address": "0x2f961",
+      "bytes": "BB 10 02",
+      "disasm": "mov     bx, 210h"
+    },
+    {
+      "address": "0x2f964",
+      "bytes": "BF 2C 02",
+      "disasm": "mov     di, 22Ch"
+    },
+    {
+      "address": "0x2f967",
+      "bytes": "8C C8",
+      "disasm": "mov     ax, cs"
+    },
+    {
+      "address": "0x2f969",
+      "bytes": "9A F9 58 6C 1F",
+      "disasm": "call    flag_bits_dispatch"
+    },
+    {
+      "address": "0x2f96e",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2f96f",
+      "bytes": "E8 E8 01",
+      "disasm": "call    near ptr mode_request_code_dispatch"
+    },
+    {
+      "address": "0x2f972",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2f973",
+      "bytes": "E8 CE 22",
+      "disasm": "call    dgroup_cycle_435_436"
+    },
+    {
+      "address": "0x2f976",
+      "bytes": "2E 80 3E 78 00 00",
+      "disasm": "cmp     cs:byte_2F6B8, 0"
+    },
+    {
+      "address": "0x2f97c",
+      "bytes": "75 1A",
+      "disasm": "jnz     short loc_2F998"
+    },
+    {
+      "address": "0x2f97e",
+      "bytes": "E8 A1 16",
+      "disasm": "call    flag_quad_state_clear"
+    },
+    {
+      "address": "0x2f981",
+      "bytes": "E8 49 22",
+      "disasm": "call    near ptr dgroup_cycle_step_438"
+    },
+    {
+      "address": "0x2f984",
+      "bytes": "2E A1 39 00",
+      "disasm": "mov     ax, cs:word_2F679"
+    },
+    {
+      "address": "0x2f988",
+      "bytes": "9A EA 2B 6C 1F",
+      "disasm": "call    control_axis_scale_store"
+    },
+    {
+      "address": "0x2f98d",
+      "bytes": "A0 7A 04",
+      "disasm": "mov     al, ds:47Ah"
+    },
+    {
+      "address": "0x2f990",
+      "bytes": "9A 8B 2C 6C 1F",
+      "disasm": "call    control_axes_read"
+    },
+    {
+      "address": "0x2f995",
+      "bytes": "E8 E1 02",
+      "disasm": "call    control_axis_store_step"
+    },
+    {
+      "address": "0x2f998",
+      "bytes": "E8 26 28",
+      "disasm": "call    mode_state_dispatch"
+    },
+    {
+      "address": "0x2f99b",
+      "bytes": "E8 A4 03",
+      "disasm": "call    game_frame_pipeline_step"
+    },
+    {
+      "address": "0x2f99e",
+      "bytes": "9A A4 32 6C 1F",
+      "disasm": "call    tick_rate_compute"
+    },
+    {
+      "address": "0x2f9a3",
+      "bytes": "2E 89 1E 39 00",
+      "disasm": "mov     cs:word_2F679, bx"
+    },
+    {
+      "address": "0x2f9a8",
+      "bytes": "2E A3 37 00",
+      "disasm": "mov     cs:word_2F677, ax"
+    },
+    {
+      "address": "0x2f9ac",
+      "bytes": "9A D6 32 6C 1F",
+      "disasm": "call    flag22220_clear"
+    },
+    {
+      "address": "0x2f9b1",
+      "bytes": "2E 8B 1E 39 00",
+      "disasm": "mov     bx, cs:word_2F679"
+    },
+    {
+      "address": "0x2f9b6",
+      "bytes": "2E A1 37 00",
+      "disasm": "mov     ax, cs:word_2F677"
+    },
+    {
+      "address": "0x2f9ba",
+      "bytes": "9A DB 03 52 4E",
+      "disasm": "call    state_add_70a03_70a5d"
+    },
+    {
+      "address": "0x2f9bf",
+      "bytes": "9A A2 35 6C 1F",
+      "disasm": "call    fixed_vec3_read"
+    },
+    {
+      "address": "0x2f9c4",
+      "bytes": "2E A3 45 00",
+      "disasm": "mov     cs:word_2F685, ax"
+    },
+    {
+      "address": "0x2f9c8",
+      "bytes": "2E 89 1E 47 00",
+      "disasm": "mov     cs:word_2F687, bx"
+    },
+    {
+      "address": "0x2f9cd",
+      "bytes": "2E 89 0E 49 00",
+      "disasm": "mov     cs:word_2F689, cx"
+    },
+    {
+      "address": "0x2f9d2",
+      "bytes": "2E 80 3E 78 00 00",
+      "disasm": "cmp     cs:byte_2F6B8, 0"
+    },
+    {
+      "address": "0x2f9d8",
+      "bytes": "75 05",
+      "disasm": "jnz     short loc_2F9DF"
+    },
+    {
+      "address": "0x2f9da",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2f9db",
+      "bytes": "E8 C7 0D",
+      "disasm": "call    near ptr ai_entity_data_load_prepare"
+    },
+    {
+      "address": "0x2f9de",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2f9df",
+      "bytes": "E8 BF 22",
+      "disasm": "call    view_terrain_frame_step"
+    },
+    {
+      "address": "0x2f9e2",
+      "bytes": "2E 80 3E 78 00 00",
+      "disasm": "cmp     cs:byte_2F6B8, 0"
+    },
+    {
+      "address": "0x2f9e8",
+      "bytes": "75 24",
+      "disasm": "jnz     short loc_2FA0E"
+    },
+    {
+      "address": "0x2f9ea",
+      "bytes": "83 3E 3B 02 00",
+      "disasm": "cmp     word ptr ds:23Bh, 0"
+    },
+    {
+      "address": "0x2f9ef",
+      "bytes": "74 0C",
+      "disasm": "jz      short loc_2F9FD"
+    },
+    {
+      "address": "0x2f9f1",
+      "bytes": "2E 8B 36 29 00",
+      "disasm": "mov     si, cs:word_2F669"
+    },
+    {
+      "address": "0x2f9f6",
+      "bytes": "B0 00",
+      "disasm": "mov     al, 0"
+    },
+    {
+      "address": "0x2f9f8",
+      "bytes": "B4 FF",
+      "disasm": "mov     ah, 0FFh"
+    },
+    {
+      "address": "0x2f9fa",
+      "bytes": "E8 D9 A9",
+      "disasm": "call    flight_entity_simulation_frame_step"
+    },
+    {
+      "address": "0x2f9fd",
+      "bytes": "A1 3B 02",
+      "disasm": "mov     ax, ds:23Bh"
+    },
+    {
+      "address": "0x2fa00",
+      "bytes": "8B 1E BA 48",
+      "disasm": "mov     bx, ds:48BAh"
+    },
+    {
+      "address": "0x2fa04",
+      "bytes": "8B 5F 7A",
+      "disasm": "mov     bx, [bx+7Ah]"
+    },
+    {
+      "address": "0x2fa07",
+      "bytes": "53",
+      "disasm": "push    bx"
+    },
+    {
+      "address": "0x2fa08",
+      "bytes": "9A FE 40 AE 43",
+      "disasm": "call    hud_rowlist_timer_step"
+    },
+    {
+      "address": "0x2fa0d",
+      "bytes": "58",
+      "disasm": "pop     ax"
+    },
+    {
+      "address": "0x2fa0e",
+      "bytes": "9A 02 00 B9 3A",
+      "disasm": "call    matrix_constants_setup"
+    },
+    {
+      "address": "0x2fa13",
+      "bytes": "80 3E 51 04 00",
+      "disasm": "cmp     byte ptr ds:451h, 0"
+    },
+    {
+      "address": "0x2fa18",
+      "bytes": "74 13",
+      "disasm": "jz      short loc_2FA2D"
+    },
+    {
+      "address": "0x2fa1a",
+      "bytes": "80 3E 51 04 FF",
+      "disasm": "cmp     byte ptr ds:451h, 0FFh"
+    },
+    {
+      "address": "0x2fa1f",
+      "bytes": "75 07",
+      "disasm": "jnz     short loc_2FA28"
+    },
+    {
+      "address": "0x2fa21",
+      "bytes": "C6 06 51 04 01",
+      "disasm": "mov     byte ptr ds:451h, 1"
+    },
+    {
+      "address": "0x2fa26",
+      "bytes": "EB 05",
+      "disasm": "jmp     short loc_2FA2D"
+    },
+    {
+      "address": "0x2fa28",
+      "bytes": "C6 06 51 04 00",
+      "disasm": "mov     byte ptr ds:451h, 0"
+    },
+    {
+      "address": "0x2fa2d",
+      "bytes": "33 C0",
+      "disasm": "xor     ax, ax"
+    },
+    {
+      "address": "0x2fa2f",
+      "bytes": "2E 38 06 78 00",
+      "disasm": "cmp     cs:byte_2F6B8, al"
+    },
+    {
+      "address": "0x2fa34",
+      "bytes": "74 03",
+      "disasm": "jz      short loc_2FA39"
+    },
+    {
+      "address": "0x2fa36",
+      "bytes": "E9 BA 00",
+      "disasm": "jmp     loc_2FAF3"
+    },
+    {
+      "address": "0x2fa39",
+      "bytes": "8B 36 BA 48",
+      "disasm": "mov     si, ds:48BAh"
+    },
+    {
+      "address": "0x2fa3d",
+      "bytes": "38 84 D4 00",
+      "disasm": "cmp     [si+0D4h], al"
+    },
+    {
+      "address": "0x2fa41",
+      "bytes": "74 1C",
+      "disasm": "jz      short loc_2FA5F"
+    },
+    {
+      "address": "0x2fa43",
+      "bytes": "38 06 FA 04",
+      "disasm": "cmp     ds:4FAh, al"
+    },
+    {
+      "address": "0x2fa47",
+      "bytes": "75 26",
+      "disasm": "jnz     short loc_2FA6F"
+    },
+    {
+      "address": "0x2fa49",
+      "bytes": "FE 06 FA 04",
+      "disasm": "inc     byte ptr ds:4FAh"
+    },
+    {
+      "address": "0x2fa4d",
+      "bytes": "B8 0C 00",
+      "disasm": "mov     ax, 0Ch"
+    },
+    {
+      "address": "0x2fa50",
+      "bytes": "BB 0E 00",
+      "disasm": "mov     bx, 0Eh"
+    },
+    {
+      "address": "0x2fa53",
+      "bytes": "B9 01 00",
+      "disasm": "mov     cx, 1"
+    },
+    {
+      "address": "0x2fa56",
+      "bytes": "33 D2",
+      "disasm": "xor     dx, dx"
+    },
+    {
+      "address": "0x2fa58",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fa59",
+      "bytes": "E8 B3 4D",
+      "disasm": "call    near ptr key_event_gate_check"
+    },
+    {
+      "address": "0x2fa5c",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fa5d",
+      "bytes": "EB 10",
+      "disasm": "jmp     short loc_2FA6F"
+    },
+    {
+      "address": "0x2fa5f",
+      "bytes": "38 06 FA 04",
+      "disasm": "cmp     ds:4FAh, al"
+    },
+    {
+      "address": "0x2fa63",
+      "bytes": "74 0A",
+      "disasm": "jz      short loc_2FA6F"
+    },
+    {
+      "address": "0x2fa65",
+      "bytes": "FE 0E FA 04",
+      "disasm": "dec     byte ptr ds:4FAh"
+    },
+    {
+      "address": "0x2fa69",
+      "bytes": "B8 0C 00",
+      "disasm": "mov     ax, 0Ch"
+    },
+    {
+      "address": "0x2fa6c",
+      "bytes": "E8 3E 4E",
+      "disasm": "call    key_code_pending_drain"
+    },
+    {
+      "address": "0x2fa6f",
+      "bytes": "80 3E FF 04 00",
+      "disasm": "cmp     byte ptr ds:4FFh, 0"
+    },
+    {
+      "address": "0x2fa74",
+      "bytes": "8B 36 BA 48",
+      "disasm": "mov     si, ds:48BAh"
+    },
+    {
+      "address": "0x2fa78",
+      "bytes": "8B 84 CA 00",
+      "disasm": "mov     ax, [si+0CAh]"
+    },
+    {
+      "address": "0x2fa7c",
+      "bytes": "75 06",
+      "disasm": "jnz     short loc_2FA84"
+    },
+    {
+      "address": "0x2fa7e",
+      "bytes": "33 06 0E 00",
+      "disasm": "xor     ax, ds:0Eh"
+    },
+    {
+      "address": "0x2fa82",
+      "bytes": "74 30",
+      "disasm": "jz      short loc_2FAB4"
+    },
+    {
+      "address": "0x2fa84",
+      "bytes": "8B D8",
+      "disasm": "mov     bx, ax"
+    },
+    {
+      "address": "0x2fa86",
+      "bytes": "C6 06 FF 04 00",
+      "disasm": "mov     byte ptr ds:4FFh, 0"
+    },
+    {
+      "address": "0x2fa8b",
+      "bytes": "2E A1 39 00",
+      "disasm": "mov     ax, cs:word_2F679"
+    },
+    {
+      "address": "0x2fa8f",
+      "bytes": "29 06 0C 00",
+      "disasm": "sub     ds:0Ch, ax"
+    },
+    {
+      "address": "0x2fa93",
+      "bytes": "79 1F",
+      "disasm": "jns     short loc_2FAB4"
+    },
+    {
+      "address": "0x2fa95",
+      "bytes": "C7 06 0C 00 00 02",
+      "disasm": "mov     word ptr ds:0Ch, 200h"
+    },
+    {
+      "address": "0x2fa9b",
+      "bytes": "B8 12 00",
+      "disasm": "mov     ax, 12h"
+    },
+    {
+      "address": "0x2fa9e",
+      "bytes": "F7 C3 00 02",
+      "disasm": "test    bx, 200h"
+    },
+    {
+      "address": "0x2faa2",
+      "bytes": "74 03",
+      "disasm": "jz      short loc_2FAA7"
+    },
+    {
+      "address": "0x2faa4",
+      "bytes": "B8 15 00",
+      "disasm": "mov     ax, 15h"
+    },
+    {
+      "address": "0x2faa7",
+      "bytes": "BB 0D 00",
+      "disasm": "mov     bx, 0Dh"
+    },
+    {
+      "address": "0x2faaa",
+      "bytes": "B9 01 00",
+      "disasm": "mov     cx, 1"
+    },
+    {
+      "address": "0x2faad",
+      "bytes": "33 D2",
+      "disasm": "xor     dx, dx"
+    },
+    {
+      "address": "0x2faaf",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fab0",
+      "bytes": "E8 5C 4D",
+      "disasm": "call    near ptr key_event_gate_check"
+    },
+    {
+      "address": "0x2fab3",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fab4",
+      "bytes": "E8 D6 76",
+      "disasm": "call    hud_terrain_strip_render"
+    },
+    {
+      "address": "0x2fab7",
+      "bytes": "33 C0",
+      "disasm": "xor     ax, ax"
+    },
+    {
+      "address": "0x2fab9",
+      "bytes": "38 06 5D 10",
+      "disasm": "cmp     ds:105Dh, al"
+    },
+    {
+      "address": "0x2fabd",
+      "bytes": "74 21",
+      "disasm": "jz      short loc_2FAE0"
+    },
+    {
+      "address": "0x2fabf",
+      "bytes": "39 06 0A 00",
+      "disasm": "cmp     ds:0Ah, ax"
+    },
+    {
+      "address": "0x2fac3",
+      "bytes": "75 1B",
+      "disasm": "jnz     short loc_2FAE0"
+    },
+    {
+      "address": "0x2fac5",
+      "bytes": "A0 5D 10",
+      "disasm": "mov     al, ds:105Dh"
+    },
+    {
+      "address": "0x2fac8",
+      "bytes": "98",
+      "disasm": "cbw"
+    },
+    {
+      "address": "0x2fac9",
+      "bytes": "B1 06",
+      "disasm": "mov     cl, 6"
+    },
+    {
+      "address": "0x2facb",
+      "bytes": "D3 E0",
+      "disasm": "shl     ax, cl"
+    },
+    {
+      "address": "0x2facd",
+      "bytes": "A3 0A 00",
+      "disasm": "mov     ds:0Ah, ax"
+    },
+    {
+      "address": "0x2fad0",
+      "bytes": "B8 14 00",
+      "disasm": "mov     ax, 14h"
+    },
+    {
+      "address": "0x2fad3",
+      "bytes": "BB 0E 00",
+      "disasm": "mov     bx, 0Eh"
+    },
+    {
+      "address": "0x2fad6",
+      "bytes": "B9 01 00",
+      "disasm": "mov     cx, 1"
+    },
+    {
+      "address": "0x2fad9",
+      "bytes": "33 D2",
+      "disasm": "xor     dx, dx"
+    },
+    {
+      "address": "0x2fadb",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fadc",
+      "bytes": "E8 30 4D",
+      "disasm": "call    near ptr key_event_gate_check"
+    },
+    {
+      "address": "0x2fadf",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fae0",
+      "bytes": "2E A1 39 00",
+      "disasm": "mov     ax, cs:word_2F679"
+    },
+    {
+      "address": "0x2fae4",
+      "bytes": "29 06 0A 00",
+      "disasm": "sub     ds:0Ah, ax"
+    },
+    {
+      "address": "0x2fae8",
+      "bytes": "7D 06",
+      "disasm": "jge     short loc_2FAF0"
+    },
+    {
+      "address": "0x2faea",
+      "bytes": "C7 06 0A 00 00 00",
+      "disasm": "mov     word ptr ds:0Ah, 0"
+    },
+    {
+      "address": "0x2faf0",
+      "bytes": "E8 29 47",
+      "disasm": "call    viewobj_batch_project_test"
+    },
+    {
+      "address": "0x2faf3",
+      "bytes": "E8 1B 14",
+      "disasm": "call    hud_data_panel_draw"
+    },
+    {
+      "address": "0x2faf6",
+      "bytes": "E8 0F 01",
+      "disasm": "call    clip_flag_gated_callback"
+    },
+    {
+      "address": "0x2faf9",
+      "bytes": "9A 9C 32 6C 1F",
+      "disasm": "call    zero_ax"
+    },
+    {
+      "address": "0x2fafe",
+      "bytes": "9A 21 00 25 4F",
+      "disasm": "call    vga_dac_palette_upload"
+    },
+    {
+      "address": "0x2fb03",
+      "bytes": "2E 80 3E 7A 00 00",
+      "disasm": "cmp     cs:byte_2F6BA, 0"
+    },
+    {
+      "address": "0x2fb09",
+      "bytes": "74 12",
+      "disasm": "jz      short loc_2FB1D"
+    },
+    {
+      "address": "0x2fb0b",
+      "bytes": "2E FE 0E 7A 00",
+      "disasm": "dec     cs:byte_2F6BA"
+    },
+    {
+      "address": "0x2fb10",
+      "bytes": "2E 80 3E 7A 00 00",
+      "disasm": "cmp     cs:byte_2F6BA, 0"
+    },
+    {
+      "address": "0x2fb16",
+      "bytes": "75 05",
+      "disasm": "jnz     short loc_2FB1D"
+    },
+    {
+      "address": "0x2fb18",
+      "bytes": "0E",
+      "disasm": "push    cs"
+    },
+    {
+      "address": "0x2fb19",
+      "bytes": "E8 17 00",
+      "disasm": "call    mode_reset_far_tail"
+    },
+    {
+      "address": "0x2fb1c",
+      "bytes": "90",
+      "disasm": "nop"
+    },
+    {
+      "address": "0x2fb1d",
+      "bytes": "2E A1 45 00",
+      "disasm": "mov     ax, cs:word_2F685"
+    },
+    {
+      "address": "0x2fb21",
+      "bytes": "2E 8B 1E 47 00",
+      "disasm": "mov     bx, cs:word_2F687"
+    },
+    {
+      "address": "0x2fb26",
+      "bytes": "2E 8B 0E 49 00",
+      "disasm": "mov     cx, cs:word_2F689"
+    },
+    {
+      "address": "0x2fb2b",
+      "bytes": "9A 93 35 6C 1F",
+      "disasm": "call    fixed_vec3_write"
+    },
+    {
+      "address": "0x2fb30",
+      "bytes": "E9 E3 FC",
+      "disasm": "jmp     loc_2F816"
+    }
+  ],
+  "xrefs_to": [
+    {
+      "from": "0x2be36",
+      "type": 18
+    }
+  ],
+  "xrefs_from": [
+    {
+      "from": "0x2f6d0",
+      "to": "0x34770",
+      "to_name": "nullsub_35",
+      "type": 2
+    },
+    {
+      "from": "0x2f6d6",
+      "to": "0x3470d",
+      "to_name": "range_key_event_dispatch",
+      "type": 2
+    },
+    {
+      "from": "0x2f6dc",
+      "to": "0x2f67f",
+      "to_name": "dword_2F67F",
+      "type": 2
+    },
+    {
+      "from": "0x2f6e0",
+      "to": "0x2f681",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f6f9",
+      "to": "0x10de2",
+      "to_name": "overlay_seg_word_read",
+      "type": 16
+    },
+    {
+      "from": "0x2f704",
+      "to": "0x2556c",
+      "to_name": "state_word_25499_set_clamp",
+      "type": 16
+    },
+    {
+      "from": "0x2f70d",
+      "to": "0x2f71f",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f711",
+      "to": "0x254a2",
+      "to_name": "state_byte_2549e_set",
+      "type": 16
+    },
+    {
+      "from": "0x2f718",
+      "to": "0x20a7a",
+      "to_name": "state_set_1f6e2_gated_2222a",
+      "type": 16
+    },
+    {
+      "from": "0x2f71d",
+      "to": "0x2f72d",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f721",
+      "to": "0x254a2",
+      "to_name": "state_byte_2549e_set",
+      "type": 16
+    },
+    {
+      "from": "0x2f728",
+      "to": "0x20a7a",
+      "to_name": "state_set_1f6e2_gated_2222a",
+      "type": 16
+    },
+    {
+      "from": "0x2f72f",
+      "to": "0x215bc",
+      "to_name": "state_byte_1f743_set",
+      "type": 16
+    },
+    {
+      "from": "0x2f734",
+      "to": "0x22c28",
+      "to_name": "pit_channel0_latch_read",
+      "type": 16
+    },
+    {
+      "from": "0x2f739",
+      "to": "0x2bfff",
+      "to_name": "sub_2BFFF",
+      "type": 16
+    },
+    {
+      "from": "0x2f740",
+      "to": "0x3001e",
+      "to_name": "game_state_load_apply",
+      "type": 17
+    },
+    {
+      "from": "0x2f743",
+      "to": "0x2bef1",
+      "to_name": "sub_2BEF1",
+      "type": 16
+    },
+    {
+      "from": "0x2f74a",
+      "to": "0x4fd38",
+      "to_name": "r08_farptr_load_thunk",
+      "type": 16
+    },
+    {
+      "from": "0x2f74f",
+      "to": "0x2f752",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f752",
+      "to": "0x7a851",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f755",
+      "to": "0x316b6",
+      "to_name": "param454_apply_tableinit",
+      "type": 17
+    },
+    {
+      "from": "0x2f758",
+      "to": "0x7a77f",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f75e",
+      "to": "0x3454c",
+      "to_name": "view_block4287_angles",
+      "type": 17
+    },
+    {
+      "from": "0x2f762",
+      "to": "0x4f3d7",
+      "to_name": "hw_cfg_scan_22158",
+      "type": 16
+    },
+    {
+      "from": "0x2f767",
+      "to": "0x7a56d",
+      "to_name": "",
+      "type": 3
+    },
+    {
+      "from": "0x2f76a",
+      "to": "0x4f4a8",
+      "to_name": "r37_farptr_store_gate",
+      "type": 16
+    },
+    {
+      "from": "0x2f76f",
+      "to": "0x4f3ec",
+      "to_name": "terrain_vm_buffer_decay",
+      "type": 16
+    },
+    {
+      "from": "0x2f774",
+      "to": "0x4f256",
+      "to_name": "hw_config_copy_85061",
+      "type": 16
+    },
+    {
+      "from": "0x2f779",
+      "to": "0x31138",
+      "to_name": "terrain_state_reinit",
+      "type": 17
+    },
+    {
+      "from": "0x2f77c",
+      "to": "0x24e46",
+      "to_name": "cs_buffer_5762_clear",
+      "type": 16
+    },
+    {
+      "from": "0x2f784",
+      "to": "0x4f168",
+      "to_name": "entity_record_build_gate",
+      "type": 16
+    },
+    {
+      "from": "0x2f789",
+      "to": "0x2f669",
+      "to_name": "word_2F669",
+      "type": 3
+    },
+    {
+      "from": "0x2f78e",
+      "to": "0x4fe02",
+      "to_name": "terrain_vm_entry_lookup",
+      "type": 16
+    },
+    {
+      "from": "0x2f796",
+      "to": "0x231c6",
+      "to_name": "cs_word_3666_set_clamped",
+      "type": 16
+    },
+    {
+      "from": "0x2f79d",
+      "to": "0x24e7b",
+      "to_name": "bda_417_mask_clear",
+      "type": 16
+    },
+    {
+      "from": "0x2f7a2",
+      "to": "0x2281f",
+      "to_name": "state_byte_22246_set_ff",
+      "type": 16
+    },
+    {
+      "from": "0x2f7a7",
+      "to": "0x7a799",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7af",
+      "to": "0x321dd",
+      "to_name": "mode_phase_apply_core",
+      "type": 17
+    },
+    {
+      "from": "0x2f7b2",
+      "to": "0x7a770",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7b7",
+      "to": "0x7a771",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7bc",
+      "to": "0x2e100",
+      "to_name": "funcs_4E5C0",
+      "type": 1
+    },
+    {
+      "from": "0x2f7bc",
+      "to": "0x31a77",
+      "to_name": "param454_apply_triple",
+      "type": 1
+    },
+    {
+      "from": "0x2f7bc",
+      "to": "0x7a7cb",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7c2",
+      "to": "0x7a7cd",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7c6",
+      "to": "0x10e39",
+      "to_name": "mode_flags_apply",
+      "type": 16
+    },
+    {
+      "from": "0x2f7cb",
+      "to": "0x2f6bb",
+      "to_name": "byte_2F6BB",
+      "type": 2
+    },
+    {
+      "from": "0x2f7d1",
+      "to": "0x2f6bc",
+      "to_name": "byte_2F6BC",
+      "type": 2
+    },
+    {
+      "from": "0x2f7d7",
+      "to": "0x7a322",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7dd",
+      "to": "0x2f669",
+      "to_name": "word_2F669",
+      "type": 3
+    },
+    {
+      "from": "0x2f7ef",
+      "to": "0x7a81d",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7f3",
+      "to": "0x7a81f",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f7f9",
+      "to": "0x34899",
+      "to_name": "state_byte_4fe_set",
+      "type": 17
+    },
+    {
+      "from": "0x2f7ff",
+      "to": "0x10de2",
+      "to_name": "overlay_seg_word_read",
+      "type": 16
+    },
+    {
+      "from": "0x2f808",
+      "to": "0x2f6b1",
+      "to_name": "word_2F6B1",
+      "type": 2
+    },
+    {
+      "from": "0x2f80c",
+      "to": "0x1117c",
+      "to_name": "int15_joystick_detect",
+      "type": 16
+    },
+    {
+      "from": "0x2f811",
+      "to": "0x22996",
+      "to_name": "flag22220_clear",
+      "type": 16
+    },
+    {
+      "from": "0x2f824",
+      "to": "0x7a853",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f828",
+      "to": "0x7a852",
+      "to_name": "",
+      "type": 3
+    },
+    {
+      "from": "0x2f82d",
+      "to": "0x2f833",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f82f",
+      "to": "0x7a852",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f833",
+      "to": "0x30356",
+      "to_name": "range_scale_step_handler",
+      "type": 17
+    },
+    {
+      "from": "0x2f836",
+      "to": "0x303c4",
+      "to_name": "key_range_wheel_handler",
+      "type": 17
+    },
+    {
+      "from": "0x2f839",
+      "to": "0x2f679",
+      "to_name": "word_2F679",
+      "type": 3
+    },
+    {
+      "from": "0x2f83d",
+      "to": "0x7b380",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f841",
+      "to": "0x2f84e",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f843",
+      "to": "0x7b380",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f849",
+      "to": "0x7b65f",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f84e",
+      "to": "0x7a7b1",
+      "to_name": "",
+      "type": 3
+    },
+    {
+      "from": "0x2f854",
+      "to": "0x2f87d",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f856",
+      "to": "0x7a769",
+      "to_name": "",
+      "type": 2
+    },
+    {
+      "from": "0x2f85d",
+      "to": "0x2703f",
+      "to_name": "ai_farptr_table_get",
+      "type": 16
+    },
+    {
+      "from": "0x2f867",
+      "to": "0x2f683",
+      "to_name": "word_2F683",
+      "type": 2
+    },
+    {
+      "from": "0x2f87b",
+      "to": "0x2f8b9",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f883",
+      "to": "0x2f8af",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f887",
+      "to": "0x2703f",
+      "to_name": "ai_farptr_table_get",
+      "type": 16
+    },
+    {
+      "from": "0x2f88c",
+      "to": "0x2f695",
+      "to_name": "word_2F695",
+      "type": 2
+    },
+    {
+      "from": "0x2f891",
+      "to": "0x2f693",
+      "to_name": "word_2F693",
+      "type": 2
+    },
+    {
+      "from": "0x2f8a6",
+      "to": "0x2f683",
+      "to_name": "word_2F683",
+      "type": 2
+    },
+    {
+      "from": "0x2f8ad",
+      "to": "0x2f8b9",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f8af",
+      "to": "0x2f669",
+      "to_name": "word_2F669",
+      "type": 3
+    },
+    {
+      "from": "0x2f8b4",
+      "to": "0x2f683",
+      "to_name": "word_2F683",
+      "type": 2
+    },
+    {
+      "from": "0x2f8be",
+      "to": "0x2f8db",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f8c9",
+      "to": "0x2fef2",
+      "to_name": "game_frame_update_chain",
+      "type": 17
+    },
+    {
+      "from": "0x2f8cc",
+      "to": "0x2f669",
+      "to_name": "word_2F669",
+      "type": 3
+    },
+    {
+      "from": "0x2f8d5",
+      "to": "0x3a3d6",
+      "to_name": "flight_entity_simulation_frame_step",
+      "type": 17
+    },
+    {
+      "from": "0x2f8d9",
+      "to": "0x2f8c8",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f8db",
+      "to": "0x2fef2",
+      "to_name": "game_frame_update_chain",
+      "type": 17
+    },
+    {
+      "from": "0x2f8de",
+      "to": "0x345a0",
+      "to_name": "sbi_int8_shutdown_hook",
+      "type": 17
+    },
+    {
+      "from": "0x2f8e1",
+      "to": "0x2f683",
+      "to_name": "word_2F683",
+      "type": 3
+    },
+    {
+      "from": "0x2f8f9",
+      "to": "0x24e5d",
+      "to_name": "bda_kb_flag_get",
+      "type": 16
+    },
+    {
+      "from": "0x2f901",
+      "to": "0x2f6b8",
+      "to_name": "byte_2F6B8",
+      "type": 3
+    },
+    {
+      "from": "0x2f907",
+      "to": "0x2f939",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f91c",
+      "to": "0x2f92e",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f924",
+      "to": "0x2f92e",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f92b",
+      "to": "0x2f92e",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f92e",
+      "to": "0x10134",
+      "to_name": "mouse_buttons_get_2",
+      "type": 16
+    },
+    {
+      "from": "0x2f936",
+      "to": "0x32b39",
+      "to_name": "view_mode_bits_step",
+      "type": 17
+    },
+    {
+      "from": "0x2f944",
+      "to": "0x70a31",
+      "to_name": "byte_70A31",
+      "type": 3
+    },
+    {
+      "from": "0x2f94a",
+      "to": "0x2f953",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f94c",
+      "to": "0x2c009",
+      "to_name": "sub_2C009",
+      "type": 16
+    },
+    {
+      "from": "0x2f951",
+      "to": "0x2f973",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f959",
+      "to": "0x2f6b8",
+      "to_name": "byte_2F6B8",
+      "type": 3
+    },
+    {
+      "from": "0x2f95f",
+      "to": "0x2f967",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f969",
+      "to": "0x24fb9",
+      "to_name": "flag_bits_dispatch",
+      "type": 16
+    },
+    {
+      "from": "0x2f96f",
+      "to": "0x2fb5a",
+      "to_name": "mode_request_code_dispatch",
+      "type": 17
+    },
+    {
+      "from": "0x2f973",
+      "to": "0x31c44",
+      "to_name": "dgroup_cycle_435_436",
+      "type": 17
+    },
+    {
+      "from": "0x2f976",
+      "to": "0x2f6b8",
+      "to_name": "byte_2F6B8",
+      "type": 3
+    },
+    {
+      "from": "0x2f97c",
+      "to": "0x2f998",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f97e",
+      "to": "0x31022",
+      "to_name": "flag_quad_state_clear",
+      "type": 17
+    },
+    {
+      "from": "0x2f981",
+      "to": "0x31bcd",
+      "to_name": "dgroup_cycle_step_438",
+      "type": 17
+    },
+    {
+      "from": "0x2f984",
+      "to": "0x2f679",
+      "to_name": "word_2F679",
+      "type": 3
+    },
+    {
+      "from": "0x2f988",
+      "to": "0x222aa",
+      "to_name": "control_axis_scale_store",
+      "type": 16
+    },
+    {
+      "from": "0x2f990",
+      "to": "0x2234b",
+      "to_name": "control_axes_read",
+      "type": 16
+    },
+    {
+      "from": "0x2f995",
+      "to": "0x2fc79",
+      "to_name": "control_axis_store_step",
+      "type": 17
+    },
+    {
+      "from": "0x2f998",
+      "to": "0x321c1",
+      "to_name": "mode_state_dispatch",
+      "type": 17
+    },
+    {
+      "from": "0x2f99b",
+      "to": "0x2fd42",
+      "to_name": "game_frame_pipeline_step",
+      "type": 17
+    },
+    {
+      "from": "0x2f99e",
+      "to": "0x22964",
+      "to_name": "tick_rate_compute",
+      "type": 16
+    },
+    {
+      "from": "0x2f9a3",
+      "to": "0x2f679",
+      "to_name": "word_2F679",
+      "type": 2
+    },
+    {
+      "from": "0x2f9a8",
+      "to": "0x2f677",
+      "to_name": "word_2F677",
+      "type": 2
+    },
+    {
+      "from": "0x2f9ac",
+      "to": "0x22996",
+      "to_name": "flag22220_clear",
+      "type": 16
+    },
+    {
+      "from": "0x2f9b1",
+      "to": "0x2f679",
+      "to_name": "word_2F679",
+      "type": 3
+    },
+    {
+      "from": "0x2f9b6",
+      "to": "0x2f677",
+      "to_name": "word_2F677",
+      "type": 3
+    },
+    {
+      "from": "0x2f9ba",
+      "to": "0x4e8fb",
+      "to_name": "state_add_70a03_70a5d",
+      "type": 16
+    },
+    {
+      "from": "0x2f9bf",
+      "to": "0x22c62",
+      "to_name": "fixed_vec3_read",
+      "type": 16
+    },
+    {
+      "from": "0x2f9c4",
+      "to": "0x2f685",
+      "to_name": "word_2F685",
+      "type": 2
+    },
+    {
+      "from": "0x2f9c8",
+      "to": "0x2f687",
+      "to_name": "word_2F687",
+      "type": 2
+    },
+    {
+      "from": "0x2f9cd",
+      "to": "0x2f689",
+      "to_name": "word_2F689",
+      "type": 2
+    },
+    {
+      "from": "0x2f9d2",
+      "to": "0x2f6b8",
+      "to_name": "byte_2F6B8",
+      "type": 3
+    },
+    {
+      "from": "0x2f9d8",
+      "to": "0x2f9df",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f9db",
+      "to": "0x307a5",
+      "to_name": "ai_entity_data_load_prepare",
+      "type": 17
+    },
+    {
+      "from": "0x2f9df",
+      "to": "0x31ca1",
+      "to_name": "view_terrain_frame_step",
+      "type": 17
+    },
+    {
+      "from": "0x2f9e2",
+      "to": "0x2f6b8",
+      "to_name": "byte_2F6B8",
+      "type": 3
+    },
+    {
+      "from": "0x2f9e8",
+      "to": "0x2fa0e",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f9ef",
+      "to": "0x2f9fd",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2f9f1",
+      "to": "0x2f669",
+      "to_name": "word_2F669",
+      "type": 3
+    },
+    {
+      "from": "0x2f9fa",
+      "to": "0x3a3d6",
+      "to_name": "flight_entity_simulation_frame_step",
+      "type": 17
+    },
+    {
+      "from": "0x2fa08",
+      "to": "0x47bde",
+      "to_name": "hud_rowlist_timer_step",
+      "type": 16
+    },
+    {
+      "from": "0x2fa0e",
+      "to": "0x3ab92",
+      "to_name": "matrix_constants_setup",
+      "type": 16
+    },
+    {
+      "from": "0x2fa18",
+      "to": "0x2fa2d",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa1f",
+      "to": "0x2fa28",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa26",
+      "to": "0x2fa2d",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa2f",
+      "to": "0x2f6b8",
+      "to_name": "byte_2F6B8",
+      "type": 3
+    },
+    {
+      "from": "0x2fa34",
+      "to": "0x2fa39",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa36",
+      "to": "0x2faf3",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa41",
+      "to": "0x2fa5f",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa47",
+      "to": "0x2fa6f",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa59",
+      "to": "0x3480f",
+      "to_name": "key_event_gate_check",
+      "type": 17
+    },
+    {
+      "from": "0x2fa5d",
+      "to": "0x2fa6f",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa63",
+      "to": "0x2fa6f",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa6c",
+      "to": "0x348ad",
+      "to_name": "key_code_pending_drain",
+      "type": 17
+    },
+    {
+      "from": "0x2fa7c",
+      "to": "0x2fa84",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa82",
+      "to": "0x2fab4",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fa8b",
+      "to": "0x2f679",
+      "to_name": "word_2F679",
+      "type": 3
+    },
+    {
+      "from": "0x2fa93",
+      "to": "0x2fab4",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2faa2",
+      "to": "0x2faa7",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fab0",
+      "to": "0x3480f",
+      "to_name": "key_event_gate_check",
+      "type": 17
+    },
+    {
+      "from": "0x2fab4",
+      "to": "0x3718d",
+      "to_name": "hud_terrain_strip_render",
+      "type": 17
+    },
+    {
+      "from": "0x2fabd",
+      "to": "0x2fae0",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fac3",
+      "to": "0x2fae0",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fadc",
+      "to": "0x3480f",
+      "to_name": "key_event_gate_check",
+      "type": 17
+    },
+    {
+      "from": "0x2fae0",
+      "to": "0x2f679",
+      "to_name": "word_2F679",
+      "type": 3
+    },
+    {
+      "from": "0x2fae8",
+      "to": "0x2faf0",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2faf0",
+      "to": "0x3421c",
+      "to_name": "viewobj_batch_project_test",
+      "type": 17
+    },
+    {
+      "from": "0x2faf3",
+      "to": "0x30f11",
+      "to_name": "hud_data_panel_draw",
+      "type": 17
+    },
+    {
+      "from": "0x2faf6",
+      "to": "0x2fc08",
+      "to_name": "clip_flag_gated_callback",
+      "type": 17
+    },
+    {
+      "from": "0x2faf9",
+      "to": "0x2295c",
+      "to_name": "zero_ax",
+      "type": 16
+    },
+    {
+      "from": "0x2fafe",
+      "to": "0x4f271",
+      "to_name": "vga_dac_palette_upload",
+      "type": 16
+    },
+    {
+      "from": "0x2fb03",
+      "to": "0x2f6ba",
+      "to_name": "byte_2F6BA",
+      "type": 3
+    },
+    {
+      "from": "0x2fb09",
+      "to": "0x2fb1d",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fb0b",
+      "to": "0x2f6ba",
+      "to_name": "byte_2F6BA",
+      "type": 2
+    },
+    {
+      "from": "0x2fb10",
+      "to": "0x2f6ba",
+      "to_name": "byte_2F6BA",
+      "type": 3
+    },
+    {
+      "from": "0x2fb16",
+      "to": "0x2fb1d",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    },
+    {
+      "from": "0x2fb19",
+      "to": "0x2fb33",
+      "to_name": "mode_reset_far_tail",
+      "type": 17
+    },
+    {
+      "from": "0x2fb1d",
+      "to": "0x2f685",
+      "to_name": "word_2F685",
+      "type": 3
+    },
+    {
+      "from": "0x2fb21",
+      "to": "0x2f687",
+      "to_name": "word_2F687",
+      "type": 3
+    },
+    {
+      "from": "0x2fb26",
+      "to": "0x2f689",
+      "to_name": "word_2F689",
+      "type": 3
+    },
+    {
+      "from": "0x2fb2b",
+      "to": "0x22c53",
+      "to_name": "fixed_vec3_write",
+      "type": 16
+    },
+    {
+      "from": "0x2fb30",
+      "to": "0x2f816",
+      "to_name": "main_game_loop_update",
+      "type": 19
+    }
+  ]
+}

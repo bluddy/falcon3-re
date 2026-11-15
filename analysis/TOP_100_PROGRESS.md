@@ -10,9 +10,9 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 62 | 62% |
+| ✅ Completed | 76 | 76% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 38 | 38% |
+| ⏳ Pending | 24 | 24% |
 
 **Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
@@ -288,8 +288,23 @@
 | 18 | 0x3352A | 81 | 1092B | **aircraft_state_dispatcher** | ✅ **COMPLETE** (✈️ aircraft states + ejection, 49 self-calls) |
 | 19 | 0x32D22 | 77 | 850B | **mission_state_initializer** | ✅ **COMPLETE** (🎯 mission init, terrain/entity setup, 31 self-calls) |
 | 20 | 0x171BA0 | 77 | 2128B | **overlay_r49_processor** | ✅ **COMPLETE** (📦 R49 overlay handler, 69 self-calls, seg 7894h) |
+| 21 | 0x172B42 | 76 | 2474B | **overlay_handler_2474** | ✅ **COMPLETE** (📦 overlay handler, text centering) |
+| 22 | 0x16DAA0 | 76 | 6198B | **overlay_r48_processor** | ✅ **COMPLETE** (📦 R48 MASSIVE, 185 self-calls, 1937 insns!) |
+| 23 | 0x112451 | 74 | 1943B | **file_processor_large_buffer** | ✅ **COMPLETE** (📁 file I/O, 1586-byte stack, 58 self-calls) |
+| 24 | 0x1A934D | 74 | 2639B | **r67_flags_op_garbage_fragment** | ✅ **COMPLETE** (📦 R67 overlay, 23 self-calls) |
+| 25 | 0x2F6D0 | 74 | 1123B | **main_game_loop_update** | ✅ **COMPLETE** (🎮 MAIN GAME LOOP, 41 self-calls, frame coordinator) |
+| 26 | 0x18B912 | 71 | 9641B | **overlay_r55_main_loop** | ✅ **COMPLETE** (📦 R55 MASSIVE BEAST: 278 self-calls, 3258 insns!) |
+| 27 | 0x194EAB | 71 | 4237B | **r58_line_table_entry** | ✅ **COMPLETE** (📦 R58 line processor, 127 self-calls) |
+| 28 | 0x193090 | 70 | 4367B | **overlay_r54_processor** | ✅ **COMPLETE** (📦 R54 overlay, 136 self-calls) |
+| 29 | 0x3D37F | 70 | 1319B | **ai_entity_update_step** | ✅ **COMPLETE** (🤖 AI per-entity update, 102 self-calls) |
+| 30 | 0x1AA1F0 | 69 | 2194B | **overlay_r58_handler** | ✅ **COMPLETE** (📦 R58 handler, 84 self-calls) |
+| 31 | 0x3001E | 62 | 745B | **game_state_load_apply** | ✅ **COMPLETE** (💾 load saved state, 10 self-calls) |
+| 32 | 0x180ED0 | 60 | 3245B | **r52_data_fragment** | ✅ **COMPLETE** (📦 R52 data, 119 self-calls) |
+| 33 | 0x185878 | 60 | 2026B | **overlay_r52_handler** | ✅ **COMPLETE** (📦 R52 handler, 0 self-calls) |
+| 34 | 0x19FEB0 | 59 | 2837B | **overlay_r56_handler** | ✅ **COMPLETE** (📦 R56 handler, 105 self-calls) |
+| 35 | 0x156945 | 59 | 2614B | **overlay_r45_logic** | ✅ **COMPLETE** (📦 R45 logic, 94 self-calls) |
 
-*(Ranks 21-100 available in top_100_functions.json)*
+*(Ranks 23-100 available in top_100_functions.json)*
 
 ---
 
