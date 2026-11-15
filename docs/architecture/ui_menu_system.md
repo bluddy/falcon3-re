@@ -95,6 +95,13 @@ Menu Navigation
 | `input_sync_and_wait` | 0x130A2F | 42 bytes | **194** | Universal input synchronization |
 | `input_finalization` | 0x130B39 | 183 bytes | 36 | Cleanup after input processed |
 | `pit_channel0_latch_read` | 0x22C38 | 43 bytes | 14 | Read 8253 PIT for entropy |
+| `mouse_sensitivity_calculator` | 0x130C80 | 103 bytes | inline | Mouse acceleration: clamp(Δ,1,8)×4 |
+| `keyboard_state_processor` | 0x130CE7 | 353 bytes | inline | Keyboard state processing |
+| `joystick_position_reader` | 0x130E48 | 279 bytes | inline | Read joystick X/Y from port 0x201 |
+| `joystick_button_handler` | 0x131001 | 374 bytes | inline | Joystick button processing |
+| `input_region_mapper` | 0x131235 | 170 bytes | inline | Map input to 2×3 region grid |
+| `joystick_calibration_handler` | 0x1312DF | 335 bytes | inline | Joystick calibration routine |
+| `input_overlay_bridge` | 0x2BEC9 | 8 bytes | inline | Tail-call to overlay for extended input |
 
 ### Rendering
 
@@ -180,22 +187,106 @@ uint16_t call_counter;                   // 0x709F:0x70A2D
 
 ## Input System Details
 
-### Input Sources
+### Complete Input Pipeline
+
+```
+Hardware Layer:
+  ├─> Keyboard (BIOS 0x0040:0x0017 + port 0x60 scan codes)
+  ├─> Mouse (INT 33h driver)
+  └─> Joystick (Game port 0x201-0x203, analog resistive)
+      ↓
+input_poll_handler (0x12FC43, 3814 bytes, 1205 instructions)
+  ├─> keyboard_state_processor (353B inline)
+  ├─> mouse_sensitivity_calculator (103B inline, acceleration)
+  ├─> joystick_position_reader (279B inline, analog read)
+  ├─> joystick_button_handler (374B inline)
+  ├─> joystick_calibration_handler (335B inline)
+  ├─> input_region_mapper (170B inline, 2×3 grid)
+  └─> input_overlay_bridge (8B inline, tail-call pattern)
+      ↓
+Input Buffer & Flags (segment 0x7894)
+  ├─> input_buffer[3] at 0x15A6
+  ├─> input_flag_pending_1 at 0x79B68
+  └─> input_flag_pending_2 at 0x79B66
+      ↓
+input_sync_and_wait (194 callers, busy-wait loop)
+      ↓
+input_finalization (cleanup, reset mouse state)
+      ↓
+Menu/Game Logic
+```
+
+### Input Devices
 
 **1. Keyboard**
-- **BIOS Data Area**: 0x0040:0x0017 (keyboard flags: Shift, Ctrl, Alt, etc.)
-- **Hardware**: Keyboard controller (likely port 0x60 scan codes)
-- **Processing**: Via `bda_kb_flag_get` and unknown callees
+- **BIOS Data Area**: 0x0040:0x0017 (modifier flags: Shift, Ctrl, Alt, Caps, etc.)
+- **Hardware**: Port 0x60 for scan codes
+- **Processing**: `keyboard_state_processor` (353 bytes, inline)
+- **Features**: Key repeat, modifier tracking, scan code translation
 
 **2. Mouse**
 - **Driver**: INT 33h (DOS mouse driver)
-- **Operations**: Position, buttons, motion delta
-- **Sensitivity**: `mouse_delta_scale_far_entry` applies scaling
-- **Processing**: Via `mouse_int33_dispatch`
+- **Operations**: Position query, button state, motion delta
+- **Acceleration**: `mouse_sensitivity_calculator` (103 bytes)
+  ```c
+  // Linear acceleration algorithm
+  int delta = current_pos - previous_pos;
+  delta = clamp(delta, 1, 8);     // Limit to [1, 8]
+  return delta * 4;                // Output: [4, 32]
+  ```
+- **Characteristics**:
+  - Linear (not exponential) acceleration
+  - 4× multiplier for responsiveness
+  - Clamped to prevent over-sensitivity
+  - Simple 1991 algorithm
 
 **3. Joystick**
-- **Hardware**: Game port 0x201 (analog)
-- **Processing**: Via unknown callees in input_poll_handler
+- **Hardware**: Game port 0x201-0x203 (analog resistive, RC timing)
+- **Processing**: Three inline handlers (988 bytes total)
+  - `joystick_position_reader` (279B): Read X/Y via RC timing
+  - `joystick_button_handler` (374B): Button state processing
+  - `joystick_calibration_handler` (335B): Calibration routine
+- **Features**:
+  - 2-axis analog input (X, Y)
+  - Button support
+  - Runtime calibration
+  - Full game control support
+
+### Input Region System
+
+**2×3 Grid for Menu Navigation**:
+
+```
+Region Layout (255×255 normalized coordinates):
+┌─────────┬─────────┬─────────┐
+│    0    │    1    │    2    │  Y < 190
+│ (left)  │ (center)│ (right) │
+├─────────┼─────────┼─────────┤
+│    3    │    4    │    5    │  Y ≥ 190
+│ (left)  │ (center)│ (right) │
+└─────────┴─────────┴─────────┘
+   X<100  100≤X<150  X≥150
+```
+
+**Implementation**:
+- **Handler**: `input_region_mapper` (0x131235, 170 bytes)
+- **Table**: 6 regions × 28 bytes = 168 bytes at segment 0x4FC2 offset 0x7C0
+- **X Thresholds**: 100, 150 (of 255)
+- **Y Threshold**: 190 (of 255)
+- **Purpose**: Spatial menu navigation, weapon selection grids
+
+**Region Table Structure** (hypothesis):
+```c
+struct input_region {
+    uint16_t x_min;
+    uint16_t x_max;
+    uint16_t y_min;
+    uint16_t y_max;
+    void __far *handler_func;    // Action when region activated
+    uint16_t flags;
+    // ... potentially more fields (28 bytes total)
+};
+```
 
 ### Input Synchronization Pattern
 
@@ -226,6 +317,26 @@ void wait_for_input_ready(void) {
 - Fast response (no context switch)
 - Works reliably in DOS
 - Acceptable CPU usage on slower 1991 processors
+
+### Why 98.5% Inline?
+
+**input_poll_handler Performance Strategy**:
+- **Size**: 3,814 bytes (extremely large for single function)
+- **Inline ratio**: 98.5% (only 18 function calls in 1205 instructions)
+- **Callees**: All 7 device-specific handlers inlined
+- **Rationale**:
+  1. Eliminate function call overhead (critical in 18.2-60 Hz game loop)
+  2. Keep CPU cache hot (single contiguous code block)
+  3. Enable better optimization by 1991 compilers
+  4. Avoid far call overhead in segmented memory model
+
+**Tradeoff**: Performance prioritized over maintainability
+
+**Why This Matters**:
+- Polled ~30-60 times per second
+- Critical path for responsiveness
+- Any microseconds saved → better "feel"
+- Inline = ~5-10 cycles saved per call × 7 callees × 60 Hz = ~2100-4200 cycles/sec saved
 
 ---
 
@@ -426,26 +537,27 @@ Busy-wait over interrupts - simpler, more reliable for 1991 DOS environment.
 - ✅ farobj_vec3_accum_b_ret dual purpose explained
 - ✅ Complete input → rendering pipeline mapped
 - ✅ Random state generation mechanism understood
+- ✅ All 7 input_poll_handler callees analyzed:
+  - ✅ Mouse acceleration algorithm (linear 4× multiplier)
+  - ✅ Keyboard state processing (inline)
+  - ✅ Joystick support (position, buttons, calibration)
+  - ✅ Input region mapping (2×3 grid)
+  - ✅ Overlay bridge for extended input
 
 ### Remaining Mysteries
 
-1. **7 unknown callees in input_poll_handler**:
-   - undoc_130C80, undoc_130CE7, undoc_130E48
-   - undoc_131001, undoc_131235, undoc_1312DF
-   - Likely: joystick handling, key repeat, mouse acceleration
-
-2. **Input buffer structure**:
-   - What do the 3 words at 0x7894:0x15A6 represent?
-   - Hypothesis: [keyboard_state, mouse_state, joystick_state]
-
-3. **Menu slot structure**:
+1. **Menu slot structure**:
    - What fields does menu_slot contain?
    - Pointed to by current_menu_slot_ptr
 
-4. **Compressed graphics formats**:
+2. **Compressed graphics formats**:
    - PEOPLE.DAT (pilot faces) - format unknown
    - MONITOR.DAT (setup screens) - format unknown
    - Likely uses overlay R02 decompressor
+
+3. **Input buffer detailed layout**:
+   - What do the 3 words at 0x7894:0x15A6 represent?
+   - Working hypothesis: [keyboard_state, mouse_state, joystick_state]
 
 ---
 

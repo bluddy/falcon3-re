@@ -65,6 +65,13 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | 0x130A2F | `input_sync_and_wait` | Universal input sync (42B, **194 callers**) |
 | 0x128518 | `ui_text_render_engine` | Core text rendering (1,282B, 70 callers) |
 | 0x128D5A | `ui_render_coordinator` | Rendering dispatcher (900B, 22 callers) |
+| 0x1744B0 | `game_mode_r48_main_coordinator` | R48 game mode coordinator (9,061B, **360 callers**) |
+| 0x1820B0 | `game_mode_r53_main_coordinator` | R53 game mode coordinator (12,693B, **342 callers**, largest function) |
+| 0x1793C0 | `overlay_r4F_handler` | R4F game mode handler (7,661B, **262 callers**) |
+| 0x18F610 | `overlay_r55_dispatcher` | R55 game mode dispatcher (4,935B, **212 callers**) |
+| 0x166F80 | `r38_loadout_menu_dispatcher` | R38 loadout menu state machine (2,943B, **147 callers**) |
+| 0x103C99 | `mission_session_init_coordinator` | Mission/game session initialization (945B, **144 callers**) |
+| 0x12DF6A | `r29_tactical_screen_coordinator` | R29 tactical planning screen (6,799B, **120 callers**, hybrid pattern) |
 | R05_400C:0x34 | `farobj_main_table` | Main entity slot table |
 | 0x65A7:0x000C | `ai_context_array` | 40 AI contexts × 24 bytes = 960 bytes |
 | 0x7B0E:0x3868 | `trig_sin_table` | Sine lookup table |
