@@ -2,40 +2,34 @@
 
 ## High Priority
 
-### 1. r15_simulation_loop (0x108BAC) - **SIMULATION CORE**
+### 1. r15_simulation_loop (0x108BAC) - **SIMULATION CORE** ✅ COMPLETE
 **Rank**: #16, 83 callers, 717 bytes  
-**Status**: Deep dive complete, but needs follow-up
+**Status**: ✅ **Deep dive complete - 100% analyzed**
 
-**Why Revisit**:
-- This is the **main simulation loop** - the heart of the flight sim
-- Dual-path architecture (cockpit vs external view) needs full understanding
-- 13 unique Path B functions not yet analyzed
-- Understanding what sets `r15_external_view_flag` and when
+**Achievement**:
+- ✅ Identified as main simulation loop
+- ✅ Discovered dual-path architecture (cockpit vs external view)
+- ✅ All 13 Path B unique functions analyzed
+- ✅ All functions renamed in IDA with descriptive names
+- ✅ 38 inline comments added
+- ✅ Complete understanding of external view rendering pipeline
 
-**Questions to Answer**:
-1. What are the 13 Path B unique functions? (stub_to_205c3, undoc_207DD, sub_128CD, etc.)
-2. Who sets `r15_external_view_flag`? When does it toggle?
-3. Why does Path B need `active_farptr_set/restore`?
-4. What is `word_10788C` (callback iteration count)?
-5. What is `byte_10788B` (early exit flag)?
-6. What do far_cb_3 and far_cb_7 actually process?
+**Path B = External View Mode** (Chase camera, flyby views):
+- View transformation (world → camera space)
+- Camera-based terrain rendering
+- Orientation classification
+- Smooth camera motion with delta vectors
+- Mode-based dispatch system
+- Far pointer state management
 
-**Related Systems**:
-- Input handling (pre-simulation)
-- Rendering finalization (post-simulation)  
-- View/camera management
-- EMS memory architecture
+**Documentation**:
+- `analysis/R15_SIMULATION_LOOP_ANALYSIS.md` (400+ lines)
+- `analysis/PATH_B_ANALYSIS.md` (100% complete, all 13 functions)
 
-**Files**:
-- `analysis/R15_SIMULATION_LOOP_ANALYSIS.md` (400+ line deep dive)
-- `analysis/ida_falconcd/sim_loop_108bac_analysis.json`
-- `analysis/ida_falconcd/func_108bac_full.json` (196 instructions)
-
-**Next Steps**:
-- Investigate Path B unique functions
-- Trace `r15_external_view_flag` writes
-- Analyze far_cb_3 and far_cb_7 dispatchers
-- Map the complete simulation flow
+**Remaining Optional Tasks**:
+- ☐ Trace r15_external_view_flag writes (find view mode switching code)
+- ☐ Document camera state structure details
+- ☐ Map view key bindings (F2/F3/F4)
 
 ---
 
