@@ -8314,8 +8314,9 @@ functions:
   - address: 0x034c31
     name: mode_axis_state_select
     system: mode
-    doc: '1929B, in=6 (game_frame_pipeline_step, main_frame_update_loop, ui_gauge_panel_draw, farobj_entity_step_near, hud_state_rowtable_step, sub_1820C0). ds:666h mode gate or r05_mode_check_58f9a; resets...'
-    source: 'old_registry (was: mode_axis_state_select)'
+    size: 1929
+    doc: '1929B, 81 callers, 84 self-calls (dispatch/recursion). Mode/axis/state selector for camera and control systems. Called from game_frame_pipeline_step, main_frame_update_loop, ui_gauge_panel_draw. Key globals: ds:666h (mode gate), ds:544h (select index), ds:546h/548h (axis values), ds:5A0h-5CAh (state flags). Checks: mode_byte_dispatch, r05_mode_check_58f9a, vec_transform_scale_norm (140h bound). Calls mode_entity_select_apply (3x), scroll operations, view delta ratio, axis accumulation. Resets mode state based on conditions. Complex state machine for view/control mode transitions.'
+    source: 'top_100_analysis (Rank #17, already named)'
 
   # VIEW SYSTEM
   - address: 0x0353ba
@@ -11542,10 +11543,11 @@ functions:
 
   # OVERLAY SYSTEM
   - address: 0x108bac
-    name: r15_flag_107762_body
-    system: r15
-    doc: '288B span, 0 dyn, cd=0, 1 caller, pad-heavy. R15 dispatch gated on flag byte cs:107762. conf: low'
-    source: 'old_registry (was: r15_flag_107762_body)'
+    name: r15_simulation_loop
+    system: r15_sim
+    size: 717
+    doc: 'R15 overlay main simulation loop. Dual-path physics/logic update gated on cs:r15_external_view_flag. Path A (flag==0, cockpit view): 37 calls, standard sim with terrain collision. Path B (flag==1, external view): 46 calls, complex mode with far pointer save/restore for camera management. Common: terrain update, 3 viewport tables (32/64/72), AI batch, entity movement, far object LOD/culling, HUD phases (seg 54AFh), tick rate, EMS ops, task queue. Path B unique: active_farptr_set/restore for state preservation, stub_to_205c3, additional rendering, 3x far_cb_7 vs 1x. The actual game simulation tick. 83 callers. **BOOKMARK: Return for deeper path analysis**'
+    source: 'top_100_analysis (Rank #16, deep dive)'
   - address: 0x109fb0
     name: overlay_undecoded_body_109fb0
     system: overlay
@@ -12316,9 +12318,12 @@ functions:
     doc: '2464B, 11 callees, 73 comparisons, 1 caller. conf: LOW'
 
   - address: 0x1734EC
-    name: overlay_r4A_handler
+    name: r4a_supply_status_screen
+    system: ui
     size: 2456
-    doc: '2456B, 7 callees, 4 comparisons, 1 caller. conf: LOW'
+    callers: 86
+    doc: 'R4A overlay: Supply status screen for campaign logistics. String: "SUPPLY STATUS". Displays ammunition, fuel, equipment levels. Heavy text processing: int_to_string_converter (21x), string_concatenate (11x). Calls sub_13DE3A 44x (text rendering/positioning). Text centering: divide by 2, subtract from 100. UI box-drawing characters in strings. Campaign logistics display.'
+    source: 'Rank #15 analysis - supply status UI screen'
 
   - address: 0x15E914
     name: overlay_r46_logic
@@ -17460,3 +17465,19 @@ functions:
     doc: 'MSC file and font loader. Builds *.MSC file paths, opens/reads files via op_dispatch_far_entry, calls madfont_idx_dat_loader for font loading. Loads mission-specific fonts and graphics resources.'
     source: 'Callee analysis of theater_campaign_file_loader'
 
+
+  # AIRCRAFT STATE SYSTEM
+  - address: 0x03352a
+    name: aircraft_state_dispatcher
+    system: aircraft_state
+    size: 1092
+    doc: '1092B, 81 callers, 49 self-calls (complex state machine). Aircraft state dispatcher handling mode changes and special states like ejection. Sets "EJECT" string for display. State flags in byte_54F6D (bits 0-3). Counter word_54D3D (0-3 range) tracks state progression. Multiple return points (3+ retf). Calls: mode_extent_recompute, hud_track_strip_pipeline, ai_farptr_table_get, state_table_apply_71c1, view_block4287_angles, hw_cfg_scan_22158, r37_farptr_store_gate, terrain_vm_buffer_decay. State transitions involve matrix constants, hardware config updates, terrain decay. Likely handles: normal flight, damage states, ejection sequence, aircraft changes. 25 inline comments.'
+    source: 'top_100_analysis (Rank #18)'
+
+  # MISSION SYSTEM
+  - address: 0x032d22
+    name: mission_state_initializer
+    system: mission
+    size: 850
+    doc: '850B, 77 callers, 31 self-calls (state machine). Mission/game state initialization and transition handler. Based on entity_build_dispatch return (AL=1/3/other), performs different init sequences. Sequence for AL=3: set DS:45Eh=1, test farptr field 2F, set multiple state bytes (BX+2F, 1084Ch), kick terrain VM sweep 2x, refresh EMS opstream table, clear CS buffer 5762h, load ISLDAT state (island data). Also calls: key_input_state_reset, mode_phase_apply_core (4x), key_state_idle_enter (4x), mode_audio_state_step (4x), xlat_mask_setbit_47e (9x). Handles mission start, terrain loading, entity setup, state transitions. 17 inline comments.'
+    source: 'top_100_analysis (Rank #19)'

@@ -10,9 +10,9 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 56 | 56% |
+| ✅ Completed | 61 | 61% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 44 | 44% |
+| ⏳ Pending | 39 | 39% |
 
 **Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
@@ -33,7 +33,7 @@
 
 ---
 
-## Completed Functions (25)
+## Completed Functions (58)
 
 ### Input System (11 functions)
 1. ✅ `input_poll_handler` (0x12FC43) - Rank varies, 56+ callers
@@ -220,6 +220,48 @@
     - Called in loop by ui_text_render_multi_mode
     - Central to all UI text operations
 
+### UI/Logistics Screens (1 function)
+55. ✅ **`r4a_supply_status_screen` (0x1734EC)** - **Rank #15, 86 callers, 2,456 bytes** ⭐
+    - **IDENTIFIED**: Supply status screen for campaign logistics display
+    - String: "SUPPLY STATUS"
+    - R4A overlay handler for resource/supply management UI
+    - Text centering calculations: divide by 2, subtract from 100
+    - Box-drawing characters for UI frame
+    - Calls sub_13DE3A 44x (display primitive)
+    - Calls int_to_string_converter 21x for numeric displays
+    - Calls string_concatenate 11x for text assembly
+    - Purpose: Shows aircraft, fuel, weapons, personnel status
+    - Added 15 inline comments
+
+### Frame Processors (1 function)
+56. ✅ **`r15_simulation_loop` (0x108BAC)** - **Rank #16, 83 callers, 717 bytes** ⭐ **MAIN SIMULATION LOOP** 🎮
+    - **IDENTIFIED**: R15 overlay main simulation loop - the actual game physics/logic tick
+    - **Dual-path architecture**: Flag cs:byte_107762 (r15_sim_mode_flag) selects execution mode
+    - **Path A** (flag==0): 37 calls - Standard flight simulation with terrain collision
+    - **Path B** (flag!=0): 46 calls - Complex mode with far pointer state save/restore
+    - **Common subsystems** (30 functions): physics, viewport (3 tables), AI, entities, far objects, HUD, timing
+    - **Path A unique** (7 functions): terrain_frame_update_driver, entity_state_load, farobj_sort_and_step
+    - **Path B unique** (13 functions): active_farptr_set/restore, stub_to_205c3, 3x far_cb_7 (vs 1x in A)
+    - **Simulation phases**:
+      1. Initialization & state setup (fn_table_dispatch)
+      2. Physics: position wrapping, clamping (farobj_pos_wrap_update, pos_clamp_40)
+      3. Terrain: altitude/collision (Path A only)
+      4. Viewport: project 3 object tables (32/64/72 entries), segment switch to 54AFh
+      5. Far objects: LOD/culling (timer/gate checks, distance sort)
+      6. AI: batch processing (ai_context_batch_processor)
+      7. Entity: movement and projection step
+      8. HUD: rendering phases (segment 54AFh), cockpit instruments
+      9. Callbacks: far_cb_3 (0x13F entities), far_cb_7 (word_10788C iterations)
+      10. Timing: tick_rate_compute → cs:word_107759
+      11. Memory: EMS page swap (ems_dual_op_44)
+      12. Tasks: pending_task_run (if not byte_10788B early exit)
+      13. Cleanup: undoc_108E79, clip_pending_atomic_apply
+    - **Data structures**: Local buffers at 0x2E/0x3A/0x40/0x22, viewport tables, entity records
+    - **Hypothesis**: Path A = player flight, Path B = external view/replay/multi-entity
+    - **Pattern**: Classic game loop update phase
+    - Added 63 inline comments documenting all phases
+    - **Created**: R15_SIMULATION_LOOP_ANALYSIS.md (comprehensive 400+ line deep dive)
+
 ---
 
 ## Top 100 Rankings
@@ -240,11 +282,11 @@
 | 12 | 0x1A57F0 | 95 | 3083B | **r57_menu_state_machine** | ✅ **COMPLETE** (🔄 7-state menu, 130-byte records) |
 | 13 | 0x1A6F30 | 88 | 4549B | **r57_loadout_display_handler** | ✅ **COMPLETE** (🖥️ display companion, 23-byte UI records) |
 | 14 | 0x6A651 | 88 | 2056B | **squad_campaign_file_loader** | ✅ **COMPLETE** (📁 .SQUAD/.CAM/.MIS files, 46 I/O ops) |
-| 15 | 0x1734EC | 86 | 2456B | sub_1734EC | ⏳ Pending |
-| 16 | 0x108BAC | 83 | 717B | r15_flag_107762_body | ⏳ Pending |
-| 17 | 0x34C31 | 81 | 1929B | mode_axis_state_select | ⏳ Pending |
-| 18 | 0x3352A | 81 | 1092B | sub_3352A | ⏳ Pending |
-| 19 | 0x32D22 | 77 | 850B | sub_32D22 | ⏳ Pending |
+| 15 | 0x1734EC | 86 | 2456B | **r4a_supply_status_screen** | ✅ **COMPLETE** (📊 supply/logistics UI, text centering) |
+| 16 | 0x108BAC | 83 | 717B | **r15_simulation_loop** | ✅ **COMPLETE** (🎮 main sim loop, dual-path physics) |
+| 17 | 0x34C31 | 81 | 1929B | **mode_axis_state_select** | ✅ **COMPLETE** (📐 mode/camera state machine, 84 self-calls) |
+| 18 | 0x3352A | 81 | 1092B | **aircraft_state_dispatcher** | ✅ **COMPLETE** (✈️ aircraft states + ejection, 49 self-calls) |
+| 19 | 0x32D22 | 77 | 850B | **mission_state_initializer** | ✅ **COMPLETE** (🎯 mission init, terrain/entity setup, 31 self-calls) |
 | 20 | 0x171BA0 | 77 | 2128B | sub_171BA0 | ⏳ Pending |
 
 *(Ranks 21-100 available in top_100_functions.json)*
