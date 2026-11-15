@@ -1,0 +1,374 @@
+{
+  "expected_name": "active_farptr_restore",
+  "current_name": "sbi_midi_event_write",
+  "address": "0x1F0D7",
+  "size": 240,
+  "instruction_count": 88,
+  "instructions": [
+    {
+      "addr": "0x1F090",
+      "disasm": "push    bp"
+    },
+    {
+      "addr": "0x1F091",
+      "disasm": "mov     bp, sp"
+    },
+    {
+      "addr": "0x1F093",
+      "disasm": "push    si"
+    },
+    {
+      "addr": "0x1F094",
+      "disasm": "mov     si, [bp+arg_0]"
+    },
+    {
+      "addr": "0x1F097",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F099",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F09B",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F09E",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F0A0",
+      "disasm": "cmp     word ptr es:[bx+105Ah], 0"
+    },
+    {
+      "addr": "0x1F0A6",
+      "disasm": "jnz     short loc_1F0AB"
+    },
+    {
+      "addr": "0x1F0A8",
+      "disasm": "jmp     loc_1F17D"
+    },
+    {
+      "addr": "0x1F0AB",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F0AD",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F0AF",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F0B2",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F0B4",
+      "disasm": "cmp     word ptr es:[bx+1110h], 0FFFFh"
+    },
+    {
+      "addr": "0x1F0BA",
+      "disasm": "jnz     short loc_1F0BF"
+    },
+    {
+      "addr": "0x1F0BC",
+      "disasm": "jmp     loc_1F17D"
+    },
+    {
+      "addr": "0x1F0BF",
+      "disasm": "push    0D7h"
+    },
+    {
+      "addr": "0x1F0C2",
+      "disasm": "call    sbi_command_wait"
+    },
+    {
+      "addr": "0x1F0C7",
+      "disasm": "pop     cx"
+    },
+    {
+      "addr": "0x1F0C8",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F0CA",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F0CC",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F0CF",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F0D1",
+      "disasm": "mov     al, es:[bx+1110h]"
+    },
+    {
+      "addr": "0x1F0D6",
+      "disasm": "mov     ah, 0"
+    },
+    {
+      "addr": "0x1F0D8",
+      "disasm": "mov     dx, 80h"
+    },
+    {
+      "addr": "0x1F0DB",
+      "disasm": "or      dx, ax"
+    },
+    {
+      "addr": "0x1F0DD",
+      "disasm": "push    dx"
+    },
+    {
+      "addr": "0x1F0DE",
+      "disasm": "call    sbi_data_write"
+    },
+    {
+      "addr": "0x1F0E3",
+      "disasm": "pop     cx"
+    },
+    {
+      "addr": "0x1F0E4",
+      "disasm": "or      si, si"
+    },
+    {
+      "addr": "0x1F0E6",
+      "disasm": "jnz     short loc_1F0F3"
+    },
+    {
+      "addr": "0x1F0E8",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F0EB",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F0ED",
+      "disasm": "mov     al, es:byte_77B1F+2C3h"
+    },
+    {
+      "addr": "0x1F0F1",
+      "disasm": "jmp     short loc_1F101"
+    },
+    {
+      "addr": "0x1F0F3",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F0F5",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F0F7",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F0FA",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F0FC",
+      "disasm": "mov     al, es:[bx+1142h]"
+    },
+    {
+      "addr": "0x1F101",
+      "disasm": "mov     ah, 0"
+    },
+    {
+      "addr": "0x1F103",
+      "disasm": "push    ax"
+    },
+    {
+      "addr": "0x1F104",
+      "disasm": "call    sbi_data_write"
+    },
+    {
+      "addr": "0x1F109",
+      "disasm": "pop     cx"
+    },
+    {
+      "addr": "0x1F10A",
+      "disasm": "push    40h ; '@'"
+    },
+    {
+      "addr": "0x1F10C",
+      "disasm": "call    sbi_data_write"
+    },
+    {
+      "addr": "0x1F111",
+      "disasm": "pop     cx"
+    },
+    {
+      "addr": "0x1F112",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F114",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F116",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F119",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F11B",
+      "disasm": "mov     word ptr es:[bx+1142h], 0"
+    },
+    {
+      "addr": "0x1F122",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F124",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F126",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F129",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F12B",
+      "disasm": "mov     word ptr es:[bx+1174h], 0"
+    },
+    {
+      "addr": "0x1F132",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F134",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F136",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F139",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F13B",
+      "disasm": "cmp     word ptr es:[bx+1110h], 0"
+    },
+    {
+      "addr": "0x1F141",
+      "disasm": "jge     short loc_1F151"
+    },
+    {
+      "addr": "0x1F143",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F145",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F147",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F149",
+      "disasm": "cmp     word ptr es:[bx+1110h], 10h"
+    },
+    {
+      "addr": "0x1F14F",
+      "disasm": "jge     short loc_1F16D"
+    },
+    {
+      "addr": "0x1F151",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F153",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F155",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F158",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F15A",
+      "disasm": "mov     bx, es:[bx+1110h]"
+    },
+    {
+      "addr": "0x1F15F",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F161",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F164",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F166",
+      "disasm": "mov     word ptr es:[bx+10F0h], 0"
+    },
+    {
+      "addr": "0x1F16D",
+      "disasm": "mov     bx, si"
+    },
+    {
+      "addr": "0x1F16F",
+      "disasm": "shl     bx, 1"
+    },
+    {
+      "addr": "0x1F171",
+      "disasm": "mov     ax, 7772h"
+    },
+    {
+      "addr": "0x1F174",
+      "disasm": "mov     es, ax"
+    },
+    {
+      "addr": "0x1F176",
+      "disasm": "mov     word ptr es:[bx+1110h], 0FFFFh"
+    },
+    {
+      "addr": "0x1F17D",
+      "disasm": "pop     si"
+    },
+    {
+      "addr": "0x1F17E",
+      "disasm": "pop     bp"
+    },
+    {
+      "addr": "0x1F17F",
+      "disasm": "retf"
+    }
+  ],
+  "caller_count": 0,
+  "callers": [],
+  "callee_count": 4,
+  "callees": [
+    {
+      "addr": "0x17369",
+      "name": "sbi_command_wait"
+    },
+    {
+      "addr": "0x17340",
+      "name": "sbi_data_write"
+    }
+  ]
+}

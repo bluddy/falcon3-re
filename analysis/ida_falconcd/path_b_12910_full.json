@@ -1,0 +1,95 @@
+{
+  "expected_name": "sub_12910",
+  "current_name": "sub_12910",
+  "address": "0x12910",
+  "size": 43,
+  "instruction_count": 16,
+  "instructions": [
+    {
+      "addr": "0x12910",
+      "disasm": "push    ds"
+    },
+    {
+      "addr": "0x12911",
+      "disasm": "push    es"
+    },
+    {
+      "addr": "0x12912",
+      "disasm": "mov     bx, 71C1h"
+    },
+    {
+      "addr": "0x12915",
+      "disasm": "mov     ds, bx"
+    },
+    {
+      "addr": "0x12917",
+      "disasm": "mov     es, bx"
+    },
+    {
+      "addr": "0x12919",
+      "disasm": "call    pos_neighbor_norm_scan"
+    },
+    {
+      "addr": "0x1291C",
+      "disasm": "cmp     cs:byte_11CF3, 0"
+    },
+    {
+      "addr": "0x12922",
+      "disasm": "jnz     short loc_1292F"
+    },
+    {
+      "addr": "0x12924",
+      "disasm": "mov     ax, cs:word_11CC8"
+    },
+    {
+      "addr": "0x12928",
+      "disasm": "xor     bl, bl"
+    },
+    {
+      "addr": "0x1292A",
+      "disasm": "call    terrain_frame_counter_inc"
+    },
+    {
+      "addr": "0x1292F",
+      "disasm": "mov     cs:byte_11C69, 0"
+    },
+    {
+      "addr": "0x12935",
+      "disasm": "call    terrain_attr_walk_13110"
+    },
+    {
+      "addr": "0x12938",
+      "disasm": "pop     es"
+    },
+    {
+      "addr": "0x12939",
+      "disasm": "pop     ds"
+    },
+    {
+      "addr": "0x1293A",
+      "disasm": "retf"
+    }
+  ],
+  "caller_count": 1,
+  "callers": [
+    {
+      "addr": "0x108D62",
+      "name": "r15_simulation_loop"
+    }
+  ],
+  "callee_count": 3,
+  "callees": [
+    {
+      "addr": "0x14B17",
+      "name": "pos_neighbor_norm_scan"
+    },
+    {
+      "addr": "0x2BEA1",
+      "name": "terrain_frame_counter_inc"
+    },
+    {
+      "addr": "0x13110",
+      "name": "terrain_attr_walk_13110"
+    }
+  ]
+}
