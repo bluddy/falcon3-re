@@ -74,6 +74,7 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | 0x12DF6A | `r29_tactical_screen_coordinator` | R29 tactical planning screen (6,799B, **120 callers**, hybrid pattern) |
 | 0x101A12 | `input_device_calibration_init` | Input device calibration (1,719B, **104 callers**, 26 callees, joystick+mouse) |
 | 0x17B437 | `squadron_mission_file_loader` | Squadron/mission file loader (4,516B, **104 callers**, 13 callees, .SQUAD/.MTV/.SHP/.TSK) |
+| 0x15A8B0 | `theater_campaign_file_loader` | Theater/campaign file loader (2,553B, **102 callers**, 70 callees, .THEATER/.WAR/.NWS/.BIN/.SHP) |
 | 0x138E6A | `int_to_string_converter` | Integer to ASCII string converter (106B, exclusive to squadron loader) |
 | 0x138F9C | `string_concatenate` | Path string concatenator (84B, handles 0x00/0xFF terminators, exclusive to squadron loader) |
 | 0x13B243 | `menu_dispatcher_19ops` | Master menu/overlay dispatcher (2,623B, 19-op jump table, **50 callers**) |

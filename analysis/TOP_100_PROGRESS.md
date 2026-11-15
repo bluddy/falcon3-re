@@ -10,11 +10,13 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 37 | 37% |
+| ✅ Completed | 42 | 42% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 63 | 63% |
+| ⏳ Pending | 58 | 58% |
 
-**Deep Dives Completed:** 1 (Rank #10: squadron_mission_file_loader + 4 callees - file I/O & menu integration analysis)
+**Deep Dives Completed:** 2  
+1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
+2. Rank #11: theater_campaign_file_loader + 4 discovered callees (campaign initialization)
 
 ---
 
@@ -80,7 +82,7 @@
 ### Screen/Menu Coordinators (1 function)
 32. ✅ **`input_device_calibration_init` (0x101A12)** - **Rank #9, 104 callers, 1,719 bytes, 26 callees** ⭐ **CORRECTED** (was incorrectly named r03_screen_coordinator)
 
-### File I/O and Resource Loading (5 functions)
+### File I/O and Resource Loading (6 functions)
 33. ✅ **`squadron_mission_file_loader` (0x17B437)** - **Rank #10, 104 callers, 4,516 bytes, 13 callees** ⭐ **DEEP DIVE COMPLETE** - Loads .SQUAD/.MTV/.SHP/.TSK files during mission planning
     - **Discovered:** 3 new undocumented file formats (.SQUAD, .TSK, .SHP)
     - **Analyzed:** Complete file I/O operation patterns (OPEN, READ, READ_EXT, CLOSE)
@@ -102,6 +104,31 @@
     - Provides menu state access, squadron selection, UI updates
     - Links file loading to War Room UI state
 37. ✅ `farobj_vec3_accum_b_ret` (0x22C89) - 142 callers (general utility, used by file loader)
+38. ✅ **`theater_campaign_file_loader` (0x15A8B0)** - **Rank #11, 102 callers, 2,553 bytes, 70 callees** ⭐ **INVESTIGATION COMPLETE**
+    - Loads theater/campaign files: .THEATER/.WAR/.SQUAD/.NWS/.SHP/.BIN
+    - 42 file I/O operations (op_dispatch_far_entry)
+    - 17 extended file operations (op_dispatch_far_wide)
+    - Uses int_to_string_converter and string_concatenate helpers (shared with squadron loader)
+    - More comprehensive than squadron loader - loads complete theater environment
+    - R46 overlay processor for campaign initialization
+    - **Investigated 4 key callees:**
+      - temp_file_handler (0x13C980) - handles .TEMP.DAT files
+      - event_irq_sync_handler (0x13D6E4) - IRQ/event synchronization
+      - ui_campaign_render_coordinator (0x15F5B8) - 34 callers, UI rendering
+      - msc_font_file_loader (0x15B2A9) - *.MSC files, font loading
+39. ✅ **`temp_file_handler` (0x13C980)** - 280 bytes, 12 callers
+    - Builds .TEMP.DAT file paths
+    - Opens for read/write (operation 4)
+    - Used during campaign initialization
+40. ✅ **`event_irq_sync_handler` (0x13D6E4)** - 55 bytes, 4 callers
+    - Polls IRQ status, sets event mode, checks state mode
+    - Ensures clean state transitions between overlays
+41. ✅ **`ui_campaign_render_coordinator` (0x15F5B8)** - 745 bytes, **34 callers**
+    - High-traffic UI function for campaign/theater screens
+    - Calls ui_text_render_engine, handles menu display
+42. ✅ **`msc_font_file_loader` (0x15B2A9)** - 430 bytes, 17 callers
+    - Loads *.MSC files (mission-specific resources)
+    - Calls madfont_idx_dat_loader for font loading
 
 ---
 
@@ -119,7 +146,7 @@
 | 8 | 0x12DF6A | 120 | 6799B | **r29_tactical_screen_coordinator** | ✅ **COMPLETE** (⭐ HYBRID pattern) |
 | 9 | 0x101A12 | 104 | 1719B | **input_device_calibration_init** | ✅ **COMPLETE** (⭐ corrected after reading actual code) |
 | 10 | 0x17B437 | 104 | 4516B | **squadron_mission_file_loader** | ✅ **DEEP DIVE COMPLETE** (📄 12K word analysis) |
-| 11 | 0x15A8B0 | 102 | 2553B | sub_15A8B0 | ⏳ Pending |
+| 11 | 0x15A8B0 | 102 | 2553B | **theater_campaign_file_loader** | ✅ **COMPLETE** (📊 6 file types, 42 I/O ops) |
 | 12 | 0x1A57F0 | 95 | 3083B | sub_1A57F0 | ⏳ Pending |
 | 13 | 0x1A6F30 | 88 | 4549B | sub_1A6F30 | ⏳ Pending |
 | 14 | 0x6A651 | 88 | 2056B | sub_6A651 | ⏳ Pending |

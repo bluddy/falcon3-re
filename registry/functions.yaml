@@ -17387,3 +17387,48 @@ functions:
     doc: 'Extended parameter wrapper for op_dispatch. Encodes params via "mov ch,bl" for DOS file I/O. Used for READ_EXT(0xC). Called only by squadron_mission_file_loader.'
     source: 'Callee analysis of 0x17B437'
 
+
+  # THEATER/CAMPAIGN FILE LOADING (Rank #11)
+  - address: 0x15A8B0
+    name: theater_campaign_file_loader
+    system: file_io
+    size: 2553
+    callers: 102
+    rank: 11
+    doc: 'Theater/campaign file loader (R46 overlay). Loads .THEATER/.WAR/.SQUAD/.NWS/.SHP/.BIN files for campaign initialization. 42 file I/O operations, 17 extended operations, 70 callees. Uses int_to_string_converter and string_concatenate helpers (shared with squadron_mission_file_loader). More comprehensive than squadron loader - loads complete theater environment.'
+    source: 'TOP_100 analysis, Rank #11'
+
+
+  # DISCOVERED CALLEES FROM RANK #11 ANALYSIS
+  - address: 0x13C980
+    name: temp_file_handler
+    system: file_io
+    size: 280
+    callers: 12
+    doc: 'Temp file handler. Builds .TEMP.DAT file path using string_concatenate, opens for read/write (operation 4), reads data. Used during campaign initialization for temporary file operations.'
+    source: 'Callee analysis of theater_campaign_file_loader'
+
+  - address: 0x13D6E4
+    name: event_irq_sync_handler
+    system: system
+    size: 55
+    callers: 4
+    doc: 'Event/IRQ synchronization handler. Polls IRQ status via irq_unmask_and_query, sets event mode via event_mode_set_77c98, checks state mode. Ensures clean state transitions between game modes/overlays.'
+    source: 'Callee analysis of theater_campaign_file_loader'
+
+  - address: 0x15F5B8
+    name: ui_campaign_render_coordinator
+    system: ui
+    size: 745
+    callers: 34
+    doc: 'UI campaign rendering coordinator. Calls ui_text_render_engine (0x128518), checks graphics_mode_flag, handles menu display operations. High-traffic UI function (34 callers) for campaign/theater screens.'
+    source: 'Callee analysis of theater_campaign_file_loader'
+
+  - address: 0x15B2A9
+    name: msc_font_file_loader
+    system: file_io
+    size: 430
+    callers: 17
+    doc: 'MSC file and font loader. Builds *.MSC file paths, opens/reads files via op_dispatch_far_entry, calls madfont_idx_dat_loader for font loading. Loads mission-specific fonts and graphics resources.'
+    source: 'Callee analysis of theater_campaign_file_loader'
+

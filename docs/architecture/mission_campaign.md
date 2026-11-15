@@ -556,7 +556,45 @@ struct ShapeFile {
 
 ---
 
-### Flight Data Files (.FLA) — UNKNOWN
+### Theater Configuration Files (.THEATER) — HYPOTHESIS
+
+**Size:** Unknown  
+**Location:** Game directory (possibly per-theater files)  
+**Purpose:** Theater configuration and strategic data
+
+**Format:** Unknown - binary format
+
+**Usage:**
+- Loaded by theater_campaign_file_loader @ 0x15A8B0
+- Contains theater-specific configuration
+- Likely includes: terrain parameters, airbase locations, strategic target definitions
+- Read via multiple op_dispatch_far_entry calls
+
+**Evidence:** String reference ".THEATER" in theater_campaign_file_loader, opened with operation 6 (OPEN)
+
+**Next steps:** Extract sample .THEATER files, analyze structure, document format
+
+---
+
+### News Files (.NWS) — HYPOTHESIS
+
+**Size:** Unknown  
+**Location:** Game directory  
+**Purpose:** Mission briefings and campaign event notifications
+
+**Format:** Unknown - possibly plain text or structured binary
+
+**Usage:**
+- Loaded by theater_campaign_file_loader @ 0x15A8B0
+- Contains news/briefing text
+- Displayed during campaign progression
+- Mission-specific or daily war updates
+
+**Evidence:** String reference ".NWS" in theater_campaign_file_loader
+
+**Next steps:** Extract sample .NWS files, determine if text or binary format
+
+---
 
 **Size:** 1,506 bytes  
 **Location:** Game directory (SQUAD0.FLA - SQUAD5.FLA)  

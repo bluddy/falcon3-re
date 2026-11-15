@@ -1,0 +1,530 @@
+{
+  "undoc_13C980 - 280B, 12 callers": {
+    "address": "0x13c980",
+    "name": "undoc_13C980",
+    "start": "0x13c980",
+    "end": "0x13ca98",
+    "size": 280,
+    "disasm": [
+      "0013C980  enter   6, 0",
+      "0013C984  push    si",
+      "0013C985  lea     ax, [bp+var_1]",
+      "0013C988  mov     [bp+var_4], ss",
+      "0013C98B  mov     [bp+var_6], ax",
+      "0013C98E  push    7894h",
+      "0013C991  push    0F32h",
+      "0013C994  mov     ax, 602Eh",
+      "0013C997  mov     es, ax",
+      "0013C999  push    word ptr es:aDat+1; \".`.DAT\"",
+      "0013C99E  push    word ptr es:byte_151337",
+      "0013C9A3  mov     ax, 602Eh",
+      "0013C9A6  mov     es, ax",
+      "0013C9A8  push    word ptr es:aWTemp+2; \".`TEMP\"",
+      "0013C9AD  push    word ptr es:aWTemp; \"w-.`TEMP\"",
+      "0013C9B2  push    cs",
+      "0013C9B3  call    near ptr string_concatenate",
+      "0013C9B6  add     sp, 0Ch",
+      "0013C9B9  push    7894h",
+      "0013C9BC  push    0F32h",
+      "0013C9BF  push    0",
+      "0013C9C1  push    0",
+      "0013C9C3  push    4",
+      "0013C9C5  call    op_dispatch_far_entry",
+      "0013C9CA  add     sp, 0Ah",
+      "0013C9CD  mov     si, ax",
+      "0013C9CF  cmp     ax, 0FFFFh",
+      "0013C9D2  jnz     short loc_13C9D7",
+      "0013C9D4  jmp     loc_13CA82",
+      "0013C9D7  push    4FC2h",
+      "0013C9DA  push    132h",
+      "0013C9DD  push    2",
+      "0013C9DF  push    si",
+      "0013C9E0  push    0Ch",
+      "0013C9E2  call    op_dispatch_far_entry",
+      "0013C9E7  add     sp, 0Ah",
+      "0013C9EA  push    602Eh",
+      "0013C9ED  push    36A9h",
+      "0013C9F0  push    1",
+      "0013C9F2  push    si",
+      "0013C9F3  push    0Ch",
+      "0013C9F5  call    op_dispatch_far_entry",
+      "0013C9FA  add     sp, 0Ah",
+      "0013C9FD  push    602Eh",
+      "0013CA00  push    36A1h",
+      "0013CA03  push    8",
+      "0013CA05  push    si",
+      "0013CA06  push    0Ch",
+      "0013CA08  call    op_dispatch_far_entry",
+      "0013CA0D  add     sp, 0Ah"
+    ],
+    "callees": [
+      {
+        "addr": "0x22598",
+        "name": "op_dispatch_far_entry"
+      },
+      {
+        "addr": "0x138f9c",
+        "name": "string_concatenate"
+      },
+      {
+        "addr": "0x13c9d7",
+        "name": "undoc_13C980"
+      },
+      {
+        "addr": "0x13ca82",
+        "name": "undoc_13C980"
+      }
+    ],
+    "string_refs": [
+      {
+        "addr": "0x151313",
+        "value": "w-.`TEMP"
+      }
+    ],
+    "disasm_lines_shown": 50,
+    "callee_count": 4
+  },
+  "undoc_13D6E4 - 55B, 4 callers": {
+    "address": "0x13d6e4",
+    "name": "undoc_13D6E4",
+    "start": "0x13d6e4",
+    "end": "0x13d71b",
+    "size": 55,
+    "disasm": [
+      "0013D6E4  push    bp",
+      "0013D6E5  mov     bp, sp",
+      "0013D6E7  mov     ax, 706Eh",
+      "0013D6EA  mov     es, ax",
+      "0013D6EC  cmp     es:word_7070A, 0",
+      "0013D6F2  jnz     short loc_13D6F6",
+      "0013D6F4  jmp     short loc_13D711",
+      "0013D6F6  call    irq_unmask_and_query",
+      "0013D6FB  or      ax, ax",
+      "0013D6FD  jz      short loc_13D708",
+      "0013D6FF  push    [bp+arg_0]",
+      "0013D702  call    event_mode_set_77c98",
+      "0013D707  pop     cx",
+      "0013D708  call    irq_unmask_and_query",
+      "0013D70D  or      ax, ax",
+      "0013D70F  jnz     short loc_13D708",
+      "0013D711  push    0",
+      "0013D713  call    state_mode_check",
+      "0013D718  pop     cx",
+      "0013D719  pop     bp",
+      "0013D71A  retf"
+    ],
+    "callees": [
+      {
+        "addr": "0x1bcc2",
+        "name": "state_mode_check"
+      },
+      {
+        "addr": "0x1bcfa",
+        "name": "irq_unmask_and_query"
+      },
+      {
+        "addr": "0x1bf3f",
+        "name": "event_mode_set_77c98"
+      },
+      {
+        "addr": "0x13d6f6",
+        "name": "undoc_13D6E4"
+      },
+      {
+        "addr": "0x13d708",
+        "name": "undoc_13D6E4"
+      },
+      {
+        "addr": "0x13d711",
+        "name": "undoc_13D6E4"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 21,
+    "callee_count": 6
+  },
+  "undoc_15F5B8 - 745B, 34 callers - HIGH TRAFFIC": {
+    "address": "0x15f5b8",
+    "name": "undoc_15F5B8",
+    "start": "0x15f5b8",
+    "end": "0x15f8a1",
+    "size": 745,
+    "disasm": [
+      "0015F5B8  enter   0Ah, 0",
+      "0015F5BC  lea     ax, [bp+var_1]",
+      "0015F5BF  mov     [bp+var_4], ss",
+      "0015F5C2  mov     [bp+var_6], ax",
+      "0015F5C5  mov     ax, 602Eh",
+      "0015F5C8  mov     es, ax",
+      "0015F5CA  mov     word ptr es:dword_14F98C+2, 602Eh",
+      "0015F5D1  mov     word ptr es:dword_14F98C, 1338h",
+      "0015F5D8  mov     ax, 602Eh",
+      "0015F5DB  mov     es, ax",
+      "0015F5DD  mov     word ptr es:dword_14F990+2, 602Eh",
+      "0015F5E4  mov     word ptr es:dword_14F990, 1374h",
+      "0015F5EB  mov     ax, 602Eh",
+      "0015F5EE  mov     es, ax",
+      "0015F5F0  mov     es:word_14F99A, 709Fh",
+      "0015F5F7  mov     es:word_14F998, 2CBh",
+      "0015F5FE  mov     ax, 7894h",
+      "0015F601  mov     es, ax",
+      "0015F603  cmp     es:graphics_mode_flag, 0",
+      "0015F609  jnz     short loc_15F60E",
+      "0015F60B  jmp     locret_15F89F",
+      "0015F60E  call    sub_128518",
+      "0015F613  mov     ax, 7894h",
+      "0015F616  mov     es, ax",
+      "0015F618  cmp     es:graphics_mode_flag, 0",
+      "0015F61E  jnz     short loc_15F623",
+      "0015F620  jmp     loc_15F778",
+      "0015F623  mov     ax, 709Fh",
+      "0015F626  mov     es, ax",
+      "0015F628  mov     al, byte ptr es:word_70A2A",
+      "0015F62C  cbw",
+      "0015F62D  shl     ax, 2",
+      "0015F630  mov     dx, 602Eh",
+      "0015F633  mov     bx, ax",
+      "0015F635  mov     es, dx",
+      "0015F637  mov     al, es:[bx+2]",
+      "0015F63C  mov     ah, 0",
+      "0015F63E  or      ax, ax",
+      "0015F640  jz      short loc_15F645",
+      "0015F642  jmp     loc_15F778",
+      "0015F645  call    far_cb_1",
+      "0015F64A  mov     ax, 4FC2h",
+      "0015F64D  mov     es, ax",
+      "0015F64F  push    es:word_13E016",
+      "0015F654  call    dispatch_220f0_invoke_1arg",
+      "0015F659  pop     cx",
+      "0015F65A  call    far_cb_0",
+      "0015F65F  mov     ax, 4FC2h",
+      "0015F662  mov     es, ax",
+      "0015F664  push    es:word_13E016"
+    ],
+    "callees": [
+      {
+        "addr": "0x25ea8",
+        "name": "dispatch_220f0_invoke_1arg"
+      },
+      {
+        "addr": "0x25ebd",
+        "name": "far_cb_0"
+      },
+      {
+        "addr": "0x25ec9",
+        "name": "far_cb_1"
+      },
+      {
+        "addr": "0x2c3a1",
+        "name": "menu_field_data_ptr_get"
+      },
+      {
+        "addr": "0x2c3b5",
+        "name": "menu_selection_ptr_get"
+      },
+      {
+        "addr": "0x2c49b",
+        "name": "sub_2C49B"
+      },
+      {
+        "addr": "0x128518",
+        "name": "sub_128518"
+      },
+      {
+        "addr": "0x1293f0",
+        "name": "sub_1293F0"
+      },
+      {
+        "addr": "0x129468",
+        "name": "undoc_129468"
+      },
+      {
+        "addr": "0x1320cc",
+        "name": "undoc_1320CC"
+      },
+      {
+        "addr": "0x138ff0",
+        "name": "undoc_138FF0"
+      },
+      {
+        "addr": "0x139f76",
+        "name": "undoc_139F76"
+      },
+      {
+        "addr": "0x15f60e",
+        "name": "undoc_15F5B8"
+      },
+      {
+        "addr": "0x15f623",
+        "name": "undoc_15F5B8"
+      },
+      {
+        "addr": "0x15f645",
+        "name": "undoc_15F5B8"
+      },
+      {
+        "addr": "0x15f778",
+        "name": "undoc_15F5B8"
+      },
+      {
+        "addr": "0x15f788",
+        "name": "undoc_15F5B8"
+      },
+      {
+        "addr": "0x15f7a7",
+        "name": "undoc_15F5B8"
+      },
+      {
+        "addr": "0x15f89f",
+        "name": "undoc_15F5B8"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 50,
+    "callee_count": 19
+  },
+  "sub_15B2A9 - 430B, 17 callers": {
+    "address": "0x15b2a9",
+    "name": "sub_15B2A9",
+    "start": "0x15b2a9",
+    "end": "0x15b457",
+    "size": 430,
+    "disasm": [
+      "0015B2A9  enter   8, 0",
+      "0015B2AD  push    si",
+      "0015B2AE  push    di",
+      "0015B2AF  call    far_cb_1",
+      "0015B2B4  mov     ax, 4FC2h",
+      "0015B2B7  mov     es, ax",
+      "0015B2B9  push    es:word_13E016",
+      "0015B2BE  call    dispatch_220f0_invoke_1arg",
+      "0015B2C3  pop     cx",
+      "0015B2C4  push    602Eh",
+      "0015B2C7  push    1450h",
+      "0015B2CA  mov     ax, 602Eh",
+      "0015B2CD  mov     es, ax",
+      "0015B2CF  mov     ax, word ptr es:byte_15135B",
+      "0015B2D3  inc     ax",
+      "0015B2D4  push    word ptr es:aMsc+1; \".`*.MSC\"",
+      "0015B2D9  push    ax",
+      "0015B2DA  push    7894h",
+      "0015B2DD  push    156Ah",
+      "0015B2E0  call    string_concatenate",
+      "0015B2E5  add     sp, 0Ch",
+      "0015B2E8  push    602Eh",
+      "0015B2EB  push    1450h",
+      "0015B2EE  push    0",
+      "0015B2F0  push    0",
+      "0015B2F2  push    6",
+      "0015B2F4  call    op_dispatch_far_entry",
+      "0015B2F9  add     sp, 0Ah",
+      "0015B2FC  mov     si, ax",
+      "0015B2FE  cmp     ax, 0FFFFh",
+      "0015B301  jnz     short loc_15B306",
+      "0015B303  jmp     loc_15B44E",
+      "0015B306  push    ss",
+      "0015B307  lea     ax, [bp+var_2]",
+      "0015B30A  push    ax",
+      "0015B30B  push    2",
+      "0015B30D  push    si",
+      "0015B30E  push    0Ah",
+      "0015B310  call    op_dispatch_far_entry",
+      "0015B315  add     sp, 0Ah",
+      "0015B318  add     [bp+var_2], 9Dh",
+      "0015B31D  push    0",
+      "0015B31F  mov     ax, [bp+var_2]",
+      "0015B322  cwd",
+      "0015B323  push    dx",
+      "0015B324  push    ax",
+      "0015B325  push    si",
+      "0015B326  push    0Eh",
+      "0015B328  call    op_dispatch_far_wide",
+      "0015B32D  add     sp, 0Ah"
+    ],
+    "callees": [
+      {
+        "addr": "0x22598",
+        "name": "op_dispatch_far_entry"
+      },
+      {
+        "addr": "0x225b6",
+        "name": "op_dispatch_far_wide"
+      },
+      {
+        "addr": "0x25ea8",
+        "name": "dispatch_220f0_invoke_1arg"
+      },
+      {
+        "addr": "0x25ebd",
+        "name": "far_cb_0"
+      },
+      {
+        "addr": "0x25ec9",
+        "name": "far_cb_1"
+      },
+      {
+        "addr": "0x138f9c",
+        "name": "string_concatenate"
+      },
+      {
+        "addr": "0x1397ce",
+        "name": "madfont_idx_dat_loader"
+      },
+      {
+        "addr": "0x139d85",
+        "name": "sub_139D85"
+      },
+      {
+        "addr": "0x15b306",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b396",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b397",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b3ae",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b3b0",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b3b2",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b3d7",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b3fc",
+        "name": "sub_15B2A9"
+      },
+      {
+        "addr": "0x15b44e",
+        "name": "sub_15B2A9"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 50,
+    "callee_count": 17
+  },
+  "sub_2C47D - 8B, 1 caller": {
+    "address": "0x2c47d",
+    "name": "sub_2C47D",
+    "start": "0x2c47d",
+    "end": "0x2c485",
+    "size": 8,
+    "disasm": [
+      "0002C47D  call    near ptr tail_bridge_overlay_load",
+      "0002C480  jmp     far ptr r30_state_init_all"
+    ],
+    "callees": [
+      {
+        "addr": "0x2afbd",
+        "name": "tail_bridge_overlay_load"
+      },
+      {
+        "addr": "0x669f0",
+        "name": "r30_state_init_all"
+      },
+      {
+        "addr": "0x160780",
+        "name": "menu_cmd_store_and_record_scan"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 2,
+    "callee_count": 3
+  },
+  "sub_2C487 - 8B, 1 caller": {
+    "address": "0x2c487",
+    "name": "sub_2C487",
+    "start": "0x2c487",
+    "end": "0x2c48f",
+    "size": 8,
+    "disasm": [
+      "0002C487  call    near ptr tail_bridge_overlay_load",
+      "0002C48A  jmp     far ptr loc_67BB4+1"
+    ],
+    "callees": [
+      {
+        "addr": "0x2afbd",
+        "name": "tail_bridge_overlay_load"
+      },
+      {
+        "addr": "0x67bb5",
+        "name": "ui_menu_transition_animate"
+      },
+      {
+        "addr": "0x161945",
+        "name": "undoc_161945"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 2,
+    "callee_count": 3
+  },
+  "sub_2C491 - 8B, 1 caller": {
+    "address": "0x2c491",
+    "name": "sub_2C491",
+    "start": "0x2c491",
+    "end": "0x2c499",
+    "size": 8,
+    "disasm": [
+      "0002C491  call    near ptr tail_bridge_overlay_load",
+      "0002C494  jmp     far ptr loc_67BE7+1"
+    ],
+    "callees": [
+      {
+        "addr": "0x2afbd",
+        "name": "tail_bridge_overlay_load"
+      },
+      {
+        "addr": "0x67be8",
+        "name": "ui_menu_transition_animate"
+      },
+      {
+        "addr": "0x161978",
+        "name": "r34_flag_slot_pick"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 2,
+    "callee_count": 3
+  },
+  "sub_2C49B - 8B, 1 caller": {
+    "address": "0x2c49b",
+    "name": "sub_2C49B",
+    "start": "0x2c49b",
+    "end": "0x2c4a3",
+    "size": 8,
+    "disasm": [
+      "0002C49B  call    near ptr tail_bridge_overlay_load",
+      "0002C49E  jmp     far ptr loc_69722+1"
+    ],
+    "callees": [
+      {
+        "addr": "0x2afbd",
+        "name": "tail_bridge_overlay_load"
+      },
+      {
+        "addr": "0x69723",
+        "name": "r6e_heap_layout_finish"
+      },
+      {
+        "addr": "0x1771e3",
+        "name": "r48_mouse_event_entry"
+      }
+    ],
+    "string_refs": [],
+    "disasm_lines_shown": 2,
+    "callee_count": 3
+  }
+}
