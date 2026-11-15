@@ -1,9 +1,51 @@
 {
   "timestamp": "2026-11-15",
-  "target_functions": 6,
-  "total_callees": 93,
-  "documented": 10,
-  "undocumented": 83,
+  "seed_functions": 40,
+  "total_callees": 227,
+  "documented": 202,
+  "undocumented": 16,
+  "seeds": {
+    "0x2703f": "ai_farptr_table_get",
+    "0x307a5": "ai_entity_data_load_prepare",
+    "0x30cb8": "ai_state_check_function",
+    "0x395df": "aircraft_motion_step",
+    "0x398a4": "ai_farptr_table_data_loader",
+    "0x3ce92": "ai_entity_behavior_dispatcher",
+    "0x3cfaa": "ai_behavior_state_machine",
+    "0x3d180": "ai_target_tracking_update",
+    "0x3d1c5": "ai_behavior_mirror_to_target",
+    "0x3cf9d": "ai_state_processor_core",
+    "0x3d37f": "ai_entity_update_step",
+    "0x3dc55": "weapon_spawn_gate_validate",
+    "0x3eb4e": "ai_state_value_dispatcher",
+    "0x3f3a8": "ai_state_calculate_helper",
+    "0x407c0": "ai_entity_terrain_position_update",
+    "0x40884": "ai_angle_calculate_helper",
+    "0x423a9": "ai_target_pursuit_update",
+    "0x42503": "ai_state_condition_check",
+    "0x49997": "ai_movement_vector_accumulate",
+    "0x3e1c2": "ai_state_range_check",
+    "0x3e8c5": "ai_farobj_flag_check",
+    "0x3f603": "ai_index_bounds_check",
+    "0x3f6d6": "ai_angle_calculate",
+    "0x407b0": "ai_record_field_read",
+    "0x40db5": "ai_field_offset_calc",
+    "0x40e38": "ai_vector_accumulate",
+    "0x40e46": "ai_vector_accumulate_alt",
+    "0x428a1": "ai_state_value_get",
+    "0x428c1": "ai_field_check_flag",
+    "0x3ded9": "ai_weapon_fire_check",
+    "0x3f5b4": "ai_field_pair_compare",
+    "0x3f700": "ai_rect_ratio_check",
+    "0x3f788": "ai_rect_ratio_update",
+    "0x408e7": "ai_distance_range_check",
+    "0x40c6a": "ai_angle_from_offset",
+    "0x40d26": "ai_position_scale_calculate",
+    "0x42838": "ai_state_flag_validate",
+    "0x49982": "ai_viewobj_project_update",
+    "0x493c4": "aircraft_record_load_step",
+    "0x495df": "ai_context_batch_processor"
+  },
   "details": {
     "ai_farptr_table_get": {
       "address": 159807,
@@ -11,6 +53,136 @@
       "documented": 0,
       "undocumented": 0,
       "callees": []
+    },
+    "ai_entity_data_load_prepare": {
+      "address": 198565,
+      "total_callees": 9,
+      "documented": 9,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 320253,
+          "name": "flag_2e125_gate_stc",
+          "size": 12,
+          "call_sites": [
+            198565
+          ]
+        },
+        {
+          "address": 66122,
+          "name": "ems_dual_op_44",
+          "size": 30,
+          "call_sites": [
+            198573
+          ]
+        },
+        {
+          "address": 320465,
+          "name": "ems_axes_record_init",
+          "size": 68,
+          "call_sites": [
+            198578
+          ]
+        },
+        {
+          "address": 320288,
+          "name": "farobj_cfg_step_control",
+          "size": 11,
+          "call_sites": [
+            198584
+          ]
+        },
+        {
+          "address": 140342,
+          "name": "cs_word_2b76_get",
+          "size": 5,
+          "call_sites": [
+            198612
+          ]
+        },
+        {
+          "address": 140347,
+          "name": "cs_word_2b78_get",
+          "size": 5,
+          "call_sites": [
+            198618
+          ]
+        },
+        {
+          "address": 139987,
+          "name": "control_axis_value",
+          "size": 120,
+          "call_sites": [
+            198624
+          ]
+        },
+        {
+          "address": 198683,
+          "name": "state_bits_pack",
+          "size": 50,
+          "call_sites": [
+            198653
+          ]
+        },
+        {
+          "address": 320533,
+          "name": "accum_record_append",
+          "size": 187,
+          "call_sites": [
+            198676
+          ]
+        }
+      ]
+    },
+    "ai_state_check_function": {
+      "address": 199864,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "aircraft_motion_step": {
+      "address": 234975,
+      "total_callees": 2,
+      "documented": 2,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 155823,
+          "name": "stub_to_249d8",
+          "size": 4,
+          "call_sites": [
+            235062
+          ]
+        },
+        {
+          "address": 149892,
+          "name": "stub_to_24988",
+          "size": 4,
+          "call_sites": [
+            235182,
+            235196,
+            235210
+          ]
+        }
+      ]
+    },
+    "ai_farptr_table_data_loader": {
+      "address": 235684,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 266527,
+          "name": "farobj_class_table_entry",
+          "size": 4,
+          "call_sites": [
+            235694,
+            235745
+          ]
+        }
+      ]
     },
     "ai_entity_behavior_dispatcher": {
       "address": 249490,
@@ -22,1176 +194,2323 @@
           "address": 149892,
           "name": "stub_to_24988",
           "size": 4,
-          "call_site": 249506
+          "call_sites": [
+            249506,
+            249554
+          ]
+        }
+      ]
+    },
+    "ai_state_processor_core": {
+      "address": 249757,
+      "total_callees": 28,
+      "documented": 28,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 250751,
+          "name": "ai_entity_update_step",
+          "size": 1319,
+          "call_sites": [
+            249766
+          ]
+        },
+        {
+          "address": 272545,
+          "name": "ai_state_value_get",
+          "size": 32,
+          "call_sites": [
+            249779,
+            250054,
+            250145,
+            250507
+          ]
+        },
+        {
+          "address": 272505,
+          "name": "r32_farptr_gate",
+          "size": 37,
+          "call_sites": [
+            249790,
+            250065,
+            250162,
+            250184,
+            250518
+          ]
+        },
+        {
+          "address": 265798,
+          "name": "ai_vector_accumulate_alt",
+          "size": 14,
+          "call_sites": [
+            249822,
+            250017,
+            250135
+          ]
+        },
+        {
+          "address": 272577,
+          "name": "ai_field_check_flag",
+          "size": 19,
+          "call_sites": [
+            249844
+          ]
+        },
+        {
+          "address": 272440,
+          "name": "ai_state_flag_validate",
+          "size": 64,
+          "call_sites": [
+            249910,
+            250081,
+            250200,
+            250534
+          ]
+        },
+        {
+          "address": 265784,
+          "name": "ai_vector_accumulate",
+          "size": 14,
+          "call_sites": [
+            249956
+          ]
+        },
+        {
+          "address": 271778,
+          "name": "hud_ai_target_tracking_draw",
+          "size": 88,
+          "call_sites": [
+            249987,
+            250108,
+            250236
+          ]
+        },
+        {
+          "address": 254402,
+          "name": "ai_state_range_check",
+          "size": 52,
+          "call_sites": [
+            250038,
+            250570
+          ]
+        },
+        {
+          "address": 264112,
+          "name": "ai_record_field_read",
+          "size": 14,
+          "call_sites": [
+            250246,
+            250309
+          ]
+        },
+        {
+          "address": 265653,
+          "name": "ai_field_offset_calc",
+          "size": 16,
+          "call_sites": [
+            250268
+          ]
+        },
+        {
+          "address": 265510,
+          "name": "ai_position_scale_calculate",
+          "size": 81,
+          "call_sites": [
+            250271
+          ]
+        },
+        {
+          "address": 264128,
+          "name": "ai_entity_terrain_position_update",
+          "size": 131,
+          "call_sites": [
+            250284
+          ]
+        },
+        {
+          "address": 259798,
+          "name": "ai_angle_calculate",
+          "size": 42,
+          "call_sites": [
+            250287,
+            250382
+          ]
+        },
+        {
+          "address": 264324,
+          "name": "ai_angle_calculate_helper",
+          "size": 99,
+          "call_sites": [
+            250290
+          ]
+        },
+        {
+          "address": 264423,
+          "name": "ai_distance_range_check",
+          "size": 24,
+          "call_sites": [
+            250293
+          ]
+        },
+        {
+          "address": 259976,
+          "name": "ai_rect_ratio_update",
+          "size": 25,
+          "call_sites": [
+            250305
+          ]
+        },
+        {
+          "address": 258984,
+          "name": "ai_state_calculate_helper",
+          "size": 256,
+          "call_sites": [
+            250368,
+            250394
+          ]
+        },
+        {
+          "address": 259508,
+          "name": "ai_field_pair_compare",
+          "size": 19,
+          "call_sites": [
+            250372
+          ]
+        },
+        {
+          "address": 259840,
+          "name": "ai_rect_ratio_check",
+          "size": 24,
+          "call_sites": [
+            250385
+          ]
+        },
+        {
+          "address": 265322,
+          "name": "ai_angle_from_offset",
+          "size": 9,
+          "call_sites": [
+            250406
+          ]
+        },
+        {
+          "address": 156784,
+          "name": "far_obj_field_call",
+          "size": 14,
+          "call_sites": [
+            250435,
+            250552
+          ]
+        },
+        {
+          "address": 271619,
+          "name": "ai_state_condition_check",
+          "size": 80,
+          "call_sites": [
+            250446
+          ]
+        },
+        {
+          "address": 256846,
+          "name": "ai_state_value_dispatcher",
+          "size": 87,
+          "call_sites": [
+            250458
+          ]
+        },
+        {
+          "address": 256197,
+          "name": "ai_farobj_flag_check",
+          "size": 13,
+          "call_sites": [
+            250478
+          ]
+        },
+        {
+          "address": 271273,
+          "name": "ai_target_pursuit_update",
+          "size": 178,
+          "call_sites": [
+            250496
+          ]
+        },
+        {
+          "address": 253657,
+          "name": "ai_weapon_fire_check",
+          "size": 69,
+          "call_sites": [
+            250584,
+            250595
+          ]
+        },
+        {
+          "address": 259587,
+          "name": "ai_index_bounds_check",
+          "size": 35,
+          "call_sites": [
+            250615
+          ]
         }
       ]
     },
     "ai_behavior_state_machine": {
       "address": 249770,
       "total_callees": 29,
-      "documented": 2,
-      "undocumented": 27,
+      "documented": 29,
+      "undocumented": 0,
       "callees": [
         {
           "address": 250751,
-          "name": "sub_3D37F",
+          "name": "ai_entity_update_step",
           "size": 1319,
-          "call_site": 249766
+          "call_sites": [
+            249766
+          ]
         },
         {
           "address": 272545,
-          "name": "sub_428A1",
+          "name": "ai_state_value_get",
           "size": 32,
-          "call_site": 249779
+          "call_sites": [
+            249779,
+            250054,
+            250145,
+            250507
+          ]
         },
         {
           "address": 272505,
           "name": "r32_farptr_gate",
           "size": 37,
-          "call_site": 249790
+          "call_sites": [
+            249790,
+            250065,
+            250162,
+            250184,
+            250518
+          ]
         },
         {
           "address": 265798,
-          "name": "sub_40E46",
+          "name": "ai_vector_accumulate_alt",
           "size": 14,
-          "call_site": 249822
+          "call_sites": [
+            249822,
+            250017,
+            250135
+          ]
         },
         {
           "address": 272577,
-          "name": "sub_428C1",
+          "name": "ai_field_check_flag",
           "size": 19,
-          "call_site": 249844
+          "call_sites": [
+            249844
+          ]
         },
         {
           "address": 272440,
-          "name": "sub_42838",
+          "name": "ai_state_flag_validate",
           "size": 64,
-          "call_site": 249910
+          "call_sites": [
+            249910,
+            250081,
+            250200,
+            250534
+          ]
         },
         {
           "address": 265784,
-          "name": "sub_40E38",
+          "name": "ai_vector_accumulate",
           "size": 14,
-          "call_site": 249956
+          "call_sites": [
+            249956
+          ]
         },
         {
           "address": 249757,
-          "name": "sub_3CF9D",
+          "name": "ai_state_processor_core",
           "size": 886,
-          "call_site": 249981
+          "call_sites": [
+            249981,
+            250102,
+            250230
+          ]
         },
         {
           "address": 271778,
-          "name": "sub_425A2",
+          "name": "hud_ai_target_tracking_draw",
           "size": 88,
-          "call_site": 249987
+          "call_sites": [
+            249987,
+            250108,
+            250236
+          ]
         },
         {
           "address": 254402,
-          "name": "sub_3E1C2",
+          "name": "ai_state_range_check",
           "size": 52,
-          "call_site": 250038
+          "call_sites": [
+            250038,
+            250570
+          ]
         },
         {
           "address": 264112,
-          "name": "sub_407B0",
+          "name": "ai_record_field_read",
           "size": 14,
-          "call_site": 250246
+          "call_sites": [
+            250246,
+            250309
+          ]
         },
         {
           "address": 265653,
-          "name": "sub_40DB5",
+          "name": "ai_field_offset_calc",
           "size": 16,
-          "call_site": 250268
+          "call_sites": [
+            250268
+          ]
         },
         {
           "address": 265510,
-          "name": "sub_40D26",
+          "name": "ai_position_scale_calculate",
           "size": 81,
-          "call_site": 250271
+          "call_sites": [
+            250271
+          ]
         },
         {
           "address": 264128,
-          "name": "sub_407C0",
+          "name": "ai_entity_terrain_position_update",
           "size": 131,
-          "call_site": 250284
+          "call_sites": [
+            250284
+          ]
         },
         {
           "address": 259798,
-          "name": "sub_3F6D6",
+          "name": "ai_angle_calculate",
           "size": 42,
-          "call_site": 250287
+          "call_sites": [
+            250287,
+            250382
+          ]
         },
         {
           "address": 264324,
-          "name": "sub_40884",
+          "name": "ai_angle_calculate_helper",
           "size": 99,
-          "call_site": 250290
+          "call_sites": [
+            250290
+          ]
         },
         {
           "address": 264423,
-          "name": "sub_408E7",
+          "name": "ai_distance_range_check",
           "size": 24,
-          "call_site": 250293
+          "call_sites": [
+            250293
+          ]
         },
         {
           "address": 259976,
-          "name": "sub_3F788",
+          "name": "ai_rect_ratio_update",
           "size": 25,
-          "call_site": 250305
+          "call_sites": [
+            250305
+          ]
         },
         {
           "address": 258984,
-          "name": "sub_3F3A8",
+          "name": "ai_state_calculate_helper",
           "size": 256,
-          "call_site": 250368
+          "call_sites": [
+            250368,
+            250394
+          ]
         },
         {
           "address": 259508,
-          "name": "sub_3F5B4",
+          "name": "ai_field_pair_compare",
           "size": 19,
-          "call_site": 250372
+          "call_sites": [
+            250372
+          ]
         },
         {
           "address": 259840,
-          "name": "sub_3F700",
+          "name": "ai_rect_ratio_check",
           "size": 24,
-          "call_site": 250385
+          "call_sites": [
+            250385
+          ]
         },
         {
           "address": 265322,
-          "name": "sub_40C6A",
+          "name": "ai_angle_from_offset",
           "size": 9,
-          "call_site": 250406
+          "call_sites": [
+            250406
+          ]
         },
         {
           "address": 156784,
           "name": "far_obj_field_call",
           "size": 14,
-          "call_site": 250435
+          "call_sites": [
+            250435,
+            250552
+          ]
         },
         {
           "address": 271619,
-          "name": "sub_42503",
+          "name": "ai_state_condition_check",
           "size": 80,
-          "call_site": 250446
+          "call_sites": [
+            250446
+          ]
         },
         {
           "address": 256846,
-          "name": "sub_3EB4E",
+          "name": "ai_state_value_dispatcher",
           "size": 87,
-          "call_site": 250458
+          "call_sites": [
+            250458
+          ]
         },
         {
           "address": 256197,
-          "name": "sub_3E8C5",
+          "name": "ai_farobj_flag_check",
           "size": 13,
-          "call_site": 250478
+          "call_sites": [
+            250478
+          ]
         },
         {
           "address": 271273,
-          "name": "sub_423A9",
+          "name": "ai_target_pursuit_update",
           "size": 178,
-          "call_site": 250496
+          "call_sites": [
+            250496
+          ]
         },
         {
           "address": 253657,
-          "name": "sub_3DED9",
+          "name": "ai_weapon_fire_check",
           "size": 69,
-          "call_site": 250584
+          "call_sites": [
+            250584,
+            250595
+          ]
         },
         {
           "address": 259587,
-          "name": "sub_3F603",
+          "name": "ai_index_bounds_check",
           "size": 35,
-          "call_site": 250615
+          "call_sites": [
+            250615
+          ]
         }
       ]
     },
     "ai_target_tracking_update": {
       "address": 250240,
       "total_callees": 29,
-      "documented": 2,
-      "undocumented": 27,
+      "documented": 29,
+      "undocumented": 0,
       "callees": [
         {
           "address": 250751,
-          "name": "sub_3D37F",
+          "name": "ai_entity_update_step",
           "size": 1319,
-          "call_site": 249766
+          "call_sites": [
+            249766
+          ]
         },
         {
           "address": 272545,
-          "name": "sub_428A1",
+          "name": "ai_state_value_get",
           "size": 32,
-          "call_site": 249779
+          "call_sites": [
+            249779,
+            250054,
+            250145,
+            250507
+          ]
         },
         {
           "address": 272505,
           "name": "r32_farptr_gate",
           "size": 37,
-          "call_site": 249790
+          "call_sites": [
+            249790,
+            250065,
+            250162,
+            250184,
+            250518
+          ]
         },
         {
           "address": 265798,
-          "name": "sub_40E46",
+          "name": "ai_vector_accumulate_alt",
           "size": 14,
-          "call_site": 249822
+          "call_sites": [
+            249822,
+            250017,
+            250135
+          ]
         },
         {
           "address": 272577,
-          "name": "sub_428C1",
+          "name": "ai_field_check_flag",
           "size": 19,
-          "call_site": 249844
+          "call_sites": [
+            249844
+          ]
         },
         {
           "address": 272440,
-          "name": "sub_42838",
+          "name": "ai_state_flag_validate",
           "size": 64,
-          "call_site": 249910
+          "call_sites": [
+            249910,
+            250081,
+            250200,
+            250534
+          ]
         },
         {
           "address": 265784,
-          "name": "sub_40E38",
+          "name": "ai_vector_accumulate",
           "size": 14,
-          "call_site": 249956
+          "call_sites": [
+            249956
+          ]
         },
         {
           "address": 249757,
-          "name": "sub_3CF9D",
+          "name": "ai_state_processor_core",
           "size": 886,
-          "call_site": 249981
+          "call_sites": [
+            249981,
+            250102,
+            250230
+          ]
         },
         {
           "address": 271778,
-          "name": "sub_425A2",
+          "name": "hud_ai_target_tracking_draw",
           "size": 88,
-          "call_site": 249987
+          "call_sites": [
+            249987,
+            250108,
+            250236
+          ]
         },
         {
           "address": 254402,
-          "name": "sub_3E1C2",
+          "name": "ai_state_range_check",
           "size": 52,
-          "call_site": 250038
+          "call_sites": [
+            250038,
+            250570
+          ]
         },
         {
           "address": 264112,
-          "name": "sub_407B0",
+          "name": "ai_record_field_read",
           "size": 14,
-          "call_site": 250246
+          "call_sites": [
+            250246,
+            250309
+          ]
         },
         {
           "address": 265653,
-          "name": "sub_40DB5",
+          "name": "ai_field_offset_calc",
           "size": 16,
-          "call_site": 250268
+          "call_sites": [
+            250268
+          ]
         },
         {
           "address": 265510,
-          "name": "sub_40D26",
+          "name": "ai_position_scale_calculate",
           "size": 81,
-          "call_site": 250271
+          "call_sites": [
+            250271
+          ]
         },
         {
           "address": 264128,
-          "name": "sub_407C0",
+          "name": "ai_entity_terrain_position_update",
           "size": 131,
-          "call_site": 250284
+          "call_sites": [
+            250284
+          ]
         },
         {
           "address": 259798,
-          "name": "sub_3F6D6",
+          "name": "ai_angle_calculate",
           "size": 42,
-          "call_site": 250287
+          "call_sites": [
+            250287,
+            250382
+          ]
         },
         {
           "address": 264324,
-          "name": "sub_40884",
+          "name": "ai_angle_calculate_helper",
           "size": 99,
-          "call_site": 250290
+          "call_sites": [
+            250290
+          ]
         },
         {
           "address": 264423,
-          "name": "sub_408E7",
+          "name": "ai_distance_range_check",
           "size": 24,
-          "call_site": 250293
+          "call_sites": [
+            250293
+          ]
         },
         {
           "address": 259976,
-          "name": "sub_3F788",
+          "name": "ai_rect_ratio_update",
           "size": 25,
-          "call_site": 250305
+          "call_sites": [
+            250305
+          ]
         },
         {
           "address": 258984,
-          "name": "sub_3F3A8",
+          "name": "ai_state_calculate_helper",
           "size": 256,
-          "call_site": 250368
+          "call_sites": [
+            250368,
+            250394
+          ]
         },
         {
           "address": 259508,
-          "name": "sub_3F5B4",
+          "name": "ai_field_pair_compare",
           "size": 19,
-          "call_site": 250372
+          "call_sites": [
+            250372
+          ]
         },
         {
           "address": 259840,
-          "name": "sub_3F700",
+          "name": "ai_rect_ratio_check",
           "size": 24,
-          "call_site": 250385
+          "call_sites": [
+            250385
+          ]
         },
         {
           "address": 265322,
-          "name": "sub_40C6A",
+          "name": "ai_angle_from_offset",
           "size": 9,
-          "call_site": 250406
+          "call_sites": [
+            250406
+          ]
         },
         {
           "address": 156784,
           "name": "far_obj_field_call",
           "size": 14,
-          "call_site": 250435
+          "call_sites": [
+            250435,
+            250552
+          ]
         },
         {
           "address": 271619,
-          "name": "sub_42503",
+          "name": "ai_state_condition_check",
           "size": 80,
-          "call_site": 250446
+          "call_sites": [
+            250446
+          ]
         },
         {
           "address": 256846,
-          "name": "sub_3EB4E",
+          "name": "ai_state_value_dispatcher",
           "size": 87,
-          "call_site": 250458
+          "call_sites": [
+            250458
+          ]
         },
         {
           "address": 256197,
-          "name": "sub_3E8C5",
+          "name": "ai_farobj_flag_check",
           "size": 13,
-          "call_site": 250478
+          "call_sites": [
+            250478
+          ]
         },
         {
           "address": 271273,
-          "name": "sub_423A9",
+          "name": "ai_target_pursuit_update",
           "size": 178,
-          "call_site": 250496
+          "call_sites": [
+            250496
+          ]
         },
         {
           "address": 253657,
-          "name": "sub_3DED9",
+          "name": "ai_weapon_fire_check",
           "size": 69,
-          "call_site": 250584
+          "call_sites": [
+            250584,
+            250595
+          ]
         },
         {
           "address": 259587,
-          "name": "sub_3F603",
+          "name": "ai_index_bounds_check",
           "size": 35,
-          "call_site": 250615
+          "call_sites": [
+            250615
+          ]
         }
       ]
     },
     "ai_behavior_mirror_to_target": {
       "address": 250309,
       "total_callees": 29,
-      "documented": 2,
-      "undocumented": 27,
+      "documented": 29,
+      "undocumented": 0,
       "callees": [
         {
           "address": 250751,
-          "name": "sub_3D37F",
+          "name": "ai_entity_update_step",
           "size": 1319,
-          "call_site": 249766
+          "call_sites": [
+            249766
+          ]
         },
         {
           "address": 272545,
-          "name": "sub_428A1",
+          "name": "ai_state_value_get",
           "size": 32,
-          "call_site": 249779
+          "call_sites": [
+            249779,
+            250054,
+            250145,
+            250507
+          ]
         },
         {
           "address": 272505,
           "name": "r32_farptr_gate",
           "size": 37,
-          "call_site": 249790
+          "call_sites": [
+            249790,
+            250065,
+            250162,
+            250184,
+            250518
+          ]
         },
         {
           "address": 265798,
-          "name": "sub_40E46",
+          "name": "ai_vector_accumulate_alt",
           "size": 14,
-          "call_site": 249822
+          "call_sites": [
+            249822,
+            250017,
+            250135
+          ]
         },
         {
           "address": 272577,
-          "name": "sub_428C1",
+          "name": "ai_field_check_flag",
           "size": 19,
-          "call_site": 249844
+          "call_sites": [
+            249844
+          ]
         },
         {
           "address": 272440,
-          "name": "sub_42838",
+          "name": "ai_state_flag_validate",
           "size": 64,
-          "call_site": 249910
+          "call_sites": [
+            249910,
+            250081,
+            250200,
+            250534
+          ]
         },
         {
           "address": 265784,
-          "name": "sub_40E38",
+          "name": "ai_vector_accumulate",
           "size": 14,
-          "call_site": 249956
+          "call_sites": [
+            249956
+          ]
         },
         {
           "address": 249757,
-          "name": "sub_3CF9D",
+          "name": "ai_state_processor_core",
           "size": 886,
-          "call_site": 249981
+          "call_sites": [
+            249981,
+            250102,
+            250230
+          ]
         },
         {
           "address": 271778,
-          "name": "sub_425A2",
+          "name": "hud_ai_target_tracking_draw",
           "size": 88,
-          "call_site": 249987
+          "call_sites": [
+            249987,
+            250108,
+            250236
+          ]
         },
         {
           "address": 254402,
-          "name": "sub_3E1C2",
+          "name": "ai_state_range_check",
           "size": 52,
-          "call_site": 250038
+          "call_sites": [
+            250038,
+            250570
+          ]
         },
         {
           "address": 264112,
-          "name": "sub_407B0",
+          "name": "ai_record_field_read",
           "size": 14,
-          "call_site": 250246
+          "call_sites": [
+            250246,
+            250309
+          ]
         },
         {
           "address": 265653,
-          "name": "sub_40DB5",
+          "name": "ai_field_offset_calc",
           "size": 16,
-          "call_site": 250268
+          "call_sites": [
+            250268
+          ]
         },
         {
           "address": 265510,
-          "name": "sub_40D26",
+          "name": "ai_position_scale_calculate",
           "size": 81,
-          "call_site": 250271
+          "call_sites": [
+            250271
+          ]
         },
         {
           "address": 264128,
-          "name": "sub_407C0",
+          "name": "ai_entity_terrain_position_update",
           "size": 131,
-          "call_site": 250284
+          "call_sites": [
+            250284
+          ]
         },
         {
           "address": 259798,
-          "name": "sub_3F6D6",
+          "name": "ai_angle_calculate",
           "size": 42,
-          "call_site": 250287
+          "call_sites": [
+            250287,
+            250382
+          ]
         },
         {
           "address": 264324,
-          "name": "sub_40884",
+          "name": "ai_angle_calculate_helper",
           "size": 99,
-          "call_site": 250290
+          "call_sites": [
+            250290
+          ]
         },
         {
           "address": 264423,
-          "name": "sub_408E7",
+          "name": "ai_distance_range_check",
           "size": 24,
-          "call_site": 250293
+          "call_sites": [
+            250293
+          ]
         },
         {
           "address": 259976,
-          "name": "sub_3F788",
+          "name": "ai_rect_ratio_update",
           "size": 25,
-          "call_site": 250305
+          "call_sites": [
+            250305
+          ]
         },
         {
           "address": 258984,
-          "name": "sub_3F3A8",
+          "name": "ai_state_calculate_helper",
           "size": 256,
-          "call_site": 250368
+          "call_sites": [
+            250368,
+            250394
+          ]
         },
         {
           "address": 259508,
-          "name": "sub_3F5B4",
+          "name": "ai_field_pair_compare",
           "size": 19,
-          "call_site": 250372
+          "call_sites": [
+            250372
+          ]
         },
         {
           "address": 259840,
-          "name": "sub_3F700",
+          "name": "ai_rect_ratio_check",
           "size": 24,
-          "call_site": 250385
+          "call_sites": [
+            250385
+          ]
         },
         {
           "address": 265322,
-          "name": "sub_40C6A",
+          "name": "ai_angle_from_offset",
           "size": 9,
-          "call_site": 250406
+          "call_sites": [
+            250406
+          ]
         },
         {
           "address": 156784,
           "name": "far_obj_field_call",
           "size": 14,
-          "call_site": 250435
+          "call_sites": [
+            250435,
+            250552
+          ]
         },
         {
           "address": 271619,
-          "name": "sub_42503",
+          "name": "ai_state_condition_check",
           "size": 80,
-          "call_site": 250446
+          "call_sites": [
+            250446
+          ]
         },
         {
           "address": 256846,
-          "name": "sub_3EB4E",
+          "name": "ai_state_value_dispatcher",
           "size": 87,
-          "call_site": 250458
+          "call_sites": [
+            250458
+          ]
         },
         {
           "address": 256197,
-          "name": "sub_3E8C5",
+          "name": "ai_farobj_flag_check",
           "size": 13,
-          "call_site": 250478
+          "call_sites": [
+            250478
+          ]
         },
         {
           "address": 271273,
-          "name": "sub_423A9",
+          "name": "ai_target_pursuit_update",
           "size": 178,
-          "call_site": 250496
+          "call_sites": [
+            250496
+          ]
         },
         {
           "address": 253657,
-          "name": "sub_3DED9",
+          "name": "ai_weapon_fire_check",
           "size": 69,
-          "call_site": 250584
+          "call_sites": [
+            250584,
+            250595
+          ]
         },
         {
           "address": 259587,
-          "name": "sub_3F603",
+          "name": "ai_index_bounds_check",
           "size": 35,
-          "call_site": 250615
+          "call_sites": [
+            250615
+          ]
+        }
+      ]
+    },
+    "ai_entity_update_step": {
+      "address": 250751,
+      "total_callees": 29,
+      "documented": 22,
+      "undocumented": 7,
+      "callees": [
+        {
+          "address": 261222,
+          "name": "sub_3FC66",
+          "size": 123,
+          "call_sites": [
+            250800,
+            250867,
+            252024
+          ]
+        },
+        {
+          "address": 149884,
+          "name": "stub_to_24980",
+          "size": 4,
+          "call_sites": [
+            250854
+          ]
+        },
+        {
+          "address": 260006,
+          "name": "farobj_store_32075",
+          "size": 187,
+          "call_sites": [
+            250875,
+            251499,
+            251679
+          ]
+        },
+        {
+          "address": 272545,
+          "name": "ai_state_value_get",
+          "size": 32,
+          "call_sites": [
+            250924,
+            251216,
+            251298,
+            251331,
+            251402,
+            251712
+          ]
+        },
+        {
+          "address": 272505,
+          "name": "r32_farptr_gate",
+          "size": 37,
+          "call_sites": [
+            250941,
+            251227,
+            251309,
+            251342,
+            251413,
+            251723,
+            251843
+          ]
+        },
+        {
+          "address": 272440,
+          "name": "ai_state_flag_validate",
+          "size": 64,
+          "call_sites": [
+            250957,
+            251243,
+            251322,
+            251369,
+            251464,
+            251739,
+            251859
+          ]
+        },
+        {
+          "address": 253657,
+          "name": "ai_weapon_fire_check",
+          "size": 69,
+          "call_sites": [
+            250960,
+            251167,
+            251276,
+            251358,
+            251445
+          ]
+        },
+        {
+          "address": 259976,
+          "name": "ai_rect_ratio_update",
+          "size": 25,
+          "call_sites": [
+            250988
+          ]
+        },
+        {
+          "address": 253514,
+          "name": "sub_3DE4A",
+          "size": 37,
+          "call_sites": [
+            251024,
+            251078,
+            251132
+          ]
+        },
+        {
+          "address": 265784,
+          "name": "ai_vector_accumulate",
+          "size": 14,
+          "call_sites": [
+            251045,
+            251392,
+            251492,
+            251624
+          ]
+        },
+        {
+          "address": 265798,
+          "name": "ai_vector_accumulate_alt",
+          "size": 14,
+          "call_sites": [
+            251100,
+            251154,
+            251672
+          ]
+        },
+        {
+          "address": 250649,
+          "name": "undoc_3D319",
+          "size": 102,
+          "call_sites": [
+            251172
+          ]
+        },
+        {
+          "address": 271778,
+          "name": "hud_ai_target_tracking_draw",
+          "size": 88,
+          "call_sites": [
+            251177
+          ]
+        },
+        {
+          "address": 259587,
+          "name": "ai_index_bounds_check",
+          "size": 35,
+          "call_sites": [
+            251196
+          ]
+        },
+        {
+          "address": 265399,
+          "name": "sub_40CB7",
+          "size": 14,
+          "call_sites": [
+            251252,
+            251428,
+            251537,
+            251760,
+            251789,
+            251887
+          ]
+        },
+        {
+          "address": 260782,
+          "name": "undoc_3FAAE",
+          "size": 90,
+          "call_sites": [
+            251281
+          ]
+        },
+        {
+          "address": 272727,
+          "name": "sub_42957",
+          "size": 30,
+          "call_sites": [
+            251316
+          ]
+        },
+        {
+          "address": 272697,
+          "name": "sub_42939",
+          "size": 30,
+          "call_sites": [
+            251458
+          ]
+        },
+        {
+          "address": 263021,
+          "name": "sub_4036D",
+          "size": 29,
+          "call_sites": [
+            251511,
+            251919
+          ]
+        },
+        {
+          "address": 265669,
+          "name": "sub_40DC5",
+          "size": 21,
+          "call_sites": [
+            251526,
+            252028
+          ]
+        },
+        {
+          "address": 142481,
+          "name": "fixed_vec3_accumulate_a",
+          "size": 68,
+          "call_sites": [
+            251557
+          ]
+        },
+        {
+          "address": 260193,
+          "name": "farobj_index_resolve_step",
+          "size": 582,
+          "call_sites": [
+            251635
+          ]
+        },
+        {
+          "address": 265653,
+          "name": "ai_field_offset_calc",
+          "size": 16,
+          "call_sites": [
+            251693
+          ]
+        },
+        {
+          "address": 265510,
+          "name": "ai_position_scale_calculate",
+          "size": 81,
+          "call_sites": [
+            251696
+          ]
+        },
+        {
+          "address": 259798,
+          "name": "ai_angle_calculate",
+          "size": 42,
+          "call_sites": [
+            251699,
+            251922
+          ]
+        },
+        {
+          "address": 254402,
+          "name": "ai_state_range_check",
+          "size": 52,
+          "call_sites": [
+            251705
+          ]
+        },
+        {
+          "address": 293736,
+          "name": "undoc_47B68",
+          "size": 94,
+          "call_sites": [
+            251817,
+            251913
+          ]
+        },
+        {
+          "address": 272577,
+          "name": "ai_field_check_flag",
+          "size": 19,
+          "call_sites": [
+            251826
+          ]
+        },
+        {
+          "address": 254454,
+          "name": "undoc_3E1F6",
+          "size": 115,
+          "call_sites": [
+            251925
+          ]
+        }
+      ]
+    },
+    "weapon_spawn_gate_validate": {
+      "address": 253013,
+      "total_callees": 15,
+      "documented": 9,
+      "undocumented": 6,
+      "callees": [
+        {
+          "address": 265784,
+          "name": "ai_vector_accumulate",
+          "size": 14,
+          "call_sites": [
+            253042,
+            253243,
+            253252,
+            253314
+          ]
+        },
+        {
+          "address": 272177,
+          "name": "undoc_42731",
+          "size": 257,
+          "call_sites": [
+            253060,
+            253270
+          ]
+        },
+        {
+          "address": 254569,
+          "name": "undoc_3E269",
+          "size": 106,
+          "call_sites": [
+            253079
+          ]
+        },
+        {
+          "address": 259798,
+          "name": "ai_angle_calculate",
+          "size": 42,
+          "call_sites": [
+            253082
+          ]
+        },
+        {
+          "address": 254675,
+          "name": "sub_3E2D3",
+          "size": 505,
+          "call_sites": [
+            253091
+          ]
+        },
+        {
+          "address": 264324,
+          "name": "ai_angle_calculate_helper",
+          "size": 99,
+          "call_sites": [
+            253114
+          ]
+        },
+        {
+          "address": 264423,
+          "name": "ai_distance_range_check",
+          "size": 24,
+          "call_sites": [
+            253117
+          ]
+        },
+        {
+          "address": 261222,
+          "name": "sub_3FC66",
+          "size": 123,
+          "call_sites": [
+            253124,
+            253329,
+            253443,
+            253481
+          ]
+        },
+        {
+          "address": 265669,
+          "name": "sub_40DC5",
+          "size": 21,
+          "call_sites": [
+            253131,
+            253366
+          ]
+        },
+        {
+          "address": 265399,
+          "name": "sub_40CB7",
+          "size": 14,
+          "call_sites": [
+            253179
+          ]
+        },
+        {
+          "address": 261345,
+          "name": "sub_3FCE1",
+          "size": 3,
+          "call_sites": [
+            253206,
+            253325,
+            253446,
+            253484
+          ]
+        },
+        {
+          "address": 265798,
+          "name": "ai_vector_accumulate_alt",
+          "size": 14,
+          "call_sites": [
+            253302,
+            253474
+          ]
+        },
+        {
+          "address": 258676,
+          "name": "sub_3F274",
+          "size": 19,
+          "call_sites": [
+            253322,
+            253350
+          ]
+        },
+        {
+          "address": 149892,
+          "name": "stub_to_24988",
+          "size": 4,
+          "call_sites": [
+            253435
+          ]
+        },
+        {
+          "address": 271778,
+          "name": "hud_ai_target_tracking_draw",
+          "size": 88,
+          "call_sites": [
+            253510
+          ]
+        }
+      ]
+    },
+    "ai_weapon_fire_check": {
+      "address": 253657,
+      "total_callees": 1,
+      "documented": 0,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 265399,
+          "name": "sub_40CB7",
+          "size": 14,
+          "call_sites": [
+            253696
+          ]
+        }
+      ]
+    },
+    "ai_state_range_check": {
+      "address": 254402,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "ai_farobj_flag_check": {
+      "address": 256197,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 314577,
+          "name": "farobj_flag_gate_check",
+          "size": 42,
+          "call_sites": [
+            256200
+          ]
+        }
+      ]
+    },
+    "ai_state_value_dispatcher": {
+      "address": 256846,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "ai_state_calculate_helper": {
+      "address": 258984,
+      "total_callees": 11,
+      "documented": 9,
+      "undocumented": 2,
+      "callees": [
+        {
+          "address": 265798,
+          "name": "ai_vector_accumulate_alt",
+          "size": 14,
+          "call_sites": [
+            259022
+          ]
+        },
+        {
+          "address": 254402,
+          "name": "ai_state_range_check",
+          "size": 52,
+          "call_sites": [
+            259032
+          ]
+        },
+        {
+          "address": 260006,
+          "name": "farobj_store_32075",
+          "size": 187,
+          "call_sites": [
+            259044
+          ]
+        },
+        {
+          "address": 265784,
+          "name": "ai_vector_accumulate",
+          "size": 14,
+          "call_sites": [
+            259101
+          ]
+        },
+        {
+          "address": 260872,
+          "name": "sub_3FB08",
+          "size": 18,
+          "call_sites": [
+            259108
+          ]
+        },
+        {
+          "address": 265653,
+          "name": "ai_field_offset_calc",
+          "size": 16,
+          "call_sites": [
+            259157
+          ]
+        },
+        {
+          "address": 265510,
+          "name": "ai_position_scale_calculate",
+          "size": 81,
+          "call_sites": [
+            259160
+          ]
+        },
+        {
+          "address": 265669,
+          "name": "sub_40DC5",
+          "size": 21,
+          "call_sites": [
+            259163
+          ]
+        },
+        {
+          "address": 272545,
+          "name": "ai_state_value_get",
+          "size": 32,
+          "call_sites": [
+            259197
+          ]
+        },
+        {
+          "address": 272505,
+          "name": "r32_farptr_gate",
+          "size": 37,
+          "call_sites": [
+            259208
+          ]
+        },
+        {
+          "address": 272440,
+          "name": "ai_state_flag_validate",
+          "size": 64,
+          "call_sites": [
+            259236
+          ]
+        }
+      ]
+    },
+    "ai_field_pair_compare": {
+      "address": 259508,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 265653,
+          "name": "ai_field_offset_calc",
+          "size": 16,
+          "call_sites": [
+            259508
+          ]
+        }
+      ]
+    },
+    "ai_index_bounds_check": {
+      "address": 259587,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "ai_angle_calculate": {
+      "address": 259798,
+      "total_callees": 2,
+      "documented": 2,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 146587,
+          "name": "angle_xy_far",
+          "size": 144,
+          "call_sites": [
+            259815
+          ]
+        },
+        {
+          "address": 146456,
+          "name": "angle_aux_far",
+          "size": 131,
+          "call_sites": [
+            259823
+          ]
+        }
+      ]
+    },
+    "ai_rect_ratio_check": {
+      "address": 259840,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 259976,
+          "name": "ai_rect_ratio_update",
+          "size": 25,
+          "call_sites": [
+            259860
+          ]
+        }
+      ]
+    },
+    "ai_rect_ratio_update": {
+      "address": 259976,
+      "total_callees": 2,
+      "documented": 1,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 85190,
+          "name": "farobj_rect_ratio_build",
+          "size": 396,
+          "call_sites": [
+            259986
+          ]
+        },
+        {
+          "address": 258676,
+          "name": "sub_3F274",
+          "size": 19,
+          "call_sites": [
+            259997
+          ]
+        }
+      ]
+    },
+    "ai_record_field_read": {
+      "address": 264112,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "ai_entity_terrain_position_update": {
+      "address": 264128,
+      "total_callees": 5,
+      "documented": 4,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 264112,
+          "name": "ai_record_field_read",
+          "size": 14,
+          "call_sites": [
+            264128
+          ]
+        },
+        {
+          "address": 136631,
+          "name": "flag_byte_get",
+          "size": 5,
+          "call_sites": [
+            264159
+          ]
+        },
+        {
+          "address": 146731,
+          "name": "fixed_matrix_mul",
+          "size": 90,
+          "call_sites": [
+            264185
+          ]
+        },
+        {
+          "address": 264259,
+          "name": "sub_40843",
+          "size": 44,
+          "call_sites": [
+            264191,
+            264203,
+            264215
+          ]
+        },
+        {
+          "address": 85678,
+          "name": "terrain_farobj_tile_copy_resolve",
+          "size": 470,
+          "call_sites": [
+            264228
+          ]
+        }
+      ]
+    },
+    "ai_angle_calculate_helper": {
+      "address": 264324,
+      "total_callees": 4,
+      "documented": 3,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 264112,
+          "name": "ai_record_field_read",
+          "size": 14,
+          "call_sites": [
+            264324
+          ]
+        },
+        {
+          "address": 265669,
+          "name": "sub_40DC5",
+          "size": 21,
+          "call_sites": [
+            264336
+          ]
+        },
+        {
+          "address": 149884,
+          "name": "stub_to_24980",
+          "size": 4,
+          "call_sites": [
+            264379
+          ]
+        },
+        {
+          "address": 155823,
+          "name": "stub_to_249d8",
+          "size": 4,
+          "call_sites": [
+            264387
+          ]
+        }
+      ]
+    },
+    "ai_distance_range_check": {
+      "address": 264423,
+      "total_callees": 1,
+      "documented": 0,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 265669,
+          "name": "sub_40DC5",
+          "size": 21,
+          "call_sites": [
+            264423
+          ]
+        }
+      ]
+    },
+    "ai_angle_from_offset": {
+      "address": 265322,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 259798,
+          "name": "ai_angle_calculate",
+          "size": 42,
+          "call_sites": [
+            265328
+          ]
+        }
+      ]
+    },
+    "ai_position_scale_calculate": {
+      "address": 265510,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 156784,
+          "name": "far_obj_field_call",
+          "size": 14,
+          "call_sites": [
+            265554
+          ]
+        }
+      ]
+    },
+    "ai_field_offset_calc": {
+      "address": 265653,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "ai_vector_accumulate": {
+      "address": 265784,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 142481,
+          "name": "fixed_vec3_accumulate_a",
+          "size": 68,
+          "call_sites": [
+            265785
+          ]
+        }
+      ]
+    },
+    "ai_vector_accumulate_alt": {
+      "address": 265798,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 142481,
+          "name": "fixed_vec3_accumulate_a",
+          "size": 68,
+          "call_sites": [
+            265799
+          ]
+        }
+      ]
+    },
+    "ai_target_pursuit_update": {
+      "address": 271273,
+      "total_callees": 9,
+      "documented": 6,
+      "undocumented": 3,
+      "callees": [
+        {
+          "address": 271619,
+          "name": "ai_state_condition_check",
+          "size": 80,
+          "call_sites": [
+            271279
+          ]
+        },
+        {
+          "address": 265157,
+          "name": "sub_40BC5",
+          "size": 41,
+          "call_sites": [
+            271287
+          ]
+        },
+        {
+          "address": 256846,
+          "name": "ai_state_value_dispatcher",
+          "size": 87,
+          "call_sites": [
+            271290
+          ]
+        },
+        {
+          "address": 256933,
+          "name": "sub_3EBA5",
+          "size": 814,
+          "call_sites": [
+            271297
+          ]
+        },
+        {
+          "address": 256210,
+          "name": "undoc_3E8D2",
+          "size": 59,
+          "call_sites": [
+            271302
+          ]
+        },
+        {
+          "address": 256367,
+          "name": "sub_3E96F",
+          "size": 479,
+          "call_sites": [
+            271309
+          ]
+        },
+        {
+          "address": 271211,
+          "name": "farobj_thrust_burn_step",
+          "size": 62,
+          "call_sites": [
+            271322
+          ]
+        },
+        {
+          "address": 262236,
+          "name": "undoc_4005C",
+          "size": 27,
+          "call_sites": [
+            271402
+          ]
+        },
+        {
+          "address": 246106,
+          "name": "farobj_attr_table_lookup",
+          "size": 29,
+          "call_sites": [
+            271416
+          ]
+        }
+      ]
+    },
+    "ai_state_condition_check": {
+      "address": 271619,
+      "total_callees": 2,
+      "documented": 1,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 265399,
+          "name": "sub_40CB7",
+          "size": 14,
+          "call_sites": [
+            271641
+          ]
+        },
+        {
+          "address": 149892,
+          "name": "stub_to_24988",
+          "size": 4,
+          "call_sites": [
+            271652
+          ]
+        }
+      ]
+    },
+    "ai_state_flag_validate": {
+      "address": 272440,
+      "total_callees": 2,
+      "documented": 1,
+      "undocumented": 1,
+      "callees": [
+        {
+          "address": 323406,
+          "name": "sub_4EF4E",
+          "size": 45,
+          "call_sites": [
+            272462
+          ]
+        },
+        {
+          "address": 272577,
+          "name": "ai_field_check_flag",
+          "size": 19,
+          "call_sites": [
+            272501
+          ]
+        }
+      ]
+    },
+    "ai_state_value_get": {
+      "address": 272545,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "ai_field_check_flag": {
+      "address": 272577,
+      "total_callees": 0,
+      "documented": 0,
+      "undocumented": 0,
+      "callees": []
+    },
+    "aircraft_record_load_step": {
+      "address": 299972,
+      "total_callees": 2,
+      "documented": 2,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 159807,
+          "name": "ai_farptr_table_get",
+          "size": 18,
+          "call_sites": [
+            299986,
+            300012
+          ]
+        },
+        {
+          "address": 300511,
+          "name": "ai_context_batch_processor",
+          "size": 236,
+          "call_sites": [
+            300022
+          ]
         }
       ]
     },
     "ai_context_batch_processor": {
       "address": 300511,
       "total_callees": 5,
-      "documented": 3,
-      "undocumented": 2,
+      "documented": 5,
+      "undocumented": 0,
       "callees": [
         {
           "address": 301442,
-          "name": "sub_49982",
+          "name": "ai_viewobj_project_update",
           "size": 21,
-          "call_site": 300540
+          "call_sites": [
+            300540
+          ]
         },
         {
           "address": 301463,
-          "name": "sub_49997",
+          "name": "ai_movement_vector_accumulate",
           "size": 130,
-          "call_site": 300554
+          "call_sites": [
+            300554,
+            300709
+          ]
         },
         {
           "address": 85678,
           "name": "terrain_farobj_tile_copy_resolve",
           "size": 470,
-          "call_site": 300658
+          "call_sites": [
+            300658
+          ]
         },
         {
           "address": 159732,
           "name": "farobj_copy_cond",
           "size": 26,
-          "call_site": 300677
+          "call_sites": [
+            300677,
+            300721
+          ]
         },
         {
           "address": 301659,
           "name": "farobj_kind_slot_reset",
           "size": 17,
-          "call_site": 300706
+          "call_sites": [
+            300706
+          ]
+        }
+      ]
+    },
+    "ai_viewobj_project_update": {
+      "address": 301442,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 76642,
+          "name": "viewobj_project_select",
+          "size": 20,
+          "call_sites": [
+            301455
+          ]
+        }
+      ]
+    },
+    "ai_movement_vector_accumulate": {
+      "address": 301463,
+      "total_callees": 1,
+      "documented": 1,
+      "undocumented": 0,
+      "callees": [
+        {
+          "address": 142481,
+          "name": "fixed_vec3_accumulate_a",
+          "size": 68,
+          "call_sites": [
+            301491,
+            301505,
+            301519
+          ]
         }
       ]
     }
   },
   "new_functions": [
     {
-      "address": 250751,
-      "name": "sub_3D37F",
-      "size": 1319,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
+      "address": 253514,
+      "name": "sub_3DE4A",
+      "size": 37,
+      "called_by": [
+        "ai_entity_update_step"
+      ],
+      "caller_count": 1,
+      "comparison_count": 6,
+      "called_by_count": 1
     },
     {
-      "address": 272545,
-      "name": "sub_428A1",
-      "size": 32,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
+      "address": 254675,
+      "name": "sub_3E2D3",
+      "size": 505,
+      "called_by": [
+        "weapon_spawn_gate_validate"
+      ],
+      "caller_count": 1,
+      "comparison_count": 43,
+      "called_by_count": 1
     },
     {
-      "address": 265798,
-      "name": "sub_40E46",
-      "size": 14,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
+      "address": 256367,
+      "name": "sub_3E96F",
+      "size": 479,
+      "called_by": [
+        "ai_target_pursuit_update"
+      ],
+      "caller_count": 2,
+      "comparison_count": 34,
+      "called_by_count": 1
     },
     {
-      "address": 272577,
-      "name": "sub_428C1",
+      "address": 256933,
+      "name": "sub_3EBA5",
+      "size": 814,
+      "called_by": [
+        "ai_target_pursuit_update"
+      ],
+      "caller_count": 2,
+      "comparison_count": 87,
+      "called_by_count": 1
+    },
+    {
+      "address": 258676,
+      "name": "sub_3F274",
       "size": 19,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
+      "called_by": [
+        "weapon_spawn_gate_validate",
+        "ai_rect_ratio_update"
+      ],
+      "caller_count": 9,
+      "comparison_count": 0,
+      "called_by_count": 2
     },
     {
-      "address": 272440,
-      "name": "sub_42838",
-      "size": 64,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
+      "address": 260872,
+      "name": "sub_3FB08",
+      "size": 18,
+      "called_by": [
+        "ai_state_calculate_helper"
+      ],
+      "caller_count": 1,
+      "comparison_count": 3,
+      "called_by_count": 1
     },
     {
-      "address": 265784,
-      "name": "sub_40E38",
+      "address": 261222,
+      "name": "sub_3FC66",
+      "size": 123,
+      "called_by": [
+        "ai_entity_update_step",
+        "weapon_spawn_gate_validate"
+      ],
+      "caller_count": 6,
+      "comparison_count": 16,
+      "called_by_count": 2
+    },
+    {
+      "address": 261345,
+      "name": "sub_3FCE1",
+      "size": 3,
+      "called_by": [
+        "weapon_spawn_gate_validate"
+      ],
+      "caller_count": 2,
+      "comparison_count": 0,
+      "called_by_count": 1
+    },
+    {
+      "address": 263021,
+      "name": "sub_4036D",
+      "size": 29,
+      "called_by": [
+        "ai_entity_update_step"
+      ],
+      "caller_count": 3,
+      "comparison_count": 0,
+      "called_by_count": 1
+    },
+    {
+      "address": 264259,
+      "name": "sub_40843",
+      "size": 44,
+      "called_by": [
+        "ai_entity_terrain_position_update"
+      ],
+      "caller_count": 1,
+      "comparison_count": 3,
+      "called_by_count": 1
+    },
+    {
+      "address": 265157,
+      "name": "sub_40BC5",
+      "size": 41,
+      "called_by": [
+        "ai_target_pursuit_update"
+      ],
+      "caller_count": 0,
+      "comparison_count": 3,
+      "called_by_count": 1
+    },
+    {
+      "address": 265399,
+      "name": "sub_40CB7",
       "size": 14,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 249757,
-      "name": "sub_3CF9D",
-      "size": 886,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 271778,
-      "name": "sub_425A2",
-      "size": 88,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 254402,
-      "name": "sub_3E1C2",
-      "size": 52,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 264112,
-      "name": "sub_407B0",
-      "size": 14,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 265653,
-      "name": "sub_40DB5",
-      "size": 16,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 265510,
-      "name": "sub_40D26",
-      "size": 81,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 264128,
-      "name": "sub_407C0",
-      "size": 131,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 259798,
-      "name": "sub_3F6D6",
-      "size": 42,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 264324,
-      "name": "sub_40884",
-      "size": 99,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 264423,
-      "name": "sub_408E7",
-      "size": 24,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 259976,
-      "name": "sub_3F788",
-      "size": 25,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 258984,
-      "name": "sub_3F3A8",
-      "size": 256,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 259508,
-      "name": "sub_3F5B4",
-      "size": 19,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 259840,
-      "name": "sub_3F700",
-      "size": 24,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 265322,
-      "name": "sub_40C6A",
-      "size": 9,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 271619,
-      "name": "sub_42503",
-      "size": 80,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 256846,
-      "name": "sub_3EB4E",
-      "size": 87,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 256197,
-      "name": "sub_3E8C5",
-      "size": 13,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 271273,
-      "name": "sub_423A9",
-      "size": 178,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 253657,
-      "name": "sub_3DED9",
-      "size": 69,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 259587,
-      "name": "sub_3F603",
-      "size": 35,
-      "called_by": "ai_behavior_state_machine",
-      "called_by_addr": 249770
-    },
-    {
-      "address": 250751,
-      "name": "sub_3D37F",
-      "size": 1319,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 272545,
-      "name": "sub_428A1",
-      "size": 32,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 265798,
-      "name": "sub_40E46",
-      "size": 14,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 272577,
-      "name": "sub_428C1",
-      "size": 19,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 272440,
-      "name": "sub_42838",
-      "size": 64,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 265784,
-      "name": "sub_40E38",
-      "size": 14,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 249757,
-      "name": "sub_3CF9D",
-      "size": 886,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 271778,
-      "name": "sub_425A2",
-      "size": 88,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 254402,
-      "name": "sub_3E1C2",
-      "size": 52,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 264112,
-      "name": "sub_407B0",
-      "size": 14,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 265653,
-      "name": "sub_40DB5",
-      "size": 16,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 265510,
-      "name": "sub_40D26",
-      "size": 81,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 264128,
-      "name": "sub_407C0",
-      "size": 131,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 259798,
-      "name": "sub_3F6D6",
-      "size": 42,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 264324,
-      "name": "sub_40884",
-      "size": 99,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 264423,
-      "name": "sub_408E7",
-      "size": 24,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 259976,
-      "name": "sub_3F788",
-      "size": 25,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 258984,
-      "name": "sub_3F3A8",
-      "size": 256,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 259508,
-      "name": "sub_3F5B4",
-      "size": 19,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 259840,
-      "name": "sub_3F700",
-      "size": 24,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 265322,
-      "name": "sub_40C6A",
-      "size": 9,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 271619,
-      "name": "sub_42503",
-      "size": 80,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 256846,
-      "name": "sub_3EB4E",
-      "size": 87,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 256197,
-      "name": "sub_3E8C5",
-      "size": 13,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 271273,
-      "name": "sub_423A9",
-      "size": 178,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 253657,
-      "name": "sub_3DED9",
-      "size": 69,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 259587,
-      "name": "sub_3F603",
-      "size": 35,
-      "called_by": "ai_target_tracking_update",
-      "called_by_addr": 250240
-    },
-    {
-      "address": 250751,
-      "name": "sub_3D37F",
-      "size": 1319,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 272545,
-      "name": "sub_428A1",
-      "size": 32,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 265798,
-      "name": "sub_40E46",
-      "size": 14,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 272577,
-      "name": "sub_428C1",
-      "size": 19,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 272440,
-      "name": "sub_42838",
-      "size": 64,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 265784,
-      "name": "sub_40E38",
-      "size": 14,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 249757,
-      "name": "sub_3CF9D",
-      "size": 886,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 271778,
-      "name": "sub_425A2",
-      "size": 88,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 254402,
-      "name": "sub_3E1C2",
-      "size": 52,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 264112,
-      "name": "sub_407B0",
-      "size": 14,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 265653,
-      "name": "sub_40DB5",
-      "size": 16,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 265510,
-      "name": "sub_40D26",
-      "size": 81,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 264128,
-      "name": "sub_407C0",
-      "size": 131,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 259798,
-      "name": "sub_3F6D6",
-      "size": 42,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 264324,
-      "name": "sub_40884",
-      "size": 99,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 264423,
-      "name": "sub_408E7",
-      "size": 24,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 259976,
-      "name": "sub_3F788",
-      "size": 25,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 258984,
-      "name": "sub_3F3A8",
-      "size": 256,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 259508,
-      "name": "sub_3F5B4",
-      "size": 19,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 259840,
-      "name": "sub_3F700",
-      "size": 24,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 265322,
-      "name": "sub_40C6A",
-      "size": 9,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 271619,
-      "name": "sub_42503",
-      "size": 80,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 256846,
-      "name": "sub_3EB4E",
-      "size": 87,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 256197,
-      "name": "sub_3E8C5",
-      "size": 13,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 271273,
-      "name": "sub_423A9",
-      "size": 178,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 253657,
-      "name": "sub_3DED9",
-      "size": 69,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 259587,
-      "name": "sub_3F603",
-      "size": 35,
-      "called_by": "ai_behavior_mirror_to_target",
-      "called_by_addr": 250309
-    },
-    {
-      "address": 301442,
-      "name": "sub_49982",
+      "called_by": [
+        "ai_entity_update_step",
+        "weapon_spawn_gate_validate",
+        "ai_weapon_fire_check",
+        "ai_state_condition_check"
+      ],
+      "caller_count": 69,
+      "comparison_count": 0,
+      "called_by_count": 4
+    },
+    {
+      "address": 265669,
+      "name": "sub_40DC5",
       "size": 21,
-      "called_by": "ai_context_batch_processor",
-      "called_by_addr": 300511
+      "called_by": [
+        "ai_entity_update_step",
+        "weapon_spawn_gate_validate",
+        "ai_state_calculate_helper",
+        "ai_angle_calculate_helper",
+        "ai_distance_range_check"
+      ],
+      "caller_count": 13,
+      "comparison_count": 0,
+      "called_by_count": 5
     },
     {
-      "address": 301463,
-      "name": "sub_49997",
-      "size": 130,
-      "called_by": "ai_context_batch_processor",
-      "called_by_addr": 300511
+      "address": 272697,
+      "name": "sub_42939",
+      "size": 30,
+      "called_by": [
+        "ai_entity_update_step"
+      ],
+      "caller_count": 1,
+      "comparison_count": 0,
+      "called_by_count": 1
+    },
+    {
+      "address": 272727,
+      "name": "sub_42957",
+      "size": 30,
+      "called_by": [
+        "ai_entity_update_step"
+      ],
+      "caller_count": 1,
+      "comparison_count": 0,
+      "called_by_count": 1
+    },
+    {
+      "address": 323406,
+      "name": "sub_4EF4E",
+      "size": 45,
+      "called_by": [
+        "ai_state_flag_validate"
+      ],
+      "caller_count": 4,
+      "comparison_count": 7,
+      "called_by_count": 1
     }
   ]
 }
