@@ -1,0 +1,52 @@
+{
+  "flag_address": "0x107762",
+  "flag_name": "r15_external_view_flag",
+  "total_refs": 5,
+  "readers": [
+    {
+      "addr": "0x108A84",
+      "func": "sub_108A05",
+      "func_addr": "0x108A05",
+      "insn": "cmp     cs:r15_external_view_flag, 0; External view mode flag: 0=cockpit (Path A), 1=external (Path B)",
+      "mnem": "cmp"
+    },
+    {
+      "addr": "0x108AB9",
+      "func": "sub_108A05",
+      "func_addr": "0x108A05",
+      "insn": "cmp     cs:r15_external_view_flag, 0; External view mode flag: 0=cockpit (Path A), 1=external (Path B)",
+      "mnem": "cmp"
+    },
+    {
+      "addr": "0x108BAC",
+      "func": "r15_simulation_loop",
+      "func_addr": "0x108BAC",
+      "insn": "cmp     cs:r15_external_view_flag, 0; Main simulation loop - Path A (cockpit) vs Path B (external view)",
+      "mnem": "cmp"
+    },
+    {
+      "addr": "0x109119",
+      "func": "sub_108FC2",
+      "func_addr": "0x108FC2",
+      "insn": "cmp     cs:r15_external_view_flag, 0; External view mode flag: 0=cockpit (Path A), 1=external (Path B)",
+      "mnem": "cmp"
+    }
+  ],
+  "writers": [
+    {
+      "addr": "0x1087B2",
+      "func": "view_mode_set",
+      "func_addr": "0x1086EC",
+      "insn": "mov     cs:r15_external_view_flag, al; Set view mode: 0=cockpit (Path A), 1=external (Path B)",
+      "mnem": "mov"
+    }
+  ],
+  "reader_functions": [
+    "sub_108A05",
+    "r15_simulation_loop",
+    "sub_108FC2"
+  ],
+  "writer_functions": [
+    "view_mode_set"
+  ]
+}
