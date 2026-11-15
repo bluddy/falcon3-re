@@ -1,0 +1,67 @@
+# angle_xy_near @ 0x23B8A
+# Rank #197
+# Size: 142 bytes, Calls: 13
+
+0x23B8A: mov     ax, [di+4]
+0x23B8D: mov     dx, [di+6]
+0x23B90: sub     ax, [si+4]
+0x23B93: sbb     dx, [si+6]
+0x23B96: jnz     short loc_23B9F
+0x23B98: or      ax, ax
+0x23B9A: jnz     short loc_23B9F
+0x23B9C: jmp     short loc_23BF1
+0x23B9F: mov     ch, dh
+0x23BA1: mov     bp, [di]
+0x23BA3: mov     bx, [di+2]
+0x23BA6: sub     bp, [si]
+0x23BA8: sbb     bx, [si+2]
+0x23BAB: jnz     short loc_23BB4
+0x23BAD: or      bp, bp
+0x23BAF: jnz     short loc_23BB4
+0x23BB1: jmp     short loc_23C0D
+0x23BB4: mov     cl, bh
+0x23BB6: push    cx
+0x23BB7: push    es
+0x23BB8: push    ds
+0x23BB9: pop     es
+0x23BBA: mov     cs:word_22DB8, 4
+0x23BC1: call    angle_delta_quadrant
+0x23BC4: mov     cs:word_22DB8, 0
+0x23BCB: pop     es
+0x23BCC: pop     cx
+0x23BCD: call    fixed_ratio_blend
+0x23BD0: or      ax, ax
+0x23BD2: jz      short loc_23C03
+0x23BD4: or      cl, cl
+0x23BD6: jl      short loc_23BE3
+0x23BD8: or      ch, ch
+0x23BDA: jl      short loc_23BDD
+0x23BDC: retf
+0x23BDD: sub     ax, 4000h
+0x23BE0: neg     ax
+0x23BE2: retf
+0x23BE3: or      ch, ch
+0x23BE5: jl      short loc_23BED
+0x23BE7: sub     ax, 2000h
+0x23BEA: neg     ax
+0x23BEC: retf
+0x23BED: add     ax, 2000h
+0x23BF0: retf
+0x23BF1: mov     ax, 2000h
+0x23BF4: mov     bx, [di]
+0x23BF6: mov     dx, [di+2]
+0x23BF9: sub     bx, [si]
+0x23BFB: sbb     dx, [si+2]
+0x23BFE: jl      short locret_23C02
+0x23C00: sub     ax, ax
+0x23C02: retf
+0x23C03: sub     ax, ax
+0x23C05: or      cl, cl
+0x23C07: jge     short locret_23C0C
+0x23C09: mov     ax, 2000h
+0x23C0C: retf
+0x23C0D: mov     ax, 1000h
+0x23C10: or      ch, ch
+0x23C12: jge     short locret_23C17
+0x23C14: mov     ax, 3000h
+0x23C17: retf

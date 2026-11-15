@@ -1,0 +1,312 @@
+# ui_render_coordinator @ 0x128D5A
+# Rank #111
+# Size: 900 bytes, Calls: 22
+
+0x128D5A: enter   1Eh, 0; Dispatches to mode-specific drawing primitives
+0x128D5E: push    si
+0x128D5F: mov     [bp+var_1D], 0
+0x128D63: mov     [bp+var_1E], 0
+0x128D67: mov     al, [bp+arg_2]
+0x128D6A: mov     [bp+var_10], al
+0x128D6D: mov     al, [bp+arg_4]
+0x128D70: mov     [bp+var_F], al
+0x128D73: mov     ax, 709Fh
+0x128D76: mov     es, ax
+0x128D78: mov     al, byte ptr es:word_70A2A
+0x128D7C: mov     [bp+var_E], al
+0x128D7F: mov     ax, 7894h
+0x128D82: mov     es, ax
+0x128D84: cmp     es:byte_7A309, 0
+0x128D8A: jz      short loc_128D98
+0x128D8C: mov     ax, 7894h
+0x128D8F: mov     es, ax
+0x128D91: mov     al, es:byte_7A305+1
+0x128D95: mov     [bp+var_D], al
+0x128D98: mov     al, [bp+arg_0]
+0x128D9B: mov     ah, 0
+0x128D9D: sub     ax, 0FAh; switch 6 cases
+0x128DA0: mov     bx, ax
+0x128DA2: cmp     bx, 5
+0x128DA5: jbe     short loc_128DAA
+0x128DA7: jmp     def_128DAC; jumptable 00128DAC default case
+0x128DAA: shl     bx, 1
+0x128DAC: jmp     cs:jpt_128DAC[bx]; switch jump
+0x128DB1: mov     [bp+var_1C], 0; jumptable 00128DAC case 255
+0x128DB5: jmp     loc_128F74
+0x128DB8: mov     [bp+var_12], 0; jumptable 00128DAC case 254
+0x128DBD: mov     [bp+var_1E], 0
+0x128DC1: jmp     short loc_128DEF
+0x128DC3: mov     ax, 709Fh
+0x128DC6: mov     es, ax
+0x128DC8: mov     al, byte ptr es:word_70A2A
+0x128DCC: cbw
+0x128DCD: cmp     ax, [bp+var_12]
+0x128DD0: jz      short loc_128DEC
+0x128DD2: mov     al, [bp+var_1E]
+0x128DD5: mov     ah, 0
+0x128DD7: lea     dx, [bp+var_1C]
+0x128DDA: add     ax, dx
+0x128DDC: mov     dl, byte ptr [bp+var_12]
+0x128DDF: mov     bx, ax
+0x128DE1: mov     ss:[bx], dl
+0x128DE4: mov     al, [bp+var_1E]
+0x128DE7: inc     al
+0x128DE9: mov     [bp+var_1E], al
+0x128DEC: inc     [bp+var_12]
+0x128DEF: mov     ax, 709Fh
+0x128DF2: mov     es, ax
+0x128DF4: mov     ax, es:word_70A2A+1
+0x128DF8: cmp     ax, [bp+var_12]
+0x128DFB: jge     short loc_128DC3
+0x128DFD: mov     al, [bp+var_1E]
+0x128E00: mov     [bp+var_1D], al
+0x128E03: jmp     loc_128F78; jumptable 00128DAC case 250
+0x128E06: mov     [bp+var_12], 0; jumptable 00128DAC case 253
+0x128E0B: mov     [bp+var_1D], 0
+0x128E0F: mov     bx, [bp+var_12]
+0x128E12: shl     bx, 2
+0x128E15: mov     ax, 602Eh
+0x128E18: mov     es, ax
+0x128E1A: cmp     byte ptr es:[bx+2], 0
+0x128E20: jz      short loc_128E74
+0x128E22: mov     ax, 709Fh
+0x128E25: mov     es, ax
+0x128E27: mov     al, byte ptr es:word_70A2A
+0x128E2B: cbw
+0x128E2C: cmp     ax, [bp+var_12]
+0x128E2F: jz      short loc_128E74
+0x128E31: mov     bx, [bp+var_12]
+0x128E34: shl     bx, 2
+0x128E37: mov     ax, 602Eh
+0x128E3A: mov     es, ax
+0x128E3C: mov     al, es:[bx+1]
+0x128E41: mov     ah, 0
+0x128E43: and     ax, 1
+0x128E46: mov     dx, 602Eh
+0x128E49: mov     es, dx
+0x128E4B: mov     dl, es:byte_14E5A0
+0x128E50: mov     dh, 0
+0x128E52: and     dx, 1
+0x128E56: cmp     ax, dx
+0x128E58: jnz     short loc_128E74
+0x128E5A: mov     al, [bp+var_1D]
+0x128E5D: mov     ah, 0
+0x128E5F: lea     dx, [bp+var_1C]
+0x128E62: add     ax, dx
+0x128E64: mov     dl, byte ptr [bp+var_12]
+0x128E67: mov     bx, ax
+0x128E69: mov     ss:[bx], dl
+0x128E6C: mov     al, [bp+var_1D]
+0x128E6F: inc     al
+0x128E71: mov     [bp+var_1D], al
+0x128E74: inc     [bp+var_12]
+0x128E77: cmp     [bp+var_12], 6
+0x128E7B: jl      short loc_128E0F
+0x128E7D: jmp     loc_128F78; jumptable 00128DAC case 250
+0x128E80: mov     [bp+var_12], 0; jumptable 00128DAC case 252
+0x128E85: mov     [bp+var_1E], 0
+0x128E89: jmp     short loc_128EE7
+0x128E8B: mov     bx, [bp+var_12]
+0x128E8E: shl     bx, 2
+0x128E91: mov     ax, 602Eh
+0x128E94: mov     es, ax
+0x128E96: mov     al, es:[bx+1]
+0x128E9B: mov     ah, 0
+0x128E9D: and     ax, 1
+0x128EA0: mov     dx, 602Eh
+0x128EA3: mov     es, dx
+0x128EA5: mov     dl, es:byte_14E5A0
+0x128EAA: mov     dh, 0
+0x128EAC: and     dx, 1
+0x128EB0: cmp     ax, dx
+0x128EB2: jnz     short loc_128EE4
+0x128EB4: mov     bx, [bp+var_12]
+0x128EB7: shl     bx, 2
+0x128EBA: mov     ax, 602Eh
+0x128EBD: mov     es, ax
+0x128EBF: mov     al, es:[bx+2]
+0x128EC4: mov     ah, 0
+0x128EC6: or      ax, ax
+0x128EC8: jnz     short loc_128EE4
+0x128ECA: mov     al, [bp+var_1E]
+0x128ECD: mov     ah, 0
+0x128ECF: lea     dx, [bp+var_1C]
+0x128ED2: add     ax, dx
+0x128ED4: mov     dl, byte ptr [bp+var_12]
+0x128ED7: mov     bx, ax
+0x128ED9: mov     ss:[bx], dl
+0x128EDC: mov     al, [bp+var_1E]
+0x128EDF: inc     al
+0x128EE1: mov     [bp+var_1E], al
+0x128EE4: inc     [bp+var_12]
+0x128EE7: mov     ax, 709Fh
+0x128EEA: mov     es, ax
+0x128EEC: mov     ax, es:word_70A2A+1
+0x128EF0: cmp     ax, [bp+var_12]
+0x128EF3: jge     short loc_128E8B
+0x128EF5: mov     al, [bp+var_1E]
+0x128EF8: mov     [bp+var_1D], al
+0x128EFB: jmp     short loc_128F78; jumptable 00128DAC case 250
+0x128EFD: mov     [bp+var_12], 0; jumptable 00128DAC case 251
+0x128F02: mov     [bp+var_1E], 0
+0x128F06: jmp     short loc_128F47
+0x128F08: mov     ax, 709Fh
+0x128F0B: mov     es, ax
+0x128F0D: mov     al, byte ptr es:word_70A2A
+0x128F11: cbw
+0x128F12: cmp     ax, [bp+var_12]
+0x128F15: jz      short loc_128F44
+0x128F17: mov     bx, [bp+var_12]
+0x128F1A: shl     bx, 2
+0x128F1D: mov     ax, 602Eh
+0x128F20: mov     es, ax
+0x128F22: cmp     byte ptr es:[bx+2], 0
+0x128F28: jz      short loc_128F44
+0x128F2A: mov     al, [bp+var_1E]
+0x128F2D: mov     ah, 0
+0x128F2F: lea     dx, [bp+var_1C]
+0x128F32: add     ax, dx
+0x128F34: mov     dl, byte ptr [bp+var_12]
+0x128F37: mov     bx, ax
+0x128F39: mov     ss:[bx], dl
+0x128F3C: mov     al, [bp+var_1E]
+0x128F3F: inc     al
+0x128F41: mov     [bp+var_1E], al
+0x128F44: inc     [bp+var_12]
+0x128F47: mov     ax, 709Fh
+0x128F4A: mov     es, ax
+0x128F4C: mov     ax, es:word_70A2A+1
+0x128F50: cmp     ax, [bp+var_12]
+0x128F53: jge     short loc_128F08
+0x128F55: mov     al, [bp+var_1E]
+0x128F58: mov     [bp+var_1D], al
+0x128F5B: jmp     short loc_128F78; jumptable 00128DAC case 250
+0x128F5D: mov     al, [bp+arg_0]; jumptable 00128DAC default case
+0x128F60: mov     ah, 0
+0x128F62: mov     dx, 709Fh
+0x128F65: mov     es, dx
+0x128F67: cmp     ax, es:word_70A2A+1
+0x128F6C: jg      short loc_128F78; jumptable 00128DAC case 250
+0x128F6E: mov     al, [bp+arg_0]
+0x128F71: mov     [bp+var_1C], al
+0x128F74: mov     [bp+var_1D], 1
+0x128F78: cmp     [bp+var_1D], 0; jumptable 00128DAC case 250
+0x128F7C: ja      short loc_128F81
+0x128F7E: jmp     loc_1290DB
+0x128F81: mov     ax, 602Eh
+0x128F84: mov     es, ax
+0x128F86: mov     al, es:byte_14E5A0
+0x128F8A: mov     dx, 7894h
+0x128F8D: mov     es, dx
+0x128F8F: mov     es:byte_79F38+26Eh, al
+0x128F93: mov     ax, 709Fh
+0x128F96: mov     es, ax
+0x128F98: mov     al, byte ptr es:word_70A2A
+0x128F9C: mov     es, dx
+0x128F9E: mov     es:byte_79F38+26Fh, al
+0x128FA2: mov     ax, 7894h
+0x128FA5: mov     es, ax
+0x128FA7: mov     es:byte_79F38+271h, 3Dh ; '='
+0x128FAD: mov     es, ax
+0x128FAF: mov     es:byte_79F38+275h, 0
+0x128FB5: mov     [bp+var_4], 1
+0x128FBA: mov     dl, byte ptr [bp+var_4]
+0x128FBD: mov     es, ax
+0x128FBF: mov     es:byte_79F38+278h, dl
+0x128FC4: mov     [bp+var_1E], 0
+0x128FC8: jmp     loc_1290D0
+0x128FCB: lea     ax, [bp+var_10]
+0x128FCE: mov     word ptr [bp+var_8+2], ss
+0x128FD1: mov     word ptr [bp+var_8], ax
+0x128FD4: mov     al, [bp+var_1E]
+0x128FD7: mov     ah, 0
+0x128FD9: lea     dx, [bp+var_1C]
+0x128FDC: add     ax, dx
+0x128FDE: mov     bx, ax
+0x128FE0: mov     al, ss:[bx]
+0x128FE3: mov     dx, 7894h
+0x128FE6: mov     es, dx
+0x128FE8: mov     es:byte_79F38+270h, al
+0x128FEC: mov     [bp+var_2], 0
+0x128FF1: jmp     loc_1290BD
+0x128FF4: mov     [bp+var_12], 0Bh
+0x128FF9: mov     [bp+var_14], 0
+0x128FFE: mov     [bp+var_15], 0Fh
+0x129002: jmp     short loc_129042
+0x129004: mov     ax, 7894h
+0x129007: mov     bx, [bp+var_12]
+0x12900A: les     si, [bp+var_8]
+0x12900D: mov     dl, es:[si]
+0x129010: mov     es, ax
+0x129012: mov     es:[bx+1866h], dl
+0x129017: mov     ax, [bp+var_12]
+0x12901A: mov     bx, 2
+0x12901D: cwd
+0x12901E: idiv    bx
+0x129020: or      dx, dx
+0x129022: jz      short loc_129031
+0x129024: les     bx, [bp+var_8]
+0x129027: mov     al, es:[bx]
+0x12902A: mov     ah, 0
+0x12902C: add     [bp+var_14], ax
+0x12902F: jmp     short loc_12903C
+0x129031: les     bx, [bp+var_8]
+0x129034: mov     al, es:[bx]
+0x129037: mov     ah, 0
+0x129039: sub     [bp+var_14], ax
+0x12903C: inc     [bp+var_12]
+0x12903F: inc     word ptr [bp+var_8]
+0x129042: mov     al, [bp+var_15]
+0x129045: mov     ah, 0
+0x129047: cmp     ax, [bp+var_12]
+0x12904A: jg      short loc_129004
+0x12904C: lea     ax, [bp+var_14]
+0x12904F: mov     word ptr [bp+var_C+2], ss
+0x129052: mov     word ptr [bp+var_C], ax
+0x129055: les     bx, [bp+var_C]
+0x129058: mov     al, es:[bx]
+0x12905B: mov     dx, 7894h
+0x12905E: mov     es, dx
+0x129060: mov     es:byte_79F38+273h, al
+0x129064: mov     es, word ptr [bp+var_C+2]
+0x129067: mov     al, es:[bx+1]
+0x12906B: mov     es, dx
+0x12906D: mov     es:byte_79F38+274h, al
+0x129071: mov     ax, 7894h
+0x129074: mov     dl, byte ptr [bp+var_2]
+0x129077: mov     es, ax
+0x129079: mov     es:byte_79F38+277h, dl
+0x12907E: mov     dl, [bp+var_15]
+0x129081: mov     es, ax
+0x129083: mov     es:byte_79F38+272h, dl
+0x129088: mov     [bp+var_12], 3
+0x12908D: push    7894h
+0x129090: push    1866h
+0x129093: mov     al, [bp+var_15]
+0x129096: mov     ah, 0
+0x129098: push    ax
+0x129099: push    3Dh ; '='
+0x12909B: call    draw_primitive_mode_2
+0x1290A0: add     sp, 8
+0x1290A3: call    draw_primitive_mode_1
+0x1290A8: call    undoc_12C2F7
+0x1290AD: or      ax, ax
+0x1290AF: jnz     short loc_1290A8
+0x1290B1: dec     [bp+var_12]
+0x1290B4: cmp     [bp+var_12], 0
+0x1290B8: jnz     short loc_12908D
+0x1290BA: inc     [bp+var_2]
+0x1290BD: mov     ax, [bp+var_2]
+0x1290C0: cmp     ax, [bp+var_4]
+0x1290C3: jge     short loc_1290C8
+0x1290C5: jmp     loc_128FF4
+0x1290C8: mov     al, [bp+var_1E]
+0x1290CB: inc     al
+0x1290CD: mov     [bp+var_1E], al
+0x1290D0: mov     al, [bp+var_1E]
+0x1290D3: cmp     al, [bp+var_1D]
+0x1290D6: jnb     short loc_1290DB
+0x1290D8: jmp     loc_128FCB
+0x1290DB: pop     si
+0x1290DC: leave
+0x1290DD: retf

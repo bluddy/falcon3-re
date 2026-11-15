@@ -1,0 +1,27 @@
+# farobj_field4_get_stc @ 0x20559
+# Rank #150
+# Size: 46 bytes, Calls: 16
+
+0x20559: mov     bx, [si+4]
+0x2055C: cmp     bx, 1
+0x2055F: jge     short loc_20563
+0x20561: stc
+0x20562: retf
+0x20563: lodsw
+0x20564: mov     cx, cs:word_1F6DA
+0x20569: imul    cx
+0x2056B: idiv    bx
+0x2056D: cmp     ax, 7FFFh
+0x20570: jz      short loc_20561
+0x20572: add     ax, 0ABCDh
+0x20575: push    ax
+0x20576: lodsw
+0x20577: imul    cx
+0x20579: idiv    bx
+0x2057B: pop     bx
+0x2057C: cmp     ax, 7FFFh
+0x2057F: jz      short loc_20561
+0x20581: add     ax, 0ABCDh
+0x20584: xchg    ax, bx
+0x20585: clc
+0x20586: retf

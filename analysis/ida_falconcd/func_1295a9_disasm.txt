@@ -1,0 +1,25 @@
+# ui_text_render_loop @ 0x1295A9
+# Rank #157
+# Size: 54 bytes, Calls: 16
+
+0x1295A9: enter   2, 0; Loops calling ui_text_render_engine N times (N from global_frame_counter)
+0x1295AD: mov     [bp+var_2], 1
+0x1295B2: jmp     short loc_1295CF
+0x1295B4: push    [bp+arg_6]
+0x1295B7: push    [bp+arg_4]
+0x1295BA: push    [bp+arg_2]
+0x1295BD: mov     al, byte ptr [bp+var_2]
+0x1295C0: push    ax
+0x1295C1: mov     al, [bp+arg_0]
+0x1295C4: push    ax
+0x1295C5: push    cs
+0x1295C6: call    near ptr ui_text_render_engine
+0x1295C9: add     sp, 0Ah
+0x1295CC: inc     [bp+var_2]
+0x1295CF: mov     ax, 709Fh
+0x1295D2: mov     es, ax
+0x1295D4: mov     ax, es:word_70A2A+1
+0x1295D8: cmp     ax, [bp+var_2]
+0x1295DB: jge     short loc_1295B4
+0x1295DD: leave
+0x1295DE: retf

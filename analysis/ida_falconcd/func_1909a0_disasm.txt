@@ -1,0 +1,102 @@
+# undoc_1909A0 @ 0x1909A0
+# Rank #193
+# Size: 308 bytes, Calls: 14
+
+0x1909A0: push    bp
+0x1909A1: mov     bp, sp
+0x1909A3: push    si
+0x1909A4: mov     si, [bp+arg_0]
+0x1909A7: mov     bx, si
+0x1909A9: cmp     bx, 0Ah; switch 11 cases
+0x1909AC: jbe     short loc_1909B1
+0x1909AE: jmp     def_1909B3; jumptable 001909B3 default case, case 1
+0x1909B1: shl     bx, 1
+0x1909B3: jmp     cs:jpt_1909B3[bx]; switch jump
+0x1909B8: mov     ax, 7894h; jumptable 001909B3 case 0
+0x1909BB: mov     es, ax
+0x1909BD: cmp     es:word_79E80, 12Ch
+0x1909C4: jge     short loc_1909C9
+0x1909C6: jmp     def_1909B3; jumptable 001909B3 default case, case 1
+0x1909C9: push    si
+0x1909CA: call    undoc_11CD7F
+0x1909CF: pop     cx
+0x1909D0: jmp     def_1909B3; jumptable 001909B3 default case, case 1
+0x1909D3: mov     ax, 7894h; jumptable 001909B3 case 2
+0x1909D6: mov     es, ax
+0x1909D8: cmp     es:word_79E80, 12Ch
+0x1909DF: jge     short loc_1909E4
+0x1909E1: jmp     def_1909B3; jumptable 001909B3 default case, case 1
+0x1909E4: push    si
+0x1909E5: call    undoc_11CDEB
+0x1909EA: jmp     short loc_1909CF
+0x1909EC: mov     ax, 602Eh; jumptable 001909B3 case 3
+0x1909EF: mov     es, ax
+0x1909F1: push    word ptr es:a0ClearMission+2; ".`CLEAR MISSION"
+0x1909F6: push    word ptr es:a0ClearMission; "\r0.`CLEAR MISSION"
+0x1909FB: push    si
+0x1909FC: call    undoc_11C576
+0x190A01: jmp     loc_190ACE
+0x190A04: mov     ax, 7894h; jumptable 001909B3 case 4
+0x190A07: mov     es, ax
+0x190A09: cmp     es:word_79D1E, 0
+0x190A0F: jnz     short loc_190A22
+0x190A11: mov     ax, 602Eh
+0x190A14: mov     es, ax
+0x190A16: push    word ptr es:aG2LoadMission+2; ".`LOAD MISSION"
+0x190A1B: push    word ptr es:aG2LoadMission; "G2.`LOAD MISSION"
+0x190A20: jmp     short loc_190A60
+0x190A22: mov     ax, 602Eh
+0x190A25: mov     es, ax
+0x190A27: push    word ptr es:aG2LoadMission+2; ".`LOAD MISSION"
+0x190A2C: push    word ptr es:aG2LoadMission; "G2.`LOAD MISSION"
+0x190A31: jmp     short loc_1909FB
+0x190A33: mov     ax, 602Eh; jumptable 001909B3 case 5
+0x190A36: mov     es, ax
+0x190A38: push    word ptr es:a3SaveMission+1; ".`SAVE MISSION"
+0x190A3D: push    word ptr es:byte_151935
+0x190A42: jmp     short loc_1909FB
+0x190A44: mov     ax, 7894h; jumptable 001909B3 case 6
+0x190A47: mov     es, ax
+0x190A49: cmp     es:word_79D1E, 0
+0x190A4F: jnz     short loc_190A68
+0x190A51: mov     ax, 602Eh
+0x190A54: mov     es, ax
+0x190A56: push    word ptr es:a0DeleteMission+1; ".`DELETE MISSION"
+0x190A5B: push    word ptr es:byte_151662
+0x190A60: push    si
+0x190A61: call    undoc_11C5DC
+0x190A66: jmp     short loc_190ACE
+0x190A68: mov     ax, 602Eh
+0x190A6B: mov     es, ax
+0x190A6D: push    word ptr es:a0DeleteMission+1; ".`DELETE MISSION"
+0x190A72: push    word ptr es:byte_151662
+0x190A77: jmp     short loc_1909FB
+0x190A79: mov     ax, 602Eh; jumptable 001909B3 case 7
+0x190A7C: mov     es, ax
+0x190A7E: push    word ptr es:a2NellisCommand+1; ".`NELLIS COMMAND"
+0x190A83: push    word ptr es:byte_151827
+0x190A88: jmp     loc_1909FB
+0x190A8B: mov     ax, 602Eh; jumptable 001909B3 case 8
+0x190A8E: mov     es, ax
+0x190A90: push    word ptr es:aK4Acmi+2; ".`ACMI"
+0x190A95: push    word ptr es:aK4Acmi; "K4.`ACMI"
+0x190A9A: push    si
+0x190A9B: call    sub_11CC39
+0x190AA0: jmp     short loc_190ACE
+0x190AA2: mov     ax, 602Eh; jumptable 001909B3 case 9
+0x190AA5: mov     es, ax
+0x190AA7: push    word ptr es:a4WarRoom+1; ".`WAR ROOM"
+0x190AAC: push    word ptr es:byte_151A36
+0x190AB1: push    si
+0x190AB2: call    utility_11c90f; Utility function (24 calls) - needs investigation
+0x190AB7: jmp     short loc_190ACE
+0x190AB9: mov     ax, 602Eh; jumptable 001909B3 case 10
+0x190ABC: mov     es, ax
+0x190ABE: push    word ptr es:a1F16Pilots+1; ".`F-16 PILOTS"
+0x190AC3: push    word ptr es:byte_151789
+0x190AC8: push    si
+0x190AC9: call    sub_11CA9E
+0x190ACE: add     sp, 6
+0x190AD1: pop     si; jumptable 001909B3 default case, case 1
+0x190AD2: pop     bp
+0x190AD3: retf

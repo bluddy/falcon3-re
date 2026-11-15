@@ -1,0 +1,59 @@
+# angle_aux_far @ 0x23C18
+# Rank #167
+# Size: 131 bytes, Calls: 15
+
+0x23C18: mov     ax, es:[di+8]
+0x23C1C: mov     dx, es:[di+0Ah]
+0x23C20: sub     ax, [si+8]
+0x23C23: sbb     dx, [si+0Ah]
+0x23C26: or      dx, dx
+0x23C28: jnz     short loc_23C2F
+0x23C2A: or      ax, ax
+0x23C2C: jnz     short loc_23C2F
+0x23C2E: retf
+0x23C2F: mov     cx, dx
+0x23C31: call    fixed_abs_neg64
+0x23C34: push    ax
+0x23C35: push    dx
+0x23C36: push    cx
+0x23C37: mov     cs:word_22DB8, 4
+0x23C3E: call    angle_quad_norm_scale
+0x23C41: mov     cs:word_22DB8, 0
+0x23C48: pop     cx
+0x23C49: pop     di
+0x23C4A: pop     si
+0x23C4B: or      dx, dx
+0x23C4D: jnz     short loc_23C56
+0x23C4F: or      ax, ax
+0x23C51: jnz     short loc_23C56
+0x23C53: jmp     short loc_23C91
+0x23C56: push    cx
+0x23C57: mov     bx, ax
+0x23C59: mov     bp, dx
+0x23C5B: mov     ax, di
+0x23C5D: mov     cx, di
+0x23C5F: mov     di, bx
+0x23C61: or      di, si
+0x23C63: mov     cs:word_22DB8, 4
+0x23C6A: call    fixed_quadrant_classify
+0x23C6D: mov     cs:word_22DB8, 0
+0x23C74: mov     di, ax
+0x23C76: mov     ax, bx
+0x23C78: mov     dx, bp
+0x23C7A: div     di
+0x23C7C: mov     bx, ax
+0x23C7E: mov     ax, si
+0x23C80: mov     dx, cx
+0x23C82: div     di
+0x23C84: pop     cx
+0x23C85: call    fixed_ratio_blend
+0x23C88: or      ax, ax
+0x23C8A: jz      short locret_23C9A
+0x23C8C: or      cx, cx
+0x23C8E: jl      short loc_23C98
+0x23C90: retf
+0x23C91: mov     ax, 1000h
+0x23C94: or      cx, cx
+0x23C96: jge     short locret_23C9A
+0x23C98: neg     ax
+0x23C9A: retf

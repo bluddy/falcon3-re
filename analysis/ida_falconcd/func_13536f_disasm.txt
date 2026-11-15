@@ -1,0 +1,420 @@
+# sub_13536F @ 0x13536F
+# Rank #103
+# Size: 1085 bytes
+
+0x13536F: enter   14h, 0
+0x135373: push    si
+0x135374: push    di
+0x135375: les     bx, [bp+arg_0]
+0x135378: mov     ax, es:[bx+2]
+0x13537C: mov     dx, es:[bx]
+0x13537F: les     bx, [bp+arg_8]
+0x135382: add     dx, es:[bx]
+0x135385: adc     ax, es:[bx+2]
+0x135389: mov     [bp+var_2], ax
+0x13538C: mov     [bp+var_4], dx
+0x13538F: les     bx, [bp+arg_4]
+0x135392: mov     ax, es:[bx+2]
+0x135396: mov     dx, es:[bx]
+0x135399: les     bx, [bp+arg_C]
+0x13539C: add     dx, es:[bx]
+0x13539F: adc     ax, es:[bx+2]
+0x1353A3: mov     [bp+var_6], ax
+0x1353A6: mov     [bp+var_8], dx
+0x1353A9: push    1
+0x1353AB: push    [bp+var_2]
+0x1353AE: push    [bp+var_4]
+0x1353B1: call    sub_13DDC3
+0x1353B6: add     sp, 6
+0x1353B9: mov     [bp+var_2], dx
+0x1353BC: mov     [bp+var_4], ax
+0x1353BF: push    1
+0x1353C1: push    [bp+var_6]
+0x1353C4: push    [bp+var_8]
+0x1353C7: call    sub_13DDC3
+0x1353CC: add     sp, 6
+0x1353CF: mov     [bp+var_6], dx
+0x1353D2: mov     [bp+var_8], ax
+0x1353D5: mov     ax, [bp+var_2]
+0x1353D8: mov     dx, [bp+var_4]
+0x1353DB: mov     [bp+var_A], ax
+0x1353DE: mov     [bp+var_C], dx
+0x1353E1: mov     ax, [bp+var_6]
+0x1353E4: mov     dx, [bp+var_8]
+0x1353E7: mov     [bp+var_E], ax
+0x1353EA: mov     [bp+var_10], dx
+0x1353ED: les     bx, [bp+arg_0]
+0x1353F0: mov     ax, es:[bx+2]
+0x1353F4: mov     dx, es:[bx]
+0x1353F7: les     bx, [bp+arg_8]
+0x1353FA: sub     dx, es:[bx]
+0x1353FD: sbb     ax, es:[bx+2]
+0x135401: mov     [bp+var_12], ax
+0x135404: mov     [bp+var_14], dx
+0x135407: cmp     [bp+var_12], 0
+0x13540B: jg      short loc_135428
+0x13540D: jl      short loc_135415
+0x13540F: cmp     [bp+var_14], 0
+0x135413: jnb     short loc_135428
+0x135415: mov     ax, [bp+var_12]
+0x135418: mov     dx, [bp+var_14]
+0x13541B: neg     ax
+0x13541D: neg     dx
+0x13541F: sbb     ax, 0
+0x135422: mov     [bp+var_12], ax
+0x135425: mov     [bp+var_14], dx
+0x135428: cmp     [bp+var_12], 0
+0x13542C: jle     short loc_135431
+0x13542E: jmp     loc_1354B4
+0x135431: jl      short loc_13543A
+0x135433: cmp     [bp+var_14], 800h
+0x135438: jnb     short loc_1354B4
+0x13543A: xor     di, di
+0x13543C: les     bx, [bp+arg_0]
+0x13543F: cmp     word ptr es:[bx+2], 0FFFFh
+0x135444: jl      short loc_135487
+0x135446: jnz     short loc_13544F
+0x135448: cmp     word ptr es:[bx], 0F000h
+0x13544D: jb      short loc_135487
+0x13544F: les     bx, [bp+arg_0]
+0x135452: cmp     word ptr es:[bx+2], 0
+0x135457: jg      short loc_135487
+0x135459: jnz     short loc_135462
+0x13545B: cmp     word ptr es:[bx], 1000h
+0x135460: ja      short loc_135487
+0x135462: push    word ptr [bp+arg_C+2]
+0x135465: push    word ptr [bp+arg_C]
+0x135468: push    word ptr [bp+arg_8+2]
+0x13546B: push    word ptr [bp+arg_8]
+0x13546E: push    word ptr [bp+arg_4+2]
+0x135471: push    word ptr [bp+arg_4]
+0x135474: push    word ptr [bp+arg_0+2]
+0x135477: push    word ptr [bp+arg_0]
+0x13547A: call    sub_1357AC
+0x13547F: add     sp, 10h
+0x135482: mov     si, ax
+0x135484: jmp     loc_1357A4
+0x135487: les     bx, [bp+arg_8]
+0x13548A: cmp     word ptr es:[bx+2], 0FFFFh
+0x13548F: jl      short loc_1354AF
+0x135491: jnz     short loc_13549A
+0x135493: cmp     word ptr es:[bx], 0F000h
+0x135498: jb      short loc_1354AF
+0x13549A: les     bx, [bp+arg_8]
+0x13549D: cmp     word ptr es:[bx+2], 0
+0x1354A2: jg      short loc_1354AF
+0x1354A4: jnz     short loc_1354AD
+0x1354A6: cmp     word ptr es:[bx], 1000h
+0x1354AB: ja      short loc_1354AF
+0x1354AD: jmp     short loc_135462
+0x1354AF: xor     si, si
+0x1354B1: jmp     loc_1357A4
+0x1354B4: les     bx, [bp+arg_0]
+0x1354B7: cmp     word ptr es:[bx+2], 0FFFFh
+0x1354BC: jle     short loc_1354C1
+0x1354BE: jmp     loc_1355B9
+0x1354C1: jl      short loc_1354CD
+0x1354C3: cmp     word ptr es:[bx], 0F000h
+0x1354C8: jb      short loc_1354CD
+0x1354CA: jmp     loc_1355B9
+0x1354CD: les     bx, [bp+arg_8]
+0x1354D0: cmp     word ptr es:[bx+2], 0FFFFh
+0x1354D5: jg      short loc_1354E5
+0x1354D7: jl      short loc_1354E0
+0x1354D9: cmp     word ptr es:[bx], 0F000h
+0x1354DE: jnb     short loc_1354E5
+0x1354E0: xor     si, si
+0x1354E2: jmp     loc_1357A2
+0x1354E5: les     bx, [bp+arg_8]
+0x1354E8: cmp     word ptr es:[bx+2], 0
+0x1354ED: jl      short loc_13556B
+0x1354EF: jg      short loc_1354F8
+0x1354F1: cmp     word ptr es:[bx], 1000h
+0x1354F6: jbe     short loc_13556B
+0x1354F8: push    ss
+0x1354F9: lea     ax, [bp+var_8]
+0x1354FC: push    ax
+0x1354FD: push    ss
+0x1354FE: lea     ax, [bp+var_4]
+0x135501: push    ax
+0x135502: push    word ptr [bp+arg_4+2]
+0x135505: push    word ptr [bp+arg_4]
+0x135508: push    word ptr [bp+arg_0+2]
+0x13550B: push    word ptr [bp+arg_0]
+0x13550E: push    cs
+0x13550F: call    near ptr sub_13536F
+0x135512: add     sp, 10h
+0x135515: mov     si, ax
+0x135517: push    word ptr [bp+arg_C+2]
+0x13551A: push    word ptr [bp+arg_C]
+0x13551D: push    word ptr [bp+arg_8+2]
+0x135520: push    word ptr [bp+arg_8]
+0x135523: push    ss
+0x135524: lea     ax, [bp+var_10]
+0x135527: push    ax
+0x135528: push    ss
+0x135529: lea     ax, [bp+var_C]
+0x13552C: push    ax
+0x13552D: push    cs
+0x13552E: call    near ptr sub_13536F
+0x135531: add     sp, 10h
+0x135534: mov     di, ax
+0x135536: or      si, si
+0x135538: jz      short loc_135541
+0x13553A: or      di, di
+0x13553C: jnz     short loc_135541
+0x13553E: jmp     loc_13575E
+0x135541: or      si, si
+0x135543: jz      short loc_135548
+0x135545: jmp     loc_1357A4
+0x135548: or      di, di
+0x13554A: jnz     short loc_13554F
+0x13554C: jmp     loc_1357A4
+0x13554F: les     bx, [bp+arg_0]
+0x135552: mov     ax, [bp+var_A]
+0x135555: mov     dx, [bp+var_C]
+0x135558: mov     es:[bx+2], ax
+0x13555C: mov     es:[bx], dx
+0x13555F: les     bx, [bp+arg_4]
+0x135562: mov     ax, [bp+var_E]
+0x135565: mov     dx, [bp+var_10]
+0x135568: jmp     loc_135777
+0x13556B: push    ss
+0x13556C: lea     ax, [bp+var_8]
+0x13556F: push    ax
+0x135570: push    ss
+0x135571: lea     ax, [bp+var_4]
+0x135574: push    ax
+0x135575: push    word ptr [bp+arg_4+2]
+0x135578: push    word ptr [bp+arg_4]
+0x13557B: push    word ptr [bp+arg_0+2]
+0x13557E: push    word ptr [bp+arg_0]
+0x135581: push    cs
+0x135582: call    near ptr sub_13536F
+0x135585: add     sp, 10h
+0x135588: mov     si, ax
+0x13558A: push    word ptr [bp+arg_C+2]
+0x13558D: push    word ptr [bp+arg_C]
+0x135590: push    word ptr [bp+arg_8+2]
+0x135593: push    word ptr [bp+arg_8]
+0x135596: push    ss
+0x135597: lea     ax, [bp+var_10]
+0x13559A: push    ax
+0x13559B: push    ss
+0x13559C: lea     ax, [bp+var_C]
+0x13559F: push    ax
+0x1355A0: push    cs
+0x1355A1: call    near ptr sub_13536F
+0x1355A4: add     sp, 10h
+0x1355A7: mov     di, ax
+0x1355A9: or      si, si
+0x1355AB: jz      short loc_1355B0
+0x1355AD: jmp     loc_1357A4
+0x1355B0: or      di, di
+0x1355B2: jnz     short loc_1355B7
+0x1355B4: jmp     loc_1357A4
+0x1355B7: jmp     short loc_13554F
+0x1355B9: les     bx, [bp+arg_0]
+0x1355BC: cmp     word ptr es:[bx+2], 0
+0x1355C1: jge     short loc_1355C6
+0x1355C3: jmp     loc_1356A4
+0x1355C6: jg      short loc_1355D2
+0x1355C8: cmp     word ptr es:[bx], 1000h
+0x1355CD: ja      short loc_1355D2
+0x1355CF: jmp     loc_1356A4
+0x1355D2: les     bx, [bp+arg_8]
+0x1355D5: cmp     word ptr es:[bx+2], 0FFFFh
+0x1355DA: jg      short loc_13563F
+0x1355DC: jl      short loc_1355E5
+0x1355DE: cmp     word ptr es:[bx], 0F000h
+0x1355E3: jnb     short loc_13563F
+0x1355E5: push    ss
+0x1355E6: lea     ax, [bp+var_8]
+0x1355E9: push    ax
+0x1355EA: push    ss
+0x1355EB: lea     ax, [bp+var_4]
+0x1355EE: push    ax
+0x1355EF: push    word ptr [bp+arg_4+2]
+0x1355F2: push    word ptr [bp+arg_4]
+0x1355F5: push    word ptr [bp+arg_0+2]
+0x1355F8: push    word ptr [bp+arg_0]
+0x1355FB: push    cs
+0x1355FC: call    near ptr sub_13536F
+0x1355FF: add     sp, 10h
+0x135602: mov     si, ax
+0x135604: push    word ptr [bp+arg_C+2]
+0x135607: push    word ptr [bp+arg_C]
+0x13560A: push    word ptr [bp+arg_8+2]
+0x13560D: push    word ptr [bp+arg_8]
+0x135610: push    ss
+0x135611: lea     ax, [bp+var_10]
+0x135614: push    ax
+0x135615: push    ss
+0x135616: lea     ax, [bp+var_C]
+0x135619: push    ax
+0x13561A: push    cs
+0x13561B: call    near ptr sub_13536F
+0x13561E: add     sp, 10h
+0x135621: mov     di, ax
+0x135623: or      si, si
+0x135625: jz      short loc_13562E
+0x135627: or      di, di
+0x135629: jnz     short loc_13562E
+0x13562B: jmp     loc_13575E
+0x13562E: or      si, si
+0x135630: jz      short loc_135635
+0x135632: jmp     loc_1357A4
+0x135635: or      di, di
+0x135637: jnz     short loc_13563C
+0x135639: jmp     loc_1357A4
+0x13563C: jmp     loc_13554F
+0x13563F: les     bx, [bp+arg_8]
+0x135642: cmp     word ptr es:[bx+2], 0
+0x135647: jl      short loc_135655
+0x135649: jg      short loc_135652
+0x13564B: cmp     word ptr es:[bx], 1000h
+0x135650: jbe     short loc_135655
+0x135652: jmp     loc_1354E0
+0x135655: push    ss
+0x135656: lea     ax, [bp+var_8]
+0x135659: push    ax
+0x13565A: push    ss
+0x13565B: lea     ax, [bp+var_4]
+0x13565E: push    ax
+0x13565F: push    word ptr [bp+arg_4+2]
+0x135662: push    word ptr [bp+arg_4]
+0x135665: push    word ptr [bp+arg_0+2]
+0x135668: push    word ptr [bp+arg_0]
+0x13566B: push    cs
+0x13566C: call    near ptr sub_13536F
+0x13566F: add     sp, 10h
+0x135672: mov     si, ax
+0x135674: push    word ptr [bp+arg_C+2]
+0x135677: push    word ptr [bp+arg_C]
+0x13567A: push    word ptr [bp+arg_8+2]
+0x13567D: push    word ptr [bp+arg_8]
+0x135680: push    ss
+0x135681: lea     ax, [bp+var_10]
+0x135684: push    ax
+0x135685: push    ss
+0x135686: lea     ax, [bp+var_C]
+0x135689: push    ax
+0x13568A: push    cs
+0x13568B: call    near ptr sub_13536F
+0x13568E: add     sp, 10h
+0x135691: mov     di, ax
+0x135693: or      si, si
+0x135695: jz      short loc_13569A
+0x135697: jmp     loc_1357A4
+0x13569A: or      di, di
+0x13569C: jnz     short loc_1356A1
+0x13569E: jmp     loc_1357A4
+0x1356A1: jmp     loc_13554F
+0x1356A4: les     bx, [bp+arg_8]
+0x1356A7: cmp     word ptr es:[bx+2], 0FFFFh
+0x1356AC: jg      short loc_135705
+0x1356AE: jl      short loc_1356B7
+0x1356B0: cmp     word ptr es:[bx], 0F000h
+0x1356B5: jnb     short loc_135705
+0x1356B7: push    ss
+0x1356B8: lea     ax, [bp+var_8]
+0x1356BB: push    ax
+0x1356BC: push    ss
+0x1356BD: lea     ax, [bp+var_4]
+0x1356C0: push    ax
+0x1356C1: push    word ptr [bp+arg_4+2]
+0x1356C4: push    word ptr [bp+arg_4]
+0x1356C7: push    word ptr [bp+arg_0+2]
+0x1356CA: push    word ptr [bp+arg_0]
+0x1356CD: push    cs
+0x1356CE: call    near ptr sub_13536F
+0x1356D1: add     sp, 10h
+0x1356D4: mov     si, ax
+0x1356D6: push    word ptr [bp+arg_C+2]
+0x1356D9: push    word ptr [bp+arg_C]
+0x1356DC: push    word ptr [bp+arg_8+2]
+0x1356DF: push    word ptr [bp+arg_8]
+0x1356E2: push    ss
+0x1356E3: lea     ax, [bp+var_10]
+0x1356E6: push    ax
+0x1356E7: push    ss
+0x1356E8: lea     ax, [bp+var_C]
+0x1356EB: push    ax
+0x1356EC: push    cs
+0x1356ED: call    near ptr sub_13536F
+0x1356F0: add     sp, 10h
+0x1356F3: mov     di, ax
+0x1356F5: or      si, si
+0x1356F7: jnz     short loc_1356FC
+0x1356F9: jmp     loc_1357A4
+0x1356FC: or      di, di
+0x1356FE: jz      short loc_135703
+0x135700: jmp     loc_1357A4
+0x135703: jmp     short loc_13575E
+0x135705: les     bx, [bp+arg_8]
+0x135708: cmp     word ptr es:[bx+2], 0
+0x13570D: jl      short loc_135780
+0x13570F: jg      short loc_135718
+0x135711: cmp     word ptr es:[bx], 1000h
+0x135716: jbe     short loc_135780
+0x135718: push    ss
+0x135719: lea     ax, [bp+var_8]
+0x13571C: push    ax
+0x13571D: push    ss
+0x13571E: lea     ax, [bp+var_4]
+0x135721: push    ax
+0x135722: push    word ptr [bp+arg_4+2]
+0x135725: push    word ptr [bp+arg_4]
+0x135728: push    word ptr [bp+arg_0+2]
+0x13572B: push    word ptr [bp+arg_0]
+0x13572E: push    cs
+0x13572F: call    near ptr sub_13536F
+0x135732: add     sp, 10h
+0x135735: mov     si, ax
+0x135737: push    word ptr [bp+arg_C+2]
+0x13573A: push    word ptr [bp+arg_C]
+0x13573D: push    word ptr [bp+arg_8+2]
+0x135740: push    word ptr [bp+arg_8]
+0x135743: push    ss
+0x135744: lea     ax, [bp+var_10]
+0x135747: push    ax
+0x135748: push    ss
+0x135749: lea     ax, [bp+var_C]
+0x13574C: push    ax
+0x13574D: push    cs
+0x13574E: call    near ptr sub_13536F
+0x135751: add     sp, 10h
+0x135754: mov     di, ax
+0x135756: or      si, si
+0x135758: jz      short loc_1357A4
+0x13575A: or      di, di
+0x13575C: jnz     short loc_1357A4
+0x13575E: les     bx, [bp+arg_8]
+0x135761: mov     ax, [bp+var_2]
+0x135764: mov     dx, [bp+var_4]
+0x135767: mov     es:[bx+2], ax
+0x13576B: mov     es:[bx], dx
+0x13576E: les     bx, [bp+arg_C]
+0x135771: mov     ax, [bp+var_6]
+0x135774: mov     dx, [bp+var_8]
+0x135777: mov     es:[bx+2], ax
+0x13577B: mov     es:[bx], dx
+0x13577E: jmp     short loc_1357A4
+0x135780: push    word ptr [bp+arg_C+2]
+0x135783: push    word ptr [bp+arg_C]
+0x135786: push    word ptr [bp+arg_8+2]
+0x135789: push    word ptr [bp+arg_8]
+0x13578C: push    word ptr [bp+arg_4+2]
+0x13578F: push    word ptr [bp+arg_4]
+0x135792: push    word ptr [bp+arg_0+2]
+0x135795: push    word ptr [bp+arg_0]
+0x135798: call    sub_1357AC
+0x13579D: add     sp, 10h
+0x1357A0: mov     si, ax
+0x1357A2: xor     di, di
+0x1357A4: mov     ax, si
+0x1357A6: or      ax, di
+0x1357A8: pop     di
+0x1357A9: pop     si
+0x1357AA: leave
+0x1357AB: retf

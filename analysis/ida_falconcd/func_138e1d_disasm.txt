@@ -1,0 +1,38 @@
+# menu_loadout_config_validate @ 0x138E1D
+# Rank #133
+# Size: 77 bytes, Calls: 19
+
+0x138E1D: push    bp
+0x138E1E: mov     bp, sp
+0x138E20: push    si
+0x138E21: push    di
+0x138E22: mov     di, 1
+0x138E25: xor     si, si
+0x138E27: jmp     short loc_138E3A
+0x138E29: les     bx, [bp+arg_0]
+0x138E2C: mov     al, es:[bx+si]
+0x138E2F: les     bx, [bp+arg_4]
+0x138E32: cmp     al, es:[bx+si]
+0x138E35: jz      short loc_138E39
+0x138E37: xor     di, di
+0x138E39: inc     si
+0x138E3A: les     bx, [bp+arg_0]
+0x138E3D: cmp     byte ptr es:[bx+si], 0
+0x138E41: jz      short loc_138E50
+0x138E43: les     bx, [bp+arg_4]
+0x138E46: cmp     byte ptr es:[bx+si], 0
+0x138E4A: jz      short loc_138E50
+0x138E4C: or      di, di
+0x138E4E: jnz     short loc_138E29
+0x138E50: les     bx, [bp+arg_0]
+0x138E53: cmp     byte ptr es:[bx+si], 0
+0x138E57: jnz     short loc_138E62
+0x138E59: les     bx, [bp+arg_4]
+0x138E5C: cmp     byte ptr es:[bx+si], 0
+0x138E60: jz      short loc_138E64
+0x138E62: xor     di, di
+0x138E64: mov     ax, di
+0x138E66: pop     di
+0x138E67: pop     si
+0x138E68: pop     bp
+0x138E69: retf

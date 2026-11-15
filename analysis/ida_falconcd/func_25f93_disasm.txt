@@ -1,0 +1,99 @@
+# segment_clip_test @ 0x25F93
+# Rank #121
+# Size: 262 bytes, Calls: 20
+
+0x25F93: sub     dx, dx
+0x25F95: mov     ax, [si]
+0x25F97: cmp     ax, cs:word_2547C
+0x25F9C: jge     short loc_25FA3
+0x25F9E: or      dx, 1
+0x25FA1: jmp     short loc_25FAD
+0x25FA3: cmp     ax, cs:word_25480
+0x25FA8: jle     short loc_25FAD
+0x25FAA: or      dx, 2
+0x25FAD: mov     ax, [si+2]
+0x25FB0: cmp     ax, cs:word_2547E
+0x25FB5: jge     short loc_25FBC
+0x25FB7: or      dx, 4
+0x25FBA: jmp     short loc_25FC6
+0x25FBC: cmp     ax, cs:word_25482
+0x25FC1: jle     short loc_25FC6
+0x25FC3: or      dx, 8
+0x25FC6: sub     bp, bp
+0x25FC8: mov     ax, [si+4]
+0x25FCB: cmp     ax, cs:word_2547C
+0x25FD0: jge     short loc_25FD7
+0x25FD2: or      bp, 1
+0x25FD5: jmp     short loc_25FE1
+0x25FD7: cmp     ax, cs:word_25480
+0x25FDC: jle     short loc_25FE1
+0x25FDE: or      bp, 2
+0x25FE1: mov     ax, [si+6]
+0x25FE4: cmp     ax, cs:word_2547E
+0x25FE9: jge     short loc_25FF0
+0x25FEB: or      bp, 4
+0x25FEE: jmp     short loc_25FFA
+0x25FF0: cmp     ax, cs:word_25482
+0x25FF5: jle     short loc_25FFA
+0x25FF7: or      bp, 8
+0x25FFA: test    dx, bp
+0x25FFC: jnz     short loc_25F8F
+0x25FFE: mov     ax, dx
+0x26000: or      ax, bp
+0x26002: jz      short loc_25F91
+0x26004: mov     ax, 2
+0x26007: or      dx, dx
+0x26009: jnz     short loc_26010
+0x2600B: mov     ax, 406h
+0x2600E: mov     dx, bp
+0x26010: push    si
+0x26011: mov     bx, [si]
+0x26013: mov     cx, [si+4]
+0x26016: mov     di, [si+6]
+0x26019: mov     si, [si+2]
+0x2601C: test    dx, 3
+0x26020: jz      short loc_26034
+0x26022: mov     bp, cs:word_2547C
+0x26027: test    dx, 1
+0x2602B: jnz     short loc_2604A
+0x2602D: mov     bp, cs:word_25480
+0x26032: jmp     short loc_2604A
+0x26034: xchg    ah, al
+0x26036: xchg    bx, si
+0x26038: xchg    cx, di
+0x2603A: mov     bp, cs:word_2547E
+0x2603F: test    dx, 4
+0x26043: jnz     short loc_2604A
+0x26045: mov     bp, cs:word_25482
+0x2604A: mov     word ptr cs:loc_26075+2, bp
+0x2604F: mov     word ptr cs:loc_26089+2, bp
+0x26054: mov     byte ptr cs:loc_26090+2, ah
+0x26059: mov     byte ptr cs:loc_26093+2, al
+0x2605D: jmp     short $+2
+0x2605F: cmp     bx, cx
+0x26061: jle     short loc_26067
+0x26063: xchg    bx, cx
+0x26065: xchg    si, di
+0x26067: mov     ax, bx
+0x26069: add     ax, cx
+0x2606B: sar     ax, 1
+0x2606D: mov     bp, ax
+0x2606F: mov     ax, si
+0x26071: add     ax, di
+0x26073: sar     ax, 1
+0x26075: cmp     bp, 0ABCDh
+0x26079: jz      short loc_2608F
+0x2607B: jl      short loc_26084
+0x2607D: mov     cx, bp
+0x2607F: mov     di, ax
+0x26081: dec     bp
+0x26082: jmp     short loc_26089
+0x26084: mov     bx, bp
+0x26086: mov     si, ax
+0x26088: inc     bp
+0x26089: cmp     bp, 0ABCDh
+0x2608D: jnz     short loc_26067
+0x2608F: pop     si
+0x26090: mov     [si+4], bp
+0x26093: mov     [si+4], ax
+0x26096: jmp     near ptr segment_clip_test

@@ -1,0 +1,51 @@
+# ui_text_render_setup @ 0x128518
+# Rank #156
+# Size: 123 bytes, Calls: 16
+
+0x128518: enter   2, 0; Core text rendering engine for entire UI system. 70+ callers.
+0x12851C: mov     ax, 7894h
+0x12851F: mov     es, ax
+0x128521: cmp     es:graphics_mode_flag, 0
+0x128527: jz      short locret_128591
+0x128529: mov     es, ax
+0x12852B: cmp     es:graphics_mode_flag, 0
+0x128531: jz      short loc_128573
+0x128533: mov     ax, 709Fh
+0x128536: mov     es, ax
+0x128538: mov     al, byte ptr es:word_70A2A
+0x12853C: cbw
+0x12853D: shl     ax, 2
+0x128540: mov     dx, 602Eh
+0x128543: mov     bx, ax
+0x128545: mov     es, dx
+0x128547: cmp     byte ptr es:[bx+2], 0
+0x12854D: jz      short loc_128573
+0x12854F: push    ss
+0x128550: lea     ax, [bp+var_2]
+0x128553: push    ax
+0x128554: push    2
+0x128556: push    4Bh ; 'K'
+0x128558: call    ui_text_render_multi_mode
+0x12855D: add     sp, 8
+0x128560: push    ss
+0x128561: lea     ax, [bp+var_2]
+0x128564: push    ax
+0x128565: push    2
+0x128567: push    4Ah ; 'J'
+0x128569: call    ui_text_render_multi_mode
+0x12856E: add     sp, 8
+0x128571: jmp     short locret_128591
+0x128573: push    ss
+0x128574: lea     ax, [bp+var_2]
+0x128577: push    ax
+0x128578: push    4Bh ; 'K'
+0x12857A: call    ui_text_render_single_mode
+0x12857F: add     sp, 6
+0x128582: push    ss
+0x128583: lea     ax, [bp+var_2]
+0x128586: push    ax
+0x128587: push    4Ah ; 'J'
+0x128589: call    ui_text_render_single_mode
+0x12858E: add     sp, 6
+0x128591: leave
+0x128592: retf

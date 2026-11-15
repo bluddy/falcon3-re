@@ -1,0 +1,464 @@
+# view_projection @ 0x20BDB
+# Rank #180
+# Size: 1076 bytes, Calls: 14
+
+0x20BDB: mov     cs:word_1F71C, es
+0x20BE0: mov     cs:word_1F71E, bx
+0x20BE5: push    es
+0x20BE6: mov     cx, cs:word_1F6E6
+0x20BEB: mov     si, [di+20h]
+0x20BEE: test    word ptr [di+24h], 80h
+0x20BF3: jz      short loc_20BF8
+0x20BF5: jmp     loc_20D64
+0x20BF8: or      si, si
+0x20BFA: js      short loc_20BFF
+0x20BFC: jmp     loc_20D64
+0x20BFF: neg     si
+0x20C01: mov     ax, [di]
+0x20C03: mov     dx, [di+2]
+0x20C06: sub     ax, es:[bx]
+0x20C09: sbb     dx, es:[bx+2]
+0x20C0D: shl     ax, 1
+0x20C0F: rcl     dx, 1
+0x20C11: shl     ax, 1
+0x20C13: rcl     dx, 1
+0x20C15: shl     ax, 1
+0x20C17: rcl     dx, 1
+0x20C19: shl     ax, 1
+0x20C1B: rcl     dx, 1
+0x20C1D: or      dx, dx
+0x20C1F: jns     short loc_20C3D
+0x20C21: neg     dx
+0x20C23: neg     ax
+0x20C25: sbb     dx, 0
+0x20C28: mov     bp, ax
+0x20C2A: sub     ax, ax
+0x20C2C: xchg    ax, dx
+0x20C2D: div     si
+0x20C2F: xchg    ax, bp
+0x20C30: div     si
+0x20C32: mov     dx, bp
+0x20C34: neg     dx
+0x20C36: neg     ax
+0x20C38: sbb     dx, 0
+0x20C3B: jmp     short loc_20C49
+0x20C3D: mov     bp, ax
+0x20C3F: sub     ax, ax
+0x20C41: xchg    ax, dx
+0x20C42: div     si
+0x20C44: xchg    ax, bp
+0x20C45: div     si
+0x20C47: mov     dx, bp
+0x20C49: jcxz    short loc_20C6D
+0x20C4B: push    cx
+0x20C4C: or      dx, dx
+0x20C4E: jns     short loc_20C66
+0x20C50: neg     dx
+0x20C52: neg     ax
+0x20C54: sbb     dx, 0
+0x20C57: shr     dx, 1
+0x20C59: rcr     ax, 1
+0x20C5B: loop    loc_20C57
+0x20C5D: neg     dx
+0x20C5F: neg     ax
+0x20C61: sbb     dx, 0
+0x20C64: jmp     short loc_20C6C
+0x20C66: shr     dx, 1
+0x20C68: rcr     ax, 1
+0x20C6A: loop    loc_20C66
+0x20C6C: pop     cx
+0x20C6D: mov     [di+16h], ax
+0x20C70: mov     cs:word_1F6F2, dx
+0x20C75: mov     ax, [di+4]
+0x20C78: mov     dx, [di+6]
+0x20C7B: sub     ax, es:[bx+4]
+0x20C7F: sbb     dx, es:[bx+6]
+0x20C83: shl     ax, 1
+0x20C85: rcl     dx, 1
+0x20C87: shl     ax, 1
+0x20C89: rcl     dx, 1
+0x20C8B: shl     ax, 1
+0x20C8D: rcl     dx, 1
+0x20C8F: shl     ax, 1
+0x20C91: rcl     dx, 1
+0x20C93: or      dx, dx
+0x20C95: jns     short loc_20CB3
+0x20C97: neg     dx
+0x20C99: neg     ax
+0x20C9B: sbb     dx, 0
+0x20C9E: mov     bp, ax
+0x20CA0: sub     ax, ax
+0x20CA2: xchg    ax, dx
+0x20CA3: div     si
+0x20CA5: xchg    ax, bp
+0x20CA6: div     si
+0x20CA8: mov     dx, bp
+0x20CAA: neg     dx
+0x20CAC: neg     ax
+0x20CAE: sbb     dx, 0
+0x20CB1: jmp     short loc_20CBF
+0x20CB3: mov     bp, ax
+0x20CB5: sub     ax, ax
+0x20CB7: xchg    ax, dx
+0x20CB8: div     si
+0x20CBA: xchg    ax, bp
+0x20CBB: div     si
+0x20CBD: mov     dx, bp
+0x20CBF: jcxz    short loc_20CE3
+0x20CC1: push    cx
+0x20CC2: or      dx, dx
+0x20CC4: jns     short loc_20CDC
+0x20CC6: neg     dx
+0x20CC8: neg     ax
+0x20CCA: sbb     dx, 0
+0x20CCD: shr     dx, 1
+0x20CCF: rcr     ax, 1
+0x20CD1: loop    loc_20CCD
+0x20CD3: neg     dx
+0x20CD5: neg     ax
+0x20CD7: sbb     dx, 0
+0x20CDA: jmp     short loc_20CE2
+0x20CDC: shr     dx, 1
+0x20CDE: rcr     ax, 1
+0x20CE0: loop    loc_20CDC
+0x20CE2: pop     cx
+0x20CE3: mov     [di+12h], ax
+0x20CE6: mov     cs:word_1F6EE, dx
+0x20CEB: mov     ax, es:[bx+8]
+0x20CEF: mov     dx, es:[bx+0Ah]
+0x20CF3: sub     ax, [di+8]
+0x20CF6: sbb     dx, [di+0Ah]
+0x20CF9: shl     ax, 1
+0x20CFB: rcl     dx, 1
+0x20CFD: shl     ax, 1
+0x20CFF: rcl     dx, 1
+0x20D01: shl     ax, 1
+0x20D03: rcl     dx, 1
+0x20D05: shl     ax, 1
+0x20D07: rcl     dx, 1
+0x20D09: or      dx, dx
+0x20D0B: jns     short loc_20D29
+0x20D0D: neg     dx
+0x20D0F: neg     ax
+0x20D11: sbb     dx, 0
+0x20D14: mov     bp, ax
+0x20D16: sub     ax, ax
+0x20D18: xchg    ax, dx
+0x20D19: div     si
+0x20D1B: xchg    ax, bp
+0x20D1C: div     si
+0x20D1E: mov     dx, bp
+0x20D20: neg     dx
+0x20D22: neg     ax
+0x20D24: sbb     dx, 0
+0x20D27: jmp     short loc_20D35
+0x20D29: mov     bp, ax
+0x20D2B: sub     ax, ax
+0x20D2D: xchg    ax, dx
+0x20D2E: div     si
+0x20D30: xchg    ax, bp
+0x20D31: div     si
+0x20D33: mov     dx, bp
+0x20D35: jcxz    short loc_20D59
+0x20D37: push    cx
+0x20D38: or      dx, dx
+0x20D3A: jns     short loc_20D52
+0x20D3C: neg     dx
+0x20D3E: neg     ax
+0x20D40: sbb     dx, 0
+0x20D43: shr     dx, 1
+0x20D45: rcr     ax, 1
+0x20D47: loop    loc_20D43
+0x20D49: neg     dx
+0x20D4B: neg     ax
+0x20D4D: sbb     dx, 0
+0x20D50: jmp     short loc_20D58
+0x20D52: shr     dx, 1
+0x20D54: rcr     ax, 1
+0x20D56: loop    loc_20D52
+0x20D58: pop     cx
+0x20D59: mov     [di+14h], ax
+0x20D5C: mov     cs:word_1F6F0, dx
+0x20D61: jmp     loc_20E10
+0x20D64: mov     ax, [di]
+0x20D66: mov     dx, [di+2]
+0x20D69: sub     ax, es:[bx]
+0x20D6C: sbb     dx, es:[bx+2]
+0x20D70: jcxz    short loc_20D94
+0x20D72: push    cx
+0x20D73: or      dx, dx
+0x20D75: jns     short loc_20D8D
+0x20D77: neg     dx
+0x20D79: neg     ax
+0x20D7B: sbb     dx, 0
+0x20D7E: shr     dx, 1
+0x20D80: rcr     ax, 1
+0x20D82: loop    loc_20D7E
+0x20D84: neg     dx
+0x20D86: neg     ax
+0x20D88: sbb     dx, 0
+0x20D8B: jmp     short loc_20D93
+0x20D8D: shr     dx, 1
+0x20D8F: rcr     ax, 1
+0x20D91: loop    loc_20D8D
+0x20D93: pop     cx
+0x20D94: mov     [di+16h], ax
+0x20D97: mov     cs:word_1F6F2, dx
+0x20D9C: mov     ax, [di+4]
+0x20D9F: mov     dx, [di+6]
+0x20DA2: sub     ax, es:[bx+4]
+0x20DA6: sbb     dx, es:[bx+6]
+0x20DAA: jcxz    short loc_20DCE
+0x20DAC: push    cx
+0x20DAD: or      dx, dx
+0x20DAF: jns     short loc_20DC7
+0x20DB1: neg     dx
+0x20DB3: neg     ax
+0x20DB5: sbb     dx, 0
+0x20DB8: shr     dx, 1
+0x20DBA: rcr     ax, 1
+0x20DBC: loop    loc_20DB8
+0x20DBE: neg     dx
+0x20DC0: neg     ax
+0x20DC2: sbb     dx, 0
+0x20DC5: jmp     short loc_20DCD
+0x20DC7: shr     dx, 1
+0x20DC9: rcr     ax, 1
+0x20DCB: loop    loc_20DC7
+0x20DCD: pop     cx
+0x20DCE: mov     [di+12h], ax
+0x20DD1: mov     cs:word_1F6EE, dx
+0x20DD6: mov     ax, es:[bx+8]
+0x20DDA: mov     dx, es:[bx+0Ah]
+0x20DDE: sub     ax, [di+8]
+0x20DE1: sbb     dx, [di+0Ah]
+0x20DE4: jcxz    short loc_20E08
+0x20DE6: push    cx
+0x20DE7: or      dx, dx
+0x20DE9: jns     short loc_20E01
+0x20DEB: neg     dx
+0x20DED: neg     ax
+0x20DEF: sbb     dx, 0
+0x20DF2: shr     dx, 1
+0x20DF4: rcr     ax, 1
+0x20DF6: loop    loc_20DF2
+0x20DF8: neg     dx
+0x20DFA: neg     ax
+0x20DFC: sbb     dx, 0
+0x20DFF: jmp     short loc_20E07
+0x20E01: shr     dx, 1
+0x20E03: rcr     ax, 1
+0x20E05: loop    loc_20E01
+0x20E07: pop     cx
+0x20E08: mov     [di+14h], ax
+0x20E0B: mov     cs:word_1F6F0, dx
+0x20E10: mov     ax, [di+12h]
+0x20E13: mov     dx, cs:word_1F6EE
+0x20E18: or      dx, dx
+0x20E1A: jns     short loc_20E23
+0x20E1C: neg     dx
+0x20E1E: neg     ax
+0x20E20: sbb     dx, 0
+0x20E23: mov     bp, ax
+0x20E25: mov     cx, dx
+0x20E27: mov     ax, [di+14h]
+0x20E2A: mov     dx, cs:word_1F6F0
+0x20E2F: or      dx, dx
+0x20E31: jns     short loc_20E3A
+0x20E33: neg     dx
+0x20E35: neg     ax
+0x20E37: sbb     dx, 0
+0x20E3A: or      bp, ax
+0x20E3C: cmp     cx, dx
+0x20E3E: jnb     short loc_20E42
+0x20E40: xchg    cx, dx
+0x20E42: mov     ax, [di+16h]
+0x20E45: mov     dx, cs:word_1F6F2
+0x20E4A: or      dx, dx
+0x20E4C: jns     short loc_20E55
+0x20E4E: neg     dx
+0x20E50: neg     ax
+0x20E52: sbb     dx, 0
+0x20E55: or      bp, ax
+0x20E57: cmp     cx, dx
+0x20E59: jnb     short loc_20E5D
+0x20E5B: xchg    cx, dx
+0x20E5D: or      cx, cx
+0x20E5F: jnz     short loc_20E72
+0x20E61: mov     cx, 2
+0x20E64: shl     bp, 1
+0x20E66: jb      short loc_20E82
+0x20E68: dec     cx
+0x20E69: shl     bp, 1
+0x20E6B: jb      short loc_20E82
+0x20E6D: sub     cx, cx
+0x20E6F: jmp     loc_20F0F
+0x20E72: mov     ax, cx
+0x20E74: mov     cx, 10h
+0x20E77: shr     ax, 1
+0x20E79: jz      short loc_20E7D
+0x20E7B: loop    loc_20E77
+0x20E7D: sub     cx, 13h
+0x20E80: neg     cx
+0x20E82: mov     ax, [di+12h]
+0x20E85: mov     dx, cs:word_1F6EE
+0x20E8A: jcxz    short loc_20EAE
+0x20E8C: push    cx
+0x20E8D: or      dx, dx
+0x20E8F: jns     short loc_20EA7
+0x20E91: neg     dx
+0x20E93: neg     ax
+0x20E95: sbb     dx, 0
+0x20E98: shr     dx, 1
+0x20E9A: rcr     ax, 1
+0x20E9C: loop    loc_20E98
+0x20E9E: neg     dx
+0x20EA0: neg     ax
+0x20EA2: sbb     dx, 0
+0x20EA5: jmp     short loc_20EAD
+0x20EA7: shr     dx, 1
+0x20EA9: rcr     ax, 1
+0x20EAB: loop    loc_20EA7
+0x20EAD: pop     cx
+0x20EAE: mov     [di+12h], ax
+0x20EB1: mov     ax, [di+14h]
+0x20EB4: mov     dx, cs:word_1F6F0
+0x20EB9: jcxz    short loc_20EDD
+0x20EBB: push    cx
+0x20EBC: or      dx, dx
+0x20EBE: jns     short loc_20ED6
+0x20EC0: neg     dx
+0x20EC2: neg     ax
+0x20EC4: sbb     dx, 0
+0x20EC7: shr     dx, 1
+0x20EC9: rcr     ax, 1
+0x20ECB: loop    loc_20EC7
+0x20ECD: neg     dx
+0x20ECF: neg     ax
+0x20ED1: sbb     dx, 0
+0x20ED4: jmp     short loc_20EDC
+0x20ED6: shr     dx, 1
+0x20ED8: rcr     ax, 1
+0x20EDA: loop    loc_20ED6
+0x20EDC: pop     cx
+0x20EDD: mov     [di+14h], ax
+0x20EE0: mov     ax, [di+16h]
+0x20EE3: mov     dx, cs:word_1F6F2
+0x20EE8: jcxz    short loc_20F0C
+0x20EEA: push    cx
+0x20EEB: or      dx, dx
+0x20EED: jns     short loc_20F05
+0x20EEF: neg     dx
+0x20EF1: neg     ax
+0x20EF3: sbb     dx, 0
+0x20EF6: shr     dx, 1
+0x20EF8: rcr     ax, 1
+0x20EFA: loop    loc_20EF6
+0x20EFC: neg     dx
+0x20EFE: neg     ax
+0x20F00: sbb     dx, 0
+0x20F03: jmp     short loc_20F0B
+0x20F05: shr     dx, 1
+0x20F07: rcr     ax, 1
+0x20F09: loop    loc_20F05
+0x20F0B: pop     cx
+0x20F0C: mov     [di+16h], ax
+0x20F0F: mov     [di+18h], cx
+0x20F12: mov     word ptr [di+1Ch], 0FFFFh
+0x20F17: mov     word ptr [di+1Ah], 0FFFFh
+0x20F1C: mov     ax, 7B0Eh
+0x20F1F: mov     es, ax
+0x20F21: lea     si, [di+12h]
+0x20F24: push    di
+0x20F25: mov     bx, 3820h
+0x20F28: mov     di, 0F44h
+0x20F2B: call    fixed_vec3_transform_es
+0x20F2E: pop     di
+0x20F2F: mov     ax, es:word_7C024
+0x20F33: mov     [di+12h], ax
+0x20F36: mov     ax, es:word_7C026
+0x20F3A: mov     [di+14h], ax
+0x20F3D: mov     ax, es:word_7C028
+0x20F41: mov     [di+16h], ax
+0x20F44: mov     cx, [di+1Eh]
+0x20F47: cmp     cx, 0FFFFh
+0x20F4A: jz      short loc_20F74
+0x20F4C: add     cx, es:word_7C028
+0x20F51: jns     short loc_20F5A
+0x20F53: or      word ptr [di+24h], 100h
+0x20F58: pop     es
+0x20F59: retf
+0x20F5A: mov     ax, es:0F44h
+0x20F5E: cwd
+0x20F5F: xor     ax, dx
+0x20F61: sub     ax, dx
+0x20F63: sub     ax, cx
+0x20F65: jg      short loc_20F53
+0x20F67: mov     ax, es:0F46h
+0x20F6B: cwd
+0x20F6C: xor     ax, dx
+0x20F6E: sub     ax, dx
+0x20F70: sub     ax, cx
+0x20F72: jg      short loc_20F53
+0x20F74: mov     si, 0F44h
+0x20F77: call    vec2_normalize_seq
+0x20F7A: sub     dx, dx
+0x20F7C: mov     cx, [di+18h]
+0x20F7F: jcxz    short loc_20F89
+0x20F81: push    cx
+0x20F82: shl     ax, 1
+0x20F84: rcl     dx, 1
+0x20F86: loop    loc_20F82
+0x20F88: pop     cx
+0x20F89: mov     [di+1Ch], dx
+0x20F8C: mov     [di+1Ah], ax
+0x20F8F: or      dx, dx
+0x20F91: jnz     short loc_20FE9
+0x20F93: cmp     cs:word_25499, 1
+0x20F99: jle     short loc_20FA4
+0x20F9B: cmp     ax, cs:word_2549B
+0x20FA0: jbe     short loc_20FA4
+0x20FA2: jmp     short loc_20F53
+0x20FA4: mov     ax, [di+24h]
+0x20FA7: test    ax, 8
+0x20FAA: jnz     short loc_20FF8
+0x20FAC: cmp     cs:byte_1F75D, 0
+0x20FB2: jnz     short loc_20FB9
+0x20FB4: test    ax, 1
+0x20FB7: jz      short loc_20FBE
+0x20FB9: pop     es
+0x20FBA: call    farobj_record_step
+0x20FBD: retf
+0x20FBE: mov     ax, [di+24h]
+0x20FC1: test    ax, 20h
+0x20FC4: jz      short loc_20FE4
+0x20FC6: push    di
+0x20FC7: mov     si, cs:word_1F71E
+0x20FCC: mov     es, cs:word_1F71C
+0x20FD1: xchg    si, di
+0x20FD3: call    overlay_tail_bridge
+0x20FD8: pop     di
+0x20FD9: or      ax, ax
+0x20FDB: jnz     short loc_20FE4
+0x20FDD: or      word ptr [di+24h], 100h
+0x20FE2: pop     es
+0x20FE3: retf
+0x20FE4: pop     es
+0x20FE5: call    farobj_record_push_7c054
+0x20FE8: retf
+0x20FE9: mov     ax, [di+24h]
+0x20FEC: test    ax, 4
+0x20FEF: jz      short loc_20FF8
+0x20FF1: or      word ptr [di+24h], 100h
+0x20FF6: pop     es
+0x20FF7: retf
+0x20FF8: cmp     cs:byte_1F75D, 0
+0x20FFE: jnz     short loc_21005
+0x21000: test    ax, 1
+0x21003: jz      short loc_2100A
+0x21005: pop     es
+0x21006: call    farobj_record_lookup_step
+0x21009: retf
+0x2100A: pop     es
+0x2100B: call    farobj_record_push_7d0c6
+0x2100E: retf

@@ -1,0 +1,115 @@
+# channel_voice_register_setup @ 0x1D914
+# Rank #129
+# Size: 292 bytes, Calls: 19
+
+0x1D914: push    bp
+0x1D915: mov     bp, sp
+0x1D917: push    si
+0x1D918: push    di
+0x1D919: mov     si, [bp+arg_0]
+0x1D91C: mov     di, [bp+arg_2]
+0x1D91F: or      di, di
+0x1D921: jz      short loc_1D935
+0x1D923: mov     ax, 7772h
+0x1D926: mov     es, ax
+0x1D928: cmp     word ptr es:byte_774F3+296h, 0
+0x1D92E: jnz     short loc_1D935
+0x1D930: call    group_children_release_dynamic
+0x1D935: or      di, di
+0x1D937: jz      short loc_1D946
+0x1D939: mov     ax, 7772h
+0x1D93C: mov     dx, [bp+arg_10]
+0x1D93F: mov     es, ax
+0x1D941: mov     word ptr es:byte_77B1F+18Bh, dx
+0x1D946: mov     ax, 7772h
+0x1D949: mov     es, ax
+0x1D94B: mov     word ptr es:byte_77B1F+191h, 0
+0x1D952: mov     bx, si
+0x1D954: shl     bx, 1
+0x1D956: mov     ax, 7772h
+0x1D959: mov     dx, 7772h
+0x1D95C: push    bx
+0x1D95D: push    ax
+0x1D95E: mov     ax, [bp+arg_4]
+0x1D961: push    dx
+0x1D962: xor     dx, dx
+0x1D964: pop     es
+0x1D965: div     word ptr es:6AAh
+0x1D96A: pop     es
+0x1D96B: pop     bx
+0x1D96C: mov     es:[bx+61Eh], ax
+0x1D971: mov     ax, 7772h
+0x1D974: mov     es, ax
+0x1D976: cmp     word ptr es:byte_774F3+2A6h, 2
+0x1D97C: jz      short loc_1D988
+0x1D97E: mov     es, ax
+0x1D980: cmp     word ptr es:byte_774F3+2A6h, 3
+0x1D986: jnz     short loc_1D9AE
+0x1D988: mov     ax, 7772h
+0x1D98B: mov     es, ax
+0x1D98D: cmp     word ptr es:byte_774F3+2A4h, 2
+0x1D993: jnz     short loc_1D9AE
+0x1D995: push    si
+0x1D996: call    event_key_valid_9_jpt
+0x1D99B: pop     cx
+0x1D99C: or      ax, ax
+0x1D99E: jnz     short loc_1D9AE
+0x1D9A0: mov     bx, si
+0x1D9A2: shl     bx, 1
+0x1D9A4: mov     ax, 7772h
+0x1D9A7: mov     es, ax
+0x1D9A9: sar     word ptr es:[bx+61Eh], 1
+0x1D9AE: mov     bx, si
+0x1D9B0: shl     bx, 1
+0x1D9B2: mov     ax, 7772h
+0x1D9B5: push    bx
+0x1D9B6: push    ax
+0x1D9B7: mov     ax, [bp+arg_6]
+0x1D9BA: mov     bx, 0Ch
+0x1D9BD: cwd
+0x1D9BE: idiv    bx
+0x1D9C0: pop     es
+0x1D9C1: pop     bx
+0x1D9C2: mov     es:[bx+5D8h], ax
+0x1D9C7: mov     ax, [bp+arg_6]
+0x1D9CA: mov     bx, 0Ch
+0x1D9CD: cwd
+0x1D9CE: idiv    bx
+0x1D9D0: shl     dx, 1
+0x1D9D2: mov     ax, 7772h
+0x1D9D5: mov     bx, dx
+0x1D9D7: mov     es, ax
+0x1D9D9: mov     ax, es:[bx+0F0Ch]
+0x1D9DE: mov     bx, si
+0x1D9E0: shl     bx, 1
+0x1D9E2: mov     dx, 7772h
+0x1D9E5: mov     es, dx
+0x1D9E7: mov     es:[bx+592h], ax
+0x1D9EC: cmp     [bp+arg_A], 0FFFFh
+0x1D9F0: jnz     short loc_1D9F8
+0x1D9F2: cmp     [bp+arg_8], 0FFFFh
+0x1D9F6: jz      short loc_1DA0B
+0x1D9F8: push    [bp+arg_E]
+0x1D9FB: push    [bp+arg_C]
+0x1D9FE: push    [bp+arg_A]
+0x1DA01: push    [bp+arg_8]
+0x1DA04: push    cs
+0x1DA05: call    near ptr channel_list_register_batch
+0x1DA08: add     sp, 8
+0x1DA0B: mov     ax, 7772h
+0x1DA0E: mov     dx, [bp+arg_12]
+0x1DA11: mov     es, ax
+0x1DA13: mov     word ptr es:byte_774F3+296h, dx
+0x1DA18: mov     es, ax
+0x1DA1A: cmp     word ptr es:byte_774F3+296h, 0
+0x1DA20: jnz     short loc_1DA34
+0x1DA22: mov     ax, 7772h
+0x1DA25: mov     es, ax
+0x1DA27: mov     ax, word ptr es:byte_774F3+298h
+0x1DA2B: mov     dx, 7772h
+0x1DA2E: mov     es, dx
+0x1DA30: mov     word ptr es:byte_774F3+296h, ax
+0x1DA34: pop     di
+0x1DA35: pop     si
+0x1DA36: pop     bp
+0x1DA37: retf

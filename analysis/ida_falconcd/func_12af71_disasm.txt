@@ -1,0 +1,58 @@
+# ui_animation_step @ 0x12AF71
+# Rank #174
+# Size: 144 bytes, Calls: 15
+
+0x12AF71: enter   2, 0
+0x12AF75: mov     ax, 7894h
+0x12AF78: mov     es, ax
+0x12AF7A: cmp     es:byte_7A30C, 0
+0x12AF80: jz      short locret_12AFFF
+0x12AF82: mov     ax, 709Fh
+0x12AF85: mov     es, ax
+0x12AF87: mov     al, byte ptr es:word_70A2A
+0x12AF8B: cbw
+0x12AF8C: shl     ax, 2
+0x12AF8F: mov     dx, 602Eh
+0x12AF92: mov     bx, ax
+0x12AF94: mov     es, dx
+0x12AF96: cmp     byte ptr es:[bx+2], 0
+0x12AF9C: jnz     short loc_12AFAB
+0x12AF9E: mov     ax, 7894h
+0x12AFA1: mov     es, ax
+0x12AFA3: cmp     es:graphics_mode_flag, 0
+0x12AFA9: jnz     short locret_12AFFF
+0x12AFAB: mov     ax, 7894h
+0x12AFAE: mov     es, ax
+0x12AFB0: cmp     es:byte_7A302, 0
+0x12AFB6: jz      short locret_12AFFF
+0x12AFB8: mov     ax, 7894h
+0x12AFBB: mov     es, ax
+0x12AFBD: cmp     es:word_7A276, 0FFh
+0x12AFC4: jz      short locret_12AFFF
+0x12AFC6: mov     ax, 7894h
+0x12AFC9: mov     es, ax
+0x12AFCB: cmp     es:graphics_mode_flag, 3
+0x12AFD1: jnz     short loc_12AFEF
+0x12AFD3: push    ss
+0x12AFD4: lea     ax, [bp+var_2]
+0x12AFD7: push    ax
+0x12AFD8: push    2
+0x12AFDA: mov     ax, 7894h
+0x12AFDD: mov     es, ax
+0x12AFDF: mov     al, byte ptr es:word_7A276
+0x12AFE3: push    ax
+0x12AFE4: push    2Dh ; '-'
+0x12AFE6: push    cs
+0x12AFE7: call    near ptr ui_text_render_engine
+0x12AFEA: add     sp, 0Ah
+0x12AFED: jmp     short locret_12AFFF
+0x12AFEF: push    ss
+0x12AFF0: lea     ax, [bp+var_2]
+0x12AFF3: push    ax
+0x12AFF4: push    0
+0x12AFF6: push    2Dh ; '-'
+0x12AFF8: push    cs
+0x12AFF9: call    near ptr ui_text_render_simple
+0x12AFFC: add     sp, 8
+0x12AFFF: leave
+0x12B000: retf

@@ -1,0 +1,80 @@
+# sub_138ED4 @ 0x138ED4
+# Rank #192
+# Size: 200 bytes, Calls: 14
+
+0x138ED4: enter   0Eh, 0
+0x138ED8: push    si
+0x138ED9: push    di
+0x138EDA: xor     si, si
+0x138EDC: mov     ax, [bp+arg_0]
+0x138EDF: or      ax, [bp+arg_2]
+0x138EE2: jnz     short loc_138EE7
+0x138EE4: jmp     loc_138F89
+0x138EE7: cmp     [bp+arg_2], 0
+0x138EEB: jg      short loc_138F10
+0x138EED: jl      short loc_138EF5
+0x138EEF: cmp     [bp+arg_0], 0
+0x138EF3: jnb     short loc_138F10
+0x138EF5: mov     ax, [bp+arg_2]
+0x138EF8: mov     dx, [bp+arg_0]
+0x138EFB: neg     ax
+0x138EFD: neg     dx
+0x138EFF: sbb     ax, 0
+0x138F02: mov     [bp+arg_2], ax
+0x138F05: mov     [bp+arg_0], dx
+0x138F08: les     bx, [bp+arg_4]
+0x138F0B: mov     byte ptr es:[bx+si], 2Dh ; '-'
+0x138F0F: inc     si
+0x138F10: xor     di, di
+0x138F12: jmp     short loc_138F68
+0x138F14: push    0Ah
+0x138F16: push    [bp+arg_2]
+0x138F19: push    [bp+arg_0]
+0x138F1C: call    sub_13DD83
+0x138F21: add     sp, 6
+0x138F24: mov     [bp+var_C], dx
+0x138F27: mov     [bp+var_E], ax
+0x138F2A: push    0Ah
+0x138F2C: push    [bp+var_C]
+0x138F2F: push    [bp+var_E]
+0x138F32: call    sub_13DD40
+0x138F37: add     sp, 6
+0x138F3A: mov     [bp+var_C], dx
+0x138F3D: mov     [bp+var_E], ax
+0x138F40: mov     ax, [bp+arg_0]
+0x138F43: sub     ax, [bp+var_E]
+0x138F46: mov     [bp+var_2], ax
+0x138F49: mov     al, byte ptr [bp+var_2]
+0x138F4C: add     al, 30h ; '0'
+0x138F4E: mov     [bp+di+var_A], al
+0x138F51: inc     di
+0x138F52: push    0Ah
+0x138F54: push    [bp+arg_2]
+0x138F57: push    [bp+arg_0]
+0x138F5A: call    sub_13DD83
+0x138F5F: add     sp, 6
+0x138F62: mov     [bp+arg_2], dx
+0x138F65: mov     [bp+arg_0], ax
+0x138F68: cmp     [bp+arg_2], 0
+0x138F6C: jg      short loc_138F14
+0x138F6E: jnz     short loc_138F83
+0x138F70: cmp     [bp+arg_0], 0
+0x138F74: ja      short loc_138F14
+0x138F76: jmp     short loc_138F83
+0x138F78: dec     di
+0x138F79: les     bx, [bp+arg_4]
+0x138F7C: mov     al, [bp+di+var_A]
+0x138F7F: mov     es:[bx+si], al
+0x138F82: inc     si
+0x138F83: or      di, di
+0x138F85: jg      short loc_138F78
+0x138F87: jmp     short loc_138F91
+0x138F89: les     bx, [bp+arg_4]
+0x138F8C: mov     byte ptr es:[bx+si], 30h ; '0'
+0x138F90: inc     si
+0x138F91: les     bx, [bp+arg_4]
+0x138F94: mov     byte ptr es:[bx+si], 0
+0x138F98: pop     di
+0x138F99: pop     si
+0x138F9A: leave
+0x138F9B: retf

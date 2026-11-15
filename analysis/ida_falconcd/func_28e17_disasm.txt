@@ -1,0 +1,26 @@
+# fixed_scale_clamp_or40 @ 0x28E17
+# Rank #169
+# Size: 57 bytes, Calls: 15
+
+0x28E17: mov     bx, cs:word_1F6DA
+0x28E1C: sub     bx, 2
+0x28E1F: mov     ax, cx
+0x28E21: imul    bx
+0x28E23: idiv    bp
+0x28E25: add     ax, 0ABCDh
+0x28E28: mov     es:[di+8], ax
+0x28E2C: mov     ax, si
+0x28E2E: imul    bx
+0x28E30: idiv    bp
+0x28E32: add     ax, 0ABCDh
+0x28E35: mov     es:[di+0Ah], ax
+0x28E39: sub     bx, bx
+0x28E3B: cmp     ax, 0ABCDh
+0x28E3E: jge     short loc_28E45
+0x28E40: or      bx, 20h
+0x28E43: jmp     short loc_28E4D
+0x28E45: cmp     ax, 0ABCDh
+0x28E48: jle     short loc_28E4D
+0x28E4A: or      bx, 40h
+0x28E4D: mov     ax, bx
+0x28E4F: retn

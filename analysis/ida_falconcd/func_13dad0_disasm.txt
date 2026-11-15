@@ -1,0 +1,50 @@
+# sub_13DAD0 @ 0x13DAD0
+# Rank #162
+# Size: 133 bytes, Calls: 16
+
+0x13DAD0: push    bp
+0x13DAD1: mov     bp, sp
+0x13DAD3: push    di
+0x13DAD4: push    si
+0x13DAD5: push    es
+0x13DAD6: push    ds
+0x13DAD7: push    cs
+0x13DAD8: pop     ds
+0x13DAD9: cmp     cs:byte_13DABA, 0FFh
+0x13DADF: jnz     short loc_13DB3F
+0x13DAE1: mov     bx, 4
+0x13DAE4: mov     ax, 0
+0x13DAE7: mov     dx, 0FBh
+0x13DAEA: call    op_dispatch
+0x13DAEF: push    ax
+0x13DAF0: push    ds
+0x13DAF1: mov     bx, 0Ch
+0x13DAF4: mov     cx, 0A67h
+0x13DAF7: lds     dx, [bp+arg_0]
+0x13DAFA: add     dx, 151h
+0x13DAFE: mov     cs:word_13DAB6, dx
+0x13DB03: call    op_dispatch
+0x13DB08: mov     cs:word_13DAB8, ds
+0x13DB0D: pop     ds
+0x13DB0E: pop     ax
+0x13DB0F: mov     bx, 8
+0x13DB12: call    op_dispatch
+0x13DB17: mov     cs:byte_13DABA, 0
+0x13DB1D: call    flag2224a_clear
+0x13DB22: mov     byte ptr cs:aScore1Tmp+5, 30h ; '0'; "-1.TMP"
+0x13DB28: mov     byte ptr cs:aScore1Tmp+6, 30h ; '0'; "1.TMP"
+0x13DB2E: mov     dx, 0FBh
+0x13DB31: mov     ax, 2
+0x13DB34: mov     bx, 6
+0x13DB37: call    op_dispatch
+0x13DB3C: call    sub_13DC2A
+0x13DB3F: call    flag2224a_clear
+0x13DB44: call    near ptr sub_13DB5E
+0x13DB47: call    sub_13DC0A
+0x13DB4A: pop     ds
+0x13DB4B: pop     es
+0x13DB4C: pop     si
+0x13DB4D: pop     di
+0x13DB4E: pop     bp
+0x13DB4F: call    flag2224a_set
+0x13DB54: retf

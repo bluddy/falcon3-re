@@ -1,0 +1,79 @@
+# undoc_12BBA6 @ 0x12BBA6
+# Rank #189
+# Size: 169 bytes, Calls: 14
+
+0x12BBA6: push    ax
+0x12BBA7: push    bx
+0x12BBA8: push    cx
+0x12BBA9: push    dx
+0x12BBAA: push    si
+0x12BBAB: push    di
+0x12BBAC: push    ds
+0x12BBAD: push    es
+0x12BBAE: mov     ax, 709Fh
+0x12BBB1: mov     ds, ax
+0x12BBB3: mov     es, ax
+0x12BBB5: mov     ax, ds:word_709F0
+0x12BBB8: cmp     ax, 4
+0x12BBBB: jl      short loc_12BBCC
+0x12BBBD: mov     si, 1D1h
+0x12BBC0: push    ds
+0x12BBC1: push    si
+0x12BBC2: call    sub_12D463
+0x12BBC7: pop     si
+0x12BBC8: pop     ds
+0x12BBC9: jmp     short loc_12BC46
+0x12BBCC: mov     si, 1D1h
+0x12BBCF: mov     cx, ds:1D1h
+0x12BBD3: xor     ch, ch
+0x12BBD5: xor     ax, ax
+0x12BBD7: add     al, [si]
+0x12BBD9: xor     ah, [si]
+0x12BBDB: inc     si
+0x12BBDC: loop    loc_12BBD7
+0x12BBDE: mov     si, 1D1h
+0x12BBE1: dec     si
+0x12BBE2: dec     si
+0x12BBE3: mov     [si], ax
+0x12BBE5: sub     si, 3
+0x12BBE8: mov     cx, ds:1D1h
+0x12BBEC: xor     ch, ch
+0x12BBEE: add     cx, 5
+0x12BBF1: mov     di, 8C0h
+0x12BBF4: cmp     ds:84h, di
+0x12BBF8: jnz     short loc_12BBFD
+0x12BBFA: mov     di, 9BFh
+0x12BBFD: mov     ax, di
+0x12BBFF: rep movsb
+0x12BC01: mov     di, ax
+0x12BC03: mov     ds:82h, di
+0x12BC07: cmp     word ptr ds:84h, 0
+0x12BC0C: jnz     short loc_12BC45
+0x12BC0E: mov     dx, ds:7Ch
+0x12BC12: add     dx, 5
+0x12BC15: cmp     word ptr ds:0, 0
+0x12BC1A: jz      short loc_12BC45
+0x12BC1C: in      al, dx
+0x12BC1D: test    al, 20h
+0x12BC1F: jz      short loc_12BC1C
+0x12BC21: mov     ax, [di+5]
+0x12BC24: xor     ah, ah
+0x12BC26: add     ax, 4
+0x12BC29: mov     word ptr ds:88h, 1
+0x12BC2F: mov     ds:84h, di
+0x12BC33: mov     ds:8Ch, ax
+0x12BC36: mov     word ptr ds:82h, 0
+0x12BC3C: mov     al, [di]
+0x12BC3E: mov     dx, ds:7Ch
+0x12BC42: sub     al, 3
+0x12BC44: out     dx, al
+0x12BC45: clc
+0x12BC46: pop     es
+0x12BC47: pop     ds
+0x12BC48: pop     di
+0x12BC49: pop     si
+0x12BC4A: pop     dx
+0x12BC4B: pop     cx
+0x12BC4C: pop     bx
+0x12BC4D: pop     ax
+0x12BC4E: retf

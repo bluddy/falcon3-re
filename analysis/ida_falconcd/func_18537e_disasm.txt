@@ -1,0 +1,50 @@
+# r53_farptr_proc @ 0x18537E
+# Rank #144
+# Size: 124 bytes, Calls: 18
+
+0x18537E: push    bp
+0x18537F: mov     bp, sp
+0x185381: push    si
+0x185382: mov     si, [bp+arg_0]
+0x185385: cmp     si, 9
+0x185388: jle     short loc_18538C
+0x18538A: dec     si
+0x18538B: dec     si
+0x18538C: mov     bx, si
+0x18538E: cmp     bx, 8; switch 9 cases
+0x185391: ja      short def_185395; jumptable 00185395 default case, cases 1-5
+0x185393: shl     bx, 1
+0x185395: jmp     cs:jpt_185395[bx]; switch jump
+0x18539A: mov     ax, 7894h; jumptable 00185395 case 0
+0x18539D: mov     es, ax
+0x18539F: cmp     es:word_79E80, 12Ch
+0x1853A6: jl      short def_185395; jumptable 00185395 default case, cases 1-5
+0x1853A8: push    si
+0x1853A9: call    undoc_11CD7F
+0x1853AE: pop     cx
+0x1853AF: jmp     short def_185395; jumptable 00185395 default case, cases 1-5
+0x1853B1: mov     ax, 7894h; jumptable 00185395 case 6
+0x1853B4: mov     es, ax
+0x1853B6: cmp     es:word_79E80, 12Ch
+0x1853BD: jl      short def_185395; jumptable 00185395 default case, cases 1-5
+0x1853BF: push    si
+0x1853C0: call    undoc_11CDEB
+0x1853C5: pop     cx
+0x1853C6: jmp     short def_185395; jumptable 00185395 default case, cases 1-5
+0x1853C8: mov     ax, 602Eh; jumptable 00185395 case 7
+0x1853CB: mov     es, ax
+0x1853CD: push    word ptr es:a0Continue+2; ".`CONTINUE..."
+0x1853D2: push    word ptr es:a0Continue; "*0.`CONTINUE..."
+0x1853D7: push    si
+0x1853D8: call    undoc_11C576
+0x1853DD: jmp     short loc_1853F4
+0x1853DF: mov     ax, 602Eh; jumptable 00185395 case 8
+0x1853E2: mov     es, ax
+0x1853E4: push    word ptr es:a2NextMission+1; ".`NEXT MISSION"
+0x1853E9: push    word ptr es:byte_15183A
+0x1853EE: push    si
+0x1853EF: call    sub_11CA9E
+0x1853F4: add     sp, 6
+0x1853F7: pop     si; jumptable 00185395 default case, cases 1-5
+0x1853F8: pop     bp
+0x1853F9: retf

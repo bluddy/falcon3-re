@@ -1,0 +1,30 @@
+# irq_unmask_and_query @ 0x1BCFA
+# Rank #179
+# Size: 55 bytes, Calls: 14
+
+0x1BCFA: push    bp
+0x1BCFB: mov     bp, sp
+0x1BCFD: push    si
+0x1BCFE: xor     si, si
+0x1BD00: push    ax
+0x1BD01: in      al, 21h; Interrupt controller, 8259A.
+0x1BD03: and     al, 0FCh
+0x1BD05: out     21h, al; Interrupt controller, 8259A.
+0x1BD07: pop     ax
+0x1BD08: mov     ax, 7772h
+0x1BD0B: mov     es, ax
+0x1BD0D: mov     ax, word ptr es:byte_77B1F+27h
+0x1BD11: cmp     ax, 2
+0x1BD14: jz      short loc_1BD22
+0x1BD16: cmp     ax, 3
+0x1BD19: jz      short loc_1BD22
+0x1BD1B: cmp     ax, 4
+0x1BD1E: jz      short loc_1BD22
+0x1BD20: jmp     short loc_1BD2C
+0x1BD22: mov     ax, 7772h
+0x1BD25: mov     es, ax
+0x1BD27: mov     si, word ptr es:byte_77B1F+19h
+0x1BD2C: mov     ax, si
+0x1BD2E: pop     si
+0x1BD2F: pop     bp
+0x1BD30: retf

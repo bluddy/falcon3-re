@@ -1,0 +1,25 @@
+# ems_state_flags_709f @ 0x4EED3
+# Rank #130
+# Size: 46 bytes, Calls: 19
+
+0x4EED3: push    ds
+0x4EED4: push    bx
+0x4EED5: mov     ax, 709Fh
+0x4EED8: mov     ds, ax
+0x4EEDA: xor     ax, ax
+0x4EEDC: cmp     ds:word_709F0, 0
+0x4EEE1: jz      short loc_4EEEE
+0x4EEE3: inc     ax
+0x4EEE4: cmp     ds:byte_709F2, 1
+0x4EEE9: jnz     short loc_4EEEE
+0x4EEEB: add     ax, 2
+0x4EEEE: push    ax
+0x4EEEF: call    flag1084c_get
+0x4EEF4: sar     ax, 1
+0x4EEF6: adc     ax, 0
+0x4EEF9: ror     ax, 1
+0x4EEFB: pop     bx
+0x4EEFC: or      ax, bx
+0x4EEFE: pop     bx
+0x4EEFF: pop     ds
+0x4EF00: retf

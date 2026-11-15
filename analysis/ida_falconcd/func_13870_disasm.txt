@@ -1,0 +1,176 @@
+# slot3_tile_record_load @ 0x13870
+# Rank #163
+# Size: 483 bytes, Calls: 15
+
+0x13870: push    ax
+0x13871: push    bx
+0x13872: and     ax, 1Fh
+0x13875: and     bx, 1Fh
+0x13878: mov     cs:word_11BDE, si
+0x1387D: mov     cx, ax
+0x1387F: mov     dx, bx
+0x13881: shr     ax, 1
+0x13883: shr     ax, 1
+0x13885: shr     bx, 1
+0x13887: shr     bx, 1
+0x13889: shl     ax, 1
+0x1388B: shl     ax, 1
+0x1388D: shl     ax, 1
+0x1388F: add     ax, bx
+0x13891: mov     cs:word_11BE0, ax
+0x13895: and     cx, 3
+0x13898: and     dx, 3
+0x1389B: shl     cx, 1
+0x1389D: shl     cx, 1
+0x1389F: add     cx, dx
+0x138A1: mov     cs:word_11BE2, cx
+0x138A6: cmp     cs:byte_11BB9, 0
+0x138AC: jnz     short loc_138B1
+0x138AE: jmp     loc_1394B
+0x138B1: push    ds
+0x138B2: call    state_word_10219_get
+0x138B7: mov     ds, ax
+0x138B9: mov     bx, 0
+0x138BC: call    ems_page_move_67
+0x138C1: mov     bx, cs:word_11BE0
+0x138C6: shl     bx, 1
+0x138C8: shl     bx, 1
+0x138CA: shl     bx, 1
+0x138CC: shl     bx, 1
+0x138CE: add     bx, cs:word_11BE2
+0x138D3: shl     bx, 1
+0x138D5: shl     bx, 1
+0x138D7: mov     ax, [bx+2]
+0x138DA: mov     bx, [bx]
+0x138DC: cmp     bx, 0FFFFh
+0x138DF: jz      short loc_13931
+0x138E1: push    ax
+0x138E2: call    ems_page_move_67
+0x138E7: pop     bx
+0x138E8: mov     ax, [bx]
+0x138EA: cmp     ax, 1
+0x138ED: jbe     short loc_13931
+0x138EF: mov     si, bx
+0x138F1: add     si, 2
+0x138F4: mov     di, cs:word_11BDE
+0x138F9: shl     di, 1
+0x138FB: shl     di, 1
+0x138FD: shl     di, 1
+0x138FF: add     di, 162h
+0x13903: mov     cx, 8
+0x13906: rep movsw
+0x13908: add     bx, 12h
+0x1390B: push    ax
+0x1390C: push    bx
+0x1390D: mov     bx, 0
+0x13910: call    op_dispatch
+0x13915: mov     bx, cs:word_11BDE
+0x1391A: mov     es:[bx+150h], ax
+0x1391F: pop     si
+0x13920: pop     cx
+0x13921: push    es
+0x13922: mov     es, ax
+0x13924: sub     di, di
+0x13926: shr     cx, 1
+0x13928: rep movsw
+0x1392A: adc     cx, cx
+0x1392C: rep movsb
+0x1392E: pop     es
+0x1392F: jmp     short loc_13947
+0x13931: mov     di, cs:word_11BDE
+0x13936: shl     di, 1
+0x13938: shl     di, 1
+0x1393A: shl     di, 1
+0x1393C: add     di, 162h
+0x13940: sub     ax, ax
+0x13942: mov     cx, 8
+0x13945: rep stosw
+0x13947: pop     ds
+0x13948: pop     bx
+0x13949: pop     ax
+0x1394A: retn
+0x1394B: mov     dx, cs:word_11BE0
+0x13950: shl     dx, 1
+0x13952: shl     dx, 1
+0x13954: sub     cl, cl
+0x13956: mov     ch, 0
+0x13958: mov     bx, 0Eh
+0x1395B: mov     ax, cs:word_11BDA
+0x1395F: call    op_dispatch
+0x13964: mov     dx, 212h
+0x13967: mov     cx, 4
+0x1396A: mov     bx, 0Ah
+0x1396D: mov     ax, cs:word_11BDA
+0x13971: call    op_dispatch
+0x13976: mov     cx, word ptr ds:byte_71BD8+24Ch
+0x1397A: mov     dx, word ptr ds:byte_71BD8+24Ah
+0x1397E: cmp     cx, 0FFFFh
+0x13981: jnz     short loc_1398B
+0x13983: cmp     dx, 0FFFFh
+0x13986: jnz     short loc_1398B
+0x13988: jmp     loc_13A3A
+0x1398B: mov     ax, cs:word_11BE2
+0x1398F: shl     ax, 1
+0x13991: add     dx, ax
+0x13993: adc     cx, 0
+0x13996: mov     ch, 0
+0x13998: mov     bx, 0Eh
+0x1399B: mov     ax, cs:word_11BDA
+0x1399F: call    op_dispatch
+0x139A4: mov     dx, 216h
+0x139A7: mov     cx, 2
+0x139AA: mov     bx, 0Ah
+0x139AD: mov     ax, cs:word_11BDA
+0x139B1: call    op_dispatch
+0x139B6: mov     cx, word ptr ds:byte_71BD8+24Ch
+0x139BA: mov     dx, word ptr ds:byte_71BD8+24Ah
+0x139BE: add     dx, word ptr ds:byte_71BD8+24Eh
+0x139C2: adc     cx, 0
+0x139C5: mov     ch, 0
+0x139C7: mov     bx, 0Eh
+0x139CA: mov     ax, cs:word_11BDA
+0x139CE: call    op_dispatch
+0x139D3: mov     dx, 216h
+0x139D6: mov     cx, 2
+0x139D9: mov     bx, 0Ah
+0x139DC: mov     ax, cs:word_11BDA
+0x139E0: call    op_dispatch
+0x139E5: cmp     word ptr ds:byte_71BD8+24Eh, 1
+0x139EA: ja      short loc_139EF
+0x139EC: jmp     short loc_13A3A
+0x139EF: mov     dx, cs:word_11BDE
+0x139F4: shl     dx, 1
+0x139F6: shl     dx, 1
+0x139F8: shl     dx, 1
+0x139FA: add     dx, 162h
+0x139FE: mov     cx, 10h
+0x13A01: mov     bx, 0Ah
+0x13A04: mov     ax, cs:word_11BDA
+0x13A08: call    op_dispatch
+0x13A0D: mov     ax, word ptr ds:byte_71BD8+24Eh
+0x13A10: mov     bx, 0
+0x13A13: call    op_dispatch
+0x13A18: mov     bx, cs:word_11BDE
+0x13A1D: mov     [bx+150h], ax
+0x13A21: mov     cx, word ptr ds:byte_71BD8+24Eh
+0x13A25: push    ds
+0x13A26: mov     ds, ax
+0x13A28: sub     dx, dx
+0x13A2A: mov     bx, 0Ah
+0x13A2D: mov     ax, cs:word_11BDA
+0x13A31: call    op_dispatch
+0x13A36: pop     ds
+0x13A37: pop     bx
+0x13A38: pop     ax
+0x13A39: retn
+0x13A3A: mov     di, cs:word_11BDE
+0x13A3F: shl     di, 1
+0x13A41: shl     di, 1
+0x13A43: shl     di, 1
+0x13A45: add     di, 162h
+0x13A49: sub     ax, ax
+0x13A4B: mov     cx, 8
+0x13A4E: rep stosw
+0x13A50: pop     bx
+0x13A51: pop     ax
+0x13A52: retn

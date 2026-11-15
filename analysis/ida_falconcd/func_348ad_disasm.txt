@@ -1,0 +1,25 @@
+# key_code_pending_drain @ 0x348AD
+# Rank #186
+# Size: 84 bytes, Calls: 14
+
+0x348AD: call    key_code_resolve_entry
+0x348B2: cmp     byte ptr ds:4893h, 0
+0x348B7: jz      short loc_348C6
+0x348B9: mov     byte ptr ds:4893h, 0
+0x348BE: mov     ax, 4
+0x348C1: call    key_code_resolve_entry
+0x348C6: cmp     byte ptr ds:4894h, 0
+0x348CB: jz      short locret_348DA
+0x348CD: mov     byte ptr ds:4894h, 0
+0x348D2: mov     ax, 3
+0x348D5: call    key_code_resolve_entry
+0x348DA: retn
+0x348EE: mov     si, 83Ch
+0x348F1: mov     di, 667h
+0x348F4: movsw
+0x348F5: movsw
+0x348F6: movsw
+0x348F7: movsw
+0x348F8: push    di
+0x348F9: mov     si, 667h
+0x348FC: call    terrain_farobj_tile_copy_resolve

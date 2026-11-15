@@ -1,0 +1,67 @@
+# fixed_vec3_transform_es @ 0x248D1
+# Rank #114
+# Size: 146 bytes, Calls: 21
+
+0x248D1: lodsw
+0x248D2: imul    word ptr es:[bx]
+0x248D5: mov     bp, ax
+0x248D7: mov     cx, dx
+0x248D9: lodsw
+0x248DA: imul    word ptr es:[bx+6]
+0x248DE: add     bp, ax
+0x248E0: adc     cx, dx
+0x248E2: lodsw
+0x248E3: imul    word ptr es:[bx+0Ch]
+0x248E7: add     ax, bp
+0x248E9: adc     dx, cx
+0x248EB: shl     ax, 1
+0x248ED: rcl     dx, 1
+0x248EF: jno     short loc_248FB
+0x248F1: js      short loc_248F8
+0x248F3: mov     dx, 8001h
+0x248F6: jmp     short loc_248FB
+0x248F8: mov     dx, 7FFFh
+0x248FB: mov     es:[di], dx
+0x248FE: sub     si, 6
+0x24901: lodsw
+0x24902: imul    word ptr es:[bx+2]
+0x24906: mov     bp, ax
+0x24908: mov     cx, dx
+0x2490A: lodsw
+0x2490B: imul    word ptr es:[bx+8]
+0x2490F: add     bp, ax
+0x24911: adc     cx, dx
+0x24913: lodsw
+0x24914: imul    word ptr es:[bx+0Eh]
+0x24918: add     ax, bp
+0x2491A: adc     dx, cx
+0x2491C: shl     ax, 1
+0x2491E: rcl     dx, 1
+0x24920: jno     short loc_2492C
+0x24922: js      short loc_24929
+0x24924: mov     dx, 8001h
+0x24927: jmp     short loc_2492C
+0x24929: mov     dx, 7FFFh
+0x2492C: mov     es:[di+2], dx
+0x24930: sub     si, 6
+0x24933: lodsw
+0x24934: imul    word ptr es:[bx+4]
+0x24938: mov     bp, ax
+0x2493A: mov     cx, dx
+0x2493C: lodsw
+0x2493D: imul    word ptr es:[bx+0Ah]
+0x24941: add     bp, ax
+0x24943: adc     cx, dx
+0x24945: lodsw
+0x24946: imul    word ptr es:[bx+10h]
+0x2494A: add     ax, bp
+0x2494C: adc     dx, cx
+0x2494E: shl     ax, 1
+0x24950: rcl     dx, 1
+0x24952: jno     short loc_2495E
+0x24954: js      short loc_2495B
+0x24956: mov     dx, 8001h
+0x24959: jmp     short loc_2495E
+0x2495B: mov     dx, 7FFFh
+0x2495E: mov     es:[di+4], dx
+0x24962: retn

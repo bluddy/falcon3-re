@@ -1,0 +1,84 @@
+# undoc_12C2F7 @ 0x12C2F7
+# Rank #116
+# Size: 176 bytes, Calls: 21
+
+0x12C2F7: push    ds
+0x12C2F8: mov     ax, 709Fh
+0x12C2FB: mov     ds, ax
+0x12C2FD: xor     ax, ax
+0x12C2FF: cmp     ds:word_709F0, 4
+0x12C304: jge     short loc_12C382
+0x12C306: cmp     ds:word_709F0, 0
+0x12C30B: jz      short loc_12C332
+0x12C30D: cmp     ds:word_70A72, ax
+0x12C311: jnz     short loc_12C319
+0x12C313: cmp     ds:word_70A74, ax
+0x12C317: jz      short loc_12C332
+0x12C319: push    es
+0x12C31A: xor     ax, ax
+0x12C31C: mov     es, ax
+0x12C31E: mov     ax, es:46Ch
+0x12C322: pop     es
+0x12C323: cmp     ds:word_71B9A, 0
+0x12C328: jnz     short loc_12C337
+0x12C32A: mov     ds:word_71B9A, ax
+0x12C32D: mov     ax, 1
+0x12C330: pop     ds
+0x12C331: retf
+0x12C332: mov     word ptr ds:byte_7B328+1A2h, ax
+0x12C335: pop     ds
+0x12C336: retf
+0x12C337: sub     ax, word ptr ds:byte_7B328+1A2h
+0x12C33B: push    bx
+0x12C33C: push    ax
+0x12C33D: push    dx
+0x12C33E: mov     bx, word ptr ds:byte_7A320+0Fh
+0x12C342: mov     ax, 1554h
+0x12C345: xor     dx, dx
+0x12C347: div     bx
+0x12C349: add     ax, 2
+0x12C34C: mov     bx, ax
+0x12C34E: pop     dx
+0x12C34F: pop     ax
+0x12C350: cmp     ax, bx
+0x12C352: jb      short loc_12C37C
+0x12C354: push    di
+0x12C355: push    dx
+0x12C356: add     word ptr ds:byte_7B328+1A2h, bx
+0x12C35A: mov     di, word ptr ds:byte_7A320+84h
+0x12C35E: add     di, word ptr ds:byte_7A320+88h
+0x12C362: mov     al, [di]
+0x12C364: mov     dx, word ptr ds:byte_7A320+7Ch
+0x12C368: sub     al, 3
+0x12C36A: out     dx, al
+0x12C36B: inc     word ptr ds:byte_7A320+88h
+0x12C36F: mov     ax, word ptr ds:byte_7A320+8Ch
+0x12C372: sub     ax, 1
+0x12C375: pop     dx
+0x12C376: pop     di
+0x12C377: jl      short loc_12C37C
+0x12C379: mov     word ptr ds:byte_7A320+8Ch, ax
+0x12C37C: pop     bx
+0x12C37D: mov     ax, 1
+0x12C380: pop     ds
+0x12C381: retf
+0x12C382: mov     ax, 709Fh
+0x12C385: mov     ds, ax
+0x12C387: xor     ax, ax
+0x12C389: inc     ax
+0x12C38A: push    si
+0x12C38B: push    bx
+0x12C38C: push    cx
+0x12C38D: mov     bx, 30h ; '0'
+0x12C390: mov     cx, ds:word_70A2A+1
+0x12C394: mov     si, 0E9Ch
+0x12C397: cmp     byte ptr [si+8], 0
+0x12C39B: jnz     short loc_12C3A2
+0x12C39D: add     si, bx
+0x12C39F: loop    loc_12C397
+0x12C3A1: dec     ax
+0x12C3A2: pop     cx
+0x12C3A3: pop     bx
+0x12C3A4: pop     si
+0x12C3A5: pop     ds
+0x12C3A6: retf

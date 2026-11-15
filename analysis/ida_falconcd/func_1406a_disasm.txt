@@ -1,0 +1,27 @@
+# point_bits_record_push @ 0x1406A
+# Rank #164
+# Size: 66 bytes, Calls: 15
+
+0x1406A: push    si
+0x1406B: mov     si, cs:word_11D14
+0x14070: mov     si, [si+8]
+0x14073: add     si, ds:0C63h
+0x14077: push    cx
+0x14078: call    point_xy_transform
+0x1407D: pop     cx
+0x1407E: pop     si
+0x1407F: mov     bx, cx
+0x14081: shl     ax, 1
+0x14083: jb      short loc_14089
+0x14085: loop    loc_14081
+0x14087: jmp     short loc_14091
+0x14089: add     cs:byte_11C6D, 18h
+0x1408F: jmp     short loc_14099
+0x14091: test    cs:byte_11C69, 1
+0x14097: jz      short loc_140A7
+0x14099: mov     al, cs:byte_11C6D
+0x1409D: mov     bx, ds:0C63h
+0x140A1: call    record_queue_push
+0x140A6: retn
+0x140A7: cmp     bx, 2
+0x140AA: jnz     short loc_14099

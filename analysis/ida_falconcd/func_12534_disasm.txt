@@ -1,0 +1,111 @@
+# entity_step_flags @ 0x12534
+# Rank #127
+# Size: 216 bytes, Calls: 19
+
+0x12534: cbw
+0x12535: xchg    ax, bx
+0x12536: cbw
+0x12537: xchg    ax, bx
+0x12538: sub     ax, 0FFh
+0x1253B: neg     ax
+0x1253D: add     bx, 100h
+0x12541: push    ds
+0x12542: push    cx
+0x12543: push    dx
+0x12544: call    tile_base_set_11c26
+0x12547: pop     dx
+0x12548: pop     cx
+0x12549: jb      short loc_125BC
+0x1254B: mov     cs:word_11BBC, si
+0x12550: mov     cs:word_11BBE, ds
+0x12555: or      cl, cl
+0x12557: jnz     short loc_12573
+0x12559: call    tile_record_count
+0x1255C: mov     si, cs:word_11BBC
+0x12561: mov     bl, 0
+0x12563: push    cx
+0x12564: call    tile_record_search_bl
+0x12567: pop     cx
+0x12568: jb      short loc_125B9
+0x1256A: mov     cs:byte_11BF0, 0
+0x12570: jmp     loc_12609
+0x12573: mov     si, cs:word_11BBC
+0x12578: mov     bl, dl
+0x1257A: mov     cs:byte_11BF0, dl
+0x1257F: push    cx
+0x12580: call    tile_record_search_bl
+0x12583: pop     cx
+0x12584: jb      short loc_125B9
+0x12586: test    cl, 40h
+0x12589: jz      short loc_12597
+0x1258B: push    cs
+0x1258C: call    near ptr farobj_step_flags_get
+0x1258F: nop
+0x12590: cmp     ax, 0FFFFh
+0x12593: jz      short loc_125BC
+0x12595: jmp     short loc_12609
+0x12597: test    cl, 1
+0x1259A: jz      short loc_125A1
+0x1259C: push    cs
+0x1259D: call    near ptr tile_pos_store_ccd
+0x125A0: nop
+0x125A1: test    cl, 4
+0x125A4: jz      short loc_125BF
+0x125A6: test    cl, 1
+0x125A9: jnz     short loc_125B0
+0x125AB: push    cs
+0x125AC: call    near ptr farptr_indirect_get_11bb
+0x125AF: nop
+0x125B0: push    si
+0x125B1: push    cs
+0x125B2: call    near ptr hw_flag_bit1_22e_extract
+0x125B5: nop
+0x125B6: pop     si
+0x125B7: jmp     short loc_12609
+0x125B9: mov     ax, 0
+0x125BC: stc
+0x125BD: pop     ds
+0x125BE: retf
+0x125BF: test    cl, 8
+0x125C2: jz      short loc_125D9
+0x125C4: test    cl, 1
+0x125C7: jnz     short loc_125CE
+0x125C9: push    cs
+0x125CA: call    near ptr farptr_indirect_get_11bb
+0x125CD: nop
+0x125CE: mov     al, ch
+0x125D0: push    si
+0x125D1: push    cs
+0x125D2: call    near ptr hw_flag_bit2_22e_set
+0x125D5: nop
+0x125D6: pop     si
+0x125D7: jmp     short loc_12609
+0x125D9: test    cl, 10h
+0x125DC: jz      short loc_125F1
+0x125DE: test    cl, 1
+0x125E1: jnz     short loc_125E8
+0x125E3: push    cs
+0x125E4: call    near ptr farptr_indirect_get_11bb
+0x125E7: nop
+0x125E8: push    si
+0x125E9: push    cs
+0x125EA: call    near ptr hw_flag_bit3_extract
+0x125ED: nop
+0x125EE: pop     si
+0x125EF: jmp     short loc_12609
+0x125F1: test    cl, 20h
+0x125F4: jz      short loc_12609
+0x125F6: test    cl, 1
+0x125F9: jnz     short loc_12600
+0x125FB: push    cs
+0x125FC: call    near ptr farptr_indirect_get_11bb
+0x125FF: nop
+0x12600: mov     al, ch
+0x12602: push    si
+0x12603: push    cs
+0x12604: call    near ptr hw_flag_bit3_22e_set_cmp
+0x12607: nop
+0x12608: pop     si
+0x12609: clc
+0x1260A: pop     ds
+0x1260B: retf

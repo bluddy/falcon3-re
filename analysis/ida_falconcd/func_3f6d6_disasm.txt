@@ -1,0 +1,25 @@
+# ai_angle_calculate @ 0x3F6D6
+# Rank #171
+# Size: 42 bytes, Calls: 15
+
+0x3F6D6: push    ds
+0x3F6D7: push    si
+0x3F6D8: mov     di, si
+0x3F6DA: add     di, 3Ah ; ':'
+0x3F6DD: mov     ax, [si+2]
+0x3F6E0: mov     si, [si+4]
+0x3F6E3: mov     ds, ax
+0x3F6E5: push    si
+0x3F6E6: push    di
+0x3F6E7: call    angle_xy_far
+0x3F6EC: pop     di
+0x3F6ED: pop     si
+0x3F6EE: push    ax
+0x3F6EF: call    angle_aux_far
+0x3F6F4: mov     bx, ax
+0x3F6F6: pop     ax
+0x3F6F7: pop     si
+0x3F6F8: pop     ds
+0x3F6F9: mov     [si+1Dh], ax
+0x3F6FC: mov     [si+1Fh], bx
+0x3F6FF: retn

@@ -1,0 +1,24 @@
+# state_mode_check @ 0x1BCC2
+# Rank #128
+# Size: 56 bytes, Calls: 19
+
+0x1BCC2: push    bp
+0x1BCC3: mov     bp, sp
+0x1BCC5: mov     ax, 7772h
+0x1BCC8: mov     es, ax
+0x1BCCA: mov     ax, word ptr es:byte_77B1F+27h
+0x1BCCE: cmp     ax, 2
+0x1BCD1: jz      short loc_1BCDF
+0x1BCD3: cmp     ax, 3
+0x1BCD6: jz      short loc_1BCDF
+0x1BCD8: cmp     ax, 4
+0x1BCDB: jz      short loc_1BCDF
+0x1BCDD: jmp     short loc_1BCF5
+0x1BCDF: call    sbi_channel_release_close
+0x1BCE4: call    state_pair_7981a_clear_if_set
+0x1BCE9: mov     ax, 7894h
+0x1BCEC: mov     es, ax
+0x1BCEE: mov     word ptr es:byte_78B06+0D18h, 0
+0x1BCF5: mov     ax, 1
+0x1BCF8: pop     bp
+0x1BCF9: retf

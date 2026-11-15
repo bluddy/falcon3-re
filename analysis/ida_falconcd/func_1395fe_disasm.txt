@@ -1,0 +1,94 @@
+# ui_menu_page_layout_engine @ 0x1395FE
+# Rank #161
+# Size: 232 bytes, Calls: 16
+
+0x1395FE: enter   42h, 0
+0x139602: push    si
+0x139603: push    di
+0x139604: call    far_cb_1
+0x139609: mov     [bp+var_2], 0
+0x13960E: jmp     short loc_139613
+0x139610: inc     [bp+var_2]
+0x139613: les     bx, [bp+arg_A]
+0x139616: add     bx, [bp+var_2]
+0x139619: cmp     byte ptr es:[bx], 0
+0x13961D: jnz     short loc_139610
+0x13961F: mov     [bp+var_4], 1
+0x139624: mov     [bp+var_42], 0
+0x139629: mov     ax, [bp+var_2]
+0x13962C: cmp     ax, [bp+arg_0]
+0x13962F: jle     short loc_139687
+0x139631: mov     si, [bp+arg_0]
+0x139634: xor     di, di
+0x139636: mov     [bp+var_6], si
+0x139639: jmp     short loc_13963C
+0x13963B: dec     si
+0x13963C: les     bx, [bp+arg_A]
+0x13963F: cmp     byte ptr es:[bx+si], 20h ; ' '
+0x139643: jz      short loc_139649
+0x139645: cmp     si, di
+0x139647: jnz     short loc_13963B
+0x139649: cmp     si, di
+0x13964B: jnz     short loc_139655
+0x13964D: inc     [bp+var_6]
+0x139650: mov     si, [bp+var_6]
+0x139653: jmp     short loc_139681
+0x139655: les     bx, [bp+arg_A]
+0x139658: mov     byte ptr es:[bx+si], 0
+0x13965C: inc     si
+0x13965D: mov     bx, [bp+var_4]
+0x139660: shl     bx, 1
+0x139662: lea     ax, [bp+var_42]
+0x139665: add     bx, ax
+0x139667: mov     ss:[bx], si
+0x13966A: inc     [bp+var_4]
+0x13966D: mov     ax, [bp+var_2]
+0x139670: sub     ax, si
+0x139672: cmp     ax, [bp+var_6]
+0x139675: jle     short loc_13967E
+0x139677: mov     di, si
+0x139679: add     si, [bp+var_6]
+0x13967C: jmp     short loc_139681
+0x13967E: mov     si, 0FFh
+0x139681: cmp     si, 0FFh
+0x139685: jnz     short loc_13963C
+0x139687: xor     si, si
+0x139689: mov     di, [bp+arg_8]
+0x13968C: push    [bp+arg_2]
+0x13968F: mov     bx, si
+0x139691: shl     bx, 1
+0x139693: lea     ax, [bp+var_42]
+0x139696: add     bx, ax
+0x139698: mov     ax, word ptr [bp+arg_A]
+0x13969B: add     ax, ss:[bx]
+0x13969E: push    word ptr [bp+arg_A+2]
+0x1396A1: push    ax
+0x1396A2: push    di
+0x1396A3: push    [bp+arg_6]
+0x1396A6: call    sub_13DE3A
+0x1396AB: add     sp, 0Ah
+0x1396AE: inc     si
+0x1396AF: mov     ax, [bp+arg_4]
+0x1396B2: inc     ax
+0x1396B3: inc     ax
+0x1396B4: add     di, ax
+0x1396B6: cmp     si, [bp+var_4]
+0x1396B9: jl      short loc_13968C
+0x1396BB: mov     si, 1
+0x1396BE: jmp     short loc_1396D8
+0x1396C0: mov     bx, si
+0x1396C2: shl     bx, 1
+0x1396C4: lea     ax, [bp+var_42]
+0x1396C7: add     bx, ax
+0x1396C9: mov     bx, ss:[bx]
+0x1396CC: mov     es, word ptr [bp+arg_A+2]
+0x1396CF: add     bx, word ptr [bp+arg_A]
+0x1396D2: mov     byte ptr es:[bx-1], 20h ; ' '
+0x1396D7: inc     si
+0x1396D8: cmp     si, [bp+var_4]
+0x1396DB: jl      short loc_1396C0
+0x1396DD: call    far_cb_0
+0x1396E2: pop     di
+0x1396E3: pop     si
+0x1396E4: leave
+0x1396E5: retf

@@ -1,0 +1,34 @@
+# sub_135C07 @ 0x135C07
+# Rank #143
+# Size: 80 bytes, Calls: 18
+
+0x135C07: enter   2, 0
+0x135C0B: push    si
+0x135C0C: xor     si, si
+0x135C0E: jmp     short loc_135C4B
+0x135C10: les     bx, [bp+arg_0]
+0x135C13: mov     al, es:[bx+si]
+0x135C16: mov     [bp+var_1], al
+0x135C19: mov     byte ptr es:[bx+si], 0
+0x135C1D: push    3
+0x135C1F: push    word ptr [bp+arg_0+2]
+0x135C22: push    word ptr [bp+arg_0]
+0x135C25: call    sub_13DE82
+0x135C2A: add     sp, 6
+0x135C2D: cmp     ax, [bp+arg_4]
+0x135C30: jle     short loc_135C41
+0x135C32: cmp     si, 1
+0x135C35: jle     short loc_135C54
+0x135C37: les     bx, [bp+arg_0]
+0x135C3A: mov     byte ptr es:[bx+si-1], 0
+0x135C3F: jmp     short loc_135C54
+0x135C41: les     bx, [bp+arg_0]
+0x135C44: mov     al, [bp+var_1]
+0x135C47: mov     es:[bx+si], al
+0x135C4A: inc     si
+0x135C4B: les     bx, [bp+arg_0]
+0x135C4E: cmp     byte ptr es:[bx+si], 0
+0x135C52: jnz     short loc_135C10
+0x135C54: pop     si
+0x135C55: leave
+0x135C56: retf

@@ -1,0 +1,58 @@
+# group_children_release @ 0x1D88C
+# Rank #135
+# Size: 136 bytes, Calls: 18
+
+0x1D88C: enter   4, 0
+0x1D890: push    si
+0x1D891: push    di
+0x1D892: mov     bx, [bp+arg_0]
+0x1D895: shl     bx, 2
+0x1D898: mov     ax, 7772h
+0x1D89B: mov     es, ax
+0x1D89D: mov     ax, es:[bx+0F36h]
+0x1D8A2: mov     dx, es:[bx+0F34h]
+0x1D8A7: mov     word ptr [bp+var_4+2], ax
+0x1D8AA: mov     word ptr [bp+var_4], dx
+0x1D8AD: mov     ax, word ptr [bp+var_4]
+0x1D8B0: or      ax, word ptr [bp+var_4+2]
+0x1D8B3: jnz     short loc_1D8B9
+0x1D8B5: xor     ax, ax
+0x1D8B7: jmp     short loc_1D910
+0x1D8B9: xor     si, si
+0x1D8BB: jmp     short loc_1D905
+0x1D8BD: mov     ax, si
+0x1D8BF: inc     ax
+0x1D8C0: shl     ax, 1
+0x1D8C2: les     bx, [bp+var_4]
+0x1D8C5: add     bx, ax
+0x1D8C7: mov     di, es:[bx]
+0x1D8CA: mov     bx, di
+0x1D8CC: shl     bx, 1
+0x1D8CE: mov     ax, 7772h
+0x1D8D1: mov     es, ax
+0x1D8D3: mov     word ptr es:[bx+592h], 0
+0x1D8DA: mov     bx, di
+0x1D8DC: shl     bx, 1
+0x1D8DE: mov     ax, 7772h
+0x1D8E1: mov     es, ax
+0x1D8E3: mov     word ptr es:[bx+5D8h], 0
+0x1D8EA: mov     bx, di
+0x1D8EC: shl     bx, 1
+0x1D8EE: mov     ax, 7772h
+0x1D8F1: mov     es, ax
+0x1D8F3: push    word ptr es:[bx+664h]
+0x1D8F8: call    channel_release
+0x1D8FD: pop     cx
+0x1D8FE: push    di
+0x1D8FF: push    cs
+0x1D900: call    near ptr channel_node_release_unlink
+0x1D903: pop     cx
+0x1D904: inc     si
+0x1D905: les     bx, [bp+var_4]
+0x1D908: cmp     es:[bx], si
+0x1D90B: jg      short loc_1D8BD
+0x1D90D: mov     ax, 1
+0x1D910: pop     di
+0x1D911: pop     si
+0x1D912: leave
+0x1D913: retf
