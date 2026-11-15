@@ -1,0 +1,96 @@
+================================================================================
+COMPLETE TRAMPOLINE CHAIN ANALYSIS
+Following operation 0xA through all layers
+================================================================================
+
+################################################################################
+LAYER 0: dispatch_220b0_near @ 0x0002063B
+################################################################################
+
+================================================================================
+dispatch_220b0_near @ 0x0002063B (6B)
+================================================================================
+  0x0002063B: call    cs:opcode_handler_table
+  0x00020640: retn
+
+Statistics:
+  Instructions: 2
+  Bit operations: 0
+  Buffer writes: 0
+  Loops: 0
+  Calls: 1 (far: 0)
+  Decompressor score: 0/16
+
+TRAMPOLINE - searching for next target...
+  Found indirect reference: cs:opcode_handler_table
+  Pointer at: 0x0002000C
+  Far pointer: 01E2:8AC4
+  Candidates: 1
+    -> 0x00038104: game_setup_toggle_step (seg R05_1F64)
+  Selecting this target for next layer
+
+################################################################################
+LAYER 1: game_setup_toggle_step @ 0x00038104
+################################################################################
+
+================================================================================
+game_setup_toggle_step @ 0x00038104 (121B)
+================================================================================
+  0x00038104: jmp     short loc_3812A
+  0x00038106: cmp     byte ptr ds:1079h, 1
+  0x0003810B: jg      short loc_3812A
+  0x0003810D: inc     byte ptr ds:1079h
+  0x00038111: mov     si, 1Bh
+  0x00038114: mov     di, 7Fh
+  0x00038117: mov     cx, 14h
+  0x0003811A: mov     dx, cx
+  0x0003811C: mov     bx, 8
+  0x0003811F: mov     bp, 10h
+  0x00038122: mov     ax, 1
+  0x00038125: call    farwrap_25a1c
+  0x0003812A: cmp     byte ptr ds:487Ch, 0
+  0x0003812F: jz      short loc_38158
+  0x00038131: mov     byte ptr ds:107Ah, 0
+  0x00038136: cmp     byte ptr ds:106Ah, 0
+  0x0003813B: jz      short loc_38163
+  0x0003813D: mov     bx, 14h
+  0x00038140: mov     di, 88h
+  0x00038143: push    ds
+  0x00038144: mov     ds, cs:word_2F66F
+  0x00038149: mov     si, cs:word_2F671
+  0x0003814E: add     si, [si+50h]
+  0x00038151: call    dispatch_220ec_stub
+  0x00038156: pop     ds
+  0x00038157: retn
+  0x00038158: cmp     byte ptr ds:107Ah, 1
+  0x0003815D: jg      short locret_38157
+  0x0003815F: inc     byte ptr ds:107Ah
+  0x00038163: mov     si, 24h ; '$'
+  0x00038166: mov     di, 88h
+  0x00038169: mov     cx, 14h
+  0x0003816C: mov     dx, cx
+  0x0003816E: mov     bx, 8
+  0x00038171: mov     bp, 10h
+  0x00038174: mov     ax, 1
+  0x00038177: call    farwrap_25a1c
+  0x0003817C: retn
+
+Statistics:
+  Instructions: 38
+  Bit operations: 0
+  Buffer writes: 0
+  Loops: 0
+  Calls: 3 (far: 0)
+  Decompressor score: 1/16
+
+Not a trampoline (size 121B) - this might be the implementation
+
+
+================================================================================
+TRAMPOLINE CHAIN SUMMARY
+================================================================================
+Layer 0: dispatch_220b0_near @ 0x0002063B (size=6B, score=0/16)
+Layer 1: game_setup_toggle_step @ 0x00038104 (size=121B, score=1/16)
+
+Final address: 0x00038104
+Final function: game_setup_toggle_step
