@@ -431,8 +431,128 @@ Requires further analysis to decode complete structure.
 - Displayed via F2 key in mission planning
 - Editable with text editor
 - Describes mission objectives in natural language
+- Loaded by squadron_mission_file_loader @ 0x17B437
 
-**Evidence:** Documented by Strategic Falcon, editable as plain text
+**Evidence:** Documented by Strategic Falcon, editable as plain text, code reference confirmed
+
+---
+
+### Squadron Selection Files (.SQUAD) — UNDOCUMENTED
+
+**Size:** Unknown (likely ~2,703 bytes)  
+**Location:** Game directory (SQUAD0.SQUAD - SQUAD5.SQUAD)  
+**Purpose:** Squadron roster selection menu data
+
+**Format:** Unknown - possibly same as .SQU format
+
+**Usage:**
+- Loaded during mission planning UI (War Room menu)
+- Loaded by squadron_mission_file_loader @ 0x17B437
+- Different from .SQU save files (execution vs. menu)
+
+**Hypothesis:**
+- Could be menu metadata (squadron names, theater assignments, campaign availability)
+- Or duplicate of .SQU format with different extension
+- First 2 bytes of 64×20-byte slot array suggest text labels
+
+**Evidence:** Code reference @ 0x17B4FC, string ".SQUAD" in segment 0x602E
+
+**Relationship to .SQU:**
+The game uses two squadron file patterns:
+- **.SQU** = Squadron save data (mission execution)
+- **.SQUAD** = Squadron menu/selection data (mission planning UI)
+
+**Next steps:** Extract and compare .SQUAD vs .SQU file contents
+
+---
+
+### Task Definition Files (.TSK) — HYPOTHESIS
+
+**Size:** 1,902 bytes  
+**Location:** Game directory (SQUAD0.TSK - SQUAD5.TSK)  
+**Purpose:** Mission task/objective definitions
+
+**Format:** Unknown - likely structured records
+
+**Possible Structure:**
+```c
+// HYPOTHESIS - 1902 bytes total
+struct TaskFile {
+    uint8_t  header[10];         // Mission type, difficulty
+    TaskRecord tasks[63];        // 63 tasks × 30 bytes = 1,890 bytes
+    uint8_t  footer[2];          // Terminator
+};
+
+struct TaskRecord {
+    uint8_t  task_type;          // CAP, CAS, STRIKE (0x01-0x10)
+    uint8_t  priority;           // 0-10
+    uint16_t target_id;          // Reference to .CAM strategic target
+    uint16_t x_coord;            // Target location
+    uint16_t y_coord;
+    uint8_t  altitude_code;      // Encoded altitude
+    uint8_t  speed_code;         // Encoded speed
+    uint8_t  flight_assignment;  // Which flight handles this task
+    uint8_t  weapon_loadout;     // Required weapons
+    uint8_t  success_criteria[8];// Victory conditions
+    uint8_t  failure_criteria[8];// Defeat conditions
+    uint8_t  flags;              // Status bits
+};  // 30 bytes
+```
+
+**Alternative:** 38 records × 50 bytes
+
+**Usage:**
+- Loaded during mission planning
+- Read in single 1,902-byte operation
+- Loaded by squadron_mission_file_loader @ 0x17B6D1
+- Success sets flag2224a state flag
+
+**Evidence:** Code reference @ 0x17B6D1, exact size 1,902 bytes (0x76E)
+
+**Next steps:**
+- Extract sample .TSK files from game directory
+- Hex dump analysis to find structure boundaries
+- Search IDA for .TSK parsing code
+- Cross-reference with .MIS waypoint actions and .CAM strategic targets
+
+---
+
+### Shape/Model Files (.SHP) — HYPOTHESIS
+
+**Size:** 6 bytes  
+**Location:** Game directory (SQUAD0.SHP - SQUAD5.SHP)  
+**Purpose:** 3D model or sprite selection reference
+
+**Format:** Unknown - possibly model ID + flags
+
+**Possible Structure:**
+```c
+struct ShapeFile {
+    uint8_t  model_type;         // +0: Aircraft, ground, building
+    uint16_t model_id;           // +1: Index into shape table
+    uint8_t  color_scheme;       // +3: Camouflage pattern
+    uint16_t flags;              // +4: LOD, damage state, variant
+};  // 6 bytes
+```
+
+**Usage:**
+- Conditionally loaded (flag at 0x7A32:0xAD4B controls loading)
+- Read in two operations: 1 byte + 5 bytes (extended read)
+- Loaded by squadron_mission_file_loader @ 0x17B5EA
+- Only loaded if specific game mode flag is set
+
+**Conditional Loading:**
+- Skipped in certain graphics modes (low detail?)
+- Could be theater-specific (some campaigns skip certain models)
+- Could be mission-specific (air-to-air skips ground vehicles)
+
+**Evidence:** Code reference @ 0x17B5EA, exact size 6 bytes (1 + 5)
+
+**Next steps:**
+- Extract sample .SHP files
+- Identify which flag at 0x7A32:0xAD4B controls loading
+- Search for model loading code in 3D rendering subsystem
+- Compare .SHP files across different squadrons/theaters
 
 ---
 
@@ -817,13 +937,18 @@ void load_squadron(int squadron_num) {
 
 ## Analysis Status
 
-### Completed (30%)
+### Completed (34%)
 
 ✅ Squadron file format (.SQU) - PROVEN  
 ✅ Pilot record structure - PROVEN  
 ✅ Rank system - PROVEN  
 ✅ File format documentation - STRONG  
-✅ Working squadron parser - PROVEN
+✅ Working squadron parser - PROVEN  
+✅ **squadron_mission_file_loader code analysis** - STRONG (Rank #10, 4,516 bytes, 13 callees)  
+✅ **File I/O operation patterns** - PROVEN (OPEN=6, READ=0xA, READ_EXT=0xC, CLOSE=8)  
+✅ **.SQUAD file format discovery** - HYPOTHESIS (menu/selection data)  
+✅ **.TSK file format discovery** - HYPOTHESIS (1,902 bytes, mission task definitions)  
+✅ **.SHP file format discovery** - HYPOTHESIS (6 bytes, 3D model references)  
 
 ### In Progress
 
@@ -834,14 +959,14 @@ void load_squadron(int squadron_num) {
 
 ### TODO (to reach 70%)
 
-- [ ] Parse supply/aircraft data
-- [ ] Parse .CAM file structure
-- [ ] Parse .MIS file structure
-- [ ] Locate squadron loading code
+- [ ] Extract and analyze sample .SQUAD/.TSK/.SHP files
+- [ ] Parse supply/aircraft data in .SQU extended section
+- [ ] Complete .CAM file structure decoding
+- [ ] Complete .MIS file structure decoding
+- [ ] Locate .MIS/.CAM loader function (distinct from squadron_mission_file_loader)
 - [ ] Find War Room UI handlers
 - [ ] Trace mission planning screens
-- [ ] Document file I/O operations
-- [ ] Map data flow (files → memory → code)
+- [ ] Document complete file I/O flow (menu → load → execution → save)
 
 ---
 
@@ -852,6 +977,7 @@ void load_squadron(int squadron_num) {
 - `analysis/MISSION_FILE_FORMATS.md` - Complete format specs
 - `analysis/MISSION_SESSION1_SUMMARY.md` - Session 1 results
 - `analysis/parse_squadron.py` - Squadron file parser
+- `analysis/SQUADRON_MISSION_FILE_LOADER_ANALYSIS.md` - **Rank #10 deep dive (12,000 words)**
 
 **Modding tools:**
 - `old_mods/strategic_falcon/` - Strategic Falcon editor
@@ -866,6 +992,6 @@ void load_squadron(int squadron_num) {
 
 ---
 
-*Status: IN PROGRESS*  
-*Last Analysis: Session 1 complete (2026-11-11)*  
-*Next: Decode supply data, parse campaign files*
+*Status: IN PROGRESS (34% complete)*  
+*Last Analysis: Rank #10 deep dive complete (2026-11-11)*  
+*Next: Extract .SQUAD/.TSK/.SHP sample files, continue top-100 analysis*

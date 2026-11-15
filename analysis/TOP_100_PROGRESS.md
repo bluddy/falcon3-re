@@ -10,9 +10,11 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 31 | 31% |
+| ✅ Completed | 34 | 34% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 69 | 69% |
+| ⏳ Pending | 66 | 66% |
+
+**Deep Dives Completed:** 1 (Rank #10: squadron_mission_file_loader - file I/O operations analysis)
 
 ---
 
@@ -75,6 +77,18 @@
 ### Tactical/UI Screens (1 function)
 31. ✅ **`r29_tactical_screen_coordinator` (0x12DF6A)** - **Rank #8, 120 callers, 6,799 bytes** ⭐ **HYBRID pattern** (large specialized handler)
 
+### Screen/Menu Coordinators (1 function)
+32. ✅ **`input_device_calibration_init` (0x101A12)** - **Rank #9, 104 callers, 1,719 bytes, 26 callees** ⭐ **CORRECTED** (was incorrectly named r03_screen_coordinator)
+
+### File I/O and Resource Loading (2 functions)
+33. ✅ **`squadron_mission_file_loader` (0x17B437)** - **Rank #10, 104 callers, 4,516 bytes, 13 callees** ⭐ **DEEP DIVE COMPLETE** - Loads .SQUAD/.MTV/.SHP/.TSK files during mission planning
+    - **Discovered:** 3 new undocumented file formats (.SQUAD, .TSK, .SHP)
+    - **Analyzed:** Complete file I/O operation patterns (OPEN, READ, READ_EXT, CLOSE)
+    - **Documented:** 64×20-byte mission slot initialization, path building, conditional .SHP loading
+    - **Created:** SQUADRON_MISSION_FILE_LOADER_ANALYSIS.md (12,000+ words)
+    - **Updated:** docs/architecture/mission_campaign.md with new file formats
+34. ✅ `farobj_vec3_accum_b_ret` (0x22C89) - 142 callers (general utility, used by file loader)
+
 ---
 
 ## Top 100 Rankings
@@ -89,8 +103,8 @@
 | 6 | 0x103C99 | 144 | 945B | **mission_session_init_coordinator** | ✅ **COMPLETE** (⭐ Phase 2 confirmed) |
 | 7 | 0x683C1 | 142 | 4170B | **ui_loadout_menu_enter** | ✅ Complete (already analyzed) |
 | 8 | 0x12DF6A | 120 | 6799B | **r29_tactical_screen_coordinator** | ✅ **COMPLETE** (⭐ HYBRID pattern) |
-| 9 | 0x101A12 | 104 | 1719B | sub_101A12 | ⏳ Pending |
-| 10 | 0x17B437 | 104 | 4516B | sub_17B437 | ⏳ Pending |
+| 9 | 0x101A12 | 104 | 1719B | **input_device_calibration_init** | ✅ **COMPLETE** (⭐ corrected after reading actual code) |
+| 10 | 0x17B437 | 104 | 4516B | **squadron_mission_file_loader** | ✅ **DEEP DIVE COMPLETE** (📄 12K word analysis) |
 | 11 | 0x15A8B0 | 102 | 2553B | sub_15A8B0 | ⏳ Pending |
 | 12 | 0x1A57F0 | 95 | 3083B | sub_1A57F0 | ⏳ Pending |
 | 13 | 0x1A6F30 | 88 | 4549B | sub_1A6F30 | ⏳ Pending |

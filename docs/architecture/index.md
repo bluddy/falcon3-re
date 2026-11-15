@@ -72,6 +72,8 @@ function signatures, `registry/structs.yaml` for data structure definitions.
 | 0x166F80 | `r38_loadout_menu_dispatcher` | R38 loadout menu state machine (2,943B, **147 callers**) |
 | 0x103C99 | `mission_session_init_coordinator` | Mission/game session initialization (945B, **144 callers**) |
 | 0x12DF6A | `r29_tactical_screen_coordinator` | R29 tactical planning screen (6,799B, **120 callers**, hybrid pattern) |
+| 0x101A12 | `input_device_calibration_init` | Input device calibration (1,719B, **104 callers**, 26 callees, joystick+mouse) |
+| 0x17B437 | `squadron_mission_file_loader` | Squadron/mission file loader (4,516B, **104 callers**, 13 callees, .SQUAD/.MTV/.SHP/.TSK) |
 | R05_400C:0x34 | `farobj_main_table` | Main entity slot table |
 | 0x65A7:0x000C | `ai_context_array` | 40 AI contexts × 24 bytes = 960 bytes |
 | 0x7B0E:0x3868 | `trig_sin_table` | Sine lookup table |
