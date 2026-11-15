@@ -1,0 +1,22 @@
+=== op_dispatch @ 0x2257B (29B) ===
+
+DISASSEMBLY:
+================================================================================
+0x2257B:  and     cs:byte_22248, 80h
+0x22581:  call    cs:op_dispatch_table[bx]
+0x22586:  cmp     cs:byte_2224A, 0
+0x2258C:  jz      short loc_22591
+0x2258E:  call    error_display_terminate
+0x22591:  test    cs:byte_22248, 7Fh
+0x22597:  retf
+
+================================================================================
+
+SWITCH/DISPATCH TABLE ANALYSIS:
+================================================================================
+Found comparison at 0x22586: cmp     cs:byte_2224A, 0
+
+
+FUNCTIONS CALLED FROM DISPATCH:
+================================================================================
+No function calls found
