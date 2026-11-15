@@ -10,9 +10,9 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 61 | 61% |
+| ✅ Completed | 62 | 62% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 39 | 39% |
+| ⏳ Pending | 38 | 38% |
 
 **Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
@@ -287,7 +287,7 @@
 | 17 | 0x34C31 | 81 | 1929B | **mode_axis_state_select** | ✅ **COMPLETE** (📐 mode/camera state machine, 84 self-calls) |
 | 18 | 0x3352A | 81 | 1092B | **aircraft_state_dispatcher** | ✅ **COMPLETE** (✈️ aircraft states + ejection, 49 self-calls) |
 | 19 | 0x32D22 | 77 | 850B | **mission_state_initializer** | ✅ **COMPLETE** (🎯 mission init, terrain/entity setup, 31 self-calls) |
-| 20 | 0x171BA0 | 77 | 2128B | sub_171BA0 | ⏳ Pending |
+| 20 | 0x171BA0 | 77 | 2128B | **overlay_r49_processor** | ✅ **COMPLETE** (📦 R49 overlay handler, 69 self-calls, seg 7894h) |
 
 *(Ranks 21-100 available in top_100_functions.json)*
 

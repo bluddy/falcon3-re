@@ -12367,8 +12367,10 @@ functions:
 
   - address: 0x171BA0
     name: overlay_r49_processor
+    system: r49
     size: 2128
-    doc: '2128B, 38 callees, 58 comparisons. conf: LOW'
+    doc: '2128B, 77 callers, 69 self-calls (dispatch/state machine). R49 overlay processor with heavy segment 7894h manipulation. Uses enter/leave stack frame (1Ch bytes local). Initializes ES:79BD8h=0, sets dword_79E68 to 4FC2h:600h. Loop with SI counter, 1Ch-byte record stride, processes offsets +606h, +604h. State machine with 69 recursions. Updates multiple word variables in segment 7894h: word_79B74=8, word_79B5C=0, word_79B5A=2, word_79B5E=0, word_79B64. Saves/restores state to BP-relative locals (var_14, var_18, var_16, var_1A, var_1C). 38 callees, 58 comparisons. R49 overlay handler - purpose unclear without deeper analysis.'
+    source: 'top_100_analysis (Rank #20, already named)'
 
   - address: 0x1A0E10
     name: overlay_r57_processor_2
