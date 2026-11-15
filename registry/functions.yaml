@@ -12752,9 +12752,12 @@ functions:
     doc: '698B, 29 comps. conf: LOW'
 
   - address: 0x128AA6
-    name: undoc_128AA6
+    name: ui_text_render_simple
+    system: ui
     size: 692
-    doc: '692B, 44 comps. Reused! 20 callers. conf: LOW'
+    callers: 20
+    doc: 'Simple text rendering without palette mode. Called by ui_text_render_single_mode when mode flags are not set. Direct/uncolored text rendering path.'
+    source: 'Render chain analysis - callee of ui_text_render_single_mode'
 
   - address: 0x131D5F
     name: undoc_131D5F
@@ -13141,9 +13144,11 @@ functions:
     size: 299
     doc: '299B, 9 comps. conf: LOW'
   - address: 0x129468
-    name: undoc_129468
+    name: ui_text_render_multi_mode
+    system: ui
     size: 297
-    doc: '297B, 17 comps. REUSED: 13 callers! conf: LOW'
+    doc: 'Renders multiple characters with display mode checking. Contains loop that calls ui_text_render_engine (0x128598) repeatedly. Same mode logic as single-char version but with counter/length parameter. Called 4x by ui_campaign_render_coordinator.'
+    source: 'Render chain analysis - callee of ui_campaign_render_coordinator'
   - address: 0x1290EA
     name: undoc_1290EA
     size: 294
@@ -13368,9 +13373,12 @@ functions:
     size: 183
     doc: '183B, 4 comps. conf: LOW'
   - address: 0x1320CC
-    name: undoc_1320CC
+    name: ui_font_config_apply
+    system: ui
     size: 182
-    doc: '182B, 2 comps. HIGHLY REUSED: 25 callers!!! conf: LOW'
+    callers: 25
+    doc: 'Applies font/text configuration settings. Called once in ui_campaign_render_coordinator. Heavily reused (25 callers) across UI system for font setup.'
+    source: 'Render chain analysis - callee of ui_campaign_render_coordinator'
   - address: 0x11C450
     name: undoc_11C450
     size: 180
@@ -14550,9 +14558,12 @@ functions:
     size: 56
     doc: '56B, 0 comps. REUSED: 5 callers! conf: LOW'
   - address: 0x138FF0
-    name: undoc_138FF0
+    name: string_copy_with_offset
+    system: utility
     size: 56
-    doc: '56B, 6 comps. HIGHLY REUSED: 30 callers!!! conf: LOW'
+    callers: 30
+    doc: 'String manipulation helper with offset parameter. Called from ui_campaign_render_coordinator. Heavily reused (30 callers) for string operations across codebase.'
+    source: 'Render chain analysis - callee of ui_campaign_render_coordinator'
   - address: 0x13D744
     name: undoc_13D744
     size: 56
@@ -15185,9 +15196,11 @@ functions:
     size: 27
     doc: '27B, 0 comps. conf: LOW'
   - address: 0x139F76
-    name: undoc_139F76
+    name: ui_render_state_update
+    system: ui
     size: 27
-    doc: '27B, 0 comps. conf: LOW'
+    doc: 'Updates UI render state/buffers. Called 3 times in ui_campaign_render_coordinator between render operations. Likely updates display buffers or cursor state.'
+    source: 'Render chain analysis - callee of ui_campaign_render_coordinator (called 3x)'
   - address: 0x11A44
     name: undoc_11A44
     size: 26
@@ -16050,10 +16063,11 @@ functions:
     source: 'expansion_analysis_2026-11-15'
 
   - address: 0x02c49b
-    name: sub_2C49B
+    name: menu_finalize_render
+    system: ui
     size: 8
-    doc: '8B, calls=1, depth=1, score=0, Found via systematic expansion from font loaders'
-    source: 'expansion_analysis_2026-11-15'
+    doc: 'Final menu render step. Called at end of ui_campaign_render_coordinator path A. Likely flips buffers or finalizes display update.'
+    source: 'Render chain analysis - callee of ui_campaign_render_coordinator'
 
   - address: 0x02c725
     name: sub_2C725
@@ -16782,16 +16796,19 @@ functions:
     source: 'expansion_analysis_2026-11-15'
 
   - address: 0x128518
-    name: sub_128518
+    name: ui_text_render_setup
+    system: ui
     size: 123
-    doc: '123B, bit_ops=1, calls=4, depth=1, score=4, Found via systematic expansion from font loaders'
-    source: 'expansion_analysis_2026-11-15'
+    callers: 16
+    doc: 'Setup/wrapper function before ui_text_render_engine. 123 bytes, located immediately before ui_text_render_engine (0x128598). May prepare parameters or check state. Called by ui_campaign_render_coordinator.'
+    source: 'Render chain analysis - address verification'
 
   - address: 0x1293f0
-    name: sub_1293F0
+    name: ui_text_render_single_mode
+    system: ui
     size: 120
-    doc: '120B, calls=2, depth=2, score=3, Found via systematic expansion from font loaders'
-    source: 'expansion_analysis_2026-11-15'
+    doc: 'Renders single character with display mode checking. Checks byte_7A302 (rendering mode), byte_14E5A0 (display mode 1/2/3). Calls ui_text_render_with_palette or ui_text_render_simple based on mode. Called 4x by ui_campaign_render_coordinator.'
+    source: 'Render chain analysis - callee of ui_campaign_render_coordinator'
 
   - address: 0x1299ae
     name: sub_1299AE
@@ -16806,16 +16823,18 @@ functions:
     source: 'expansion_analysis_2026-11-15'
 
   - address: 0x129c88
-    name: sub_129C88
+    name: ui_text_render_multi_palette
+    system: ui
     size: 590
-    doc: '590B, buf_wr=1, calls=12, depth=3, score=-1, Found via systematic expansion from font loaders'
-    source: 'expansion_analysis_2026-11-15'
+    doc: 'Multi-character text rendering with palette mode. Called by ui_text_render_multi_mode in loop. Handles palette/color mode parameter for text display.'
+    source: 'Render chain analysis - callee of ui_text_render_multi_mode'
 
   - address: 0x129ed6
-    name: sub_129ED6
+    name: ui_text_render_with_palette
+    system: ui
     size: 574
-    doc: '574B, buf_wr=1, calls=10, depth=3, score=2, Found via systematic expansion from font loaders'
-    source: 'expansion_analysis_2026-11-15'
+    doc: 'Text rendering with palette mode parameter. Called by ui_text_render_single_mode when mode flags are set. Handles colored/palette-based text rendering.'
+    source: 'Render chain analysis - callee of ui_text_render_single_mode'
 
   - address: 0x12a114
     name: sub_12A114

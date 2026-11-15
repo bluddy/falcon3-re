@@ -10,13 +10,14 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 42 | 42% |
+| ✅ Completed | 53 | 53% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 58 | 58% |
+| ⏳ Pending | 47 | 47% |
 
-**Deep Dives Completed:** 2  
+**Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
-2. Rank #11: theater_campaign_file_loader + 4 discovered callees (campaign initialization)
+2. Rank #11: theater_campaign_file_loader + 4 discovered callees (campaign initialization)  
+3. **ui_campaign_render_coordinator (0x15F5B8) + 10 callees (UI rendering chain)** ⭐ NEW
 
 ---
 
@@ -123,12 +124,54 @@
 40. ✅ **`event_irq_sync_handler` (0x13D6E4)** - 55 bytes, 4 callers
     - Polls IRQ status, sets event mode, checks state mode
     - Ensures clean state transitions between overlays
-41. ✅ **`ui_campaign_render_coordinator` (0x15F5B8)** - 745 bytes, **34 callers**
+41. ✅ **`ui_campaign_render_coordinator` (0x15F5B8)** - 745 bytes, **34 callers** ⭐ **DEEP DIVE #3 COMPLETE**
     - High-traffic UI function for campaign/theater screens
-    - Calls ui_text_render_engine, handles menu display
+    - Two code paths: detailed vs compact rendering
+    - Checks graphics_mode_flag, branches on display mode
+    - Calls render helpers 4x each (single-mode or multi-mode)
+    - **Discovered complete UI text rendering chain (10 functions):**
 42. ✅ **`msc_font_file_loader` (0x15B2A9)** - 430 bytes, 17 callers
     - Loads *.MSC files (mission-specific resources)
     - Calls madfont_idx_dat_loader for font loading
+
+### UI Text Rendering Chain (11 functions discovered from ui_campaign_render_coordinator)
+43. ✅ **`ui_text_render_single_mode` (0x1293F0)** - 120 bytes, called 4x by coordinator
+    - Single character renderer with mode checking
+    - Checks byte_7A302 (rendering mode), byte_14E5A0 (display mode 1/2/3)
+    - Routes to palette or simple renderer based on flags
+44. ✅ **`ui_text_render_multi_mode` (0x129468)** - 297 bytes, called 4x by coordinator
+    - Multi-character renderer with mode checking
+    - Contains loop calling ui_text_render_engine (0x128598)
+    - Parallel to single-mode but with length parameter
+45. ✅ **`ui_text_render_with_palette` (0x129ED6)** - 574 bytes
+    - Palette-based text rendering (colored text)
+    - Called by single-mode when mode flags set
+46. ✅ **`ui_text_render_simple` (0x128AA6)** - 692 bytes, 20 callers
+    - Direct/uncolored text rendering
+    - Called by single-mode when mode flags not set
+47. ✅ **`ui_text_render_multi_palette` (0x129C88)** - 590 bytes
+    - Multi-character palette rendering
+    - Called by multi-mode in loop
+48. ✅ **`ui_render_state_update` (0x139F76)** - 27 bytes, called 3x
+    - Updates render state/buffers between operations
+    - Likely updates display buffers or cursor state
+49. ✅ **`ui_font_config_apply` (0x1320CC)** - 182 bytes, 25 callers (highly reused!)
+    - Applies font/text configuration settings
+    - Used across entire UI system
+50. ✅ **`string_copy_with_offset` (0x138FF0)** - 56 bytes, 30 callers (highly reused!)
+    - String manipulation with offset parameter
+    - General utility function
+51. ✅ **`menu_finalize_render` (0x2C49B)** - 8 bytes
+    - Final render step (likely buffer flip)
+    - Called at end of Path A in coordinator
+52. ✅ **`ui_text_render_setup` (0x128518)** - 123 bytes, 16 callers
+    - Setup/wrapper before ui_text_render_engine
+    - Located immediately before ui_text_render_engine (0x128598)
+    - Prepares parameters or checks state
+53. ✅ **`ui_text_render_engine` (0x128598)** - 1282 bytes, 70 callers (KNOWN, verified)
+    - Core single-character text rendering engine
+    - Called in loop by ui_text_render_multi_mode
+    - Central to all UI text operations
 
 ---
 
