@@ -1,0 +1,92 @@
+Function: font_file_parser
+Address: 0x13142e
+Size: 243 bytes
+================================================================================
+
+0x13142e:  push    bp
+0x13142f:  mov     bp, sp
+0x131431:  push    si
+0x131432:  xor     si, si
+0x131434:  jmp     short loc_131447
+0x131436:  mov     bx, si
+0x131438:  shl     bx, 1
+0x13143a:  mov     ax, 7894h
+0x13143d:  mov     es, ax
+0x13143f:  mov     word ptr es:[bx+15A6h], 0
+0x131446:  inc     si
+0x131447:  cmp     si, 3
+0x13144a:  jl      short loc_131436
+0x13144c:  xor     si, si
+0x13144e:  mov     ax, 7894h
+0x131451:  mov     es, ax
+0x131453:  cmp     es:word_79870, 0
+0x131459:  jnz     short loc_13145E
+0x13145b:  jmp     loc_131509
+0x13145e:  mov     ax, 7894h
+0x131461:  mov     es, ax
+0x131463:  mov     es:word_79E46, 6
+0x13146a:  push    7894h
+0x13146d:  push    1506h
+0x131470:  push    7894h
+0x131473:  push    1506h
+0x131476:  call    mouse_int33_dispatch
+          -> calls mouse_int33_dispatch @ 0x1018f
+0x13147b:  add     sp, 8
+0x13147e:  mov     ax, 7894h
+0x131481:  mov     es, ax
+0x131483:  mov     ax, es:word_79E4A
+0x131487:  shr     ax, 1
+0x131489:  mov     dx, 7894h
+0x13148c:  mov     es, dx
+0x13148e:  mov     word ptr es:byte_7A278+3Ch, ax
+0x131492:  mov     ax, 7894h
+0x131495:  mov     es, ax
+0x131497:  mov     ax, es:word_79E4C
+0x13149b:  mov     dx, 7894h
+0x13149e:  mov     es, dx
+0x1314a0:  mov     word ptr es:byte_7A278+3Ah, ax
+0x1314a4:  mov     ax, 7894h
+0x1314a7:  mov     es, ax
+0x1314a9:  mov     ax, es:word_79E46
+0x1314ad:  and     ax, 3
+0x1314b0:  mov     dx, 7894h
+0x1314b3:  mov     es, dx
+0x1314b5:  mov     word ptr es:byte_7A278+38h, ax
+0x1314b9:  mov     ax, 7894h
+0x1314bc:  mov     es, ax
+0x1314be:  mov     ax, word ptr es:byte_7A278+3Ch
+0x1314c2:  mov     dx, 7894h
+0x1314c5:  mov     es, dx
+0x1314c7:  mov     word ptr es:byte_79EE6, ax
+0x1314cb:  mov     ax, 7894h
+0x1314ce:  mov     es, ax
+0x1314d0:  mov     ax, word ptr es:byte_7A278+3Ah
+0x1314d4:  mov     es, dx
+0x1314d6:  mov     word ptr es:byte_79EE6+2, ax
+0x1314da:  mov     ax, 7894h
+0x1314dd:  mov     es, ax
+0x1314df:  mov     ax, word ptr es:byte_7A278+38h
+0x1314e3:  mov     es, dx
+0x1314e5:  mov     word ptr es:byte_79EE6+4, ax
+0x1314e9:  mov     ax, 7894h
+0x1314ec:  mov     es, ax
+0x1314ee:  cmp     word ptr es:byte_7A278+38h, 1
+0x1314f4:  jnz     short loc_1314F9
+0x1314f6:  mov     si, 1Ch
+0x1314f9:  mov     ax, 7894h
+0x1314fc:  mov     es, ax
+0x1314fe:  cmp     word ptr es:byte_7A278+38h, 2
+0x131504:  jnz     short loc_131509
+0x131506:  mov     si, 1
+0x131509:  call    flag_block_build_far_thunk
+          -> calls flag_block_build_far_thunk @ 0x25087
+0x13150e:  or      ax, ax
+0x131510:  jz      short loc_13151C
+0x131512:  call    flag_table_pop_far_thunk
+          -> calls flag_table_pop_far_thunk @ 0x251c3
+0x131517:  sar     ax, 8
+0x13151a:  mov     si, ax
+0x13151c:  mov     ax, si
+0x13151e:  pop     si
+0x13151f:  pop     bp
+0x131520:  retf

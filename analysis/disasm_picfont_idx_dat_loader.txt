@@ -1,0 +1,84 @@
+Function: picfont_idx_dat_loader
+Address: 0x1297f0
+Size: 187 bytes
+================================================================================
+
+0x1297f0:  enter   2, 0                                      
+0x1297f4:  mov     ax, 7894h                                 
+0x1297f7:  mov     es, ax                                    
+0x1297f9:  cmp     es:word_78940, 0                            ; COMPARE (possibly control/header)
+0x1297ff:  jnz     short loc_129804                          
+0x129801:  jmp     locret_1298A9                             
+0x129804:  mov     ax, 602Eh                                 
+0x129807:  mov     es, ax                                    
+0x129809:  push    word ptr es:aPicfontIdx; ".`PICFONT.IDX"  
+0x12980e:  push    es:word_14E76F                            
+0x129813:  push    0                                         
+0x129815:  push    0                                         
+0x129817:  push    6                                         
+0x129819:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x12981e:  add     sp, 0Ah                                   
+0x129821:  mov     [bp+var_2], ax                              ; BUFFER WRITE #1
+0x129824:  mov     ax, 602Eh                                 
+0x129827:  mov     es, ax                                    
+0x129829:  push    word ptr es:dword_14E78F+2                
+0x12982e:  push    word ptr es:dword_14E78F                  
+0x129833:  push    1Ch                                       
+0x129835:  push    [bp+var_2]                                
+0x129838:  push    0Ah                                       
+0x12983a:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x12983f:  add     sp, 0Ah                                   
+0x129842:  push    ss                                        
+0x129843:  lea     ax, [bp+var_2]                            
+0x129846:  push    ax                                        
+0x129847:  push    0                                         
+0x129849:  push    [bp+var_2]                                
+0x12984c:  push    8                                         
+0x12984e:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x129853:  add     sp, 0Ah                                   
+0x129856:  mov     ax, 602Eh                                 
+0x129859:  mov     es, ax                                    
+0x12985b:  push    word ptr es:aPicfontDat; ".`PICFONT.DAT"  
+0x129860:  push    es:word_14E77F                            
+0x129865:  push    0                                         
+0x129867:  push    0                                         
+0x129869:  push    6                                         
+0x12986b:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x129870:  add     sp, 0Ah                                   
+0x129873:  mov     [bp+var_2], ax                              ; BUFFER WRITE #2
+0x129876:  mov     ax, 602Eh                                 
+0x129879:  mov     es, ax                                    
+0x12987b:  push    es:word_14E7B1                            
+0x129880:  push    es:word_14E7AF                            
+0x129885:  push    1ABh                                      
+0x129888:  push    [bp+var_2]                                
+0x12988b:  push    0Ah                                       
+0x12988d:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x129892:  add     sp, 0Ah                                   
+0x129895:  push    ss                                        
+0x129896:  lea     ax, [bp+var_2]                            
+0x129899:  push    ax                                        
+0x12989a:  push    0                                         
+0x12989c:  push    [bp+var_2]                                
+0x12989f:  push    8                                         
+0x1298a1:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x1298a6:  add     sp, 0Ah                                   
+0x1298a9:  leave                                             
+0x1298aa:  retf                                              
+
+================================================================================
+SUMMARY
+================================================================================
+Loops: 0
+Buffer writes: 2
+Comparisons: 1
+
+Buffer write locations:
+  0x129821: mov     [bp+var_2], ax
+  0x129873: mov     [bp+var_2], ax

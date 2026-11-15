@@ -1,0 +1,554 @@
+Function: madfont_idx_dat_loader
+Address: 0x1397ce
+Size: 1463 bytes
+================================================================================
+
+0x1397ce:  enter   98h, 0                                    
+0x1397d2:  push    si                                        
+0x1397d3:  push    di                                        
+0x1397d4:  mov     ax, 7894h                                 
+0x1397d7:  mov     es, ax                                    
+0x1397d9:  mov     ax, es:word_78940                         
+0x1397dd:  mov     [bp+var_20], ax                             ; BUFFER WRITE #1
+0x1397e0:  mov     ax, 7894h                                 
+0x1397e3:  mov     es, ax                                    
+0x1397e5:  mov     es:word_78940, 0                          
+0x1397ec:  xor     si, si                                    
+0x1397ee:  jmp     short loc_1397F1                          
+0x1397f0:  inc     si                                        
+0x1397f1:  les     bx, [bp+arg_8]                            
+0x1397f4:  cmp     byte ptr es:[bx+si], 0                      ; COMPARE (possibly control/header)
+0x1397f8:  jnz     short loc_1397F0                          
+0x1397fa:  mov     [bp+var_16], 1                              ; BUFFER WRITE #2
+0x1397ff:  mov     [bp+var_98], 0                              ; BUFFER WRITE #3
+0x139805:  mov     ax, 602Eh                                 
+0x139808:  mov     es, ax                                    
+0x13980a:  cmp     es:byte_151B41, 0                           ; COMPARE (possibly control/header)
+0x139810:  jz      short loc_139816                          
+0x139812:  sub     [bp+arg_2], 0Ah                           
+0x139816:  mov     [bp+var_10], 0                              ; BUFFER WRITE #4
+0x13981b:  xor     di, di                                    
+0x13981d:  les     bx, [bp+arg_8]                            
+0x139820:  add     bx, [bp+var_10]                           
+0x139823:  cmp     byte ptr es:[bx], 0Dh                       ; COMPARE (possibly control/header)
+0x139827:  jnz     short loc_13984C                          
+0x139829:  mov     bx, [bp+var_16]                           
+0x13982c:  shl     bx, 1                                     
+0x13982e:  lea     ax, [bp+var_98]                           
+0x139832:  add     bx, ax                                    
+0x139834:  mov     ax, [bp+var_10]                           
+0x139837:  inc     ax                                        
+0x139838:  mov     ss:[bx], ax                                 ; BUFFER WRITE #5
+0x13983b:  les     bx, [bp+arg_8]                            
+0x13983e:  add     bx, [bp+var_10]                           
+0x139841:  mov     byte ptr es:[bx], 0                         ; BUFFER WRITE #6
+0x139845:  inc     [bp+var_16]                               
+0x139848:  xor     di, di                                    
+0x13984a:  jmp     short loc_139881                          
+0x13984c:  les     bx, [bp+arg_8]                            
+0x13984f:  add     bx, [bp+var_10]                           
+0x139852:  mov     al, es:[bx]                               
+0x139855:  cbw                                               
+0x139856:  mov     dx, 602Eh                                 
+0x139859:  mov     bx, ax                                    
+0x13985b:  mov     es, dx                                    
+0x13985d:  mov     al, es:[bx+3526h]                         
+0x139862:  mov     ah, 0                                     
+0x139864:  add     di, ax                                    
+0x139866:  cmp     di, [bp+arg_2]                            
+0x139869:  jle     short loc_139881                          
+0x13986b:  dec     [bp+var_10]                               
+0x13986e:  les     bx, [bp+arg_8]                            
+0x139871:  add     bx, [bp+var_10]                           
+0x139874:  cmp     byte ptr es:[bx], 20h ; ' '                 ; COMPARE (possibly control/header)
+0x139878:  jnz     short loc_13987C                          
+0x13987a:  jmp     short loc_139829                          
+0x13987c:  dec     [bp+var_10]                               
+0x13987f:  jmp     short loc_13986E                          
+0x139881:  inc     [bp+var_10]                               
+0x139884:  les     bx, [bp+arg_8]                            
+0x139887:  add     bx, [bp+var_10]                           
+0x13988a:  cmp     byte ptr es:[bx], 0                         ; COMPARE (possibly control/header)
+0x13988e:  jnz     short loc_13981D                          
+0x139890:  push    602Eh                                     
+0x139893:  push    350Ch                                     
+0x139896:  push    0                                         
+0x139898:  push    0                                         
+0x13989a:  push    4                                         
+0x13989c:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x1398a1:  add     sp, 0Ah                                   
+0x1398a4:  mov     [bp+var_2], ax                              ; BUFFER WRITE #7
+0x1398a7:  mov     ax, 7894h                                 
+0x1398aa:  mov     es, ax                                    
+0x1398ac:  push    word ptr es:dword_79E5C+2                 
+0x1398b1:  push    word ptr es:dword_79E5C                   
+0x1398b6:  push    9858h                                     
+0x1398b9:  push    [bp+var_2]                                
+0x1398bc:  push    0Ch                                       
+0x1398be:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x1398c3:  add     sp, 0Ah                                   
+0x1398c6:  push    ss                                        
+0x1398c7:  lea     ax, [bp+var_10]                           
+0x1398ca:  push    ax                                        
+0x1398cb:  push    0                                         
+0x1398cd:  push    [bp+var_2]                                
+0x1398d0:  push    8                                         
+0x1398d2:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x1398d7:  add     sp, 0Ah                                   
+0x1398da:  mov     ax, 7894h                                 
+0x1398dd:  mov     es, ax                                    
+0x1398df:  mov     ax, word ptr es:dword_79E5C+2             
+0x1398e3:  mov     dx, word ptr es:dword_79E5C               
+0x1398e8:  add     dx, 7148h                                 
+0x1398ec:  mov     word ptr [bp+var_6+2], ax                   ; BUFFER WRITE #8
+0x1398ef:  mov     word ptr [bp+var_6], dx                     ; BUFFER WRITE #9
+0x1398f2:  mov     ax, word ptr [bp+var_6+2]                 
+0x1398f5:  add     dx, 5B0h                                  
+0x1398f9:  mov     [bp+var_8], ax                              ; BUFFER WRITE #10
+0x1398fc:  mov     [bp+var_A], dx                              ; BUFFER WRITE #11
+0x1398ff:  mov     ax, 602Eh                                 
+0x139902:  mov     es, ax                                    
+0x139904:  push    word ptr es:a5MadfontIdx+2; ".`madfont.idx"
+0x139909:  push    word ptr es:a5MadfontIdx; "(5.`madfont.idx"
+0x13990e:  push    0                                         
+0x139910:  push    0                                         
+0x139912:  push    6                                         
+0x139914:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139919:  add     sp, 0Ah                                   
+0x13991c:  mov     [bp+var_2], ax                              ; BUFFER WRITE #12
+0x13991f:  push    word ptr [bp+var_6+2]                     
+0x139922:  push    word ptr [bp+var_6]                       
+0x139925:  push    16Ch                                      
+0x139928:  push    [bp+var_2]                                
+0x13992b:  push    0Ah                                       
+0x13992d:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139932:  add     sp, 0Ah                                   
+0x139935:  push    ss                                        
+0x139936:  lea     ax, [bp+var_10]                           
+0x139939:  push    ax                                        
+0x13993a:  push    0                                         
+0x13993c:  push    [bp+var_2]                                
+0x13993f:  push    8                                         
+0x139941:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139946:  add     sp, 0Ah                                   
+0x139949:  mov     ax, 602Eh                                 
+0x13994c:  mov     es, ax                                    
+0x13994e:  push    word ptr es:a85MadfontDat+2; ".`madfont.dat"
+0x139953:  push    word ptr es:a85MadfontDat; "85.`madfont.dat"
+0x139958:  push    0                                         
+0x13995a:  push    0                                         
+0x13995c:  push    6                                         
+0x13995e:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139963:  add     sp, 0Ah                                   
+0x139966:  mov     [bp+var_2], ax                              ; BUFFER WRITE #13
+0x139969:  push    [bp+var_8]                                
+0x13996c:  push    [bp+var_A]                                
+0x13996f:  push    1611h                                     
+0x139972:  push    [bp+var_2]                                
+0x139975:  push    0Ah                                       
+0x139977:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x13997c:  add     sp, 0Ah                                   
+0x13997f:  push    ss                                        
+0x139980:  lea     ax, [bp+var_10]                           
+0x139983:  push    ax                                        
+0x139984:  push    0                                         
+0x139986:  push    [bp+var_2]                                
+0x139989:  push    8                                         
+0x13998b:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139990:  add     sp, 0Ah                                   
+0x139993:  mov     ax, 602Eh                                 
+0x139996:  mov     es, ax                                    
+0x139998:  mov     es:word_151AE4, 0                         
+0x13999f:  mov     [bp+var_10], 0                              ; BUFFER WRITE #14
+0x1399a4:  xor     di, di                                    
+0x1399a6:  mov     ax, 602Eh                                 
+0x1399a9:  mov     es, ax                                    
+0x1399ab:  cmp     es:byte_151B41, 0                           ; COMPARE (possibly control/header)
+0x1399b1:  jz      short loc_1399F2                          
+0x1399b3:  mov     si, [bp+var_10]                           
+0x1399b6:  mov     [bp+var_14], 0                              ; BUFFER WRITE #15
+0x1399bb:  jmp     short loc_1399D6                          
+0x1399bd:  les     bx, [bp+arg_8]                            
+0x1399c0:  mov     al, es:[bx+si]                            
+0x1399c3:  cbw                                               
+0x1399c4:  mov     dx, 602Eh                                 
+0x1399c7:  mov     bx, ax                                    
+0x1399c9:  mov     es, dx                                    
+0x1399cb:  mov     al, es:[bx+3526h]                         
+0x1399d0:  mov     ah, 0                                     
+0x1399d2:  add     [bp+var_14], ax                           
+0x1399d5:  inc     si                                        
+0x1399d6:  les     bx, [bp+arg_8]                            
+0x1399d9:  cmp     byte ptr es:[bx+si], 0                      ; COMPARE (possibly control/header)
+0x1399dd:  jnz     short loc_1399BD                          
+0x1399df:  mov     ax, [bp+var_14]                           
+0x1399e2:  mov     bx, 2                                     
+0x1399e5:  cwd                                               
+0x1399e6:  idiv    bx                                        
+0x1399e8:  mov     dx, 96h                                   
+0x1399eb:  sub     dx, ax                                    
+0x1399ed:  mov     [bp+var_C], dx                              ; BUFFER WRITE #16
+0x1399f0:  jmp     short loc_1399F8                          
+0x1399f2:  mov     ax, [bp+arg_4]                            
+0x1399f5:  mov     [bp+var_C], ax                              ; BUFFER WRITE #17
+0x1399f8:  mov     ax, [bp+arg_6]                            
+0x1399fb:  mov     [bp+var_E], ax                              ; BUFFER WRITE #18
+0x1399fe:  push    0Bh                                       
+0x139a00:  call    far ptr sub_2C351                         
+          -> calls sub_2C351 @ 0x2c351
+0x139a05:  pop     cx                                        
+0x139a06:  call    pending_task_run                          
+          -> calls pending_task_run @ 0x258b2
+0x139a0b:  call    far_cb_1                                  
+          -> calls far_cb_1 @ 0x25ec9
+0x139a10:  mov     ax, 4FC2h                                 
+0x139a13:  mov     es, ax                                    
+0x139a15:  push    es:word_13E016                            
+0x139a1a:  call    dispatch_220f0_invoke_1arg                
+          -> calls dispatch_220f0_invoke_1arg @ 0x25ea8
+0x139a1f:  pop     cx                                        
+0x139a20:  call    far_cb_0                                  
+          -> calls far_cb_0 @ 0x25ebd
+0x139a25:  mov     ax, 4FC2h                                 
+0x139a28:  mov     es, ax                                    
+0x139a2a:  push    es:word_13E016                            
+0x139a2f:  call    dispatch_220f0_invoke_1arg                
+          -> calls dispatch_220f0_invoke_1arg @ 0x25ea8
+0x139a34:  pop     cx                                        
+0x139a35:  push    1                                         
+0x139a37:  call    dispatch_220fc_invoke_1arg                
+          -> calls dispatch_220fc_invoke_1arg @ 0x25dd8
+0x139a3c:  pop     cx                                        
+0x139a3d:  mov     ax, 4FC2h                                 
+0x139a40:  mov     es, ax                                    
+0x139a42:  push    es:word_13E016                            
+0x139a47:  call    dispatch_220f0_invoke_1arg                
+          -> calls dispatch_220f0_invoke_1arg @ 0x25ea8
+0x139a4c:  pop     cx                                        
+0x139a4d:  push    0                                         
+0x139a4f:  call    dispatch_220fc_invoke_1arg                
+          -> calls dispatch_220fc_invoke_1arg @ 0x25dd8
+0x139a54:  pop     cx                                        
+0x139a55:  call    far_cb_0                                  
+          -> calls far_cb_0 @ 0x25ebd
+0x139a5a:  mov     [bp+var_19], 0                              ; BUFFER WRITE #19
+0x139a5e:  mov     [bp+var_1A], 0                              ; BUFFER WRITE #20
+0x139a62:  les     bx, [bp+arg_8]                            
+0x139a65:  add     bx, [bp+var_10]                           
+0x139a68:  mov     al, es:[bx]                               
+0x139a6b:  cbw                                               
+0x139a6c:  mov     [bp+var_12], ax                             ; BUFFER WRITE #21
+0x139a6f:  cmp     [bp+var_12], 0                              ; COMPARE (possibly control/header)
+0x139a73:  jz      short loc_139A78                          
+0x139a75:  jmp     loc_139B13                                
+0x139a78:  inc     di                                        
+0x139a79:  add     [bp+var_E], 16h                           
+0x139a7d:  mov     ax, 602Eh                                 
+0x139a80:  mov     es, ax                                    
+0x139a82:  cmp     es:byte_151B41, 0                           ; COMPARE (possibly control/header)
+0x139a88:  jz      short loc_139ACC                          
+0x139a8a:  mov     ax, [bp+var_10]                           
+0x139a8d:  inc     ax                                        
+0x139a8e:  mov     si, ax                                    
+0x139a90:  mov     [bp+var_14], 0                              ; BUFFER WRITE #22
+0x139a95:  jmp     short loc_139AB0                          
+0x139a97:  les     bx, [bp+arg_8]                            
+0x139a9a:  mov     al, es:[bx+si]                            
+0x139a9d:  cbw                                               
+0x139a9e:  mov     dx, 602Eh                                 
+0x139aa1:  mov     bx, ax                                    
+0x139aa3:  mov     es, dx                                    
+0x139aa5:  mov     al, es:[bx+3526h]                         
+0x139aaa:  mov     ah, 0                                     
+0x139aac:  add     [bp+var_14], ax                           
+0x139aaf:  inc     si                                        
+0x139ab0:  les     bx, [bp+arg_8]                            
+0x139ab3:  cmp     byte ptr es:[bx+si], 0                      ; COMPARE (possibly control/header)
+0x139ab7:  jnz     short loc_139A97                          
+0x139ab9:  mov     ax, [bp+var_14]                           
+0x139abc:  mov     bx, 2                                     
+0x139abf:  cwd                                               
+0x139ac0:  idiv    bx                                        
+0x139ac2:  mov     dx, 96h                                   
+0x139ac5:  sub     dx, ax                                    
+0x139ac7:  mov     [bp+var_C], dx                              ; BUFFER WRITE #23
+0x139aca:  jmp     short loc_139AD2                          
+0x139acc:  mov     ax, [bp+arg_4]                            
+0x139acf:  mov     [bp+var_C], ax                              ; BUFFER WRITE #24
+0x139ad2:  mov     ax, 602Eh                                 
+0x139ad5:  mov     es, ax                                    
+0x139ad7:  mov     es:word_151AE4, 0                         
+0x139ade:  inc     [bp+var_10]                               
+0x139ae1:  or      di, di                                    
+0x139ae3:  jnz     short loc_139AE8                          
+0x139ae5:  jmp     loc_139BA7                                
+0x139ae8:  mov     ax, di                                    
+0x139aea:  mov     bx, 9                                     
+0x139aed:  cwd                                               
+0x139aee:  idiv    bx                                        
+0x139af0:  or      dx, dx                                    
+0x139af2:  jz      short loc_139AF9                          
+0x139af4:  cmp     di, [bp+var_16]                           
+0x139af7:  jnz     short loc_139B0C                          
+0x139af9:  mov     [bp+var_19], 1                              ; BUFFER WRITE #25
+0x139afd:  cmp     di, [bp+var_16]                           
+0x139b00:  jz      short loc_139B05                          
+0x139b02:  jmp     loc_139BA7                                
+0x139b05:  mov     [bp+var_1A], 0                              ; BUFFER WRITE #26
+0x139b09:  jmp     loc_139BA7                                
+0x139b0c:  mov     [bp+var_1A], 0                              ; BUFFER WRITE #27
+0x139b10:  jmp     loc_139BA7                                
+0x139b13:  sub     [bp+var_12], 20h ; ' '                    
+0x139b17:  mov     ax, [bp+var_12]                           
+0x139b1a:  shl     ax, 2                                     
+0x139b1d:  les     bx, [bp+var_6]                            
+0x139b20:  add     bx, ax                                    
+0x139b22:  mov     ax, es:[bx]                               
+0x139b25:  mov     dx, 602Eh                                 
+0x139b28:  mov     es, dx                                    
+0x139b2a:  mov     es:word_151ABA, ax                        
+0x139b2e:  mov     ax, [bp+var_12]                           
+0x139b31:  shl     ax, 2                                     
+0x139b34:  les     bx, [bp+var_6]                            
+0x139b37:  add     bx, ax                                    
+0x139b39:  mov     ax, es:[bx+2]                             
+0x139b3d:  mov     dx, 602Eh                                 
+0x139b40:  mov     es, dx                                    
+0x139b42:  mov     es:word_151AB8, ax                        
+0x139b46:  mov     ax, 602Eh                                 
+0x139b49:  mov     dx, [bp+var_C]                            
+0x139b4c:  mov     es, ax                                    
+0x139b4e:  mov     es:word_151ABC, dx                        
+0x139b53:  mov     ax, 602Eh                                 
+0x139b56:  mov     dx, [bp+var_E]                            
+0x139b59:  mov     es, ax                                    
+0x139b5b:  mov     es:word_151ABE, dx                        
+0x139b60:  mov     ax, 602Eh                                 
+0x139b63:  mov     dx, [bp+var_8]                            
+0x139b66:  mov     bx, [bp+var_A]                            
+0x139b69:  mov     es, ax                                    
+0x139b6b:  mov     es:word_151AC2, dx                        
+0x139b70:  mov     es:word_151AC0, bx                        
+0x139b75:  push    cs                                        
+0x139b76:  push    offset sub_1396E6                         
+0x139b79:  push    cs                                        
+0x139b7a:  push    offset undoc_139737                       
+0x139b7d:  mov     ax, 7894h                                 
+0x139b80:  mov     es, ax                                    
+0x139b82:  push    es:word_7A270                             
+0x139b87:  push    es:word_7A26E                             
+0x139b8c:  call    sub_2BFC3                                 
+          -> calls sub_2BFC3 @ 0x2bfc3
+0x139b91:  mov     ax, 602Eh                                 
+0x139b94:  mov     bx, [bp+var_12]                           
+0x139b97:  mov     es, ax                                    
+0x139b99:  mov     al, es:[bx+3546h]                         
+0x139b9e:  mov     ah, 0                                     
+0x139ba0:  inc     ax                                        
+0x139ba1:  add     [bp+var_C], ax                            
+0x139ba4:  inc     [bp+var_10]                               
+0x139ba7:  cmp     [bp+var_19], 0                              ; COMPARE (possibly control/header)
+0x139bab:  jnz     short loc_139BB0                          
+0x139bad:  jmp     loc_139CFB                                
+0x139bb0:  mov     al, [bp+var_1A]                           
+0x139bb3:  mov     ah, 0                                     
+0x139bb5:  or      ax, ax                                    
+0x139bb7:  jz      short loc_139BBC                          
+0x139bb9:  jmp     loc_139CFB                                
+0x139bbc:  mov     [bp+var_1A], 1                              ; BUFFER WRITE #28
+0x139bc0:  mov     [bp+var_18], 0C7h                           ; BUFFER WRITE #29
+0x139bc5:  jmp     short loc_139C1F                          
+0x139bc7:  call    font_file_parser                          
+          -> calls font_file_parser @ 0x13142e
+0x139bcc:  mov     dx, 7894h                                 
+0x139bcf:  mov     es, dx                                    
+0x139bd1:  mov     es:word_79B66, ax                         
+0x139bd5:  or      ax, ax                                    
+0x139bd7:  jz      short loc_139BEC                          
+0x139bd9:  mov     ax, 7894h                                 
+0x139bdc:  mov     es, ax                                    
+0x139bde:  cmp     es:word_79B66, 1                          
+0x139be4:  jnz     short loc_139BEC                          
+0x139be6:  mov     di, [bp+var_16]                           
+0x139be9:  jmp     loc_139D03                                
+0x139bec:  push    0FFFFh                                    
+0x139bee:  push    1                                         
+0x139bf0:  push    [bp+var_18]                               
+0x139bf3:  push    0                                         
+0x139bf5:  mov     ax, 0C7h                                  
+0x139bf8:  sub     ax, [bp+var_18]                           
+0x139bfb:  push    ax                                        
+0x139bfc:  call    dispatch_22100_invoke                     
+          -> calls dispatch_22100_invoke @ 0x25deb
+0x139c01:  add     sp, 0Ah                                   
+0x139c04:  push    0FFFFh                                    
+0x139c06:  push    0                                         
+0x139c08:  mov     ax, 0C7h                                  
+0x139c0b:  sub     ax, [bp+var_18]                           
+0x139c0e:  push    ax                                        
+0x139c0f:  push    [bp+var_18]                               
+0x139c12:  push    0                                         
+0x139c14:  call    dispatch_22100_invoke                     
+          -> calls dispatch_22100_invoke @ 0x25deb
+0x139c19:  add     sp, 0Ah                                   
+0x139c1c:  dec     [bp+var_18]                               
+0x139c1f:  cmp     [bp+var_18], 0                              ; COMPARE (possibly control/header)
+0x139c23:  jge     short loc_139BC7                          
+0x139c25:  push    1                                         
+0x139c27:  push    0                                         
+0x139c29:  push    0C7h                                      
+0x139c2c:  push    0                                         
+0x139c2e:  push    0                                         
+0x139c30:  call    dispatch_22100_invoke                     
+          -> calls dispatch_22100_invoke @ 0x25deb
+0x139c35:  add     sp, 0Ah                                   
+0x139c38:  mov     ax, 4FC2h                                 
+0x139c3b:  mov     es, ax                                    
+0x139c3d:  push    es:word_13E016                            
+0x139c42:  call    dispatch_220f0_invoke_1arg                
+          -> calls dispatch_220f0_invoke_1arg @ 0x25ea8
+0x139c47:  pop     cx                                        
+0x139c48:  mov     [bp+var_19], 0                              ; BUFFER WRITE #30
+0x139c4c:  mov     ax, 602Eh                                 
+0x139c4f:  mov     es, ax                                    
+0x139c51:  cmp     es:byte_151B41, 0                           ; COMPARE (possibly control/header)
+0x139c57:  jz      short loc_139C9B                          
+0x139c59:  mov     ax, [bp+var_10]                           
+0x139c5c:  inc     ax                                        
+0x139c5d:  mov     si, ax                                    
+0x139c5f:  mov     [bp+var_14], 0                              ; BUFFER WRITE #31
+0x139c64:  jmp     short loc_139C7F                          
+0x139c66:  les     bx, [bp+arg_8]                            
+0x139c69:  mov     al, es:[bx+si]                            
+0x139c6c:  cbw                                               
+0x139c6d:  mov     dx, 602Eh                                 
+0x139c70:  mov     bx, ax                                    
+0x139c72:  mov     es, dx                                    
+0x139c74:  mov     al, es:[bx+3526h]                         
+0x139c79:  mov     ah, 0                                     
+0x139c7b:  add     [bp+var_14], ax                           
+0x139c7e:  inc     si                                        
+0x139c7f:  les     bx, [bp+arg_8]                            
+0x139c82:  cmp     byte ptr es:[bx+si], 0                      ; COMPARE (possibly control/header)
+0x139c86:  jnz     short loc_139C66                          
+0x139c88:  mov     ax, [bp+var_14]                           
+0x139c8b:  mov     bx, 2                                     
+0x139c8e:  cwd                                               
+0x139c8f:  idiv    bx                                        
+0x139c91:  mov     dx, 96h                                   
+0x139c94:  sub     dx, ax                                    
+0x139c96:  mov     [bp+var_C], dx                              ; BUFFER WRITE #32
+0x139c99:  jmp     short loc_139CA1                          
+0x139c9b:  mov     ax, [bp+arg_4]                            
+0x139c9e:  mov     [bp+var_C], ax                              ; BUFFER WRITE #33
+0x139ca1:  mov     ax, [bp+arg_6]                            
+0x139ca4:  mov     [bp+var_E], ax                              ; BUFFER WRITE #34
+0x139ca7:  mov     ax, 602Eh                                 
+0x139caa:  mov     es, ax                                    
+0x139cac:  mov     es:word_151AE4, 0                         
+0x139cb3:  mov     [bp+var_1E], 3                              ; BUFFER WRITE #35
+0x139cb8:  cmp     [bp+arg_0], 0                               ; COMPARE (possibly control/header)
+0x139cbc:  jz      short loc_139CFB                          
+0x139cbe:  mov     [bp+var_1C], 0FFFFh                         ; BUFFER WRITE #36
+0x139cc3:  call    font_file_parser                          
+          -> calls font_file_parser @ 0x13142e
+0x139cc8:  mov     dx, 7894h                                 
+0x139ccb:  mov     es, dx                                    
+0x139ccd:  mov     es:word_79B66, ax                         
+0x139cd1:  or      ax, ax                                    
+0x139cd3:  jz      short loc_139CE9                          
+0x139cd5:  mov     ax, 7894h                                 
+0x139cd8:  mov     es, ax                                    
+0x139cda:  cmp     es:word_79B66, 1                          
+0x139ce0:  jz      short loc_139D03                          
+0x139ce2:  mov     [bp+var_1E], 1                              ; BUFFER WRITE #37
+0x139ce7:  jmp     short loc_139CF2                          
+0x139ce9:  dec     [bp+var_1C]                               
+0x139cec:  cmp     [bp+var_1C], 0                              ; COMPARE (possibly control/header)
+0x139cf0:  jnz     short loc_139CC3                          
+0x139cf2:  dec     [bp+var_1E]                               
+0x139cf5:  cmp     [bp+var_1E], 0                              ; COMPARE (possibly control/header)
+0x139cf9:  jnz     short loc_139CBE                          
+0x139cfb:  cmp     di, [bp+var_16]                           
+0x139cfe:  jge     short loc_139D03                          
+0x139d00:  jmp     loc_139A62                                
+0x139d03:  push    602Eh                                     
+0x139d06:  push    350Ch                                     
+0x139d09:  push    0                                         
+0x139d0b:  push    2                                         
+0x139d0d:  push    6                                         
+0x139d0f:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139d14:  add     sp, 0Ah                                   
+0x139d17:  mov     [bp+var_2], ax                              ; BUFFER WRITE #38
+0x139d1a:  mov     ax, 7894h                                 
+0x139d1d:  mov     es, ax                                    
+0x139d1f:  push    word ptr es:dword_79E5C+2                 
+0x139d24:  push    word ptr es:dword_79E5C                   
+0x139d29:  push    9858h                                     
+0x139d2c:  push    [bp+var_2]                                
+0x139d2f:  push    0Ah                                       
+0x139d31:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139d36:  add     sp, 0Ah                                   
+0x139d39:  push    ss                                        
+0x139d3a:  lea     ax, [bp+var_10]                           
+0x139d3d:  push    ax                                        
+0x139d3e:  push    0                                         
+0x139d40:  push    [bp+var_2]                                
+0x139d43:  push    8                                         
+0x139d45:  call    op_dispatch_far_entry                     
+          -> calls op_dispatch_far_entry @ 0x22598
+0x139d4a:  add     sp, 0Ah                                   
+0x139d4d:  push    0                                         
+0x139d4f:  call    dispatch_220fc_invoke_1arg                
+          -> calls dispatch_220fc_invoke_1arg @ 0x25dd8
+0x139d54:  pop     cx                                        
+0x139d55:  call    far_cb_1                                  
+          -> calls far_cb_1 @ 0x25ec9
+0x139d5a:  mov     ax, 4FC2h                                 
+0x139d5d:  mov     es, ax                                    
+0x139d5f:  push    es:word_13E016                            
+0x139d64:  call    dispatch_220f0_invoke_1arg                
+          -> calls dispatch_220f0_invoke_1arg @ 0x25ea8
+0x139d69:  pop     cx                                        
+0x139d6a:  call    far_cb_0                                  
+          -> calls far_cb_0 @ 0x25ebd
+0x139d6f:  mov     ax, 7894h                                 
+0x139d72:  mov     dx, [bp+var_20]                           
+0x139d75:  mov     es, ax                                    
+0x139d77:  mov     es:word_78940, dx                         
+0x139d7c:  call    clip_pending_atomic_apply                 
+          -> calls clip_pending_atomic_apply @ 0x2589f
+0x139d81:  pop     di                                        
+0x139d82:  pop     si                                        
+0x139d83:  leave                                             
+0x139d84:  retf                                              
+
+================================================================================
+SUMMARY
+================================================================================
+Loops: 0
+Buffer writes: 38
+Comparisons: 23
+
+Buffer write locations:
+  0x1397dd: mov     [bp+var_20], ax
+  0x1397fa: mov     [bp+var_16], 1
+  0x1397ff: mov     [bp+var_98], 0
+  0x139816: mov     [bp+var_10], 0
+  0x139838: mov     ss:[bx], ax
+  0x139841: mov     byte ptr es:[bx], 0
+  0x1398a4: mov     [bp+var_2], ax
+  0x1398ec: mov     word ptr [bp+var_6+2], ax
+  0x1398ef: mov     word ptr [bp+var_6], dx
+  0x1398f9: mov     [bp+var_8], ax
