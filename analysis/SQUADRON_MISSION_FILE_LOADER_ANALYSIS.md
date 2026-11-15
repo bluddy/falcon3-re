@@ -46,13 +46,13 @@ int squadron_mission_file_loader(
 | Address | Name | Calls | Purpose |
 |---------|------|-------|---------|
 | 0x13AA6A | sub_13AA6A | 1 | Initialization routine |
-| 0x138E6A | undoc_138E6A | 4 | Menu slot pointer handler |
-| 0x138F9C | menu_field_offset_calculate | 6 | Build file path strings |
+| 0x138E6A | **int_to_string_converter** | 4 | **Integer to ASCII string converter** (0-5 → "0"-"5") ⭐ |
+| 0x138F9C | **string_concatenate** | 6 | **Path string concatenator** (handles 0x00/0xFF terminators) ⭐ |
 | 0x022598 | op_dispatch_far_entry | 6 | **File I/O dispatcher** (open, read, close) |
 | 0x022574 | flag2224a_clear | 2 | Clear state flag |
 | 0x02256D | flag2224a_set | 1 | Set state flag |
-| 0x0225B6 | op_dispatch_far_wide | 1 | Extended file operation |
-| 0x13B243 | overlay_handler_2623 | 1 | Overlay management |
+| 0x0225B6 | op_dispatch_far_wide | 1 | Extended file operation (parameter encoder) |
+| 0x13B243 | **menu_dispatcher_19ops** | 1 | **Menu/overlay dispatcher** (19-op jump table, 50 callers) ⭐ |
 | 0x022C89 | farobj_vec3_accum_b_ret | 1 | Vector accumulator (?) |
 | 0x129468 | undoc_129468 | 1 | Unknown |
 | 0x1293F0 | sub_1293F0 | 1 | Unknown |
@@ -60,6 +60,13 @@ int squadron_mission_file_loader(
 | 0x13AAC0 | sub_13AAC0 | 1 | Unknown |
 
 **Critical callee:** `op_dispatch_far_entry` is the DOS file I/O dispatcher, called 6 times with different operation codes.
+
+**Key discoveries from callee analysis:**
+- `int_to_string_converter` (0x138E6A): Converts squadron numbers to ASCII strings (EXCLUSIVE to this function)
+- `string_concatenate` (0x138F9C): Builds file paths by concatenating strings (EXCLUSIVE to this function)
+- `menu_dispatcher_19ops` (0x13B243): Master menu system with 19 operations, links to UI state (50 total callers)
+
+See `analysis/CALLEE_ANALYSIS_FINDINGS.md` for complete analysis.
 
 ---
 
@@ -117,7 +124,7 @@ mov     si, ax          ; Store file handle in SI
 
 **Loading sequence (0x17B4FC-0x17B592):**
 1. Call `undoc_138E6A` with menu slot pointer (setup context)
-2. Call `menu_field_offset_calculate` 2x to build full path:
+2. Call `string_concatenate` 2x to build full path:
    - First call: Base path from `current_menu_slot_ptr`
    - Second call: Append `".SQUAD"` extension
    - Result stored at 0x7894:0x0F32
@@ -139,7 +146,7 @@ mov     si, ax          ; Store file handle in SI
 - Editable with text editor
 
 **Loading sequence (0x17B54F-0x17B569):**
-1. Call `menu_field_offset_calculate` 2x to build `"*.MTV"` path
+1. Call `string_concatenate` 2x to build `"*.MTV"` path
    - Path buffer: 0x7894:0x0F32
    - Extension at `es:byte_151365` (offset in segment 602Eh)
 2. **No explicit OPEN call in extracted disassembly** (likely handled by later call)
@@ -160,7 +167,7 @@ mov     si, ax          ; Store file handle in SI
    - If zero, skip .SHP loading and jump to 0x17B941
    - This is a conditional load based on game mode flag
 2. Call `undoc_138E6A` (setup menu context)
-3. Call `menu_field_offset_calculate` 2x to build `"*.SHP"` path
+3. Call `string_concatenate` 2x to build `"*.SHP"` path
 4. Call `flag2224a_clear` (clear state flag before open)
 5. **Open file** (operation 6) → handle stored in `[bp+var_2]`
 6. If handle == 0xFFFF (failed), jump to 0x17B661 (skip)
@@ -191,7 +198,7 @@ mov     si, ax          ; Store file handle in SI
 
 **Loading sequence (0x17B6B9-0x17B71C):**
 1. Call `undoc_138E6A` (setup menu context)
-2. Call `menu_field_offset_calculate` 2x to build `"*.TSK"` path
+2. Call `string_concatenate` 2x to build `"*.TSK"` path
 3. Call `flag2224a_clear` (clear state flag)
 4. **Open file** (operation 6) → handle stored in `[bp+var_2]`
 5. If handle == 0xFFFF (failed), jump to 0x17B71C (skip)
@@ -419,6 +426,8 @@ jmp     loc_17C58E                     ; Exit if in graphics mode
 
 **Purpose:** Concatenate path segments to build full file paths
 
+**Renamed to:** `string_concatenate` (more accurate, less confusing)
+
 **Call pattern:**
 ```asm
 push    7894h                       ; Destination segment
@@ -427,13 +436,13 @@ push    word ptr es:base_path+2     ; Source segment (far ptr)
 push    word ptr es:base_path       ; Source offset
 push    word ptr es:extension+2     ; Extension segment
 push    word ptr es:extension       ; Extension offset
-call    menu_field_offset_calculate
+call    string_concatenate
 add     sp, 0Ch                     ; Clean up 12 bytes (6 params)
 ```
 
 **Signature (reconstructed):**
 ```c
-void menu_field_offset_calculate(
+void string_concatenate(
     uint16_t ext_seg,      // Extension far pointer segment
     uint16_t ext_ofs,      // Extension far pointer offset
     uint16_t base_seg,     // Base path far pointer segment

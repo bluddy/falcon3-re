@@ -10,11 +10,11 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 34 | 34% |
+| ✅ Completed | 37 | 37% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 66 | 66% |
+| ⏳ Pending | 63 | 63% |
 
-**Deep Dives Completed:** 1 (Rank #10: squadron_mission_file_loader - file I/O operations analysis)
+**Deep Dives Completed:** 1 (Rank #10: squadron_mission_file_loader + 4 callees - file I/O & menu integration analysis)
 
 ---
 
@@ -80,14 +80,28 @@
 ### Screen/Menu Coordinators (1 function)
 32. ✅ **`input_device_calibration_init` (0x101A12)** - **Rank #9, 104 callers, 1,719 bytes, 26 callees** ⭐ **CORRECTED** (was incorrectly named r03_screen_coordinator)
 
-### File I/O and Resource Loading (2 functions)
+### File I/O and Resource Loading (5 functions)
 33. ✅ **`squadron_mission_file_loader` (0x17B437)** - **Rank #10, 104 callers, 4,516 bytes, 13 callees** ⭐ **DEEP DIVE COMPLETE** - Loads .SQUAD/.MTV/.SHP/.TSK files during mission planning
     - **Discovered:** 3 new undocumented file formats (.SQUAD, .TSK, .SHP)
     - **Analyzed:** Complete file I/O operation patterns (OPEN, READ, READ_EXT, CLOSE)
     - **Documented:** 64×20-byte mission slot initialization, path building, conditional .SHP loading
     - **Created:** SQUADRON_MISSION_FILE_LOADER_ANALYSIS.md (12,000+ words)
+    - **Created:** CALLEE_ANALYSIS_FINDINGS.md (6,000+ words on helper functions)
     - **Updated:** docs/architecture/mission_campaign.md with new file formats
-34. ✅ `farobj_vec3_accum_b_ret` (0x22C89) - 142 callers (general utility, used by file loader)
+    - **Renamed:** 3 helper functions, added 17 inline comments in IDA
+34. ✅ **`int_to_string_converter` (0x138E6A)** - 106 bytes, **0 other callers** (EXCLUSIVE to squadron_mission_file_loader)
+    - Integer to ASCII string converter (squadron numbers 0-5 → "0"-"5")
+    - Handles negative numbers with '-' prefix
+    - Classic divide-by-10 with digit reversal algorithm
+35. ✅ **`string_concatenate` (0x138F9C)** - 84 bytes, **0 other callers** (EXCLUSIVE to squadron_mission_file_loader)
+    - Path string concatenator, handles both 0x00 and 0xFF terminators
+    - Called 2x per file: base_path + squadron_name, then + extension
+    - Builds "C:\FALCON3\SQUAD0.SQUAD" etc.
+36. ✅ **`menu_dispatcher_19ops` (0x13B243)** - 2,623 bytes, **50 callers**
+    - Master menu/overlay dispatcher with 19-operation jump table (CS:0x3A52)
+    - Provides menu state access, squadron selection, UI updates
+    - Links file loading to War Room UI state
+37. ✅ `farobj_vec3_accum_b_ret` (0x22C89) - 142 callers (general utility, used by file loader)
 
 ---
 

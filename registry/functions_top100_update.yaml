@@ -1,0 +1,168 @@
+# TOP 100 ANALYSIS - Functions to add to registry
+# Generated from TOP_100_PROGRESS.md and analysis documents
+# Date: 2026-11-11
+
+# GAME MODE COORDINATORS (Rank #1-4, mega-coordinators)
+- address: 0x1744B0
+  name: game_mode_r48_main_coordinator
+  system: game_mode
+  size: 9061
+  callers: 360
+  rank: 1
+  doc: 'R48 overlay main coordinator. Mega-coordinator integrating UI/input/rendering/state/resources. 110 callees across subsystems. Phase 1 pattern.'
+  source: 'TOP_100_PROGRESS.md, GAME_MODE_R48_ANALYSIS.md'
+
+- address: 0x1820B0
+  name: game_mode_r53_main_coordinator
+  system: game_mode
+  size: 12693
+  callers: 342
+  rank: 2
+  doc: 'R53 overlay main coordinator. LARGEST FUNCTION in codebase. Script-driven game mode with opcode decoder. Mega-coordinator pattern.'
+  source: 'TOP_100_PROGRESS.md'
+
+- address: 0x1793C0
+  name: overlay_r4F_handler
+  system: game_mode
+  size: 7661
+  callers: 262
+  rank: 3
+  doc: 'R4F overlay handler. Mega-coordinator pattern. Already correctly named.'
+  source: 'TOP_100_PROGRESS.md'
+
+- address: 0x18F610
+  name: overlay_r55_dispatcher
+  system: game_mode
+  size: 4935
+  callers: 212
+  rank: 4
+  doc: 'R55 overlay dispatcher. Mega-coordinator pattern. Already correctly named.'
+  source: 'TOP_100_PROGRESS.md'
+
+# MENU COORDINATORS (Rank #5, transition point)
+- address: 0x166F80
+  name: r38_loadout_menu_dispatcher
+  system: menu
+  size: 2943
+  callers: 147
+  rank: 5
+  doc: 'R38 loadout menu dispatcher. TRANSITION POINT from mega-coordinators to specialized handlers. Jump-table dispatcher for weapons loadout configuration. Phase 2 pattern begins.'
+  source: 'TOP_100_PROGRESS.md'
+
+# MISSION/SESSION MANAGEMENT (Rank #6)
+- address: 0x103C99
+  name: mission_session_init_coordinator
+  system: mission
+  size: 945
+  callers: 144
+  rank: 6
+  doc: 'Mission/game session initialization. 7-phase orchestration with EMS dependency. Sequential coordinator, Phase 2 small pattern. 41 callees.'
+  source: 'TOP_100_PROGRESS.md, MISSION_SESSION_INIT_ANALYSIS.md'
+
+# UI/MENU SYSTEM (Rank #7)
+- address: 0x0683C1
+  name: ui_loadout_menu_enter
+  system: ui
+  size: 4170
+  callers: 142
+  rank: 7
+  doc: 'UI loadout menu entry point. Already analyzed.'
+  source: 'TOP_100_PROGRESS.md'
+
+# TACTICAL SCREENS (Rank #8)
+- address: 0x12DF6A
+  name: r29_tactical_screen_coordinator
+  system: ui
+  size: 6799
+  callers: 120
+  rank: 8
+  doc: 'R29 tactical planning screen coordinator. HYBRID pattern - large Phase 2 function. 11-item grid + 2D tactical map with coordinate transformation. 90-120 callees.'
+  source: 'TOP_100_PROGRESS.md, R29_TACTICAL_SCREEN_ANALYSIS.md'
+
+# INPUT SYSTEM (Rank #9)
+- address: 0x101A12
+  name: input_device_calibration_init
+  system: input
+  size: 1719
+  callers: 104
+  rank: 9
+  doc: 'Input device calibration initialization. Joystick detection with early exit if no joystick. 26 callees. Phase 2 medium pattern. CORRECTED from wrong initial guess.'
+  source: 'TOP_100_PROGRESS.md, INPUT_DEVICE_CALIBRATION_ANALYSIS.md'
+
+# FILE I/O AND RESOURCE LOADING (Rank #10 + callees)
+- address: 0x17B437
+  name: squadron_mission_file_loader
+  system: file_io
+  size: 4516
+  callers: 104
+  rank: 10
+  doc: 'Squadron mission file loader. Loads .SQUAD/.MTV/.SHP/.TSK files during mission planning (War Room UI). Two-layer architecture: (1) Menu system integration via menu_dispatcher_19ops for squadron selection and path building, (2) File I/O operations via op_dispatch_far_entry. Initializes 64×20-byte mission slot array at 0x7894:0x79D3E. Phase 2 large pattern. 13 callees. DEEP DIVE COMPLETE.'
+  source: 'TOP_100_PROGRESS.md, SQUADRON_MISSION_FILE_LOADER_ANALYSIS.md, CALLEE_ANALYSIS_FINDINGS.md'
+
+- address: 0x138E6A
+  name: int_to_string_converter
+  system: utility
+  size: 106
+  callers: 0
+  doc: 'Integer to ASCII string converter. Converts squadron numbers (0-5) to strings ("0"-"5"). Handles negative numbers with minus prefix. Classic divide-by-10 with digit reversal algorithm. EXCLUSIVE to squadron_mission_file_loader (0 other callers).'
+  source: 'CALLEE_ANALYSIS_FINDINGS.md'
+
+- address: 0x138F9C
+  name: string_concatenate
+  system: utility
+  size: 84
+  callers: 0
+  doc: 'Path string concatenator. Concatenates two strings, handles both 0x00 and 0xFF terminators. Called 2x per file: base_path+squadron_name, then +extension. Builds paths like "C:\FALCON3\SQUAD0.SQUAD". EXCLUSIVE to squadron_mission_file_loader (0 other callers).'
+  source: 'CALLEE_ANALYSIS_FINDINGS.md'
+
+- address: 0x13B243
+  name: menu_dispatcher_19ops
+  system: menu
+  size: 2623
+  callers: 50
+  doc: 'Master menu/overlay dispatcher. 19-operation jump table at CS:0x3A52. Provides menu state access, squadron selection, integer formatting, path building, UI updates. Links file loading to War Room UI state. Called by 50 functions across codebase.'
+  source: 'CALLEE_ANALYSIS_FINDINGS.md'
+
+- address: 0x225B6
+  name: op_dispatch_far_wide
+  system: file_io
+  size: 30
+  callers: 1
+  doc: 'Extended parameter wrapper for op_dispatch. Encodes parameters via "mov ch,bl" for DOS file I/O. Used for READ_EXT operation (0xC). Called only by squadron_mission_file_loader.'
+  source: 'CALLEE_ANALYSIS_FINDINGS.md'
+
+# INPUT SYSTEM (already analyzed)
+- address: 0x12FC43
+  name: input_poll_handler
+  system: input
+  size: 3814
+  callers: 56
+  doc: 'Input polling handler. Keyboard/Mouse/Joystick processing. Already analyzed.'
+  source: 'TOP_100_PROGRESS.md'
+
+- address: 0x130A2F
+  name: input_sync_and_wait
+  system: input
+  size: 42
+  callers: 194
+  doc: 'Universal input synchronization. 194 callers - highest caller count in input system. Already analyzed.'
+  source: 'TOP_100_PROGRESS.md'
+
+# UI SYSTEM (already analyzed)
+- address: 0x128518
+  name: ui_text_render_engine
+  system: ui
+  size: 1282
+  callers: 70
+  doc: 'Core text rendering engine. 70 callers. Already analyzed.'
+  source: 'TOP_100_PROGRESS.md'
+
+- address: 0x128D5A
+  name: ui_render_coordinator
+  system: ui
+  size: 900
+  callers: 22
+  doc: 'Rendering coordinator dispatcher. 22 callers. Already analyzed.'
+  source: 'TOP_100_PROGRESS.md'
+
+# Add more as analysis continues...

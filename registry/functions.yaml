@@ -17261,3 +17261,129 @@ functions:
   category: Graphics
   signature: 'RETF fn; RLE decompressor for VGA graphics. Classic flag-byte RLE: bit 7 = run-length vs literal. Uses REP STOSW/STOSB for runs, REP MOVSW/MOVSB for literals. Handles VGA planes via EGA sequencer port.'
   notes: '114B retf. THE RLE decompressor! Found via bytecode search (REP STOSB/STOSW pattern). Used by font loaders and menu graphics. Processes 4 VGA planes sequentially. Compression ratios 0.34%-2%. conf: HIGH'
+
+  # ============================================================================
+  # TOP 100 MOST-CALLED FUNCTIONS - Analysis Session 2026-11-11
+  # Source: TOP_100_PROGRESS.md, systematic top-down analysis
+  # Progress: 37/100 (37%) - Ranks #1-10 complete with deep dive
+  # ============================================================================
+
+  # GAME MODE COORDINATORS (Rank #1-4, Phase 1 mega-coordinators)
+  - address: 0x1744B0
+    name: game_mode_r48_main_coordinator
+    system: game_mode
+    size: 9061
+    callers: 360
+    rank: 1
+    doc: 'R48 overlay main coordinator. Mega-coordinator integrating UI/input/rendering/state/resources. 110 callees across subsystems. Phase 1 pattern.'
+    source: 'TOP_100 analysis, GAME_MODE_R48_ANALYSIS.md'
+
+  - address: 0x1820B0
+    name: game_mode_r53_main_coordinator
+    system: game_mode
+    size: 12693
+    callers: 342
+    rank: 2
+    doc: 'R53 overlay main coordinator. LARGEST FUNCTION in codebase. Script-driven game mode with opcode decoder. Mega-coordinator pattern.'
+    source: 'TOP_100 analysis'
+
+  - address: 0x1793C0
+    name: overlay_r4F_handler
+    system: game_mode
+    size: 7661
+    callers: 262
+    rank: 3
+    doc: 'R4F overlay handler. Mega-coordinator pattern. Already correctly named in IDA.'
+    source: 'TOP_100 analysis'
+
+  - address: 0x18F610
+    name: overlay_r55_dispatcher
+    system: game_mode
+    size: 4935
+    callers: 212
+    rank: 4
+    doc: 'R55 overlay dispatcher. Mega-coordinator pattern. Already correctly named in IDA.'
+    source: 'TOP_100 analysis'
+
+  # MENU COORDINATORS (Rank #5, TRANSITION POINT)
+  - address: 0x166F80
+    name: r38_loadout_menu_dispatcher
+    system: menu
+    size: 2943
+    callers: 147
+    rank: 5
+    doc: 'R38 loadout menu dispatcher. TRANSITION POINT from mega-coordinators to specialized handlers. Jump-table dispatcher for weapons loadout. Phase 2 pattern begins here.'
+    source: 'TOP_100 analysis'
+
+  # MISSION/SESSION MANAGEMENT (Rank #6)
+  - address: 0x103C99
+    name: mission_session_init_coordinator
+    system: mission
+    size: 945
+    callers: 144
+    rank: 6
+    doc: 'Mission/game session initialization. 7-phase orchestration with EMS dependency. Sequential coordinator, Phase 2 small pattern. 41 callees.'
+    source: 'TOP_100 analysis, MISSION_SESSION_INIT_ANALYSIS.md'
+
+  # TACTICAL SCREENS (Rank #8)
+  - address: 0x12DF6A
+    name: r29_tactical_screen_coordinator
+    system: ui
+    size: 6799
+    callers: 120
+    rank: 8
+    doc: 'R29 tactical planning screen coordinator. HYBRID pattern - large Phase 2 function. 11-item grid + 2D tactical map with coordinate transformation. 90-120 callees.'
+    source: 'TOP_100 analysis, R29_TACTICAL_SCREEN_ANALYSIS.md'
+
+  # INPUT SYSTEM (Rank #9)
+  - address: 0x101A12
+    name: input_device_calibration_init
+    system: input
+    size: 1719
+    callers: 104
+    rank: 9
+    doc: 'Input device calibration initialization. Joystick detection with early exit if no joystick. 26 callees. Phase 2 medium pattern. CORRECTED from initial incorrect guess (was r03_screen_coordinator).'
+    source: 'TOP_100 analysis, INPUT_DEVICE_CALIBRATION_ANALYSIS.md'
+
+  # FILE I/O AND RESOURCE LOADING (Rank #10 + discovered callees)
+  - address: 0x17B437
+    name: squadron_mission_file_loader
+    system: file_io
+    size: 4516
+    callers: 104
+    rank: 10
+    doc: 'Squadron mission file loader - loads .SQUAD/.MTV/.SHP/.TSK during mission planning. Two-layer: (1) Menu integration via menu_dispatcher_19ops for squadron selection/path building, (2) File I/O via op_dispatch_far_entry (OPEN=6, READ=0xA, READ_EXT=0xC, CLOSE=8). Initializes 64×20-byte mission slots at 0x7894:0x79D3E. Discovers 3 undocumented file formats. 13 callees. DEEP DIVE COMPLETE.'
+    source: 'TOP_100 analysis, SQUADRON_MISSION_FILE_LOADER_ANALYSIS.md, CALLEE_ANALYSIS_FINDINGS.md'
+
+  - address: 0x138E6A
+    name: int_to_string_converter
+    system: utility
+    size: 106
+    callers: 0
+    doc: 'Integer to ASCII converter for squadron numbers (0-5→"0"-"5"). Handles negatives with minus prefix. Divide-by-10 with digit reversal. EXCLUSIVE to squadron_mission_file_loader.'
+    source: 'Callee analysis of 0x17B437'
+
+  - address: 0x138F9C
+    name: string_concatenate
+    system: utility
+    size: 84
+    callers: 0
+    doc: 'Path string concatenator. Handles 0x00 and 0xFF terminators. Called 2×/file: base+squadron_name, then +extension. Builds "C:\FALCON3\SQUAD0.SQUAD" etc. EXCLUSIVE to squadron_mission_file_loader.'
+    source: 'Callee analysis of 0x17B437'
+
+  - address: 0x13B243
+    name: menu_dispatcher_19ops
+    system: menu
+    size: 2623
+    callers: 50
+    doc: 'Master menu/overlay dispatcher. 19-operation jump table at CS:0x3A52. Provides menu state, squadron selection, int formatting, path building, UI updates. Links file loading to War Room UI.'
+    source: 'Callee analysis of 0x17B437'
+
+  - address: 0x225B6
+    name: op_dispatch_far_wide
+    system: file_io
+    size: 30
+    callers: 1
+    doc: 'Extended parameter wrapper for op_dispatch. Encodes params via "mov ch,bl" for DOS file I/O. Used for READ_EXT(0xC). Called only by squadron_mission_file_loader.'
+    source: 'Callee analysis of 0x17B437'
+
