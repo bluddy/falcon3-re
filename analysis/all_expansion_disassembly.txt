@@ -1,0 +1,2385 @@
+COMPLETE DISASSEMBLY OF EXPANSION ANALYSIS FUNCTIONS
+================================================================================
+Total functions: 67
+================================================================================
+
+================================================================================
+picfont_idx_dat_loader @ 0x001297F0
+================================================================================
+  0x001297F0: enter   2, 0
+  0x001297F4: mov     ax, 7894h
+  0x001297F7: mov     es, ax
+  0x001297F9: cmp     es:word_78940, 0
+  0x001297FF: jnz     short loc_129804
+  0x00129801: jmp     locret_1298A9
+  0x00129804: mov     ax, 602Eh
+  0x00129807: mov     es, ax
+  0x00129809: push    word ptr es:aPicfontIdx; ".`PICFONT.IDX"
+  0x0012980E: push    es:word_14E76F
+  0x00129813: push    0
+  0x00129815: push    0
+  0x00129817: push    6
+  0x00129819: call    op_dispatch_far_entry
+  0x0012981E: add     sp, 0Ah
+  0x00129821: mov     [bp+var_2], ax
+  0x00129824: mov     ax, 602Eh
+  0x00129827: mov     es, ax
+  0x00129829: push    word ptr es:dword_14E78F+2
+  0x0012982E: push    word ptr es:dword_14E78F
+  0x00129833: push    1Ch
+  0x00129835: push    [bp+var_2]
+  0x00129838: push    0Ah
+  0x0012983A: call    op_dispatch_far_entry
+  0x0012983F: add     sp, 0Ah
+  0x00129842: push    ss
+  0x00129843: lea     ax, [bp+var_2]
+  0x00129846: push    ax
+  0x00129847: push    0
+  0x00129849: push    [bp+var_2]
+  0x0012984C: push    8
+  0x0012984E: call    op_dispatch_far_entry
+  0x00129853: add     sp, 0Ah
+  0x00129856: mov     ax, 602Eh
+  0x00129859: mov     es, ax
+  0x0012985B: push    word ptr es:aPicfontDat; ".`PICFONT.DAT"
+  0x00129860: push    es:word_14E77F
+  0x00129865: push    0
+  0x00129867: push    0
+  0x00129869: push    6
+  0x0012986B: call    op_dispatch_far_entry
+  0x00129870: add     sp, 0Ah
+  0x00129873: mov     [bp+var_2], ax
+  0x00129876: mov     ax, 602Eh
+  0x00129879: mov     es, ax
+  0x0012987B: push    es:word_14E7B1
+  0x00129880: push    es:word_14E7AF
+  0x00129885: push    1ABh
+  0x00129888: push    [bp+var_2]
+  0x0012988B: push    0Ah
+  0x0012988D: call    op_dispatch_far_entry
+  0x00129892: add     sp, 0Ah
+  0x00129895: push    ss
+  0x00129896: lea     ax, [bp+var_2]
+  0x00129899: push    ax
+  0x0012989A: push    0
+  0x0012989C: push    [bp+var_2]
+  0x0012989F: push    8
+  0x001298A1: call    op_dispatch_far_entry
+  0x001298A6: add     sp, 0Ah
+  0x001298A9: leave
+  0x001298AA: retf
+
+================================================================================
+madfont_idx_dat_loader @ 0x001397CE
+================================================================================
+  0x001397CE: enter   98h, 0
+  0x001397D2: push    si
+  0x001397D3: push    di
+  0x001397D4: mov     ax, 7894h
+  0x001397D7: mov     es, ax
+  0x001397D9: mov     ax, es:word_78940
+  0x001397DD: mov     [bp+var_20], ax
+  0x001397E0: mov     ax, 7894h
+  0x001397E3: mov     es, ax
+  0x001397E5: mov     es:word_78940, 0
+  0x001397EC: xor     si, si
+  0x001397EE: jmp     short loc_1397F1
+  0x001397F0: inc     si
+  0x001397F1: les     bx, [bp+arg_8]
+  0x001397F4: cmp     byte ptr es:[bx+si], 0
+  0x001397F8: jnz     short loc_1397F0
+  0x001397FA: mov     [bp+var_16], 1
+  0x001397FF: mov     [bp+var_98], 0
+  0x00139805: mov     ax, 602Eh
+  0x00139808: mov     es, ax
+  0x0013980A: cmp     es:byte_151B41, 0
+  0x00139810: jz      short loc_139816
+  0x00139812: sub     [bp+arg_2], 0Ah
+  0x00139816: mov     [bp+var_10], 0
+  0x0013981B: xor     di, di
+  0x0013981D: les     bx, [bp+arg_8]
+  0x00139820: add     bx, [bp+var_10]
+  0x00139823: cmp     byte ptr es:[bx], 0Dh
+  0x00139827: jnz     short loc_13984C
+  0x00139829: mov     bx, [bp+var_16]
+  0x0013982C: shl     bx, 1
+  0x0013982E: lea     ax, [bp+var_98]
+  0x00139832: add     bx, ax
+  0x00139834: mov     ax, [bp+var_10]
+  0x00139837: inc     ax
+  0x00139838: mov     ss:[bx], ax
+  0x0013983B: les     bx, [bp+arg_8]
+  0x0013983E: add     bx, [bp+var_10]
+  0x00139841: mov     byte ptr es:[bx], 0
+  0x00139845: inc     [bp+var_16]
+  0x00139848: xor     di, di
+  0x0013984A: jmp     short loc_139881
+  0x0013984C: les     bx, [bp+arg_8]
+  0x0013984F: add     bx, [bp+var_10]
+  0x00139852: mov     al, es:[bx]
+  0x00139855: cbw
+  0x00139856: mov     dx, 602Eh
+  0x00139859: mov     bx, ax
+  0x0013985B: mov     es, dx
+  0x0013985D: mov     al, es:[bx+3526h]
+  0x00139862: mov     ah, 0
+  0x00139864: add     di, ax
+  0x00139866: cmp     di, [bp+arg_2]
+  0x00139869: jle     short loc_139881
+  0x0013986B: dec     [bp+var_10]
+  0x0013986E: les     bx, [bp+arg_8]
+  0x00139871: add     bx, [bp+var_10]
+  0x00139874: cmp     byte ptr es:[bx], 20h ; ' '
+  0x00139878: jnz     short loc_13987C
+  0x0013987A: jmp     short loc_139829
+  0x0013987C: dec     [bp+var_10]
+  0x0013987F: jmp     short loc_13986E
+  0x00139881: inc     [bp+var_10]
+  0x00139884: les     bx, [bp+arg_8]
+  0x00139887: add     bx, [bp+var_10]
+  0x0013988A: cmp     byte ptr es:[bx], 0
+  0x0013988E: jnz     short loc_13981D
+  0x00139890: push    602Eh
+  0x00139893: push    350Ch
+  0x00139896: push    0
+  0x00139898: push    0
+  0x0013989A: push    4
+  0x0013989C: call    op_dispatch_far_entry
+  0x001398A1: add     sp, 0Ah
+  0x001398A4: mov     [bp+var_2], ax
+  0x001398A7: mov     ax, 7894h
+  0x001398AA: mov     es, ax
+  0x001398AC: push    word ptr es:dword_79E5C+2
+  0x001398B1: push    word ptr es:dword_79E5C
+  0x001398B6: push    9858h
+  0x001398B9: push    [bp+var_2]
+  0x001398BC: push    0Ch
+  0x001398BE: call    op_dispatch_far_entry
+  0x001398C3: add     sp, 0Ah
+  0x001398C6: push    ss
+  0x001398C7: lea     ax, [bp+var_10]
+  0x001398CA: push    ax
+  0x001398CB: push    0
+  0x001398CD: push    [bp+var_2]
+  0x001398D0: push    8
+  0x001398D2: call    op_dispatch_far_entry
+  0x001398D7: add     sp, 0Ah
+  0x001398DA: mov     ax, 7894h
+  0x001398DD: mov     es, ax
+  0x001398DF: mov     ax, word ptr es:dword_79E5C+2
+  0x001398E3: mov     dx, word ptr es:dword_79E5C
+  0x001398E8: add     dx, 7148h
+  0x001398EC: mov     word ptr [bp+var_6+2], ax
+  0x001398EF: mov     word ptr [bp+var_6], dx
+  0x001398F2: mov     ax, word ptr [bp+var_6+2]
+  0x001398F5: add     dx, 5B0h
+  0x001398F9: mov     [bp+var_8], ax
+  0x001398FC: mov     [bp+var_A], dx
+  0x001398FF: mov     ax, 602Eh
+  0x00139902: mov     es, ax
+  0x00139904: push    word ptr es:a5MadfontIdx+2; ".`madfont.idx"
+  0x00139909: push    word ptr es:a5MadfontIdx; "(5.`madfont.idx"
+  0x0013990E: push    0
+  0x00139910: push    0
+  0x00139912: push    6
+  0x00139914: call    op_dispatch_far_entry
+  0x00139919: add     sp, 0Ah
+  0x0013991C: mov     [bp+var_2], ax
+  0x0013991F: push    word ptr [bp+var_6+2]
+  0x00139922: push    word ptr [bp+var_6]
+  0x00139925: push    16Ch
+  0x00139928: push    [bp+var_2]
+  0x0013992B: push    0Ah
+  0x0013992D: call    op_dispatch_far_entry
+  0x00139932: add     sp, 0Ah
+  0x00139935: push    ss
+  0x00139936: lea     ax, [bp+var_10]
+  0x00139939: push    ax
+  0x0013993A: push    0
+  0x0013993C: push    [bp+var_2]
+  0x0013993F: push    8
+  0x00139941: call    op_dispatch_far_entry
+  0x00139946: add     sp, 0Ah
+  0x00139949: mov     ax, 602Eh
+  0x0013994C: mov     es, ax
+  0x0013994E: push    word ptr es:a85MadfontDat+2; ".`madfont.dat"
+  0x00139953: push    word ptr es:a85MadfontDat; "85.`madfont.dat"
+  0x00139958: push    0
+  0x0013995A: push    0
+  0x0013995C: push    6
+  0x0013995E: call    op_dispatch_far_entry
+  0x00139963: add     sp, 0Ah
+  0x00139966: mov     [bp+var_2], ax
+  0x00139969: push    [bp+var_8]
+  0x0013996C: push    [bp+var_A]
+  0x0013996F: push    1611h
+  0x00139972: push    [bp+var_2]
+  0x00139975: push    0Ah
+  0x00139977: call    op_dispatch_far_entry
+  0x0013997C: add     sp, 0Ah
+  0x0013997F: push    ss
+  0x00139980: lea     ax, [bp+var_10]
+  0x00139983: push    ax
+  0x00139984: push    0
+  0x00139986: push    [bp+var_2]
+  0x00139989: push    8
+  0x0013998B: call    op_dispatch_far_entry
+  0x00139990: add     sp, 0Ah
+  0x00139993: mov     ax, 602Eh
+  0x00139996: mov     es, ax
+  0x00139998: mov     es:word_151AE4, 0
+  0x0013999F: mov     [bp+var_10], 0
+  0x001399A4: xor     di, di
+  0x001399A6: mov     ax, 602Eh
+  0x001399A9: mov     es, ax
+  0x001399AB: cmp     es:byte_151B41, 0
+  0x001399B1: jz      short loc_1399F2
+  0x001399B3: mov     si, [bp+var_10]
+  0x001399B6: mov     [bp+var_14], 0
+  0x001399BB: jmp     short loc_1399D6
+  0x001399BD: les     bx, [bp+arg_8]
+  0x001399C0: mov     al, es:[bx+si]
+  0x001399C3: cbw
+  0x001399C4: mov     dx, 602Eh
+  0x001399C7: mov     bx, ax
+  0x001399C9: mov     es, dx
+  0x001399CB: mov     al, es:[bx+3526h]
+  0x001399D0: mov     ah, 0
+  0x001399D2: add     [bp+var_14], ax
+  0x001399D5: inc     si
+  0x001399D6: les     bx, [bp+arg_8]
+  0x001399D9: cmp     byte ptr es:[bx+si], 0
+  0x001399DD: jnz     short loc_1399BD
+  0x001399DF: mov     ax, [bp+var_14]
+  0x001399E2: mov     bx, 2
+  0x001399E5: cwd
+  0x001399E6: idiv    bx
+  0x001399E8: mov     dx, 96h
+  0x001399EB: sub     dx, ax
+  0x001399ED: mov     [bp+var_C], dx
+  0x001399F0: jmp     short loc_1399F8
+  0x001399F2: mov     ax, [bp+arg_4]
+  0x001399F5: mov     [bp+var_C], ax
+  0x001399F8: mov     ax, [bp+arg_6]
+  0x001399FB: mov     [bp+var_E], ax
+  0x001399FE: push    0Bh
+  0x00139A00: call    far ptr sub_2C351
+  0x00139A05: pop     cx
+  0x00139A06: call    pending_task_run
+  0x00139A0B: call    far_cb_1
+  0x00139A10: mov     ax, 4FC2h
+  0x00139A13: mov     es, ax
+  0x00139A15: push    es:word_13E016
+  0x00139A1A: call    dispatch_220f0_invoke_1arg
+  0x00139A1F: pop     cx
+  0x00139A20: call    far_cb_0
+  0x00139A25: mov     ax, 4FC2h
+  0x00139A28: mov     es, ax
+  0x00139A2A: push    es:word_13E016
+  0x00139A2F: call    dispatch_220f0_invoke_1arg
+  0x00139A34: pop     cx
+  0x00139A35: push    1
+  0x00139A37: call    dispatch_220fc_invoke_1arg
+  0x00139A3C: pop     cx
+  0x00139A3D: mov     ax, 4FC2h
+  0x00139A40: mov     es, ax
+  0x00139A42: push    es:word_13E016
+  0x00139A47: call    dispatch_220f0_invoke_1arg
+  0x00139A4C: pop     cx
+  0x00139A4D: push    0
+  0x00139A4F: call    dispatch_220fc_invoke_1arg
+  0x00139A54: pop     cx
+  0x00139A55: call    far_cb_0
+  0x00139A5A: mov     [bp+var_19], 0
+  0x00139A5E: mov     [bp+var_1A], 0
+  0x00139A62: les     bx, [bp+arg_8]
+  0x00139A65: add     bx, [bp+var_10]
+  0x00139A68: mov     al, es:[bx]
+  0x00139A6B: cbw
+  0x00139A6C: mov     [bp+var_12], ax
+  0x00139A6F: cmp     [bp+var_12], 0
+  0x00139A73: jz      short loc_139A78
+  0x00139A75: jmp     loc_139B13
+  0x00139A78: inc     di
+  0x00139A79: add     [bp+var_E], 16h
+  0x00139A7D: mov     ax, 602Eh
+  0x00139A80: mov     es, ax
+  0x00139A82: cmp     es:byte_151B41, 0
+  0x00139A88: jz      short loc_139ACC
+  0x00139A8A: mov     ax, [bp+var_10]
+  0x00139A8D: inc     ax
+  0x00139A8E: mov     si, ax
+  0x00139A90: mov     [bp+var_14], 0
+  0x00139A95: jmp     short loc_139AB0
+  0x00139A97: les     bx, [bp+arg_8]
+  0x00139A9A: mov     al, es:[bx+si]
+  0x00139A9D: cbw
+  0x00139A9E: mov     dx, 602Eh
+  0x00139AA1: mov     bx, ax
+  0x00139AA3: mov     es, dx
+  0x00139AA5: mov     al, es:[bx+3526h]
+  0x00139AAA: mov     ah, 0
+  0x00139AAC: add     [bp+var_14], ax
+  0x00139AAF: inc     si
+  0x00139AB0: les     bx, [bp+arg_8]
+  0x00139AB3: cmp     byte ptr es:[bx+si], 0
+  0x00139AB7: jnz     short loc_139A97
+  0x00139AB9: mov     ax, [bp+var_14]
+  0x00139ABC: mov     bx, 2
+  0x00139ABF: cwd
+  0x00139AC0: idiv    bx
+  0x00139AC2: mov     dx, 96h
+  0x00139AC5: sub     dx, ax
+  0x00139AC7: mov     [bp+var_C], dx
+  0x00139ACA: jmp     short loc_139AD2
+  0x00139ACC: mov     ax, [bp+arg_4]
+  0x00139ACF: mov     [bp+var_C], ax
+  0x00139AD2: mov     ax, 602Eh
+  0x00139AD5: mov     es, ax
+  0x00139AD7: mov     es:word_151AE4, 0
+  0x00139ADE: inc     [bp+var_10]
+  0x00139AE1: or      di, di
+  0x00139AE3: jnz     short loc_139AE8
+  0x00139AE5: jmp     loc_139BA7
+  0x00139AE8: mov     ax, di
+  0x00139AEA: mov     bx, 9
+  0x00139AED: cwd
+  0x00139AEE: idiv    bx
+  0x00139AF0: or      dx, dx
+  0x00139AF2: jz      short loc_139AF9
+  0x00139AF4: cmp     di, [bp+var_16]
+  0x00139AF7: jnz     short loc_139B0C
+  0x00139AF9: mov     [bp+var_19], 1
+  0x00139AFD: cmp     di, [bp+var_16]
+  0x00139B00: jz      short loc_139B05
+  0x00139B02: jmp     loc_139BA7
+  0x00139B05: mov     [bp+var_1A], 0
+  0x00139B09: jmp     loc_139BA7
+  0x00139B0C: mov     [bp+var_1A], 0
+  0x00139B10: jmp     loc_139BA7
+  0x00139B13: sub     [bp+var_12], 20h ; ' '
+  0x00139B17: mov     ax, [bp+var_12]
+  0x00139B1A: shl     ax, 2
+  0x00139B1D: les     bx, [bp+var_6]
+  0x00139B20: add     bx, ax
+  0x00139B22: mov     ax, es:[bx]
+  0x00139B25: mov     dx, 602Eh
+  0x00139B28: mov     es, dx
+  0x00139B2A: mov     es:word_151ABA, ax
+  0x00139B2E: mov     ax, [bp+var_12]
+  0x00139B31: shl     ax, 2
+  0x00139B34: les     bx, [bp+var_6]
+  0x00139B37: add     bx, ax
+  0x00139B39: mov     ax, es:[bx+2]
+  0x00139B3D: mov     dx, 602Eh
+  0x00139B40: mov     es, dx
+  0x00139B42: mov     es:word_151AB8, ax
+  0x00139B46: mov     ax, 602Eh
+  0x00139B49: mov     dx, [bp+var_C]
+  0x00139B4C: mov     es, ax
+  0x00139B4E: mov     es:word_151ABC, dx
+  0x00139B53: mov     ax, 602Eh
+  0x00139B56: mov     dx, [bp+var_E]
+  0x00139B59: mov     es, ax
+  0x00139B5B: mov     es:word_151ABE, dx
+  0x00139B60: mov     ax, 602Eh
+  0x00139B63: mov     dx, [bp+var_8]
+  0x00139B66: mov     bx, [bp+var_A]
+  0x00139B69: mov     es, ax
+  0x00139B6B: mov     es:word_151AC2, dx
+  0x00139B70: mov     es:word_151AC0, bx
+  0x00139B75: push    cs
+  0x00139B76: push    offset sub_1396E6
+  0x00139B79: push    cs
+  0x00139B7A: push    offset undoc_139737
+  0x00139B7D: mov     ax, 7894h
+  0x00139B80: mov     es, ax
+  0x00139B82: push    es:word_7A270
+  0x00139B87: push    es:word_7A26E
+  0x00139B8C: call    sub_2BFC3
+  0x00139B91: mov     ax, 602Eh
+  0x00139B94: mov     bx, [bp+var_12]
+  0x00139B97: mov     es, ax
+  0x00139B99: mov     al, es:[bx+3546h]
+  0x00139B9E: mov     ah, 0
+  0x00139BA0: inc     ax
+  0x00139BA1: add     [bp+var_C], ax
+  0x00139BA4: inc     [bp+var_10]
+  0x00139BA7: cmp     [bp+var_19], 0
+  0x00139BAB: jnz     short loc_139BB0
+  0x00139BAD: jmp     loc_139CFB
+  0x00139BB0: mov     al, [bp+var_1A]
+  0x00139BB3: mov     ah, 0
+  0x00139BB5: or      ax, ax
+  0x00139BB7: jz      short loc_139BBC
+  0x00139BB9: jmp     loc_139CFB
+  0x00139BBC: mov     [bp+var_1A], 1
+  0x00139BC0: mov     [bp+var_18], 0C7h
+  0x00139BC5: jmp     short loc_139C1F
+  0x00139BC7: call    font_file_parser
+  0x00139BCC: mov     dx, 7894h
+  0x00139BCF: mov     es, dx
+  0x00139BD1: mov     es:word_79B66, ax
+  0x00139BD5: or      ax, ax
+  0x00139BD7: jz      short loc_139BEC
+  0x00139BD9: mov     ax, 7894h
+  0x00139BDC: mov     es, ax
+  0x00139BDE: cmp     es:word_79B66, 1
+  0x00139BE4: jnz     short loc_139BEC
+  0x00139BE6: mov     di, [bp+var_16]
+  0x00139BE9: jmp     loc_139D03
+  0x00139BEC: push    0FFFFh
+  0x00139BEE: push    1
+  0x00139BF0: push    [bp+var_18]
+  0x00139BF3: push    0
+  0x00139BF5: mov     ax, 0C7h
+  0x00139BF8: sub     ax, [bp+var_18]
+  0x00139BFB: push    ax
+  0x00139BFC: call    dispatch_22100_invoke
+  0x00139C01: add     sp, 0Ah
+  0x00139C04: push    0FFFFh
+  0x00139C06: push    0
+  0x00139C08: mov     ax, 0C7h
+  0x00139C0B: sub     ax, [bp+var_18]
+  0x00139C0E: push    ax
+  0x00139C0F: push    [bp+var_18]
+  0x00139C12: push    0
+  0x00139C14: call    dispatch_22100_invoke
+  0x00139C19: add     sp, 0Ah
+  0x00139C1C: dec     [bp+var_18]
+  0x00139C1F: cmp     [bp+var_18], 0
+  0x00139C23: jge     short loc_139BC7
+  0x00139C25: push    1
+  0x00139C27: push    0
+  0x00139C29: push    0C7h
+  0x00139C2C: push    0
+  0x00139C2E: push    0
+  0x00139C30: call    dispatch_22100_invoke
+  0x00139C35: add     sp, 0Ah
+  0x00139C38: mov     ax, 4FC2h
+  0x00139C3B: mov     es, ax
+  0x00139C3D: push    es:word_13E016
+  0x00139C42: call    dispatch_220f0_invoke_1arg
+  0x00139C47: pop     cx
+  0x00139C48: mov     [bp+var_19], 0
+  0x00139C4C: mov     ax, 602Eh
+  0x00139C4F: mov     es, ax
+  0x00139C51: cmp     es:byte_151B41, 0
+  0x00139C57: jz      short loc_139C9B
+  0x00139C59: mov     ax, [bp+var_10]
+  0x00139C5C: inc     ax
+  0x00139C5D: mov     si, ax
+  0x00139C5F: mov     [bp+var_14], 0
+  0x00139C64: jmp     short loc_139C7F
+  0x00139C66: les     bx, [bp+arg_8]
+  0x00139C69: mov     al, es:[bx+si]
+  0x00139C6C: cbw
+  0x00139C6D: mov     dx, 602Eh
+  0x00139C70: mov     bx, ax
+  0x00139C72: mov     es, dx
+  0x00139C74: mov     al, es:[bx+3526h]
+  0x00139C79: mov     ah, 0
+  0x00139C7B: add     [bp+var_14], ax
+  0x00139C7E: inc     si
+  0x00139C7F: les     bx, [bp+arg_8]
+  0x00139C82: cmp     byte ptr es:[bx+si], 0
+  0x00139C86: jnz     short loc_139C66
+  0x00139C88: mov     ax, [bp+var_14]
+  0x00139C8B: mov     bx, 2
+  0x00139C8E: cwd
+  0x00139C8F: idiv    bx
+  0x00139C91: mov     dx, 96h
+  0x00139C94: sub     dx, ax
+  0x00139C96: mov     [bp+var_C], dx
+  0x00139C99: jmp     short loc_139CA1
+  0x00139C9B: mov     ax, [bp+arg_4]
+  0x00139C9E: mov     [bp+var_C], ax
+  0x00139CA1: mov     ax, [bp+arg_6]
+  0x00139CA4: mov     [bp+var_E], ax
+  0x00139CA7: mov     ax, 602Eh
+  0x00139CAA: mov     es, ax
+  0x00139CAC: mov     es:word_151AE4, 0
+  0x00139CB3: mov     [bp+var_1E], 3
+  0x00139CB8: cmp     [bp+arg_0], 0
+  0x00139CBC: jz      short loc_139CFB
+  0x00139CBE: mov     [bp+var_1C], 0FFFFh
+  0x00139CC3: call    font_file_parser
+  0x00139CC8: mov     dx, 7894h
+  0x00139CCB: mov     es, dx
+  0x00139CCD: mov     es:word_79B66, ax
+  0x00139CD1: or      ax, ax
+  0x00139CD3: jz      short loc_139CE9
+  0x00139CD5: mov     ax, 7894h
+  0x00139CD8: mov     es, ax
+  0x00139CDA: cmp     es:word_79B66, 1
+  0x00139CE0: jz      short loc_139D03
+  0x00139CE2: mov     [bp+var_1E], 1
+  0x00139CE7: jmp     short loc_139CF2
+  0x00139CE9: dec     [bp+var_1C]
+  0x00139CEC: cmp     [bp+var_1C], 0
+  0x00139CF0: jnz     short loc_139CC3
+  0x00139CF2: dec     [bp+var_1E]
+  0x00139CF5: cmp     [bp+var_1E], 0
+  0x00139CF9: jnz     short loc_139CBE
+  0x00139CFB: cmp     di, [bp+var_16]
+  0x00139CFE: jge     short loc_139D03
+  0x00139D00: jmp     loc_139A62
+  0x00139D03: push    602Eh
+  0x00139D06: push    350Ch
+  0x00139D09: push    0
+  0x00139D0B: push    2
+  0x00139D0D: push    6
+  0x00139D0F: call    op_dispatch_far_entry
+  0x00139D14: add     sp, 0Ah
+  0x00139D17: mov     [bp+var_2], ax
+  0x00139D1A: mov     ax, 7894h
+  0x00139D1D: mov     es, ax
+  0x00139D1F: push    word ptr es:dword_79E5C+2
+  0x00139D24: push    word ptr es:dword_79E5C
+  0x00139D29: push    9858h
+  0x00139D2C: push    [bp+var_2]
+  0x00139D2F: push    0Ah
+  0x00139D31: call    op_dispatch_far_entry
+  0x00139D36: add     sp, 0Ah
+  0x00139D39: push    ss
+  0x00139D3A: lea     ax, [bp+var_10]
+  0x00139D3D: push    ax
+  0x00139D3E: push    0
+  0x00139D40: push    [bp+var_2]
+  0x00139D43: push    8
+  0x00139D45: call    op_dispatch_far_entry
+  0x00139D4A: add     sp, 0Ah
+  0x00139D4D: push    0
+  0x00139D4F: call    dispatch_220fc_invoke_1arg
+  0x00139D54: pop     cx
+  0x00139D55: call    far_cb_1
+  0x00139D5A: mov     ax, 4FC2h
+  0x00139D5D: mov     es, ax
+  0x00139D5F: push    es:word_13E016
+  0x00139D64: call    dispatch_220f0_invoke_1arg
+  0x00139D69: pop     cx
+  0x00139D6A: call    far_cb_0
+  0x00139D6F: mov     ax, 7894h
+  0x00139D72: mov     dx, [bp+var_20]
+  0x00139D75: mov     es, ax
+  0x00139D77: mov     es:word_78940, dx
+  0x00139D7C: call    clip_pending_atomic_apply
+  0x00139D81: pop     di
+  0x00139D82: pop     si
+  0x00139D83: leave
+  0x00139D84: retf
+
+================================================================================
+font_file_parser @ 0x0013142E
+================================================================================
+  0x0013142E: push    bp
+  0x0013142F: mov     bp, sp
+  0x00131431: push    si
+  0x00131432: xor     si, si
+  0x00131434: jmp     short loc_131447
+  0x00131436: mov     bx, si
+  0x00131438: shl     bx, 1
+  0x0013143A: mov     ax, 7894h
+  0x0013143D: mov     es, ax
+  0x0013143F: mov     word ptr es:[bx+15A6h], 0
+  0x00131446: inc     si
+  0x00131447: cmp     si, 3
+  0x0013144A: jl      short loc_131436
+  0x0013144C: xor     si, si
+  0x0013144E: mov     ax, 7894h
+  0x00131451: mov     es, ax
+  0x00131453: cmp     es:word_79870, 0
+  0x00131459: jnz     short loc_13145E
+  0x0013145B: jmp     loc_131509
+  0x0013145E: mov     ax, 7894h
+  0x00131461: mov     es, ax
+  0x00131463: mov     es:word_79E46, 6
+  0x0013146A: push    7894h
+  0x0013146D: push    1506h
+  0x00131470: push    7894h
+  0x00131473: push    1506h
+  0x00131476: call    mouse_int33_dispatch
+  0x0013147B: add     sp, 8
+  0x0013147E: mov     ax, 7894h
+  0x00131481: mov     es, ax
+  0x00131483: mov     ax, es:word_79E4A
+  0x00131487: shr     ax, 1
+  0x00131489: mov     dx, 7894h
+  0x0013148C: mov     es, dx
+  0x0013148E: mov     word ptr es:byte_7A278+3Ch, ax
+  0x00131492: mov     ax, 7894h
+  0x00131495: mov     es, ax
+  0x00131497: mov     ax, es:word_79E4C
+  0x0013149B: mov     dx, 7894h
+  0x0013149E: mov     es, dx
+  0x001314A0: mov     word ptr es:byte_7A278+3Ah, ax
+  0x001314A4: mov     ax, 7894h
+  0x001314A7: mov     es, ax
+  0x001314A9: mov     ax, es:word_79E46
+  0x001314AD: and     ax, 3
+  0x001314B0: mov     dx, 7894h
+  0x001314B3: mov     es, dx
+  0x001314B5: mov     word ptr es:byte_7A278+38h, ax
+  0x001314B9: mov     ax, 7894h
+  0x001314BC: mov     es, ax
+  0x001314BE: mov     ax, word ptr es:byte_7A278+3Ch
+  0x001314C2: mov     dx, 7894h
+  0x001314C5: mov     es, dx
+  0x001314C7: mov     word ptr es:byte_79EE6, ax
+  0x001314CB: mov     ax, 7894h
+  0x001314CE: mov     es, ax
+  0x001314D0: mov     ax, word ptr es:byte_7A278+3Ah
+  0x001314D4: mov     es, dx
+  0x001314D6: mov     word ptr es:byte_79EE6+2, ax
+  0x001314DA: mov     ax, 7894h
+  0x001314DD: mov     es, ax
+  0x001314DF: mov     ax, word ptr es:byte_7A278+38h
+  0x001314E3: mov     es, dx
+  0x001314E5: mov     word ptr es:byte_79EE6+4, ax
+  0x001314E9: mov     ax, 7894h
+  0x001314EC: mov     es, ax
+  0x001314EE: cmp     word ptr es:byte_7A278+38h, 1
+  0x001314F4: jnz     short loc_1314F9
+  0x001314F6: mov     si, 1Ch
+  0x001314F9: mov     ax, 7894h
+  0x001314FC: mov     es, ax
+  0x001314FE: cmp     word ptr es:byte_7A278+38h, 2
+  0x00131504: jnz     short loc_131509
+  0x00131506: mov     si, 1
+  0x00131509: call    flag_block_build_far_thunk
+  0x0013150E: or      ax, ax
+  0x00131510: jz      short loc_13151C
+  0x00131512: call    flag_table_pop_far_thunk
+  0x00131517: sar     ax, 8
+  0x0013151A: mov     si, ax
+  0x0013151C: mov     ax, si
+  0x0013151E: pop     si
+  0x0013151F: pop     bp
+  0x00131520: retf
+
+================================================================================
+op_dispatch_far_entry @ 0x00022598
+================================================================================
+  0x00022598: push    bp
+  0x00022599: mov     bp, sp
+  0x0002259B: push    ds
+  0x0002259C: push    si
+  0x0002259D: push    di
+  0x0002259E: mov     bx, [bp+arg_0]
+  0x000225A1: mov     ax, [bp+arg_2]
+  0x000225A4: mov     cx, [bp+arg_4]
+  0x000225A7: mov     dx, [bp+arg_6]
+  0x000225AA: mov     ds, [bp+arg_8]
+  0x000225AD: push    cs
+  0x000225AE: call    near ptr op_dispatch
+  0x000225B1: pop     di
+  0x000225B2: pop     si
+  0x000225B3: pop     ds
+  0x000225B4: pop     bp
+  0x000225B5: retf
+
+================================================================================
+sub_2C351 @ 0x0002C351
+================================================================================
+  0x0002C351: call    near ptr tail_bridge_overlay_load
+  0x0002C354: jmp     far ptr loc_66A04+1
+
+================================================================================
+pending_task_run @ 0x000258B2
+================================================================================
+  0x000258B2: cli
+  0x000258B3: cmp     cs:byte_2548B, 0
+  0x000258B9: jz      short loc_258C4
+  0x000258BB: mov     cs:byte_2548B, 0
+  0x000258C1: call    farobj_batch_flush_2548c
+  0x000258C4: mov     cs:byte_2548C, 0
+  0x000258CA: sti
+  0x000258CB: retf
+
+================================================================================
+far_cb_1 @ 0x00025EC9
+================================================================================
+  0x00025EC9: call    cs:opcode_handler_2
+  0x00025ECE: retf
+
+================================================================================
+dispatch_220f0_invoke_1arg @ 0x00025EA8
+================================================================================
+  0x00025EA8: push    bp
+  0x00025EA9: mov     bp, sp
+  0x00025EAB: push    di
+  0x00025EAC: mov     ax, [bp+arg_0]
+  0x00025EAF: call    cs:dword_220F0
+  0x00025EB4: pop     di
+  0x00025EB5: pop     bp
+  0x00025EB6: retf
+
+================================================================================
+far_cb_0 @ 0x00025EBD
+================================================================================
+  0x00025EBD: call    cs:opcode_handler_1
+  0x00025EC2: retf
+
+================================================================================
+dispatch_220fc_invoke_1arg @ 0x00025DD8
+================================================================================
+  0x00025DD8: push    bp
+  0x00025DD9: mov     bp, sp
+  0x00025DDB: mov     bx, [bp+arg_0]
+  0x00025DDE: call    cs:dword_220FC
+  0x00025DE3: pop     bp
+  0x00025DE4: retf
+
+================================================================================
+sub_2BFC3 @ 0x0002BFC3
+================================================================================
+  0x0002BFC3: call    near ptr tail_bridge_overlay_load
+  0x0002BFC6: jmp     far ptr 2CF6h:0D01h
+
+================================================================================
+dispatch_22100_invoke @ 0x00025DEB
+================================================================================
+  0x00025DEB: push    bp
+  0x00025DEC: mov     bp, sp
+  0x00025DEE: push    si
+  0x00025DEF: push    di
+  0x00025DF0: mov     si, [bp+arg_0]
+  0x00025DF3: mov     di, [bp+arg_2]
+  0x00025DF6: mov     bx, [bp+arg_4]
+  0x00025DF9: mov     ax, [bp+arg_6]
+  0x00025DFC: mov     dx, [bp+arg_8]
+  0x00025DFF: call    cs:dword_22100
+  0x00025E04: pop     di
+  0x00025E05: pop     si
+  0x00025E06: pop     bp
+  0x00025E07: retf
+
+================================================================================
+clip_pending_atomic_apply @ 0x0002589F
+================================================================================
+  0x0002589F: cli
+  0x000258A0: mov     cs:byte_2548B, 0FFh
+  0x000258A6: mov     cs:byte_2548C, 0
+  0x000258AC: push    cs
+  0x000258AD: call    near ptr clip_pending_apply_latch
+  0x000258B0: sti
+  0x000258B1: retf
+
+================================================================================
+tail_bridge_overlay_load @ 0x0002AFBD
+================================================================================
+  0x0002AFBD: push    bp
+  0x0002AFBE: mov     bp, sp
+  0x0002AFC0: push    ax
+  0x0002AFC1: push    bx
+  0x0002AFC2: push    cx
+  0x0002AFC3: push    dx
+  0x0002AFC4: push    di
+  0x0002AFC5: push    si
+  0x0002AFC6: push    ds
+  0x0002AFC7: pushf
+  0x0002AFC8: mov     dx, seg seg021
+  0x0002AFCB: mov     ds, dx
+  0x0002AFCD: test    word_2B63D, 100h
+  0x0002AFD3: jz      short loc_2AFD8
+  0x0002AFD5: call    near ptr overlay_patch_verify
+  0x0002AFD8: mov     bx, [bp+2]
+  0x0002AFDB: mov     ax, [bx+5]
+  0x0002AFDE: push    ax
+  0x0002AFDF: mov     si, word_2B4A2
+  0x0002AFE3: mov     ax, word_2B4A0
+  0x0002AFE6: add     si, ax
+  0x0002AFE8: add     ax, 6
+  0x0002AFEB: mov     word_2B4A0, ax
+  0x0002AFEE: cmp     ax, word_2B4A6
+  0x0002AFF2: jb      short loc_2B001
+  0x0002AFF4: mov     ax, 2
+  0x0002AFF7: mov     cx, 2
+  0x0002AFFA: mov     bx, word_2AA42
+  0x0002AFFE: jmp     loc_2B478
+  0x0002B001: pop     cx
+  0x0002B002: mov     ds, seg_2B4A4
+  0x0002B006: mov     [si], cx
+  0x0002B008: test    cs:word_2B63D, 1
+  0x0002B00F: jnz     short loc_2B016
+  0x0002B011: mov     ax, seg seg021
+  0x0002B014: jmp     short loc_2B01E
+  0x0002B016: mov     ax, [bp+arg_0]
+  0x0002B019: mov     [bp+arg_0], seg seg021
+  0x0002B01E: mov     [si+4], ax
+  0x0002B021: mov     ax, [bp+var_s4]
+  0x0002B024: mov     [si+2], ax
+  0x0002B027: mov     [bp+var_s4], 701h
+  0x0002B02C: mov     ax, cs
+  0x0002B02E: mov     ds, ax
+  0x0002B030: mov     ax, cx
+  0x0002B032: push    cs
+  0x0002B033: call    near ptr overlay_segment_load
+  0x0002B036: popf
+  0x0002B037: pop     ds
+  0x0002B038: pop     si
+  0x0002B039: pop     di
+  0x0002B03A: pop     dx
+  0x0002B03B: pop     cx
+  0x0002B03C: pop     bx
+  0x0002B03D: pop     ax
+  0x0002B03E: pop     bp
+  0x0002B03F: retn
+
+================================================================================
+mouse_int33_dispatch @ 0x0001018F
+================================================================================
+  0x0001018F: push    bp
+  0x00010190: mov     bp, sp
+  0x00010192: push    ds
+  0x00010193: push    es
+  0x00010194: push    di
+  0x00010195: push    si
+  0x00010196: push    dx
+  0x00010197: push    cx
+  0x00010198: push    bx
+  0x00010199: push    ax
+  0x0001019A: mov     ax, [bp+arg_4]
+  0x0001019D: mov     ds, ax
+  0x0001019F: mov     si, [bp+arg_2]
+  0x000101A2: mov     ax, [bp+arg_8]
+  0x000101A5: mov     es, ax
+  0x000101A7: mov     ax, [si]
+  0x000101A9: cmp     ax, 9
+  0x000101AC: jz      short loc_101FD
+  0x000101AE: cmp     ax, 0Ch
+  0x000101B1: jz      short loc_101FD
+  0x000101B3: cmp     ax, 10h
+  0x000101B6: jz      short loc_101FD
+  0x000101B8: cmp     ax, 14h
+  0x000101BB: jz      short loc_101FD
+  0x000101BD: cmp     ax, 16h
+  0x000101C0: jz      short loc_101FD
+  0x000101C2: cmp     ax, 17h
+  0x000101C5: jz      short loc_101FD
+  0x000101C7: cmp     ax, 18h
+  0x000101CA: jz      short loc_101FD
+  0x000101CC: cmp     ax, 19h
+  0x000101CF: jz      short loc_101FD
+  0x000101D1: cmp     ax, 1Fh
+  0x000101D4: jz      short loc_101FD
+  0x000101D6: cmp     ax, 20h ; ' '
+  0x000101D9: jz      short loc_101FD
+  0x000101DB: cmp     ax, 21h ; '!'
+  0x000101DE: jz      short loc_101FD
+  0x000101E0: mov     bx, [si+2]
+  0x000101E3: mov     cx, [si+4]
+  0x000101E6: mov     dx, [si+6]
+  0x000101E9: int     33h; - MS MOUSE -
+  0x000101EB: mov     di, [bp+arg_6]
+  0x000101EE: mov     es:[di], ax
+  0x000101F1: mov     es:[di+2], bx
+  0x000101F5: mov     es:[di+4], cx
+  0x000101F9: mov     es:[di+6], dx
+  0x000101FD: pop     ax
+  0x000101FE: pop     bx
+  0x000101FF: pop     cx
+  0x00010200: pop     dx
+  0x00010201: pop     si
+  0x00010202: pop     di
+  0x00010203: pop     es
+  0x00010204: pop     ds
+  0x00010205: pop     bp
+  0x00010206: retf
+
+================================================================================
+farobj_batch_flush_2548c @ 0x000258CC
+================================================================================
+  0x000258CC: cmp     cs:byte_2548C, 0
+  0x000258D2: jz      short locret_2590B
+  0x000258D4: mov     cs:byte_2548C, 0
+  0x000258DA: push    ds
+  0x000258DB: push    si
+  0x000258DC: push    di
+  0x000258DD: push    bp
+  0x000258DE: mov     ax, 7B0Eh
+  0x000258E1: mov     ds, ax
+  0x000258E3: pushf
+  0x000258E4: cld
+  0x000258E5: call    cs:dword_2219C
+  0x000258EA: call    cs:opcode_handler_2
+  0x000258EF: mov     bx, cs:word_2548D
+  0x000258F4: mov     di, cs:word_2548F
+  0x000258F9: mov     si, 3FFEh
+  0x000258FC: call    cs:dword_220A0
+  0x00025901: call    cs:dword_221A0
+  0x00025906: popf
+  0x00025907: pop     bp
+  0x00025908: pop     di
+  0x00025909: pop     si
+  0x0002590A: pop     ds
+  0x0002590B: retn
+
+================================================================================
+op_dispatch @ 0x0002257B
+================================================================================
+  0x0002257B: and     cs:byte_22248, 80h
+  0x00022581: call    cs:op_dispatch_table[bx]
+  0x00022586: cmp     cs:byte_2224A, 0
+  0x0002258C: jz      short loc_22591
+  0x0002258E: call    error_display_terminate
+  0x00022591: test    cs:byte_22248, 7Fh
+  0x00022597: retf
+
+================================================================================
+flag_block_build_far_thunk @ 0x00025087
+================================================================================
+  0x00025087: push    bp
+  0x00025088: push    si
+  0x00025089: push    di
+  0x0002508A: push    cs
+  0x0002508B: call    near ptr flag_block_build
+  0x0002508E: nop
+  0x0002508F: mov     ax, 0
+  0x00025092: adc     ax, 0
+  0x00025095: pop     di
+  0x00025096: pop     si
+  0x00025097: pop     bp
+  0x00025098: retf
+
+================================================================================
+flag_table_pop_far_thunk @ 0x000251C3
+================================================================================
+  0x000251C3: push    bp
+  0x000251C4: push    si
+  0x000251C5: push    di
+  0x000251C6: push    cs
+  0x000251C7: call    near ptr flag_table_pop
+  0x000251CA: nop
+  0x000251CB: pop     di
+  0x000251CC: pop     si
+  0x000251CD: pop     bp
+  0x000251CE: retf
+
+================================================================================
+clip_pending_apply_latch @ 0x000257D5
+================================================================================
+  0x000257D5: mov     cs:byte_2549D, 1
+  0x000257DB: call    clip_pending_apply_record
+  0x000257DE: mov     cs:byte_2549D, 0
+  0x000257E4: retf
+
+================================================================================
+overlay_segment_load @ 0x0002AC4C
+================================================================================
+  0x0002AC4C: cmp     ax, 0FFFFh
+  0x0002AC4F: jnz     short loc_2AC52
+  0x0002AC51: retf
+  0x0002AC52: pushf
+  0x0002AC53: push    ax
+  0x0002AC54: push    bx
+  0x0002AC55: push    cx
+  0x0002AC56: push    dx
+  0x0002AC57: push    di
+  0x0002AC58: push    si
+  0x0002AC59: push    bp
+  0x0002AC5A: push    ds
+  0x0002AC5B: push    es
+  0x0002AC5C: mov     bp, sp
+  0x0002AC5E: cld
+  0x0002AC5F: mov     cx, seg seg021
+  0x0002AC62: mov     ds, cx
+  0x0002AC64: call    arena_off_ax18
+  0x0002AC67: mov     word_2B4BA, bx
+  0x0002AC6B: test    word ptr [bx+8], 0FFFFh
+  0x0002AC70: jz      short loc_2AC78
+  0x0002AC72: test    byte ptr [bx+7], 2
+  0x0002AC76: jz      short loc_2ACA5
+  0x0002AC78: clc
+  0x0002AC79: jmp     loc_2AE84
+  0x0002AC7C: mov     ax, cs
+  0x0002AC7E: mov     ds, ax
+  0x0002AC80: mov     dx, word_2AA3A
+  0x0002AC84: mov     cx, [bx+0Eh]
+  0x0002AC87: call    bcd_hex_ch_store
+  0x0002AC8C: mov     dx, word_2AA3C
+  0x0002AC90: mov     cx, [si+0Eh]
+  0x0002AC93: call    bcd_hex_ch_store
+  0x0002AC98: mov     ax, 6
+  0x0002AC9B: mov     cx, 3
+  0x0002AC9E: mov     bx, word_2AA38
+  0x0002ACA2: jmp     loc_2B478
+  0x0002ACA5: push    ax
+  0x0002ACA6: mov     bx, word_2B4BA
+  0x0002ACAA: mov     cx, word_2B649
+  0x0002ACAE: mov     si, 0C1Fh
+  0x0002ACB1: test    byte ptr [si+7], 2
+  0x0002ACB5: jz      short loc_2ACC7
+  0x0002ACB7: mov     ax, [si]
+  0x0002ACB9: sub     ax, [bx]
+  0x0002ACBB: jb      short loc_2ACC2
+  0x0002ACBD: cmp     ax, [bx+8]
+  0x0002ACC0: jmp     short loc_2ACC7
+  0x0002ACC2: neg     ax
+  0x0002ACC4: cmp     ax, [si+8]
+  0x0002ACC7: jnb     short loc_2ACD7
+  0x0002ACC9: mov     ax, cx
+  0x0002ACCB: sub     ax, word_2B649
+  0x0002ACCF: neg     ax
+  0x0002ACD1: push    cs
+  0x0002ACD2: call    near ptr farobj_flag7_branch
+  0x0002ACD5: jb      short loc_2AC7C
+  0x0002ACD7: add     si, 12h
+  0x0002ACDA: loop    loc_2ACB1
+  0x0002ACDC: pop     ax
+  0x0002ACDD: test    byte_2B4B4, 0FFh
+  0x0002ACE2: jz      short loc_2ACF8
+  0x0002ACE4: test    byte ptr [bx+7], 0Ch
+  0x0002ACE8: jz      short loc_2ACF8
+  0x0002ACEA: push    es
+  0x0002ACEB: mov     es, word ptr [bx]
+  0x0002ACED: call    stc_retf_const
+  0x0002ACF2: pop     es
+  0x0002ACF3: jb      short loc_2ACF8
+  0x0002ACF5: jmp     loc_2AE77
+  0x0002ACF8: mov     si, [bx+2]
+  0x0002ACFB: test    byte ptr [bx+7], 8
+  0x0002ACFF: jz      short loc_2AD03
+  0x0002AD01: mov     si, [si]
+  0x0002AD03: call    near ptr overlay_file_open
+  0x0002AD06: mov     dx, [bx+0Ah]
+  0x0002AD09: add     dx, 3
+  0x0002AD0C: shr     dx, 1
+  0x0002AD0E: shr     dx, 1
+  0x0002AD10: xor     ch, ch
+  0x0002AD12: mov     cl, [bx+6]
+  0x0002AD15: add     dx, [bx+4]
+  0x0002AD18: adc     cx, 0
+  0x0002AD1B: mov     di, dx
+  0x0002AD1D: mov     ax, 0Fh
+  0x0002AD20: shl     cx, 1
+  0x0002AD22: rol     dx, 1
+  0x0002AD24: shl     cx, 1
+  0x0002AD26: rol     dx, 1
+  0x0002AD28: shl     cx, 1
+  0x0002AD2A: rol     dx, 1
+  0x0002AD2C: shl     cx, 1
+  0x0002AD2E: rol     dx, 1
+  0x0002AD30: and     ax, dx
+  0x0002AD32: or      cx, ax
+  0x0002AD34: xor     dx, ax
+  0x0002AD36: mov     ax, [bx+2]
+  0x0002AD39: test    byte ptr [bx+7], 8
+  0x0002AD3D: jz      short loc_2AD45
+  0x0002AD3F: push    di
+  0x0002AD40: mov     di, ax
+  0x0002AD42: mov     ax, [di]
+  0x0002AD44: pop     di
+  0x0002AD45: inc     ax
+  0x0002AD46: cmp     ax, word_2B627
+  0x0002AD4A: jnz     short loc_2AD5B
+  0x0002AD4C: push    es
+  0x0002AD4D: push    di
+  0x0002AD4E: les     di, off_2B629
+  0x0002AD52: add     dx, es:[di]
+  0x0002AD55: adc     cx, es:[di+2]
+  0x0002AD59: pop     di
+  0x0002AD5A: pop     es
+  0x0002AD5B: mov     bx, word_2B4BE
+  0x0002AD5F: mov     ax, 4200h
+  0x0002AD62: int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)
+  0x0002AD64: push    ds
+  0x0002AD65: mov     ax, bx
+  0x0002AD67: mov     bx, word_2B4BA
+  0x0002AD6B: mov     cx, [bx+10h]
+  0x0002AD6E: mov     ds, word ptr [bx]
+  0x0002AD70: test    byte ptr cs:[bx+7], 20h
+  0x0002AD75: jnz     short loc_2ADAD
+  0x0002AD77: mov     bx, ax
+  0x0002AD79: dec     di
+  0x0002AD7A: and     di, 7Fh
+  0x0002AD7D: inc     di
+  0x0002AD7E: sub     di, 1000h
+  0x0002AD82: neg     di
+  0x0002AD84: jcxz    short loc_2ADC8
+  0x0002AD86: mov     ax, cx
+  0x0002AD88: cmp     ax, di
+  0x0002AD8A: jbe     short loc_2AD8E
+  0x0002AD8C: mov     ax, di
+  0x0002AD8E: push    ax
+  0x0002AD8F: push    cx
+  0x0002AD90: mov     cl, 4
+  0x0002AD92: shl     ax, cl
+  0x0002AD94: mov     cx, ax
+  0x0002AD96: xor     dx, dx
+  0x0002AD98: mov     ah, 3Fh
+  0x0002AD9A: int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x0002AD9C: jb      short loc_2ADBD
+  0x0002AD9E: pop     cx
+  0x0002AD9F: pop     ax
+  0x0002ADA0: sub     cx, ax
+  0x0002ADA2: mov     dx, ds
+  0x0002ADA4: add     dx, ax
+  0x0002ADA6: mov     ds, dx
+  0x0002ADA8: mov     di, 0F80h
+  0x0002ADAB: jmp     short loc_2AD84
+  0x0002ADAD: push    ax
+  0x0002ADAE: push    word ptr cs:[bx+8]
+  0x0002ADB2: push    ds
+  0x0002ADB3: call    far ptr 0:0
+  0x0002ADB8: pop     ds
+  0x0002ADB9: or      ax, ax
+  0x0002ADBB: jz      short loc_2ADDA
+  0x0002ADBD: mov     cx, 13Fh
+  0x0002ADC0: mov     bx, cs:word_2AA36
+  0x0002ADC5: jmp     loc_2B458
+  0x0002ADC8: mov     ax, ds
+  0x0002ADCA: pop     ds
+  0x0002ADCB: mov     bx, word_2B4BA
+  0x0002ADCF: mov     dx, [bx+8]
+  0x0002ADD2: sub     dx, [bx+10h]
+  0x0002ADD5: add     dx, ax
+  0x0002ADD7: call    mem_block_move_ax
+  0x0002ADDA: mov     bx, word_2B4BA
+  0x0002ADDE: mov     dx, [bx+4]
+  0x0002ADE1: mov     cl, [bx+6]
+  0x0002ADE4: xor     ch, ch
+  0x0002ADE6: mov     ax, 0Fh
+  0x0002ADE9: shl     cx, 1
+  0x0002ADEB: rol     dx, 1
+  0x0002ADED: shl     cx, 1
+  0x0002ADEF: rol     dx, 1
+  0x0002ADF1: shl     cx, 1
+  0x0002ADF3: rol     dx, 1
+  0x0002ADF5: shl     cx, 1
+  0x0002ADF7: rol     dx, 1
+  0x0002ADF9: and     ax, dx
+  0x0002ADFB: or      cx, ax
+  0x0002ADFD: xor     dx, ax
+  0x0002ADFF: mov     ax, [bx+2]
+  0x0002AE02: test    byte ptr [bx+7], 8
+  0x0002AE06: jz      short loc_2AE0E
+  0x0002AE08: push    di
+  0x0002AE09: mov     di, ax
+  0x0002AE0B: mov     ax, [di]
+  0x0002AE0D: pop     di
+  0x0002AE0E: inc     ax
+  0x0002AE0F: cmp     ax, word_2B627
+  0x0002AE13: jnz     short loc_2AE24
+  0x0002AE15: push    es
+  0x0002AE16: push    di
+  0x0002AE17: les     di, off_2B629
+  0x0002AE1B: add     dx, es:[di]
+  0x0002AE1E: adc     cx, es:[di+2]
+  0x0002AE22: pop     di
+  0x0002AE23: pop     es
+  0x0002AE24: mov     si, [bx+0Ah]
+  0x0002AE27: mov     bx, word_2B4BE
+  0x0002AE2B: mov     ax, 4200h
+  0x0002AE2E: int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)
+  0x0002AE30: mov     cx, si
+  0x0002AE32: jcxz    short loc_2AE77
+  0x0002AE34: cmp     cx, 58h ; 'X'
+  0x0002AE37: jbe     short loc_2AE3C
+  0x0002AE39: mov     cx, 58h ; 'X'
+  0x0002AE3C: sub     si, cx
+  0x0002AE3E: push    si
+  0x0002AE3F: push    cx
+  0x0002AE40: shl     cx, 1
+  0x0002AE42: shl     cx, 1
+  0x0002AE44: mov     dx, 0A92h
+  0x0002AE47: mov     ah, 3Fh
+  0x0002AE49: int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x0002AE4B: jnb     short loc_2AE50
+  0x0002AE4D: jmp     loc_2ADBD
+  0x0002AE50: cmp     ax, cx
+  0x0002AE52: jz      short loc_2AE57
+  0x0002AE54: jmp     loc_2ADBD
+  0x0002AE57: mov     si, dx
+  0x0002AE59: mov     dx, word_2B4B6
+  0x0002AE5D: add     dx, 10h
+  0x0002AE60: pop     cx
+  0x0002AE61: mov     ax, dx
+  0x0002AE63: add     ax, [si+2]
+  0x0002AE66: jb      short loc_2AE6F
+  0x0002AE68: mov     es, ax
+  0x0002AE6A: mov     di, [si]
+  0x0002AE6C: add     es:[di], dx
+  0x0002AE6F: add     si, 4
+  0x0002AE72: loop    loc_2AE61
+  0x0002AE74: pop     si
+  0x0002AE75: jmp     short loc_2AE30
+  0x0002AE77: mov     bx, word_2B4BA
+  0x0002AE7B: or      byte ptr [bx+7], 2
+  0x0002AE7F: clc
+  0x0002AE80: push    cs
+  0x0002AE81: call    near ptr nop_retf
+  0x0002AE84: mov     bx, word_2B4BA
+  0x0002AE88: mov     ax, [bx+0Ch]
+  0x0002AE8B: pop     es
+  0x0002AE8C: pop     ds
+  0x0002AE8D: pop     bp
+  0x0002AE8E: pop     si
+  0x0002AE8F: pop     di
+  0x0002AE90: pop     dx
+  0x0002AE91: pop     cx
+  0x0002AE92: jb      short loc_2AEA5
+  0x0002AE94: test    cs:byte_2B622, 0FFh
+  0x0002AE9A: jz      short loc_2AEA5
+  0x0002AE9C: cmp     ax, 0FFFFh
+  0x0002AE9F: jz      short loc_2AEA5
+  0x0002AEA1: push    cs
+  0x0002AEA2: call    near ptr overlay_segment_load
+  0x0002AEA5: pop     bx
+  0x0002AEA6: pop     ax
+  0x0002AEA7: popf
+  0x0002AEA8: retf
+
+================================================================================
+flag_table_pop @ 0x000251CF
+================================================================================
+  0x000251CF: push    cx
+  0x000251D0: push    si
+  0x000251D1: push    ds
+  0x000251D2: push    es
+  0x000251D3: mov     cx, cs
+  0x000251D5: mov     ds, cx
+  0x000251D7: mov     cx, 0Bh
+  0x000251DA: mov     si, 5C6Eh
+  0x000251DD: lodsb
+  0x000251DE: or      al, al
+  0x000251E0: jnz     short loc_251E8
+  0x000251E2: loop    loc_251DD
+  0x000251E4: sub     ax, ax
+  0x000251E6: jmp     short loc_25206
+  0x000251E8: mov     [si-1], ch
+  0x000251EB: mov     si, 0Bh
+  0x000251EE: sub     si, cx
+  0x000251F0: shl     si, 1
+  0x000251F2: shl     si, 1
+  0x000251F4: shl     si, 1
+  0x000251F6: shl     al, 1
+  0x000251F8: jb      short loc_251FD
+  0x000251FA: inc     si
+  0x000251FB: jmp     short loc_251F6
+  0x000251FD: mov     ax, si
+  0x000251FF: xchg    ah, al
+  0x00025201: inc     ah
+  0x00025203: call    kbd_scancode_xlat_shift
+  0x00025206: pop     es
+  0x00025207: pop     ds
+  0x00025208: pop     si
+  0x00025209: pop     cx
+  0x0002520A: retf
+
+================================================================================
+vgraph_slot_9 @ 0x00087894
+================================================================================
+  0x00087894: call    sub_88384; traced calls: 2
+  0x00087897: lodsw
+  0x00087898: mov     bp, ax
+  0x0008789A: lodsw
+  0x0008789B: mov     cx, ax
+  0x0008789D: push    es
+  0x0008789E: mov     es, cs:word_85C7E
+  0x000878A3: mov     dx, 3C4h
+  0x000878A6: mov     al, 2
+  0x000878A8: out     dx, al; EGA: sequencer address reg
+  0x000878A9: shl     di, 1
+  0x000878AB: mov     di, cs:[di+1B0h]
+  0x000878B0: mov     ax, bx
+  0x000878B2: shr     ax, 1
+  0x000878B4: shr     ax, 1
+  0x000878B6: add     di, ax
+  0x000878B8: mov     ax, 1001h
+  0x000878BB: mov     bx, cx
+  0x000878BD: shr     bp, 1
+  0x000878BF: shr     bp, 1
+  0x000878C1: xchg    bx, bp
+  0x000878C3: push    bp
+  0x000878C4: push    di
+  0x000878C5: mov     dx, 3C5h
+  0x000878C8: out     dx, al; EGA port: sequencer data register
+  0x000878C9: mov     dx, 50h ; 'P'
+  0x000878CC: sub     dx, bx
+  0x000878CE: mov     cx, bx
+  0x000878D0: shr     cx, 1
+  0x000878D2: rep movsw
+  0x000878D4: adc     cx, cx
+  0x000878D6: rep movsb
+  0x000878D8: add     di, dx
+  0x000878DA: dec     bp
+  0x000878DB: jnz     short loc_878CE
+  0x000878DD: pop     di
+  0x000878DE: mov     bp, sp
+  0x000878E0: mov     bp, [bp+0]
+  0x000878E3: shl     ax, 1
+  0x000878E5: jnb     short loc_878C4
+  0x000878E7: add     sp, 2
+  0x000878EA: mov     dx, 3C4h
+  0x000878ED: mov     ax, 0F02h
+  0x000878F0: out     dx, ax; EGA: sequencer address reg
+  0x000878F1: pop     es
+  0x000878F2: retf
+
+================================================================================
+dos_mem_alloc @ 0x000225F4
+================================================================================
+  0x000225F4: push    bx
+  0x000225F5: mov     bx, ax
+  0x000225F7: and     bx, 0Fh
+  0x000225FA: add     bx, 0Fh
+  0x000225FD: shr     bx, 1
+  0x000225FF: shr     bx, 1
+  0x00022601: shr     bx, 1
+  0x00022603: shr     bx, 1
+  0x00022605: shr     ax, 1
+  0x00022607: shr     ax, 1
+  0x00022609: shr     ax, 1
+  0x0002260B: shr     ax, 1
+  0x0002260D: add     bx, ax
+  0x0002260F: mov     ah, 48h
+  0x00022611: int     21h; DOS - 2+ - ALLOCATE MEMORY
+  0x00022613: jnb     short loc_22624
+  0x00022615: or      cs:byte_22248, 1
+  0x0002261B: mov     cs:byte_22249, 0
+  0x00022621: mov     ax, 0FFFFh
+  0x00022624: pop     bx
+  0x00022625: retn
+
+================================================================================
+error_display_terminate @ 0x000224D3
+================================================================================
+  0x000224D3: test    cs:byte_22248, 7Fh
+  0x000224D9: jnz     short loc_224DC
+  0x000224DB: retn
+  0x000224DC: push    ds
+  0x000224DD: mov     ax, 7B0Eh
+  0x000224E0: mov     ds, ax
+  0x000224E2: test    cs:byte_22248, 80h
+  0x000224E8: jz      short loc_2250B
+  0x000224EA: mov     dx, 3792h
+  0x000224ED: mov     ah, 9
+  0x000224EF: int     21h; DOS - PRINT STRING
+  0x000224F1: mov     bl, cs:byte_22249
+  0x000224F6: sub     bh, bh
+  0x000224F8: mov     dx, [bx+362Ch]
+  0x000224FC: mov     ah, 9
+  0x000224FE: int     21h; DOS - PRINT STRING
+  0x00022500: mov     dx, 3792h
+  0x00022503: mov     ah, 9
+  0x00022505: int     21h; DOS - PRINT STRING
+  0x00022507: mov     ah, 4Ch
+  0x00022509: int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+  0x0002250B: push    es
+  0x0002250C: mov     ax, ds
+  0x0002250E: mov     es, ax
+  0x00022510: mov     bl, cs:byte_22249
+  0x00022515: sub     bh, bh
+  0x00022517: mov     si, [bx+3620h]
+  0x0002251B: mov     di, 3648h
+  0x0002251E: mov     cx, 0Bh
+  0x00022521: rep movsw
+  0x00022523: or      bx, bx
+  0x00022525: jnz     short loc_2252C
+  0x00022527: mov     ds:byte_7E756, 0
+  0x0002252C: call    far_cb_1
+  0x00022531: mov     si, 3638h
+  0x00022534: mov     cx, 4
+  0x00022537: call    cb_args_invoke
+  0x0002253C: call    far_cb_0
+  0x00022541: pop     es
+  0x00022542: push    cs
+  0x00022543: call    near ptr flag_block_zero_5762_5c63
+  0x00022546: push    cs
+  0x00022547: call    near ptr mouse_wait_click
+  0x0002254A: push    cs
+  0x0002254B: call    near ptr flag_table_pop
+  0x0002254E: test    cs:byte_22248, 1
+  0x00022554: jz      short loc_22562
+  0x00022556: test    cs:byte_22248, 80h
+  0x0002255C: jz      short $+2
+  0x0002255E: push    cs
+  0x0002255F: call    program_terminate
+  0x00022562: pop     ds
+  0x00022563: retn
+
+================================================================================
+flag_block_build @ 0x00025099
+================================================================================
+  0x00025099: push    es
+  0x0002509A: mov     ax, cs
+  0x0002509C: mov     es, ax
+  0x0002509E: mov     di, 5762h
+  0x000250A1: push    cs
+  0x000250A2: call    near ptr flag_block_merge_zero_5c63
+  0x000250A5: mov     al, 1
+  0x000250A7: mov     cx, 0Bh
+  0x000250AA: mov     si, 5762h
+  0x000250AD: mov     ah, cs:[si]
+  0x000250B0: or      ah, ah
+  0x000250B2: jnz     short loc_250BC
+  0x000250B4: add     al, 8
+  0x000250B6: inc     si
+  0x000250B7: loop    loc_250AD
+  0x000250B9: pop     es
+  0x000250BA: clc
+  0x000250BB: retf
+  0x000250BC: pop     es
+  0x000250BD: stc
+  0x000250BE: retf
+
+================================================================================
+clip_pending_apply_record @ 0x000257E5
+================================================================================
+  0x000257E5: cmp     cs:byte_2548B, 0
+  0x000257EB: jnz     short loc_257EE
+  0x000257ED: retn
+  0x000257EE: push    ax
+  0x000257EF: push    bx
+  0x000257F0: push    cx
+  0x000257F1: push    dx
+  0x000257F2: push    si
+  0x000257F3: push    di
+  0x000257F4: push    bp
+  0x000257F5: call    cs:dword_22110
+  0x000257FA: call    state_byte_25488_to_89_near
+  0x000257FD: call    clip_bounds_save_2546c
+  0x00025800: mov     ax, cs:word_25474
+  0x00025804: mov     cs:word_25450, ax
+  0x00025808: mov     ax, cs:word_25478
+  0x0002580C: mov     cs:word_25454, ax
+  0x00025810: mov     ax, cs:word_25476
+  0x00025814: mov     cs:word_25452, ax
+  0x00025818: mov     ax, cs:word_2547A
+  0x0002581C: mov     cs:word_25456, ax
+  0x00025820: mov     al, cs:byte_2548A
+  0x00025824: mov     cs:byte_25488, al
+  0x00025828: mov     bx, cs:word_25491
+  0x0002582D: mov     di, cs:word_25493
+  0x00025832: push    cs
+  0x00025833: call    near ptr mouse_record_clip_2590c
+  0x00025836: call    clip_bounds_restore_25450
+  0x00025839: call    state_byte_25489_to_88_near
+  0x0002583C: call    cs:dword_22114
+  0x00025841: pop     bp
+  0x00025842: pop     di
+  0x00025843: pop     si
+  0x00025844: pop     dx
+  0x00025845: pop     cx
+  0x00025846: pop     bx
+  0x00025847: pop     ax
+  0x00025848: retn
+
+================================================================================
+mem_copy_fwd @ 0x000227BF
+================================================================================
+  0x000227BF: shr     cx, 1
+  0x000227C1: rep movsw
+  0x000227C3: adc     cx, cx
+  0x000227C5: rep movsb
+  0x000227C7: retn
+
+================================================================================
+mem_store_fwd @ 0x000227C8
+================================================================================
+  0x000227C8: mov     ah, al
+  0x000227CA: shr     cx, 1
+  0x000227CC: rep stosw
+  0x000227CE: adc     cx, cx
+  0x000227D0: rep stosb
+  0x000227D2: retn
+
+================================================================================
+file_find_first @ 0x00022760
+================================================================================
+  0x00022760: push    ds
+  0x00022761: call    str_upper_copy_3676
+  0x00022764: cli
+  0x00022765: mov     cs:byte_2224B, 1
+  0x0002276B: sti
+  0x0002276C: mov     cx, ax
+  0x0002276E: push    cx
+  0x0002276F: mov     ah, 4Eh
+  0x00022771: int     21h; DOS - 2+ - FIND FIRST ASCIZ (FINDFIRST)
+  0x00022773: mov     ax, 1
+  0x00022776: jnb     short loc_2278A
+  0x00022778: call    str_upper_copy_3795
+  0x0002277B: pop     cx
+  0x0002277C: mov     ah, 4Eh
+  0x0002277E: int     21h; DOS - 2+ - FIND FIRST ASCIZ (FINDFIRST)
+  0x00022780: mov     ax, 1
+  0x00022783: jnb     short loc_2278D
+  0x00022785: mov     ax, 0
+  0x00022788: jmp     short loc_2278D
+  0x0002278A: add     sp, 2
+  0x0002278D: cli
+  0x0002278E: mov     cs:byte_2224B, 0
+  0x00022794: sti
+  0x00022795: pop     ds
+  0x00022796: retn
+
+================================================================================
+overlay_patch_verify @ 0x0002B0BF
+================================================================================
+  0x0002B0BF: push    ds
+  0x0002B0C0: push    si
+  0x0002B0C1: mov     si, cs
+  0x0002B0C3: mov     ds, si
+  0x0002B0C5: mov     si, word_2B12D
+  0x0002B0C9: call    patch_scan_e8_58d
+  0x0002B0CC: jnb     short loc_2B0C9
+  0x0002B0CE: cmp     si, word_2B12F
+  0x0002B0D2: jnz     short loc_2B0D7
+  0x0002B0D4: pop     si
+  0x0002B0D5: pop     ds
+  0x0002B0D6: retn
+  0x0002B0D7: mov     cx, ds
+  0x0002B0D9: mov     ax, word_2B4B6
+  0x0002B0DC: sub     cx, ax
+  0x0002B0DE: sub     cx, 10h
+  0x0002B0E1: mov     dx, word ptr byte_2AA3E+2
+  0x0002B0E5: call    bcd_hex_ch_store
+  0x0002B0EA: mov     cx, si
+  0x0002B0EC: mov     dx, word ptr byte_2AA3E+2
+  0x0002B0F0: add     dx, 5
+  0x0002B0F3: call    bcd_hex_ch_store
+  0x0002B0F8: mov     ax, 12h
+  0x0002B0FB: mov     cx, 3
+  0x0002B0FE: mov     bx, word ptr byte_2AA3E
+  0x0002B102: jmp     loc_2B478
+
+================================================================================
+dos_mem_free @ 0x00022626
+================================================================================
+  0x00022626: push    es
+  0x00022627: mov     es, ax
+  0x00022629: mov     ah, 49h
+  0x0002262B: int     21h; DOS - 2+ - FREE MEMORY
+  0x0002262D: pop     es
+  0x0002262E: retn
+
+================================================================================
+file_create @ 0x00022699
+================================================================================
+  0x00022699: call    str_upper_copy_3676
+  0x0002269C: push    cx
+  0x0002269D: mov     cx, ax
+  0x0002269F: mov     ah, 3Ch
+  0x000226A1: int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)
+  0x000226A3: jnb     short loc_226B4
+  0x000226A5: or      cs:byte_22248, 1
+  0x000226AB: mov     cs:byte_22249, 2
+  0x000226B1: mov     ax, 0FFFFh
+  0x000226B4: pop     cx
+  0x000226B5: retn
+
+================================================================================
+file_open @ 0x000226B6
+================================================================================
+  0x000226B6: push    ds
+  0x000226B7: call    str_upper_copy_3676
+  0x000226BA: mov     ah, 3Dh ; '='
+  0x000226BC: push    ax
+  0x000226BD: int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x000226BF: jnb     short loc_226DA
+  0x000226C1: call    str_upper_copy_3795
+  0x000226C4: pop     ax
+  0x000226C5: int     21h; DOS -
+  0x000226C7: jnb     short loc_226DD
+  0x000226C9: or      cs:byte_22248, 1
+  0x000226CF: mov     cs:byte_22249, 4
+  0x000226D5: mov     ax, 0FFFFh
+  0x000226D8: jmp     short loc_226DD
+  0x000226DA: add     sp, 2
+  0x000226DD: pop     ds
+  0x000226DE: retn
+
+================================================================================
+file_close @ 0x000226DF
+================================================================================
+  0x000226DF: push    bx
+  0x000226E0: mov     bx, ax
+  0x000226E2: mov     ah, 3Eh
+  0x000226E4: int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x000226E6: pop     bx
+  0x000226E7: retn
+
+================================================================================
+file_read @ 0x000226E8
+================================================================================
+  0x000226E8: cli
+  0x000226E9: mov     cs:byte_2224B, 1
+  0x000226EF: sti
+  0x000226F0: push    bx
+  0x000226F1: mov     bx, ax
+  0x000226F3: mov     ah, 3Fh
+  0x000226F5: int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE
+  0x000226F7: jnb     short loc_22708
+  0x000226F9: or      cs:byte_22248, 1
+  0x000226FF: mov     cs:byte_22249, 6
+  0x00022705: mov     ax, 0FFFFh
+  0x00022708: pop     bx
+  0x00022709: cli
+  0x0002270A: mov     cs:byte_2224B, 0
+  0x00022710: sti
+  0x00022711: retn
+
+================================================================================
+file_write @ 0x00022712
+================================================================================
+  0x00022712: cli
+  0x00022713: mov     cs:byte_2224B, 1
+  0x00022719: sti
+  0x0002271A: push    bx
+  0x0002271B: mov     bx, ax
+  0x0002271D: mov     ah, 40h
+  0x0002271F: int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE
+  0x00022721: jnb     short loc_22732
+  0x00022723: or      cs:byte_22248, 1
+  0x00022729: mov     cs:byte_22249, 8
+  0x0002272F: mov     ax, 0FFFFh
+  0x00022732: pop     bx
+  0x00022733: cli
+  0x00022734: mov     cs:byte_2224B, 0
+  0x0002273A: sti
+  0x0002273B: retn
+
+================================================================================
+file_lseek @ 0x0002273C
+================================================================================
+  0x0002273C: cli
+  0x0002273D: mov     cs:byte_2224B, 1
+  0x00022743: sti
+  0x00022744: push    bx
+  0x00022745: mov     bx, ax
+  0x00022747: mov     ah, 42h ; 'B'
+  0x00022749: mov     al, ch
+  0x0002274B: sub     ch, ch
+  0x0002274D: int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)
+  0x0002274F: jnb     short loc_22756
+  0x00022751: mov     ax, 0FFFFh
+  0x00022754: mov     dx, ax
+  0x00022756: pop     bx
+  0x00022757: cli
+  0x00022758: mov     cs:byte_2224B, 0
+  0x0002275E: sti
+  0x0002275F: retn
+
+================================================================================
+file_find_next @ 0x00022797
+================================================================================
+  0x00022797: cli
+  0x00022798: mov     cs:byte_2224B, 1
+  0x0002279E: sti
+  0x0002279F: mov     ah, 4Fh
+  0x000227A1: int     21h; DOS - 2+ - FIND NEXT ASCIZ (FINDNEXT)
+  0x000227A3: mov     ax, 1
+  0x000227A6: jnb     short loc_227AB
+  0x000227A8: mov     ax, 0
+  0x000227AB: cli
+  0x000227AC: mov     cs:byte_2224B, 0
+  0x000227B2: sti
+  0x000227B3: retn
+
+================================================================================
+file_get_dta @ 0x000227B4
+================================================================================
+  0x000227B4: push    es
+  0x000227B5: mov     ah, 2Fh
+  0x000227B7: int     21h; DOS - GET DISK TRANSFER AREA ADDRESS
+  0x000227B9: mov     dx, es
+  0x000227BB: mov     ax, bx
+  0x000227BD: pop     es
+  0x000227BE: retn
+
+================================================================================
+file_delete @ 0x000227D3
+================================================================================
+  0x000227D3: call    str_upper_copy_3676
+  0x000227D6: mov     ah, 41h
+  0x000227D8: int     21h; DOS - 2+ - DELETE A FILE (UNLINK)
+  0x000227DA: jnb     short locret_227EB
+  0x000227DC: or      cs:byte_22248, 2
+  0x000227E2: mov     cs:byte_22249, 0Ah
+  0x000227E8: mov     ax, 0FFFFh
+  0x000227EB: retn
+
+================================================================================
+file_size @ 0x000227EC
+================================================================================
+  0x000227EC: push    di
+  0x000227ED: push    ax
+  0x000227EE: xor     cl, cl
+  0x000227F0: xor     dx, dx
+  0x000227F2: mov     ch, 1
+  0x000227F4: call    file_lseek
+  0x000227F7: pop     bx
+  0x000227F8: push    bx
+  0x000227F9: push    ax
+  0x000227FA: push    dx
+  0x000227FB: mov     ax, bx
+  0x000227FD: xor     cl, cl
+  0x000227FF: xor     dx, dx
+  0x00022801: mov     ch, 2
+  0x00022803: call    file_lseek
+  0x00022806: mov     bx, dx
+  0x00022808: pop     cx
+  0x00022809: pop     dx
+  0x0002280A: pop     di
+  0x0002280B: push    ax
+  0x0002280C: push    bx
+  0x0002280D: mov     ax, di
+  0x0002280F: mov     ch, 0
+  0x00022811: call    file_lseek
+  0x00022814: pop     dx
+  0x00022815: pop     ax
+  0x00022816: pop     di
+  0x00022817: retn
+
+================================================================================
+dos_print_str @ 0x00022818
+================================================================================
+  0x00022818: mov     dx, si
+  0x0002281A: mov     ah, 9
+  0x0002281C: int     21h; DOS - PRINT STRING
+  0x0002281E: retn
+
+================================================================================
+sub_86C86 @ 0x00086C86
+================================================================================
+  0x00086C86: call    sub_88384; traced calls: 2
+
+================================================================================
+overlay_file_open @ 0x0002AEA9
+================================================================================
+  0x0002AEA9: push    ax
+  0x0002AEAA: push    bx
+  0x0002AEAB: push    cx
+  0x0002AEAC: push    dx
+  0x0002AEAD: push    di
+  0x0002AEAE: push    si
+  0x0002AEAF: push    ds
+  0x0002AEB0: push    es
+  0x0002AEB1: inc     si
+  0x0002AEB2: cmp     word_2B4BC, 0
+  0x0002AEB7: jz      short loc_2AECB
+  0x0002AEB9: mov     ax, word_2B4BE
+  0x0002AEBC: cmp     si, word_2B4BC
+  0x0002AEC0: jnz     short loc_2AEC5
+  0x0002AEC2: jmp     loc_2AFB4
+  0x0002AEC5: mov     bx, ax
+  0x0002AEC7: mov     ah, 3Eh
+  0x0002AEC9: int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE
+  0x0002AECB: mov     word_2B4BC, si
+  0x0002AECF: test    byte ptr [si-1], 1
+  0x0002AED3: jz      short loc_2AEF0
+  0x0002AED5: mov     dx, si
+  0x0002AED7: mov     al, byte_2B4B5
+  0x0002AEDA: mov     ah, 3Dh
+  0x0002AEDC: int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x0002AEDE: jb      short loc_2AEE6
+  0x0002AEE0: mov     word_2B4BE, ax
+  0x0002AEE3: jmp     loc_2AFB4
+  0x0002AEE6: mov     cx, 13Dh
+  0x0002AEE9: mov     bx, word ptr byte_2AA34
+  0x0002AEED: jmp     loc_2B458
+  0x0002AEF0: test    word_2B63D, 80h
+  0x0002AEF6: jnz     short loc_2AF52
+  0x0002AEF8: mov     di, si
+  0x0002AEFA: mov     ax, ds
+  0x0002AEFC: mov     es, ax
+  0x0002AEFE: mov     cx, 80h
+  0x0002AF01: xor     al, al
+  0x0002AF03: repne scasb
+  0x0002AF05: mov     ax, es:[di-3]
+  0x0002AF09: or      ax, 2020h
+  0x0002AF0C: cmp     ax, 6578h
+  0x0002AF0F: jnz     short loc_2AF52
+  0x0002AF11: mov     ax, es:[di-5]
+  0x0002AF15: or      ah, 20h
+  0x0002AF18: cmp     ax, 652Eh
+  0x0002AF1B: jnz     short loc_2AF52
+  0x0002AF1D: mov     ax, cs:word_2B4BC
+  0x0002AF21: mov     cs:word_2B627, ax
+  0x0002AF25: mov     ax, word_2B4B6
+  0x0002AF28: call    dos_version_ge3_check
+  0x0002AF2D: jb      short loc_2AF52
+  0x0002AF2F: cmp     bx, 0FFFFh
+  0x0002AF32: jz      short loc_2AF40
+  0x0002AF34: mov     al, cs:byte_2B4B5
+  0x0002AF38: mov     ah, 3Dh
+  0x0002AF3A: int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE
+  0x0002AF3C: jnb     short loc_2AF99
+  0x0002AF3E: jmp     short loc_2AF52
+  0x0002AF40: mov     si, dx
+  0x0002AF42: mov     ax, seg seg021
+  0x0002AF45: mov     es, ax
+  0x0002AF47: mov     di, es:word_2B4BC
+  0x0002AF4C: lodsb
+  0x0002AF4D: stosb
+  0x0002AF4E: or      al, al
+  0x0002AF50: jnz     short loc_2AF4C
+  0x0002AF52: mov     ax, seg seg021
+  0x0002AF55: mov     ds, ax
+  0x0002AF57: mov     si, 0A78h
+  0x0002AF5A: mov     es, ax
+  0x0002AF5C: mov     di, word_2B4BC
+  0x0002AF60: mov     bx, 0A92h
+  0x0002AF63: add     bx, 0Fh
+  0x0002AF66: mov     cl, 4
+  0x0002AF68: shr     bx, cl
+  0x0002AF6A: add     ax, bx
+  0x0002AF6C: mov     cx, ax
+  0x0002AF6E: mov     ax, word_2B4B6
+  0x0002AF71: mov     bl, byte_2B4B5
+  0x0002AF75: call    overlay_loader_main
+  0x0002AF7A: jnb     short loc_2AF89
+  0x0002AF7C: mov     ax, 1
+  0x0002AF7F: mov     cx, 1
+  0x0002AF82: mov     bx, word_2AA32
+  0x0002AF86: jmp     loc_2B458
+  0x0002AF89: jz      short loc_2AF95
+  0x0002AF8B: mov     dx, cs:word_2B4BC
+  0x0002AF90: mov     cs:word_2B627, dx
+  0x0002AF95: mov     ds, cx
+  0x0002AF97: xor     dx, dx
+  0x0002AF99: mov     si, dx
+  0x0002AF9B: mov     bx, seg seg021
+  0x0002AF9E: mov     es, bx
+  0x0002AFA0: mov     es:word_2B4BE, ax
+  0x0002AFA4: mov     di, es:word_2B4BC
+  0x0002AFA9: or      byte ptr es:[di-1], 1
+  0x0002AFAE: lodsb
+  0x0002AFAF: stosb
+  0x0002AFB0: or      al, al
+  0x0002AFB2: jnz     short loc_2AFAE
+  0x0002AFB4: pop     es
+  0x0002AFB5: pop     ds
+  0x0002AFB6: pop     si
+  0x0002AFB7: pop     di
+  0x0002AFB8: pop     dx
+  0x0002AFB9: pop     cx
+  0x0002AFBA: pop     bx
+  0x0002AFBB: pop     ax
+  0x0002AFBC: retn
+
+================================================================================
+str_upper_copy_3676 @ 0x0002262F
+================================================================================
+  0x0002262F: push    es
+  0x00022630: push    si
+  0x00022631: push    di
+  0x00022632: push    cx
+  0x00022633: push    ax
+  0x00022634: mov     cx, 7B0Eh
+  0x00022637: mov     es, cx
+  0x00022639: mov     di, 3676h
+  0x0002263C: mov     si, dx
+  0x0002263E: mov     cx, 18h
+  0x00022641: lodsb
+  0x00022642: cmp     al, 61h ; 'a'
+  0x00022644: jb      short loc_2264C
+  0x00022646: cmp     al, 7Ah ; 'z'
+  0x00022648: ja      short loc_2264C
+  0x0002264A: sub     al, 20h ; ' '
+  0x0002264C: stosb
+  0x0002264D: loop    loc_22641
+  0x0002264F: pop     ax
+  0x00022650: pop     cx
+  0x00022651: pop     di
+  0x00022652: pop     si
+  0x00022653: pop     es
+  0x00022654: retn
+
+================================================================================
+mouse_wait_click @ 0x00025102
+================================================================================
+  0x00025102: push    bp
+  0x00025103: push    si
+  0x00025104: push    di
+  0x00025105: jmp     short loc_2510A
+  0x00025107: jmp     short loc_25136
+  0x00025109: align 2
+  0x0002510A: call    mouse_buttons_get
+  0x0002510F: or      al, al
+  0x00025111: jnz     short loc_25107
+  0x00025113: push    es
+  0x00025114: mov     ax, cs
+  0x00025116: mov     es, ax
+  0x00025118: mov     di, 5762h
+  0x0002511B: push    cs
+  0x0002511C: call    near ptr flag_block_merge_zero_5c63
+  0x0002511F: mov     al, 1
+  0x00025121: mov     cx, 0Bh
+  0x00025124: mov     si, 5762h
+  0x00025127: pop     es
+  0x00025128: mov     ah, cs:[si]
+  0x0002512B: or      ah, ah
+  0x0002512D: jnz     short loc_25136
+  0x0002512F: add     al, 8
+  0x00025131: inc     si
+  0x00025132: loop    loc_25128
+  0x00025134: jmp     short loc_2510A
+  0x00025136: pop     di
+  0x00025137: pop     si
+  0x00025138: pop     bp
+  0x00025139: retf
+
+================================================================================
+farobj_flag7_branch @ 0x0002ABE2
+================================================================================
+  0x0002ABE2: test    byte ptr [si+7], 10h
+  0x0002ABE6: jnz     short loc_2AC1B
+  0x0002ABE8: push    ax
+  0x0002ABE9: push    bx
+  0x0002ABEA: push    cx
+  0x0002ABEB: push    dx
+  0x0002ABEC: mov     cx, ax
+  0x0002ABEE: test    byte_2B4B4, 0FFh
+  0x0002ABF3: jz      short loc_2AC09
+  0x0002ABF5: test    byte ptr [si+7], 0Ch
+  0x0002ABF9: jz      short loc_2AC09
+  0x0002ABFB: push    es
+  0x0002ABFC: mov     ax, cx
+  0x0002ABFE: mov     es, word ptr [si]
+  0x0002AC00: mov     cx, [si+8]
+  0x0002AC03: call    stc_retf_const
+  0x0002AC08: pop     es
+  0x0002AC09: and     byte ptr [si+7], 0FDh
+  0x0002AC0D: test    word_2B63D, 100h
+  0x0002AC13: jnz     short loc_2AC1D
+  0x0002AC15: clc
+  0x0002AC16: pop     dx
+  0x0002AC17: pop     cx
+  0x0002AC18: pop     bx
+  0x0002AC19: pop     ax
+  0x0002AC1A: retf
+  0x0002AC1B: stc
+  0x0002AC1C: retf
+  0x0002AC1D: push    di
+  0x0002AC1E: push    es
+  0x0002AC1F: mov     ax, [si]
+  0x0002AC21: mov     cx, [si+8]
+  0x0002AC24: push    ax
+  0x0002AC25: push    cx
+  0x0002AC26: mov     dx, 1000h
+  0x0002AC29: cmp     cx, dx
+  0x0002AC2B: jnb     short loc_2AC2F
+  0x0002AC2D: mov     dx, cx
+  0x0002AC2F: mov     es, ax
+  0x0002AC31: xor     di, di
+  0x0002AC33: mov     ax, 8E8Eh
+  0x0002AC36: mov     cx, dx
+  0x0002AC38: shl     cx, 1
+  0x0002AC3A: shl     cx, 1
+  0x0002AC3C: shl     cx, 1
+  0x0002AC3E: rep stosw
+  0x0002AC40: pop     cx
+  0x0002AC41: pop     ax
+  0x0002AC42: add     ax, dx
+  0x0002AC44: sub     cx, dx
+  0x0002AC46: jnz     short loc_2AC24
+  0x0002AC48: pop     di
+  0x0002AC49: pop     es
+  0x0002AC4A: jmp     short loc_2AC15
+
+================================================================================
+flag_block_merge_zero_5c63 @ 0x00025268
+================================================================================
+  0x00025268: push    ax
+  0x00025269: push    cx
+  0x0002526A: push    si
+  0x0002526B: push    di
+  0x0002526C: push    ds
+  0x0002526D: push    es
+  0x0002526E: mov     cx, cs
+  0x00025270: mov     ds, cx
+  0x00025272: mov     cx, 0Bh
+  0x00025275: mov     si, 5C63h
+  0x00025278: cli
+  0x00025279: lodsb
+  0x0002527A: mov     ah, [si+0Ah]
+  0x0002527D: or      al, ah
+  0x0002527F: stosb
+  0x00025280: loop    loc_25279
+  0x00025282: mov     ax, cs
+  0x00025284: mov     es, ax
+  0x00025286: sub     ax, ax
+  0x00025288: mov     cx, 5
+  0x0002528B: mov     di, 5C63h
+  0x0002528E: rep stosw
+  0x00025290: stosb
+  0x00025291: sti
+  0x00025292: pop     es
+  0x00025293: pop     ds
+  0x00025294: pop     di
+  0x00025295: pop     si
+  0x00025296: pop     cx
+  0x00025297: pop     ax
+  0x00025298: retf
+
+================================================================================
+mouse_record_clip_2590c @ 0x0002590C
+================================================================================
+  0x0002590C: pushf
+  0x0002590D: push    ds
+  0x0002590E: mov     ax, 7B0Eh
+  0x00025911: mov     ds, ax
+  0x00025913: cld
+  0x00025914: call    cs:dword_2219C
+  0x00025919: call    cs:opcode_handler_2
+  0x0002591E: mov     word ptr ds:byte_7F0DA, bx
+  0x00025922: mov     word ptr ds:byte_7F0DA+2, di
+  0x00025926: cmp     cs:byte_2548C, 0
+  0x0002592C: jz      short loc_25940
+  0x0002592E: mov     bx, cs:word_2548D
+  0x00025933: mov     di, cs:word_2548F
+  0x00025938: mov     si, 3FFEh
+  0x0002593B: call    cs:dword_220A0
+  0x00025940: mov     cs:byte_2548C, 0FFh
+  0x00025946: mov     cx, word ptr ds:byte_7F0DA
+  0x0002594A: mov     si, word ptr ds:byte_7F0DA+2
+  0x0002594E: call    mouse_bounds_clamp_25474
+  0x00025951: and     cx, 0FFF8h
+  0x00025954: mov     cs:word_2548D, cx
+  0x00025959: mov     cs:word_2548F, si
+  0x0002595E: mov     di, 4002h
+  0x00025961: mov     bx, 0Fh
+  0x00025964: mov     bp, 18h
+  0x00025967: call    cs:dword_2210C
+  0x0002596C: mov     bx, word ptr ds:byte_7F0DA
+  0x00025970: mov     di, word ptr ds:byte_7F0DA+2
+  0x00025974: add     bx, 4
+  0x00025977: add     di, 7
+  0x0002597A: lds     si, dword ptr ds:byte_7F0DA+170h
+  0x0002597E: push    cs
+  0x0002597F: call    near ptr clip_rect_compute_guard
+  0x00025982: call    cs:dword_221A0
+  0x00025987: pop     ds
+  0x00025988: popf
+  0x00025989: retf
+
+================================================================================
+str_upper_copy_3795 @ 0x00022655
+================================================================================
+  0x00022655: push    es
+  0x00022656: push    si
+  0x00022657: push    di
+  0x00022658: push    cx
+  0x00022659: push    ax
+  0x0002265A: push    ds
+  0x0002265B: mov     cx, 7B0Eh
+  0x0002265E: mov     es, cx
+  0x00022660: mov     di, 3676h
+  0x00022663: mov     ds, cx
+  0x00022665: mov     si, 3795h
+  0x00022668: lodsb
+  0x00022669: cmp     al, 61h ; 'a'
+  0x0002266B: jb      short loc_22673
+  0x0002266D: cmp     al, 7Ah ; 'z'
+  0x0002266F: ja      short loc_22673
+  0x00022671: sub     al, 20h ; ' '
+  0x00022673: stosb
+  0x00022674: or      al, al
+  0x00022676: jnz     short loc_22668
+  0x00022678: dec     di
+  0x00022679: mov     cx, ds
+  0x0002267B: pop     ds
+  0x0002267C: mov     si, dx
+  0x0002267E: lodsb
+  0x0002267F: cmp     al, 61h ; 'a'
+  0x00022681: jb      short loc_22689
+  0x00022683: cmp     al, 7Ah ; 'z'
+  0x00022685: ja      short loc_22689
+  0x00022687: sub     al, 20h ; ' '
+  0x00022689: stosb
+  0x0002268A: or      al, al
+  0x0002268C: jnz     short loc_2267E
+  0x0002268E: mov     ds, cx
+  0x00022690: mov     dx, 3676h
+  0x00022693: pop     ax
+  0x00022694: pop     cx
+  0x00022695: pop     di
+  0x00022696: pop     si
+  0x00022697: pop     es
+  0x00022698: retn
+
+================================================================================
+mem_block_move_ax @ 0x0002B050
+================================================================================
+  0x0002B050: cmp     ax, dx
+  0x0002B052: jz      short locret_2B087
+  0x0002B054: push    ax
+  0x0002B055: push    cx
+  0x0002B056: push    dx
+  0x0002B057: push    di
+  0x0002B058: push    es
+  0x0002B059: sub     dx, ax
+  0x0002B05B: mov     cx, dx
+  0x0002B05D: mov     es, ax
+  0x0002B05F: push    cx
+  0x0002B060: mov     dx, 1000h
+  0x0002B063: cmp     cx, dx
+  0x0002B065: jnb     short loc_2B069
+  0x0002B067: mov     dx, cx
+  0x0002B069: mov     cx, dx
+  0x0002B06B: shl     cx, 1
+  0x0002B06D: shl     cx, 1
+  0x0002B06F: shl     cx, 1
+  0x0002B071: xor     ax, ax
+  0x0002B073: mov     di, ax
+  0x0002B075: rep stosw
+  0x0002B077: mov     ax, es
+  0x0002B079: add     ax, dx
+  0x0002B07B: mov     es, ax
+  0x0002B07D: pop     cx
+  0x0002B07E: sub     cx, dx
+  0x0002B080: jnz     short loc_2B05F
+  0x0002B082: pop     es
+  0x0002B083: pop     di
+  0x0002B084: pop     dx
+  0x0002B085: pop     cx
+  0x0002B086: pop     ax
+  0x0002B087: retn
+
+================================================================================
+flag_block_zero_5762_5c63 @ 0x00025247
+================================================================================
+  0x00025247: push    ax
+  0x00025248: push    cx
+  0x00025249: push    di
+  0x0002524A: push    es
+  0x0002524B: mov     ax, cs
+  0x0002524D: mov     es, ax
+  0x0002524F: sub     ax, ax
+  0x00025251: mov     di, 5762h
+  0x00025254: mov     cx, 0Bh
+  0x00025257: rep stosb
+  0x00025259: mov     di, 5C63h
+  0x0002525C: cli
+  0x0002525D: mov     cx, 0Bh
+  0x00025260: rep stosw
+  0x00025262: sti
+  0x00025263: pop     es
+  0x00025264: pop     di
+  0x00025265: pop     cx
+  0x00025266: pop     ax
+  0x00025267: retf
+
+================================================================================
+sub_88384 @ 0x00088384
+================================================================================
+  0x00088384: push    ax
+  0x00088385: push    bx
+  0x00088386: push    ds
+  0x00088387: push    bp
+  0x00088388: mov     bp, sp
+  0x0008838A: mov     ds, [bp+arg_2]
+  0x0008838D: mov     bx, [bp+arg_0]
+  0x00088390: mov     ax, [bp+8]
+  0x00088393: mov     [bx-4], ax
+  0x00088396: mov     word ptr [bx-2], cs
+  0x00088399: mov     byte ptr [bx-5], 9Ah
+  0x0008839D: pop     bp
+  0x0008839E: pop     ds
+  0x0008839F: pop     bx
+  0x000883A0: pop     ax
+  0x000883A1: retn
+
+================================================================================
+kbd_scancode_xlat_shift @ 0x000253FC
+================================================================================
+  0x000253FC: xor     al, al
+  0x000253FE: cmp     ah, 3Ah ; ':'
+  0x00025401: ja      short locret_2544E
+  0x00025403: push    bx
+  0x00025404: push    ds
+  0x00025405: push    es
+  0x00025406: xor     bx, bx
+  0x00025408: mov     es, bx
+  0x0002540A: mov     bx, 7B0Eh
+  0x0002540D: mov     ds, bx
+  0x0002540F: mov     bx, 39E2h
+  0x00025412: test    byte ptr es:417h, 3
+  0x00025418: jnz     short loc_25448
+  0x0002541A: test    byte ptr es:417h, 40h
+  0x00025420: jnz     short loc_25427
+  0x00025422: mov     bx, 3A1Dh
+  0x00025425: jmp     short loc_25448
+  0x00025427: cmp     ah, 10h
+  0x0002542A: jl      short loc_25445
+  0x0002542C: cmp     ah, 32h ; '2'
+  0x0002542F: jg      short loc_25445
+  0x00025431: cmp     ah, 2Ch ; ','
+  0x00025434: jge     short loc_25448
+  0x00025436: cmp     ah, 19h
+  0x00025439: jle     short loc_25448
+  0x0002543B: cmp     ah, 1Eh
+  0x0002543E: jl      short loc_25445
+  0x00025440: cmp     ah, 26h ; '&'
+  0x00025443: jle     short loc_25448
+  0x00025445: mov     bx, 3A1Dh
+  0x00025448: mov     al, ah
+  0x0002544A: xlat
+  0x0002544B: pop     es
+  0x0002544C: pop     ds
+  0x0002544D: pop     bx
+  0x0002544E: retn
+
+================================================================================
+cb_args_invoke @ 0x00011A5E
+================================================================================
+  0x00011A5E: mov     al, cs:byte_11875
+  0x00011A62: mov     cs:byte_11870, al
+  0x00011A66: mov     al, cs:byte_11876
+  0x00011A6A: mov     cs:byte_11871, al
+  0x00011A6E: mov     al, cs:byte_11877
+  0x00011A72: mov     cs:byte_11872, al
+  0x00011A76: mov     ax, cs:word_11873
+  0x00011A7A: jmp     short loc_11A8F
+  0x00011A7C: db 90h
+
+================================================================================
+program_terminate @ 0x0002224C
+================================================================================
+  0x0002224C: call    mouse_reset_if_10000
+  0x00022251: call    ems_gate_10218_run2
+  0x00022256: call    ems_seg_free_21_49
+  0x0002225B: call    op_26400_release
+  0x00022260: push    cs
+  0x00022261: call    near ptr vector_shutdown_chain
+  0x00022264: nop
+  0x00022265: mov     ah, 4Ch
+  0x00022267: int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)
+
+================================================================================
+patch_scan_e8_58d @ 0x0002B105
+================================================================================
+  0x0002B105: push    ax
+  0x0002B106: push    si
+  0x0002B107: lodsb
+  0x0002B108: cmp     al, 0E8h
+  0x0002B10A: jnz     short loc_2B129
+  0x0002B10C: lodsw
+  0x0002B10D: add     ax, si
+  0x0002B10F: cmp     ax, 58Dh
+  0x0002B112: jnz     short loc_2B129
+  0x0002B114: lodsb
+  0x0002B115: cmp     al, 0EAh
+  0x0002B117: jnz     short loc_2B129
+  0x0002B119: add     si, 4
+  0x0002B11C: lodsw
+  0x0002B11D: cmp     ax, word_2B649
+  0x0002B121: jnb     short loc_2B129
+  0x0002B123: add     sp, 2
+  0x0002B126: pop     ax
+  0x0002B127: clc
+  0x0002B128: retn
+  0x0002B129: pop     si
+  0x0002B12A: pop     ax
+  0x0002B12B: stc
+  0x0002B12C: retn
+
+================================================================================
+bcd_hex_ch_store @ 0x0002C975
+================================================================================
+  0x0002C975: push    ax
+  0x0002C976: push    di
+  0x0002C977: push    es
+  0x0002C978: mov     ax, ds
+  0x0002C97A: mov     es, ax
+  0x0002C97C: mov     ax, cx
+  0x0002C97E: mov     di, dx
+  0x0002C980: call    bcd_hex_byte_ah
+  0x0002C983: pop     es
+  0x0002C984: pop     di
+  0x0002C985: pop     ax
+  0x0002C986: retf
+
+================================================================================
+arena_off_ax18 @ 0x0002B040
+================================================================================
+  0x0002B040: push    ax
+  0x0002B041: push    dx
+  0x0002B042: mov     bx, 12h
+  0x0002B045: mul     bx
+  0x0002B047: mov     bx, ax
+  0x0002B049: add     bx, 0C1Fh
+  0x0002B04D: pop     dx
+  0x0002B04E: pop     ax
+  0x0002B04F: retn
+
+================================================================================
+stc_retf_const @ 0x0002C973
+================================================================================
+  0x0002C973: stc
+  0x0002C974: retf
+
+================================================================================
+nop_retf @ 0x0002ABE0
+================================================================================
+  0x0002ABE0: nop
+  0x0002ABE1: retf
+
+================================================================================
+state_byte_25488_to_89_near @ 0x0002574A
+================================================================================
+  0x0002574A: mov     al, cs:byte_25488
+  0x0002574E: mov     cs:byte_25489, al
+  0x00025752: retn
+
+================================================================================
+vgraph_slot_37 @ 0x00087207
+================================================================================
+  0x00087207: call    sub_88384; traced calls: 1
+  0x0008720A: mov     dx, 3CEh
+  0x0008720D: mov     al, 5
+  0x0008720F: out     dx, al; EGA: graph 1 and 2 addr reg:
+  0x00087210: inc     dx
+  0x00087211: in      al, dx; EGA port: graphics controller data register
+  0x00087212: mov     cs:byte_862E6, al
+  0x00087216: mov     dx, 3CEh
+  0x00087219: mov     ax, 4005h
+  0x0008721C: out     dx, ax; EGA: graph 1 and 2 addr reg:
+  0x0008721D: mov     dx, 3CEh
+  0x00087220: mov     al, 4
+  0x00087222: out     dx, al; EGA: graph 1 and 2 addr reg:
+  0x00087223: inc     dx
+  0x00087224: in      al, dx; EGA port: graphics controller data register
+  0x00087225: mov     cs:byte_862E7, al
+  0x00087229: mov     dx, 3C4h
+  0x0008722C: mov     al, 2
+  0x0008722E: out     dx, al; EGA: sequencer address reg
+  0x0008722F: inc     dx
+  0x00087230: in      al, dx; EGA port: sequencer data register
+  0x00087231: mov     cs:byte_862E8, al
+  0x00087235: retf
+
+================================================================================
+clip_bounds_save_2546c @ 0x0002584D
+================================================================================
+  0x0002584D: mov     ax, cs:word_25450
+  0x00025851: mov     cs:word_2546C, ax
+  0x00025855: mov     ax, cs:word_25454
+  0x00025859: mov     cs:word_25470, ax
+  0x0002585D: mov     ax, cs:word_25452
+  0x00025861: mov     cs:word_2546E, ax
+  0x00025865: mov     ax, cs:word_25456
+  0x00025869: mov     cs:word_25472, ax
+  0x0002586D: retn
+
+================================================================================
+clip_bounds_restore_25450 @ 0x00025872
+================================================================================
+  0x00025872: mov     ax, cs:word_2546C
+  0x00025876: mov     cs:word_25450, ax
+  0x0002587A: mov     ax, cs:word_25470
+  0x0002587E: mov     cs:word_25454, ax
+  0x00025882: mov     ax, cs:word_2546E
+  0x00025886: mov     cs:word_25452, ax
+  0x0002588A: mov     ax, cs:word_25472
+  0x0002588E: mov     cs:word_25456, ax
+  0x00025892: retn
+
+================================================================================
+state_byte_25489_to_88_near @ 0x0002575C
+================================================================================
+  0x0002575C: mov     al, cs:byte_25489
+  0x00025760: mov     cs:byte_25488, al
+  0x00025764: retn
