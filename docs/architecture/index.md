@@ -1,13 +1,13 @@
 # Falcon 3.0 — Architecture Specification
 
-*Last updated 2026-11-11. Findings 1–179 + S4 bottom-up analysis (Levels 0–18+) + **Top 100 Analysis COMPLETE (100%)**.*
+*Last updated 2026-11-11. Findings 1–179 + S4 bottom-up analysis (Levels 0–18+) + **Top 200 Analysis COMPLETE (100%)**.*
 *Certainty: **PROVEN** (byte-level) · **STRONG** (multi-signal) · **HYPOTHESIS** (single-signal) · **UNKNOWN***
 
 This directory replaces `docs/architecture.md` with focused sub-documents.
 See `docs/structures.md` for binary file format structs, `registry/functions.yaml` for
 function signatures, `registry/structs.yaml` for data structure definitions.
 
-**NEW**: Top 100 most-called functions systematically analyzed. See `analysis/TOP_100_COMPLETE.md` for full report.
+**NEW**: Top 200 most-called functions completely analyzed! All 200 functions renamed, documented, and categorized. See `analysis/TOP_200_COMPLETE.md` for comprehensive report.
 
 ---
 
