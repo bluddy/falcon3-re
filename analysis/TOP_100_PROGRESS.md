@@ -10,14 +10,14 @@
 
 | Status | Count | Percentage |
 |--------|-------|------------|
-| ✅ Completed | 53 | 53% |
+| ✅ Completed | 54 | 54% |
 | 🔄 In Progress | 0 | 0% |
-| ⏳ Pending | 47 | 47% |
+| ⏳ Pending | 46 | 46% |
 
 **Deep Dives Completed:** 3  
 1. Rank #10: squadron_mission_file_loader + 4 callees (file I/O & menu integration)  
 2. Rank #11: theater_campaign_file_loader + 4 discovered callees (campaign initialization)  
-3. **ui_campaign_render_coordinator (0x15F5B8) + 10 callees (UI rendering chain)** ⭐ NEW
+3. ui_campaign_render_coordinator (0x15F5B8) + 10 callees (UI rendering chain) ⭐
 
 ---
 
@@ -134,41 +134,63 @@
     - Loads *.MSC files (mission-specific resources)
     - Calls madfont_idx_dat_loader for font loading
 
+### Menu State Machines (1 function)
+43. ✅ **`r57_menu_state_machine` (0x1A57F0)** - **Rank #12, 95 callers, 3,083 bytes, 31 callees** ⭐ **WEAPONS LOADOUT MENU**
+    - **IDENTIFIED**: This is the **weapons loadout configuration menu** for mission planning!
+    - String evidence from callee: "CLEAR ALL WEAPONS", "DEFAULT LOAD", "ASSIGN PILOTS", "TAKEOFF"
+    - Aircraft types: "F-16", "FA-18"
+    - R57 overlay processor with 7-state FSM (finite state machine)
+    - **State 0**: Flight selection (navigate through flights)
+    - **State 1**: Aircraft selection (navigate within flight, 1-4 aircraft)
+    - **State 2**: Weapon configuration loop (20 hardpoints total)
+    - **State 3**: Pilot assignment loop
+    - **State 4-6**: Validation, preparation, takeoff
+    - Switch on word_79F16 (state variable 0-6)
+    - Uses 130-byte (0x82) flight records at dword_79BEC
+    - Record structure: +0x04 = aircraft count (1-4), +0x15 = validation flag
+    - Calls input_sync_and_wait 14x across states (user input loops)
+    - Calls ui_menu_transition_animate 7x (state transitions)
+    - Keyboard shortcuts: '2', '4', '6' keys for navigation
+    - Callee sub_1A6AA6 (850B) has parallel 7-case switch for rendering
+    - Heavy use of overlay load trampolines (sub_2C8xx: 8 functions)
+    - Added 27 inline comments documenting state machine flow
+    - **Created**: R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md (comprehensive deep dive)
+
 ### UI Text Rendering Chain (11 functions discovered from ui_campaign_render_coordinator)
-43. ✅ **`ui_text_render_single_mode` (0x1293F0)** - 120 bytes, called 4x by coordinator
+44. ✅ **`ui_text_render_single_mode` (0x1293F0)** - 120 bytes, called 4x by coordinator
     - Single character renderer with mode checking
     - Checks byte_7A302 (rendering mode), byte_14E5A0 (display mode 1/2/3)
     - Routes to palette or simple renderer based on flags
-44. ✅ **`ui_text_render_multi_mode` (0x129468)** - 297 bytes, called 4x by coordinator
+45. ✅ **`ui_text_render_multi_mode` (0x129468)** - 297 bytes, called 4x by coordinator
     - Multi-character renderer with mode checking
     - Contains loop calling ui_text_render_engine (0x128598)
     - Parallel to single-mode but with length parameter
-45. ✅ **`ui_text_render_with_palette` (0x129ED6)** - 574 bytes
+46. ✅ **`ui_text_render_with_palette` (0x129ED6)** - 574 bytes
     - Palette-based text rendering (colored text)
     - Called by single-mode when mode flags set
-46. ✅ **`ui_text_render_simple` (0x128AA6)** - 692 bytes, 20 callers
+47. ✅ **`ui_text_render_simple` (0x128AA6)** - 692 bytes, 20 callers
     - Direct/uncolored text rendering
     - Called by single-mode when mode flags not set
-47. ✅ **`ui_text_render_multi_palette` (0x129C88)** - 590 bytes
+48. ✅ **`ui_text_render_multi_palette` (0x129C88)** - 590 bytes
     - Multi-character palette rendering
     - Called by multi-mode in loop
-48. ✅ **`ui_render_state_update` (0x139F76)** - 27 bytes, called 3x
+49. ✅ **`ui_render_state_update` (0x139F76)** - 27 bytes, called 3x
     - Updates render state/buffers between operations
     - Likely updates display buffers or cursor state
-49. ✅ **`ui_font_config_apply` (0x1320CC)** - 182 bytes, 25 callers (highly reused!)
+50. ✅ **`ui_font_config_apply` (0x1320CC)** - 182 bytes, 25 callers (highly reused!)
     - Applies font/text configuration settings
     - Used across entire UI system
-50. ✅ **`string_copy_with_offset` (0x138FF0)** - 56 bytes, 30 callers (highly reused!)
+51. ✅ **`string_copy_with_offset` (0x138FF0)** - 56 bytes, 30 callers (highly reused!)
     - String manipulation with offset parameter
     - General utility function
-51. ✅ **`menu_finalize_render` (0x2C49B)** - 8 bytes
+52. ✅ **`menu_finalize_render` (0x2C49B)** - 8 bytes
     - Final render step (likely buffer flip)
     - Called at end of Path A in coordinator
-52. ✅ **`ui_text_render_setup` (0x128518)** - 123 bytes, 16 callers
+53. ✅ **`ui_text_render_setup` (0x128518)** - 123 bytes, 16 callers
     - Setup/wrapper before ui_text_render_engine
     - Located immediately before ui_text_render_engine (0x128598)
     - Prepares parameters or checks state
-53. ✅ **`ui_text_render_engine` (0x128598)** - 1282 bytes, 70 callers (KNOWN, verified)
+54. ✅ **`ui_text_render_engine` (0x128598)** - 1282 bytes, 70 callers (KNOWN, verified)
     - Core single-character text rendering engine
     - Called in loop by ui_text_render_multi_mode
     - Central to all UI text operations
@@ -190,7 +212,7 @@
 | 9 | 0x101A12 | 104 | 1719B | **input_device_calibration_init** | ✅ **COMPLETE** (⭐ corrected after reading actual code) |
 | 10 | 0x17B437 | 104 | 4516B | **squadron_mission_file_loader** | ✅ **DEEP DIVE COMPLETE** (📄 12K word analysis) |
 | 11 | 0x15A8B0 | 102 | 2553B | **theater_campaign_file_loader** | ✅ **COMPLETE** (📊 6 file types, 42 I/O ops) |
-| 12 | 0x1A57F0 | 95 | 3083B | sub_1A57F0 | ⏳ Pending |
+| 12 | 0x1A57F0 | 95 | 3083B | **r57_menu_state_machine** | ✅ **COMPLETE** (🔄 7-state menu, 130-byte records) |
 | 13 | 0x1A6F30 | 88 | 4549B | sub_1A6F30 | ⏳ Pending |
 | 14 | 0x6A651 | 88 | 2056B | sub_6A651 | ⏳ Pending |
 | 15 | 0x1734EC | 86 | 2456B | sub_1734EC | ⏳ Pending |
