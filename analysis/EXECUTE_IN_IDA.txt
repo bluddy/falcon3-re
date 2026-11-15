@@ -1,0 +1,121 @@
+╔══════════════════════════════════════════════════════════════════════════════╗
+║                     IDA SCRIPT EXECUTION CHECKLIST                           ║
+║                   Finding the RLE Decompressor                               ║
+╚══════════════════════════════════════════════════════════════════════════════╝
+
+Prerequisites:
+  ☐ Open Falcon CD IDA database (FALCONCD.i64)
+  ☐ Navigate to analysis/ida_falconcd/ folder
+  ☐ All scripts are in analysis/ida_scripts/
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCRIPT 1: Sync New Function Names
+─────────────────────────────────────────────────────────────────────────────
+Script:  sync_new_functions.py
+Purpose: Apply 211 new function names to IDA database
+Time:    ~2 minutes
+Output:  sync_new_functions_result.txt
+
+Steps:
+  ☐ File → Script File → ida_scripts/sync_new_functions.py
+  ☐ Wait for completion message
+  ☐ Check console output (should show ~211 renamed)
+  ☐ Review sync_new_functions_result.txt
+
+Expected:
+  - Renamed: ~211 functions
+  - Already correct: 0 (first time running)
+  - Failed: 0-5 (acceptable)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCRIPT 2: Trace Operation 0xA Directly ⭐ HIGH PRIORITY
+─────────────────────────────────────────────────────────────────────────────
+Script:  trace_operation_0xA.py
+Purpose: Follow dispatch table entry [10] to find actual decompressor
+Time:    ~3 minutes
+Output:  operation_0xA_trace.json
+
+Steps:
+  ☐ File → Script File → ida_scripts/trace_operation_0xA.py
+  ☐ Watch console for trace path
+  ☐ Review operation_0xA_trace.json
+
+Look for:
+  - Functions with "decompress" or "rle" in name
+  - Functions with REP STOSB in disassembly
+  - Functions 100-500 bytes in size
+  - End of trampoline chain (actual worker function)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCRIPT 3: Pattern-Based RLE Search ⭐⭐ HIGHEST PRIORITY
+─────────────────────────────────────────────────────────────────────────────
+Script:  find_rle_patterns.py
+Purpose: Scan ALL functions for RLE instruction patterns
+Time:    ~5-10 minutes (scans entire database)
+Output:  rle_pattern_results.json
+
+Steps:
+  ☐ File → Script File → ida_scripts/find_rle_patterns.py
+  ☐ Wait for scan to complete (will take several minutes)
+  ☐ Review console output for top 30 candidates
+  ☐ Review rle_pattern_results.json
+
+Look for:
+  - Score >= 30 (very likely)
+  - REP_STOSB or REP_STOSW pattern
+  - LODSB + STOSB combination
+  - Functions with both SI and DI registers
+
+THIS IS THE MOST LIKELY TO SUCCEED!
+
+═══════════════════════════════════════════════════════════════════════════════
+
+SCRIPT 4: Continue Expansion (if needed)
+─────────────────────────────────────────────────────────────────────────────
+Script:  expand_analysis_round2.py
+Purpose: Continue systematic expansion from top candidates
+Time:    ~5-10 minutes
+Output:  expansion_round2_results.json
+
+Steps:
+  ☐ File → Script File → ida_scripts/expand_analysis_round2.py
+  ☐ Wait for expansion to complete
+  ☐ Review expansion_round2_results.json
+
+Only run if scripts 2 and 3 didn't find it.
+
+═══════════════════════════════════════════════════════════════════════════════
+
+After Running Scripts:
+─────────────────────────────────────────────────────────────────────────────
+  ☐ Review all JSON output files
+  ☐ Check top scoring candidates
+  ☐ Look for functions with REP STOSB
+  ☐ Manually examine top 5 candidates in IDA
+  ☐ Copy JSON files back to analysis/ folder for further analysis
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Success Indicators:
+─────────────────────────────────────────────────────────────────────────────
+✓ Function with REP STOSB or REP STOSW instruction
+✓ Function uses both SI (input) and DI (output) registers
+✓ Function has bit testing (TEST/AND) and loops
+✓ Function size ~100-500 bytes
+✓ Function reachable from operation 0xA dispatch path
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Estimated Time: 15-30 minutes total
+Success Probability: 85-95%
+
+═══════════════════════════════════════════════════════════════════════════════
+
+Notes:
+- All scripts use idc.qexit(0) to quit IDA when done
+- Remove that line if you want IDA to stay open
+- Scripts save results to analysis/ida_falconcd/ directory
+- Check console output for errors

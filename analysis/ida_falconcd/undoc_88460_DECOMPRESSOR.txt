@@ -1,0 +1,72 @@
+================================================================================
+; undoc_88460 - LIKELY RLE DECOMPRESSOR
+; Address: 0x088460 - 0x0884D2
+; Size: 114 bytes
+; Segment: VGRAPH
+; Found via bytecode search: REP STOSB + REP STOSW
+================================================================================
+
+00088460  push    es
+00088461  mov     es, cs:word_85C7E
+00088466  shl     di, 1
+00088468  mov     di, cs:[di+1B0h]
+0008846D  shr     bx, 1
+0008846F  shr     bx, 1
+00088471  add     di, bx
+00088473  lodsw
+00088474  mov     bx, ax
+00088476  lodsw
+00088477  mov     bp, ax
+00088479  sub     cx, cx
+0008847B  mov     dx, 3C4h
+0008847E  mov     al, 2
+00088480  out     dx, al; EGA: sequencer address reg
+00088481  inc     dx
+00088482  mov     al, 1
+00088484  shr     bx, 1
+00088486  shr     bx, 1
+00088488  push    ax
+00088489  push    di
+0008848A  push    bp
+0008848B  out     dx, al; EGA port: sequencer data register
+0008848C  push    bp
+0008848D  push    di
+0008848E  mov     bp, bx
+00088490  mov     ah, 1
+00088492  lodsb
+00088493  test    al, 80h
+00088495  jz      short loc_884AA
+00088497  and     al, 7Fh
+00088499  mov     cl, al
+0008849B  sub     bp, cx
+0008849D  lodsb
+0008849E  mov     ah, al
+000884A0  shr     cx, 1
+000884A2  rep stosw
+000884A4  adc     cx, cx
+000884A6  rep stosb
+000884A8  jmp     short loc_884B6
+000884AA  mov     cl, al
+000884AC  sub     bp, cx
+000884AE  shr     cx, 1
+000884B0  rep movsw
+000884B2  adc     cx, cx
+000884B4  rep movsb
+000884B6  or      bp, bp
+000884B8  jg      short loc_88492
+000884BA  pop     di
+000884BB  pop     bp
+000884BC  add     di, 50h ; 'P'
+000884BF  dec     bp
+000884C0  jg      short loc_8848C
+000884C2  pop     bp
+000884C3  pop     di
+000884C4  pop     ax
+000884C5  shl     al, 1
+000884C7  cmp     al, 10h
+000884C9  jz      short loc_884CD
+000884CB  jmp     short loc_88488
+000884CD  mov     al, 0Fh
+000884CF  out     dx, al; EGA port: sequencer data register
+000884D0  pop     es
+000884D1  retf
