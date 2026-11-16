@@ -18275,3 +18275,173 @@ functions:
     calls: 1
     description: Conditionally processes keyboard event 0x0C if gate flag (byte_2F6B6) is enabled
     source: 'top_400_analysis rank 399'
+  # TOP 500 BATCH 1 - RANKS 403-428 (20 functions)
+  # UI (8), Hardware I/O (5), Overlay/State (2), Graphics (1), Input (1), Data (2), Campaign (1)
+  
+  # INPUT SYSTEM
+  - address: 0x03DE6F
+    name: input_state_switch_with_key_process
+    system: input
+    size: 106
+    calls: 2
+    description: Switches input state context, preserves previous state, and processes key events through gate
+    source: 'top_500_analysis rank 403'
+
+  # 3D GRAPHICS MATH
+  - address: 0x04FECC
+    name: math_3d_rotate_and_project_xy
+    system: graphics
+    size: 112
+    calls: 0
+    description: Applies 2x2 rotation matrix to XY coordinates with fixed-point scaling; includes visibility array search
+    source: 'top_500_analysis rank 408'
+
+  # DATA COMPRESSION
+  - address: 0x100ACC
+    name: data_bitstream_writer_recursive
+    system: compression
+    size: 118
+    calls: 2
+    description: Writes variable-width bit fields to packed buffer; flushes at 2KB boundary; recursive for multi-byte values
+    source: 'top_500_analysis rank 410'
+
+  # OVERLAY MANAGEMENT
+  - address: 0x102932
+    name: overlay_state_coordinator_with_dispatch
+    system: overlay
+    size: 326
+    calls: 4
+    description: Coordinates overlay state by checking masks, calculating positions, and dispatching to multiple handlers
+    source: 'top_500_analysis rank 411'
+
+  - address: 0x1086C1
+    name: dispatch_table_loop_executor
+    system: dispatch
+    size: 43
+    calls: 1
+    description: Executes sequence of calls from CS table; each entry contains address and parameter byte (3-byte entries)
+    source: 'top_500_analysis rank 412'
+
+  # UI RENDERING
+  - address: 0x11CB23
+    name: ui_element_render_paired_centered
+    system: ui
+    size: 133
+    calls: 4
+    description: Renders paired UI elements (top/bottom or left/right) with centered positioning calculation
+    source: 'top_500_analysis rank 413'
+
+  - address: 0x11CEAB
+    name: ui_element_render_single
+    system: ui
+    size: 48
+    calls: 1
+    description: Renders single UI element with 16-byte descriptor format
+    source: 'top_500_analysis rank 414'
+
+  - address: 0x123FDD
+    name: ui_element_render_with_clipping
+    system: ui
+    size: 152
+    calls: 2
+    description: Renders UI element with screen clipping validation (3-pixel borders, 199x179 visible area)
+    source: 'top_500_analysis rank 415'
+
+  - address: 0x12A114
+    name: ui_text_render_state_machine
+    system: ui
+    size: 550
+    calls: 8
+    description: Complex 3-pass text rendering state machine with control code processing and line wrapping
+    source: 'top_500_analysis rank 416'
+
+  - address: 0x12A908
+    name: font_glyph_load_and_validate
+    system: ui
+    size: 121
+    calls: 0
+    description: Loads font glyph from HUD font array, validates bitmap pointer, returns glyph data address
+    source: 'top_500_analysis rank 417'
+
+  - address: 0x163CCD
+    name: ui_loadout_state_update_weapon
+    system: ui
+    size: 102
+    calls: 1
+    description: Updates weapon loadout state from UI selection, handles validation and state transitions
+    source: 'top_500_analysis rank 426'
+
+  - address: 0x1852E5
+    name: ui_debriefing_screen_setup
+    system: ui
+    size: 153
+    calls: 8
+    description: Sets up mission debriefing screen with different rendering based on success/failure mode
+    source: 'top_500_analysis rank 428'
+
+  # HARDWARE I/O
+  - address: 0x12BC4F
+    name: serial_uart_transmit_polled
+    system: hardware
+    size: 21
+    calls: 0
+    description: Polled UART serial transmission, waits for LSR bit 5 (THR empty) before writing byte
+    source: 'top_500_analysis rank 418'
+
+  - address: 0x12BC64
+    name: bios_timer_delay_ticks
+    system: hardware
+    size: 31
+    calls: 0
+    description: Delays execution by polling BIOS timer tick counter at 0:046Ch until target reached
+    source: 'top_500_analysis rank 419'
+
+  - address: 0x12BC83
+    name: bios_timer_delay_ticks_far
+    system: hardware
+    size: 4
+    calls: 1
+    description: Far wrapper for BIOS timer delay function
+    source: 'top_500_analysis rank 420'
+
+  - address: 0x12D4F6
+    name: int7a_call_function_01
+    system: hardware
+    size: 12
+    calls: 0
+    description: Calls INT 7Ah with function code 01 (custom interrupt handler, possibly NetWare or sound driver)
+    source: 'top_500_analysis rank 421'
+
+  - address: 0x12D525
+    name: int7a_call_function_04
+    system: hardware
+    size: 22
+    calls: 0
+    description: Calls INT 7Ah with function code 04, passes buffer pointer
+    source: 'top_500_analysis rank 422'
+
+  # RESOURCE MANAGEMENT
+  - address: 0x139169
+    name: resource_string_load_indexed
+    system: resource
+    size: 187
+    calls: 6
+    description: Loads indexed string resource from file, handles caching and pointer fixups
+    source: 'top_500_analysis rank 423'
+
+  # CAMPAIGN SYSTEM
+  - address: 0x13D744
+    name: campaign_mission_display_enabled
+    system: campaign
+    size: 56
+    calls: 0
+    description: Checks if campaign mission should be displayed based on multiple state flags and conditions
+    source: 'top_500_analysis rank 425'
+
+  - address: 0x17DF4D
+    name: campaign_score_total_get
+    system: campaign
+    size: 49
+    calls: 0
+    description: Sums byte values at offset +4 across 4 campaign entries (130-byte structures)
+    source: 'top_500_analysis rank 427'
