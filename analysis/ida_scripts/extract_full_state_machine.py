@@ -1,12 +1,15 @@
 """
 Extract complete disassembly of r57_menu_state_machine function.
-Run this in IDA Pro with FALCONCD.EXE loaded.
+
+Run with:
+"C:\Program Files\IDA Professional 9.1\idat.exe" -A -S"analysis\ida_scripts\extract_full_state_machine.py" "analysis\ida_falconcd\FALCONCD.EXE.i64"
 """
 
 import idaapi
 import idc
 import idautils
 import json
+from pathlib import Path
 
 def get_function_disassembly_full(ea):
     """Get complete disassembly of a function with all instructions."""
@@ -20,8 +23,8 @@ def get_function_disassembly_full(ea):
     # Iterate through all addresses in the function
     addr = func.start_ea
     while addr < func.end_ea:
-        # Get disassembly line
-        disasm = idc.GetDisasm(addr)
+        # Get disassembly line using IDA API
+        disasm = idc.generate_disasm_line(addr, 0)
         addr_hex = "%08X" % addr
         line = f"{addr_hex}  {disasm}"
         disasm_lines.append(line)
@@ -44,6 +47,14 @@ def get_function_disassembly_full(ea):
 
 def find_function_by_name(name):
     """Find function address by name."""
+    # Try direct lookup first
+    ea = idc.get_name_ea_simple(name)
+    if ea != idc.BADADDR:
+        func = idaapi.get_func(ea)
+        if func:
+            return ea
+    
+    # Fallback: search all functions
     for func_ea in idautils.Functions():
         func_name = idc.get_func_name(func_ea)
         if func_name == name:
@@ -51,6 +62,11 @@ def find_function_by_name(name):
     return None
 
 def main():
+    # Wait for auto-analysis to complete
+    print("Waiting for auto-analysis...")
+    idaapi.auto_wait()
+    print("Auto-analysis complete")
+    
     print("="*80)
     print("EXTRACTING COMPLETE r57_menu_state_machine DISASSEMBLY")
     print("="*80)
@@ -61,6 +77,7 @@ def main():
     
     if not func_ea:
         print(f"ERROR: Could not find function '{func_name}'")
+        idc.qexit(1)
         return
     
     print(f"\nFound {func_name} at 0x{func_ea:08X}")
@@ -70,6 +87,7 @@ def main():
     
     if not result:
         print("ERROR: Could not get function bounds")
+        idc.qexit(1)
         return
     
     print(f"Function size: {result['size']} bytes")
@@ -77,8 +95,9 @@ def main():
     print(f"Total instructions: {result['instruction_count']}")
     print(f"Disassembly lines: {len(result['lines'])}")
     
-    # Save to file
-    output_file = "r57_state_machine_full_disasm.txt"
+    # Use Path for cross-platform compatibility
+    output_dir = Path(__file__).parent.parent
+    output_file = output_dir / "r57_state_machine_full_disasm.txt"
     with open(output_file, 'w') as f:
         f.write("="*80 + "\n")
         f.write(f"Function: {func_name}\n")
@@ -93,7 +112,7 @@ def main():
     print(f"\nSaved complete disassembly to: {output_file}")
     
     # Also save as JSON
-    json_file = "r57_state_machine_full_disasm.json"
+    json_file = output_dir / "r57_state_machine_full_disasm.json"
     json_data = {
         'function': func_name,
         'address': hex(func_ea),
@@ -126,6 +145,9 @@ def main():
     print("\n" + "="*80)
     print("EXTRACTION COMPLETE")
     print("="*80)
+    
+    # CRITICAL: Exit cleanly
+    idc.qexit(0)
 
 if __name__ == "__main__":
     main()

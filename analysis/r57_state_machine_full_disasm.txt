@@ -1,0 +1,959 @@
+================================================================================
+Function: r57_menu_state_machine
+Address: 0x001A57F0
+Size: 3083 bytes
+Instructions: 952
+================================================================================
+
+   0: 001A57F0  enter   0Ch, 0
+   1: 001A57F4  push    si
+   2: 001A57F5  push    di
+   3: 001A57F6  mov     ax, 4FC2h
+   4: 001A57F9  mov     es, ax
+   5: 001A57FB  push    es:word_13E030
+   6: 001A5800  call    state_byte_25488_set_arg
+   7: 001A5805  pop     cx
+   8: 001A5806  mov     ax, 7894h; Initialize word_79B60 = 0
+   9: 001A5809  mov     es, ax
+  10: 001A580B  mov     es:word_79B60, 0
+  11: 001A5812  mov     ax, 7894h; Initialize word_79E86 = 0
+  12: 001A5815  mov     es, ax
+  13: 001A5817  mov     es:word_79E86, 0
+  14: 001A581E  call    sub_2C8F1
+  15: 001A5823  mov     ax, 7894h
+  16: 001A5826  mov     es, ax
+  17: 001A5828  mov     es:word_79E88, 0
+  18: 001A582F  mov     es, ax
+  19: 001A5831  mov     ax, es:word_79E88
+  20: 001A5835  mov     dx, 7894h
+  21: 001A5838  mov     es, dx
+  22: 001A583A  mov     es:word_79F34, ax
+  23: 001A583E  call    sub_2C8FB
+  24: 001A5843  mov     ax, 602Eh
+  25: 001A5846  mov     es, ax
+  26: 001A5848  xor     es:word_14F8BE, 8; Toggle word_14F8BE bit 3 (XOR 8)
+  27: 001A584F  mov     ax, 7894h
+  28: 001A5852  mov     es, ax
+  29: 001A5854  mov     es:word_79B62, 0; Initialize word_79B62 = 0 (record index)
+  30: 001A585B  mov     ax, 7894h
+  31: 001A585E  mov     es, ax
+  32: 001A5860  mov     es:word_79E88, 0
+  33: 001A5867  mov     es, ax
+  34: 001A5869  mov     ax, es:word_79E88
+  35: 001A586D  mov     dx, 7894h
+  36: 001A5870  mov     es, dx
+  37: 001A5872  mov     es:word_79F34, ax
+  38: 001A5876  call    far ptr loc_68006
+  39: 001A587B  call    overlay_bridge_to_68338
+  40: 001A5880  call    overlay_bridge_to_68b4a
+  41: 001A5885  call    overlay_bridge_to_68d32
+  42: 001A588A  mov     [bp+var_2], 0; var_2 = 0 (local state counter)
+  43: 001A588F  mov     ax, 7894h
+  44: 001A5892  mov     es, ax
+  45: 001A5894  mov     es:word_79EA0, 0; word_79EA0 = 0 (menu field index)
+  46: 001A589B  mov     es, ax
+  47: 001A589D  mov     bx, es:word_79EA0
+  48: 001A58A2  shl     bx, 1
+  49: 001A58A4  mov     ax, 4FC2h
+  50: 001A58A7  mov     es, ax
+  51: 001A58A9  push    word ptr es:[bx+30Ah]
+  52: 001A58AE  call    overlay_bridge_to_68f9e
+  53: 001A58B3  pop     cx
+  54: 001A58B4  push    6
+  55: 001A58B6  call    far ptr sub_2C351
+  56: 001A58BB  pop     cx
+  57: 001A58BC  mov     [bp+var_4], 0; Loop init: var_4 = 0
+  58: 001A58C1  jmp     short loc_1A58F9
+  59: 001A58C3  mov     ax, [bp+var_4]
+  60: 001A58C6  mov     dx, 1Ch
+  61: 001A58C9  imul    dx
+  62: 001A58CB  mov     dx, 4FC2h
+  63: 001A58CE  mov     bx, ax
+  64: 001A58D0  mov     es, dx
+  65: 001A58D2  mov     word ptr es:[bx+606h], 4FC2h; Initialize record far ptr to 4FC2:0A68
+  66: 001A58D9  mov     word ptr es:[bx+604h], 0A68h
+  67: 001A58E0  mov     ax, [bp+var_4]; Compute record offset: var_4 * 0x1C (28 bytes)
+  68: 001A58E3  mov     dx, 1Ch
+  69: 001A58E6  imul    dx
+  70: 001A58E8  mov     dx, 4FC2h
+  71: 001A58EB  mov     bx, ax
+  72: 001A58ED  mov     es, dx
+  73: 001A58EF  mov     word ptr es:[bx+608h], 6; Set record dword+8 to 6
+  74: 001A58F6  inc     [bp+var_4]
+  75: 001A58F9  cmp     [bp+var_4], 0Bh; Loop condition: var_4 < 0xB (11 iterations)
+  76: 001A58FD  jl      short loc_1A58C3
+  77: 001A58FF  mov     ax, 4FC2h
+  78: 001A5902  mov     es, ax
+  79: 001A5904  mov     es:word_13E94E, 4FC2h
+  80: 001A590B  mov     es:word_13E94C, 868h
+  81: 001A5912  mov     ax, 7894h
+  82: 001A5915  mov     es, ax
+  83: 001A5917  mov     word ptr es:dword_79E68+2, 4FC2h
+  84: 001A591E  mov     word ptr es:dword_79E68, 600h
+  85: 001A5925  mov     ax, 7894h
+  86: 001A5928  mov     es, ax
+  87: 001A592A  mov     word ptr es:dword_79E2C+2, 4FC2h
+  88: 001A5931  mov     word ptr es:dword_79E2C, 6A8h
+  89: 001A5938  mov     es, ax
+  90: 001A593A  les     bx, es:dword_79E2C
+  91: 001A593F  push    word ptr es:[bx+2]
+  92: 001A5943  mov     es, ax
+  93: 001A5945  les     bx, es:dword_79E2C
+  94: 001A594A  push    word ptr es:[bx]
+  95: 001A594D  call    ui_coordinate_transform
+  96: 001A5952  pop     cx
+  97: 001A5953  pop     cx
+  98: 001A5954  mov     ax, 7894h
+  99: 001A5957  mov     es, ax
+ 100: 001A5959  mov     es:word_79E9C, 4
+ 101: 001A5960  call    ui_text_render_setup
+ 102: 001A5965  call    far ptr unk_67609; jumptable 001A5A25 default case
+ 103: 001A596A  push    [bp+var_2]
+ 104: 001A596D  call    far ptr sub_2C8E7
+ 105: 001A5972  pop     cx
+ 106: 001A5973  call    sub_12805C
+ 107: 001A5978  call    sub_12DB63
+ 108: 001A597D  mov     ax, 7894h
+ 109: 001A5980  mov     es, ax
+ 110: 001A5982  cmp     es:word_79B6C, 32h ; '2'
+ 111: 001A5988  jnz     short loc_1A59F7
+ 112: 001A598A  mov     ax, 7894h
+ 113: 001A598D  mov     es, ax
+ 114: 001A598F  mov     ax, es:input_scan_code_queue
+ 115: 001A5993  cmp     ax, 1
+ 116: 001A5996  jz      short loc_1A59B2
+ 117: 001A5998  cmp     ax, 3
+ 118: 001A599B  jz      short loc_1A59A4
+ 119: 001A599D  cmp     ax, 0FFh
+ 120: 001A59A0  jz      short loc_1A59CC
+ 121: 001A59A2  jmp     short loc_1A59F4
+ 122: 001A59A4  mov     ax, 7894h
+ 123: 001A59A7  mov     es, ax
+ 124: 001A59A9  mov     es:current_view_index, 6
+ 125: 001A59B0  jmp     short loc_1A5A11
+ 126: 001A59B2  push    5
+ 127: 001A59B4  call    far ptr loc_67CA5+1
+ 128: 001A59B9  pop     cx
+ 129: 001A59BA  call    sub_12805C
+ 130: 001A59BF  call    menu_cursor_position_set
+ 131: 001A59C4  mov     [bp+var_2], 1
+ 132: 001A59C9  jmp     loc_1A63E7
+ 133: 001A59CC  mov     ax, 4FC2h
+ 134: 001A59CF  mov     es, ax
+ 135: 001A59D1  push    es:word_13E012
+ 136: 001A59D6  call    ui_font_config_apply
+ 137: 001A59DB  pop     cx
+ 138: 001A59DC  mov     ax, 4FC2h
+ 139: 001A59DF  mov     es, ax
+ 140: 001A59E1  push    es:word_13E012
+ 141: 001A59E6  call    far ptr menu_finalize_render
+ 142: 001A59EB  pop     cx
+ 143: 001A59EC  call    sub_11D274
+ 144: 001A59F1  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 145: 001A59F4  jmp     loc_1A6272
+ 146: 001A59F7  mov     ax, 7894h
+ 147: 001A59FA  mov     es, ax
+ 148: 001A59FC  cmp     es:word_79B6C, 34h ; '4'
+ 149: 001A5A02  jz      short loc_1A5A11
+ 150: 001A5A04  mov     es, ax
+ 151: 001A5A06  cmp     es:word_79B6C, 36h ; '6'
+ 152: 001A5A0C  jz      short loc_1A5A11
+ 153: 001A5A0E  jmp     loc_1A5FE2
+ 154: 001A5A11  mov     ax, 7894h
+ 155: 001A5A14  mov     es, ax
+ 156: 001A5A16  mov     bx, es:current_view_index; Load state variable word_79F16
+ 157: 001A5A1B  cmp     bx, 6; Switch on state (0-6, 7 cases)
+ 158: 001A5A1E  jbe     short loc_1A5A23
+ 159: 001A5A20  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 160: 001A5A23  shl     bx, 1
+ 161: 001A5A25  jmp     cs:jpt_1A5A25[bx]; switch jump
+ 162: 001A5A2A  mov     ax, 7894h; Case 0: Initial state - animate and wait for input
+ 163: 001A5A2D  mov     es, ax
+ 164: 001A5A2F  push    es:current_view_index
+ 165: 001A5A34  call    far ptr loc_67CA5+1
+ 166: 001A5A39  pop     cx
+ 167: 001A5A3A  call    sub_12805C
+ 168: 001A5A3F  call    menu_cursor_position_set; Wait for user input
+ 169: 001A5A44  mov     ax, 7894h
+ 170: 001A5A47  mov     es, ax
+ 171: 001A5A49  cmp     es:word_79B6C, 36h ; '6'; Check word_79B6C == 0x36 (key '6' or specific command)
+ 172: 001A5A4F  jnz     short loc_1A5AA8
+ 173: 001A5A51  jmp     short $+2
+ 174: 001A5A53  mov     ax, 7894h
+ 175: 001A5A56  mov     es, ax
+ 176: 001A5A58  mov     ax, es:word_79EEC
+ 177: 001A5A5C  dec     ax
+ 178: 001A5A5D  mov     dx, 7894h
+ 179: 001A5A60  mov     es, dx
+ 180: 001A5A62  add     es:word_79B62, ax; Adjust word_79B62 index by word_79EEC-1
+ 181: 001A5A67  mov     ax, 7894h
+ 182: 001A5A6A  mov     es, ax
+ 183: 001A5A6C  mov     ax, es:word_79B62
+ 184: 001A5A70  mov     dx, 7894h
+ 185: 001A5A73  push    dx
+ 186: 001A5A74  cwd
+ 187: 001A5A75  pop     es
+ 188: 001A5A76  idiv    word ptr es:15ACh; Modulo division: word_79B62 %= word[7894:15AC]
+ 189: 001A5A7B  mov     ax, 7894h
+ 190: 001A5A7E  mov     es, ax
+ 191: 001A5A80  mov     es:word_79B62, dx
+ 192: 001A5A85  mov     ax, 7894h
+ 193: 001A5A88  mov     es, ax
+ 194: 001A5A8A  mov     ax, es:word_79B62; Compute record ptr: word_79B62 * 0x82 (130 bytes)
+ 195: 001A5A8E  mov     dx, 82h
+ 196: 001A5A91  imul    dx
+ 197: 001A5A93  mov     dx, 7894h
+ 198: 001A5A96  mov     es, dx
+ 199: 001A5A98  les     bx, es:dword_79BEC
+ 200: 001A5A9D  add     bx, ax
+ 201: 001A5A9F  cmp     byte ptr es:[bx+15h], 0; Validate: check byte at record+0x15
+ 202: 001A5AA4  jz      short loc_1A5A53
+ 203: 001A5AA6  jmp     short loc_1A5AF0
+ 204: 001A5AA8  jmp     short $+2
+ 205: 001A5AAA  mov     ax, 7894h
+ 206: 001A5AAD  mov     es, ax
+ 207: 001A5AAF  inc     es:word_79B62; Increment word_79B62 (next record)
+ 208: 001A5AB4  mov     es, ax
+ 209: 001A5AB6  mov     ax, es:word_79B62
+ 210: 001A5ABA  mov     dx, 7894h
+ 211: 001A5ABD  push    dx
+ 212: 001A5ABE  cwd
+ 213: 001A5ABF  pop     es
+ 214: 001A5AC0  idiv    word ptr es:15ACh
+ 215: 001A5AC5  mov     ax, 7894h
+ 216: 001A5AC8  mov     es, ax
+ 217: 001A5ACA  mov     es:word_79B62, dx
+ 218: 001A5ACF  mov     ax, 7894h
+ 219: 001A5AD2  mov     es, ax
+ 220: 001A5AD4  mov     ax, es:word_79B62
+ 221: 001A5AD8  mov     dx, 82h
+ 222: 001A5ADB  imul    dx
+ 223: 001A5ADD  mov     dx, 7894h
+ 224: 001A5AE0  mov     es, dx
+ 225: 001A5AE2  les     bx, es:dword_79BEC
+ 226: 001A5AE7  add     bx, ax
+ 227: 001A5AE9  cmp     byte ptr es:[bx+15h], 0
+ 228: 001A5AEE  jz      short loc_1A5AAA
+ 229: 001A5AF0  mov     ax, 7894h
+ 230: 001A5AF3  mov     es, ax
+ 231: 001A5AF5  mov     es:word_79E88, 0
+ 232: 001A5AFC  mov     es, ax
+ 233: 001A5AFE  mov     ax, es:word_79E88
+ 234: 001A5B02  mov     dx, 7894h
+ 235: 001A5B05  mov     es, dx
+ 236: 001A5B07  mov     es:word_79F34, ax
+ 237: 001A5B0B  mov     [bp+var_4], 0
+ 238: 001A5B10  jmp     short loc_1A5B38
+ 239: 001A5B12  mov     ax, [bp+var_4]
+ 240: 001A5B15  mov     dx, 82h
+ 241: 001A5B18  imul    dx
+ 242: 001A5B1A  mov     dx, 7894h
+ 243: 001A5B1D  mov     es, dx
+ 244: 001A5B1F  les     bx, es:dword_79BEC
+ 245: 001A5B24  add     bx, ax
+ 246: 001A5B26  mov     al, es:[bx+4]
+ 247: 001A5B2A  cbw
+ 248: 001A5B2B  mov     dx, 7894h
+ 249: 001A5B2E  mov     es, dx
+ 250: 001A5B30  add     es:word_79F34, ax
+ 251: 001A5B35  inc     [bp+var_4]
+ 252: 001A5B38  mov     ax, 7894h
+ 253: 001A5B3B  mov     es, ax
+ 254: 001A5B3D  mov     ax, es:word_79B62
+ 255: 001A5B41  cmp     ax, [bp+var_4]
+ 256: 001A5B44  jg      short loc_1A5B12
+ 257: 001A5B46  mov     ax, 7894h
+ 258: 001A5B49  mov     es, ax
+ 259: 001A5B4B  cmp     es:byte_7A302, 0
+ 260: 001A5B51  jz      short loc_1A5B8D
+ 261: 001A5B53  mov     ax, 7894h
+ 262: 001A5B56  mov     es, ax
+ 263: 001A5B58  cmp     es:byte_7A30E, 0
+ 264: 001A5B5E  jz      short loc_1A5B8D
+ 265: 001A5B60  call    far ptr loc_68006
+ 266: 001A5B65  call    sub_2C8FB
+ 267: 001A5B6A  call    overlay_bridge_to_68338
+ 268: 001A5B6F  call    overlay_bridge_to_68b4a
+ 269: 001A5B74  call    overlay_bridge_to_68d32
+ 270: 001A5B79  mov     [bp+var_2], 0
+ 271: 001A5B7E  mov     ax, 7894h
+ 272: 001A5B81  mov     es, ax
+ 273: 001A5B83  mov     es:word_79EA0, 0
+ 274: 001A5B8A  jmp     loc_1A63C8
+ 275: 001A5B8D  jmp     loc_1A5FA1
+ 276: 001A5B90  mov     ax, 7894h; Case 1: Secondary state
+ 277: 001A5B93  mov     es, ax
+ 278: 001A5B95  push    es:current_view_index
+ 279: 001A5B9A  call    far ptr loc_67CA5+1
+ 280: 001A5B9F  pop     cx
+ 281: 001A5BA0  call    sub_12805C
+ 282: 001A5BA5  call    menu_cursor_position_set
+ 283: 001A5BAA  mov     ax, 7894h
+ 284: 001A5BAD  mov     es, ax
+ 285: 001A5BAF  cmp     es:word_79B6C, 36h ; '6'
+ 286: 001A5BB5  jnz     short loc_1A5BF6
+ 287: 001A5BB7  mov     ax, 7894h
+ 288: 001A5BBA  mov     es, ax
+ 289: 001A5BBC  dec     es:word_79E88
+ 290: 001A5BC1  mov     es, ax
+ 291: 001A5BC3  cmp     es:word_79E88, 0
+ 292: 001A5BC9  jge     short loc_1A5C37
+ 293: 001A5BCB  mov     ax, 7894h
+ 294: 001A5BCE  mov     es, ax
+ 295: 001A5BD0  mov     ax, es:word_79B62
+ 296: 001A5BD4  mov     dx, 82h
+ 297: 001A5BD7  imul    dx
+ 298: 001A5BD9  mov     dx, 7894h
+ 299: 001A5BDC  mov     es, dx
+ 300: 001A5BDE  les     bx, es:dword_79BEC
+ 301: 001A5BE3  add     bx, ax
+ 302: 001A5BE5  mov     al, es:[bx+4]
+ 303: 001A5BE9  cbw
+ 304: 001A5BEA  dec     ax
+ 305: 001A5BEB  mov     dx, 7894h
+ 306: 001A5BEE  mov     es, dx
+ 307: 001A5BF0  mov     es:word_79E88, ax
+ 308: 001A5BF4  jmp     short loc_1A5C37
+ 309: 001A5BF6  mov     ax, 7894h
+ 310: 001A5BF9  mov     es, ax
+ 311: 001A5BFB  inc     es:word_79E88
+ 312: 001A5C00  mov     ax, 7894h
+ 313: 001A5C03  mov     es, ax
+ 314: 001A5C05  mov     ax, es:word_79B62
+ 315: 001A5C09  mov     dx, 82h
+ 316: 001A5C0C  imul    dx
+ 317: 001A5C0E  mov     dx, 7894h
+ 318: 001A5C11  mov     es, dx
+ 319: 001A5C13  les     bx, es:dword_79BEC
+ 320: 001A5C18  add     bx, ax
+ 321: 001A5C1A  mov     al, es:[bx+4]
+ 322: 001A5C1E  cbw
+ 323: 001A5C1F  mov     dx, 7894h
+ 324: 001A5C22  mov     es, dx
+ 325: 001A5C24  cmp     ax, es:word_79E88
+ 326: 001A5C29  jg      short loc_1A5C37
+ 327: 001A5C2B  mov     ax, 7894h
+ 328: 001A5C2E  mov     es, ax
+ 329: 001A5C30  mov     es:word_79E88, 0
+ 330: 001A5C37  mov     ax, 7894h
+ 331: 001A5C3A  mov     es, ax
+ 332: 001A5C3C  mov     ax, es:word_79E88
+ 333: 001A5C40  mov     dx, 7894h
+ 334: 001A5C43  mov     es, dx
+ 335: 001A5C45  mov     es:word_79F34, ax
+ 336: 001A5C49  mov     [bp+var_4], 0
+ 337: 001A5C4E  jmp     short loc_1A5C76
+ 338: 001A5C50  mov     ax, [bp+var_4]
+ 339: 001A5C53  mov     dx, 82h
+ 340: 001A5C56  imul    dx
+ 341: 001A5C58  mov     dx, 7894h
+ 342: 001A5C5B  mov     es, dx
+ 343: 001A5C5D  les     bx, es:dword_79BEC
+ 344: 001A5C62  add     bx, ax
+ 345: 001A5C64  mov     al, es:[bx+4]
+ 346: 001A5C68  cbw
+ 347: 001A5C69  mov     dx, 7894h
+ 348: 001A5C6C  mov     es, dx
+ 349: 001A5C6E  add     es:word_79F34, ax
+ 350: 001A5C73  inc     [bp+var_4]
+ 351: 001A5C76  mov     ax, 7894h
+ 352: 001A5C79  mov     es, ax
+ 353: 001A5C7B  mov     ax, es:word_79B62
+ 354: 001A5C7F  cmp     ax, [bp+var_4]
+ 355: 001A5C82  jg      short loc_1A5C50
+ 356: 001A5C84  mov     ax, 7894h
+ 357: 001A5C87  mov     es, ax
+ 358: 001A5C89  cmp     es:byte_7A302, 0
+ 359: 001A5C8F  jz      short loc_1A5CA1
+ 360: 001A5C91  mov     ax, 7894h
+ 361: 001A5C94  mov     es, ax
+ 362: 001A5C96  cmp     es:byte_7A30E, 0
+ 363: 001A5C9C  jz      short loc_1A5CA1
+ 364: 001A5C9E  jmp     loc_1A5B60
+ 365: 001A5CA1  jmp     loc_1A5FA1
+ 366: 001A5CA4  mov     ax, 7894h; Case 2: Third state
+ 367: 001A5CA7  mov     es, ax
+ 368: 001A5CA9  push    es:current_view_index
+ 369: 001A5CAE  call    far ptr loc_67CA5+1
+ 370: 001A5CB3  pop     cx
+ 371: 001A5CB4  call    sub_12805C
+ 372: 001A5CB9  call    menu_cursor_position_set
+ 373: 001A5CBE  mov     [bp+var_4], 0
+ 374: 001A5CC3  jmp     short loc_1A5CDE
+ 375: 001A5CC5  push    [bp+var_4]
+ 376: 001A5CC8  call    far ptr tail_bridge_to_ui_menu_frame_enter
+ 377: 001A5CCD  pop     cx
+ 378: 001A5CCE  push    [bp+var_4]
+ 379: 001A5CD1  call    far ptr overlay_bridge_to_68019
+ 380: 001A5CD6  pop     cx
+ 381: 001A5CD7  or      ax, ax
+ 382: 001A5CD9  jg      short loc_1A5CC5
+ 383: 001A5CDB  inc     [bp+var_4]
+ 384: 001A5CDE  cmp     [bp+var_4], 14h
+ 385: 001A5CE2  jl      short loc_1A5CCE
+ 386: 001A5CE4  mov     ax, 7894h
+ 387: 001A5CE7  mov     es, ax
+ 388: 001A5CE9  les     bx, es:dword_79E50
+ 389: 001A5CEE  add     word ptr es:[bx+24h], 1Eh
+ 390: 001A5CF3  mov     es, ax
+ 391: 001A5CF5  les     bx, es:dword_79E50
+ 392: 001A5CFA  add     word ptr es:[bx+26h], 1Eh
+ 393: 001A5CFF  mov     es, ax
+ 394: 001A5D01  les     bx, es:dword_79E50
+ 395: 001A5D06  add     word ptr es:[bx], 203h
+ 396: 001A5D0B  adc     word ptr es:[bx+2], 0
+ 397: 001A5D10  mov     ax, 7894h
+ 398: 001A5D13  mov     es, ax
+ 399: 001A5D15  cmp     es:byte_7A302, 0
+ 400: 001A5D1B  jz      short loc_1A5D6F
+ 401: 001A5D1D  mov     ax, 7894h
+ 402: 001A5D20  mov     es, ax
+ 403: 001A5D22  cmp     es:byte_7A30E, 0
+ 404: 001A5D28  jz      short loc_1A5D6F
+ 405: 001A5D2A  mov     ax, 7894h
+ 406: 001A5D2D  mov     dx, 7894h
+ 407: 001A5D30  mov     es, dx
+ 408: 001A5D32  mov     dl, es:byte_7A30F
+ 409: 001A5D37  mov     dh, 0
+ 410: 001A5D39  mov     es, ax
+ 411: 001A5D3B  cmp     es:word_79F34, dx
+ 412: 001A5D40  jge     short loc_1A5D6F
+ 413: 001A5D42  mov     es, ax
+ 414: 001A5D44  mov     bx, es:word_79F34
+ 415: 001A5D49  shl     bx, 2
+ 416: 001A5D4C  mov     ax, 602Eh
+ 417: 001A5D4F  mov     es, ax
+ 418: 001A5D51  cmp     byte ptr es:[bx+1], 3
+ 419: 001A5D57  jnz     short loc_1A5D6F
+ 420: 001A5D59  mov     ax, 7894h
+ 421: 001A5D5C  mov     es, ax
+ 422: 001A5D5E  les     bx, es:dword_79E50
+ 423: 001A5D63  add     word ptr es:[bx], 3Fh ; '?'
+ 424: 001A5D67  adc     word ptr es:[bx+2], 0
+ 425: 001A5D6C  jmp     loc_1A5FA1
+ 426: 001A5D6F  jmp     loc_1A5FA1
+ 427: 001A5D72  mov     ax, 7894h; Case 3: Fourth state
+ 428: 001A5D75  mov     es, ax
+ 429: 001A5D77  push    es:current_view_index
+ 430: 001A5D7C  call    far ptr loc_67CA5+1
+ 431: 001A5D81  pop     cx
+ 432: 001A5D82  call    sub_12805C
+ 433: 001A5D87  call    menu_cursor_position_set
+ 434: 001A5D8C  mov     [bp+var_4], 0
+ 435: 001A5D91  jmp     short loc_1A5DAC
+ 436: 001A5D93  push    [bp+var_4]
+ 437: 001A5D96  call    far ptr tail_bridge_to_ui_menu_frame_enter
+ 438: 001A5D9B  pop     cx
+ 439: 001A5D9C  push    [bp+var_4]
+ 440: 001A5D9F  call    far ptr overlay_bridge_to_68019
+ 441: 001A5DA4  pop     cx
+ 442: 001A5DA5  or      ax, ax
+ 443: 001A5DA7  jg      short loc_1A5D93
+ 444: 001A5DA9  inc     [bp+var_4]
+ 445: 001A5DAC  cmp     [bp+var_4], 14h
+ 446: 001A5DB0  jl      short loc_1A5D9C
+ 447: 001A5DB2  call    far ptr tail_bridge_to_slot_record_init_b
+ 448: 001A5DB7  jmp     loc_1A5FA1
+ 449: 001A5DBA  mov     ax, 7894h; Case 4: Fifth state
+ 450: 001A5DBD  mov     es, ax
+ 451: 001A5DBF  push    es:current_view_index
+ 452: 001A5DC4  call    far ptr loc_67CA5+1
+ 453: 001A5DC9  pop     cx
+ 454: 001A5DCA  call    sub_12805C
+ 455: 001A5DCF  call    menu_cursor_position_set
+ 456: 001A5DD4  mov     ax, 7894h
+ 457: 001A5DD7  mov     es, ax
+ 458: 001A5DD9  cmp     es:word_79E88, 0
+ 459: 001A5DDF  jz      short loc_1A5DE4
+ 460: 001A5DE1  jmp     loc_1A5EC8
+ 461: 001A5DE4  call    far ptr sub_2C72F
+ 462: 001A5DE9  call    sub_2C8FB
+ 463: 001A5DEE  mov     ax, 7894h
+ 464: 001A5DF1  mov     es, ax
+ 465: 001A5DF3  mov     bx, es:word_79EA0
+ 466: 001A5DF8  shl     bx, 1
+ 467: 001A5DFA  mov     ax, 4FC2h
+ 468: 001A5DFD  mov     es, ax
+ 469: 001A5DFF  push    word ptr es:[bx+30Ah]
+ 470: 001A5E04  call    overlay_bridge_to_68f9e
+ 471: 001A5E09  pop     cx
+ 472: 001A5E0A  call    overlay_bridge_to_68338
+ 473: 001A5E0F  call    overlay_bridge_to_68b4a
+ 474: 001A5E14  call    overlay_bridge_to_68d32
+ 475: 001A5E19  push    6
+ 476: 001A5E1B  call    far ptr sub_2C351
+ 477: 001A5E20  pop     cx
+ 478: 001A5E21  mov     [bp+var_4], 0
+ 479: 001A5E26  jmp     short loc_1A5E5E
+ 480: 001A5E28  mov     ax, [bp+var_4]
+ 481: 001A5E2B  mov     dx, 1Ch
+ 482: 001A5E2E  imul    dx
+ 483: 001A5E30  mov     dx, 4FC2h
+ 484: 001A5E33  mov     bx, ax
+ 485: 001A5E35  mov     es, dx
+ 486: 001A5E37  mov     word ptr es:[bx+606h], 4FC2h
+ 487: 001A5E3E  mov     word ptr es:[bx+604h], 0A68h
+ 488: 001A5E45  mov     ax, [bp+var_4]
+ 489: 001A5E48  mov     dx, 1Ch
+ 490: 001A5E4B  imul    dx
+ 491: 001A5E4D  mov     dx, 4FC2h
+ 492: 001A5E50  mov     bx, ax
+ 493: 001A5E52  mov     es, dx
+ 494: 001A5E54  mov     word ptr es:[bx+608h], 6
+ 495: 001A5E5B  inc     [bp+var_4]
+ 496: 001A5E5E  cmp     [bp+var_4], 0Bh
+ 497: 001A5E62  jl      short loc_1A5E28
+ 498: 001A5E64  mov     ax, 4FC2h
+ 499: 001A5E67  mov     es, ax
+ 500: 001A5E69  mov     es:word_13E94E, 4FC2h
+ 501: 001A5E70  mov     es:word_13E94C, 868h
+ 502: 001A5E77  mov     ax, 7894h
+ 503: 001A5E7A  mov     es, ax
+ 504: 001A5E7C  mov     word ptr es:dword_79E68+2, 4FC2h
+ 505: 001A5E83  mov     word ptr es:dword_79E68, 600h
+ 506: 001A5E8A  mov     ax, 7894h
+ 507: 001A5E8D  mov     es, ax
+ 508: 001A5E8F  mov     word ptr es:dword_79E2C+2, 4FC2h
+ 509: 001A5E96  mov     word ptr es:dword_79E2C, 6A8h
+ 510: 001A5E9D  mov     es, ax
+ 511: 001A5E9F  les     bx, es:dword_79E2C
+ 512: 001A5EA4  push    word ptr es:[bx+2]
+ 513: 001A5EA8  mov     es, ax
+ 514: 001A5EAA  les     bx, es:dword_79E2C
+ 515: 001A5EAF  push    word ptr es:[bx]
+ 516: 001A5EB2  call    ui_coordinate_transform
+ 517: 001A5EB7  pop     cx
+ 518: 001A5EB8  pop     cx
+ 519: 001A5EB9  mov     ax, 7894h
+ 520: 001A5EBC  mov     es, ax
+ 521: 001A5EBE  mov     es:word_79E9C, 4
+ 522: 001A5EC5  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 523: 001A5EC8  xor     di, di
+ 524: 001A5ECA  mov     [bp+var_4], 0
+ 525: 001A5ECF  jmp     short loc_1A5EEF
+ 526: 001A5ED1  mov     ax, [bp+var_4]
+ 527: 001A5ED4  mov     dx, 82h
+ 528: 001A5ED7  imul    dx
+ 529: 001A5ED9  mov     dx, 7894h
+ 530: 001A5EDC  mov     es, dx
+ 531: 001A5EDE  les     bx, es:dword_79BEC
+ 532: 001A5EE3  add     bx, ax
+ 533: 001A5EE5  mov     al, es:[bx+4]
+ 534: 001A5EE9  cbw
+ 535: 001A5EEA  add     di, ax
+ 536: 001A5EEC  inc     [bp+var_4]
+ 537: 001A5EEF  mov     ax, 7894h
+ 538: 001A5EF2  mov     es, ax
+ 539: 001A5EF4  mov     ax, es:word_79B62
+ 540: 001A5EF8  cmp     ax, [bp+var_4]
+ 541: 001A5EFB  jg      short loc_1A5ED1
+ 542: 001A5EFD  mov     ax, di
+ 543: 001A5EFF  mov     dx, 17h
+ 544: 001A5F02  imul    dx
+ 545: 001A5F04  mov     dx, 7894h
+ 546: 001A5F07  mov     es, dx
+ 547: 001A5F09  mov     dx, word ptr es:dword_79E6C+2
+ 548: 001A5F0E  mov     bx, word ptr es:dword_79E6C
+ 549: 001A5F13  add     bx, ax
+ 550: 001A5F15  mov     word ptr [bp+var_8+2], dx
+ 551: 001A5F18  mov     word ptr [bp+var_8], bx
+ 552: 001A5F1B  mov     ax, 7894h
+ 553: 001A5F1E  mov     es, ax
+ 554: 001A5F20  mov     ax, es:word_79F34
+ 555: 001A5F24  mov     dx, 17h
+ 556: 001A5F27  imul    dx
+ 557: 001A5F29  mov     dx, 7894h
+ 558: 001A5F2C  mov     es, dx
+ 559: 001A5F2E  mov     dx, word ptr es:dword_79E6C+2
+ 560: 001A5F33  mov     bx, word ptr es:dword_79E6C
+ 561: 001A5F38  add     bx, ax
+ 562: 001A5F3A  mov     word ptr [bp+var_C+2], dx
+ 563: 001A5F3D  mov     word ptr [bp+var_C], bx
+ 564: 001A5F40  xor     si, si
+ 565: 001A5F42  jmp     short loc_1A5F57
+ 566: 001A5F44  push    si
+ 567: 001A5F45  call    far ptr tail_bridge_to_ui_menu_frame_enter
+ 568: 001A5F4A  pop     cx
+ 569: 001A5F4B  push    si
+ 570: 001A5F4C  call    far ptr overlay_bridge_to_68019
+ 571: 001A5F51  pop     cx
+ 572: 001A5F52  or      ax, ax
+ 573: 001A5F54  jnz     short loc_1A5F44
+ 574: 001A5F56  inc     si
+ 575: 001A5F57  cmp     si, 14h
+ 576: 001A5F5A  jl      short loc_1A5F4B
+ 577: 001A5F5C  xor     si, si
+ 578: 001A5F5E  jmp     short loc_1A5F6D
+ 579: 001A5F60  les     bx, [bp+var_8]
+ 580: 001A5F63  mov     al, es:[bx+si]
+ 581: 001A5F66  les     bx, [bp+var_C]
+ 582: 001A5F69  mov     es:[bx+si], al
+ 583: 001A5F6C  inc     si
+ 584: 001A5F6D  cmp     si, 17h
+ 585: 001A5F70  jl      short loc_1A5F60
+ 586: 001A5F72  mov     ax, 7894h
+ 587: 001A5F75  mov     es, ax
+ 588: 001A5F77  push    es:word_79F34
+ 589: 001A5F7C  call    utility_large_2971
+ 590: 001A5F81  pop     cx
+ 591: 001A5F82  mov     ax, 7894h
+ 592: 001A5F85  mov     es, ax
+ 593: 001A5F87  cmp     es:byte_7A302, 0
+ 594: 001A5F8D  jz      short loc_1A5FA1
+ 595: 001A5F8F  mov     ax, 7894h
+ 596: 001A5F92  mov     es, ax
+ 597: 001A5F94  cmp     es:byte_7A312, 0
+ 598: 001A5F9A  jz      short loc_1A5FA1
+ 599: 001A5F9C  call    far ptr loc_68006
+ 600: 001A5FA1  call    overlay_bridge_to_68338
+ 601: 001A5FA6  call    overlay_bridge_to_68b4a
+ 602: 001A5FAB  call    overlay_bridge_to_68d32
+ 603: 001A5FB0  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 604: 001A5FB3  mov     ax, 7894h; Case 5: Sixth state
+ 605: 001A5FB6  mov     es, ax
+ 606: 001A5FB8  push    es:current_view_index
+ 607: 001A5FBD  jmp     loc_1A59B4
+ 608: 001A5FC0  mov     ax, 7894h; Case 6: Final/exit state
+ 609: 001A5FC3  mov     es, ax
+ 610: 001A5FC5  push    es:current_view_index
+ 611: 001A5FCA  call    far ptr loc_67CA5+1
+ 612: 001A5FCF  pop     cx
+ 613: 001A5FD0  call    sub_12805C
+ 614: 001A5FD5  call    menu_cursor_position_set
+ 615: 001A5FDA  mov     [bp+var_2], 2
+ 616: 001A5FDF  jmp     loc_1A63E7
+ 617: 001A5FE2  mov     ax, 7894h
+ 618: 001A5FE5  mov     es, ax
+ 619: 001A5FE7  cmp     es:word_79B6C, 0
+ 620: 001A5FED  jz      short loc_1A5FF2
+ 621: 001A5FEF  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 622: 001A5FF2  mov     ax, 7894h
+ 623: 001A5FF5  mov     es, ax
+ 624: 001A5FF7  cmp     es:word_79E7E, 86h
+ 625: 001A5FFE  jl      short loc_1A6003
+ 626: 001A6000  jmp     loc_1A627A
+ 627: 001A6003  mov     es, ax
+ 628: 001A6005  cmp     es:word_79E7E, 66h ; 'f'
+ 629: 001A600B  jl      short loc_1A6010
+ 630: 001A600D  jmp     loc_1A6138
+ 631: 001A6010  mov     [bp+var_4], 0
+ 632: 001A6015  jmp     loc_1A612C
+ 633: 001A6018  mov     ax, 4FC2h
+ 634: 001A601B  mov     bx, [bp+var_4]
+ 635: 001A601E  mov     es, ax
+ 636: 001A6020  mov     al, es:[bx+44Ah]
+ 637: 001A6025  mov     ah, 0
+ 638: 001A6027  mov     dx, 7894h
+ 639: 001A602A  mov     es, dx
+ 640: 001A602C  cmp     ax, es:word_79E80
+ 641: 001A6031  jle     short loc_1A6036
+ 642: 001A6033  jmp     loc_1A6129
+ 643: 001A6036  mov     ax, 4FC2h
+ 644: 001A6039  mov     es, ax
+ 645: 001A603B  mov     al, es:[bx+44Ah]
+ 646: 001A6040  mov     ah, 0
+ 647: 001A6042  add     ax, 0Fh
+ 648: 001A6045  mov     es, dx
+ 649: 001A6047  cmp     ax, es:word_79E80
+ 650: 001A604C  jg      short loc_1A6051
+ 651: 001A604E  jmp     loc_1A6129
+ 652: 001A6051  mov     ax, 4FC2h
+ 653: 001A6054  mov     es, ax
+ 654: 001A6056  mov     al, es:[bx+453h]
+ 655: 001A605B  mov     ah, 0
+ 656: 001A605D  mov     dx, 7894h
+ 657: 001A6060  mov     es, dx
+ 658: 001A6062  cmp     ax, es:word_79E7E
+ 659: 001A6067  jle     short loc_1A606C
+ 660: 001A6069  jmp     loc_1A6129
+ 661: 001A606C  mov     ax, 4FC2h
+ 662: 001A606F  mov     es, ax
+ 663: 001A6071  mov     al, es:[bx+453h]
+ 664: 001A6076  mov     ah, 0
+ 665: 001A6078  add     ax, 0Fh
+ 666: 001A607B  mov     es, dx
+ 667: 001A607D  cmp     ax, es:word_79E7E
+ 668: 001A6082  jg      short loc_1A6087
+ 669: 001A6084  jmp     loc_1A6129
+ 670: 001A6087  shl     bx, 1
+ 671: 001A6089  mov     ax, 7894h
+ 672: 001A608C  mov     es, ax
+ 673: 001A608E  cmp     word ptr es:[bx+15E0h], 0
+ 674: 001A6094  jg      short loc_1A6099
+ 675: 001A6096  jmp     loc_1A6124
+ 676: 001A6099  mov     ax, 7894h
+ 677: 001A609C  mov     es, ax
+ 678: 001A609E  mov     es:word_79EA0, 0
+ 679: 001A60A5  mov     [bp+var_2], 0
+ 680: 001A60AA  jmp     short loc_1A60D4
+ 681: 001A60AC  mov     ax, 7894h
+ 682: 001A60AF  mov     es, ax
+ 683: 001A60B1  inc     es:word_79EA0
+ 684: 001A60B6  mov     bx, [bp+var_2]
+ 685: 001A60B9  shl     bx, 1
+ 686: 001A60BB  mov     ax, 4FC2h
+ 687: 001A60BE  mov     es, ax
+ 688: 001A60C0  mov     ax, es:[bx+302h]
+ 689: 001A60C5  mov     dx, 7894h
+ 690: 001A60C8  mov     es, dx
+ 691: 001A60CA  cmp     ax, es:word_79EA0
+ 692: 001A60CF  jnz     short loc_1A60D4
+ 693: 001A60D1  inc     [bp+var_2]
+ 694: 001A60D4  mov     ax, 7894h
+ 695: 001A60D7  mov     es, ax
+ 696: 001A60D9  mov     bx, es:word_79EA0
+ 697: 001A60DE  shl     bx, 1
+ 698: 001A60E0  mov     ax, 4FC2h
+ 699: 001A60E3  mov     es, ax
+ 700: 001A60E5  mov     ax, es:[bx+30Ah]
+ 701: 001A60EA  mov     bx, [bp+var_4]
+ 702: 001A60ED  shl     bx, 1
+ 703: 001A60EF  mov     dx, 7894h
+ 704: 001A60F2  mov     es, dx
+ 705: 001A60F4  cmp     ax, es:[bx+154Ah]
+ 706: 001A60F9  jz      short loc_1A6108
+ 707: 001A60FB  mov     ax, 7894h
+ 708: 001A60FE  mov     es, ax
+ 709: 001A6100  cmp     es:word_79EA0, 13h
+ 710: 001A6106  jl      short loc_1A60AC
+ 711: 001A6108  mov     ax, 7894h
+ 712: 001A610B  mov     es, ax
+ 713: 001A610D  mov     bx, es:word_79EA0
+ 714: 001A6112  shl     bx, 1
+ 715: 001A6114  mov     ax, 4FC2h
+ 716: 001A6117  mov     es, ax
+ 717: 001A6119  push    word ptr es:[bx+30Ah]
+ 718: 001A611E  call    overlay_bridge_to_68f9e
+ 719: 001A6123  pop     cx
+ 720: 001A6124  mov     [bp+var_4], 9
+ 721: 001A6129  inc     [bp+var_4]
+ 722: 001A612C  cmp     [bp+var_4], 9
+ 723: 001A6130  jge     short loc_1A6135
+ 724: 001A6132  jmp     loc_1A6018
+ 725: 001A6135  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 726: 001A6138  mov     ax, 7894h
+ 727: 001A613B  mov     es, ax
+ 728: 001A613D  cmp     es:word_79E7E, 76h ; 'v'
+ 729: 001A6143  jl      short loc_1A6148
+ 730: 001A6145  jmp     loc_1A61EB
+ 731: 001A6148  mov     ax, 7894h
+ 732: 001A614B  mov     es, ax
+ 733: 001A614D  cmp     es:word_79E80, 58h ; 'X'
+ 734: 001A6153  jl      short loc_1A6158
+ 735: 001A6155  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 736: 001A6158  mov     ax, 7894h
+ 737: 001A615B  mov     es, ax
+ 738: 001A615D  mov     bx, es:word_79EA0
+ 739: 001A6162  shl     bx, 1
+ 740: 001A6164  mov     ax, 4FC2h
+ 741: 001A6167  mov     es, ax
+ 742: 001A6169  mov     ax, es:[bx+30Ah]
+ 743: 001A616E  mov     [bp+var_4], ax
+ 744: 001A6171  push    [bp+var_4]
+ 745: 001A6174  call    sub_2C8BF
+ 746: 001A6179  pop     cx
+ 747: 001A617A  or      ax, ax
+ 748: 001A617C  jz      short loc_1A61E8
+ 749: 001A617E  xor     si, si
+ 750: 001A6180  mov     di, 66h ; 'f'
+ 751: 001A6183  mov     ax, 7894h
+ 752: 001A6186  mov     es, ax
+ 753: 001A6188  push    es:word_79A18
+ 754: 001A618D  push    es:word_79A16
+ 755: 001A6192  push    di
+ 756: 001A6193  push    si
+ 757: 001A6194  call    dispatch_220ec_invoke
+ 758: 001A6199  add     sp, 8
+ 759: 001A619C  call    sub_12805C
+ 760: 001A61A1  push    [bp+var_4]
+ 761: 001A61A4  call    far ptr sub_2C923
+ 762: 001A61A9  pop     cx
+ 763: 001A61AA  push    [bp+var_4]
+ 764: 001A61AD  call    far ptr overlay_bridge_to_68019
+ 765: 001A61B2  pop     cx
+ 766: 001A61B3  cmp     ax, 1
+ 767: 001A61B6  jnz     short loc_1A61CF
+ 768: 001A61B8  mov     ax, [bp+var_4]
+ 769: 001A61BB  mov     dx, 9
+ 770: 001A61BE  imul    dx
+ 771: 001A61C0  mov     dx, 4FC2h
+ 772: 001A61C3  mov     bx, ax
+ 773: 001A61C5  mov     es, dx
+ 774: 001A61C7  cmp     byte ptr es:[bx+35Eh], 1
+ 775: 001A61CD  jz      short loc_1A61E6
+ 776: 001A61CF  push    [bp+var_4]
+ 777: 001A61D2  call    sub_2C8BF
+ 778: 001A61D7  pop     cx
+ 779: 001A61D8  or      ax, ax
+ 780: 001A61DA  jz      short loc_1A61E6
+ 781: 001A61DC  push    [bp+var_4]
+ 782: 001A61DF  call    far ptr sub_2C923
+ 783: 001A61E4  jmp     short loc_1A6262
+ 784: 001A61E6  jmp     short loc_1A6263
+ 785: 001A61E8  jmp     loc_1A6272
+ 786: 001A61EB  mov     ax, 7894h
+ 787: 001A61EE  mov     es, ax
+ 788: 001A61F0  cmp     es:word_79E80, 58h ; 'X'
+ 789: 001A61F6  jl      short loc_1A61FB
+ 790: 001A61F8  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 791: 001A61FB  mov     ax, 7894h
+ 792: 001A61FE  mov     es, ax
+ 793: 001A6200  mov     bx, es:word_79EA0
+ 794: 001A6205  shl     bx, 1
+ 795: 001A6207  mov     ax, 4FC2h
+ 796: 001A620A  mov     es, ax
+ 797: 001A620C  mov     ax, es:[bx+30Ah]
+ 798: 001A6211  mov     [bp+var_4], ax
+ 799: 001A6214  push    [bp+var_4]
+ 800: 001A6217  call    far ptr overlay_bridge_to_68019
+ 801: 001A621C  pop     cx
+ 802: 001A621D  or      ax, ax
+ 803: 001A621F  jle     short loc_1A6272
+ 804: 001A6221  xor     si, si
+ 805: 001A6223  mov     di, 76h ; 'v'
+ 806: 001A6226  mov     ax, 7894h
+ 807: 001A6229  mov     es, ax
+ 808: 001A622B  push    es:word_79A24
+ 809: 001A6230  push    es:word_79A22
+ 810: 001A6235  push    di
+ 811: 001A6236  push    si
+ 812: 001A6237  call    dispatch_220ec_invoke
+ 813: 001A623C  add     sp, 8
+ 814: 001A623F  call    sub_12805C
+ 815: 001A6244  push    [bp+var_4]
+ 816: 001A6247  call    far ptr tail_bridge_to_ui_menu_frame_enter
+ 817: 001A624C  pop     cx
+ 818: 001A624D  push    [bp+var_4]
+ 819: 001A6250  call    far ptr overlay_bridge_to_68019
+ 820: 001A6255  pop     cx
+ 821: 001A6256  or      ax, ax
+ 822: 001A6258  jle     short loc_1A6263
+ 823: 001A625A  push    [bp+var_4]
+ 824: 001A625D  call    far ptr tail_bridge_to_ui_menu_frame_enter
+ 825: 001A6262  pop     cx
+ 826: 001A6263  call    overlay_bridge_to_68338
+ 827: 001A6268  call    overlay_bridge_to_68b4a
+ 828: 001A626D  call    overlay_bridge_to_68d32
+ 829: 001A6272  call    menu_cursor_position_set
+ 830: 001A6277  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 831: 001A627A  mov     ax, 7894h
+ 832: 001A627D  mov     es, ax
+ 833: 001A627F  cmp     es:word_79E7E, 0B6h
+ 834: 001A6286  jl      short loc_1A628B
+ 835: 001A6288  jmp     loc_1A635D
+ 836: 001A628B  mov     ax, 7894h
+ 837: 001A628E  mov     es, ax
+ 838: 001A6290  cmp     es:word_79E80, 18h
+ 839: 001A6296  jl      short loc_1A629B
+ 840: 001A6298  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 841: 001A629B  mov     ax, 7894h
+ 842: 001A629E  mov     es, ax
+ 843: 001A62A0  cmp     es:word_79E7E, 9Eh
+ 844: 001A62A7  jge     short loc_1A630C
+ 845: 001A62A9  xor     si, si
+ 846: 001A62AB  mov     di, 86h
+ 847: 001A62AE  mov     ax, 7894h
+ 848: 001A62B1  mov     es, ax
+ 849: 001A62B3  push    es:word_79A58
+ 850: 001A62B8  push    es:word_79A56
+ 851: 001A62BD  push    di
+ 852: 001A62BE  push    si
+ 853: 001A62BF  call    dispatch_220ec_invoke
+ 854: 001A62C4  add     sp, 8
+ 855: 001A62C7  call    sub_12805C
+ 856: 001A62CC  call    menu_cursor_position_set
+ 857: 001A62D1  mov     ax, 7894h
+ 858: 001A62D4  mov     es, ax
+ 859: 001A62D6  dec     es:word_79EA0
+ 860: 001A62DB  mov     bx, [bp+var_2]
+ 861: 001A62DE  shl     bx, 1
+ 862: 001A62E0  mov     ax, 4FC2h
+ 863: 001A62E3  mov     es, ax
+ 864: 001A62E5  mov     ax, es:[bx+300h]
+ 865: 001A62EA  mov     dx, 7894h
+ 866: 001A62ED  mov     es, dx
+ 867: 001A62EF  cmp     ax, es:word_79EA0
+ 868: 001A62F4  jle     short loc_1A6309
+ 869: 001A62F6  mov     bx, [bp+var_2]
+ 870: 001A62F9  shl     bx, 1
+ 871: 001A62FB  mov     ax, 4FC2h
+ 872: 001A62FE  mov     es, ax
+ 873: 001A6300  mov     ax, es:[bx+302h]
+ 874: 001A6305  dec     ax
+ 875: 001A6306  jmp     loc_1A63BF
+ 876: 001A6309  jmp     loc_1A63C8
+ 877: 001A630C  xor     si, si
+ 878: 001A630E  mov     di, 9Eh
+ 879: 001A6311  mov     ax, 7894h
+ 880: 001A6314  mov     es, ax
+ 881: 001A6316  push    es:word_79A60
+ 882: 001A631B  push    es:word_79A5E
+ 883: 001A6320  push    di
+ 884: 001A6321  push    si
+ 885: 001A6322  call    dispatch_220ec_invoke
+ 886: 001A6327  add     sp, 8
+ 887: 001A632A  call    sub_12805C
+ 888: 001A632F  call    menu_cursor_position_set
+ 889: 001A6334  mov     ax, 7894h
+ 890: 001A6337  mov     es, ax
+ 891: 001A6339  inc     es:word_79EA0
+ 892: 001A633E  mov     bx, [bp+var_2]
+ 893: 001A6341  shl     bx, 1
+ 894: 001A6343  mov     ax, 4FC2h
+ 895: 001A6346  mov     es, ax
+ 896: 001A6348  mov     ax, es:[bx+302h]
+ 897: 001A634D  mov     dx, 7894h
+ 898: 001A6350  mov     es, dx
+ 899: 001A6352  cmp     ax, es:word_79EA0
+ 900: 001A6357  jg      short loc_1A635B
+ 901: 001A6359  jmp     short loc_1A63B0
+ 902: 001A635B  jmp     short loc_1A63C8
+ 903: 001A635D  mov     ax, 7894h
+ 904: 001A6360  mov     es, ax
+ 905: 001A6362  cmp     es:word_79E80, 64h ; 'd'
+ 906: 001A6368  jge     short loc_1A638C
+ 907: 001A636A  mov     es, ax
+ 908: 001A636C  cmp     es:word_79E80, 32h ; '2'
+ 909: 001A6372  jge     short loc_1A6380
+ 910: 001A6374  call    menu_cursor_position_set
+ 911: 001A6379  mov     [bp+var_2], 0
+ 912: 001A637E  jmp     short loc_1A63B0
+ 913: 001A6380  call    menu_cursor_position_set
+ 914: 001A6385  mov     [bp+var_2], 1
+ 915: 001A638A  jmp     short loc_1A63B0
+ 916: 001A638C  mov     ax, 7894h
+ 917: 001A638F  mov     es, ax
+ 918: 001A6391  cmp     es:word_79E80, 96h
+ 919: 001A6398  jge     short loc_1A63A6
+ 920: 001A639A  call    menu_cursor_position_set
+ 921: 001A639F  mov     [bp+var_2], 2
+ 922: 001A63A4  jmp     short loc_1A63B0
+ 923: 001A63A6  call    menu_cursor_position_set
+ 924: 001A63AB  mov     [bp+var_2], 3
+ 925: 001A63B0  mov     bx, [bp+var_2]
+ 926: 001A63B3  shl     bx, 1
+ 927: 001A63B5  mov     ax, 4FC2h
+ 928: 001A63B8  mov     es, ax
+ 929: 001A63BA  mov     ax, es:[bx+300h]
+ 930: 001A63BF  mov     dx, 7894h
+ 931: 001A63C2  mov     es, dx
+ 932: 001A63C4  mov     es:word_79EA0, ax
+ 933: 001A63C8  mov     ax, 7894h
+ 934: 001A63CB  mov     es, ax
+ 935: 001A63CD  mov     bx, es:word_79EA0
+ 936: 001A63D2  shl     bx, 1
+ 937: 001A63D4  mov     ax, 4FC2h
+ 938: 001A63D7  mov     es, ax
+ 939: 001A63D9  push    word ptr es:[bx+30Ah]
+ 940: 001A63DE  call    overlay_bridge_to_68f9e
+ 941: 001A63E3  pop     cx
+ 942: 001A63E4  jmp     def_1A5A25; jumptable 001A5A25 default case
+ 943: 001A63E7  push    6
+ 944: 001A63E9  call    far ptr sub_2C351
+ 945: 001A63EE  pop     cx
+ 946: 001A63EF  call    undoc_133535
+ 947: 001A63F4  mov     ax, [bp+var_2]
+ 948: 001A63F7  pop     di
+ 949: 001A63F8  pop     si
+ 950: 001A63F9  leave
+ 951: 001A63FA  retf
