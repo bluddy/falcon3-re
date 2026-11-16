@@ -790,3 +790,27 @@ globals:
     type: word
     doc: Menu initialization flag (cleared to 0 on state machine entry)
     source: r57_state_machine_analysis
+  
+  - address: 0x1C72
+    segment: 0x7894
+    name: menu_loadout_array_ptr
+    size: 4
+    type: dword
+    doc: Far pointer to loadout configuration array (23-byte stride), indexed by flight record sum
+    source: r57_state_4_analysis
+  
+  - address: 0x1C32
+    segment: 0x7894
+    name: menu_coordinate_data_ptr
+    size: 4
+    type: dword
+    doc: Far pointer to coordinate data structure (used in ui_coordinate_transform)
+    source: r57_state_4_analysis
+  
+  - address: 0x1C6E
+    segment: 0x7894
+    name: menu_data_ptr_79e68
+    size: 4
+    type: dword
+    doc: Far pointer to menu data structure (set to 4FC2:0600 in State 0 and State 4)
+    source: r57_state_4_analysis
