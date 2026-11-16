@@ -214,30 +214,67 @@ def add_comments(functions, yaml_data):
             addr = int(addr, 16)
         
         # Build full comment from YAML fields
+        # Support both 'description' (new) and 'doc' (old) fields
         comment_parts = []
+        
+        # Try description field first (new format)
         if 'description' in func:
             comment_parts.append(func['description'])
-        if 'size' in func:
+        # Fall back to doc field (old format)
+        elif 'doc' in func:
+            comment_parts.append(func['doc'])
+        
+        # Add size info if available
+        if 'size' in func and 'calls' in func:
+            comment_parts.append(f"({func['size']}B, {func['calls']} calls)")
+        elif 'size' in func:
             comment_parts.append(f"({func['size']}B)")
+        
+        # Add system info
+        if 'system' in func:
+            comment_parts.append(f"[{func['system']}]")
+        
+        # Add source/notes
         if 'notes' in func:
             comment_parts.append(func['notes'])
         
         if comment_parts:
-            comments[addr] = ". ".join(comment_parts)
+            comments[addr] = " | ".join(comment_parts)
     
     added_count = 0
+    updated_count = 0
+    failed_count = 0
+    
     for addr, comment in comments.items():
+        # Check if function exists
+        func = idaapi.get_func(addr)
+        if not func:
+            failed_count += 1
+            continue
+        
+        # Get current comment
+        current_cmt = idc.get_func_cmt(addr, 0)
+        
+        # Set the comment
         if idc.set_func_cmt(addr, comment, 0):  # 0 = regular comment
             func_name = idc.get_func_name(addr)
-            print(f"✓ Added comment to {func_name}")
-            added_count += 1
+            if current_cmt:
+                print(f"✓ Updated comment for {func_name:40} @ {addr:#08x}")
+                updated_count += 1
+            else:
+                print(f"✓ Added comment to {func_name:40} @ {addr:#08x}")
+                added_count += 1
         else:
             print(f"✗ Failed to add comment to {addr:#08x}")
+            failed_count += 1
     
-    print(f"\nComments added: {added_count}/{len(comments)}")
+    print(f"\nComments added: {added_count}")
+    print(f"Comments updated: {updated_count}")
+    print(f"Failed: {failed_count}")
+    print(f"Total: {len(comments)}")
     print("="*80)
     
-    return added_count
+    return added_count + updated_count
 
 def save_naming_report(functions, renamed, skipped, failed):
     """Save report of what was renamed."""
