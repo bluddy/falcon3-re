@@ -1,0 +1,122 @@
+VIEW SWITCHING DISPATCHER - MANUAL INSPECTION TARGETS
+====================================================
+
+GOAL: Find the code that processes input_flag_pending_2 scan codes 0x02-0x0B
+      and either:
+      a) Sets r15_external_view_flag (0x107762) based on view type, OR
+      b) Calls different view handler functions
+
+TARGET ADDRESSES TO INSPECT IN IDA
+===================================
+
+Priority 1: r29_tactical_screen_coordinator
+-------------------------------------------
+0x12DFD6  - First read of input_flag_pending_2
+0x12EEDC  - Second read
+0x12F512  - Third read
+
+Priority 2: game_mode_r53_main_coordinator
+------------------------------------------
+0x182476  - First read
+0x183834  - Second read
+0x183FA6  - Third read
+0x184B10  - Fourth read
+0x185068  - Fifth read
+
+WHAT TO LOOK FOR
+================
+
+At each address above, you should see:
+  mov ax, es:input_flag_pending_2
+
+Then in the NEXT 30-50 instructions, look for:
+
+[PATTERN 1: Normalization]
+  sub ax, 2          ; Converts scan 0x02-0x0B to index 0-9
+
+[PATTERN 2: Bounds Check]
+  cmp ax, 10         ; Check if valid view key
+  ja  <skip>         ; Jump if out of range
+
+[PATTERN 3: Jump Table]
+  shl ax, 1          ; Multiply by 2 for word offsets
+  mov bx, ax
+  jmp [bx + offset]  ; Indexed jump
+
+OR:
+  jmp word ptr [table + ax*2]
+
+[PATTERN 4: If/Else Chain]
+  cmp ax, 2          ; Key 1 (satellite)
+  jz  handler_satellite
+  cmp ax, 3          ; Key 2 (ground)
+  jz  handler_ground
+  cmp ax, 4          ; Key 3 (front cockpit)
+  jz  handler_front
+  ...
+
+[PATTERN 5: Parameterized Call]
+  push ax            ; Pass scan code as parameter
+  call view_handler  ; Generic handler
+
+[PATTERN 6: Direct Handler Calls]
+  Look for sequences like:
+    cmp ax, 8        ; Key 7 (wingman view)
+    jnz skip
+    call wingman_view_setup
+    jmp done
+
+KEY INFORMATION
+===============
+
+View Key Scan Codes:
+  0x02 = Key 1 = Satellite view (EXTERNAL)
+  0x03 = Key 2 = Ground view (EXTERNAL)
+  0x04 = Key 3 = Front cockpit (INTERNAL)
+  0x05 = Key 4 = Left cockpit (INTERNAL)
+  0x06 = Key 5 = Rear cockpit (INTERNAL)
+  0x07 = Key 6 = Right cockpit (INTERNAL)
+  0x08 = Key 7 = Wingman view (EXTERNAL)
+  0x09 = Key 8 = Padlock view (EXTERNAL)
+  0x0A = Key 9 = (unused?)
+  0x0B = Key 0 = Chase plane view (EXTERNAL)
+
+External vs Internal:
+  Keys 1,2,7,8,0 = EXTERNAL views (should set flag to 1)
+  Keys 3,4,5,6   = INTERNAL views (should set flag to 0)
+
+Flag Location:
+  r15_external_view_flag at cs:0x107762
+
+INSPECTION PROCEDURE
+====================
+
+For EACH of the 8 addresses:
+
+1. Press 'G' in IDA, enter address
+2. Verify you see "mov ax, es:input_flag_pending_2"
+3. Press Down Arrow to advance through next 50 instructions
+4. Note any of the patterns above
+5. If you find dispatch logic:
+   - Document the pattern type
+   - Note the addresses of handler functions called
+   - Check if any handler writes to 0x107762
+6. If no dispatch in first 50 instructions, continue another 50
+
+QUESTIONS TO ANSWER
+===================
+
+1. Which address(es) contain the dispatcher?
+2. What dispatch method is used? (jump table, if/else, etc.)
+3. What are the handler function addresses?
+4. Do any handlers write to r15_external_view_flag (0x107762)?
+5. If not, what DO the handlers do?
+
+FALLBACK
+========
+
+If NONE of the 8 addresses show dispatch patterns:
+- The dispatcher might be elsewhere
+- Try searching for functions called FROM these coordinators
+- Look for other reads of input_flag_pending_2 in different segments
+- Consider that dispatch might be in overlay code not currently analyzed
