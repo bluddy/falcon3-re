@@ -189,16 +189,91 @@ def apply_function_names(functions):
     
     return renamed_count, skipped_count, failed_count
 
-def apply_data_names(data):
-    """Name data locations in IDA."""
+def load_globals_from_yaml():
+    """Load global variables from YAML registry."""
+    yaml_path = Path(__file__).parent.parent.parent / "registry" / "globals.yaml"
+    
+    if not yaml_path.exists():
+        print(f"WARNING: {yaml_path} not found, skipping globals")
+        return {}
+    
+    data = parse_simple_yaml(yaml_path)
+    
+    if not data or 'globals' not in data:
+        print(f"WARNING: No globals found in {yaml_path}")
+        return {}
+    
+    print(f"Loaded {len(data['globals'])} globals from {yaml_path}")
+    return data['globals']
+
+def apply_data_names(globals_list):
+    """Name global variable locations in IDA."""
     print("\n" + "="*80)
-    print("APPLYING DATA NAMES")
+    print("APPLYING GLOBAL VARIABLE NAMES")
     print("="*80)
-    print("(Data naming implementation pending)")
+    
+    renamed_count = 0
+    skipped_count = 0
+    failed_count = 0
+    
+    for glob in globals_list:
+        address = glob.get('address')
+        name = glob.get('name')
+        segment = glob.get('segment')
+        
+        if not address or not name:
+            continue
+        
+        # Handle different addressing modes
+        if segment == 'CS':
+            # Code segment - relative to current code segment
+            # In IDA, we'd need to know the actual CS value
+            # For now, skip CS-relative
+            print(f"⊘ {name:30} - CS-relative addressing not yet supported")
+            skipped_count += 1
+            continue
+        elif segment == 'DS':
+            # Data segment - most common
+            ea = address
+        elif segment:
+            # Specific segment given (e.g., 0x7894)
+            # Calculate linear address: segment * 16 + offset
+            if isinstance(segment, str) and segment.startswith('0x'):
+                seg_val = int(segment, 16)
+            else:
+                seg_val = int(segment) if isinstance(segment, int) else int(segment, 16)
+            ea = (seg_val << 4) + address
+        else:
+            # No segment specified, assume DS-relative
+            ea = address
+        
+        # Check if already named
+        current_name = idc.get_name(ea, idc.GN_VISIBLE)
+        
+        if current_name == name:
+            print(f"✓ {name:30} @ {ea:#08x} - already named")
+            skipped_count += 1
+            continue
+        
+        # Try to rename
+        if idc.set_name(ea, name, idc.SN_NOWARN | idc.SN_CHECK):
+            if current_name:
+                print(f"✓ {name:30} @ {ea:#08x} - renamed from {current_name}")
+            else:
+                print(f"✓ {name:30} @ {ea:#08x} - named")
+            renamed_count += 1
+        else:
+            print(f"✗ {name:30} @ {ea:#08x} - FAILED")
+            failed_count += 1
+    
+    print("\n" + "="*80)
+    print(f"Globals renamed: {renamed_count}")
+    print(f"Already correct: {skipped_count}")
+    print(f"Failed: {failed_count}")
+    print(f"Total processed: {len(globals_list)}")
     print("="*80)
-    # TODO: Implement data naming
-    # Need to figure out how to name segment:offset addresses
-    return 0, 0, 0
+    
+    return renamed_count, skipped_count, failed_count
 
 def add_comments(functions, yaml_data):
     """Add comments to functions with our knowledge from YAML."""
@@ -320,14 +395,17 @@ def main():
         idc.qexit(1)
         return
     
+    # Load globals from YAML
+    globals_list = load_globals_from_yaml()
+    
     # Apply function names
     renamed, skipped, failed = apply_function_names(functions)
     
     # Add comments from YAML
     comments_added = add_comments(functions, yaml_data)
     
-    # Apply data names (TODO)
-    # data_renamed, data_skipped, data_failed = apply_data_names(KNOWN_DATA)
+    # Apply global variable names
+    data_renamed, data_skipped, data_failed = apply_data_names(globals_list)
     
     # Save report
     report_file = save_naming_report(functions, renamed, skipped, failed)
@@ -338,11 +416,13 @@ def main():
     print("="*80)
     print(f"Functions renamed: {renamed}")
     print(f"Comments added: {comments_added}")
-    print(f"Failed: {failed}")
+    print(f"Globals renamed: {data_renamed}")
+    print(f"Failed (functions): {failed}")
+    print(f"Failed (globals): {data_failed}")
     print(f"Report: {report_file}")
     print("="*80)
-    print("\nIMPORTANT: Re-run this script as we learn more function names!")
-    print("Add new discoveries to registry/functions.yaml")
+    print("\nIMPORTANT: Re-run this script as we learn more function/global names!")
+    print("Add new discoveries to registry/functions.yaml and registry/globals.yaml")
     print("="*80)
     
     # Exit cleanly
