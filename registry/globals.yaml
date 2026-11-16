@@ -814,3 +814,19 @@ globals:
     type: dword
     doc: Far pointer to menu data structure (set to 4FC2:0600 in State 0 and State 4)
     source: r57_state_4_analysis
+  
+  - address: 0x1C56
+    segment: 0x7894
+    name: menu_data_structure_ptr
+    size: 4
+    type: dword
+    doc: Far pointer to data structure with offsets (modified in State 2, +0=dword, +0x24=word, +0x26=word)
+    source: r57_states_1_2_3_analysis
+  
+  - address: 0x2115
+    segment: 0x7894
+    name: menu_validation_threshold
+    size: 1
+    type: byte
+    doc: Validation threshold for menu_flight_record_sum comparison (State 2)
+    source: r57_states_1_2_3_analysis
