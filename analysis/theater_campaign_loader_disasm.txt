@@ -1,0 +1,47 @@
+DISASSEMBLY: theater_campaign_file_loader
+Address: 0x15a8b0 - 0x15b2a9
+Size: 2553 bytes
+Instructions: 875
+================================================================================
+
+0x15a8b0  enter   6, 0
+0x15a8b4  push    si
+0x15a8b5  push    di
+0x15a8b6  call    pit_channel0_latch_read; Read PIT timer for timing/randomization
+0x15a8bb  push    3
+0x15a8bd  call    event_irq_sync_handler
+0x15a8c2  pop     cx
+0x15a8c3  mov     ax, 602Eh
+0x15a8c6  mov     es, ax
+0x15a8c8  mov     ax, es:word_14F874
+0x15a8cc  mov     dx, es:word_14F872
+0x15a8d1  mov     bx, 602Eh
+0x15a8d4  mov     es, bx
+0x15a8d6  mov     es:word_14F880, ax
+0x15a8da  mov     es:word_14F87E, dx
+0x15a8df  push    639Eh
+0x15a8e2  push    8B9h
+0x15a8e5  call    far ptr menu_selection_ptr_get
+0x15a8ea  pop     cx
+0x15a8eb  pop     cx
+0x15a8ec  xor     si, si
+0x15a8ee  jmp     short loc_15A8FC
+0x15a8f0  mov     ax, 602Eh
+0x15a8f3  mov     es, ax
+0x15a8f5  mov     byte ptr es:[si+36A1h], 0
+0x15a8fb  inc     si
+0x15a8fc  cmp     si, 8
+0x15a8ff  jle     short loc_15A8F0
+0x15a901  mov     ax, 602Eh
+0x15a904  mov     es, ax
+0x15a906  mov     es:byte_151C49, 0FFh
+0x15a90c  mov     ax, 602Eh
+0x15a90f  mov     es, ax
+0x15a911  mov     es:byte_151C4A, 0
+0x15a917  mov     ax, 602Eh
+0x15a91a  mov     es, ax
+0x15a91c  mov     es:byte_14EC29, 0
+0x15a922  call    temp_file_handler
+0x15a927  push    7894h
+0x15a92a  push    0F5Ah
+0x15a92d  push    [bp+arg_0]

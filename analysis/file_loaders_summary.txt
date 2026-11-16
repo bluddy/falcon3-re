@@ -1,0 +1,211 @@
+MISSION/CAMPAIGN FILE LOADERS - ANALYSIS SUMMARY
+================================================================================
+
+File Extension Strings Found: 8
+
+MISSION:
+  "MISSION CONVERSION NOT IMPLEMENTED" at 0x846d0
+    -> undoc_166DF2 at 0x166e3d
+  "mission.dmp" at 0x846f4
+    -> game_mode_r48_main_coordinator at 0x1753aa
+  "CHOOSE MISSION" at 0x8481e
+    -> undoc_16F47D at 0x16f482
+  ".`MISSION." at 0x14e967
+    -> string_format_builder at 0x13d7ba
+    -> sub_13D869 at 0x13d8a7
+  "0.`CLEAR MISSION" at 0x1515a9
+    -> undoc_1909A0 at 0x1909f6
+    -> undoc_190AEA at 0x190b0f
+  "G2.`LOAD MISSION" at 0x1517e3
+    -> undoc_1909A0 at 0x190a1b
+    -> undoc_1909A0 at 0x190a2c
+    -> undoc_190AEA at 0x190b34
+    -> undoc_190AEA at 0x190b45
+
+THEATER:
+  "u4.`THEATER" at 0x151a11
+    -> menu_graphics_buffer_setup at 0x1322b9
+    -> undoc_139224 at 0x139250
+    -> undoc_139351 at 0x13937d
+    -> undoc_1394A2 at 0x1394ca
+    -> theater_campaign_file_loader at 0x15aa0c
+
+SQUAD:
+  "S-.`SQUAD" at 0x1512ef
+    -> squad_campaign_file_loader at 0x6a6be
+    -> squad_campaign_file_loader at 0x6a7ae
+    -> squad_campaign_file_loader at 0x6a8a3
+    -> squad_campaign_file_loader at 0x6a998
+    -> squad_campaign_file_loader at 0x6aa8d
+    -> squad_campaign_file_loader at 0x6ab82
+    -> squad_campaign_file_loader at 0x6ac77
+    -> squad_campaign_file_loader at 0x6ad6c
+    -> undoc_132012 at 0x132041
+    -> ui_font_config_apply at 0x1320f7
+    -> campaign_squadron_data_load at 0x1321b9
+    -> sub_1581E5 at 0x158224
+    -> theater_campaign_file_loader at 0x15a94e
+    -> theater_campaign_file_loader at 0x15afab
+    -> overlay_r46_processor_950 at 0x15b4be
+    -> overlay_r46_processor_950 at 0x15b574
+    -> overlay_r46_processor_950 at 0x15b6b4
+    -> overlay_r46_handler at 0x15c3b5
+    -> undoc_16042A at 0x1605eb
+    -> sub_1623FE at 0x162454
+    -> r35_field_scale_op_step at 0x164356
+    -> overlay_undecoded_body_166313 at 0x16634b
+    -> game_mode_r48_main_coordinator at 0x175458
+    -> game_mode_r48_main_coordinator at 0x17625e
+    -> game_mode_r48_main_coordinator at 0x176369
+    -> r48_arg_forward_stub at 0x176b3a
+    -> r48_mouse_event_entry at 0x17720e
+    -> overlay_undecoded_body_178ba9 at 0x178bf5
+    -> overlay_undecoded_body_178ba9 at 0x178c9c
+    -> overlay_r4F_handler at 0x179789
+    -> overlay_r4F_handler at 0x1798ee
+    -> overlay_r4F_handler at 0x179a5c
+    -> overlay_r4F_handler at 0x179b4a
+    -> overlay_r4F_handler at 0x179c4e
+    -> overlay_r4F_handler at 0x179d52
+    -> overlay_r4F_handler at 0x179eb0
+    -> overlay_r4F_handler at 0x179fa4
+    -> overlay_r4F_handler at 0x17a088
+    -> overlay_r4F_handler at 0x17a171
+    -> squadron_mission_file_loader at 0x17b53c
+    -> squadron_mission_file_loader at 0x17b5d2
+    -> squadron_mission_file_loader at 0x17b6a1
+    -> squadron_mission_file_loader at 0x17c4d1
+    -> overlay_undecoded_body_190f at 0x190fd3
+    -> r56_head_fragment at 0x1914aa
+    -> overlay_r57_processor_2 at 0x1a15bb
+
+
+DOS File Operations: 42
+--------------------------------------------------------------------------------
+
+r01_file_create_3ch (14 operations):
+  0x2cf9e: Create File (0x3c)
+  0x2cfcc: Create File (0x3c)
+  0x2cfed: Create File (0x3c)
+  0x2d001: Open File (0x3d)
+  0x2d00e: Seek File (0x42)
+  0x2d01c: Write File (0x40)
+  0x2d028: Write File (0x40)
+  0x2d02d: Close File (0x3e)
+  0x2d045: Write File (0x40)
+  0x2d08d: Write File (0x40)
+  0x2d09e: Seek File (0x42)
+  0x2d0ad: Read File (0x3f)
+  0x2d0b6: Close File (0x3e)
+  0x2d0bf: Close File (0x3e)
+
+overlay_file_open (3 operations):
+  0x2aec9: Close File (0x3e)
+  0x2aedc: Open File (0x3d)
+  0x2af3a: Open File (0x3d)
+
+file_open (2 operations):
+  0x226bd: Open File (0x3d)
+  0x226c5: Open File (0x3d)
+
+overlay_segment_load (2 operations):
+  0x2ad9a: Read File (0x3f)
+  0x2ae49: Read File (0x3f)
+
+dos_handle_dup_path (2 operations):
+  0x2cf0e: Close File (0x3e)
+  0x2cf19: Close File (0x3e)
+
+ems_extended_memory_handler (2 operations):
+  0x30966: Read File (0x3f)
+  0x3096c: Close File (0x3e)
+
+sub_12C4DE (2 operations):
+  0x12c4e9: Read File (0x3f)
+  0x12c4ee: Close File (0x3e)
+
+fwrite (2 operations):
+  0x12c50f: Write File (0x40)
+  0x12c514: Close File (0x3e)
+
+ems_ems_detect_3d44 (1 operations):
+  0x1060c: Close File (0x3e)
+
+alloc_read_mscdex (1 operations):
+  0x10886: Open File (0x3d)
+
+file_create (1 operations):
+  0x226a1: Create File (0x3c)
+
+file_close (1 operations):
+  0x226e4: Close File (0x3e)
+
+file_read (1 operations):
+  0x226f5: Read File (0x3f)
+
+file_write (1 operations):
+  0x2271f: Write File (0x40)
+
+file_lseek (1 operations):
+  0x2274d: Seek File (0x42)
+
+file_delete (1 operations):
+  0x227d8: Delete File (0x41)
+
+module_open_3d00 (1 operations):
+  0x2a724: Close File (0x3e)
+
+undoc_2B424 (1 operations):
+  0x2b442: Close File (0x3e)
+
+fname_open_3d00 (1 operations):
+  0x2ce05: Open File (0x3d)
+
+r69_pending_session_step (1 operations):
+  0x6e5f3: Delete File (0x41)
+
+sub_12C4F2 (1 operations):
+  0x12c4fe: Create File (0x3c)
+
+
+dword_79E3A Writes: 13
+--------------------------------------------------------------------------------
+
+0x67561 in menu_event_dispatch:
+  mov     word ptr es:dword_79E3A, dx
+
+0x676bd in ui_menu_frame_enter:
+  mov     word ptr es:dword_79E3A, dx
+
+0x677ab in display_palette_hud_refresh_step:
+  mov     word ptr es:dword_79E3A, dx
+
+0x692ba in ui_loadout_menu_enter:
+  mov     word ptr es:dword_79E3A, dx
+
+0x131674 in sub_13161A:
+  mov     word ptr es:dword_79E3A, dx
+
+0x1569ad in overlay_r45_logic:
+  mov     word ptr es:dword_79E3A, dx
+
+0x1571fb in overlay_r45_logic:
+  mov     word ptr es:dword_79E3A, dx
+
+0x15723c in overlay_r45_logic:
+  mov     word ptr es:dword_79E3A, dx
+
+0x15734d in overlay_r45_logic:
+  mov     word ptr es:dword_79E3A, dx
+
+0x15754d in sub_15752C:
+  mov     word ptr es:dword_79E3A, dx
+
+0x1576c0 in sub_15752C:
+  mov     word ptr es:dword_79E3A, dx
+
+0x176989 in r48_time_threshold_table_init:
+  mov     word ptr es:dword_79E3A, dx
+
+0x190e6d in undoc_190D04:
+  mov     word ptr es:dword_79E3A, dx

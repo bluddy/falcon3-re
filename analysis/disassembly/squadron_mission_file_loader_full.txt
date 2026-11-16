@@ -1,0 +1,67 @@
+Function: squadron_mission_file_loader
+Address: 0x17B437
+Size: 4516 bytes
+================================================================================
+
+   1 | +0x0000 | 0x17B437 | enter   10h, 0
+   2 | +0x0004 | 0x17B43B | push    si
+   3 | +0x0005 | 0x17B43C | push    di
+   4 | +0x0006 | 0x17B43D | mov     [bp+var_E], 0FFh
+   5 | +0x000B | 0x17B442 | mov     ax, 7894h
+   6 | +0x000E | 0x17B445 | mov     es, ax
+   7 | +0x0010 | 0x17B447 | mov     es:word_79E32, 0
+   8 | +0x0017 | 0x17B44E | mov     ax, 7894h
+   9 | +0x001A | 0x17B451 | mov     es, ax
+  10 | +0x001C | 0x17B453 | mov     es:word_79D1E, 0
+  11 | +0x0023 | 0x17B45A | xor     di, di
+  12 | +0x0025 | 0x17B45C | jmp     short loc_17B48E
+  13 | +0x0027 | 0x17B45E | mov     ax, di; Initialize 64×20-byte mission slot array. Each slot: [0]=0x20 (space), [1]=0x00 (null)  ; Initialize 64×20-byte mission slot array. Each slot: [0]=0x20 (space), [1]=0x00 (null)
+  14 | +0x0029 | 0x17B460 | mov     dx, 14h
+  15 | +0x002C | 0x17B463 | imul    dx
+  16 | +0x002E | 0x17B465 | mov     dx, 7894h
+  17 | +0x0031 | 0x17B468 | mov     es, dx
+  18 | +0x0033 | 0x17B46A | les     bx, es:dword_79D3E
+      *** MISSION SLOT ARRAY POINTER ACCESS ***
+  19 | +0x0038 | 0x17B46F | add     bx, ax
+  20 | +0x003A | 0x17B471 | mov     byte ptr es:[bx], 20h ; ' '
+      *** POTENTIAL MISSION SLOT FIELD WRITE: byte ptr es:[bx] = 20h ***
+  21 | +0x003E | 0x17B475 | mov     ax, di
+  22 | +0x0040 | 0x17B477 | mov     dx, 14h
+  23 | +0x0043 | 0x17B47A | imul    dx
+  24 | +0x0045 | 0x17B47C | mov     dx, 7894h
+  25 | +0x0048 | 0x17B47F | mov     es, dx
+  26 | +0x004A | 0x17B481 | les     bx, es:dword_79D3E
+      *** MISSION SLOT ARRAY POINTER ACCESS ***
+  27 | +0x004F | 0x17B486 | add     bx, ax
+  28 | +0x0051 | 0x17B488 | mov     byte ptr es:[bx+1], 0
+      *** POTENTIAL MISSION SLOT FIELD WRITE: byte ptr es:[bx+1] = 0 ***
+  29 | +0x0056 | 0x17B48D | inc     di
+  30 | +0x0057 | 0x17B48E | cmp     di, 40h ; '@'
+  31 | +0x005A | 0x17B491 | jl      short loc_17B45E
+  32 | +0x005C | 0x17B493 | call    sub_13AA6A; Call initialization routine  ; Call initialization routine
+  33 | +0x0061 | 0x17B498 | mov     ax, 7894h
+  34 | +0x0064 | 0x17B49B | mov     es, ax
+  35 | +0x0066 | 0x17B49D | mov     ax, word ptr es:dword_79EDE+2
+  36 | +0x006A | 0x17B4A1 | mov     dx, word ptr es:dword_79EDE
+  37 | +0x006F | 0x17B4A6 | mov     bx, 602Eh
+  38 | +0x0072 | 0x17B4A9 | mov     es, bx
+  39 | +0x0074 | 0x17B4AB | mov     word ptr es:dword_151BFC+2, ax
+  40 | +0x0078 | 0x17B4AF | mov     word ptr es:dword_151BFC, dx
+  41 | +0x007D | 0x17B4B4 | mov     ax, 7894h
+  42 | +0x0080 | 0x17B4B7 | mov     es, ax
+  43 | +0x0082 | 0x17B4B9 | mov     es:byte_7A310, 0
+  44 | +0x0088 | 0x17B4BF | mov     ax, 709Fh; Check graphics mode - skip file loading in certain modes  ; Check graphics mode - skip file loading in certain modes
+  45 | +0x008B | 0x17B4C2 | mov     es, ax
+  46 | +0x008D | 0x17B4C4 | mov     al, byte ptr es:word_70A2A
+  47 | +0x0091 | 0x17B4C8 | cbw
+  48 | +0x0092 | 0x17B4C9 | shl     ax, 2
+  49 | +0x0095 | 0x17B4CC | mov     dx, 602Eh
+  50 | +0x0098 | 0x17B4CF | mov     bx, ax
+  51 | +0x009A | 0x17B4D1 | mov     es, dx
+  52 | +0x009C | 0x17B4D3 | cmp     byte ptr es:[bx+2], 0
+  53 | +0x00A2 | 0x17B4D9 | jnz     short loc_17B4EB
+  54 | +0x00A4 | 0x17B4DB | mov     ax, 7894h
+  55 | +0x00A7 | 0x17B4DE | mov     es, ax
+  56 | +0x00A9 | 0x17B4E0 | cmp     es:graphics_mode_flag, 0
+  57 | +0x00AF | 0x17B4E6 | jz      short loc_17B4EB
+  58 | +0x00B1 | 0x17B4E8 | jmp     loc_17C58E

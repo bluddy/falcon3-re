@@ -1,0 +1,64 @@
+DISASSEMBLY: squadron_mission_file_loader
+Address: 0x17b437 - 0x17c5db
+Size: 4516 bytes
+Instructions: 1602
+================================================================================
+
+0x17b437  enter   10h, 0
+0x17b43b  push    si
+0x17b43c  push    di
+0x17b43d  mov     [bp+var_E], 0FFh
+0x17b442  mov     ax, 7894h
+0x17b445  mov     es, ax
+0x17b447  mov     es:word_79E32, 0
+0x17b44e  mov     ax, 7894h
+0x17b451  mov     es, ax
+0x17b453  mov     es:word_79D1E, 0
+0x17b45a  xor     di, di
+0x17b45c  jmp     short loc_17B48E
+0x17b45e  mov     ax, di; Initialize 64×20-byte mission slot array. Each slot: [0]=0x20 (space), [1]=0x00 (null)
+0x17b460  mov     dx, 14h
+0x17b463  imul    dx
+0x17b465  mov     dx, 7894h
+0x17b468  mov     es, dx
+0x17b46a  les     bx, es:dword_79D3E
+0x17b46f  add     bx, ax
+0x17b471  mov     byte ptr es:[bx], 20h ; ' '
+0x17b475  mov     ax, di
+0x17b477  mov     dx, 14h
+0x17b47a  imul    dx
+0x17b47c  mov     dx, 7894h
+0x17b47f  mov     es, dx
+0x17b481  les     bx, es:dword_79D3E
+0x17b486  add     bx, ax
+0x17b488  mov     byte ptr es:[bx+1], 0
+0x17b48d  inc     di
+0x17b48e  cmp     di, 40h ; '@'
+0x17b491  jl      short loc_17B45E
+0x17b493  call    sub_13AA6A; Call initialization routine
+0x17b498  mov     ax, 7894h
+0x17b49b  mov     es, ax
+0x17b49d  mov     ax, word ptr es:dword_79EDE+2
+0x17b4a1  mov     dx, word ptr es:dword_79EDE
+0x17b4a6  mov     bx, 602Eh
+0x17b4a9  mov     es, bx
+0x17b4ab  mov     word ptr es:dword_151BFC+2, ax
+0x17b4af  mov     word ptr es:dword_151BFC, dx
+0x17b4b4  mov     ax, 7894h
+0x17b4b7  mov     es, ax
+0x17b4b9  mov     es:byte_7A310, 0
+0x17b4bf  mov     ax, 709Fh; Check graphics mode - skip file loading in certain modes
+0x17b4c2  mov     es, ax
+0x17b4c4  mov     al, byte ptr es:word_70A2A
+0x17b4c8  cbw
+0x17b4c9  shl     ax, 2
+0x17b4cc  mov     dx, 602Eh
+0x17b4cf  mov     bx, ax
+0x17b4d1  mov     es, dx
+0x17b4d3  cmp     byte ptr es:[bx+2], 0
+0x17b4d9  jnz     short loc_17B4EB
+0x17b4db  mov     ax, 7894h
+0x17b4de  mov     es, ax
+0x17b4e0  cmp     es:graphics_mode_flag, 0
+0x17b4e6  jz      short loc_17B4EB
+0x17b4e8  jmp     loc_17C58E

@@ -547,6 +547,66 @@
 # FLIGHT/MISSION STRUCTURES
 # ============================================================================
 
+- name: MissionSlot
+  size: 20  # 0x14 bytes - EXACT SIZE FROM INITIALIZATION
+  description: |
+    Mission slot header/index in campaign mission array.
+    64 slots per campaign (1,280 bytes total).
+    Array pointer: dword_79D3E in segment 0x7894.
+    
+    WARNING: dword_79D3E is a multi-purpose pointer that changes context:
+    - In initialization: points to 64×20 byte MissionSlot array
+    - In R55/R56 overlays: points to larger ~1600-byte structure
+  evidence:
+    - address: 0x17B437
+      function: squadron_mission_file_loader
+      pattern: "mov dx, 14h; imul dx; cmp di, 40h (64 slots)"
+    - writer_analysis: 53 references across 15 functions
+    - campaign_file: 1,280 bytes (64×20) in .CAM header
+  fields:
+    - offset: 0x00
+      size: 2
+      type: char[2]
+      name: label
+      description: |
+        Mission label/ID string (2 chars).
+        Initialized to {0x20 (space), 0x00 (null)}.
+        Populated by file loader and string manipulation functions.
+      evidence:
+        - init: "mov byte ptr es:[bx], 20h; mov byte ptr es:[bx+1], 0"
+        - writers: squadron_mission_file_loader (0x17B471), sub_135C57 (0x135C89)
+    
+    - offset: 0x02
+      size: 2
+      type: uint16_t
+      name: field_02
+      description: |
+        Unknown field, value 0xC8 (200 decimal).
+        Possibly mission timing threshold, ID, or squadron capacity.
+      evidence:
+        - writers: r48_time_threshold_table_init (0x176AFA), undoc_190D04 (0x190F9A)
+        - value: "mov word ptr es:[bx+2], 0C8h"
+    
+    - offset: 0x04
+      size: 16
+      type: uint8_t[16]
+      name: unknown
+      description: |
+        Unknown fields (16 bytes).
+        Not directly written during initialization.
+        Likely populated from .TSK file reads (1902 bytes read at 0x17B444).
+        May contain: mission type, theater, objectives, timing, etc.
+      evidence:
+        - file_read: squadron_mission_file_loader reads .TSK files
+        - offset_713: "Read 1902 bytes from .TSK → 0x602E:0x068F"
+  
+  notes:
+    - "Total array size: 64 slots × 20 bytes = 1,280 bytes (0x500)"
+    - "Array pointer: dword_79D3E @ segment 0x7894"
+    - "Initialized by: squadron_mission_file_loader @ 0x17B437"
+    - "Next slot boundary confirmed: +0x14 writes by sub_170E24"
+    - "Context warning: R55/R56 overlays use dword_79D3E for different structure"
+
 - name: FlightRecord
   size: 130  # 0x82 bytes - from R57 analysis
   description: |
