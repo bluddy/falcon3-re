@@ -1,0 +1,1799 @@
+DISASSEMBLY: r53_script_opcode_interpreter
+Address: 0x186a7c - 0x187e34
+Size: 5048 bytes
+================================================================================
+
+0x186a7c  enter   0B0h, 0
+0x186a80  push    si
+0x186a81  push    di
+0x186a82  mov     [bp+var_2C], 0
+0x186a87  call    pit_channel0_latch_read
+0x186a8c  call    sub_13DB56; Set CS:byte_13DABA to 0xFF (7B, 20 calls)
+0x186a91  call    sub_136DDD
+0x186a96  xor     di, di
+0x186a98  jmp     short loc_186AF0
+0x186a9a  mov     bx, di
+0x186a9c  shl     bx, 1
+0x186a9e  lea     ax, [bp+var_70]
+0x186aa1  add     bx, ax
+0x186aa3  mov     word ptr ss:[bx], 0FFFFh
+0x186aa8  mov     [bp+di+var_20], 0
+0x186aac  mov     bx, di
+0x186aae  shl     bx, 1
+0x186ab0  lea     ax, [bp+var_80]
+0x186ab3  add     bx, ax
+0x186ab5  mov     word ptr ss:[bx], 0
+0x186aba  mov     bx, di
+0x186abc  shl     bx, 1
+0x186abe  lea     ax, [bp+var_90]
+0x186ac2  add     bx, ax
+0x186ac4  mov     word ptr ss:[bx], 0
+0x186ac9  mov     bx, di
+0x186acb  shl     bx, 1
+0x186acd  lea     ax, [bp+var_A0]
+0x186ad1  add     bx, ax
+0x186ad3  mov     word ptr ss:[bx], 0
+0x186ad8  mov     bx, di
+0x186ada  shl     bx, 1
+0x186adc  lea     ax, [bp+var_B0]
+0x186ae0  add     bx, ax
+0x186ae2  mov     word ptr ss:[bx], 0
+0x186ae7  mov     [bp+di+var_38], 0
+0x186aeb  mov     [bp+di+var_40], 0
+0x186aef  inc     di
+0x186af0  cmp     di, 8
+0x186af3  jl      short loc_186A9A
+0x186af5  mov     [bp+var_8], 0
+0x186afa  mov     [bp+var_30], 0
+0x186aff  mov     ax, 7894h
+0x186b02  mov     es, ax
+0x186b04  mov     ax, word ptr es:dword_79E3A+2
+0x186b08  mov     dx, word ptr es:dword_79E3A
+0x186b0d  add     dx, 3Dh ; '='
+0x186b10  mov     word ptr [bp+var_44+2], ax
+0x186b13  mov     word ptr [bp+var_44], dx
+0x186b16  mov     ax, 7894h
+0x186b19  mov     es, ax
+0x186b1b  cmp     es:graphics_mode_flag, 0
+0x186b21  jz      short loc_186B35
+0x186b23  mov     ax, 7894h
+0x186b26  mov     es, ax
+0x186b28  cmp     es:byte_7A302, 0
+0x186b2e  jz      short loc_186B35
+0x186b30  call    loc_6CAD5+2
+0x186b35  xor     di, di
+0x186b37  jmp     loc_186CE0
+0x186b3a  mov     ax, di
+0x186b3c  mov     dx, 42h ; 'B'
+0x186b3f  imul    dx
+0x186b41  les     bx, [bp+var_44]
+0x186b44  add     bx, ax
+0x186b46  cmp     byte ptr es:[bx+41h], 0FFh
+0x186b4b  jnz     short loc_186B50
+0x186b4d  jmp     loc_186C78
+0x186b50  mov     ax, di
+0x186b52  mov     dx, 42h ; 'B'
+0x186b55  imul    dx
+0x186b57  mov     bx, word ptr [bp+var_44]
+0x186b5a  add     bx, ax
+0x186b5c  mov     al, es:[bx+41h]
+0x186b60  cbw
+0x186b61  shl     ax, 1
+0x186b63  lea     dx, [bp+var_70]
+0x186b66  add     ax, dx
+0x186b68  mov     bx, ax
+0x186b6a  mov     ss:[bx], di
+0x186b6d  mov     ax, di
+0x186b6f  mov     dx, 42h ; 'B'
+0x186b72  imul    dx
+0x186b74  mov     bx, word ptr [bp+var_44]
+0x186b77  add     bx, ax
+0x186b79  mov     al, es:[bx+41h]
+0x186b7d  cbw
+0x186b7e  shl     ax, 1
+0x186b80  lea     dx, [bp+var_B0]
+0x186b84  add     ax, dx
+0x186b86  push    ax
+0x186b87  mov     ax, di
+0x186b89  mov     dx, 42h ; 'B'
+0x186b8c  imul    dx
+0x186b8e  mov     bx, word ptr [bp+var_44]
+0x186b91  add     bx, ax
+0x186b93  mov     al, es:[bx+24h]
+0x186b97  mov     ah, 0
+0x186b99  shl     ax, 8
+0x186b9c  pop     bx
+0x186b9d  mov     ss:[bx], ax
+0x186ba0  mov     ax, di
+0x186ba2  mov     dx, 42h ; 'B'
+0x186ba5  imul    dx
+0x186ba7  mov     bx, word ptr [bp+var_44]
+0x186baa  add     bx, ax
+0x186bac  mov     al, es:[bx+41h]
+0x186bb0  cbw
+0x186bb1  shl     ax, 1
+0x186bb3  lea     dx, [bp+var_80]
+0x186bb6  add     ax, dx
+0x186bb8  push    ax
+0x186bb9  mov     ax, di
+0x186bbb  mov     dx, 42h ; 'B'
+0x186bbe  imul    dx
+0x186bc0  mov     bx, word ptr [bp+var_44]
+0x186bc3  add     bx, ax
+0x186bc5  mov     al, es:[bx+25h]
+0x186bc9  mov     ah, 0
+0x186bcb  shl     ax, 8
+0x186bce  pop     bx
+0x186bcf  mov     ss:[bx], ax
+0x186bd2  mov     ax, di
+0x186bd4  mov     dx, 42h ; 'B'
+0x186bd7  imul    dx
+0x186bd9  mov     bx, word ptr [bp+var_44]
+0x186bdc  add     bx, ax
+0x186bde  mov     al, es:[bx+41h]
+0x186be2  cbw
+0x186be3  shl     ax, 1
+0x186be5  lea     dx, [bp+var_90]
+0x186be9  add     ax, dx
+0x186beb  push    ax
+0x186bec  mov     ax, di
+0x186bee  mov     dx, 42h ; 'B'
+0x186bf1  imul    dx
+0x186bf3  mov     bx, word ptr [bp+var_44]
+0x186bf6  add     bx, ax
+0x186bf8  mov     al, es:[bx+23h]
+0x186bfc  mov     ah, 0
+0x186bfe  shl     ax, 8
+0x186c01  pop     bx
+0x186c02  mov     ss:[bx], ax
+0x186c05  mov     ax, di
+0x186c07  mov     dx, 42h ; 'B'
+0x186c0a  imul    dx
+0x186c0c  mov     bx, word ptr [bp+var_44]
+0x186c0f  add     bx, ax
+0x186c11  mov     al, es:[bx+41h]
+0x186c15  cbw
+0x186c16  shl     ax, 1
+0x186c18  lea     dx, [bp+var_A0]
+0x186c1c  add     ax, dx
+0x186c1e  push    ax
+0x186c1f  mov     ax, di
+0x186c21  mov     dx, 42h ; 'B'
+0x186c24  imul    dx
+0x186c26  mov     bx, word ptr [bp+var_44]
+0x186c29  add     bx, ax
+0x186c2b  mov     al, es:[bx+22h]
+0x186c2f  mov     ah, 0
+0x186c31  shl     ax, 8
+0x186c34  pop     bx
+0x186c35  mov     ss:[bx], ax
+0x186c38  mov     ax, di
+0x186c3a  mov     dx, 42h ; 'B'
+0x186c3d  imul    dx
+0x186c3f  mov     bx, word ptr [bp+var_44]
+0x186c42  add     bx, ax
+0x186c44  mov     al, es:[bx+31h]
+0x186c48  push    ax
+0x186c49  mov     ax, di
+0x186c4b  mov     dx, 42h ; 'B'
+0x186c4e  imul    dx
+0x186c50  mov     bx, word ptr [bp+var_44]
+0x186c53  add     bx, ax
+0x186c55  mov     al, es:[bx+41h]
+0x186c59  cbw
+0x186c5a  lea     dx, [bp+var_28]
+0x186c5d  add     ax, dx
+0x186c5f  mov     bx, ax
+0x186c61  pop     ax
+0x186c62  mov     ss:[bx], al
+0x186c65  mov     ax, di
+0x186c67  mov     dx, 42h ; 'B'
+0x186c6a  imul    dx
+0x186c6c  mov     bx, word ptr [bp+var_44]
+0x186c6f  add     bx, ax
+0x186c71  mov     byte ptr es:[bx+30h], 0
+0x186c76  jmp     short loc_186CDF
+0x186c78  call    farobj_vec3_accum_b_ret
+0x186c7d  and     ax, 7FFFh
+0x186c80  mov     bx, 1Eh
+0x186c83  cwd
+0x186c84  idiv    bx
+0x186c86  mov     ax, di
+0x186c88  mov     bx, 42h ; 'B'
+0x186c8b  push    dx
+0x186c8c  imul    bx
+0x186c8e  les     bx, [bp+var_44]
+0x186c91  add     bx, ax
+0x186c93  mov     al, es:[bx+25h]
+0x186c97  pop     dx
+0x186c98  add     al, dl
+0x186c9a  push    ax
+0x186c9b  mov     ax, di
+0x186c9d  mov     dx, 42h ; 'B'
+0x186ca0  imul    dx
+0x186ca2  mov     bx, word ptr [bp+var_44]
+0x186ca5  add     bx, ax
+0x186ca7  pop     ax
+0x186ca8  mov     es:[bx+25h], al
+0x186cac  push    di
+0x186cad  push    word ptr [bp+var_44+2]
+0x186cb0  push    word ptr [bp+var_44]
+0x186cb3  call    loc_6CA45+3
+0x186cb8  add     sp, 6
+0x186cbb  mov     ax, di
+0x186cbd  mov     dx, 42h ; 'B'
+0x186cc0  imul    dx
+0x186cc2  les     bx, [bp+var_44]
+0x186cc5  add     bx, ax
+0x186cc7  cmp     byte ptr es:[bx+25h], 64h ; 'd'
+0x186ccc  jbe     short loc_186CDF
+0x186cce  mov     ax, di
+0x186cd0  mov     dx, 42h ; 'B'
+0x186cd3  imul    dx
+0x186cd5  mov     bx, word ptr [bp+var_44]
+0x186cd8  add     bx, ax
+0x186cda  mov     byte ptr es:[bx+25h], 64h ; 'd'
+0x186cdf  inc     di
+0x186ce0  mov     ax, 7894h
+0x186ce3  mov     es, ax
+0x186ce5  les     bx, es:dword_79E3A
+0x186cea  cmp     es:[bx+0A8Dh], di
+0x186cef  jbe     short loc_186CF4
+0x186cf1  jmp     loc_186B3A
+0x186cf4  xor     di, di
+0x186cf6  jmp     short loc_186D48
+0x186cf8  mov     bx, di
+0x186cfa  shl     bx, 1
+0x186cfc  lea     ax, [bp+var_70]
+0x186cff  add     bx, ax
+0x186d01  cmp     word ptr ss:[bx], 0FFFFh
+0x186d05  jz      short loc_186D47
+0x186d07  mov     bx, di
+0x186d09  shl     bx, 1
+0x186d0b  add     bx, ax
+0x186d0d  mov     ax, ss:[bx]
+0x186d10  mov     dx, 42h ; 'B'
+0x186d13  imul    dx
+0x186d15  les     bx, [bp+var_44]
+0x186d18  add     bx, ax
+0x186d1a  inc     byte ptr es:[bx+27h]
+0x186d1e  mov     ax, 7894h
+0x186d21  mov     es, ax
+0x186d23  cmp     es:graphics_mode_flag, 0
+0x186d29  jz      short loc_186D47
+0x186d2b  mov     ax, 7894h
+0x186d2e  mov     es, ax
+0x186d30  les     bx, es:dword_79E3A
+0x186d35  inc     word ptr es:[bx+0Fh]
+0x186d39  mov     ax, 7894h
+0x186d3c  mov     es, ax
+0x186d3e  les     bx, es:menu_state_ptr
+0x186d43  inc     word ptr es:[bx+0Ch]
+0x186d47  inc     di
+0x186d48  cmp     di, 8
+0x186d4b  jl      short loc_186CF8
+0x186d4d  mov     [bp+var_10], 0
+0x186d51  mov     ax, 7894h; jumptable 00186D81 default case
+0x186d54  mov     es, ax
+0x186d56  push    es:word_79E72
+0x186d5b  push    es:word_79E70
+0x186d60  call    sub_13DAD0; Utility function (133B, 16 calls) - needs investigation
+0x186d65  pop     cx
+0x186d66  pop     cx
+0x186d67  mov     word ptr [bp+var_4C+2], dx
+0x186d6a  mov     word ptr [bp+var_4C], ax
+0x186d6d  les     bx, [bp+var_4C]
+0x186d70  mov     al, es:[bx]
+0x186d73  mov     ah, 0
+0x186d75  and     ax, 7
+0x186d78  mov     bx, ax
+0x186d7a  cmp     bx, 7; switch 1 cases
+0x186d7d  ja      short def_186D81; jumptable 00186D81 default case
+0x186d7f  shl     bx, 1
+0x186d81  jmp     cs:jpt_186D81[bx]; switch jump
+0x186d86  add     word ptr [bp+var_4C], 5
+0x186d8a  inc     [bp+var_2C]
+0x186d8d  jmp     short def_186D81; jumptable 00186D81 default case
+0x186d8f  les     bx, [bp+var_4C]
+0x186d92  mov     al, es:[bx]
+0x186d95  mov     ah, 0
+0x186d97  mov     si, ax
+0x186d99  sar     si, 3
+0x186d9c  and     si, 7
+0x186da0  inc     word ptr [bp+var_4C]
+0x186da3  les     bx, [bp+var_4C]
+0x186da6  mov     al, es:[bx]
+0x186da9  mov     ah, 0
+0x186dab  mov     [bp+var_16], ax
+0x186dae  and     [bp+var_16], 0Fh
+0x186db3  cmp     [bp+var_16], 0Ch
+0x186db7  jnz     short loc_186DC0
+0x186db9  mov     [bp+var_2E], 1
+0x186dbe  jmp     short loc_186DC5
+0x186dc0  mov     [bp+var_2E], 0
+0x186dc5  inc     word ptr [bp+var_4C]
+0x186dc8  jmp     short def_186D81; jumptable 00186D81 default case
+0x186dca  les     bx, [bp+var_4C]
+0x186dcd  mov     al, es:[bx]
+0x186dd0  mov     ah, 0
+0x186dd2  mov     si, ax
+0x186dd4  sar     si, 3
+0x186dd7  and     si, 7
+0x186ddb  mov     al, es:[bx]
+0x186dde  mov     [bp+var_F], al
+0x186de1  sar     [bp+var_F], 6
+0x186de5  and     [bp+var_F], 3
+0x186de9  inc     word ptr [bp+var_4C]
+0x186dec  les     bx, [bp+var_4C]
+0x186def  mov     al, es:[bx]
+0x186df2  mov     ah, 0
+0x186df4  mov     [bp+var_12], ax
+0x186df7  and     [bp+var_12], 0Fh
+0x186dfc  mov     al, es:[bx]
+0x186dff  mov     ah, 0
+0x186e01  mov     [bp+var_14], ax
+0x186e04  sar     [bp+var_14], 4
+0x186e08  and     [bp+var_14], 0Fh
+0x186e0d  inc     word ptr [bp+var_4C]
+0x186e10  les     bx, [bp+var_4C]
+0x186e13  mov     al, es:[bx]
+0x186e16  mov     ah, 0
+0x186e18  mov     [bp+var_16], ax
+0x186e1b  inc     word ptr [bp+var_4C]
+0x186e1e  les     bx, [bp+var_4C]
+0x186e21  mov     al, es:[bx]
+0x186e24  mov     ah, 0
+0x186e26  mov     [bp+var_2A], ax
+0x186e29  inc     word ptr [bp+var_4C]
+0x186e2c  les     bx, [bp+var_4C]
+0x186e2f  mov     al, es:[bx]
+0x186e32  mov     ah, 0
+0x186e34  mov     [bp+var_30], ax
+0x186e37  and     [bp+var_30], 3Fh
+0x186e3c  mov     ax, 602Eh
+0x186e3f  mov     es, ax
+0x186e41  les     bx, es:dword_151B42
+0x186e46  add     bx, [bp+var_30]
+0x186e49  inc     byte ptr es:[bx]
+0x186e4c  inc     word ptr [bp+var_4C]
+0x186e4f  cmp     [bp+var_16], 20h ; ' '
+0x186e53  jge     short loc_186E58
+0x186e55  jmp     loc_187168
+0x186e58  mov     ax, 7894h
+0x186e5b  mov     es, ax
+0x186e5d  mov     ax, es:word_79D98
+0x186e61  mov     dx, es:word_79D96
+0x186e66  mov     word ptr [bp+var_48+2], ax
+0x186e69  mov     word ptr [bp+var_48], dx
+0x186e6c  add     word ptr [bp+var_48], 4
+0x186e70  mov     ax, [bp+var_16]
+0x186e73  add     word ptr [bp+var_48], ax
+0x186e76  les     bx, [bp+var_48]
+0x186e79  mov     al, es:[bx]
+0x186e7c  mov     ah, 0
+0x186e7e  mov     bx, ax
+0x186e80  cmp     bx, 5
+0x186e83  jbe     short loc_186E88
+0x186e85  jmp     loc_1870D0
+0x186e88  shl     bx, 1
+0x186e8a  jmp     word ptr cs:[bx+193Ch]
+0x186e8f  mov     ax, 602Eh
+0x186e92  mov     es, ax
+0x186e94  les     bx, es:dword_151B42
+0x186e99  add     bx, [bp+var_30]
+0x186e9c  cmp     byte ptr es:[bx], 2
+0x186ea0  jl      short loc_186EA5
+0x186ea2  jmp     loc_1870D0
+0x186ea5  mov     bx, si
+0x186ea7  shl     bx, 1
+0x186ea9  lea     ax, [bp+var_70]
+0x186eac  add     bx, ax
+0x186eae  mov     ax, ss:[bx]
+0x186eb1  mov     dx, 42h ; 'B'
+0x186eb4  imul    dx
+0x186eb6  les     bx, [bp+var_44]
+0x186eb9  add     bx, ax
+0x186ebb  inc     byte ptr es:[bx+28h]
+0x186ebf  mov     ax, 7894h
+0x186ec2  mov     es, ax
+0x186ec4  les     bx, es:dword_79E3A
+0x186ec9  inc     word ptr es:[bx+11h]
+0x186ecd  mov     ax, 7894h
+0x186ed0  mov     es, ax
+0x186ed2  cmp     es:word_79B56, 2
+0x186ed8  jnz     short loc_186EEB
+0x186eda  mov     ax, 7894h
+0x186edd  mov     es, ax
+0x186edf  les     bx, es:menu_state_ptr
+0x186ee4  inc     word ptr es:[bx+1Ah]
+0x186ee8  jmp     loc_1870BE
+0x186eeb  jmp     loc_1870BE
+0x186eee  mov     ax, 602Eh
+0x186ef1  mov     es, ax
+0x186ef3  les     bx, es:dword_151B42
+0x186ef8  add     bx, [bp+var_30]
+0x186efb  cmp     byte ptr es:[bx], 2
+0x186eff  jl      short loc_186F04
+0x186f01  jmp     loc_1870D0
+0x186f04  mov     bx, si
+0x186f06  shl     bx, 1
+0x186f08  lea     ax, [bp+var_70]
+0x186f0b  add     bx, ax
+0x186f0d  mov     ax, ss:[bx]
+0x186f10  mov     dx, 42h ; 'B'
+0x186f13  imul    dx
+0x186f15  les     bx, [bp+var_44]
+0x186f18  add     bx, ax
+0x186f1a  inc     byte ptr es:[bx+29h]
+0x186f1e  mov     ax, 7894h
+0x186f21  mov     es, ax
+0x186f23  les     bx, es:dword_79E3A
+0x186f28  inc     word ptr es:[bx+13h]
+0x186f2c  mov     ax, 7894h
+0x186f2f  mov     es, ax
+0x186f31  cmp     es:word_79B56, 2
+0x186f37  jnz     short loc_186F4A
+0x186f39  mov     ax, 7894h
+0x186f3c  mov     es, ax
+0x186f3e  les     bx, es:menu_state_ptr
+0x186f43  inc     word ptr es:[bx+1Ch]
+0x186f47  jmp     loc_1870BE
+0x186f4a  jmp     loc_1870BE
+0x186f4d  mov     ax, 602Eh
+0x186f50  mov     es, ax
+0x186f52  les     bx, es:dword_151B42
+0x186f57  add     bx, [bp+var_30]
+0x186f5a  cmp     byte ptr es:[bx], 2
+0x186f5e  jl      short loc_186F63
+0x186f60  jmp     loc_1870D0
+0x186f63  mov     bx, si
+0x186f65  shl     bx, 1
+0x186f67  lea     ax, [bp+var_70]
+0x186f6a  add     bx, ax
+0x186f6c  mov     ax, ss:[bx]
+0x186f6f  mov     dx, 42h ; 'B'
+0x186f72  imul    dx
+0x186f74  les     bx, [bp+var_44]
+0x186f77  add     bx, ax
+0x186f79  inc     byte ptr es:[bx+2Ah]
+0x186f7d  mov     ax, 7894h
+0x186f80  mov     es, ax
+0x186f82  les     bx, es:dword_79E3A
+0x186f87  inc     word ptr es:[bx+15h]
+0x186f8b  mov     ax, 7894h
+0x186f8e  mov     es, ax
+0x186f90  cmp     es:word_79B56, 2
+0x186f96  jnz     short loc_186FA9
+0x186f98  mov     ax, 7894h
+0x186f9b  mov     es, ax
+0x186f9d  les     bx, es:menu_state_ptr
+0x186fa2  inc     word ptr es:[bx+1Eh]
+0x186fa6  jmp     loc_1870BE
+0x186fa9  jmp     loc_1870BE
+0x186fac  mov     ax, 602Eh
+0x186faf  mov     es, ax
+0x186fb1  les     bx, es:dword_151B42
+0x186fb6  add     bx, [bp+var_30]
+0x186fb9  cmp     byte ptr es:[bx], 2
+0x186fbd  jl      short loc_186FC2
+0x186fbf  jmp     loc_1870D0
+0x186fc2  mov     bx, si
+0x186fc4  shl     bx, 1
+0x186fc6  lea     ax, [bp+var_70]
+0x186fc9  add     bx, ax
+0x186fcb  mov     ax, ss:[bx]
+0x186fce  mov     dx, 42h ; 'B'
+0x186fd1  imul    dx
+0x186fd3  les     bx, [bp+var_44]
+0x186fd6  add     bx, ax
+0x186fd8  inc     byte ptr es:[bx+2Bh]
+0x186fdc  mov     ax, 7894h
+0x186fdf  mov     es, ax
+0x186fe1  les     bx, es:dword_79E3A
+0x186fe6  inc     word ptr es:[bx+17h]
+0x186fea  mov     ax, 7894h
+0x186fed  mov     es, ax
+0x186fef  cmp     es:word_79B56, 2
+0x186ff5  jnz     short loc_187008
+0x186ff7  mov     ax, 7894h
+0x186ffa  mov     es, ax
+0x186ffc  les     bx, es:menu_state_ptr
+0x187001  inc     word ptr es:[bx+20h]
+0x187005  jmp     loc_1870BE
+0x187008  jmp     loc_1870BE
+0x18700b  mov     ax, 602Eh
+0x18700e  mov     es, ax
+0x187010  les     bx, es:dword_151B42
+0x187015  add     bx, [bp+var_30]
+0x187018  cmp     byte ptr es:[bx], 2
+0x18701c  jl      short loc_187021
+0x18701e  jmp     loc_1870D0
+0x187021  mov     bx, si
+0x187023  shl     bx, 1
+0x187025  lea     ax, [bp+var_70]
+0x187028  add     bx, ax
+0x18702a  mov     ax, ss:[bx]
+0x18702d  mov     dx, 42h ; 'B'
+0x187030  imul    dx
+0x187032  les     bx, [bp+var_44]
+0x187035  add     bx, ax
+0x187037  inc     byte ptr es:[bx+2Dh]
+0x18703b  mov     ax, 7894h
+0x18703e  mov     es, ax
+0x187040  les     bx, es:dword_79E3A
+0x187045  inc     word ptr es:[bx+19h]
+0x187049  mov     ax, 7894h
+0x18704c  mov     es, ax
+0x18704e  cmp     es:word_79B56, 2
+0x187054  jnz     short loc_187066
+0x187056  mov     ax, 7894h
+0x187059  mov     es, ax
+0x18705b  les     bx, es:menu_state_ptr
+0x187060  inc     word ptr es:[bx+24h]
+0x187064  jmp     short loc_1870BE
+0x187066  jmp     short loc_1870BE
+0x187068  mov     ax, 602Eh
+0x18706b  mov     es, ax
+0x18706d  les     bx, es:dword_151B42
+0x187072  add     bx, [bp+var_30]
+0x187075  cmp     byte ptr es:[bx], 2
+0x187079  jge     short loc_1870D0
+0x18707b  mov     bx, si
+0x18707d  shl     bx, 1
+0x18707f  lea     ax, [bp+var_70]
+0x187082  add     bx, ax
+0x187084  mov     ax, ss:[bx]
+0x187087  mov     dx, 42h ; 'B'
+0x18708a  imul    dx
+0x18708c  les     bx, [bp+var_44]
+0x18708f  add     bx, ax
+0x187091  inc     byte ptr es:[bx+2Ch]
+0x187095  mov     ax, 7894h
+0x187098  mov     es, ax
+0x18709a  les     bx, es:dword_79E3A
+0x18709f  inc     word ptr es:[bx+1Bh]
+0x1870a3  mov     ax, 7894h
+0x1870a6  mov     es, ax
+0x1870a8  cmp     es:word_79B56, 2
+0x1870ae  jnz     short loc_1870BE
+0x1870b0  mov     ax, 7894h
+0x1870b3  mov     es, ax
+0x1870b5  les     bx, es:menu_state_ptr
+0x1870ba  inc     word ptr es:[bx+22h]
+0x1870be  les     bx, [bp+var_48]
+0x1870c1  mov     al, es:[bx]
+0x1870c4  mov     ah, 0
+0x1870c6  lea     dx, [bp+var_40]
+0x1870c9  add     ax, dx
+0x1870cb  mov     bx, ax
+0x1870cd  inc     byte ptr ss:[bx]
+0x1870d0  cmp     [bp+var_F], 2
+0x1870d4  jz      short loc_1870DF
+0x1870d6  cmp     [bp+var_F], 3
+0x1870da  jz      short loc_1870DF
+0x1870dc  jmp     loc_187168
+0x1870df  les     bx, [bp+var_48]
+0x1870e2  mov     al, es:[bx]
+0x1870e5  mov     ah, 0
+0x1870e7  mov     bx, ax
+0x1870e9  cmp     bx, 5; switch with an invalid jump table
+0x1870ec  ja      short def_1870F0; jumptable 001870F0 default case
+0x1870ee  shl     bx, 1
+0x1870f0  jmp     cs:jpt_1870F0[bx]; switch jump
+0x1870f5  push    [bp+var_30]
+0x1870f8  call    sub_136DFC
+0x1870fd  pop     cx
+0x1870fe  or      ax, ax
+0x187100  jz      short loc_18710E
+0x187102  mov     [bp+var_2], 5
+0x187107  mov     [bp+var_4], 3
+0x18710c  jmp     short loc_187138
+0x18710e  mov     [bp+var_2], 3
+0x187113  jmp     short loc_187133
+0x187115  push    [bp+var_30]
+0x187118  call    sub_136DFC
+0x18711d  pop     cx
+0x18711e  or      ax, ax
+0x187120  jz      short loc_18712E
+0x187122  mov     [bp+var_2], 2
+0x187127  mov     [bp+var_4], 2
+0x18712c  jmp     short loc_187138
+0x18712e  mov     [bp+var_2], 1
+0x187133  mov     [bp+var_4], 1
+0x187138  mov     [bp+var_6], 1
+0x18713d  mov     dx, [bp+var_14]; jumptable 001870F0 default case
+0x187140  inc     dx
+0x187141  mov     ax, [bp+var_2]
+0x187144  imul    dx
+0x187146  mov     [bp+var_2], ax
+0x187149  cmp     [bp+var_12], 0
+0x18714d  jz      short loc_187156
+0x18714f  cwd
+0x187150  idiv    [bp+var_12]
+0x187153  mov     [bp+var_2], ax
+0x187156  mov     al, byte ptr [bp+var_2]
+0x187159  add     [bp+si+var_20], al
+0x18715c  mov     al, byte ptr [bp+var_4]
+0x18715f  add     [bp+si+var_28], al
+0x187162  mov     ax, [bp+var_6]
+0x187165  add     [bp+var_8], ax
+0x187168  cmp     [bp+var_16], 20h ; ' '
+0x18716c  jl      short loc_1871B1
+0x18716e  mov     bx, si
+0x187170  shl     bx, 1
+0x187172  lea     ax, [bp+var_A0]
+0x187176  add     bx, ax
+0x187178  mov     ax, ss:[bx]
+0x18717b  mov     dx, [bp+var_14]
+0x18717e  inc     dx
+0x18717f  shl     dx, 7
+0x187182  add     ax, dx
+0x187184  or      ax, ax
+0x187186  jbe     short loc_1871E1
+0x187188  mov     bx, si
+0x18718a  shl     bx, 1
+0x18718c  lea     ax, [bp+var_A0]
+0x187190  add     bx, ax
+0x187192  mov     ax, [bp+var_14]
+0x187195  inc     ax
+0x187196  shl     ax, 7
+0x187199  add     ss:[bx], ax
+0x18719c  mov     bx, si
+0x18719e  shl     bx, 1
+0x1871a0  lea     ax, [bp+var_A0]
+0x1871a4  add     bx, ax
+0x1871a6  mov     ax, [bp+var_12]
+0x1871a9  shl     ax, 5
+0x1871ac  sub     ss:[bx], ax
+0x1871af  jmp     short loc_1871E1
+0x1871b1  mov     bx, si
+0x1871b3  shl     bx, 1
+0x1871b5  lea     ax, [bp+var_A0]
+0x1871b9  add     bx, ax
+0x1871bb  sub     word ptr ss:[bx], 200h
+0x1871c0  cmp     [bp+var_F], 0
+0x1871c4  jz      short loc_1871E1
+0x1871c6  mov     bx, si
+0x1871c8  shl     bx, 1
+0x1871ca  lea     ax, [bp+var_70]
+0x1871cd  add     bx, ax
+0x1871cf  mov     ax, ss:[bx]
+0x1871d2  mov     dx, 42h ; 'B'
+0x1871d5  imul    dx
+0x1871d7  les     bx, [bp+var_44]
+0x1871da  add     bx, ax
+0x1871dc  mov     byte ptr es:[bx+26h], 46h ; 'F'
+0x1871e1  mov     bx, si
+0x1871e3  shl     bx, 1
+0x1871e5  lea     ax, [bp+var_80]
+0x1871e8  add     bx, ax
+0x1871ea  sub     word ptr ss:[bx], 40h ; '@'
+0x1871ee  jmp     def_186D81; jumptable 00186D81 default case
+0x1871f1  les     bx, [bp+var_4C]
+0x1871f4  mov     al, es:[bx]
+0x1871f7  mov     ah, 0
+0x1871f9  mov     si, ax
+0x1871fb  sar     si, 3
+0x1871fe  and     si, 7
+0x187202  inc     word ptr [bp+var_4C]
+0x187205  les     bx, [bp+var_4C]
+0x187208  mov     al, es:[bx]
+0x18720b  mov     ah, 0
+0x18720d  and     ax, 0Fh
+0x187210  mov     [bp+var_12], ax
+0x187213  mov     al, es:[bx]
+0x187216  mov     ah, 0
+0x187218  sar     ax, 4
+0x18721b  and     ax, 0Fh
+0x18721e  mov     [bp+var_14], ax
+0x187221  inc     word ptr [bp+var_4C]
+0x187224  les     bx, [bp+var_4C]
+0x187227  mov     al, es:[bx]
+0x18722a  mov     ah, 0
+0x18722c  mov     [bp+var_16], ax
+0x18722f  and     [bp+var_16], 3Fh
+0x187234  inc     word ptr [bp+var_4C]
+0x187237  mov     ax, [bp+var_14]
+0x18723a  shl     ax, 1
+0x18723c  mov     [bp+var_2], ax
+0x18723f  cmp     [bp+var_12], 0
+0x187243  jz      short loc_18724C
+0x187245  cwd
+0x187246  idiv    [bp+var_12]
+0x187249  mov     [bp+var_2], ax
+0x18724c  mov     al, byte ptr [bp+var_2]
+0x18724f  add     [bp+si+var_20], al
+0x187252  inc     [bp+si+var_28]
+0x187255  inc     [bp+var_8]
+0x187258  mov     bx, [bp+var_16]
+0x18725b  sub     bx, 20h ; ' '
+0x18725e  cmp     bx, 11h
+0x187261  jbe     short loc_187266
+0x187263  jmp     loc_1872F5
+0x187266  shl     bx, 1
+0x187268  jmp     word ptr cs:(loc_1839B8+4)[bx]
+0x18726d  mov     bx, si
+0x18726f  shl     bx, 1
+0x187271  lea     ax, [bp+var_70]
+0x187274  add     bx, ax
+0x187276  mov     ax, ss:[bx]
+0x187279  mov     dx, 42h ; 'B'
+0x18727c  imul    dx
+0x18727e  les     bx, [bp+var_44]
+0x187281  add     bx, ax
+0x187283  inc     byte ptr es:[bx+3Dh]
+0x187287  mov     ax, 7894h
+0x18728a  mov     es, ax
+0x18728c  les     bx, es:dword_79E3A
+0x187291  inc     word ptr es:[bx+35h]
+0x187295  mov     ax, 7894h
+0x187298  mov     es, ax
+0x18729a  cmp     es:word_79B56, 2
+0x1872a0  jnz     short loc_1872F5
+0x1872a2  mov     ax, 7894h
+0x1872a5  mov     es, ax
+0x1872a7  les     bx, es:menu_state_ptr
+0x1872ac  inc     word ptr es:[bx+2Eh]
+0x1872b0  jmp     short loc_1872F5
+0x1872b2  mov     bx, si
+0x1872b4  shl     bx, 1
+0x1872b6  lea     ax, [bp+var_70]
+0x1872b9  add     bx, ax
+0x1872bb  mov     ax, ss:[bx]
+0x1872be  mov     dx, 42h ; 'B'
+0x1872c1  imul    dx
+0x1872c3  les     bx, [bp+var_44]
+0x1872c6  add     bx, ax
+0x1872c8  inc     byte ptr es:[bx+3Eh]
+0x1872cc  mov     ax, 7894h
+0x1872cf  mov     es, ax
+0x1872d1  les     bx, es:dword_79E3A
+0x1872d6  inc     word ptr es:[bx+37h]
+0x1872da  mov     ax, 7894h
+0x1872dd  mov     es, ax
+0x1872df  cmp     es:word_79B56, 2
+0x1872e5  jnz     short loc_1872F5
+0x1872e7  mov     ax, 7894h
+0x1872ea  mov     es, ax
+0x1872ec  les     bx, es:menu_state_ptr
+0x1872f1  inc     word ptr es:[bx+30h]
+0x1872f5  cmp     [bp+var_16], 20h ; ' '
+0x1872f9  jl      short loc_187335
+0x1872fb  mov     ax, [bp+var_14]
+0x1872fe  inc     ax
+0x1872ff  shl     ax, 6
+0x187302  mov     dx, [bp+var_12]
+0x187305  shl     dx, 4
+0x187308  sub     ax, dx
+0x18730a  jle     short loc_18737D
+0x18730c  mov     bx, si
+0x18730e  shl     bx, 1
+0x187310  lea     ax, [bp+var_90]
+0x187314  add     bx, ax
+0x187316  mov     ax, [bp+var_14]
+0x187319  inc     ax
+0x18731a  shl     ax, 6
+0x18731d  add     ss:[bx], ax
+0x187320  mov     bx, si
+0x187322  shl     bx, 1
+0x187324  lea     ax, [bp+var_90]
+0x187328  add     bx, ax
+0x18732a  mov     ax, [bp+var_12]
+0x18732d  shl     ax, 4
+0x187330  sub     ss:[bx], ax
+0x187333  jmp     short loc_18737D
+0x187335  mov     bx, si
+0x187337  shl     bx, 1
+0x187339  lea     ax, [bp+var_90]
+0x18733d  add     bx, ax
+0x18733f  sub     word ptr ss:[bx], 80h
+0x187344  inc     [bp+si+var_38]
+0x187347  cmp     [bp+si+var_38], 3
+0x18734b  jle     short loc_18737D
+0x18734d  mov     bx, si
+0x18734f  shl     bx, 1
+0x187351  lea     ax, [bp+var_70]
+0x187354  add     bx, ax
+0x187356  mov     ax, ss:[bx]
+0x187359  mov     dx, 42h ; 'B'
+0x18735c  imul    dx
+0x18735e  les     bx, [bp+var_44]
+0x187361  add     bx, ax
+0x187363  mov     byte ptr es:[bx+26h], 26h ; '&'
+0x187368  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x18736d  cmp     ax, si
+0x18736f  jnz     short loc_18737D
+0x187371  mov     ax, 7894h
+0x187374  mov     es, ax
+0x187376  mov     es:word_79E30, 200h
+0x18737d  mov     bx, si
+0x18737f  shl     bx, 1
+0x187381  lea     ax, [bp+var_80]
+0x187384  add     bx, ax
+0x187386  sub     word ptr ss:[bx], 20h ; ' '
+0x18738a  jmp     def_186D81; jumptable 00186D81 default case
+0x18738d  les     bx, [bp+var_4C]
+0x187390  mov     al, es:[bx]
+0x187393  mov     ah, 0
+0x187395  mov     si, ax
+0x187397  sar     si, 3
+0x18739a  and     si, 7
+0x18739e  mov     al, es:[bx]
+0x1873a1  mov     [bp+var_F], al
+0x1873a4  sar     [bp+var_F], 6
+0x1873a8  and     [bp+var_F], 1
+0x1873ac  inc     word ptr [bp+var_4C]
+0x1873af  les     bx, [bp+var_4C]
+0x1873b2  mov     al, es:[bx]
+0x1873b5  mov     ah, 0
+0x1873b7  and     ax, 0Fh
+0x1873ba  mov     [bp+var_12], ax
+0x1873bd  mov     al, es:[bx]
+0x1873c0  mov     ah, 0
+0x1873c2  sar     ax, 4
+0x1873c5  and     ax, 0Fh
+0x1873c8  mov     [bp+var_14], ax
+0x1873cb  inc     word ptr [bp+var_4C]
+0x1873ce  cmp     [bp+var_F], 0
+0x1873d2  jnz     short loc_1873E5
+0x1873d4  mov     [bp+var_2], 2
+0x1873d9  mov     [bp+var_4], 1
+0x1873de  mov     [bp+var_6], 2
+0x1873e3  jmp     short loc_1873F4
+0x1873e5  mov     [bp+var_2], 3
+0x1873ea  mov     [bp+var_4], 2
+0x1873ef  mov     [bp+var_6], 5
+0x1873f4  cmp     [bp+var_2E], 1
+0x1873f8  jnz     short loc_18743F
+0x1873fa  mov     bx, si
+0x1873fc  shl     bx, 1
+0x1873fe  lea     ax, [bp+var_70]
+0x187401  add     bx, ax
+0x187403  mov     ax, ss:[bx]
+0x187406  mov     dx, 42h ; 'B'
+0x187409  imul    dx
+0x18740b  les     bx, [bp+var_44]
+0x18740e  add     bx, ax
+0x187410  inc     byte ptr es:[bx+3Ch]
+0x187414  mov     ax, 7894h
+0x187417  mov     es, ax
+0x187419  les     bx, es:dword_79E3A
+0x18741e  inc     word ptr es:[bx+33h]
+0x187422  mov     ax, 7894h
+0x187425  mov     es, ax
+0x187427  cmp     es:word_79B56, 2
+0x18742d  jnz     short loc_187482
+0x18742f  mov     ax, 7894h
+0x187432  mov     es, ax
+0x187434  les     bx, es:menu_state_ptr
+0x187439  inc     word ptr es:[bx+2Ch]
+0x18743d  jmp     short loc_187482
+0x18743f  mov     bx, si
+0x187441  shl     bx, 1
+0x187443  lea     ax, [bp+var_70]
+0x187446  add     bx, ax
+0x187448  mov     ax, ss:[bx]
+0x18744b  mov     dx, 42h ; 'B'
+0x18744e  imul    dx
+0x187450  les     bx, [bp+var_44]
+0x187453  add     bx, ax
+0x187455  inc     byte ptr es:[bx+3Bh]
+0x187459  mov     ax, 7894h
+0x18745c  mov     es, ax
+0x18745e  les     bx, es:dword_79E3A
+0x187463  inc     word ptr es:[bx+31h]
+0x187467  mov     ax, 7894h
+0x18746a  mov     es, ax
+0x18746c  cmp     es:word_79B56, 2
+0x187472  jnz     short loc_187482
+0x187474  mov     ax, 7894h
+0x187477  mov     es, ax
+0x187479  les     bx, es:menu_state_ptr
+0x18747e  inc     word ptr es:[bx+2Ah]
+0x187482  mov     dx, [bp+var_14]
+0x187485  inc     dx
+0x187486  mov     ax, [bp+var_2]
+0x187489  imul    dx
+0x18748b  mov     [bp+var_2], ax
+0x18748e  cmp     [bp+var_12], 0
+0x187492  jz      short loc_18749B
+0x187494  cwd
+0x187495  idiv    [bp+var_12]
+0x187498  mov     [bp+var_2], ax
+0x18749b  mov     al, byte ptr [bp+var_2]
+0x18749e  add     [bp+si+var_20], al
+0x1874a1  mov     al, byte ptr [bp+var_4]
+0x1874a4  add     [bp+si+var_28], al
+0x1874a7  mov     ax, [bp+var_6]
+0x1874aa  add     [bp+var_8], ax
+0x1874ad  mov     bx, si
+0x1874af  shl     bx, 1
+0x1874b1  lea     ax, [bp+var_90]
+0x1874b5  add     bx, ax
+0x1874b7  mov     ax, ss:[bx]
+0x1874ba  add     ax, 40h ; '@'
+0x1874bd  or      ax, ax
+0x1874bf  ja      short loc_1874C4
+0x1874c1  jmp     def_186D81; jumptable 00186D81 default case
+0x1874c4  mov     bx, si
+0x1874c6  shl     bx, 1
+0x1874c8  lea     ax, [bp+var_90]
+0x1874cc  add     bx, ax
+0x1874ce  add     word ptr ss:[bx], 40h ; '@'
+0x1874d2  jmp     def_186D81; jumptable 00186D81 default case
+0x1874d5  les     bx, [bp+var_4C]
+0x1874d8  mov     al, es:[bx]
+0x1874db  mov     ah, 0
+0x1874dd  mov     si, ax
+0x1874df  sar     si, 3
+0x1874e2  and     si, 7
+0x1874e6  mov     al, es:[bx]
+0x1874e9  mov     [bp+var_F], al
+0x1874ec  sar     [bp+var_F], 6
+0x1874f0  and     [bp+var_F], 3
+0x1874f4  inc     word ptr [bp+var_4C]
+0x1874f7  les     bx, [bp+var_4C]
+0x1874fa  mov     al, es:[bx]
+0x1874fd  mov     ah, 0
+0x1874ff  mov     [bp+var_16], ax
+0x187502  inc     word ptr [bp+var_4C]
+0x187505  mov     al, [bp+var_F]
+0x187508  cbw
+0x187509  mov     bx, ax
+0x18750b  cmp     bx, 3
+0x18750e  jbe     short loc_187513
+0x187510  jmp     def_186D81; jumptable 00186D81 default case
+0x187513  shl     bx, 1
+0x187515  jmp     word ptr cs:[bx+1904h]
+0x18751a  mov     bx, si
+0x18751c  shl     bx, 1
+0x18751e  lea     ax, [bp+var_80]
+0x187521  add     bx, ax
+0x187523  sub     word ptr ss:[bx], 208h
+0x187528  mov     [bp+var_2], 1
+0x18752d  mov     [bp+var_4], 1
+0x187532  mov     [bp+var_6], 0
+0x187537  jmp     def_186D81; jumptable 00186D81 default case
+0x18753a  call    farobj_vec3_accum_b_ret
+0x18753f  add     ax, 400h
+0x187542  and     ax, 3FFh
+0x187545  mov     bx, si
+0x187547  shl     bx, 1
+0x187549  lea     dx, [bp+var_80]
+0x18754c  add     bx, dx
+0x18754e  sub     ss:[bx], ax
+0x187551  jmp     def_186D81; jumptable 00186D81 default case
+0x187554  call    farobj_vec3_accum_b_ret
+0x187559  test    ax, 0
+0x18755c  jnz     short loc_187561
+0x18755e  jmp     def_186D81; jumptable 00186D81 default case
+0x187561  mov     bx, si
+0x187563  shl     bx, 1
+0x187565  lea     ax, [bp+var_80]
+0x187568  add     bx, ax
+0x18756a  sub     word ptr ss:[bx], 400h
+0x18756f  jmp     def_186D81; jumptable 00186D81 default case
+0x187572  mov     ax, 7894h
+0x187575  mov     es, ax
+0x187577  cmp     es:graphics_mode_flag, 0
+0x18757d  jz      short loc_187582
+0x18757f  jmp     def_186D81; jumptable 00186D81 default case
+0x187582  mov     bx, si
+0x187584  shl     bx, 1
+0x187586  lea     ax, [bp+var_80]
+0x187589  add     bx, ax
+0x18758b  mov     word ptr ss:[bx], 0
+0x187590  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187595  cmp     ax, si
+0x187597  jnz     short loc_1875A5
+0x187599  mov     ax, 7894h
+0x18759c  mov     es, ax
+0x18759e  mov     es:word_79E30, 8
+0x1875a5  mov     bx, si
+0x1875a7  shl     bx, 1
+0x1875a9  lea     ax, [bp+var_70]
+0x1875ac  add     bx, ax
+0x1875ae  mov     ax, ss:[bx]
+0x1875b1  mov     dx, 42h ; 'B'
+0x1875b4  imul    dx
+0x1875b6  les     bx, [bp+var_44]
+0x1875b9  add     bx, ax
+0x1875bb  mov     byte ptr es:[bx+26h], 3
+0x1875c0  jmp     def_186D81; jumptable 00186D81 default case
+0x1875c3  call    sub_13DB56; Set CS:byte_13DABA to 0xFF (7B, 20 calls)
+0x1875c8  xor     si, si
+0x1875ca  jmp     loc_187E17
+0x1875cd  mov     bx, si
+0x1875cf  shl     bx, 1
+0x1875d1  lea     ax, [bp+var_70]
+0x1875d4  add     bx, ax
+0x1875d6  cmp     word ptr ss:[bx], 0FFFFh
+0x1875da  jnz     short loc_1875DF
+0x1875dc  jmp     loc_187E16
+0x1875df  mov     ax, 7894h
+0x1875e2  mov     es, ax
+0x1875e4  mov     ax, es:word_79E72
+0x1875e8  mov     dx, es:word_79E70
+0x1875ed  mov     word ptr [bp+var_4C+2], ax
+0x1875f0  mov     word ptr [bp+var_4C], dx
+0x1875f3  mov     ax, si
+0x1875f5  mov     dx, 1Fh
+0x1875f8  imul    dx
+0x1875fa  add     word ptr [bp+var_4C], ax
+0x1875fd  mov     ax, word ptr [bp+var_4C+2]
+0x187600  mov     dx, word ptr [bp+var_4C]
+0x187603  mov     word ptr [bp+var_50+2], ax
+0x187606  mov     word ptr [bp+var_50], dx
+0x187609  les     bx, [bp+var_50]
+0x18760c  mov     ax, es:[bx]
+0x18760f  mov     [bp+var_E], ax
+0x187612  push    0FFC0h
+0x187614  cwd
+0x187615  push    dx
+0x187616  push    ax
+0x187617  call    sub_13DD40
+0x18761c  add     sp, 6
+0x18761f  mov     [bp+var_56], dx
+0x187622  mov     [bp+var_58], ax
+0x187625  push    0CDh
+0x187628  push    [bp+var_56]
+0x18762b  push    [bp+var_58]
+0x18762e  call    sub_13DD83
+0x187633  add     sp, 6
+0x187636  mov     [bp+var_E], ax
+0x187639  add     word ptr [bp+var_50], 2
+0x18763d  les     bx, [bp+var_50]
+0x187640  mov     ax, es:[bx]
+0x187643  mov     [bp+var_C], ax
+0x187646  push    40h ; '@'
+0x187648  cwd
+0x187649  push    dx
+0x18764a  push    ax
+0x18764b  call    sub_13DD40
+0x187650  add     sp, 6
+0x187653  mov     [bp+var_56], dx
+0x187656  mov     [bp+var_58], ax
+0x187659  push    0CDh
+0x18765c  push    [bp+var_56]
+0x18765f  push    [bp+var_58]
+0x187662  call    sub_13DD83
+0x187667  add     sp, 6
+0x18766a  mov     [bp+var_C], ax
+0x18766d  add     word ptr [bp+var_50], 2
+0x187671  les     bx, [bp+var_50]
+0x187674  mov     ax, es:[bx]
+0x187677  mov     [bp+var_5E], ax
+0x18767a  shr     ax, 0Eh
+0x18767d  mov     [bp+var_2A], ax
+0x187680  and     [bp+var_5E], 3FFFh
+0x187685  add     word ptr [bp+var_50], 2
+0x187689  les     bx, [bp+var_50]
+0x18768c  mov     ax, es:[bx]
+0x18768f  mov     [bp+var_A], ax
+0x187692  add     word ptr [bp+var_50], 2
+0x187696  add     word ptr [bp+var_50], 2
+0x18769a  mov     ax, word ptr [bp+var_50+2]
+0x18769d  mov     dx, word ptr [bp+var_50]
+0x1876a0  mov     word ptr [bp+var_4C+2], ax
+0x1876a3  mov     word ptr [bp+var_4C], dx
+0x1876a6  add     word ptr [bp+var_4C], 13h
+0x1876aa  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x1876af  cmp     ax, si
+0x1876b1  jnz     short loc_1876C4
+0x1876b3  les     bx, [bp+var_4C]
+0x1876b6  and     byte ptr es:[bx], 0FBh
+0x1876ba  test    byte ptr es:[bx], 40h
+0x1876be  jz      short loc_1876C4
+0x1876c0  or      byte ptr es:[bx], 4
+0x1876c4  les     bx, [bp+var_4C]
+0x1876c7  mov     al, es:[bx]
+0x1876ca  mov     [bp+var_F], al
+0x1876cd  inc     word ptr [bp+var_4C]
+0x1876d0  les     bx, [bp+var_4C]
+0x1876d3  mov     al, es:[bx]
+0x1876d6  mov     [bp+var_5F], al
+0x1876d9  mov     bx, si
+0x1876db  shl     bx, 1
+0x1876dd  lea     ax, [bp+var_70]
+0x1876e0  add     bx, ax
+0x1876e2  cmp     word ptr ss:[bx], 0FFFFh
+0x1876e6  jz      short loc_187744
+0x1876e8  push    [bp+var_E]
+0x1876eb  push    [bp+var_C]
+0x1876ee  call    far ptr sub_2C815
+0x1876f3  pop     cx
+0x1876f4  pop     cx
+0x1876f5  mov     [bp+var_18], ax
+0x1876f8  mov     bx, si
+0x1876fa  shl     bx, 1
+0x1876fc  lea     ax, [bp+var_70]
+0x1876ff  add     bx, ax
+0x187701  mov     ax, ss:[bx]
+0x187704  mov     dx, 42h ; 'B'
+0x187707  imul    dx
+0x187709  les     bx, [bp+var_44]
+0x18770c  add     bx, ax
+0x18770e  cmp     byte ptr es:[bx+26h], 3
+0x187713  jge     short loc_187744
+0x187715  cmp     [bp+var_2A], 0
+0x187719  jle     short loc_187744
+0x18771b  mov     bx, si
+0x18771d  shl     bx, 1
+0x18771f  lea     ax, [bp+var_70]
+0x187722  add     bx, ax
+0x187724  mov     ax, ss:[bx]
+0x187727  mov     dx, 42h ; 'B'
+0x18772a  imul    dx
+0x18772c  mov     bx, word ptr [bp+var_44]
+0x18772f  add     bx, ax
+0x187731  mov     byte ptr es:[bx+26h], 2
+0x187736  mov     bx, si
+0x187738  shl     bx, 1
+0x18773a  lea     ax, [bp+var_80]
+0x18773d  add     bx, ax
+0x18773f  mov     word ptr ss:[bx], 1E00h
+0x187744  mov     al, [bp+var_F]
+0x187747  cbw
+0x187748  and     ax, 3Ch
+0x18774b  sar     ax, 2
+0x18774e  mov     bx, ax
+0x187750  cmp     bx, 0Fh
+0x187753  jbe     short loc_187758
+0x187755  jmp     loc_187B49
+0x187758  shl     bx, 1
+0x18775a  jmp     word ptr cs:[bx+18E4h]
+0x18775f  cmp     [bp+var_10], 0
+0x187763  jz      short loc_187768
+0x187765  jmp     loc_1878C9
+0x187768  mov     ax, 7894h
+0x18776b  mov     es, ax
+0x18776d  mov     ax, es:word_79EA2
+0x187771  mov     dx, 4Eh ; 'N'
+0x187774  imul    dx
+0x187776  mov     dx, 7894h
+0x187779  mov     es, dx
+0x18777b  les     bx, es:dword_79B6E
+0x187780  add     bx, ax
+0x187782  mov     ax, [bp+var_C]
+0x187785  sub     ax, es:[bx+40h]
+0x187789  mov     [bp+var_C], ax
+0x18778c  mov     ax, 7894h
+0x18778f  mov     es, ax
+0x187791  mov     ax, es:word_79EA2
+0x187795  mov     dx, 4Eh ; 'N'
+0x187798  imul    dx
+0x18779a  mov     dx, 7894h
+0x18779d  mov     es, dx
+0x18779f  les     bx, es:dword_79B6E
+0x1877a4  add     bx, ax
+0x1877a6  mov     ax, [bp+var_E]
+0x1877a9  sub     ax, es:[bx+42h]
+0x1877ad  mov     [bp+var_E], ax
+0x1877b0  push    [bp+var_C]
+0x1877b3  mov     ax, [bp+var_C]
+0x1877b6  cwd
+0x1877b7  push    dx
+0x1877b8  push    ax
+0x1877b9  call    sub_13DD40
+0x1877be  add     sp, 6
+0x1877c1  push    ax
+0x1877c2  push    dx
+0x1877c3  push    [bp+var_E]
+0x1877c6  mov     ax, [bp+var_E]
+0x1877c9  cwd
+0x1877ca  push    dx
+0x1877cb  push    ax
+0x1877cc  call    sub_13DD40
+0x1877d1  add     sp, 6
+0x1877d4  pop     bx
+0x1877d5  pop     cx
+0x1877d6  add     cx, ax
+0x1877d8  adc     bx, dx
+0x1877da  mov     [bp+var_56], bx
+0x1877dd  mov     [bp+var_58], cx
+0x1877e0  push    [bp+var_56]
+0x1877e3  push    [bp+var_58]
+0x1877e6  call    menu_simple_helper
+0x1877eb  pop     cx
+0x1877ec  pop     cx
+0x1877ed  cwd
+0x1877ee  mov     [bp+var_56], dx
+0x1877f1  mov     [bp+var_58], ax
+0x1877f4  mov     ax, 7894h
+0x1877f7  mov     es, ax
+0x1877f9  mov     ax, es:word_79BDA
+0x1877fd  mov     dx, 4Eh ; 'N'
+0x187800  imul    dx
+0x187802  mov     dx, 7894h
+0x187805  mov     es, dx
+0x187807  les     bx, es:dword_79B6E
+0x18780c  add     bx, ax
+0x18780e  mov     ax, es:[bx+40h]
+0x187812  mov     dx, 7894h
+0x187815  mov     es, dx
+0x187817  push    ax
+0x187818  mov     ax, es:word_79EA2
+0x18781c  mov     dx, 4Eh ; 'N'
+0x18781f  imul    dx
+0x187821  mov     dx, 7894h
+0x187824  mov     es, dx
+0x187826  les     bx, es:dword_79B6E
+0x18782b  add     bx, ax
+0x18782d  pop     ax
+0x18782e  sub     ax, es:[bx+40h]
+0x187832  mov     [bp+var_C], ax
+0x187835  mov     ax, 7894h
+0x187838  mov     es, ax
+0x18783a  mov     ax, es:word_79BDA
+0x18783e  mov     dx, 4Eh ; 'N'
+0x187841  imul    dx
+0x187843  mov     dx, 7894h
+0x187846  mov     es, dx
+0x187848  les     bx, es:dword_79B6E
+0x18784d  add     bx, ax
+0x18784f  mov     ax, es:[bx+42h]
+0x187853  mov     dx, 7894h
+0x187856  mov     es, dx
+0x187858  push    ax
+0x187859  mov     ax, es:word_79EA2
+0x18785d  mov     dx, 4Eh ; 'N'
+0x187860  imul    dx
+0x187862  mov     dx, 7894h
+0x187865  mov     es, dx
+0x187867  les     bx, es:dword_79B6E
+0x18786c  add     bx, ax
+0x18786e  pop     ax
+0x18786f  sub     ax, es:[bx+42h]
+0x187873  mov     [bp+var_E], ax
+0x187876  push    [bp+var_52]
+0x187879  mov     ax, [bp+var_52]
+0x18787c  cwd
+0x18787d  push    dx
+0x18787e  push    ax
+0x18787f  call    sub_13DD40
+0x187884  add     sp, 6
+0x187887  push    ax
+0x187888  push    dx
+0x187889  push    [bp+var_54]
+0x18788c  mov     ax, [bp+var_54]
+0x18788f  cwd
+0x187890  push    dx
+0x187891  push    ax
+0x187892  call    sub_13DD40
+0x187897  add     sp, 6
+0x18789a  pop     bx
+0x18789b  pop     cx
+0x18789c  add     cx, ax
+0x18789e  adc     bx, dx
+0x1878a0  mov     [bp+var_5A], bx
+0x1878a3  mov     [bp+var_5C], cx
+0x1878a6  push    [bp+var_5A]
+0x1878a9  push    [bp+var_5C]
+0x1878ac  call    menu_simple_helper
+0x1878b1  pop     cx
+0x1878b2  pop     cx
+0x1878b3  cwd
+0x1878b4  mov     [bp+var_5A], dx
+0x1878b7  mov     [bp+var_5C], ax
+0x1878ba  mov     ax, [bp+var_5A]
+0x1878bd  mov     dx, [bp+var_5C]
+0x1878c0  add     [bp+var_58], dx
+0x1878c3  adc     [bp+var_56], ax
+0x1878c6  jmp     loc_187955
+0x1878c9  mov     ax, 7894h
+0x1878cc  mov     es, ax
+0x1878ce  mov     ax, es:word_79BDA
+0x1878d2  mov     dx, 4Eh ; 'N'
+0x1878d5  imul    dx
+0x1878d7  mov     dx, 7894h
+0x1878da  mov     es, dx
+0x1878dc  les     bx, es:dword_79B6E
+0x1878e1  add     bx, ax
+0x1878e3  mov     ax, [bp+var_C]
+0x1878e6  sub     ax, es:[bx+40h]
+0x1878ea  mov     [bp+var_C], ax
+0x1878ed  mov     ax, 7894h
+0x1878f0  mov     es, ax
+0x1878f2  mov     ax, es:word_79BDA
+0x1878f6  mov     dx, 4Eh ; 'N'
+0x1878f9  imul    dx
+0x1878fb  mov     dx, 7894h
+0x1878fe  mov     es, dx
+0x187900  les     bx, es:dword_79B6E
+0x187905  add     bx, ax
+0x187907  mov     ax, [bp+var_E]
+0x18790a  sub     ax, es:[bx+42h]
+0x18790e  mov     [bp+var_E], ax
+0x187911  push    [bp+var_52]
+0x187914  mov     ax, [bp+var_52]
+0x187917  cwd
+0x187918  push    dx
+0x187919  push    ax
+0x18791a  call    sub_13DD40
+0x18791f  add     sp, 6
+0x187922  push    ax
+0x187923  push    dx
+0x187924  push    [bp+var_54]
+0x187927  mov     ax, [bp+var_54]
+0x18792a  cwd
+0x18792b  push    dx
+0x18792c  push    ax
+0x18792d  call    sub_13DD40
+0x187932  add     sp, 6
+0x187935  pop     bx
+0x187936  pop     cx
+0x187937  add     cx, ax
+0x187939  adc     bx, dx
+0x18793b  mov     [bp+var_56], bx
+0x18793e  mov     [bp+var_58], cx
+0x187941  push    [bp+var_56]
+0x187944  push    [bp+var_58]
+0x187947  call    menu_simple_helper
+0x18794c  pop     cx
+0x18794d  pop     cx
+0x18794e  cwd
+0x18794f  mov     [bp+var_56], dx
+0x187952  mov     [bp+var_58], ax
+0x187955  mov     ax, [bp+var_A]
+0x187958  mov     bx, 0Ah
+0x18795b  cwd
+0x18795c  idiv    bx
+0x18795e  cwd
+0x18795f  cmp     dx, [bp+var_56]
+0x187962  jle     short loc_187967
+0x187964  jmp     loc_187B49
+0x187967  jl      short loc_187971
+0x187969  cmp     ax, [bp+var_58]
+0x18796c  jb      short loc_187971
+0x18796e  jmp     loc_187B49
+0x187971  call    farobj_vec3_accum_b_ret
+0x187976  test    ax, 0
+0x187979  jnz     short loc_18797E
+0x18797b  jmp     loc_187B49
+0x18797e  mov     bx, si
+0x187980  shl     bx, 1
+0x187982  lea     ax, [bp+var_70]
+0x187985  add     bx, ax
+0x187987  mov     ax, ss:[bx]
+0x18798a  mov     dx, 42h ; 'B'
+0x18798d  imul    dx
+0x18798f  les     bx, [bp+var_44]
+0x187992  add     bx, ax
+0x187994  cmp     byte ptr es:[bx+26h], 3
+0x187999  jl      short loc_18799E
+0x18799b  jmp     loc_187B49
+0x18799e  mov     bx, si
+0x1879a0  shl     bx, 1
+0x1879a2  lea     ax, [bp+var_70]
+0x1879a5  add     bx, ax
+0x1879a7  mov     ax, ss:[bx]
+0x1879aa  mov     dx, 42h ; 'B'
+0x1879ad  imul    dx
+0x1879af  mov     bx, word ptr [bp+var_44]
+0x1879b2  add     bx, ax
+0x1879b4  mov     byte ptr es:[bx+26h], 66h ; 'f'
+0x1879b9  jmp     loc_187B49
+0x1879bc  mov     ax, [bp+var_18]
+0x1879bf  cmp     ax, 1
+0x1879c2  jz      short loc_1879CC
+0x1879c4  cmp     ax, 2
+0x1879c7  jz      short loc_187A0E
+0x1879c9  jmp     loc_187A63
+0x1879cc  mov     ax, 7894h
+0x1879cf  mov     es, ax
+0x1879d1  cmp     es:graphics_mode_flag, 0
+0x1879d7  jz      short loc_1879DC
+0x1879d9  jmp     loc_187A63
+0x1879dc  mov     bx, si
+0x1879de  shl     bx, 1
+0x1879e0  lea     ax, [bp+var_70]
+0x1879e3  add     bx, ax
+0x1879e5  mov     ax, ss:[bx]
+0x1879e8  mov     dx, 42h ; 'B'
+0x1879eb  imul    dx
+0x1879ed  les     bx, [bp+var_44]
+0x1879f0  add     bx, ax
+0x1879f2  mov     byte ptr es:[bx+26h], 4
+0x1879f7  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x1879fc  cmp     ax, si
+0x1879fe  jnz     short loc_187A63
+0x187a00  mov     ax, 7894h
+0x187a03  mov     es, ax
+0x187a05  mov     es:word_79E30, 20h ; ' '
+0x187a0c  jmp     short loc_187A63
+0x187a0e  mov     ax, 7894h
+0x187a11  mov     es, ax
+0x187a13  cmp     es:graphics_mode_flag, 0
+0x187a19  jnz     short loc_187A63
+0x187a1b  call    farobj_vec3_accum_b_ret
+0x187a20  and     ax, 7FFFh
+0x187a23  cmp     ax, 4000h
+0x187a26  jge     short loc_187A4E
+0x187a28  mov     bx, si
+0x187a2a  shl     bx, 1
+0x187a2c  lea     ax, [bp+var_70]
+0x187a2f  add     bx, ax
+0x187a31  mov     ax, ss:[bx]
+0x187a34  mov     dx, 42h ; 'B'
+0x187a37  imul    dx
+0x187a39  les     bx, [bp+var_44]
+0x187a3c  add     bx, ax
+0x187a3e  mov     byte ptr es:[bx+26h], 4
+0x187a43  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187a48  cmp     ax, si
+0x187a4a  jnz     short loc_187A63
+0x187a4c  jmp     short loc_187A00
+0x187a4e  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187a53  cmp     ax, si
+0x187a55  jnz     short loc_187A63
+0x187a57  mov     ax, 7894h
+0x187a5a  mov     es, ax
+0x187a5c  mov     es:word_79E30, 10h
+0x187a63  cmp     [bp+var_5E], 0
+0x187a67  jz      short loc_187A6C
+0x187a69  jmp     loc_187B49
+0x187a6c  mov     bx, si
+0x187a6e  shl     bx, 1
+0x187a70  lea     ax, [bp+var_70]
+0x187a73  add     bx, ax
+0x187a75  mov     ax, ss:[bx]
+0x187a78  mov     dx, 42h ; 'B'
+0x187a7b  imul    dx
+0x187a7d  les     bx, [bp+var_44]
+0x187a80  add     bx, ax
+0x187a82  mov     byte ptr es:[bx+26h], 66h ; 'f'
+0x187a87  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187a8c  cmp     ax, si
+0x187a8e  jz      short loc_187A93
+0x187a90  jmp     loc_187B49
+0x187a93  mov     ax, 7894h
+0x187a96  mov     es, ax
+0x187a98  mov     es:word_79E30, 200h
+0x187a9f  jmp     loc_187B49
+0x187aa2  mov     ax, 7894h
+0x187aa5  mov     es, ax
+0x187aa7  cmp     es:graphics_mode_flag, 0
+0x187aad  jz      short loc_187AB2
+0x187aaf  jmp     loc_187B49
+0x187ab2  cmp     [bp+var_5E], 3FFFh
+0x187ab7  jz      short loc_187ABC
+0x187ab9  jmp     loc_187B49
+0x187abc  mov     bx, si
+0x187abe  shl     bx, 1
+0x187ac0  lea     ax, [bp+var_70]
+0x187ac3  add     bx, ax
+0x187ac5  mov     ax, ss:[bx]
+0x187ac8  mov     dx, 42h ; 'B'
+0x187acb  imul    dx
+0x187acd  les     bx, [bp+var_44]
+0x187ad0  add     bx, ax
+0x187ad2  mov     byte ptr es:[bx+26h], 3
+0x187ad7  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187adc  cmp     ax, si
+0x187ade  jnz     short loc_187B49
+0x187ae0  mov     ax, 7894h
+0x187ae3  mov     es, ax
+0x187ae5  mov     es:word_79E30, 8
+0x187aec  jmp     short loc_187B49
+0x187aee  mov     bx, si
+0x187af0  shl     bx, 1
+0x187af2  lea     ax, [bp+var_70]
+0x187af5  add     bx, ax
+0x187af7  mov     ax, ss:[bx]
+0x187afa  mov     dx, 42h ; 'B'
+0x187afd  imul    dx
+0x187aff  les     bx, [bp+var_44]
+0x187b02  add     bx, ax
+0x187b04  cmp     byte ptr es:[bx+26h], 3
+0x187b09  jge     short loc_187B49
+0x187b0b  mov     bx, si
+0x187b0d  shl     bx, 1
+0x187b0f  lea     ax, [bp+var_70]
+0x187b12  add     bx, ax
+0x187b14  mov     ax, ss:[bx]
+0x187b17  mov     dx, 42h ; 'B'
+0x187b1a  imul    dx
+0x187b1c  mov     bx, word ptr [bp+var_44]
+0x187b1f  add     bx, ax
+0x187b21  mov     byte ptr es:[bx+26h], 2
+0x187b26  mov     bx, si
+0x187b28  shl     bx, 1
+0x187b2a  lea     ax, [bp+var_80]
+0x187b2d  add     bx, ax
+0x187b2f  mov     word ptr ss:[bx], 1D00h
+0x187b34  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187b39  cmp     ax, si
+0x187b3b  jnz     short loc_187B49
+0x187b3d  mov     ax, 7894h
+0x187b40  mov     es, ax
+0x187b42  mov     es:word_79E30, 10h
+0x187b49  call    farobj_vec3_accum_b_ret
+0x187b4e  and     ax, 7FFFh
+0x187b51  mov     bx, 64h ; 'd'
+0x187b54  cwd
+0x187b55  idiv    bx
+0x187b57  mov     di, dx
+0x187b59  mov     al, [bp+var_5F]
+0x187b5c  mov     ah, 0
+0x187b5e  mov     dx, 64h ; 'd'
+0x187b61  sub     dx, ax
+0x187b63  cmp     dx, di
+0x187b65  jge     short loc_187BB4
+0x187b67  mov     bx, si
+0x187b69  shl     bx, 1
+0x187b6b  lea     ax, [bp+var_70]
+0x187b6e  add     bx, ax
+0x187b70  mov     ax, ss:[bx]
+0x187b73  mov     dx, 42h ; 'B'
+0x187b76  imul    dx
+0x187b78  les     bx, [bp+var_44]
+0x187b7b  add     bx, ax
+0x187b7d  cmp     byte ptr es:[bx+26h], 3
+0x187b82  jge     short loc_187BB4
+0x187b84  call    graphics_mode_query; Utility function (38B, 16 calls) - needs investigation
+0x187b89  cmp     ax, si
+0x187b8b  jnz     short loc_187B99
+0x187b8d  mov     ax, 7894h
+0x187b90  mov     es, ax
+0x187b92  mov     es:word_79E30, 200h
+0x187b99  mov     bx, si
+0x187b9b  shl     bx, 1
+0x187b9d  lea     ax, [bp+var_70]
+0x187ba0  add     bx, ax
+0x187ba2  mov     ax, ss:[bx]
+0x187ba5  mov     dx, 42h ; 'B'
+0x187ba8  imul    dx
+0x187baa  les     bx, [bp+var_44]
+0x187bad  add     bx, ax
+0x187baf  mov     byte ptr es:[bx+26h], 86h
+0x187bb4  mov     al, [bp+si+var_20]
+0x187bb7  mov     ah, 0
+0x187bb9  shl     ax, 1
+0x187bbb  or      ax, ax
+0x187bbd  jle     short loc_187BFC
+0x187bbf  mov     bx, si
+0x187bc1  shl     bx, 1
+0x187bc3  lea     ax, [bp+var_70]
+0x187bc6  add     bx, ax
+0x187bc8  mov     ax, ss:[bx]
+0x187bcb  mov     dx, 42h ; 'B'
+0x187bce  imul    dx
+0x187bd0  les     bx, [bp+var_44]
+0x187bd3  add     bx, ax
+0x187bd5  mov     al, es:[bx+30h]
+0x187bd9  mov     dl, [bp+si+var_20]
+0x187bdc  shl     dl, 1
+0x187bde  add     al, dl
+0x187be0  mov     bx, si
+0x187be2  shl     bx, 1
+0x187be4  lea     dx, [bp+var_70]
+0x187be7  add     bx, dx
+0x187be9  push    ax
+0x187bea  mov     ax, ss:[bx]
+0x187bed  mov     dx, 42h ; 'B'
+0x187bf0  imul    dx
+0x187bf2  mov     bx, word ptr [bp+var_44]
+0x187bf5  add     bx, ax
+0x187bf7  pop     ax
+0x187bf8  mov     es:[bx+30h], al
+0x187bfc  mov     bx, si
+0x187bfe  shl     bx, 1
+0x187c00  lea     ax, [bp+var_70]
+0x187c03  add     bx, ax
+0x187c05  mov     ax, ss:[bx]
+0x187c08  mov     dx, 42h ; 'B'
+0x187c0b  imul    dx
+0x187c0d  les     bx, [bp+var_44]
+0x187c10  add     bx, ax
+0x187c12  cmp     byte ptr es:[bx+30h], 0
+0x187c17  ja      short loc_187C34
+0x187c19  mov     bx, si
+0x187c1b  shl     bx, 1
+0x187c1d  lea     ax, [bp+var_70]
+0x187c20  add     bx, ax
+0x187c22  mov     ax, ss:[bx]
+0x187c25  mov     dx, 42h ; 'B'
+0x187c28  imul    dx
+0x187c2a  mov     bx, word ptr [bp+var_44]
+0x187c2d  add     bx, ax
+0x187c2f  mov     byte ptr es:[bx+30h], 0
+0x187c34  mov     al, [bp+si+var_28]
+0x187c37  mov     ah, 0
+0x187c39  shl     ax, 1
+0x187c3b  or      ax, ax
+0x187c3d  jle     short loc_187C7C
+0x187c3f  mov     bx, si
+0x187c41  shl     bx, 1
+0x187c43  lea     ax, [bp+var_70]
+0x187c46  add     bx, ax
+0x187c48  mov     ax, ss:[bx]
+0x187c4b  mov     dx, 42h ; 'B'
+0x187c4e  imul    dx
+0x187c50  les     bx, [bp+var_44]
+0x187c53  add     bx, ax
+0x187c55  mov     al, es:[bx+31h]
+0x187c59  mov     dl, [bp+si+var_28]
+0x187c5c  shl     dl, 1
+0x187c5e  add     al, dl
+0x187c60  mov     bx, si
+0x187c62  shl     bx, 1
+0x187c64  lea     dx, [bp+var_70]
+0x187c67  add     bx, dx
+0x187c69  push    ax
+0x187c6a  mov     ax, ss:[bx]
+0x187c6d  mov     dx, 42h ; 'B'
+0x187c70  imul    dx
+0x187c72  mov     bx, word ptr [bp+var_44]
+0x187c75  add     bx, ax
+0x187c77  pop     ax
+0x187c78  mov     es:[bx+31h], al
+0x187c7c  mov     bx, si
+0x187c7e  shl     bx, 1
+0x187c80  lea     ax, [bp+var_70]
+0x187c83  add     bx, ax
+0x187c85  mov     ax, ss:[bx]
+0x187c88  mov     dx, 42h ; 'B'
+0x187c8b  imul    dx
+0x187c8d  les     bx, [bp+var_44]
+0x187c90  add     bx, ax
+0x187c92  cmp     byte ptr es:[bx+31h], 0
+0x187c97  ja      short loc_187CB4
+0x187c99  mov     bx, si
+0x187c9b  shl     bx, 1
+0x187c9d  lea     ax, [bp+var_70]
+0x187ca0  add     bx, ax
+0x187ca2  mov     ax, ss:[bx]
+0x187ca5  mov     dx, 42h ; 'B'
+0x187ca8  imul    dx
+0x187caa  mov     bx, word ptr [bp+var_44]
+0x187cad  add     bx, ax
+0x187caf  mov     byte ptr es:[bx+31h], 0
+0x187cb4  mov     bx, si
+0x187cb6  shl     bx, 1
+0x187cb8  lea     ax, [bp+var_B0]
+0x187cbc  add     bx, ax
+0x187cbe  cmp     word ptr ss:[bx], 6400h
+0x187cc3  jbe     short loc_187CD0
+0x187cc5  mov     bx, si
+0x187cc7  shl     bx, 1
+0x187cc9  add     bx, ax
+0x187ccb  mov     word ptr ss:[bx], 6400h
+0x187cd0  mov     bx, si
+0x187cd2  shl     bx, 1
+0x187cd4  lea     ax, [bp+var_B0]
+0x187cd8  add     bx, ax
+0x187cda  mov     ax, ss:[bx]
+0x187cdd  shr     ax, 8
+0x187ce0  mov     bx, si
+0x187ce2  shl     bx, 1
+0x187ce4  lea     dx, [bp+var_70]
+0x187ce7  add     bx, dx
+0x187ce9  push    ax
+0x187cea  mov     ax, ss:[bx]
+0x187ced  mov     dx, 42h ; 'B'
+0x187cf0  imul    dx
+0x187cf2  les     bx, [bp+var_44]
+0x187cf5  add     bx, ax
+0x187cf7  pop     ax
+0x187cf8  mov     es:[bx+24h], al
+0x187cfc  mov     bx, si
+0x187cfe  shl     bx, 1
+0x187d00  lea     ax, [bp+var_80]
+0x187d03  add     bx, ax
+0x187d05  cmp     word ptr ss:[bx], 6400h
+0x187d0a  jbe     short loc_187D17
+0x187d0c  mov     bx, si
+0x187d0e  shl     bx, 1
+0x187d10  add     bx, ax
+0x187d12  mov     word ptr ss:[bx], 6400h
+0x187d17  mov     ax, 7894h
+0x187d1a  mov     es, ax
+0x187d1c  cmp     es:graphics_mode_flag, 0
+0x187d22  jz      short loc_187D41
+0x187d24  mov     bx, si
+0x187d26  shl     bx, 1
+0x187d28  lea     ax, [bp+var_70]
+0x187d2b  add     bx, ax
+0x187d2d  mov     ax, ss:[bx]
+0x187d30  mov     dx, 42h ; 'B'
+0x187d33  imul    dx
+0x187d35  les     bx, [bp+var_44]
+0x187d38  add     bx, ax
+0x187d3a  mov     byte ptr es:[bx+26h], 0
+0x187d3f  jmp     short loc_187D6C
+0x187d41  mov     bx, si
+0x187d43  shl     bx, 1
+0x187d45  lea     ax, [bp+var_80]
+0x187d48  add     bx, ax
+0x187d4a  mov     ax, ss:[bx]
+0x187d4d  shr     ax, 8
+0x187d50  mov     bx, si
+0x187d52  shl     bx, 1
+0x187d54  lea     dx, [bp+var_70]
+0x187d57  add     bx, dx
+0x187d59  push    ax
+0x187d5a  mov     ax, ss:[bx]
+0x187d5d  mov     dx, 42h ; 'B'
+0x187d60  imul    dx
+0x187d62  les     bx, [bp+var_44]
+0x187d65  add     bx, ax
+0x187d67  pop     ax
+0x187d68  mov     es:[bx+25h], al
+0x187d6c  mov     bx, si
+0x187d6e  shl     bx, 1
+0x187d70  lea     ax, [bp+var_70]
+0x187d73  add     bx, ax
+0x187d75  push    word ptr ss:[bx]
+0x187d78  push    word ptr [bp+var_44+2]
+0x187d7b  push    word ptr [bp+var_44]
+0x187d7e  call    loc_6CA45+3
+0x187d83  add     sp, 6
+0x187d86  mov     bx, si
+0x187d88  shl     bx, 1
+0x187d8a  lea     ax, [bp+var_90]
+0x187d8e  add     bx, ax
+0x187d90  cmp     word ptr ss:[bx], 6400h
+0x187d95  jbe     short loc_187DA2
+0x187d97  mov     bx, si
+0x187d99  shl     bx, 1
+0x187d9b  add     bx, ax
+0x187d9d  mov     word ptr ss:[bx], 6400h
+0x187da2  mov     bx, si
+0x187da4  shl     bx, 1
+0x187da6  lea     ax, [bp+var_90]
+0x187daa  add     bx, ax
+0x187dac  mov     ax, ss:[bx]
+0x187daf  shr     ax, 8
+0x187db2  mov     bx, si
+0x187db4  shl     bx, 1
+0x187db6  lea     dx, [bp+var_70]
+0x187db9  add     bx, dx
+0x187dbb  push    ax
+0x187dbc  mov     ax, ss:[bx]
+0x187dbf  mov     dx, 42h ; 'B'
+0x187dc2  imul    dx
+0x187dc4  les     bx, [bp+var_44]
+0x187dc7  add     bx, ax
+0x187dc9  pop     ax
+0x187dca  mov     es:[bx+23h], al
+0x187dce  mov     bx, si
+0x187dd0  shl     bx, 1
+0x187dd2  lea     ax, [bp+var_A0]
+0x187dd6  add     bx, ax
+0x187dd8  cmp     word ptr ss:[bx], 6400h
+0x187ddd  jbe     short loc_187DEA
+0x187ddf  mov     bx, si
+0x187de1  shl     bx, 1
+0x187de3  add     bx, ax
+0x187de5  mov     word ptr ss:[bx], 6400h
+0x187dea  mov     bx, si
+0x187dec  shl     bx, 1
+0x187dee  lea     ax, [bp+var_A0]
+0x187df2  add     bx, ax
+0x187df4  mov     ax, ss:[bx]
+0x187df7  shr     ax, 8
+0x187dfa  mov     bx, si
+0x187dfc  shl     bx, 1
+0x187dfe  lea     dx, [bp+var_70]
+0x187e01  add     bx, dx
+0x187e03  push    ax
+0x187e04  mov     ax, ss:[bx]
+0x187e07  mov     dx, 42h ; 'B'
+0x187e0a  imul    dx
+0x187e0c  les     bx, [bp+var_44]
+0x187e0f  add     bx, ax
+0x187e11  pop     ax
+0x187e12  mov     es:[bx+22h], al
+0x187e16  inc     si
+0x187e17  cmp     si, 8
+0x187e1a  jge     short loc_187E1F
+0x187e1c  jmp     loc_1875CD
+0x187e1f  mov     ax, 7894h
+0x187e22  mov     es, ax
+0x187e24  les     bx, es:dword_79E3A
+0x187e29  mov     ax, [bp+var_8]
+0x187e2c  add     es:[bx+1Dh], ax
+0x187e30  pop     di
+0x187e31  pop     si
+0x187e32  leave
+0x187e33  retf
