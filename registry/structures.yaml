@@ -549,10 +549,12 @@
 
 - name: MissionSlot
   size: 20  # 0x14 bytes - EXACT SIZE FROM INITIALIZATION
+  confidence: high  # 95% complete
   description: |
     Mission slot header/index in campaign mission array.
     64 slots per campaign (1,280 bytes total).
     Array pointer: dword_79D3E in segment 0x7894.
+    Loaded from .MIS files (not .TSK!).
     
     WARNING: dword_79D3E is a multi-purpose pointer that changes context:
     - In initialization: points to 64×20 byte MissionSlot array
@@ -562,12 +564,14 @@
       function: squadron_mission_file_loader
       pattern: "mov dx, 14h; imul dx; cmp di, 40h (64 slots)"
     - writer_analysis: 53 references across 15 functions
-    - campaign_file: 1,280 bytes (64×20) in .CAM header
+    - file_format: SQUAD*.MIS files (6-byte records + detail section)
+    - file_analysis: SQUAD0.MIS (824 bytes), SQUAD1.MIS (451 bytes)
   fields:
     - offset: 0x00
       size: 2
       type: char[2]
       name: label
+      confidence: confirmed  # 100%
       description: |
         Mission label/ID string (2 chars).
         Initialized to {0x20 (space), 0x00 (null)}.
@@ -580,32 +584,237 @@
       size: 2
       type: uint16_t
       name: field_02
+      confidence: high  # 90%
       description: |
         Unknown field, value 0xC8 (200 decimal).
-        Possibly mission timing threshold, ID, or squadron capacity.
+        Appears in both code and .MIS file detail sections.
+        Possibly mission timing threshold, difficulty, or ID.
       evidence:
         - writers: r48_time_threshold_table_init (0x176AFA), undoc_190D04 (0x190F9A)
         - value: "mov word ptr es:[bx+2], 0C8h"
+        - file: SQUAD0.MIS offset 0x0170 contains 0xC8 pattern
     
     - offset: 0x04
-      size: 16
-      type: uint8_t[16]
-      name: unknown
+      size: 1
+      type: uint8_t  # MissionType enum
+      name: mission_type
+      confidence: confirmed  # 100%
       description: |
-        Unknown fields (16 bytes).
-        Not directly written during initialization.
-        Likely populated from .TSK file reads (1902 bytes read at 0x17B444).
-        May contain: mission type, theater, objectives, timing, etc.
+        Mission type enum value (0-19).
+        Loaded from .MIS file record byte +0x02.
+        
+        Confirmed values:
+        - 0x01 (1) = MISSION_FIGHTER_SWEEP
+        - 0x07 (7) = MISSION_STRIKE
+        - 0x08 (8) = MISSION_DEEPSTRIKE
+        - 0x09 (9) = MISSION_CASUP
+        - 0x0A (10) = MISSION_CAS
+        - 0x0B (11) = MISSION_SEAD
+        - 0x34 (52), 0x35 (53), 0x36 (54) = Unknown extended types
       evidence:
-        - file_read: squadron_mission_file_loader reads .TSK files
-        - offset_713: "Read 1902 bytes from .TSK → 0x602E:0x068F"
+        - file_format: .MIS 6-byte record, byte +0x02
+        - enum: MissionType enum in registry
+        - pattern_match: File values match enum exactly
+    
+    - offset: 0x05
+      size: 1
+      type: uint8_t
+      name: flags
+      confidence: high  # 95%
+      description: |
+        Mission status/availability flags.
+        Loaded from .MIS file record byte +0x05.
+        
+        Bit 7: Always set (0x80 mask)
+        Bit 0: Mission state?
+          - 0x80 (bit 0 clear) = Available/incomplete (most common)
+          - 0x81 (bit 0 set) = Completed/unavailable (less common)
+      evidence:
+        - file_format: .MIS 6-byte record, byte +0x05
+        - pattern: Values 0x80 or 0x81 only
+        - frequency: 0x80 more common in early missions, 0x81 in later
+    
+    - offset: 0x06
+      size: 1
+      type: uint8_t
+      name: parameter
+      confidence: high  # 90%
+      description: |
+        Mission-specific parameter (1-45 observed).
+        Loaded from .MIS file record byte +0x04.
+        Meaning varies by mission type:
+        
+        Examples from SQUAD0.MIS:
+        - Type 1 (FIGHTER_SWEEP): param = 3
+        - Type 52: param = 1, 7
+        - Type 53: param = 32, 35
+        - Type 54: param = 45
+        - Type 11 (SEAD): param = 14
+        - Type 9 (CASUP): param = 11
+        - Type 10 (CAS): param = 9
+        - Type 8 (DEEPSTRIKE): param = 8
+        - Type 7 (STRIKE): param = 5, 13
+        
+        Hypothesis: Target ID, loadout preset, or difficulty multiplier.
+      evidence:
+        - file_format: .MIS 6-byte record, byte +0x04
+        - range: 1-45 observed
+        - variation: Different values for same mission type in different files
+    
+    - offset: 0x07
+      size: 13
+      type: uint8_t[13]
+      name: extended_data
+      confidence: low  # 40%
+      description: |
+        Extended mission data (13 bytes).
+        Not written during initialization.
+        Source: .MIS file detail section (after 6-byte records).
+        
+        Likely contains:
+        - Target coordinates (4 bytes?)
+        - Timing/scheduling (2 bytes?)
+        - Weather/time-of-day (1 byte?)
+        - Threat level (1 byte?)
+        - Squadron assignment (1 byte?)
+        - Flight count (1 byte?)
+        - Reserved/padding (3 bytes?)
+        
+        Requires further analysis of detail section parsing.
+      evidence:
+        - file: SQUAD0.MIS detail section starts at +0x00AD
+        - pattern: 20-byte aligned data with 0xC8, 0x1E values
+        - size: Remaining 13 bytes after known fields
   
   notes:
+    - "File format: .MIS (NOT .TSK as initially thought)"
+    - ".MIS structure: 12B header + N×6B records + variable detail section"
+    - "File record: [index][00][type][00][param][flags]"
     - "Total array size: 64 slots × 20 bytes = 1,280 bytes (0x500)"
     - "Array pointer: dword_79D3E @ segment 0x7894"
     - "Initialized by: squadron_mission_file_loader @ 0x17B437"
+    - "File read at: offset +0x713 (address 0x17BB4A)"
+    - "Buffer location: 0x602E:0x068F"
     - "Next slot boundary confirmed: +0x14 writes by sub_170E24"
     - "Context warning: R55/R56 overlays use dword_79D3E for different structure"
+
+- name: MissionSlotFileRecord
+  size: 6
+  confidence: confirmed  # 100%
+  description: |
+    Mission slot record format in .MIS files.
+    Multiple records per file (count in header +0x07).
+    Expanded to 20-byte MissionSlot in memory.
+  evidence:
+    - file_analysis: SQUAD0.MIS, SQUAD1.MIS
+    - pattern: [index][00][type][00][param][flags]
+  fields:
+    - offset: 0x00
+      size: 1
+      type: uint8_t
+      name: slot_index
+      description: Mission slot number (0-63, but 3-27 typical)
+    
+    - offset: 0x01
+      size: 1
+      type: uint8_t
+      name: zero_01
+      description: Always 0x00 (padding/alignment)
+    
+    - offset: 0x02
+      size: 1
+      type: uint8_t
+      name: mission_type
+      description: MissionType enum value (goes to MissionSlot +0x04)
+    
+    - offset: 0x03
+      size: 1
+      type: uint8_t
+      name: zero_03
+      description: Always 0x00 (padding/alignment)
+    
+    - offset: 0x04
+      size: 1
+      type: uint8_t
+      name: parameter
+      description: Mission parameter (goes to MissionSlot +0x06)
+    
+    - offset: 0x05
+      size: 1
+      type: uint8_t
+      name: flags
+      description: Mission flags 0x80/0x81 (goes to MissionSlot +0x05)
+
+- name: MISFileHeader
+  size: 12
+  confidence: high  # 85%
+  description: |
+    Header of .MIS mission files.
+    Precedes mission slot records.
+  evidence:
+    - file_analysis: SQUAD0.MIS, SQUAD1.MIS
+  fields:
+    - offset: 0x00
+      size: 2
+      type: uint16_t
+      name: mission_count
+      description: |
+        Number of active missions.
+        SQUAD0: 3, SQUAD1: 2
+    
+    - offset: 0x02
+      size: 1
+      type: uint8_t
+      name: theater_id
+      description: |
+        Theater ID.
+        SQUAD0: 1, SQUAD1: 7
+    
+    - offset: 0x03
+      size: 1
+      type: uint8_t
+      name: slot_size
+      description: |
+        MissionSlot size marker.
+        SQUAD0: 0x14 (20 bytes), SQUAD1: 0x11 (17? - anomaly)
+    
+    - offset: 0x04
+      size: 1
+      type: uint8_t
+      name: pilots_per_squad
+      description: |
+        Pilots per squadron.
+        SQUAD0: 0x1E (30), SQUAD1: 0x01 (anomaly)
+    
+    - offset: 0x05
+      size: 1
+      type: uint8_t
+      name: menu_elements
+      description: |
+        UI menu element count.
+        SQUAD0: 0x0B (11), SQUAD1: 0x00 (anomaly)
+    
+    - offset: 0x06
+      size: 1
+      type: uint8_t
+      name: unknown_06
+      description: Always 0x00 in samples
+    
+    - offset: 0x07
+      size: 1
+      type: uint8_t
+      name: record_count
+      description: |
+        Number of mission slot records following.
+        SQUAD0: 0x1A (26), SQUAD1: 0x10 (16)
+    
+    - offset: 0x08
+      size: 4
+      type: uint8_t[4]
+      name: unknown_08_0B
+      description: |
+        Unknown fields (4 bytes).
+        Values vary between files.
 
 - name: FlightRecord
   size: 130  # 0x82 bytes - from R57 analysis

@@ -1,0 +1,535 @@
+POST FILE READ CODE ANALYSIS
+Function: squadron_mission_file_loader @ 0x17B437
+File read at: 0x17BB4A (offset +0x713)
+================================================================================
+
++0x0713 | 0x17BB4A | push    0Ah
++0x0715 | 0x17BB4C | call    op_dispatch_far_entry
++0x071A | 0x17BB51 | add     sp, 0Ah
++0x071D | 0x17BB54 | cmp     [bp+var_8], 7Eh ; '~'
++0x0721 | 0x17BB58 | jz      short loc_17BB83
++0x0723 | 0x17BB5A | cmp     [bp+var_8], 60h ; '`'
++0x0727 | 0x17BB5E | jbe     short loc_17BB6E
++0x0729 | 0x17BB60 | cmp     [bp+var_8], 7Ah ; 'z'
++0x072D | 0x17BB64 | ja      short loc_17BB6E
++0x072F | 0x17BB66 | mov     al, [bp+var_8]
++0x0732 | 0x17BB69 | add     al, 0E0h
++0x0734 | 0x17BB6B | mov     [bp+var_8], al
++0x0737 | 0x17BB6E | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x073A | 0x17BB71 | mov     es, ax
++0x073C | 0x17BB73 | les     bx, es:dword_151BFC
++0x0741 | 0x17BB78 | add     bx, [bp+var_A]
++0x0744 | 0x17BB7B | mov     al, [bp+var_8]
++0x0747 | 0x17BB7E | mov     es:[bx], al
++0x074A | 0x17BB81 | jmp     short loc_17BBE6
+      --> Jump to +0x-178C11
++0x074C | 0x17BB83 | inc     [bp+var_4]
++0x074F | 0x17BB86 | push    ss
++0x0750 | 0x17BB87 | lea     ax, [bp+var_8]
++0x0753 | 0x17BB8A | push    ax
++0x0754 | 0x17BB8B | push    1
++0x0756 | 0x17BB8D | push    si
++0x0757 | 0x17BB8E | push    0Ah
++0x0759 | 0x17BB90 | call    op_dispatch_far_entry
++0x075E | 0x17BB95 | add     sp, 0Ah
++0x0761 | 0x17BB98 | push    [bp+arg_4]
++0x0764 | 0x17BB9B | push    [bp+arg_2]
++0x0767 | 0x17BB9E | push    [bp+arg_0]
++0x076A | 0x17BBA1 | push    si
++0x076B | 0x17BBA2 | push    ss
++0x076C | 0x17BBA3 | lea     ax, [bp+var_4]
++0x076F | 0x17BBA6 | push    ax
++0x0770 | 0x17BBA7 | push    ss
++0x0771 | 0x17BBA8 | lea     ax, [bp+var_A]
++0x0774 | 0x17BBAB | push    ax
++0x0775 | 0x17BBAC | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0778 | 0x17BBAF | mov     es, ax
++0x077A | 0x17BBB1 | push    word ptr es:dword_151BFC+2
++0x077F | 0x17BBB6 | push    word ptr es:dword_151BFC
++0x0784 | 0x17BBBB | mov     al, [bp+var_8]
++0x0787 | 0x17BBBE | mov     ah, 0
++0x0789 | 0x17BBC0 | push    ax
++0x078A | 0x17BBC1 | call    menu_dispatcher_19ops
++0x078F | 0x17BBC6 | add     sp, 16h
++0x0792 | 0x17BBC9 | mov     [bp+var_A], 0
++0x0797 | 0x17BBCE | jmp     short loc_17BBD3
+      --> Jump to +0x-178C24
++0x0799 | 0x17BBD0 | inc     [bp+var_A]
++0x079C | 0x17BBD3 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x079F | 0x17BBD6 | mov     es, ax
++0x07A1 | 0x17BBD8 | les     bx, es:dword_151BFC
++0x07A6 | 0x17BBDD | add     bx, [bp+var_A]
++0x07A9 | 0x17BBE0 | cmp     byte ptr es:[bx], 0
++0x07AD | 0x17BBE4 | jnz     short loc_17BBD0
++0x07AF | 0x17BBE6 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x07B2 | 0x17BBE9 | mov     es, ax
++0x07B4 | 0x17BBEB | les     bx, es:dword_151BFC
++0x07B9 | 0x17BBF0 | add     bx, [bp+var_A]
++0x07BC | 0x17BBF3 | cmp     byte ptr es:[bx], 0
++0x07C0 | 0x17BBF7 | jz      short loc_17BBFC
++0x07C2 | 0x17BBF9 | jmp     loc_17BB3F
+      --> Jump to +0x-178CB8
++0x07C5 | 0x17BBFC | dec     [bp+var_A]
++0x07C8 | 0x17BBFF | mov     ax, [bp+var_6]
++0x07CB | 0x17BC02 | mov     [bp+var_4], ax
++0x07CE | 0x17BC05 | push    0
++0x07D0 | 0x17BC07 | cwd
++0x07D1 | 0x17BC08 | push    dx
++0x07D2 | 0x17BC09 | push    ax
++0x07D3 | 0x17BC0A | push    si
++0x07D4 | 0x17BC0B | push    0Eh
++0x07D6 | 0x17BC0D | call    op_dispatch_far_wide
++0x07DB | 0x17BC12 | add     sp, 0Ah
++0x07DE | 0x17BC15 | cmp     [bp+var_7], 0
++0x07E2 | 0x17BC19 | jz      short loc_17BC1E
++0x07E4 | 0x17BC1B | jmp     loc_17B946
+      --> Jump to +0x-178EB1
++0x07E7 | 0x17BC1E | mov     al, [bp+var_F]
++0x07EA | 0x17BC21 | mov     ah, 0
++0x07EC | 0x17BC23 | or      ax, ax
++0x07EE | 0x17BC25 | jz      short loc_17BC2A
++0x07F0 | 0x17BC27 | jmp     loc_17C42A
+      --> Jump to +0x-1783CD
++0x07F3 | 0x17BC2A | push    0
++0x07F5 | 0x17BC2C | push    0
++0x07F7 | 0x17BC2E | push    0
++0x07F9 | 0x17BC30 | push    si
++0x07FA | 0x17BC31 | push    0Eh
++0x07FC | 0x17BC33 | call    op_dispatch_far_wide
++0x0801 | 0x17BC38 | add     sp, 0Ah
++0x0804 | 0x17BC3B | push    ss
++0x0805 | 0x17BC3C | lea     ax, [bp+var_4]
++0x0808 | 0x17BC3F | push    ax
++0x0809 | 0x17BC40 | push    2
++0x080B | 0x17BC42 | push    si
++0x080C | 0x17BC43 | push    0Ah
++0x080E | 0x17BC45 | call    op_dispatch_far_entry
++0x0813 | 0x17BC4A | add     sp, 0Ah
++0x0816 | 0x17BC4D | push    0
++0x0818 | 0x17BC4F | mov     ax, [bp+var_4]
++0x081B | 0x17BC52 | cwd
++0x081C | 0x17BC53 | push    dx
++0x081D | 0x17BC54 | push    ax
++0x081E | 0x17BC55 | push    si
++0x081F | 0x17BC56 | push    0Eh
++0x0821 | 0x17BC58 | call    op_dispatch_far_wide
++0x0826 | 0x17BC5D | add     sp, 0Ah
++0x0829 | 0x17BC60 | push    ss
++0x082A | 0x17BC61 | lea     ax, [bp+var_4]
++0x082D | 0x17BC64 | push    ax
++0x082E | 0x17BC65 | push    2
++0x0830 | 0x17BC67 | push    si
++0x0831 | 0x17BC68 | push    0Ah
++0x0833 | 0x17BC6A | call    op_dispatch_far_entry
++0x0838 | 0x17BC6F | add     sp, 0Ah
++0x083B | 0x17BC72 | push    0
++0x083D | 0x17BC74 | mov     ax, [bp+var_4]
++0x0840 | 0x17BC77 | cwd
++0x0841 | 0x17BC78 | push    dx
++0x0842 | 0x17BC79 | push    ax
++0x0843 | 0x17BC7A | push    si
++0x0844 | 0x17BC7B | push    0Eh
++0x0846 | 0x17BC7D | call    op_dispatch_far_wide
++0x084B | 0x17BC82 | add     sp, 0Ah
++0x084E | 0x17BC85 | dec     [bp+var_A]
++0x0851 | 0x17BC88 | inc     [bp+var_A]
++0x0854 | 0x17BC8B | inc     [bp+var_4]
++0x0857 | 0x17BC8E | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x085A | 0x17BC91 | mov     es, ax
++0x085C | 0x17BC93 | les     bx, es:dword_151BFC
++0x0861 | 0x17BC98 | add     bx, [bp+var_A]
++0x0864 | 0x17BC9B | mov     byte ptr es:[bx], 0
++0x0868 | 0x17BC9F | push    ss
++0x0869 | 0x17BCA0 | lea     ax, [bp+var_7]
++0x086C | 0x17BCA3 | push    ax
++0x086D | 0x17BCA4 | push    1
++0x086F | 0x17BCA6 | push    si
++0x0870 | 0x17BCA7 | push    0Ah
++0x0872 | 0x17BCA9 | call    op_dispatch_far_entry
++0x0877 | 0x17BCAE | add     sp, 0Ah
++0x087A | 0x17BCB1 | cmp     [bp+var_7], 0FFh
++0x087E | 0x17BCB5 | jz      short loc_17BCE4
++0x0880 | 0x17BCB7 | cmp     [bp+var_7], 7Eh ; '~'
++0x0884 | 0x17BCBB | jz      short loc_17BCE4
++0x0886 | 0x17BCBD | cmp     [bp+var_7], 60h ; '`'
++0x088A | 0x17BCC1 | jbe     short loc_17BCD1
++0x088C | 0x17BCC3 | cmp     [bp+var_7], 7Ah ; 'z'
++0x0890 | 0x17BCC7 | ja      short loc_17BCD1
++0x0892 | 0x17BCC9 | mov     al, [bp+var_7]
++0x0895 | 0x17BCCC | add     al, 0E0h
++0x0897 | 0x17BCCE | mov     [bp+var_7], al
++0x089A | 0x17BCD1 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x089D | 0x17BCD4 | mov     es, ax
++0x089F | 0x17BCD6 | les     bx, es:dword_151BFC
++0x08A4 | 0x17BCDB | add     bx, [bp+var_A]
++0x08A7 | 0x17BCDE | mov     al, [bp+var_7]
++0x08AA | 0x17BCE1 | mov     es:[bx], al
++0x08AD | 0x17BCE4 | cmp     [bp+var_7], 0
++0x08B1 | 0x17BCE8 | jnz     short loc_17BC88
++0x08B3 | 0x17BCEA | mov     ax, 7A32h
++0x08B6 | 0x17BCED | mov     es, ax
++0x08B8 | 0x17BCEF | mov     ax, es:0AD47h
++0x08BC | 0x17BCF3 | and     ax, 7
++0x08BF | 0x17BCF6 | cmp     ax, 7
++0x08C2 | 0x17BCF9 | jz      short loc_17BCFE
++0x08C4 | 0x17BCFB | jmp     loc_17BD7F
+      --> Jump to +0x-178A78
++0x08C7 | 0x17BCFE | push    ss
++0x08C8 | 0x17BCFF | lea     ax, [bp+var_4]
++0x08CB | 0x17BD02 | push    ax
++0x08CC | 0x17BD03 | push    2
++0x08CE | 0x17BD05 | push    si
++0x08CF | 0x17BD06 | push    0Ah
++0x08D1 | 0x17BD08 | call    op_dispatch_far_entry
++0x08D6 | 0x17BD0D | add     sp, 0Ah
++0x08D9 | 0x17BD10 | push    0
++0x08DB | 0x17BD12 | mov     ax, [bp+var_4]
++0x08DE | 0x17BD15 | cwd
++0x08DF | 0x17BD16 | push    dx
++0x08E0 | 0x17BD17 | push    ax
++0x08E1 | 0x17BD18 | push    si
++0x08E2 | 0x17BD19 | push    0Eh
++0x08E4 | 0x17BD1B | call    op_dispatch_far_wide
++0x08E9 | 0x17BD20 | add     sp, 0Ah
++0x08EC | 0x17BD23 | dec     [bp+var_A]
++0x08EF | 0x17BD26 | inc     [bp+var_A]
++0x08F2 | 0x17BD29 | inc     [bp+var_4]
++0x08F5 | 0x17BD2C | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x08F8 | 0x17BD2F | mov     es, ax
++0x08FA | 0x17BD31 | les     bx, es:dword_151BFC
++0x08FF | 0x17BD36 | add     bx, [bp+var_A]
++0x0902 | 0x17BD39 | mov     byte ptr es:[bx], 0
++0x0906 | 0x17BD3D | push    ss
++0x0907 | 0x17BD3E | lea     ax, [bp+var_7]
++0x090A | 0x17BD41 | push    ax
++0x090B | 0x17BD42 | push    1
++0x090D | 0x17BD44 | push    si
++0x090E | 0x17BD45 | push    0Ah
++0x0910 | 0x17BD47 | call    op_dispatch_far_entry
++0x0915 | 0x17BD4C | add     sp, 0Ah
++0x0918 | 0x17BD4F | cmp     [bp+var_7], 60h ; '`'
++0x091C | 0x17BD53 | jbe     short loc_17BD63
++0x091E | 0x17BD55 | cmp     [bp+var_7], 7Ah ; 'z'
++0x0922 | 0x17BD59 | ja      short loc_17BD63
++0x0924 | 0x17BD5B | mov     al, [bp+var_7]
++0x0927 | 0x17BD5E | add     al, 0E0h
++0x0929 | 0x17BD60 | mov     [bp+var_7], al
++0x092C | 0x17BD63 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x092F | 0x17BD66 | mov     es, ax
++0x0931 | 0x17BD68 | les     bx, es:dword_151BFC
++0x0936 | 0x17BD6D | add     bx, [bp+var_A]
++0x0939 | 0x17BD70 | mov     al, [bp+var_7]
++0x093C | 0x17BD73 | mov     es:[bx], al
++0x093F | 0x17BD76 | cmp     [bp+var_7], 0
++0x0943 | 0x17BD7A | jnz     short loc_17BD26
++0x0945 | 0x17BD7C | jmp     loc_17C42A
+      --> Jump to +0x-1783CD
++0x0948 | 0x17BD7F | mov     ax, 7A32h
++0x094B | 0x17BD82 | mov     es, ax
++0x094D | 0x17BD84 | test    word ptr es:0AD47h, 7
++0x0954 | 0x17BD8B | jz      short loc_17BD90
++0x0956 | 0x17BD8D | jmp     loc_17C0EB
+      --> Jump to +0x-17870C
++0x0959 | 0x17BD90 | push    ss
++0x095A | 0x17BD91 | lea     ax, [bp+var_4]
++0x095D | 0x17BD94 | push    ax
++0x095E | 0x17BD95 | push    2
++0x0960 | 0x17BD97 | push    si
++0x0961 | 0x17BD98 | push    0Ah
++0x0963 | 0x17BD9A | call    op_dispatch_far_entry
++0x0968 | 0x17BD9F | add     sp, 0Ah
++0x096B | 0x17BDA2 | push    ss
++0x096C | 0x17BDA3 | lea     ax, [bp+var_4]
++0x096F | 0x17BDA6 | push    ax
++0x0970 | 0x17BDA7 | push    2
++0x0972 | 0x17BDA9 | push    si
++0x0973 | 0x17BDAA | push    0Ah
++0x0975 | 0x17BDAC | call    op_dispatch_far_entry
++0x097A | 0x17BDB1 | add     sp, 0Ah
++0x097D | 0x17BDB4 | push    0
++0x097F | 0x17BDB6 | mov     ax, [bp+var_4]
++0x0982 | 0x17BDB9 | cwd
++0x0983 | 0x17BDBA | push    dx
++0x0984 | 0x17BDBB | push    ax
++0x0985 | 0x17BDBC | push    si
++0x0986 | 0x17BDBD | push    0Eh
++0x0988 | 0x17BDBF | call    op_dispatch_far_wide
++0x098D | 0x17BDC4 | add     sp, 0Ah
++0x0990 | 0x17BDC7 | dec     [bp+var_A]
++0x0993 | 0x17BDCA | inc     [bp+var_A]
++0x0996 | 0x17BDCD | inc     [bp+var_4]
++0x0999 | 0x17BDD0 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x099C | 0x17BDD3 | mov     es, ax
++0x099E | 0x17BDD5 | les     bx, es:dword_151BFC
++0x09A3 | 0x17BDDA | add     bx, [bp+var_A]
++0x09A6 | 0x17BDDD | mov     byte ptr es:[bx], 0
++0x09AA | 0x17BDE1 | push    ss
++0x09AB | 0x17BDE2 | lea     ax, [bp+var_7]
++0x09AE | 0x17BDE5 | push    ax
++0x09AF | 0x17BDE6 | push    1
++0x09B1 | 0x17BDE8 | push    si
++0x09B2 | 0x17BDE9 | push    0Ah
++0x09B4 | 0x17BDEB | call    op_dispatch_far_entry
++0x09B9 | 0x17BDF0 | add     sp, 0Ah
++0x09BC | 0x17BDF3 | cmp     [bp+var_7], 60h ; '`'
++0x09C0 | 0x17BDF7 | jbe     short loc_17BE07
++0x09C2 | 0x17BDF9 | cmp     [bp+var_7], 7Ah ; 'z'
++0x09C6 | 0x17BDFD | ja      short loc_17BE07
++0x09C8 | 0x17BDFF | mov     al, [bp+var_7]
++0x09CB | 0x17BE02 | add     al, 0E0h
++0x09CD | 0x17BE04 | mov     [bp+var_7], al
++0x09D0 | 0x17BE07 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x09D3 | 0x17BE0A | mov     es, ax
++0x09D5 | 0x17BE0C | les     bx, es:dword_151BFC
++0x09DA | 0x17BE11 | add     bx, [bp+var_A]
++0x09DD | 0x17BE14 | mov     al, [bp+var_7]
++0x09E0 | 0x17BE17 | mov     es:[bx], al
++0x09E3 | 0x17BE1A | cmp     [bp+var_7], 0
++0x09E7 | 0x17BE1E | jnz     short loc_17BDCA
++0x09E9 | 0x17BE20 | push    ss
++0x09EA | 0x17BE21 | lea     ax, [bp+var_7]
++0x09ED | 0x17BE24 | push    ax
++0x09EE | 0x17BE25 | push    1
++0x09F0 | 0x17BE27 | push    si
++0x09F1 | 0x17BE28 | push    0Ah
++0x09F3 | 0x17BE2A | call    op_dispatch_far_entry
++0x09F8 | 0x17BE2F | add     sp, 0Ah
++0x09FB | 0x17BE32 | mov     ax, 7A32h
++0x09FE | 0x17BE35 | mov     es, ax
++0x0A00 | 0x17BE37 | mov     ax, es:0AD47h
++0x0A04 | 0x17BE3B | and     ax, 38h
++0x0A07 | 0x17BE3E | cmp     ax, 38h ; '8'
++0x0A0A | 0x17BE41 | jnz     short loc_17BE70
++0x0A0C | 0x17BE43 | inc     [bp+var_4]
++0x0A0F | 0x17BE46 | cmp     [bp+var_7], 60h ; '`'
++0x0A13 | 0x17BE4A | jbe     short loc_17BE5A
++0x0A15 | 0x17BE4C | cmp     [bp+var_7], 7Ah ; 'z'
++0x0A19 | 0x17BE50 | ja      short loc_17BE5A
++0x0A1B | 0x17BE52 | mov     al, [bp+var_7]
++0x0A1E | 0x17BE55 | add     al, 0E0h
++0x0A20 | 0x17BE57 | mov     [bp+var_7], al
++0x0A23 | 0x17BE5A | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0A26 | 0x17BE5D | mov     es, ax
++0x0A28 | 0x17BE5F | les     bx, es:dword_151BFC
++0x0A2D | 0x17BE64 | add     bx, [bp+var_A]
++0x0A30 | 0x17BE67 | mov     al, [bp+var_7]
++0x0A33 | 0x17BE6A | mov     es:[bx], al
++0x0A36 | 0x17BE6D | inc     [bp+var_A]
++0x0A39 | 0x17BE70 | cmp     [bp+var_7], 0
++0x0A3D | 0x17BE74 | jnz     short loc_17BE20
++0x0A3F | 0x17BE76 | mov     ax, 7A32h
++0x0A42 | 0x17BE79 | mov     es, ax
++0x0A44 | 0x17BE7B | mov     ax, es:0AD47h
++0x0A48 | 0x17BE7F | and     ax, 38h
++0x0A4B | 0x17BE82 | cmp     ax, 38h ; '8'
++0x0A4E | 0x17BE85 | jnz     short loc_17BE8A
++0x0A50 | 0x17BE87 | jmp     loc_17C42A
+      --> Jump to +0x-1783CD
++0x0A53 | 0x17BE8A | dec     [bp+var_A]
++0x0A56 | 0x17BE8D | inc     [bp+var_A]
++0x0A59 | 0x17BE90 | inc     [bp+var_4]
++0x0A5C | 0x17BE93 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0A5F | 0x17BE96 | mov     es, ax
++0x0A61 | 0x17BE98 | les     bx, es:dword_151BFC
++0x0A66 | 0x17BE9D | add     bx, [bp+var_A]
++0x0A69 | 0x17BEA0 | mov     byte ptr es:[bx], 0
++0x0A6D | 0x17BEA4 | push    ss
++0x0A6E | 0x17BEA5 | lea     ax, [bp+var_7]
++0x0A71 | 0x17BEA8 | push    ax
++0x0A72 | 0x17BEA9 | push    1
++0x0A74 | 0x17BEAB | push    si
++0x0A75 | 0x17BEAC | push    0Ah
++0x0A77 | 0x17BEAE | call    op_dispatch_far_entry
++0x0A7C | 0x17BEB3 | add     sp, 0Ah
++0x0A7F | 0x17BEB6 | cmp     [bp+var_7], 60h ; '`'
++0x0A83 | 0x17BEBA | jbe     short loc_17BECA
++0x0A85 | 0x17BEBC | cmp     [bp+var_7], 7Ah ; 'z'
++0x0A89 | 0x17BEC0 | ja      short loc_17BECA
++0x0A8B | 0x17BEC2 | mov     al, [bp+var_7]
++0x0A8E | 0x17BEC5 | add     al, 0E0h
++0x0A90 | 0x17BEC7 | mov     [bp+var_7], al
++0x0A93 | 0x17BECA | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0A96 | 0x17BECD | mov     es, ax
++0x0A98 | 0x17BECF | les     bx, es:dword_151BFC
++0x0A9D | 0x17BED4 | add     bx, [bp+var_A]
++0x0AA0 | 0x17BED7 | mov     al, [bp+var_7]
++0x0AA3 | 0x17BEDA | mov     es:[bx], al
++0x0AA6 | 0x17BEDD | cmp     [bp+var_7], 0
++0x0AAA | 0x17BEE1 | jnz     short loc_17BE8D
++0x0AAC | 0x17BEE3 | push    ss
++0x0AAD | 0x17BEE4 | lea     ax, [bp+var_7]
++0x0AB0 | 0x17BEE7 | push    ax
++0x0AB1 | 0x17BEE8 | push    1
++0x0AB3 | 0x17BEEA | push    si
++0x0AB4 | 0x17BEEB | push    0Ah
++0x0AB6 | 0x17BEED | call    op_dispatch_far_entry
++0x0ABB | 0x17BEF2 | add     sp, 0Ah
++0x0ABE | 0x17BEF5 | mov     ax, 7A32h
++0x0AC1 | 0x17BEF8 | mov     es, ax
++0x0AC3 | 0x17BEFA | test    word ptr es:0AD47h, 8
++0x0ACA | 0x17BF01 | jz      short loc_17BF2D
++0x0ACC | 0x17BF03 | cmp     [bp+var_7], 60h ; '`'
++0x0AD0 | 0x17BF07 | jbe     short loc_17BF17
++0x0AD2 | 0x17BF09 | cmp     [bp+var_7], 7Ah ; 'z'
++0x0AD6 | 0x17BF0D | ja      short loc_17BF17
++0x0AD8 | 0x17BF0F | mov     al, [bp+var_7]
++0x0ADB | 0x17BF12 | add     al, 0E0h
++0x0ADD | 0x17BF14 | mov     [bp+var_7], al
++0x0AE0 | 0x17BF17 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0AE3 | 0x17BF1A | mov     es, ax
++0x0AE5 | 0x17BF1C | les     bx, es:dword_151BFC
++0x0AEA | 0x17BF21 | add     bx, [bp+var_A]
++0x0AED | 0x17BF24 | mov     al, [bp+var_7]
++0x0AF0 | 0x17BF27 | mov     es:[bx], al
++0x0AF3 | 0x17BF2A | inc     [bp+var_A]
++0x0AF6 | 0x17BF2D | cmp     [bp+var_7], 20h ; ' '
++0x0AFA | 0x17BF31 | jnz     short loc_17BEE3
++0x0AFC | 0x17BF33 | push    ss
++0x0AFD | 0x17BF34 | lea     ax, [bp+var_7]
++0x0B00 | 0x17BF37 | push    ax
++0x0B01 | 0x17BF38 | push    1
++0x0B03 | 0x17BF3A | push    si
++0x0B04 | 0x17BF3B | push    0Ah
++0x0B06 | 0x17BF3D | call    op_dispatch_far_entry
++0x0B0B | 0x17BF42 | add     sp, 0Ah
++0x0B0E | 0x17BF45 | mov     ax, 7A32h
++0x0B11 | 0x17BF48 | mov     es, ax
++0x0B13 | 0x17BF4A | test    word ptr es:0AD47h, 8
++0x0B1A | 0x17BF51 | jz      short loc_17BF9E
++0x0B1C | 0x17BF53 | mov     es, ax
++0x0B1E | 0x17BF55 | mov     ax, es:0AD47h
++0x0B22 | 0x17BF59 | and     ax, 10h
++0x0B25 | 0x17BF5C | mov     dx, 7A32h
++0x0B28 | 0x17BF5F | mov     es, dx
++0x0B2A | 0x17BF61 | mov     dx, es:0AD47h
++0x0B2F | 0x17BF66 | and     dx, 20h
++0x0B33 | 0x17BF6A | xor     ax, dx
++0x0B35 | 0x17BF6C | jz      short loc_17BF9E
++0x0B37 | 0x17BF6E | cmp     [bp+var_7], 60h ; '`'
++0x0B3B | 0x17BF72 | jbe     short loc_17BF82
++0x0B3D | 0x17BF74 | cmp     [bp+var_7], 7Ah ; 'z'
++0x0B41 | 0x17BF78 | ja      short loc_17BF82
++0x0B43 | 0x17BF7A | mov     al, [bp+var_7]
++0x0B46 | 0x17BF7D | add     al, 0E0h
++0x0B48 | 0x17BF7F | mov     [bp+var_7], al
++0x0B4B | 0x17BF82 | cmp     [bp+var_7], 0
++0x0B4F | 0x17BF86 | jz      short loc_17BF9E
++0x0B51 | 0x17BF88 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0B54 | 0x17BF8B | mov     es, ax
++0x0B56 | 0x17BF8D | les     bx, es:dword_151BFC
++0x0B5B | 0x17BF92 | add     bx, [bp+var_A]
++0x0B5E | 0x17BF95 | mov     al, [bp+var_7]
++0x0B61 | 0x17BF98 | mov     es:[bx], al
++0x0B64 | 0x17BF9B | inc     [bp+var_A]
++0x0B67 | 0x17BF9E | cmp     [bp+var_7], 0
++0x0B6B | 0x17BFA2 | jnz     short loc_17BF33
++0x0B6D | 0x17BFA4 | push    ss
++0x0B6E | 0x17BFA5 | lea     ax, [bp+var_7]
++0x0B71 | 0x17BFA8 | push    ax
++0x0B72 | 0x17BFA9 | push    1
++0x0B74 | 0x17BFAB | push    si
++0x0B75 | 0x17BFAC | push    0Ah
++0x0B77 | 0x17BFAE | call    op_dispatch_far_entry
++0x0B7C | 0x17BFB3 | add     sp, 0Ah
++0x0B7F | 0x17BFB6 | mov     ax, 7A32h
++0x0B82 | 0x17BFB9 | mov     es, ax
++0x0B84 | 0x17BFBB | test    word ptr es:0AD47h, 10h
++0x0B8B | 0x17BFC2 | jz      short loc_17BFF4
++0x0B8D | 0x17BFC4 | cmp     [bp+var_7], 60h ; '`'
++0x0B91 | 0x17BFC8 | jbe     short loc_17BFD8
++0x0B93 | 0x17BFCA | cmp     [bp+var_7], 7Ah ; 'z'
++0x0B97 | 0x17BFCE | ja      short loc_17BFD8
++0x0B99 | 0x17BFD0 | mov     al, [bp+var_7]
++0x0B9C | 0x17BFD3 | add     al, 0E0h
++0x0B9E | 0x17BFD5 | mov     [bp+var_7], al
++0x0BA1 | 0x17BFD8 | cmp     [bp+var_7], 0
++0x0BA5 | 0x17BFDC | jz      short loc_17BFF4
++0x0BA7 | 0x17BFDE | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0BAA | 0x17BFE1 | mov     es, ax
++0x0BAC | 0x17BFE3 | les     bx, es:dword_151BFC
++0x0BB1 | 0x17BFE8 | add     bx, [bp+var_A]
++0x0BB4 | 0x17BFEB | mov     al, [bp+var_7]
++0x0BB7 | 0x17BFEE | mov     es:[bx], al
++0x0BBA | 0x17BFF1 | inc     [bp+var_A]
++0x0BBD | 0x17BFF4 | cmp     [bp+var_7], 20h ; ' '
++0x0BC1 | 0x17BFF8 | jnz     short loc_17BFA4
++0x0BC3 | 0x17BFFA | push    ss
++0x0BC4 | 0x17BFFB | lea     ax, [bp+var_7]
++0x0BC7 | 0x17BFFE | push    ax
++0x0BC8 | 0x17BFFF | push    1
++0x0BCA | 0x17C001 | push    si
++0x0BCB | 0x17C002 | push    0Ah
++0x0BCD | 0x17C004 | call    op_dispatch_far_entry
++0x0BD2 | 0x17C009 | add     sp, 0Ah
++0x0BD5 | 0x17C00C | mov     ax, 7A32h
++0x0BD8 | 0x17C00F | mov     es, ax
++0x0BDA | 0x17C011 | test    word ptr es:0AD47h, 0
++0x0BE1 | 0x17C018 | jz      short loc_17C04A
++0x0BE3 | 0x17C01A | cmp     [bp+var_7], 60h ; '`'
++0x0BE7 | 0x17C01E | jbe     short loc_17C02E
++0x0BE9 | 0x17C020 | cmp     [bp+var_7], 7Ah ; 'z'
++0x0BED | 0x17C024 | ja      short loc_17C02E
++0x0BEF | 0x17C026 | mov     al, [bp+var_7]
++0x0BF2 | 0x17C029 | add     al, 0E0h
++0x0BF4 | 0x17C02B | mov     [bp+var_7], al
++0x0BF7 | 0x17C02E | cmp     [bp+var_7], 0
++0x0BFB | 0x17C032 | jz      short loc_17C04A
++0x0BFD | 0x17C034 | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0C00 | 0x17C037 | mov     es, ax
++0x0C02 | 0x17C039 | les     bx, es:dword_151BFC
++0x0C07 | 0x17C03E | add     bx, [bp+var_A]
++0x0C0A | 0x17C041 | mov     al, [bp+var_7]
++0x0C0D | 0x17C044 | mov     es:[bx], al
++0x0C10 | 0x17C047 | inc     [bp+var_A]
++0x0C13 | 0x17C04A | cmp     [bp+var_7], 0
++0x0C17 | 0x17C04E | jnz     short loc_17BFFA
++0x0C19 | 0x17C050 | push    ss
++0x0C1A | 0x17C051 | lea     ax, [bp+var_7]
++0x0C1D | 0x17C054 | push    ax
++0x0C1E | 0x17C055 | push    1
++0x0C20 | 0x17C057 | push    si
++0x0C21 | 0x17C058 | push    0Ah
++0x0C23 | 0x17C05A | call    op_dispatch_far_entry
++0x0C28 | 0x17C05F | add     sp, 0Ah
++0x0C2B | 0x17C062 | mov     ax, 7A32h
++0x0C2E | 0x17C065 | mov     es, ax
++0x0C30 | 0x17C067 | test    word ptr es:0AD47h, 20h
++0x0C37 | 0x17C06E | jz      short loc_17C0A0
++0x0C39 | 0x17C070 | cmp     [bp+var_7], 60h ; '`'
++0x0C3D | 0x17C074 | jbe     short loc_17C084
++0x0C3F | 0x17C076 | cmp     [bp+var_7], 7Ah ; 'z'
++0x0C43 | 0x17C07A | ja      short loc_17C084
++0x0C45 | 0x17C07C | mov     al, [bp+var_7]
++0x0C48 | 0x17C07F | add     al, 0E0h
++0x0C4A | 0x17C081 | mov     [bp+var_7], al
++0x0C4D | 0x17C084 | cmp     [bp+var_7], 0
++0x0C51 | 0x17C088 | jz      short loc_17C0A0
++0x0C53 | 0x17C08A | mov     ax, 602Eh
+      *** FILE BUFFER ACCESS ***
++0x0C56 | 0x17C08D | mov     es, ax
++0x0C58 | 0x17C08F | les     bx, es:dword_151BFC
++0x0C5D | 0x17C094 | add     bx, [bp+var_A]
++0x0C60 | 0x17C097 | mov     al, [bp+var_7]
++0x0C63 | 0x17C09A | mov     es:[bx], al
++0x0C66 | 0x17C09D | inc     [bp+var_A]
++0x0C69 | 0x17C0A0 | cmp     [bp+var_7], 0
+
+
+Extracted 500 instructions
