@@ -594,6 +594,14 @@ globals:
   # INPUT SYSTEM GLOBALS
   # ===========================================================================
   
+  - address: 0x199B
+    segment: 0x7894
+    name: input_scan_code_queue
+    size: 2
+    type: word
+    doc: Current keyboard scan code from input queue (1=ESC, 3=exit, 0xFF=special)
+    source: r57_state_machine_analysis
+  
   - address: 0x11175
     segment: 0x1110
     name: input_device_calibration_flag
@@ -689,3 +697,96 @@ globals:
     type: byte
     doc: Campaign file operation gate flag, controls temp save file access
     source: top_500_analysis
+  
+  # ===========================================================================
+  # R57 LOADOUT MENU SYSTEM GLOBALS (Segment 7894h)
+  # From complete state machine analysis
+  # ===========================================================================
+  
+  - address: 0x15AC
+    segment: 0x7894
+    name: current_view_index
+    size: 2
+    type: word
+    doc: Current menu state/view index (0-6), controls R57 state machine dispatch
+    source: r57_state_machine_analysis
+    
+  - address: 0x1972
+    segment: 0x7894
+    name: menu_input_command_byte
+    size: 2
+    type: word
+    doc: Input/command byte for menu navigation (checked for '2', '4', '6' keys)
+    source: r57_state_machine_analysis
+    
+  - address: 0x1C8E
+    segment: 0x7894
+    name: menu_temp_accumulator
+    size: 2
+    type: word
+    doc: Temporary accumulator for sum calculations in State 0
+    source: r57_state_machine_analysis
+    
+  - address: 0x2140
+    segment: 0x7894
+    name: menu_flight_record_sum
+    size: 2
+    type: word
+    doc: Sum of flight record byte_4 values from 0 to current_flight_index
+    source: r57_state_machine_analysis
+    
+  - address: 0x1CA6
+    segment: 0x7894
+    name: menu_ui_field_index
+    size: 2
+    type: word
+    doc: UI field/button selection index (used in State 6 for array indexing)
+    source: r57_state_machine_analysis
+    
+  - address: 0x1CA2
+    segment: 0x7894
+    name: menu_ui_mode_config
+    size: 2
+    type: word
+    doc: UI mode configuration flag (set to 4 in default render case)
+    source: r57_state_machine_analysis
+    
+  - address: 0x1C8A
+    segment: 0x7894
+    name: menu_cursor_coord_y
+    size: 2
+    type: word
+    doc: Menu cursor Y coordinate (checked against regions 0x86, 0x76, 0xB6, 0x9E in State 6)
+    source: r57_state_machine_analysis
+    
+  - address: 0x2108
+    segment: 0x7894
+    name: menu_flag_byte_7a302
+    size: 1
+    type: byte
+    doc: Menu state flag checked in State 0 before display handler call
+    source: r57_state_machine_analysis
+    
+  - address: 0x2114
+    segment: 0x7894
+    name: menu_flag_byte_7a30e
+    size: 1
+    type: byte
+    doc: Menu state flag checked in State 0 before display handler call
+    source: r57_state_machine_analysis
+    
+  - address: 0x1966
+    segment: 0x7894
+    name: menu_init_flag_79b60
+    size: 2
+    type: word
+    doc: Menu initialization flag (cleared to 0 on state machine entry)
+    source: r57_state_machine_analysis
+    
+  - address: 0x1C8C
+    segment: 0x7894
+    name: menu_init_flag_79e86
+    size: 2
+    type: word
+    doc: Menu initialization flag (cleared to 0 on state machine entry)
+    source: r57_state_machine_analysis
