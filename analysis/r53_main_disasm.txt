@@ -1,0 +1,3918 @@
+DISASSEMBLY: game_mode_r53_main_coordinator
+Address: 0x1820b0 - 0x185245
+Size: 12693 bytes
+================================================================================
+
+0x1820b0  enter   16h, 0
+0x1820b4  push    si
+0x1820b5  push    di
+0x1820b6  push    8
+0x1820b8  call    far ptr sub_2C351
+0x1820bd  pop     cx
+0x1820be  call    undoc_133535
+0x1820c3  mov     ax, 7894h
+0x1820c6  mov     es, ax
+0x1820c8  cmp     es:graphics_mode_flag, 0
+                ; comparing with 0
+0x1820ce  jz      short loc_182107
+0x1820d0  mov     ax, 7894h
+0x1820d3  mov     es, ax
+0x1820d5  cmp     es:byte_7A302, 0
+                ; comparing with 0
+0x1820db  jz      short loc_182107
+0x1820dd  mov     ax, 4FC2h
+0x1820e0  mov     es, ax
+0x1820e2  push    es:word_13E012
+0x1820e7  call    sub_2C761; Overlay bridge trampoline (8B, 14 calls)
+0x1820ec  pop     cx
+0x1820ed  mov     ax, 7894h
+0x1820f0  mov     es, ax
+0x1820f2  dec     es:word_79EEC
+0x1820f7  mov     ax, 4FC2h
+0x1820fa  mov     es, ax
+0x1820fc  push    es:word_13E012
+0x182101  call    far ptr menu_finalize_render
+0x182106  pop     cx
+0x182107  call    ui_text_render_setup
+0x18210c  mov     ax, 7894h
+0x18210f  mov     es, ax
+0x182111  mov     ax, word ptr es:dword_79E3A+2
+0x182115  mov     dx, word ptr es:dword_79E3A
+0x18211a  add     dx, 3Dh ; '='
+0x18211d  mov     bx, 6E1Eh
+0x182120  mov     es, bx
+0x182122  mov     word ptr es:byte_6E1C9+49h, ax
+0x182126  mov     word ptr es:byte_6E1C9+47h, dx
+0x18212b  mov     ax, 6E1Eh
+0x18212e  mov     es, ax
+0x182130  mov     word ptr es:byte_6E1C9+17h, 0
+0x182137  jmp     short loc_182172
+0x182139  mov     ax, 6E1Eh
+0x18213c  mov     es, ax
+0x18213e  mov     bx, word ptr es:byte_6E1C9+17h
+0x182143  lea     ax, [bp+var_12]
+0x182146  add     bx, ax
+0x182148  mov     byte ptr ss:[bx], 1
+0x18214c  mov     ax, 6E1Eh
+0x18214f  mov     es, ax
+0x182151  mov     ax, word ptr es:byte_6E1C9+17h
+0x182155  shl     ax, 1
+0x182157  mov     dx, 6E1Eh
+0x18215a  mov     es, dx
+0x18215c  les     bx, dword ptr es:loc_6E2A1+3
+0x182161  add     bx, ax
+0x182163  mov     word ptr es:[bx], 0FFFFh
+0x182168  mov     ax, 6E1Eh
+0x18216b  mov     es, ax
+0x18216d  inc     word ptr es:byte_6E1C9+17h
+0x182172  mov     ax, 6E1Eh
+0x182175  mov     es, ax
+0x182177  cmp     word ptr es:byte_6E1C9+17h, 8
+                ; comparing with 8
+0x18217d  jl      short loc_182139
+0x18217f  mov     es, ax
+0x182181  mov     word ptr es:byte_6E1C9+17h, 0
+0x182188  jmp     short loc_1821F0
+0x18218a  mov     ax, 6E1Eh
+0x18218d  mov     es, ax
+0x18218f  mov     ax, word ptr es:byte_6E1C9+17h
+0x182193  mov     dx, 42h ; 'B'
+0x182196  imul    dx
+0x182198  mov     dx, 6E1Eh
+0x18219b  mov     es, dx
+0x18219d  les     bx, dword ptr es:byte_6E1C9+47h
+0x1821a2  add     bx, ax
+0x1821a4  cmp     byte ptr es:[bx+41h], 0FFh
+0x1821a9  jz      short loc_1821E6
+0x1821ab  mov     ax, 6E1Eh
+0x1821ae  mov     es, ax
+0x1821b0  mov     ax, word ptr es:byte_6E1C9+17h
+0x1821b4  mov     dx, 42h ; 'B'
+0x1821b7  imul    dx
+0x1821b9  mov     dx, 6E1Eh
+0x1821bc  mov     es, dx
+0x1821be  les     bx, dword ptr es:byte_6E1C9+47h
+0x1821c3  add     bx, ax
+0x1821c5  mov     al, es:[bx+41h]
+0x1821c9  cbw
+0x1821ca  shl     ax, 1
+0x1821cc  mov     dx, 6E1Eh
+0x1821cf  mov     es, dx
+0x1821d1  les     bx, dword ptr es:loc_6E2A1+3
+0x1821d6  add     bx, ax
+0x1821d8  mov     ax, 6E1Eh
+0x1821db  push    es
+0x1821dc  mov     es, ax
+0x1821de  mov     ax, word ptr es:byte_6E1C9+17h
+0x1821e2  pop     es
+0x1821e3  mov     es:[bx], ax
+0x1821e6  mov     ax, 6E1Eh
+0x1821e9  mov     es, ax
+0x1821eb  inc     word ptr es:byte_6E1C9+17h
+0x1821f0  mov     ax, 7894h
+0x1821f3  mov     es, ax
+0x1821f5  les     bx, es:dword_79E3A
+0x1821fa  mov     ax, es:[bx+0A8Dh]
+0x1821ff  mov     dx, 6E1Eh
+0x182202  mov     es, dx
+0x182204  cmp     ax, word ptr es:byte_6E1C9+17h
+                ; comparing with 0
+0x182209  jbe     short loc_18220E
+0x18220b  jmp     loc_18218A
+0x18220e  mov     ax, 7894h
+0x182211  mov     es, ax
+0x182213  cmp     es:word_79B56, 1
+                ; comparing with 1
+0x182219  jnz     short loc_182229
+0x18221b  mov     ax, 7894h
+0x18221e  mov     es, ax
+0x182220  mov     es:word_79B60, 0FFFFh
+0x182227  jmp     short loc_182235
+0x182229  mov     ax, 7894h
+0x18222c  mov     es, ax
+0x18222e  mov     es:word_79B60, 28h ; '('
+0x182235  mov     ax, 7894h
+0x182238  mov     es, ax
+0x18223a  mov     es:word_79E86, 1
+0x182241  mov     ax, 7894h
+0x182244  mov     es, ax
+0x182246  mov     es:word_79B5A, 1
+0x18224d  mov     ax, 7894h
+0x182250  mov     es, ax
+0x182252  mov     es:word_79B62, 0
+0x182259  mov     ax, 7894h
+0x18225c  mov     es, ax
+0x18225e  mov     es:word_79D6A, 0
+0x182265  call    far ptr sub_1364BA
+0x18226a  mov     ax, 7894h
+0x18226d  mov     es, ax
+0x18226f  mov     ax, es:word_79B62
+0x182273  mov     dx, 82h
+0x182276  imul    dx
+0x182278  mov     dx, 7894h
+0x18227b  mov     es, dx
+0x18227d  les     bx, es:dword_79BEC
+0x182282  add     bx, ax
+0x182284  cmp     byte ptr es:[bx+15h], 1
+                ; comparing with 1
+0x182289  jg      short loc_18228E
+0x18228b  jmp     loc_183A14
+0x18228e  mov     ax, 7894h
+0x182291  mov     es, ax
+0x182293  mov     es:word_79B74, 2
+0x18229a  mov     ax, 7894h
+0x18229d  mov     es, ax
+0x18229f  mov     es:word_79BD6, 0FFFFh
+0x1822a6  mov     ax, 4FC2h
+0x1822a9  mov     es, ax
+0x1822ab  mov     es:word_13E006, 0
+0x1822b2  mov     ax, 4FC2h
+0x1822b5  mov     es, ax
+0x1822b7  mov     es:word_13E008, 0
+0x1822be  call    sub_13504F
+0x1822c3  mov     ax, 7894h
+0x1822c6  mov     es, ax
+0x1822c8  mov     es:word_79E32, 0
+0x1822cf  mov     ax, 7894h
+0x1822d2  mov     es, ax
+0x1822d4  mov     es:word_79D1E, 0
+0x1822db  push    7894h
+0x1822de  push    0F32h
+0x1822e1  mov     ax, 6E1Eh
+0x1822e4  mov     es, ax
+0x1822e6  push    word ptr es:loc_6E2E3+2
+0x1822eb  push    word ptr es:loc_6E2E3
+0x1822f0  call    string_copy_with_offset
+0x1822f5  add     sp, 8
+0x1822f8  push    0
+0x1822fa  push    7894h
+0x1822fd  push    0F32h
+0x182300  call    sub_135C57
+0x182305  add     sp, 6
+0x182308  mov     dx, 7894h
+0x18230b  mov     es, dx
+0x18230d  mov     es:word_79D1E, ax
+0x182311  call    undoc_11D941
+0x182316  call    undoc_12661D
+0x18231b  push    1
+0x18231d  call    loc_69C25
+0x182322  pop     cx
+0x182323  call    sub_12805C
+0x182328  mov     ax, 6E1Eh
+0x18232b  mov     es, ax
+0x18232d  mov     word ptr es:byte_6E1C9+17h, 0
+0x182334  jmp     short loc_18237F
+0x182336  mov     ax, 6E1Eh
+0x182339  mov     es, ax
+0x18233b  mov     ax, word ptr es:byte_6E1C9+17h
+0x18233f  mov     dx, 1Ch
+0x182342  imul    dx
+0x182344  mov     dx, 4FC2h
+0x182347  mov     bx, ax
+0x182349  mov     es, dx
+0x18234b  mov     word ptr es:[bx+606h], 4FC2h
+0x182352  mov     word ptr es:[bx+604h], 0A68h
+0x182359  mov     ax, 6E1Eh
+0x18235c  mov     es, ax
+0x18235e  mov     ax, word ptr es:byte_6E1C9+17h
+0x182362  mov     dx, 1Ch
+0x182365  imul    dx
+0x182367  mov     dx, 4FC2h
+0x18236a  mov     bx, ax
+0x18236c  mov     es, dx
+0x18236e  mov     word ptr es:[bx+608h], 7
+0x182375  mov     ax, 6E1Eh
+0x182378  mov     es, ax
+0x18237a  inc     word ptr es:byte_6E1C9+17h
+0x18237f  mov     ax, 6E1Eh
+0x182382  mov     es, ax
+0x182384  cmp     word ptr es:byte_6E1C9+17h, 0Bh
+                ; comparing with 11
+0x18238a  jl      short loc_182336
+0x18238c  mov     ax, 4FC2h
+0x18238f  mov     es, ax
+0x182391  mov     es:word_13E94E, 4FC2h
+0x182398  mov     es:word_13E94C, 7C0h
+0x18239f  mov     ax, 7894h
+0x1823a2  mov     es, ax
+0x1823a4  mov     word ptr es:dword_79E68+2, 4FC2h
+0x1823ab  mov     word ptr es:dword_79E68, 600h
+0x1823b2  mov     ax, 7894h
+0x1823b5  mov     es, ax
+0x1823b7  mov     word ptr es:dword_79E2C+2, 4FC2h
+0x1823be  mov     word ptr es:dword_79E2C, 6C4h
+0x1823c5  mov     es, ax
+0x1823c7  les     bx, es:dword_79E2C
+0x1823cc  push    word ptr es:[bx+2]
+0x1823d0  mov     es, ax
+0x1823d2  les     bx, es:dword_79E2C
+0x1823d7  push    word ptr es:[bx]
+0x1823da  call    ui_coordinate_transform
+0x1823df  pop     cx
+0x1823e0  pop     cx
+0x1823e1  mov     ax, 7894h
+0x1823e4  mov     es, ax
+0x1823e6  mov     es:word_79E9C, 2
+0x1823ed  mov     ax, 7894h
+0x1823f0  mov     es, ax
+0x1823f2  cmp     es:word_79B56, 1
+                ; comparing with 1
+0x1823f8  jz      short loc_182408
+0x1823fa  call    loc_6CB67+1
+0x1823ff  mov     dx, 602Eh
+0x182402  mov     es, dx
+0x182404  mov     es:word_14F8A9, ax
+0x182408  mov     [bp+var_A], 0
+0x18240d  jmp     short loc_182423
+0x18240f  mov     ax, 602Eh
+0x182412  mov     es, ax
+0x182414  les     bx, es:dword_151B42
+0x182419  add     bx, [bp+var_A]
+0x18241c  mov     byte ptr es:[bx], 0
+0x182420  inc     [bp+var_A]
+0x182423  cmp     [bp+var_A], 3Fh ; '?'
+0x182427  jl      short loc_18240F
+0x182429  mov     ax, 7894h
+0x18242c  mov     es, ax
+0x18242e  mov     ax, es:word_79F14
+0x182432  mov     dx, 7894h
+0x182435  mov     es, dx
+0x182437  sub     ax, es:game_status_word
+0x18243c  push    ax
+0x18243d  call    loc_6DCB2+3
+0x182442  pop     cx
+0x182443  xor     si, si
+0x182445  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x182448  call    undoc_11D941
+0x18244d  call    undoc_12661D
+0x182452  push    1; jump table for switch statement
+0x182454  call    loc_69C25
+0x182459  pop     cx
+0x18245a  call    sub_12805C
+0x18245f  call    sub_12DB63
+0x182464  mov     ax, 7894h
+0x182467  mov     es, ax
+0x182469  cmp     es:word_79B6C, 32h ; '2'
+0x18246f  jnz     short loc_1824C8
+0x182471  mov     ax, 7894h
+0x182474  mov     es, ax
+0x182476  mov     ax, es:input_scan_code_queue; INPUT DISPATCHER: Handle view keys (scan 0x03,0x04)
+0x18247a  mov     [bp+var_14], ax
+0x18247d  mov     cx, 4
+0x182480  mov     bx, 3225h; Load dispatch table address (4 entries: 0x01,0x03,0x04,0xFF)
+0x182483  mov     ax, cs:[bx]
+0x182486  cmp     ax, [bp+var_14]
+0x182489  jz      short loc_182491; JUMP TABLE DISPATCH: jmp to handler at [bx+8]
+0x18248b  inc     bx
+0x18248c  inc     bx
+0x18248d  loop    loc_182483
+0x18248f  jmp     short loc_1824C0
+0x182491  jmp     word ptr cs:[bx+8]; JUMP TABLE DISPATCH: jmp to handler at [bx+8]
+0x182495  mov     ax, 7894h
+0x182498  mov     es, ax
+0x18249a  mov     es:current_view_index, 7; VIEW KEY HANDLER: Set current_view_index = 7 (likely ground or external view)
+0x1824a1  jmp     short loc_1824E2
+0x1824a3  push    8; VIEW KEY HANDLER: Push view index 8, call view setup (likely padlock view)
+0x1824a5  call    far ptr loc_69CBE
+0x1824aa  pop     cx
+0x1824ab  call    sub_12805C
+0x1824b0  call    menu_cursor_position_set
+0x1824b5  jmp     loc_18523C
+0x1824b8  call    loc_6C7E8
+0x1824bd  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x1824c0  call    menu_cursor_position_set
+0x1824c5  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x1824c8  mov     ax, 7894h
+0x1824cb  mov     es, ax
+0x1824cd  cmp     es:word_79B6C, 34h ; '4'
+0x1824d3  jz      short loc_1824E2
+0x1824d5  mov     es, ax
+0x1824d7  cmp     es:word_79B6C, 36h ; '6'
+0x1824dd  jz      short loc_1824E2
+0x1824df  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x1824e2  mov     ax, 7894h
+0x1824e5  mov     es, ax
+0x1824e7  mov     bx, es:current_view_index
+0x1824ec  cmp     bx, 8; switch 9 cases
+                ; comparing with 8
+0x1824ef  jbe     short loc_1824F4
+0x1824f1  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x1824f4  shl     bx, 1
+0x1824f6  jmp     cs:jpt_1824F6[bx]; switch jump
+0x1824fb  mov     ax, 7894h; jumptable 001824F6 case 0
+0x1824fe  mov     es, ax
+0x182500  cmp     es:word_79E80, 12Ch
+0x182507  jge     short loc_18250C
+0x182509  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x18250c  mov     ax, 7894h
+0x18250f  mov     es, ax
+0x182511  push    es:current_view_index
+0x182516  call    far ptr loc_69CBE
+0x18251b  pop     cx
+0x18251c  call    sub_12805C
+0x182521  jmp     short loc_182556
+0x182523  mov     ax, 7894h
+0x182526  mov     es, ax
+0x182528  cmp     es:word_79E32, 0
+                ; comparing with 0
+0x18252e  jle     short loc_182537
+0x182530  mov     es, ax
+0x182532  dec     es:word_79E32
+0x182537  call    far ptr loc_69EA9
+0x18253c  mov     ax, 7894h
+0x18253f  mov     es, ax
+0x182541  push    es:current_view_index
+0x182546  call    far ptr loc_69CBE
+0x18254b  pop     cx
+0x18254c  call    sub_12805C
+0x182551  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x182556  mov     ax, 7894h
+0x182559  mov     es, ax
+0x18255b  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x182561  jnz     short loc_182523
+0x182563  jmp     short loc_1825D9
+0x182565  mov     ax, 7894h; jumptable 001824F6 case 6
+0x182568  mov     es, ax
+0x18256a  cmp     es:word_79E80, 12Ch
+0x182571  jge     short loc_182576
+0x182573  jmp     def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x182576  mov     ax, 7894h
+0x182579  mov     es, ax
+0x18257b  push    es:current_view_index
+0x182580  call    far ptr loc_69CBE
+0x182585  pop     cx
+0x182586  call    sub_12805C
+0x18258b  jmp     short loc_1825CC
+0x18258d  mov     ax, 7894h
+0x182590  mov     dx, 7894h
+0x182593  mov     es, dx
+0x182595  mov     dx, es:word_79D1E
+0x18259a  add     dx, 0FFF5h
+0x18259d  mov     es, ax
+0x18259f  cmp     es:word_79E32, dx
+                ; comparing with 2
+0x1825a4  jge     short loc_1825AD
+0x1825a6  mov     es, ax
+0x1825a8  inc     es:word_79E32
+0x1825ad  call    far ptr loc_69EA9
+0x1825b2  mov     ax, 7894h
+0x1825b5  mov     es, ax
+0x1825b7  push    es:current_view_index
+0x1825bc  call    far ptr loc_69CBE
+0x1825c1  pop     cx
+0x1825c2  call    sub_12805C
+0x1825c7  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x1825cc  mov     ax, 7894h
+0x1825cf  mov     es, ax
+0x1825d1  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x1825d7  jnz     short loc_18258D
+0x1825d9  call    undoc_130B39
+0x1825de  jmp     short def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x1825e0  push    7; jumptable 001824F6 case 7
+0x1825e2  call    far ptr loc_69CBE
+0x1825e7  pop     cx
+0x1825e8  call    sub_12805C
+0x1825ed  call    menu_cursor_position_set
+0x1825f2  mov     si, 1
+0x1825f5  jmp     short def_1824F6; jumptable 001824F6 default case, cases 1-5
+0x1825f7  jmp     loc_1824A3; jumptable 001824F6 case 8
+0x1825fa  or      si, si; jumptable 001824F6 default case, cases 1-5
+0x1825fc  jnz     short loc_182601
+0x1825fe  jmp     loc_182448
+0x182601  xor     si, si
+0x182603  call    sub_135DF4; Utility function (473B, 16 calls) - needs investigation
+0x182608  mov     ax, 7894h
+0x18260b  mov     es, ax
+0x18260d  mov     es:word_79B74, 2
+0x182614  mov     ax, 7894h
+0x182617  mov     es, ax
+0x182619  mov     es:word_79BD6, 0FFFFh
+0x182620  mov     ax, 7894h
+0x182623  mov     es, ax
+0x182625  mov     es:word_79E32, 0
+0x18262c  mov     ax, 7894h
+0x18262f  mov     es, ax
+0x182631  mov     es:word_79D1E, 0
+0x182638  push    7894h
+0x18263b  push    0F32h
+0x18263e  mov     ax, 6E1Eh
+0x182641  mov     es, ax
+0x182643  push    word ptr es:loc_6E2E9
+0x182648  push    word ptr es:loc_6E2E6+1
+0x18264d  call    string_copy_with_offset
+0x182652  add     sp, 8
+0x182655  push    7894h
+0x182658  push    0F32h
+0x18265b  mov     ax, 602Eh
+0x18265e  mov     es, ax
+0x182660  push    word ptr es:aJ0+2; ".`\n"
+0x182665  push    word ptr es:aJ0; "J0.`\n"
+0x18266a  push    7894h
+0x18266d  push    0F32h
+0x182670  call    string_concatenate
+0x182675  add     sp, 0Ch
+0x182678  push    7894h
+0x18267b  push    0F32h
+0x18267e  mov     ax, 602Eh
+0x182681  mov     es, ax
+0x182683  push    word ptr es:aJ0+2; ".`\n"
+0x182688  push    word ptr es:aJ0; "J0.`\n"
+0x18268d  push    7894h
+0x182690  push    0F32h
+0x182693  call    string_concatenate
+0x182698  add     sp, 0Ch
+0x18269b  push    7894h
+0x18269e  push    0F32h
+0x1826a1  mov     ax, 6E1Eh
+0x1826a4  mov     es, ax
+0x1826a6  push    word ptr es:loc_6E2ED
+0x1826ab  push    word ptr es:loc_6E2EA+1
+0x1826b0  push    7894h
+0x1826b3  push    0F32h
+0x1826b6  call    string_concatenate
+0x1826bb  add     sp, 0Ch
+0x1826be  push    7894h
+0x1826c1  push    0F32h
+0x1826c4  mov     ax, 602Eh
+0x1826c7  mov     es, ax
+0x1826c9  push    word ptr es:aJ0+2; ".`\n"
+0x1826ce  push    word ptr es:aJ0; "J0.`\n"
+0x1826d3  push    7894h
+0x1826d6  push    0F32h
+0x1826d9  call    string_concatenate
+0x1826de  add     sp, 0Ch
+0x1826e1  push    0
+0x1826e3  push    7894h
+0x1826e6  push    0F32h
+0x1826e9  call    sub_135C57
+0x1826ee  add     sp, 6
+0x1826f1  mov     dx, 7894h
+0x1826f4  mov     es, dx
+0x1826f6  mov     es:word_79D1E, ax
+0x1826fa  push    0
+0x1826fc  call    loc_69C25
+0x182701  pop     cx
+0x182702  mov     ax, 6E1Eh
+0x182705  mov     es, ax
+0x182707  mov     word ptr es:byte_6E1C9+23h, 1
+0x18270e  call    undoc_12661D
+0x182713  call    sub_12805C
+0x182718  mov     ax, 6E1Eh
+0x18271b  mov     es, ax
+0x18271d  mov     word ptr es:byte_6E1C9+17h, 0
+0x182724  mov     ax, 6E1Eh
+0x182727  mov     es, ax
+0x182729  mov     word ptr es:byte_6E1C9+35h, 7FFFh
+0x182730  mov     ax, 6E1Eh
+0x182733  mov     es, ax
+0x182735  mov     word ptr es:byte_6E1C9+37h, 7FFFh
+0x18273c  mov     [bp+var_6], 0
+0x182741  mov     [bp+var_4], 1
+0x182746  call    sub_13DB56; Set CS:byte_13DABA to 0xFF (7B, 20 calls)
+0x18274b  jmp     loc_1837B0
+0x18274e  mov     ax, 7894h
+0x182751  mov     es, ax
+0x182753  push    es:word_79E72
+0x182758  push    es:word_79E70
+0x18275d  call    sub_13DAD0; Utility function (133B, 16 calls) - needs investigation
+0x182762  pop     cx
+0x182763  pop     cx
+0x182764  mov     bx, 6E1Eh
+0x182767  mov     es, bx
+0x182769  mov     word ptr es:byte_6E1C9+1Dh, dx
+0x18276e  mov     word ptr es:byte_6E1C9+1Bh, ax
+0x182772  mov     ax, 6E1Eh
+0x182775  mov     es, ax
+0x182777  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x18277c  mov     al, es:[bx]
+0x18277f  mov     ah, 0
+0x182781  and     ax, 7
+0x182784  mov     bx, ax
+0x182786  cmp     bx, 7; switch 8 cases
+                ; comparing with 7
+0x182789  jbe     short loc_18278E
+0x18278b  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x18278e  shl     bx, 1
+0x182790  jmp     cs:jpt_182790[bx]; switch jump
+0x182795  cmp     [bp+var_4], 0; jumptable 00182790 case 0
+                ; comparing with 0
+0x182799  jnz     short loc_18279E
+0x18279b  jmp     loc_182BFC
+0x18279e  mov     ax, 6E1Eh
+0x1827a1  mov     es, ax
+0x1827a3  inc     word ptr es:byte_6E1C9+1Bh
+0x1827a8  mov     es, ax
+0x1827aa  mov     ax, word ptr es:byte_6E1C9+1Dh
+0x1827ae  mov     dx, word ptr es:byte_6E1C9+1Bh
+0x1827b3  mov     bx, 6E1Eh
+0x1827b6  mov     es, bx
+0x1827b8  mov     word ptr es:byte_6E1C9+21h, ax
+0x1827bc  mov     word ptr es:byte_6E1C9+1Fh, dx
+0x1827c1  mov     ax, 6E1Eh
+0x1827c4  mov     es, ax
+0x1827c6  les     bx, dword ptr es:byte_6E1C9+1Fh
+0x1827cb  mov     ax, es:[bx]
+0x1827ce  mov     dx, 6E1Eh
+0x1827d1  mov     es, dx
+0x1827d3  mov     word ptr es:loc_6E2A1+1, ax
+0x1827d7  push    0FFC0h
+0x1827d9  mov     ax, 6E1Eh
+0x1827dc  mov     es, ax
+0x1827de  mov     ax, word ptr es:loc_6E2A1+1
+0x1827e2  cwd
+0x1827e3  push    dx
+0x1827e4  push    ax
+0x1827e5  call    sub_13DD40
+0x1827ea  add     sp, 6
+0x1827ed  mov     bx, 6E1Eh
+0x1827f0  mov     es, bx
+0x1827f2  mov     word ptr es:byte_6E1C9+43h, dx
+0x1827f7  mov     word ptr es:byte_6E1C9+41h, ax
+0x1827fb  push    0CDh
+0x1827fe  mov     ax, 6E1Eh
+0x182801  mov     es, ax
+0x182803  push    word ptr es:byte_6E1C9+43h
+0x182808  push    word ptr es:byte_6E1C9+41h
+0x18280d  call    sub_13DD83
+0x182812  add     sp, 6
+0x182815  mov     dx, 6E1Eh
+0x182818  mov     es, dx
+0x18281a  mov     word ptr es:loc_6E2A1+1, ax
+0x18281e  mov     ax, 6E1Eh
+0x182821  mov     es, ax
+0x182823  add     word ptr es:byte_6E1C9+1Fh, 2
+0x182829  mov     es, ax
+0x18282b  les     bx, dword ptr es:byte_6E1C9+1Fh
+0x182830  mov     ax, es:[bx]
+0x182833  mov     dx, 6E1Eh
+0x182836  mov     es, dx
+0x182838  mov     word ptr es:loc_6E2A0, ax
+0x18283c  push    40h ; '@'
+0x18283e  mov     ax, 6E1Eh
+0x182841  mov     es, ax
+0x182843  mov     ax, word ptr es:loc_6E2A0
+0x182847  cwd
+0x182848  push    dx
+0x182849  push    ax
+0x18284a  call    sub_13DD40
+0x18284f  add     sp, 6
+0x182852  mov     bx, 6E1Eh
+0x182855  mov     es, bx
+0x182857  mov     word ptr es:byte_6E1C9+31h, dx
+0x18285c  mov     word ptr es:byte_6E1C9+2Fh, ax
+0x182860  push    0CDh
+0x182863  mov     ax, 6E1Eh
+0x182866  mov     es, ax
+0x182868  push    word ptr es:byte_6E1C9+31h
+0x18286d  push    word ptr es:byte_6E1C9+2Fh
+0x182872  call    sub_13DD83
+0x182877  add     sp, 6
+0x18287a  mov     dx, 6E1Eh
+0x18287d  mov     es, dx
+0x18287f  mov     word ptr es:loc_6E2A0, ax
+0x182883  mov     ax, 6E1Eh
+0x182886  mov     es, ax
+0x182888  add     word ptr es:byte_6E1C9+1Fh, 2
+0x18288e  mov     es, ax
+0x182890  mov     ax, word ptr es:byte_6E1C9+21h
+0x182894  mov     dx, word ptr es:byte_6E1C9+1Fh
+0x182899  mov     bx, 6E1Eh
+0x18289c  mov     es, bx
+0x18289e  mov     word ptr es:byte_6E1C9+1Dh, ax
+0x1828a2  mov     word ptr es:byte_6E1C9+1Bh, dx
+0x1828a7  mov     ax, 6E1Eh
+0x1828aa  mov     es, ax
+0x1828ac  cmp     word ptr es:byte_6E1C9+35h, 7FFFh
+0x1828b3  jnz     short loc_1828B8
+0x1828b5  jmp     loc_182BD5
+0x1828b8  mov     es, ax
+0x1828ba  mov     ax, word ptr es:byte_6E1C9+35h
+0x1828be  mov     dx, 4FC2h
+0x1828c1  mov     es, dx
+0x1828c3  sub     ax, es:word_13E00E
+0x1828c8  cwd
+0x1828c9  mov     bx, 6E1Eh
+0x1828cc  mov     es, bx
+0x1828ce  mov     word ptr es:byte_6E1C9+2Dh, dx
+0x1828d3  mov     word ptr es:byte_6E1C9+2Bh, ax
+0x1828d7  push    0EFh
+0x1828da  mov     ax, 6E1Eh
+0x1828dd  mov     es, ax
+0x1828df  push    word ptr es:byte_6E1C9+2Dh
+0x1828e4  push    word ptr es:byte_6E1C9+2Bh
+0x1828e9  call    sub_13DD40
+0x1828ee  add     sp, 6
+0x1828f1  mov     bx, 6E1Eh
+0x1828f4  mov     es, bx
+0x1828f6  mov     word ptr es:byte_6E1C9+2Dh, dx
+0x1828fb  mov     word ptr es:byte_6E1C9+2Bh, ax
+0x1828ff  mov     ax, 7894h
+0x182902  mov     es, ax
+0x182904  mov     bx, es:word_79B5E
+0x182909  shl     bx, 1
+0x18290b  mov     ax, 4FC2h
+0x18290e  mov     es, ax
+0x182910  push    word ptr es:[bx+158h]
+0x182915  mov     ax, 6E1Eh
+0x182918  mov     es, ax
+0x18291a  push    word ptr es:byte_6E1C9+2Dh
+0x18291f  push    word ptr es:byte_6E1C9+2Bh
+0x182924  call    sub_13DD83
+0x182929  add     sp, 6
+0x18292c  mov     bx, 6E1Eh
+0x18292f  mov     es, bx
+0x182931  mov     word ptr es:byte_6E1C9+2Dh, dx
+0x182936  mov     word ptr es:byte_6E1C9+2Bh, ax
+0x18293a  mov     ax, 6E1Eh
+0x18293d  mov     es, ax
+0x18293f  mov     ax, word ptr es:byte_6E1C9+37h
+0x182943  mov     dx, 4FC2h
+0x182946  mov     es, dx
+0x182948  sub     ax, es:word_13E010
+0x18294d  cwd
+0x18294e  mov     bx, 6E1Eh
+0x182951  mov     es, bx
+0x182953  mov     word ptr es:byte_6E1C9+3Fh, dx
+0x182958  mov     word ptr es:byte_6E1C9+3Dh, ax
+0x18295c  push    0C7h
+0x18295f  mov     ax, 6E1Eh
+0x182962  mov     es, ax
+0x182964  push    word ptr es:byte_6E1C9+3Fh
+0x182969  push    word ptr es:byte_6E1C9+3Dh
+0x18296e  call    sub_13DD40
+0x182973  add     sp, 6
+0x182976  mov     bx, 6E1Eh
+0x182979  mov     es, bx
+0x18297b  mov     word ptr es:byte_6E1C9+3Fh, dx
+0x182980  mov     word ptr es:byte_6E1C9+3Dh, ax
+0x182984  mov     ax, 7894h
+0x182987  mov     es, ax
+0x182989  mov     bx, es:word_79B5E
+0x18298e  shl     bx, 1
+0x182990  mov     ax, 4FC2h
+0x182993  mov     es, ax
+0x182995  push    word ptr es:[bx+158h]
+0x18299a  mov     ax, 6E1Eh
+0x18299d  mov     es, ax
+0x18299f  push    word ptr es:byte_6E1C9+3Fh
+0x1829a4  push    word ptr es:byte_6E1C9+3Dh
+0x1829a9  call    sub_13DD83
+0x1829ae  add     sp, 6
+0x1829b1  mov     bx, 6E1Eh
+0x1829b4  mov     es, bx
+0x1829b6  mov     word ptr es:byte_6E1C9+3Fh, dx
+0x1829bb  mov     word ptr es:byte_6E1C9+3Dh, ax
+0x1829bf  mov     ax, 6E1Eh
+0x1829c2  mov     es, ax
+0x1829c4  mov     ax, word ptr es:loc_6E2A0
+0x1829c8  mov     dx, 4FC2h
+0x1829cb  mov     es, dx
+0x1829cd  sub     ax, es:word_13E00E
+0x1829d2  cwd
+0x1829d3  mov     bx, 6E1Eh
+0x1829d6  mov     es, bx
+0x1829d8  mov     word ptr es:byte_6E1C9+31h, dx
+0x1829dd  mov     word ptr es:byte_6E1C9+2Fh, ax
+0x1829e1  push    0EFh
+0x1829e4  mov     ax, 6E1Eh
+0x1829e7  mov     es, ax
+0x1829e9  push    word ptr es:byte_6E1C9+31h
+0x1829ee  push    word ptr es:byte_6E1C9+2Fh
+0x1829f3  call    sub_13DD40
+0x1829f8  add     sp, 6
+0x1829fb  mov     bx, 6E1Eh
+0x1829fe  mov     es, bx
+0x182a00  mov     word ptr es:byte_6E1C9+31h, dx
+0x182a05  mov     word ptr es:byte_6E1C9+2Fh, ax
+0x182a09  mov     ax, 7894h
+0x182a0c  mov     es, ax
+0x182a0e  mov     bx, es:word_79B5E
+0x182a13  shl     bx, 1
+0x182a15  mov     ax, 4FC2h
+0x182a18  mov     es, ax
+0x182a1a  push    word ptr es:[bx+158h]
+0x182a1f  mov     ax, 6E1Eh
+0x182a22  mov     es, ax
+0x182a24  push    word ptr es:byte_6E1C9+31h
+0x182a29  push    word ptr es:byte_6E1C9+2Fh
+0x182a2e  call    sub_13DD83
+0x182a33  add     sp, 6
+0x182a36  mov     bx, 6E1Eh
+0x182a39  mov     es, bx
+0x182a3b  mov     word ptr es:byte_6E1C9+31h, dx
+0x182a40  mov     word ptr es:byte_6E1C9+2Fh, ax
+0x182a44  mov     ax, 6E1Eh
+0x182a47  mov     es, ax
+0x182a49  mov     ax, word ptr es:loc_6E2A1+1
+0x182a4d  mov     dx, 4FC2h
+0x182a50  mov     es, dx
+0x182a52  sub     ax, es:word_13E010
+0x182a57  cwd
+0x182a58  mov     bx, 6E1Eh
+0x182a5b  mov     es, bx
+0x182a5d  mov     word ptr es:byte_6E1C9+43h, dx
+0x182a62  mov     word ptr es:byte_6E1C9+41h, ax
+0x182a66  push    0C7h
+0x182a69  mov     ax, 6E1Eh
+0x182a6c  mov     es, ax
+0x182a6e  push    word ptr es:byte_6E1C9+43h
+0x182a73  push    word ptr es:byte_6E1C9+41h
+0x182a78  call    sub_13DD40
+0x182a7d  add     sp, 6
+0x182a80  mov     bx, 6E1Eh
+0x182a83  mov     es, bx
+0x182a85  mov     word ptr es:byte_6E1C9+43h, dx
+0x182a8a  mov     word ptr es:byte_6E1C9+41h, ax
+0x182a8e  mov     ax, 7894h
+0x182a91  mov     es, ax
+0x182a93  mov     bx, es:word_79B5E
+0x182a98  shl     bx, 1
+0x182a9a  mov     ax, 4FC2h
+0x182a9d  mov     es, ax
+0x182a9f  push    word ptr es:[bx+158h]
+0x182aa4  mov     ax, 6E1Eh
+0x182aa7  mov     es, ax
+0x182aa9  push    word ptr es:byte_6E1C9+43h
+0x182aae  push    word ptr es:byte_6E1C9+41h
+0x182ab3  call    sub_13DD83
+0x182ab8  add     sp, 6
+0x182abb  mov     bx, 6E1Eh
+0x182abe  mov     es, bx
+0x182ac0  mov     word ptr es:byte_6E1C9+43h, dx
+0x182ac5  mov     word ptr es:byte_6E1C9+41h, ax
+0x182ac9  push    6E1Eh
+0x182acc  push    2Ah ; '*'
+0x182acf  push    6E1Eh
+0x182ad2  push    18h
+0x182ad5  push    6E1Eh
+0x182ad8  push    26h ; '&'
+0x182adb  push    6E1Eh
+0x182ade  push    14h
+0x182ae1  call    vector_arithmetic_complex; Complex vector/coordinate arithmetic (1085B, 24 calls)
+0x182ae6  add     sp, 10h
+0x182ae9  or      ax, ax
+0x182aeb  jnz     short loc_182AF0
+0x182aed  jmp     loc_182BD5
+0x182af0  mov     ax, 6E1Eh
+0x182af3  mov     es, ax
+0x182af5  mov     ax, word ptr es:byte_6E1C9+2Bh
+0x182af9  mov     dx, 6E1Eh
+0x182afc  mov     es, dx
+0x182afe  mov     word ptr es:byte_6E1C9+29h, ax
+0x182b02  mov     ax, 6E1Eh
+0x182b05  mov     es, ax
+0x182b07  mov     ax, word ptr es:byte_6E1C9+2Fh
+0x182b0b  mov     dx, 6E1Eh
+0x182b0e  mov     es, dx
+0x182b10  mov     word ptr es:byte_6E1C9+39h, ax
+0x182b14  mov     ax, 6E1Eh
+0x182b17  mov     es, ax
+0x182b19  mov     ax, word ptr es:byte_6E1C9+3Dh
+0x182b1d  mov     dx, 6E1Eh
+0x182b20  mov     es, dx
+0x182b22  mov     word ptr es:byte_6E1C9+33h, ax
+0x182b26  mov     ax, 6E1Eh
+0x182b29  mov     es, ax
+0x182b2b  mov     ax, word ptr es:byte_6E1C9+41h
+0x182b2f  mov     dx, 6E1Eh
+0x182b32  mov     es, dx
+0x182b34  mov     word ptr es:byte_6E1C9+3Bh, ax
+0x182b38  push    6E1Eh
+0x182b3b  push    24h ; '$'
+0x182b3e  push    6E1Eh
+0x182b41  push    22h ; '"'
+0x182b44  push    6E1Eh
+0x182b47  push    1Ch
+0x182b4a  push    6E1Eh
+0x182b4d  push    12h
+0x182b50  call    graphics_clip_processor
+0x182b55  add     sp, 10h
+0x182b58  or      ax, ax
+0x182b5a  jnz     short loc_182BD5
+0x182b5c  mov     ax, 4FC2h
+0x182b5f  mov     es, ax
+0x182b61  push    es:word_13E032
+0x182b66  mov     ax, 6E1Eh
+0x182b69  mov     es, ax
+0x182b6b  push    word ptr es:byte_6E1C9+3Bh
+0x182b70  mov     ax, 6E1Eh
+0x182b73  mov     es, ax
+0x182b75  push    word ptr es:byte_6E1C9+39h
+0x182b7a  mov     ax, 6E1Eh
+0x182b7d  mov     es, ax
+0x182b7f  push    word ptr es:byte_6E1C9+33h
+0x182b84  mov     ax, 6E1Eh
+0x182b87  mov     es, ax
+0x182b89  push    word ptr es:byte_6E1C9+29h
+0x182b8e  call    undoc_127FC4; Utility function (50B, 18 calls) - needs investigation
+0x182b93  add     sp, 0Ah
+0x182b96  call    sub_12805C
+0x182b9b  mov     ax, 4FC2h
+0x182b9e  mov     es, ax
+0x182ba0  push    es:word_13E018
+0x182ba5  mov     ax, 6E1Eh
+0x182ba8  mov     es, ax
+0x182baa  push    word ptr es:byte_6E1C9+3Bh
+0x182baf  mov     ax, 6E1Eh
+0x182bb2  mov     es, ax
+0x182bb4  push    word ptr es:byte_6E1C9+39h
+0x182bb9  mov     ax, 6E1Eh
+0x182bbc  mov     es, ax
+0x182bbe  push    word ptr es:byte_6E1C9+33h
+0x182bc3  mov     ax, 6E1Eh
+0x182bc6  mov     es, ax
+0x182bc8  push    word ptr es:byte_6E1C9+29h
+0x182bcd  call    undoc_127FC4; Utility function (50B, 18 calls) - needs investigation
+0x182bd2  add     sp, 0Ah
+0x182bd5  mov     ax, 6E1Eh
+0x182bd8  mov     es, ax
+0x182bda  mov     ax, word ptr es:loc_6E2A0
+0x182bde  mov     dx, 6E1Eh
+0x182be1  mov     es, dx
+0x182be3  mov     word ptr es:byte_6E1C9+35h, ax
+0x182be7  mov     ax, 6E1Eh
+0x182bea  mov     es, ax
+0x182bec  mov     ax, word ptr es:loc_6E2A1+1
+0x182bf0  mov     dx, 6E1Eh
+0x182bf3  mov     es, dx
+0x182bf5  mov     word ptr es:byte_6E1C9+37h, ax
+0x182bf9  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x182bfc  jmp     loc_182E98
+0x182bff  mov     ax, 6E1Eh; jumptable 00182790 case 2
+0x182c02  mov     es, ax
+0x182c04  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x182c09  mov     al, es:[bx]
+0x182c0c  mov     ah, 0
+0x182c0e  mov     dx, 6E1Eh
+0x182c11  mov     es, dx
+0x182c13  mov     word ptr es:byte_6E1C9+45h, ax
+0x182c17  mov     ax, 6E1Eh
+0x182c1a  mov     es, ax
+0x182c1c  sar     word ptr es:byte_6E1C9+45h, 3
+0x182c22  mov     es, ax
+0x182c24  and     word ptr es:byte_6E1C9+45h, 7
+0x182c2b  mov     es, ax
+0x182c2d  mov     ax, word ptr es:byte_6E1C9+45h
+0x182c31  shl     ax, 1
+0x182c33  mov     dx, 6E1Eh
+0x182c36  mov     es, dx
+0x182c38  les     bx, dword ptr es:loc_6E2A1+3
+0x182c3d  add     bx, ax
+0x182c3f  cmp     word ptr es:[bx], 0FFFFh
+0x182c43  jnz     short loc_182C48
+0x182c45  jmp     loc_182E98
+0x182c48  mov     ax, 6E1Eh
+0x182c4b  mov     es, ax
+0x182c4d  inc     word ptr es:byte_6E1C9+1Bh
+0x182c52  mov     es, ax
+0x182c54  inc     word ptr es:byte_6E1C9+1Bh
+0x182c59  mov     es, ax
+0x182c5b  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x182c60  mov     al, es:[bx]
+0x182c63  mov     ah, 0
+0x182c65  mov     dx, 6E1Eh
+0x182c68  mov     es, dx
+0x182c6a  mov     es:word_6E2B8, ax
+0x182c6e  mov     ax, 6E1Eh
+0x182c71  mov     es, ax
+0x182c73  inc     word ptr es:byte_6E1C9+1Bh
+0x182c78  mov     es, ax
+0x182c7a  inc     word ptr es:byte_6E1C9+1Bh
+0x182c7f  mov     es, ax
+0x182c81  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x182c86  mov     al, es:[bx]
+0x182c89  mov     ah, 0
+0x182c8b  mov     [bp+var_8], ax
+0x182c8e  and     [bp+var_8], 3Fh
+0x182c93  mov     ax, 602Eh
+0x182c96  mov     es, ax
+0x182c98  les     bx, es:dword_151B42
+0x182c9d  add     bx, [bp+var_8]
+0x182ca0  cmp     byte ptr es:[bx], 0
+                ; comparing with 0
+0x182ca4  jz      short loc_182CA9
+0x182ca6  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x182ca9  mov     ax, 602Eh
+0x182cac  mov     es, ax
+0x182cae  les     bx, es:dword_151B42
+0x182cb3  add     bx, [bp+var_8]
+0x182cb6  mov     byte ptr es:[bx], 2
+0x182cba  mov     ax, 6E1Eh
+0x182cbd  mov     es, ax
+0x182cbf  inc     word ptr es:byte_6E1C9+1Bh
+0x182cc4  mov     ax, 6E1Eh
+0x182cc7  mov     es, ax
+0x182cc9  mov     al, byte ptr es:word_6E2B8
+0x182ccd  push    ax
+0x182cce  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x182cd3  pop     cx
+0x182cd4  mov     bx, 6E1Eh
+0x182cd7  mov     es, bx
+0x182cd9  mov     word ptr es:byte_6E1C9+27h, dx
+0x182cde  mov     word ptr es:byte_6E1C9+25h, ax
+0x182ce2  push    7894h
+0x182ce5  push    0F32h
+0x182ce8  mov     ax, 602Eh
+0x182ceb  mov     es, ax; jump table for switch statement
+0x182ced  push    word ptr es:a2_0+1; ".` "
+0x182cf2  push    word ptr es:byte_151860
+0x182cf7  mov     ax, 6E1Eh
+0x182cfa  mov     es, ax
+0x182cfc  mov     ax, word ptr es:byte_6E1C9+45h
+0x182d00  shl     ax, 1
+0x182d02  mov     dx, 6E1Eh
+0x182d05  mov     es, dx
+0x182d07  les     bx, dword ptr es:loc_6E2A1+3
+0x182d0c  add     bx, ax
+0x182d0e  mov     ax, es:[bx]
+0x182d11  mov     dx, 42h ; 'B'
+0x182d14  imul    dx
+0x182d16  mov     dx, 6E1Eh
+0x182d19  mov     es, dx
+0x182d1b  les     bx, dword ptr es:byte_6E1C9+47h
+0x182d20  add     bx, ax
+0x182d22  mov     al, es:[bx+1]
+0x182d26  cbw
+0x182d27  shl     ax, 2
+0x182d2a  mov     dx, 602Eh
+0x182d2d  mov     bx, ax
+0x182d2f  mov     es, dx
+0x182d31  push    word ptr es:[bx+1AD8h]
+0x182d36  push    word ptr es:[bx+1AD6h]
+0x182d3b  call    string_concatenate
+0x182d40  add     sp, 0Ch
+0x182d43  push    7894h
+0x182d46  push    0F32h
+0x182d49  mov     ax, 6E1Eh
+0x182d4c  mov     es, ax
+0x182d4e  mov     ax, word ptr es:byte_6E1C9+45h
+0x182d52  shl     ax, 1
+0x182d54  mov     dx, 6E1Eh
+0x182d57  mov     es, dx
+0x182d59  les     bx, dword ptr es:loc_6E2A1+3
+0x182d5e  add     bx, ax
+0x182d60  mov     ax, es:[bx]
+0x182d63  mov     dx, 42h ; 'B'
+0x182d66  imul    dx
+0x182d68  mov     dx, 6E1Eh
+0x182d6b  mov     es, dx
+0x182d6d  mov     dx, word ptr es:byte_6E1C9+47h
+0x182d72  add     dx, ax
+0x182d74  inc     dx
+0x182d75  inc     dx
+0x182d76  push    word ptr es:byte_6E1C9+49h
+0x182d7b  push    dx
+0x182d7c  push    7894h
+0x182d7f  push    0F32h
+0x182d82  call    string_concatenate
+0x182d87  add     sp, 0Ch
+0x182d8a  mov     ax, 6E1Eh
+0x182d8d  mov     es, ax
+0x182d8f  cmp     es:word_6E2B8, 20h ; ' '
+0x182d95  jge     short loc_182DBA
+0x182d97  push    7894h
+0x182d9a  push    0F32h
+0x182d9d  mov     ax, 6E1Eh
+0x182da0  mov     es, ax
+0x182da2  push    word ptr es:loc_6E385
+0x182da7  push    word ptr es:loc_6E380+3
+0x182dac  push    7894h
+0x182daf  push    0F32h
+0x182db2  call    string_concatenate
+0x182db7  add     sp, 0Ch
+0x182dba  mov     ax, 602Eh
+0x182dbd  mov     es, ax
+0x182dbf  les     bx, es:dword_151B86
+0x182dc4  add     bx, [bp+var_8]
+0x182dc7  cmp     byte ptr es:[bx], 0
+                ; comparing with 0
+0x182dcb  jl      short loc_182DDD
+0x182dcd  mov     es, ax
+0x182dcf  les     bx, es:dword_151B86
+0x182dd4  add     bx, [bp+var_8]
+0x182dd7  cmp     byte ptr es:[bx], 3
+                ; comparing with 3
+0x182ddb  jle     short loc_182DF4
+0x182ddd  push    7894h
+0x182de0  push    0F32h
+0x182de3  mov     ax, 6E1Eh
+0x182de6  mov     es, ax
+0x182de8  push    word ptr es:loc_6E371
+0x182ded  push    word ptr es:loc_6E36C+3
+0x182df2  jmp     short loc_182E1F
+0x182df4  push    7894h
+0x182df7  push    0F32h
+0x182dfa  mov     ax, 602Eh
+0x182dfd  mov     es, ax
+0x182dff  les     bx, es:dword_151B86
+0x182e04  add     bx, [bp+var_8]
+0x182e07  mov     al, es:[bx]
+0x182e0a  cbw
+0x182e0b  shl     ax, 2
+0x182e0e  mov     dx, 6E1Eh
+0x182e11  mov     bx, ax
+0x182e13  mov     es, dx
+0x182e15  push    word ptr es:[bx+191h]
+0x182e1a  push    word ptr es:[bx+18Fh]
+0x182e1f  push    7894h
+0x182e22  push    0F32h
+0x182e25  call    string_concatenate
+0x182e2a  add     sp, 0Ch
+0x182e2d  push    7894h
+0x182e30  push    0F32h
+0x182e33  mov     ax, 6E1Eh
+0x182e36  mov     es, ax
+0x182e38  push    word ptr es:byte_6E1C9+27h
+0x182e3d  push    word ptr es:byte_6E1C9+25h
+0x182e42  push    7894h
+0x182e45  push    0F32h
+0x182e48  call    string_concatenate
+0x182e4d  add     sp, 0Ch
+0x182e50  mov     ax, 6E1Eh
+0x182e53  mov     es, ax
+0x182e55  cmp     es:word_6E2B8, 20h ; ' '
+0x182e5b  jge     short loc_182E80
+0x182e5d  push    7894h
+0x182e60  push    0F32h
+0x182e63  mov     ax, 6E1Eh
+0x182e66  mov     es, ax
+0x182e68  push    word ptr es:loc_6E387+2
+0x182e6d  push    word ptr es:loc_6E387
+0x182e72  push    7894h
+0x182e75  push    0F32h
+0x182e78  call    string_concatenate
+0x182e7d  add     sp, 0Ch
+0x182e80  push    7894h
+0x182e83  push    0F32h
+0x182e86  mov     ax, 602Eh
+0x182e89  mov     es, ax
+0x182e8b  push    es:word_1516B9
+0x182e90  push    es:word_1516B7
+0x182e95  jmp     loc_183091
+0x182e98  mov     ax, 6E1Eh
+0x182e9b  mov     es, ax
+0x182e9d  add     word ptr es:byte_6E1C9+1Bh, 5
+0x182ea3  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x182ea6  mov     ax, 6E1Eh; jumptable 00182790 case 3
+0x182ea9  mov     es, ax
+0x182eab  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x182eb0  mov     al, es:[bx]
+0x182eb3  mov     ah, 0
+0x182eb5  mov     dx, 6E1Eh
+0x182eb8  mov     es, dx
+0x182eba  mov     word ptr es:byte_6E1C9+45h, ax
+0x182ebe  mov     ax, 6E1Eh
+0x182ec1  mov     es, ax
+0x182ec3  sar     word ptr es:byte_6E1C9+45h, 3
+0x182ec9  mov     es, ax
+0x182ecb  and     word ptr es:byte_6E1C9+45h, 7
+0x182ed2  mov     es, ax
+0x182ed4  mov     ax, word ptr es:byte_6E1C9+45h
+0x182ed8  and     ax, 7
+0x182edb  shl     ax, 1
+0x182edd  mov     dx, 6E1Eh
+0x182ee0  mov     es, dx
+0x182ee2  les     bx, dword ptr es:loc_6E2A1+3
+0x182ee7  add     bx, ax
+0x182ee9  cmp     word ptr es:[bx], 0FFFFh
+0x182eed  jnz     short loc_182EF2
+0x182eef  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x182ef2  mov     ax, 6E1Eh
+0x182ef5  mov     es, ax
+0x182ef7  inc     word ptr es:byte_6E1C9+1Bh
+0x182efc  mov     es, ax
+0x182efe  inc     word ptr es:byte_6E1C9+1Bh
+0x182f03  mov     es, ax
+0x182f05  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x182f0a  mov     al, es:[bx]
+0x182f0d  mov     ah, 0
+0x182f0f  mov     dx, 6E1Eh
+0x182f12  mov     es, dx
+0x182f14  mov     es:word_6E2B8, ax
+0x182f18  mov     ax, 6E1Eh
+0x182f1b  mov     es, ax
+0x182f1d  and     es:word_6E2B8, 3Fh
+0x182f24  mov     es, ax
+0x182f26  or      es:word_6E2B8, 40h
+0x182f2d  mov     ax, 6E1Eh
+0x182f30  mov     es, ax
+0x182f32  inc     word ptr es:byte_6E1C9+1Bh
+0x182f37  mov     ax, 6E1Eh
+0x182f3a  mov     es, ax
+0x182f3c  mov     al, byte ptr es:word_6E2B8
+0x182f40  push    ax
+0x182f41  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x182f46  pop     cx
+0x182f47  mov     bx, 6E1Eh
+0x182f4a  mov     es, bx
+0x182f4c  mov     word ptr es:byte_6E1C9+27h, dx
+0x182f51  mov     word ptr es:byte_6E1C9+25h, ax
+0x182f55  push    7894h
+0x182f58  push    0F32h
+0x182f5b  mov     ax, 602Eh
+0x182f5e  mov     es, ax
+0x182f60  push    word ptr es:a2_0+1; ".` "
+0x182f65  push    word ptr es:byte_151860
+0x182f6a  mov     ax, 6E1Eh
+0x182f6d  mov     es, ax
+0x182f6f  mov     ax, word ptr es:byte_6E1C9+45h
+0x182f73  shl     ax, 1
+0x182f75  mov     dx, 6E1Eh
+0x182f78  mov     es, dx
+0x182f7a  les     bx, dword ptr es:loc_6E2A1+3
+0x182f7f  add     bx, ax
+0x182f81  mov     ax, es:[bx]
+0x182f84  mov     dx, 42h ; 'B'
+0x182f87  imul    dx
+0x182f89  mov     dx, 6E1Eh
+0x182f8c  mov     es, dx
+0x182f8e  les     bx, dword ptr es:byte_6E1C9+47h
+0x182f93  add     bx, ax
+0x182f95  mov     al, es:[bx+1]
+0x182f99  cbw
+0x182f9a  shl     ax, 2
+0x182f9d  mov     dx, 602Eh
+0x182fa0  mov     bx, ax
+0x182fa2  mov     es, dx
+0x182fa4  push    word ptr es:[bx+1AD8h]
+0x182fa9  push    word ptr es:[bx+1AD6h]
+0x182fae  call    string_concatenate
+0x182fb3  add     sp, 0Ch
+0x182fb6  push    7894h
+0x182fb9  push    0F32h
+0x182fbc  mov     ax, 6E1Eh
+0x182fbf  mov     es, ax
+0x182fc1  mov     ax, word ptr es:byte_6E1C9+45h
+0x182fc5  shl     ax, 1
+0x182fc7  mov     dx, 6E1Eh
+0x182fca  mov     es, dx
+0x182fcc  les     bx, dword ptr es:loc_6E2A1+3
+0x182fd1  add     bx, ax
+0x182fd3  mov     ax, es:[bx]
+0x182fd6  mov     dx, 42h ; 'B'
+0x182fd9  imul    dx
+0x182fdb  mov     dx, 6E1Eh
+0x182fde  mov     es, dx
+0x182fe0  mov     dx, word ptr es:byte_6E1C9+47h
+0x182fe5  add     dx, ax
+0x182fe7  inc     dx
+0x182fe8  inc     dx
+0x182fe9  push    word ptr es:byte_6E1C9+49h
+0x182fee  push    dx
+0x182fef  push    7894h
+0x182ff2  push    0F32h
+0x182ff5  call    string_concatenate
+0x182ffa  add     sp, 0Ch
+0x182ffd  push    7894h
+0x183000  push    0F32h
+0x183003  mov     ax, 602Eh
+0x183006  mov     es, ax
+0x183008  push    word ptr es:a2_0+1; ".` "
+0x18300d  push    word ptr es:byte_151860
+0x183012  push    7894h
+0x183015  push    0F32h
+0x183018  call    string_concatenate
+0x18301d  add     sp, 0Ch
+0x183020  mov     ax, 6E1Eh
+0x183023  mov     es, ax
+0x183025  and     es:word_6E2B8, 3Fh
+0x18302c  mov     es, ax
+0x18302e  cmp     es:word_6E2B8, 20h ; ' '
+0x183034  jge     short loc_183059
+0x183036  push    7894h
+0x183039  push    0F32h
+0x18303c  mov     ax, 6E1Eh
+0x18303f  mov     es, ax
+0x183041  push    word ptr es:loc_6E385
+0x183046  push    word ptr es:loc_6E380+3
+0x18304b  push    7894h
+0x18304e  push    0F32h
+0x183051  call    string_concatenate
+0x183056  add     sp, 0Ch
+0x183059  push    7894h
+0x18305c  push    0F32h
+0x18305f  mov     ax, 6E1Eh
+0x183062  mov     es, ax
+0x183064  push    word ptr es:loc_6E2FC+1
+0x183069  push    word ptr es:loc_6E2FB
+0x18306e  push    7894h
+0x183071  push    0F32h
+0x183074  call    string_concatenate
+0x183079  add     sp, 0Ch
+0x18307c  push    7894h
+0x18307f  push    0F32h
+0x183082  mov     ax, 6E1Eh
+0x183085  mov     es, ax
+0x183087  push    word ptr es:byte_6E1C9+27h
+0x18308c  push    word ptr es:byte_6E1C9+25h
+0x183091  push    7894h
+0x183094  push    0F32h
+0x183097  call    string_concatenate
+0x18309c  add     sp, 0Ch
+0x18309f  push    7894h
+0x1830a2  push    0F32h
+0x1830a5  mov     ax, 602Eh
+0x1830a8  mov     es, ax
+0x1830aa  push    word ptr es:aJ0+2; ".`\n"
+0x1830af  push    word ptr es:aJ0; "J0.`\n"
+0x1830b4  push    7894h
+0x1830b7  push    0F32h
+0x1830ba  call    string_concatenate
+0x1830bf  add     sp, 0Ch
+0x1830c2  push    7894h
+0x1830c5  push    0F32h
+0x1830c8  mov     ax, 602Eh
+0x1830cb  mov     es, ax
+0x1830cd  push    word ptr es:aJ0+2; ".`\n"
+0x1830d2  push    word ptr es:aJ0; "J0.`\n"
+0x1830d7  push    7894h
+0x1830da  push    0F32h
+0x1830dd  call    string_concatenate
+0x1830e2  add     sp, 0Ch
+0x1830e5  mov     ax, 7894h
+0x1830e8  mov     es, ax
+0x1830ea  push    es:word_79D1E
+0x1830ef  push    7894h
+0x1830f2  push    0F32h
+0x1830f5  call    sub_135C57
+0x1830fa  add     sp, 6
+0x1830fd  mov     dx, 7894h
+0x183100  mov     es, dx
+0x183102  mov     es:word_79D1E, ax
+0x183106  mov     [bp+var_6], 0Fh
+0x18310b  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x18310e  mov     ax, 6E1Eh; jumptable 00182790 case 4
+0x183111  mov     es, ax
+0x183113  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x183118  mov     al, es:[bx]
+0x18311b  mov     ah, 0
+0x18311d  mov     dx, 6E1Eh
+0x183120  mov     es, dx
+0x183122  mov     word ptr es:byte_6E1C9+45h, ax
+0x183126  mov     ax, 6E1Eh
+0x183129  mov     es, ax
+0x18312b  sar     word ptr es:byte_6E1C9+45h, 3
+0x183131  mov     es, ax
+0x183133  and     word ptr es:byte_6E1C9+45h, 7
+0x18313a  mov     ax, 6E1Eh
+0x18313d  mov     es, ax
+0x18313f  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x183144  mov     al, es:[bx]
+0x183147  mov     ah, 0
+0x183149  mov     dx, 6E1Eh
+0x18314c  mov     es, dx
+0x18314e  mov     word ptr es:byte_6E1C9+4Dh, ax
+0x183152  mov     ax, 6E1Eh
+0x183155  mov     es, ax
+0x183157  sar     word ptr es:byte_6E1C9+4Dh, 6
+0x18315d  mov     es, ax
+0x18315f  and     word ptr es:byte_6E1C9+4Dh, 1
+0x183166  mov     ax, 6E1Eh
+0x183169  mov     es, ax
+0x18316b  inc     word ptr es:byte_6E1C9+1Bh
+0x183170  mov     es, ax
+0x183172  inc     word ptr es:byte_6E1C9+1Bh
+0x183177  push    7894h
+0x18317a  push    0F32h
+0x18317d  mov     ax, 602Eh
+0x183180  mov     es, ax
+0x183182  push    word ptr es:a2_0+1; ".` "
+0x183187  push    word ptr es:byte_151860
+0x18318c  mov     ax, 6E1Eh
+0x18318f  mov     es, ax
+0x183191  mov     ax, word ptr es:byte_6E1C9+45h
+0x183195  shl     ax, 1
+0x183197  mov     dx, 6E1Eh
+0x18319a  mov     es, dx
+0x18319c  les     bx, dword ptr es:loc_6E2A1+3
+0x1831a1  add     bx, ax
+0x1831a3  mov     ax, es:[bx]
+0x1831a6  mov     dx, 42h ; 'B'
+0x1831a9  imul    dx
+0x1831ab  mov     dx, 6E1Eh
+0x1831ae  mov     es, dx
+0x1831b0  les     bx, dword ptr es:byte_6E1C9+47h
+0x1831b5  add     bx, ax
+0x1831b7  mov     al, es:[bx+1]
+0x1831bb  cbw
+0x1831bc  shl     ax, 2
+0x1831bf  mov     dx, 602Eh
+0x1831c2  mov     bx, ax
+0x1831c4  mov     es, dx
+0x1831c6  push    word ptr es:[bx+1AD8h]
+0x1831cb  push    word ptr es:[bx+1AD6h]
+0x1831d0  call    string_concatenate
+0x1831d5  add     sp, 0Ch
+0x1831d8  push    7894h
+0x1831db  push    0F32h
+0x1831de  mov     ax, 6E1Eh
+0x1831e1  mov     es, ax
+0x1831e3  mov     ax, word ptr es:byte_6E1C9+45h
+0x1831e7  shl     ax, 1
+0x1831e9  mov     dx, 6E1Eh
+0x1831ec  mov     es, dx
+0x1831ee  les     bx, dword ptr es:loc_6E2A1+3
+0x1831f3  add     bx, ax
+0x1831f5  mov     ax, es:[bx]
+0x1831f8  mov     dx, 42h ; 'B'
+0x1831fb  imul    dx
+0x1831fd  mov     dx, 6E1Eh
+0x183200  mov     es, dx
+0x183202  mov     dx, word ptr es:byte_6E1C9+47h
+0x183207  add     dx, ax
+0x183209  inc     dx
+0x18320a  inc     dx
+0x18320b  push    word ptr es:byte_6E1C9+49h
+0x183210  push    dx
+0x183211  push    7894h
+0x183214  push    0F32h
+0x183217  call    string_concatenate
+0x18321c  add     sp, 0Ch
+0x18321f  push    7894h
+0x183222  push    0F32h
+0x183225  mov     ax, 602Eh
+0x183228  mov     es, ax
+0x18322a  push    word ptr es:a2_0+1; ".` "
+0x18322f  push    word ptr es:byte_151860
+0x183234  push    7894h
+0x183237  push    0F32h
+0x18323a  call    string_concatenate
+0x18323f  add     sp, 0Ch
+0x183242  mov     ax, 6E1Eh
+0x183245  mov     es, ax
+0x183247  cmp     word ptr es:byte_6E1C9+4Dh, 0
+                ; comparing with 0
+0x18324d  jnz     short loc_183266
+0x18324f  push    7894h
+0x183252  push    0F32h
+0x183255  mov     ax, 6E1Eh
+0x183258  mov     es, ax
+0x18325a  push    word ptr es:loc_6E301
+0x18325f  push    word ptr es:loc_6E2FF
+0x183264  jmp     short loc_18327B
+0x183266  push    7894h
+0x183269  push    0F32h
+0x18326c  mov     ax, 6E1Eh
+0x18326f  mov     es, ax
+0x183271  push    word ptr es:loc_6E303+2
+0x183276  push    word ptr es:loc_6E303
+0x18327b  push    7894h
+0x18327e  push    0F32h
+0x183281  call    string_concatenate
+0x183286  add     sp, 0Ch
+0x183289  push    7894h
+0x18328c  push    0F32h
+0x18328f  mov     ax, 602Eh
+0x183292  mov     es, ax
+0x183294  push    word ptr es:aJ0+2; ".`\n"
+0x183299  push    word ptr es:aJ0; jumptable 00186D81 case 0
+0x18329e  push    7894h
+0x1832a1  push    0F32h
+0x1832a4  call    string_concatenate
+0x1832a9  add     sp, 0Ch
+0x1832ac  push    7894h
+0x1832af  push    0F32h
+0x1832b2  mov     ax, 602Eh
+0x1832b5  mov     es, ax
+0x1832b7  push    word ptr es:aJ0+2; ".`\n"
+0x1832bc  push    word ptr es:aJ0; "J0.`\n"
+0x1832c1  push    7894h
+0x1832c4  push    0F32h
+0x1832c7  call    string_concatenate
+0x1832cc  add     sp, 0Ch
+0x1832cf  mov     [bp+var_6], 0Fh
+0x1832d4  mov     ax, 6E1Eh
+0x1832d7  mov     es, ax
+0x1832d9  mov     ax, word ptr es:byte_6E1C9+45h
+0x1832dd  shl     ax, 1
+0x1832df  mov     dx, 6E1Eh
+0x1832e2  mov     es, dx
+0x1832e4  les     bx, dword ptr es:loc_6E2A1+3
+0x1832e9  add     bx, ax
+0x1832eb  cmp     word ptr es:[bx], 0FFFFh
+0x1832ef  jnz     short loc_1832F4
+0x1832f1  jmp     def_182790; jumptable 00182790 default case, cases 1,6
+0x1832f4  jmp     loc_1836F1
+0x1832f7  mov     ax, 6E1Eh; jumptable 00182790 case 5
+0x1832fa  mov     es, ax
+0x1832fc  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x183301  mov     al, es:[bx]
+0x183304  mov     ah, 0
+0x183306  mov     dx, 6E1Eh
+0x183309  mov     es, dx
+0x18330b  mov     word ptr es:byte_6E1C9+45h, ax
+0x18330f  mov     ax, 6E1Eh
+0x183312  mov     es, ax
+0x183314  sar     word ptr es:byte_6E1C9+45h, 3
+0x18331a  mov     es, ax
+0x18331c  and     word ptr es:byte_6E1C9+45h, 7
+0x183323  mov     ax, 6E1Eh
+0x183326  mov     es, ax
+0x183328  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x18332d  mov     al, es:[bx]
+0x183330  mov     ah, 0
+0x183332  mov     dx, 6E1Eh
+0x183335  mov     es, dx
+0x183337  mov     word ptr es:byte_6E1C9+4Dh, ax
+0x18333b  mov     ax, 6E1Eh
+0x18333e  mov     es, ax
+0x183340  sar     word ptr es:byte_6E1C9+4Dh, 6
+0x183346  mov     es, ax
+0x183348  and     word ptr es:byte_6E1C9+4Dh, 3
+0x18334f  mov     ax, 6E1Eh
+0x183352  mov     es, ax
+0x183354  inc     word ptr es:byte_6E1C9+1Bh
+0x183359  mov     es, ax
+0x18335b  les     bx, dword ptr es:byte_6E1C9+1Bh
+0x183360  mov     al, es:[bx]
+0x183363  mov     ah, 0
+0x183365  mov     dx, 6E1Eh
+0x183368  mov     es, dx
+0x18336a  mov     es:word_6E2B8, ax
+0x18336e  mov     ax, 6E1Eh
+0x183371  mov     es, ax
+0x183373  test    es:word_6E2B8, 80h
+0x18337a  jz      short loc_1833BE
+0x18337c  mov     es, ax
+0x18337e  and     es:word_6E2B8, 3Fh
+0x183385  mov     es, ax
+0x183387  cmp     es:word_6E2B8, 33h ; '3'
+0x18338d  jge     short loc_1833B1; jumptable 001833A0 cases 39-43,48
+0x18338f  mov     es, ax
+0x183391  mov     bx, es:word_6E2B8
+0x183396  sub     bx, 27h ; '''; switch 10 cases
+0x183399  cmp     bx, 9
+                ; comparing with 9
+0x18339c  ja      short def_1833A0; jumptable 001833A0 default case, cases 44-47
+0x18339e  shl     bx, 1
+0x1833a0  jmp     cs:jpt_1833A0[bx]; switch jump
+0x1833a5  mov     ax, 6E1Eh; jumptable 001833A0 default case, cases 44-47
+0x1833a8  mov     es, ax
+0x1833aa  mov     es:word_6E2B8, 29h ; ')'
+0x1833b1  mov     ax, 6E1Eh; jumptable 001833A0 cases 39-43,48
+0x1833b4  mov     es, ax
+0x1833b6  add     es:word_6E2B8, 40h ; '@'
+0x1833bc  jmp     short loc_1833CA
+0x1833be  mov     ax, 6E1Eh
+0x1833c1  mov     es, ax
+0x1833c3  and     es:word_6E2B8, 3Fh
+0x1833ca  mov     ax, 6E1Eh
+0x1833cd  mov     es, ax
+0x1833cf  mov     al, byte ptr es:word_6E2B8
+0x1833d3  push    ax
+0x1833d4  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x1833d9  pop     cx
+0x1833da  mov     bx, 6E1Eh
+0x1833dd  mov     es, bx
+0x1833df  mov     word ptr es:byte_6E1C9+27h, dx
+0x1833e4  mov     word ptr es:byte_6E1C9+25h, ax
+0x1833e8  mov     ax, 6E1Eh
+0x1833eb  mov     es, ax
+0x1833ed  inc     word ptr es:byte_6E1C9+1Bh
+0x1833f2  push    7894h
+0x1833f5  push    0F32h
+0x1833f8  mov     ax, 602Eh
+0x1833fb  mov     es, ax
+0x1833fd  push    word ptr es:a2_0+1; ".` "
+0x183402  push    word ptr es:byte_151860
+0x183407  mov     ax, 6E1Eh
+0x18340a  mov     es, ax
+0x18340c  mov     ax, word ptr es:byte_6E1C9+45h
+0x183410  shl     ax, 1
+0x183412  mov     dx, 6E1Eh
+0x183415  mov     es, dx
+0x183417  les     bx, dword ptr es:loc_6E2A1+3
+0x18341c  add     bx, ax
+0x18341e  mov     ax, es:[bx]
+0x183421  mov     dx, 42h ; 'B'
+0x183424  imul    dx
+0x183426  mov     dx, 6E1Eh
+0x183429  mov     es, dx
+0x18342b  les     bx, dword ptr es:byte_6E1C9+47h
+0x183430  add     bx, ax
+0x183432  mov     al, es:[bx+1]
+0x183436  cbw
+0x183437  shl     ax, 2
+0x18343a  mov     dx, 602Eh
+0x18343d  mov     bx, ax
+0x18343f  mov     es, dx
+0x183441  push    word ptr es:[bx+1AD8h]
+0x183446  push    word ptr es:[bx+1AD6h]
+0x18344b  call    string_concatenate
+0x183450  add     sp, 0Ch
+0x183453  push    7894h
+0x183456  push    0F32h
+0x183459  mov     ax, 6E1Eh
+0x18345c  mov     es, ax
+0x18345e  mov     ax, word ptr es:byte_6E1C9+45h
+0x183462  shl     ax, 1
+0x183464  mov     dx, 6E1Eh
+0x183467  mov     es, dx
+0x183469  les     bx, dword ptr es:loc_6E2A1+3
+0x18346e  add     bx, ax
+0x183470  mov     ax, es:[bx]
+0x183473  mov     dx, 42h ; 'B'
+0x183476  imul    dx
+0x183478  mov     dx, 6E1Eh
+0x18347b  mov     es, dx
+0x18347d  mov     dx, word ptr es:byte_6E1C9+47h
+0x183482  add     dx, ax
+0x183484  inc     dx
+0x183485  inc     dx
+0x183486  push    word ptr es:byte_6E1C9+49h
+0x18348b  push    dx
+0x18348c  push    7894h
+0x18348f  push    0F32h
+0x183492  call    string_concatenate
+0x183497  add     sp, 0Ch
+0x18349a  push    7894h
+0x18349d  push    0F32h
+0x1834a0  mov     ax, 602Eh
+0x1834a3  mov     es, ax
+0x1834a5  push    word ptr es:a2_0+1; ".` "
+0x1834aa  push    word ptr es:byte_151860
+0x1834af  push    7894h
+0x1834b2  push    0F32h
+0x1834b5  call    string_concatenate
+0x1834ba  add     sp, 0Ch
+0x1834bd  mov     ax, 6E1Eh
+0x1834c0  mov     es, ax
+0x1834c2  mov     ax, es:word_6E2B8
+0x1834c6  mov     dx, 7891h
+0x1834c9  mov     es, dx
+0x1834cb  cmp     ax, es:word_78910
+                ; comparing with 0
+0x1834d0  jnz     short loc_1834D5
+0x1834d2  jmp     loc_183631
+0x1834d5  push    7894h
+0x1834d8  push    0F32h
+0x1834db  mov     ax, 6E1Eh
+0x1834de  mov     es, ax
+0x1834e0  push    word ptr es:loc_6E307+2
+0x1834e5  push    word ptr es:loc_6E307
+0x1834ea  push    7894h
+0x1834ed  push    0F32h
+0x1834f0  call    string_concatenate
+0x1834f5  add     sp, 0Ch
+0x1834f8  push    7894h
+0x1834fb  push    0F32h
+0x1834fe  mov     ax, 6E1Eh
+0x183501  mov     es, ax
+0x183503  push    word ptr es:byte_6E1C9+27h
+0x183508  push    word ptr es:byte_6E1C9+25h
+0x18350d  push    7894h
+0x183510  push    0F32h
+0x183513  call    string_concatenate
+0x183518  add     sp, 0Ch
+0x18351b  push    7894h
+0x18351e  push    0F32h
+0x183521  mov     ax, 602Eh
+0x183524  mov     es, ax
+0x183526  push    word ptr es:a2_0+1; ".` "
+0x18352b  push    word ptr es:byte_151860
+0x183530  push    7894h
+0x183533  push    0F32h
+0x183536  call    string_concatenate
+0x18353b  add     sp, 0Ch
+0x18353e  mov     ax, 6E1Eh
+0x183541  mov     es, ax
+0x183543  mov     ax, word ptr es:byte_6E1C9+45h
+0x183547  shl     ax, 1
+0x183549  mov     dx, 6E1Eh
+0x18354c  mov     es, dx
+0x18354e  les     bx, dword ptr es:loc_6E2A1+3
+0x183553  add     bx, ax
+0x183555  mov     ax, es:[bx]
+0x183558  mov     dx, 42h ; 'B'
+0x18355b  imul    dx
+0x18355d  mov     dx, 6E1Eh
+0x183560  mov     es, dx
+0x183562  les     bx, dword ptr es:byte_6E1C9+47h
+0x183567  add     bx, ax
+0x183569  mov     al, es:[bx+26h]
+0x18356d  cbw
+0x18356e  and     ax, 7
+0x183571  cmp     ax, 6
+                ; comparing with 6
+0x183574  jnz     short loc_183579
+0x183576  jmp     loc_18361A
+0x183579  push    7894h
+0x18357c  push    0F32h
+0x18357f  mov     ax, 602Eh
+0x183582  mov     es, ax
+0x183584  push    es:word_1516C5
+0x183589  push    es:word_1516C3
+0x18358e  push    7894h
+0x183591  push    0F32h
+0x183594  call    string_concatenate
+0x183599  add     sp, 0Ch
+0x18359c  push    7894h
+0x18359f  push    0F32h
+0x1835a2  mov     ax, 6E1Eh
+0x1835a5  mov     es, ax
+0x1835a7  mov     ax, word ptr es:byte_6E1C9+45h
+0x1835ab  shl     ax, 1
+0x1835ad  mov     dx, 6E1Eh
+0x1835b0  mov     es, dx
+0x1835b2  les     bx, dword ptr es:loc_6E2A1+3
+0x1835b7  add     bx, ax
+0x1835b9  mov     ax, es:[bx]
+0x1835bc  mov     dx, 42h ; 'B'
+0x1835bf  imul    dx
+0x1835c1  mov     dx, 6E1Eh
+0x1835c4  mov     es, dx
+0x1835c6  les     bx, dword ptr es:byte_6E1C9+47h
+0x1835cb  add     bx, ax
+0x1835cd  mov     al, es:[bx+26h]
+0x1835d1  cbw
+0x1835d2  and     ax, 0Fh
+0x1835d5  shl     ax, 2
+0x1835d8  mov     dx, 602Eh
+0x1835db  mov     bx, ax
+0x1835dd  mov     es, dx
+0x1835df  push    word ptr es:[bx+1B9Bh]
+0x1835e4  push    word ptr es:[bx+1B99h]
+0x1835e9  push    7894h
+0x1835ec  push    0F32h
+0x1835ef  call    string_concatenate
+0x1835f4  add     sp, 0Ch
+0x1835f7  push    7894h
+0x1835fa  push    0F32h
+0x1835fd  mov     ax, 602Eh
+0x183600  mov     es, ax
+0x183602  push    es:word_1516CB
+0x183607  push    es:word_1516C9
+0x18360c  push    7894h
+0x18360f  push    0F32h
+0x183612  call    string_concatenate
+0x183617  add     sp, 0Ch
+0x18361a  push    7894h
+0x18361d  push    0F32h
+0x183620  mov     ax, 602Eh
+0x183623  mov     es, ax
+0x183625  push    es:word_1516B9
+0x18362a  push    es:word_1516B7
+0x18362f  jmp     short loc_183646
+0x183631  push    7894h
+0x183634  push    0F32h
+0x183637  mov     ax, 6E1Eh
+0x18363a  mov     es, ax
+0x18363c  push    word ptr es:loc_6E3A0+1
+0x183641  push    word ptr es:loc_6E39A+5
+0x183646  push    7894h
+0x183649  push    0F32h
+0x18364c  call    string_concatenate
+0x183651  add     sp, 0Ch
+0x183654  push    7894h
+0x183657  push    0F32h
+0x18365a  mov     ax, 602Eh
+0x18365d  mov     es, ax
+0x18365f  push    word ptr es:aJ0+2; ".`\n"
+0x183664  push    word ptr es:aJ0; "J0.`\n"
+0x183669  push    7894h
+0x18366c  push    0F32h
+0x18366f  call    string_concatenate
+0x183674  add     sp, 0Ch
+0x183677  push    7894h
+0x18367a  push    0F32h
+0x18367d  mov     ax, 602Eh
+0x183680  mov     es, ax
+0x183682  push    word ptr es:aJ0+2; ".`\n"
+0x183687  push    word ptr es:aJ0; "J0.`\n"
+0x18368c  push    7894h
+0x18368f  push    0F32h
+0x183692  call    string_concatenate
+0x183697  add     sp, 0Ch
+0x18369a  mov     ax, 6E1Eh
+0x18369d  mov     es, ax
+0x18369f  cmp     word ptr es:byte_6E1C9+4Dh, 0
+                ; comparing with 0
+0x1836a5  jz      short def_182790; jumptable 00182790 default case, cases 1,6
+0x1836a7  mov     ax, 6E1Eh
+0x1836aa  mov     es, ax
+0x1836ac  mov     bx, word ptr es:byte_6E1C9+45h
+0x1836b1  lea     ax, [bp+var_12]
+0x1836b4  add     bx, ax
+0x1836b6  cmp     byte ptr ss:[bx], 0
+                ; comparing with 0
+0x1836ba  jz      short def_182790; jumptable 00182790 default case, cases 1,6
+0x1836bc  mov     [bp+var_6], 1Eh
+0x1836c1  mov     ax, 6E1Eh
+0x1836c4  mov     es, ax
+0x1836c6  mov     ax, word ptr es:byte_6E1C9+45h
+0x1836ca  shl     ax, 1
+0x1836cc  mov     dx, 6E1Eh
+0x1836cf  mov     es, dx
+0x1836d1  les     bx, dword ptr es:loc_6E2A1+3
+0x1836d6  add     bx, ax
+0x1836d8  cmp     word ptr es:[bx], 0FFFFh
+0x1836dc  jz      short def_182790; jumptable 00182790 default case, cases 1,6
+0x1836de  mov     ax, 6E1Eh
+0x1836e1  mov     es, ax
+0x1836e3  mov     bx, word ptr es:byte_6E1C9+45h
+0x1836e8  lea     ax, [bp+var_12]
+0x1836eb  add     bx, ax
+0x1836ed  mov     byte ptr ss:[bx], 0
+0x1836f1  mov     ax, 7894h
+0x1836f4  mov     es, ax
+0x1836f6  push    es:word_79D1E
+0x1836fb  push    7894h
+0x1836fe  push    0F32h
+0x183701  call    sub_135C57
+0x183706  add     sp, 6
+0x183709  mov     dx, 7894h
+0x18370c  mov     es, dx
+0x18370e  mov     es:word_79D1E, ax
+0x183712  jmp     short def_182790; jumptable 00182790 default case, cases 1,6
+0x183714  mov     si, 1; jumptable 00182790 case 7
+0x183717  mov     ax, 7894h; jumptable 00182790 default case, cases 1,6
+0x18371a  mov     es, ax
+0x18371c  mov     ax, es:word_79D1E
+0x183720  add     ax, 0FFF5h
+0x183723  mov     dx, 7894h
+0x183726  mov     es, dx
+0x183728  mov     es:word_79E32, ax
+0x18372c  mov     ax, 7894h
+0x18372f  mov     es, ax
+0x183731  cmp     es:word_79E32, 0
+                ; comparing with 0
+0x183737  jge     short loc_183742
+0x183739  mov     es, ax
+0x18373b  mov     es:word_79E32, 0
+0x183742  push    1
+0x183744  call    loc_69C25
+0x183749  pop     cx
+0x18374a  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x18374f  mov     ax, 7894h
+0x183752  mov     es, ax
+0x183754  cmp     es:graphics_mode_flag, 0
+                ; comparing with 0
+0x18375a  jz      short loc_183763
+0x18375c  mov     [bp+var_A], 0
+0x183761  jmp     short loc_18376B
+0x183763  call    font_file_parser
+0x183768  mov     [bp+var_A], ax
+0x18376b  cmp     [bp+var_A], 1Ch
+0x18376f  jz      short loc_183777
+0x183771  cmp     [bp+var_A], 1
+                ; comparing with 1
+0x183775  jnz     short loc_18378B
+0x183777  mov     [bp+var_4], 0
+0x18377c  call    far_cb_1
+0x183781  call    undoc_11D20D
+0x183786  call    far_cb_0
+0x18378b  cmp     [bp+var_4], 0
+                ; comparing with 0
+0x18378f  jz      short loc_183796
+0x183791  call    sub_12805C
+0x183796  cmp     [bp+var_6], 0
+                ; comparing with 0
+0x18379a  jz      short loc_1837B0
+0x18379c  cmp     [bp+var_4], 0
+                ; comparing with 0
+0x1837a0  jz      short loc_1837B0
+0x1837a2  push    [bp+var_6]
+0x1837a5  call    sub_134BF0
+0x1837aa  pop     cx
+0x1837ab  mov     [bp+var_6], 0
+0x1837b0  or      si, si
+0x1837b2  jnz     short loc_1837B7
+0x1837b4  jmp     loc_18274E
+0x1837b7  mov     ax, 6E1Eh
+0x1837ba  mov     es, ax
+0x1837bc  push    es:word_6E2A6
+0x1837c1  push    word ptr es:loc_6E2A1+3
+0x1837c6  push    ss
+0x1837c7  lea     ax, [bp+var_12]
+0x1837ca  push    ax
+0x1837cb  call    far ptr loc_6DB11+2
+0x1837d0  add     sp, 8
+0x1837d3  mov     ax, 7894h
+0x1837d6  mov     es, ax
+0x1837d8  mov     ax, es:word_79D1E
+0x1837dc  add     ax, 0FFF5h
+0x1837df  mov     dx, 7894h
+0x1837e2  mov     es, dx
+0x1837e4  mov     es:word_79E32, ax
+0x1837e8  mov     ax, 7894h
+0x1837eb  mov     es, ax
+0x1837ed  cmp     es:word_79E32, 0
+                ; comparing with 0
+0x1837f3  jge     short loc_1837FE
+0x1837f5  mov     es, ax
+0x1837f7  mov     es:word_79E32, 0
+0x1837fe  call    sub_13DB56; Set CS:byte_13DABA to 0xFF (7B, 20 calls)
+0x183803  xor     si, si
+0x183805  call    menu_cursor_position_set
+0x18380a  jmp     def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x18380d  push    1
+0x18380f  call    loc_69C25
+0x183814  pop     cx
+0x183815  call    sub_12805C
+0x18381a  call    sub_12DB63
+0x18381f  mov     ax, 7894h
+0x183822  mov     es, ax
+0x183824  cmp     es:word_79B6C, 32h ; '2'
+0x18382a  jz      short loc_18382F
+0x18382c  jmp     loc_1838B9
+0x18382f  mov     ax, 7894h
+0x183832  mov     es, ax
+0x183834  mov     ax, es:input_scan_code_queue
+0x183838  cmp     ax, 1
+                ; comparing with 1
+0x18383b  jz      short loc_183857
+0x18383d  cmp     ax, 3
+                ; comparing with 3
+0x183840  jz      short loc_183849
+0x183842  cmp     ax, 0FFh
+0x183845  jz      short loc_18385A
+0x183847  jmp     short loc_1838B6
+0x183849  mov     ax, 7894h
+0x18384c  mov     es, ax
+0x18384e  mov     es:current_view_index, 7
+0x183855  jmp     short loc_1838D3
+0x183857  jmp     loc_1824A3; VIEW KEY HANDLER: Push view index 8, call view setup (likely padlock view)
+0x18385a  mov     ax, 4FC2h
+0x18385d  mov     es, ax
+0x18385f  push    es:word_13E012
+0x183864  call    sub_2C761; Overlay bridge trampoline (8B, 14 calls)
+0x183869  pop     cx
+0x18386a  mov     ax, 7894h
+0x18386d  mov     es, ax
+0x18386f  les     bx, es:menu_state_ptr
+0x183874  dec     word ptr es:[bx]
+0x183877  mov     ax, 4FC2h
+0x18387a  mov     es, ax
+0x18387c  push    es:word_13E012
+0x183881  call    far ptr menu_finalize_render
+0x183886  pop     cx
+0x183887  call    sub_11D274
+0x18388c  mov     ax, 7894h
+0x18388f  mov     es, ax
+0x183891  les     bx, es:menu_state_ptr
+0x183896  inc     word ptr es:[bx]
+0x183899  mov     ax, 4FC2h
+0x18389c  mov     es, ax
+0x18389e  push    es:word_13E012
+0x1838a3  call    far ptr menu_finalize_render
+0x1838a8  pop     cx
+0x1838a9  call    undoc_12661D
+0x1838ae  call    sub_12805C
+0x1838b3  jmp     def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x1838b6  jmp     loc_183805
+0x1838b9  mov     ax, 7894h
+0x1838bc  mov     es, ax
+0x1838be  cmp     es:word_79B6C, 34h ; '4'
+0x1838c4  jz      short loc_1838D3
+0x1838c6  mov     es, ax
+0x1838c8  cmp     es:word_79B6C, 36h ; '6'
+0x1838ce  jz      short loc_1838D3
+0x1838d0  jmp     def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x1838d3  mov     ax, 7894h
+0x1838d6  mov     es, ax
+0x1838d8  mov     bx, es:current_view_index
+0x1838dd  cmp     bx, 8; switch 9 cases
+                ; comparing with 8
+0x1838e0  jbe     short loc_1838E5
+0x1838e2  jmp     def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x1838e5  shl     bx, 1
+0x1838e7  jmp     cs:jpt_1838E7[bx]; switch jump
+0x1838ec  mov     ax, 7894h; jumptable 001838E7 case 0
+0x1838ef  mov     es, ax
+0x1838f1  cmp     es:word_79E80, 12Ch
+0x1838f8  jge     short loc_1838FD
+0x1838fa  jmp     def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x1838fd  mov     ax, 7894h
+0x183900  mov     es, ax
+0x183902  push    es:current_view_index
+0x183907  call    far ptr loc_69CBE
+0x18390c  pop     cx
+0x18390d  call    sub_12805C
+0x183912  jmp     short loc_183947
+0x183914  mov     ax, 7894h
+0x183917  mov     es, ax
+0x183919  cmp     es:word_79E32, 0
+                ; comparing with 0
+0x18391f  jle     short loc_183928
+0x183921  mov     es, ax
+0x183923  dec     es:word_79E32
+0x183928  call    far ptr loc_69EA9
+0x18392d  mov     ax, 7894h
+0x183930  mov     es, ax
+0x183932  push    es:current_view_index
+0x183937  call    far ptr loc_69CBE
+0x18393c  pop     cx
+0x18393d  call    sub_12805C
+0x183942  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x183947  mov     ax, 7894h
+0x18394a  mov     es, ax
+0x18394c  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x183952  jnz     short loc_183914
+0x183954  jmp     short loc_1839CA
+0x183956  mov     ax, 7894h; jumptable 001838E7 case 6
+0x183959  mov     es, ax
+0x18395b  cmp     es:word_79E80, 12Ch
+0x183962  jge     short loc_183967
+0x183964  jmp     def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x183967  mov     ax, 7894h
+0x18396a  mov     es, ax
+0x18396c  push    es:current_view_index
+0x183971  call    far ptr loc_69CBE
+0x183976  pop     cx
+0x183977  call    sub_12805C
+0x18397c  jmp     short loc_1839BD
+0x18397e  mov     ax, 7894h
+0x183981  mov     dx, 7894h
+0x183984  mov     es, dx
+0x183986  mov     dx, es:word_79D1E
+0x18398b  add     dx, 0FFF5h
+0x18398e  mov     es, ax
+0x183990  cmp     es:word_79E32, dx
+                ; comparing with 2
+0x183995  jge     short loc_18399E
+0x183997  mov     es, ax
+0x183999  inc     es:word_79E32
+0x18399e  call    far ptr loc_69EA9
+0x1839a3  mov     ax, 7894h
+0x1839a6  mov     es, ax
+0x1839a8  push    es:current_view_index
+0x1839ad  call    far ptr loc_69CBE
+0x1839b2  pop     cx
+0x1839b3  call    sub_12805C
+0x1839b8  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x1839bd  mov     ax, 7894h
+0x1839c0  mov     es, ax
+0x1839c2  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x1839c8  jnz     short loc_18397E
+0x1839ca  call    undoc_130B39
+0x1839cf  jmp     short def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x1839d1  mov     ax, 7894h; jumptable 001838E7 case 7
+0x1839d4  mov     es, ax
+0x1839d6  push    es:current_view_index
+0x1839db  call    far ptr loc_69CBE
+0x1839e0  dw 9A59h; jump table for switch statement
+0x1839e2  db 8Ch, 1, 0C1h, 39h
+0x1839e6  call    menu_cursor_position_set
+0x1839eb  mov     ax, 7894h
+0x1839ee  mov     es, ax
+0x1839f0  cmp     es:word_79B56, 1
+                ; comparing with 1
+0x1839f6  jnz     short near ptr loc_1839FA+1
+0x1839f8  dw offset loc_183299; jump table for switch statement
+0x1839fa  out     0BEh, ax; Interrupt Controller #2, 8259A
+0x1839fc  add     [bx+si], ax
+0x1839fe  jmp     short def_1838E7; jumptable 001838E7 default case, cases 1-5
+0x183a00  mov     ax, 7894h; jumptable 001838E7 case 8
+0x183a03  mov     es, ax
+0x183a05  push    es:current_view_index
+0x183a0a  jmp     loc_1824A5
+0x183a0d  or      si, si; jumptable 001838E7 default case, cases 1-5
+0x183a0f  jnz     short loc_183A14
+0x183a11  jmp     loc_18380D
+0x183a14  mov     ax, 7894h
+0x183a17  mov     es, ax
+0x183a19  cmp     es:word_79B56, 1
+                ; comparing with 1
+0x183a1f  jnz     short loc_183A24
+0x183a21  jmp     loc_18523C
+0x183a24  mov     ax, 7894h
+0x183a27  mov     es, ax
+0x183a29  mov     es:word_79D1E, 0
+0x183a30  mov     ax, 7894h
+0x183a33  mov     es, ax
+0x183a35  mov     es:word_79E32, 0
+0x183a3c  push    7894h
+0x183a3f  push    0F32h
+0x183a42  mov     ax, 602Eh
+0x183a45  mov     es, ax
+0x183a47  push    word ptr es:aJ0+2; ".`\n"
+0x183a4c  push    word ptr es:aJ0; "J0.`\n"
+0x183a51  mov     ax, 6E1Eh
+0x183a54  mov     es, ax
+0x183a56  push    word ptr es:loc_6E317+2
+0x183a5b  push    word ptr es:loc_6E317
+0x183a60  call    string_concatenate
+0x183a65  add     sp, 0Ch
+0x183a68  mov     ax, 7894h
+0x183a6b  mov     es, ax
+0x183a6d  push    es:word_79D1E
+0x183a72  push    7894h
+0x183a75  push    0F32h
+0x183a78  call    sub_135C57
+0x183a7d  add     sp, 6
+0x183a80  mov     dx, 7894h
+0x183a83  mov     es, dx
+0x183a85  mov     es:word_79D1E, ax
+0x183a89  mov     ax, 6E1Eh
+0x183a8c  mov     es, ax
+0x183a8e  mov     word ptr es:byte_6E1C9+17h, 0
+0x183a95  jmp     loc_183F4D
+0x183a98  mov     ax, 6E1Eh
+0x183a9b  mov     es, ax
+0x183a9d  mov     ax, word ptr es:byte_6E1C9+17h
+0x183aa1  mov     dx, 42h ; 'B'
+0x183aa4  imul    dx
+0x183aa6  mov     dx, 6E1Eh
+0x183aa9  mov     es, dx
+0x183aab  les     bx, dword ptr es:byte_6E1C9+47h
+0x183ab0  add     bx, ax
+0x183ab2  cmp     byte ptr es:[bx+32h], 0FFh
+0x183ab7  jnz     short loc_183ADD
+0x183ab9  mov     ax, 6E1Eh
+0x183abc  mov     es, ax
+0x183abe  mov     ax, word ptr es:byte_6E1C9+17h
+0x183ac2  mov     dx, 42h ; 'B'
+0x183ac5  imul    dx
+0x183ac7  mov     dx, 6E1Eh
+0x183aca  mov     es, dx
+0x183acc  les     bx, dword ptr es:byte_6E1C9+47h
+0x183ad1  add     bx, ax
+0x183ad3  cmp     byte ptr es:[bx+33h], 0FFh
+0x183ad8  jnz     short loc_183ADD
+0x183ada  jmp     loc_183D8A
+0x183add  push    7894h
+0x183ae0  push    0F32h
+0x183ae3  mov     ax, 602Eh
+0x183ae6  mov     es, ax
+0x183ae8  push    word ptr es:a2_0+1; ".` "
+0x183aed  push    word ptr es:byte_151860
+0x183af2  mov     ax, 6E1Eh
+0x183af5  mov     es, ax
+0x183af7  mov     ax, word ptr es:byte_6E1C9+17h
+0x183afb  mov     dx, 42h ; 'B'
+0x183afe  imul    dx
+0x183b00  mov     dx, 6E1Eh
+0x183b03  mov     es, dx
+0x183b05  les     bx, dword ptr es:byte_6E1C9+47h
+0x183b0a  add     bx, ax
+0x183b0c  mov     al, es:[bx+1]
+0x183b10  cbw
+0x183b11  shl     ax, 2
+0x183b14  mov     dx, 602Eh
+0x183b17  mov     bx, ax
+0x183b19  mov     es, dx
+0x183b1b  push    word ptr es:[bx+1AD8h]
+0x183b20  push    word ptr es:[bx+1AD6h]
+0x183b25  call    string_concatenate
+0x183b2a  add     sp, 0Ch
+0x183b2d  push    7894h
+0x183b30  push    0F32h
+0x183b33  mov     ax, 6E1Eh
+0x183b36  mov     es, ax
+0x183b38  mov     ax, word ptr es:byte_6E1C9+17h
+0x183b3c  mov     dx, 42h ; 'B'
+0x183b3f  imul    dx
+0x183b41  mov     dx, 6E1Eh
+0x183b44  mov     es, dx
+0x183b46  mov     dx, word ptr es:byte_6E1C9+47h
+0x183b4b  add     dx, ax
+0x183b4d  inc     dx
+0x183b4e  inc     dx
+0x183b4f  push    word ptr es:byte_6E1C9+49h
+0x183b54  push    dx
+0x183b55  push    7894h
+0x183b58  push    0F32h
+0x183b5b  call    string_concatenate
+0x183b60  add     sp, 0Ch
+0x183b63  push    7894h
+0x183b66  push    0F32h
+0x183b69  mov     ax, 602Eh
+0x183b6c  mov     es, ax
+0x183b6e  push    word ptr es:a2_0+1; ".` "
+0x183b73  push    word ptr es:byte_151860
+0x183b78  push    7894h
+0x183b7b  push    0F32h
+0x183b7e  call    string_concatenate
+0x183b83  add     sp, 0Ch
+0x183b86  push    7894h
+0x183b89  push    0F32h
+0x183b8c  mov     ax, 6E1Eh
+0x183b8f  mov     es, ax
+0x183b91  push    word ptr es:sub_6E31D
+0x183b96  push    word ptr es:loc_6E317+4
+0x183b9b  push    7894h
+0x183b9e  push    0F32h
+0x183ba1  call    string_concatenate
+0x183ba6  add     sp, 0Ch
+0x183ba9  push    7894h
+0x183bac  push    0F32h
+0x183baf  mov     ax, 602Eh
+0x183bb2  mov     es, ax
+0x183bb4  push    word ptr es:aJ0+2; ".`\n"
+0x183bb9  push    word ptr es:aJ0; "J0.`\n"
+0x183bbe  push    7894h
+0x183bc1  push    0F32h
+0x183bc4  call    string_concatenate
+0x183bc9  add     sp, 0Ch
+0x183bcc  mov     ax, 6E1Eh
+0x183bcf  mov     es, ax
+0x183bd1  mov     ax, word ptr es:byte_6E1C9+17h
+0x183bd5  mov     dx, 42h ; 'B'
+0x183bd8  imul    dx
+0x183bda  mov     dx, 6E1Eh
+0x183bdd  mov     es, dx
+0x183bdf  les     bx, dword ptr es:byte_6E1C9+47h
+0x183be4  add     bx, ax
+0x183be6  cmp     byte ptr es:[bx+33h], 0FFh
+0x183beb  jz      short loc_183C45
+0x183bed  mov     ax, 6E1Eh
+0x183bf0  mov     es, ax
+0x183bf2  mov     ax, word ptr es:byte_6E1C9+17h
+0x183bf6  mov     dx, 42h ; 'B'
+0x183bf9  imul    dx
+0x183bfb  mov     dx, 6E1Eh
+0x183bfe  mov     es, dx
+0x183c00  les     bx, dword ptr es:byte_6E1C9+47h
+0x183c05  add     bx, ax
+0x183c07  mov     al, es:[bx+33h]
+0x183c0b  cbw
+0x183c0c  mov     dx, 6E1Eh
+0x183c0f  mov     es, dx
+0x183c11  mov     word ptr es:byte_6E1C9+4Dh, ax
+0x183c15  push    7894h
+0x183c18  push    0F32h
+0x183c1b  mov     ax, 6E1Eh
+0x183c1e  mov     es, ax
+0x183c20  mov     bx, word ptr es:byte_6E1C9+4Dh
+0x183c25  shl     bx, 2
+0x183c28  mov     ax, 6E1Eh
+0x183c2b  mov     es, ax
+0x183c2d  push    word ptr es:[bx+141h]
+0x183c32  push    word ptr es:[bx+13Fh]
+0x183c37  push    7894h
+0x183c3a  push    0F32h
+0x183c3d  call    string_concatenate
+0x183c42  add     sp, 0Ch
+0x183c45  mov     ax, 6E1Eh
+0x183c48  mov     es, ax
+0x183c4a  mov     ax, word ptr es:byte_6E1C9+17h
+0x183c4e  mov     dx, 42h ; 'B'
+0x183c51  imul    dx
+0x183c53  mov     dx, 6E1Eh
+0x183c56  mov     es, dx
+0x183c58  les     bx, dword ptr es:byte_6E1C9+47h
+0x183c5d  add     bx, ax
+0x183c5f  cmp     byte ptr es:[bx+32h], 0FFh
+0x183c64  jz      short loc_183CAA
+0x183c66  mov     ax, 6E1Eh
+0x183c69  mov     es, ax
+0x183c6b  mov     ax, word ptr es:byte_6E1C9+17h
+0x183c6f  mov     dx, 42h ; 'B'
+0x183c72  imul    dx
+0x183c74  mov     dx, 6E1Eh
+0x183c77  mov     es, dx
+0x183c79  les     bx, dword ptr es:byte_6E1C9+47h
+0x183c7e  add     bx, ax
+0x183c80  cmp     byte ptr es:[bx+33h], 0FFh
+0x183c85  jz      short loc_183CAA
+0x183c87  push    7894h
+0x183c8a  push    0F32h
+0x183c8d  mov     ax, 4FC2h
+0x183c90  mov     es, ax
+0x183c92  push    word ptr es:byte_13DFC6
+0x183c97  push    es:word_13DFC4
+0x183c9c  push    7894h
+0x183c9f  push    0F32h
+0x183ca2  call    string_concatenate
+0x183ca7  add     sp, 0Ch
+0x183caa  mov     ax, 6E1Eh
+0x183cad  mov     es, ax
+0x183caf  mov     ax, word ptr es:byte_6E1C9+17h
+0x183cb3  mov     dx, 42h ; 'B'
+0x183cb6  imul    dx
+0x183cb8  mov     dx, 6E1Eh
+0x183cbb  mov     es, dx
+0x183cbd  les     bx, dword ptr es:byte_6E1C9+47h
+0x183cc2  add     bx, ax
+0x183cc4  cmp     byte ptr es:[bx+32h], 0FFh
+0x183cc9  jz      short loc_183D23
+0x183ccb  mov     ax, 6E1Eh
+0x183cce  mov     es, ax
+0x183cd0  mov     ax, word ptr es:byte_6E1C9+17h
+0x183cd4  mov     dx, 42h ; 'B'
+0x183cd7  imul    dx
+0x183cd9  mov     dx, 6E1Eh
+0x183cdc  mov     es, dx
+0x183cde  les     bx, dword ptr es:byte_6E1C9+47h
+0x183ce3  add     bx, ax
+0x183ce5  mov     al, es:[bx+32h]
+0x183ce9  cbw
+0x183cea  mov     dx, 6E1Eh
+0x183ced  mov     es, dx
+0x183cef  mov     word ptr es:byte_6E1C9+4Dh, ax
+0x183cf3  push    7894h
+0x183cf6  push    0F32h
+0x183cf9  mov     ax, 6E1Eh
+0x183cfc  mov     es, ax
+0x183cfe  mov     bx, word ptr es:byte_6E1C9+4Dh
+0x183d03  shl     bx, 2
+0x183d06  mov     ax, 6E1Eh
+0x183d09  mov     es, ax
+0x183d0b  push    word ptr es:[bx+141h]
+0x183d10  push    word ptr es:[bx+13Fh]
+0x183d15  push    7894h
+0x183d18  push    0F32h
+0x183d1b  call    string_concatenate
+0x183d20  add     sp, 0Ch
+0x183d23  push    7894h
+0x183d26  push    0F32h
+0x183d29  mov     ax, 602Eh
+0x183d2c  mov     es, ax
+0x183d2e  push    word ptr es:aJ0+2; ".`\n"
+0x183d33  push    word ptr es:aJ0; "J0.`\n"
+0x183d38  push    7894h
+0x183d3b  push    0F32h
+0x183d3e  call    string_concatenate
+0x183d43  add     sp, 0Ch
+0x183d46  push    7894h
+0x183d49  push    0F32h
+0x183d4c  mov     ax, 602Eh
+0x183d4f  mov     es, ax
+0x183d51  push    word ptr es:aJ0+2; ".`\n"
+0x183d56  push    word ptr es:aJ0; "J0.`\n"
+0x183d5b  push    7894h
+0x183d5e  push    0F32h
+0x183d61  call    string_concatenate
+0x183d66  add     sp, 0Ch
+0x183d69  mov     ax, 7894h
+0x183d6c  mov     es, ax
+0x183d6e  push    es:word_79D1E
+0x183d73  push    7894h
+0x183d76  push    0F32h
+0x183d79  call    sub_135C57
+0x183d7e  add     sp, 6
+0x183d81  mov     dx, 7894h
+0x183d84  mov     es, dx
+0x183d86  mov     es:word_79D1E, ax
+0x183d8a  mov     ax, 6E1Eh
+0x183d8d  mov     es, ax
+0x183d8f  mov     ax, word ptr es:byte_6E1C9+17h
+0x183d93  mov     dx, 42h ; 'B'
+0x183d96  imul    dx
+0x183d98  mov     dx, 6E1Eh
+0x183d9b  mov     es, dx
+0x183d9d  les     bx, dword ptr es:byte_6E1C9+47h
+0x183da2  add     bx, ax
+0x183da4  mov     al, es:[bx+26h]
+0x183da8  cbw
+0x183da9  and     ax, 1Fh
+0x183dac  cmp     ax, 6
+                ; comparing with 6
+0x183daf  jz      short loc_183DB4
+0x183db1  jmp     loc_183F43
+0x183db4  push    7894h
+0x183db7  push    0F32h
+0x183dba  mov     ax, 602Eh
+0x183dbd  mov     es, ax
+0x183dbf  push    word ptr es:a2_0+1; ".` "
+0x183dc4  push    word ptr es:byte_151860
+0x183dc9  mov     ax, 6E1Eh
+0x183dcc  mov     es, ax
+0x183dce  mov     ax, word ptr es:byte_6E1C9+17h
+0x183dd2  mov     dx, 42h ; 'B'
+0x183dd5  imul    dx
+0x183dd7  mov     dx, 6E1Eh
+0x183dda  mov     es, dx
+0x183ddc  les     bx, dword ptr es:byte_6E1C9+47h
+0x183de1  add     bx, ax
+0x183de3  mov     al, es:[bx+1]
+0x183de7  cbw
+0x183de8  shl     ax, 2
+0x183deb  mov     dx, 602Eh
+0x183dee  mov     bx, ax
+0x183df0  mov     es, dx
+0x183df2  push    word ptr es:[bx+1AD8h]
+0x183df7  push    word ptr es:[bx+1AD6h]
+0x183dfc  call    string_concatenate
+0x183e01  add     sp, 0Ch
+0x183e04  push    7894h
+0x183e07  push    0F32h
+0x183e0a  mov     ax, 6E1Eh
+0x183e0d  mov     es, ax
+0x183e0f  mov     ax, word ptr es:byte_6E1C9+17h
+0x183e13  mov     dx, 42h ; 'B'
+0x183e16  imul    dx
+0x183e18  mov     dx, 6E1Eh
+0x183e1b  mov     es, dx
+0x183e1d  mov     dx, word ptr es:byte_6E1C9+47h
+0x183e22  add     dx, ax
+0x183e24  inc     dx
+0x183e25  inc     dx
+0x183e26  push    word ptr es:byte_6E1C9+49h
+0x183e2b  push    dx
+0x183e2c  push    7894h
+0x183e2f  push    0F32h
+0x183e32  call    string_concatenate
+0x183e37  add     sp, 0Ch
+0x183e3a  push    7894h
+0x183e3d  push    0F32h
+0x183e40  mov     ax, 6E1Eh
+0x183e43  mov     es, ax
+0x183e45  push    word ptr es:loc_6E38C+1
+0x183e4a  push    word ptr es:loc_6E387+4
+0x183e4f  push    7894h
+0x183e52  push    0F32h
+0x183e55  call    string_concatenate
+0x183e5a  add     sp, 0Ch
+0x183e5d  mov     ax, 6E1Eh
+0x183e60  mov     es, ax
+0x183e62  mov     ax, word ptr es:byte_6E1C9+17h
+0x183e66  mov     dx, 42h ; 'B'
+0x183e69  imul    dx
+0x183e6b  mov     dx, 6E1Eh
+0x183e6e  mov     es, dx
+0x183e70  les     bx, dword ptr es:byte_6E1C9+47h
+0x183e75  add     bx, ax
+0x183e77  test    byte ptr es:[bx+26h], 0F0h
+0x183e7c  jz      short loc_183EDC
+0x183e7e  mov     ax, 6E1Eh
+0x183e81  mov     es, ax
+0x183e83  mov     ax, word ptr es:byte_6E1C9+17h
+0x183e87  mov     dx, 42h ; 'B'
+0x183e8a  imul    dx
+0x183e8c  mov     dx, 6E1Eh
+0x183e8f  mov     es, dx
+0x183e91  les     bx, dword ptr es:byte_6E1C9+47h
+0x183e96  add     bx, ax
+0x183e98  mov     al, es:[bx+26h]
+0x183e9c  cbw
+0x183e9d  and     ax, 0F0h
+0x183ea0  sar     ax, 5
+0x183ea3  mov     dx, 7894h
+0x183ea6  mov     es, dx
+0x183ea8  mov     es:word_79E80, ax
+0x183eac  push    7894h
+0x183eaf  push    0F32h
+0x183eb2  mov     ax, 7894h
+0x183eb5  mov     es, ax
+0x183eb7  mov     bx, es:word_79E80
+0x183ebc  shl     bx, 2
+0x183ebf  mov     ax, 6E1Eh
+0x183ec2  mov     es, ax
+0x183ec4  push    word ptr es:[bx+1ADh]
+0x183ec9  push    word ptr es:[bx+1ABh]
+0x183ece  push    7894h
+0x183ed1  push    0F32h
+0x183ed4  call    string_concatenate
+0x183ed9  add     sp, 0Ch
+0x183edc  push    7894h
+0x183edf  push    0F32h
+0x183ee2  mov     ax, 602Eh
+0x183ee5  mov     es, ax
+0x183ee7  push    word ptr es:aJ0+2; ".`\n"
+0x183eec  push    word ptr es:aJ0; "J0.`\n"
+0x183ef1  push    7894h
+0x183ef4  push    0F32h
+0x183ef7  call    string_concatenate
+0x183efc  add     sp, 0Ch
+0x183eff  push    7894h
+0x183f02  push    0F32h
+0x183f05  mov     ax, 602Eh
+0x183f08  mov     es, ax
+0x183f0a  push    word ptr es:aJ0+2; ".`\n"
+0x183f0f  push    word ptr es:aJ0; "J0.`\n"
+0x183f14  push    7894h
+0x183f17  push    0F32h
+0x183f1a  call    string_concatenate
+0x183f1f  add     sp, 0Ch
+0x183f22  mov     ax, 7894h
+0x183f25  mov     es, ax
+0x183f27  push    es:word_79D1E
+0x183f2c  push    7894h
+0x183f2f  push    0F32h
+0x183f32  call    sub_135C57
+0x183f37  add     sp, 6
+0x183f3a  mov     dx, 7894h
+0x183f3d  mov     es, dx
+0x183f3f  mov     es:word_79D1E, ax
+0x183f43  mov     ax, 6E1Eh
+0x183f46  mov     es, ax
+0x183f48  inc     word ptr es:byte_6E1C9+17h
+0x183f4d  mov     ax, 7894h
+0x183f50  mov     es, ax
+0x183f52  les     bx, es:dword_79E3A
+0x183f57  mov     ax, es:[bx+0A8Dh]
+0x183f5c  mov     dx, 6E1Eh
+0x183f5f  mov     es, dx
+0x183f61  cmp     ax, word ptr es:byte_6E1C9+17h
+                ; comparing with 0
+0x183f66  jbe     short loc_183F6B
+0x183f68  jmp     loc_183A98
+0x183f6b  call    sub_135DF4; Utility function (473B, 16 calls) - needs investigation
+0x183f70  xor     si, si
+0x183f72  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x183f75  call    undoc_11D941
+0x183f7a  call    undoc_12661D
+0x183f7f  push    1
+0x183f81  call    loc_69C25
+0x183f86  pop     cx
+0x183f87  call    sub_12805C
+0x183f8c  call    sub_12DB63
+0x183f91  mov     ax, 7894h
+0x183f94  mov     es, ax
+0x183f96  cmp     es:word_79B6C, 32h ; '2'
+0x183f9c  jz      short loc_183FA1
+0x183f9e  jmp     loc_184039
+0x183fa1  mov     ax, 7894h
+0x183fa4  mov     es, ax
+0x183fa6  mov     ax, es:input_scan_code_queue
+0x183faa  mov     [bp+var_16], ax
+0x183fad  mov     cx, 4
+0x183fb0  mov     bx, 31CDh
+0x183fb3  mov     ax, cs:[bx]
+0x183fb6  cmp     ax, [bp+var_16]
+0x183fb9  jz      short loc_183FC1
+0x183fbb  inc     bx
+0x183fbc  inc     bx
+0x183fbd  loop    loc_183FB3
+0x183fbf  jmp     short loc_184031
+0x183fc1  jmp     word ptr cs:[bx+8]
+0x183fc5  mov     ax, 7894h
+0x183fc8  mov     es, ax
+0x183fca  mov     es:current_view_index, 7
+0x183fd1  jmp     loc_184053
+0x183fd4  jmp     loc_1824A3; VIEW KEY HANDLER: Push view index 8, call view setup (likely padlock view)
+0x183fd7  call    loc_6CA42+1
+0x183fdc  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x183fdf  mov     ax, 4FC2h
+0x183fe2  mov     es, ax
+0x183fe4  push    es:word_13E012
+0x183fe9  call    sub_2C761; Overlay bridge trampoline (8B, 14 calls)
+0x183fee  pop     cx
+0x183fef  mov     ax, 7894h
+0x183ff2  mov     es, ax
+0x183ff4  les     bx, es:menu_state_ptr
+0x183ff9  dec     word ptr es:[bx]
+0x183ffc  mov     ax, 4FC2h
+0x183fff  mov     es, ax
+0x184001  push    es:word_13E012
+0x184006  call    far ptr menu_finalize_render
+0x18400b  pop     cx
+0x18400c  call    sub_11D274
+0x184011  mov     ax, 7894h
+0x184014  mov     es, ax
+0x184016  les     bx, es:menu_state_ptr
+0x18401b  inc     word ptr es:[bx]
+0x18401e  mov     ax, 4FC2h
+0x184021  mov     es, ax
+0x184023  push    es:word_13E012
+0x184028  call    far ptr menu_finalize_render
+0x18402d  pop     cx
+0x18402e  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x184031  call    menu_cursor_position_set
+0x184036  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x184039  mov     ax, 7894h
+0x18403c  mov     es, ax
+0x18403e  cmp     es:word_79B6C, 34h ; '4'
+0x184044  jz      short loc_184053
+0x184046  mov     es, ax
+0x184048  cmp     es:word_79B6C, 36h ; '6'
+0x18404e  jz      short loc_184053
+0x184050  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x184053  mov     ax, 7894h
+0x184056  mov     es, ax
+0x184058  mov     bx, es:current_view_index
+0x18405d  cmp     bx, 8; switch 9 cases
+                ; comparing with 8
+0x184060  jbe     short loc_184065
+0x184062  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x184065  shl     bx, 1
+0x184067  jmp     cs:jpt_184067[bx]; switch jump
+0x18406c  mov     ax, 7894h; jumptable 00184067 case 0
+0x18406f  mov     es, ax
+0x184071  cmp     es:word_79E80, 12Ch
+0x184078  jge     short loc_18407D
+0x18407a  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x18407d  mov     ax, 7894h
+0x184080  mov     es, ax
+0x184082  push    es:current_view_index
+0x184087  call    far ptr loc_69CBE
+0x18408c  pop     cx
+0x18408d  call    sub_12805C
+0x184092  jmp     short loc_1840C7
+0x184094  mov     ax, 7894h
+0x184097  mov     es, ax
+0x184099  cmp     es:word_79E32, 0
+                ; comparing with 0
+0x18409f  jle     short loc_1840A8
+0x1840a1  mov     es, ax
+0x1840a3  dec     es:word_79E32
+0x1840a8  call    far ptr loc_69EA9
+0x1840ad  mov     ax, 7894h
+0x1840b0  mov     es, ax
+0x1840b2  push    es:current_view_index
+0x1840b7  call    far ptr loc_69CBE
+0x1840bc  pop     cx
+0x1840bd  call    sub_12805C
+0x1840c2  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x1840c7  mov     ax, 7894h
+0x1840ca  mov     es, ax
+0x1840cc  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x1840d2  jnz     short loc_184094
+0x1840d4  jmp     short loc_18414A
+0x1840d6  mov     ax, 7894h; jumptable 00184067 case 6
+0x1840d9  mov     es, ax
+0x1840db  cmp     es:word_79E80, 12Ch
+0x1840e2  jge     short loc_1840E7
+0x1840e4  jmp     def_184067; jumptable 00184067 default case, cases 1-5
+0x1840e7  mov     ax, 7894h
+0x1840ea  mov     es, ax
+0x1840ec  push    es:current_view_index
+0x1840f1  call    far ptr loc_69CBE
+0x1840f6  pop     cx
+0x1840f7  call    sub_12805C
+0x1840fc  jmp     short loc_18413D
+0x1840fe  mov     ax, 7894h
+0x184101  mov     dx, 7894h
+0x184104  mov     es, dx
+0x184106  mov     dx, es:word_79D1E
+0x18410b  add     dx, 0FFF5h
+0x18410e  mov     es, ax
+0x184110  cmp     es:word_79E32, dx
+                ; comparing with 2
+0x184115  jge     short loc_18411E
+0x184117  mov     es, ax
+0x184119  inc     es:word_79E32
+0x18411e  call    far ptr loc_69EA9
+0x184123  mov     ax, 7894h
+0x184126  mov     es, ax
+0x184128  push    es:current_view_index
+0x18412d  call    far ptr loc_69CBE
+0x184132  pop     cx
+0x184133  call    sub_12805C
+0x184138  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x18413d  mov     ax, 7894h
+0x184140  mov     es, ax
+0x184142  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x184148  jnz     short loc_1840FE
+0x18414a  call    undoc_130B39
+0x18414f  jmp     short def_184067; jumptable 00184067 default case, cases 1-5
+0x184151  push    7; jumptable 00184067 case 7
+0x184153  call    far ptr loc_69CBE
+0x184158  pop     cx
+0x184159  call    sub_12805C
+0x18415e  call    menu_cursor_position_set
+0x184163  mov     si, 1
+0x184166  jmp     short def_184067; jumptable 00184067 default case, cases 1-5
+0x184168  jmp     loc_1824A3; jumptable 00184067 case 8
+0x18416b  or      si, si; jumptable 00184067 default case, cases 1-5
+0x18416d  jnz     short loc_184172
+0x18416f  jmp     loc_183F75
+0x184172  mov     ax, 7894h
+0x184175  mov     es, ax
+0x184177  mov     es:word_79E32, 0
+0x18417e  mov     ax, 7894h
+0x184181  mov     es, ax
+0x184183  cmp     es:word_79B56, 1
+                ; comparing with 1
+0x184189  jz      short loc_184199
+0x18418b  call    loc_6CB67+1
+0x184190  mov     dx, 602Eh
+0x184193  mov     es, dx
+0x184195  mov     es:word_14F8A9, ax
+0x184199  push    7894h
+0x18419c  push    0F32h
+0x18419f  mov     ax, 6E1Eh
+0x1841a2  mov     es, ax
+0x1841a4  push    es:word_6E767
+0x1841a9  push    es:word_6E765
+0x1841ae  call    string_copy_with_offset
+0x1841b3  add     sp, 8
+0x1841b6  push    7894h
+0x1841b9  push    0F32h
+0x1841bc  mov     ax, 602Eh
+0x1841bf  mov     es, ax
+0x1841c1  push    word ptr es:aJ0+2; ".`\n"
+0x1841c6  push    word ptr es:aJ0; "J0.`\n"
+0x1841cb  push    7894h
+0x1841ce  push    0F32h
+0x1841d1  call    string_concatenate
+0x1841d6  add     sp, 0Ch
+0x1841d9  mov     ax, 602Eh
+0x1841dc  mov     es, ax
+0x1841de  cmp     es:word_14F8A9, 0
+                ; comparing with 0
+0x1841e4  jnz     short loc_1841FD
+0x1841e6  push    7894h
+0x1841e9  push    0F32h
+0x1841ec  mov     ax, 6E1Eh
+0x1841ef  mov     es, ax
+0x1841f1  push    es:word_6E783
+0x1841f6  push    es:word_6E781
+0x1841fb  jmp     short loc_184212
+0x1841fd  push    7894h
+0x184200  push    0F32h
+0x184203  mov     ax, 6E1Eh
+0x184206  mov     es, ax
+0x184208  push    es:word_6E787
+0x18420d  push    es:word_6E785
+0x184212  push    7894h
+0x184215  push    0F32h
+0x184218  call    string_concatenate
+0x18421d  add     sp, 0Ch
+0x184220  push    7894h
+0x184223  push    0F32h
+0x184226  mov     ax, 602Eh
+0x184229  mov     es, ax
+0x18422b  push    word ptr es:aJ0+2; ".`\n"
+0x184230  push    word ptr es:aJ0; "J0.`\n"
+0x184235  push    7894h
+0x184238  push    0F32h
+0x18423b  call    string_concatenate
+0x184240  add     sp, 0Ch
+0x184243  push    0
+0x184245  push    7894h
+0x184248  push    0F32h
+0x18424b  call    sub_135C57
+0x184250  add     sp, 6
+0x184253  mov     dx, 7894h
+0x184256  mov     es, dx
+0x184258  mov     es:word_79D1E, ax
+0x18425c  mov     ax, 7894h
+0x18425f  mov     es, ax
+0x184261  mov     es:byte_79872, 0
+0x184267  mov     ax, 602Eh
+0x18426a  mov     es, ax
+0x18426c  cmp     es:word_14F8A9, 0
+                ; comparing with 0
+0x184272  jz      short loc_184290
+0x184274  push    7894h
+0x184277  push    0F32h
+0x18427a  mov     ax, 602Eh
+0x18427d  mov     es, ax
+0x18427f  push    es:word_151C15
+0x184284  mov     ax, 602Eh
+0x184287  mov     es, ax
+0x184289  push    es:word_14F8A9
+0x18428e  jmp     short loc_1842AC
+0x184290  mov     ax, 602Eh
+0x184293  mov     es, ax
+0x184295  cmp     es:word_14F8AB, 0
+                ; comparing with 0
+0x18429b  jz      short loc_1842D7
+0x18429d  push    7894h
+0x1842a0  push    0F32h
+0x1842a3  push    0
+0x1842a5  mov     es, ax
+0x1842a7  push    es:word_14F8AB
+0x1842ac  call    loc_6AD84
+0x1842b1  add     sp, 8
+0x1842b4  push    7894h
+0x1842b7  push    0F32h
+0x1842ba  mov     ax, 602Eh
+0x1842bd  mov     es, ax
+0x1842bf  push    word ptr es:aJ0+2; ".`\n"
+0x1842c4  push    word ptr es:aJ0; "J0.`\n"
+0x1842c9  push    7894h
+0x1842cc  push    0F32h
+0x1842cf  call    string_concatenate
+0x1842d4  add     sp, 0Ch
+0x1842d7  push    7894h
+0x1842da  push    0F32h
+0x1842dd  mov     ax, 602Eh
+0x1842e0  mov     es, ax
+0x1842e2  push    word ptr es:aJ0+2; ".`\n"
+0x1842e7  push    word ptr es:aJ0; "J0.`\n"
+0x1842ec  push    7894h
+0x1842ef  push    0F32h
+0x1842f2  call    string_concatenate
+0x1842f7  add     sp, 0Ch
+0x1842fa  push    7894h
+0x1842fd  push    0F32h
+0x184300  mov     ax, 6E1Eh
+0x184303  mov     es, ax
+0x184305  push    es:word_6E76B
+0x18430a  push    es:word_6E769
+0x18430f  push    7894h
+0x184312  push    0F32h
+0x184315  call    string_concatenate
+0x18431a  add     sp, 0Ch
+0x18431d  mov     ax, 7894h
+0x184320  mov     es, ax
+0x184322  push    es:word_79D1E
+0x184327  push    7894h
+0x18432a  push    0F32h
+0x18432d  call    sub_135C57
+0x184332  add     sp, 6
+0x184335  mov     dx, 7894h
+0x184338  mov     es, dx
+0x18433a  mov     es:word_79D1E, ax
+0x18433e  mov     ax, 7894h
+0x184341  mov     es, ax
+0x184343  mov     es:byte_79872, 0
+0x184349  mov     di, 1
+0x18434c  mov     [bp+var_2], 20h ; ' '
+0x184351  jmp     loc_184427
+0x184354  mov     ax, 6E1Eh
+0x184357  mov     es, ax
+0x184359  les     bx, dword ptr es:byte_6E1C9+4Fh
+0x18435e  add     bx, [bp+var_2]
+0x184361  cmp     byte ptr es:[bx], 0
+                ; comparing with 0
+0x184365  jnz     short loc_18436A
+0x184367  jmp     loc_184424
+0x18436a  xor     di, di
+0x18436c  mov     al, byte ptr [bp+var_2]
+0x18436f  push    ax
+0x184370  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x184375  pop     cx
+0x184376  mov     bx, 6E1Eh
+0x184379  mov     es, bx
+0x18437b  mov     word ptr es:byte_6E1C9+27h, dx
+0x184380  mov     word ptr es:byte_6E1C9+25h, ax
+0x184384  push    602Eh
+0x184387  push    1400h
+0x18438a  mov     ax, 6E1Eh
+0x18438d  mov     es, ax
+0x18438f  les     bx, dword ptr es:byte_6E1C9+4Fh
+0x184394  add     bx, [bp+var_2]
+0x184397  mov     al, es:[bx]
+0x18439a  mov     ah, 0
+0x18439c  push    ax
+0x18439d  call    int_to_string_converter
+0x1843a2  add     sp, 6
+0x1843a5  push    7894h
+0x1843a8  push    0F32h
+0x1843ab  push    ds
+0x1843ac  push    (offset asc_8477E - offset byte_7A320); " : " ...
+0x1843af  mov     ax, 6E1Eh
+0x1843b2  mov     es, ax
+0x1843b4  push    word ptr es:byte_6E1C9+27h
+0x1843b9  push    word ptr es:byte_6E1C9+25h
+0x1843be  call    string_concatenate
+0x1843c3  add     sp, 0Ch
+0x1843c6  push    7894h
+0x1843c9  push    0F32h
+0x1843cc  push    602Eh
+0x1843cf  push    1400h
+0x1843d2  push    7894h
+0x1843d5  push    0F32h
+0x1843d8  call    string_concatenate
+0x1843dd  add     sp, 0Ch
+0x1843e0  push    7894h
+0x1843e3  push    0F32h
+0x1843e6  mov     ax, 602Eh
+0x1843e9  mov     es, ax
+0x1843eb  push    word ptr es:aJ0+2; ".`\n"
+0x1843f0  push    word ptr es:aJ0; "J0.`\n"
+0x1843f5  push    7894h
+0x1843f8  push    0F32h
+0x1843fb  call    string_concatenate
+0x184400  add     sp, 0Ch
+0x184403  mov     ax, 7894h
+0x184406  mov     es, ax
+0x184408  push    es:word_79D1E
+0x18440d  push    7894h
+0x184410  push    0F32h
+0x184413  call    sub_135C57
+0x184418  add     sp, 6
+0x18441b  mov     dx, 7894h
+0x18441e  mov     es, dx
+0x184420  mov     es:word_79D1E, ax
+0x184424  inc     [bp+var_2]
+0x184427  cmp     [bp+var_2], 40h ; '@'
+0x18442b  jge     short loc_184430
+0x18442d  jmp     loc_184354
+0x184430  or      di, di
+0x184432  jz      short loc_184476
+0x184434  push    7894h
+0x184437  push    0F32h
+0x18443a  mov     ax, 602Eh
+0x18443d  mov     es, ax
+0x18443f  push    es:word_1516B9
+0x184444  push    es:word_1516B7
+0x184449  push    ds
+0x18444a  push    (offset aNone - offset byte_7A320); "NONE" ...
+0x18444d  call    string_concatenate
+0x184452  add     sp, 0Ch
+0x184455  mov     ax, 7894h
+0x184458  mov     es, ax
+0x18445a  push    es:word_79D1E
+0x18445f  push    7894h
+0x184462  push    0F32h
+0x184465  call    sub_135C57
+0x18446a  add     sp, 6
+0x18446d  mov     dx, 7894h
+0x184470  mov     es, dx
+0x184472  mov     es:word_79D1E, ax
+0x184476  mov     di, 1
+0x184479  push    7894h
+0x18447c  push    0F32h
+0x18447f  mov     ax, 6E1Eh
+0x184482  mov     es, ax
+0x184484  push    es:word_6E76F
+0x184489  push    es:word_6E76D
+0x18448e  mov     ax, 602Eh
+0x184491  mov     es, ax
+0x184493  push    word ptr es:aJ0+2; ".`\n"
+0x184498  push    word ptr es:aJ0; "J0.`\n"
+0x18449d  call    string_concatenate
+0x1844a2  add     sp, 0Ch
+0x1844a5  mov     ax, 7894h
+0x1844a8  mov     es, ax
+0x1844aa  push    es:word_79D1E
+0x1844af  push    7894h
+0x1844b2  push    0F32h
+0x1844b5  call    sub_135C57
+0x1844ba  add     sp, 6
+0x1844bd  mov     dx, 7894h
+0x1844c0  mov     es, dx
+0x1844c2  mov     es:word_79D1E, ax
+0x1844c6  mov     [bp+var_2], 0
+0x1844cb  jmp     loc_1845A1
+0x1844ce  mov     ax, 6E1Eh
+0x1844d1  mov     es, ax
+0x1844d3  les     bx, dword ptr es:byte_6E1C9+4Fh
+0x1844d8  add     bx, [bp+var_2]
+0x1844db  cmp     byte ptr es:[bx], 0
+                ; comparing with 0
+0x1844df  jnz     short loc_1844E4
+0x1844e1  jmp     loc_18459E
+0x1844e4  xor     di, di
+0x1844e6  mov     al, byte ptr [bp+var_2]
+0x1844e9  push    ax
+0x1844ea  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x1844ef  pop     cx
+0x1844f0  mov     bx, 6E1Eh
+0x1844f3  mov     es, bx
+0x1844f5  mov     word ptr es:byte_6E1C9+27h, dx
+0x1844fa  mov     word ptr es:byte_6E1C9+25h, ax
+0x1844fe  push    602Eh
+0x184501  push    1400h
+0x184504  mov     ax, 6E1Eh
+0x184507  mov     es, ax
+0x184509  les     bx, dword ptr es:byte_6E1C9+4Fh
+0x18450e  add     bx, [bp+var_2]
+0x184511  mov     al, es:[bx]
+0x184514  mov     ah, 0
+0x184516  push    ax
+0x184517  call    int_to_string_converter
+0x18451c  add     sp, 6
+0x18451f  push    7894h
+0x184522  push    0F32h
+0x184525  push    ds
+0x184526  push    (offset asc_84787 - offset byte_7A320); " : " ...
+0x184529  mov     ax, 6E1Eh
+0x18452c  mov     es, ax
+0x18452e  push    word ptr es:byte_6E1C9+27h
+0x184533  push    word ptr es:byte_6E1C9+25h
+0x184538  call    string_concatenate
+0x18453d  add     sp, 0Ch
+0x184540  push    7894h
+0x184543  push    0F32h
+0x184546  push    602Eh
+0x184549  push    1400h
+0x18454c  push    7894h
+0x18454f  push    0F32h
+0x184552  call    string_concatenate
+0x184557  add     sp, 0Ch
+0x18455a  push    7894h
+0x18455d  push    0F32h
+0x184560  mov     ax, 602Eh
+0x184563  mov     es, ax
+0x184565  push    word ptr es:aJ0+2; ".`\n"
+0x18456a  push    word ptr es:aJ0; "J0.`\n"
+0x18456f  push    7894h
+0x184572  push    0F32h
+0x184575  call    string_concatenate
+0x18457a  add     sp, 0Ch
+0x18457d  mov     ax, 7894h
+0x184580  mov     es, ax
+0x184582  push    es:word_79D1E
+0x184587  push    7894h
+0x18458a  push    0F32h
+0x18458d  call    sub_135C57
+0x184592  add     sp, 6
+0x184595  mov     dx, 7894h
+0x184598  mov     es, dx
+0x18459a  mov     es:word_79D1E, ax
+0x18459e  inc     [bp+var_2]
+0x1845a1  cmp     [bp+var_2], 20h ; ' '
+0x1845a5  jge     short loc_1845AA
+0x1845a7  jmp     loc_1844CE
+0x1845aa  or      di, di
+0x1845ac  jz      short loc_1845F0
+0x1845ae  push    7894h
+0x1845b1  push    0F32h
+0x1845b4  mov     ax, 602Eh
+0x1845b7  mov     es, ax
+0x1845b9  push    es:word_1516B9
+0x1845be  push    es:word_1516B7
+0x1845c3  push    ds
+0x1845c4  push    (offset aNone_0 - offset byte_7A320); "NONE" ...
+0x1845c7  call    string_concatenate
+0x1845cc  add     sp, 0Ch
+0x1845cf  mov     ax, 7894h
+0x1845d2  mov     es, ax
+0x1845d4  push    es:word_79D1E
+0x1845d9  push    7894h
+0x1845dc  push    0F32h
+0x1845df  call    sub_135C57
+0x1845e4  add     sp, 6
+0x1845e7  mov     dx, 7894h
+0x1845ea  mov     es, dx
+0x1845ec  mov     es:word_79D1E, ax
+0x1845f0  mov     di, 1
+0x1845f3  push    7894h
+0x1845f6  push    0F32h
+0x1845f9  mov     ax, 6E1Eh
+0x1845fc  mov     es, ax
+0x1845fe  push    es:word_6E773
+0x184603  push    es:word_6E771
+0x184608  mov     ax, 602Eh
+0x18460b  mov     es, ax
+0x18460d  push    word ptr es:aJ0+2; ".`\n"
+0x184612  push    word ptr es:aJ0; "J0.`\n"
+0x184617  call    string_concatenate
+0x18461c  add     sp, 0Ch
+0x18461f  mov     ax, 7894h
+0x184622  mov     es, ax
+0x184624  push    es:word_79D1E
+0x184629  push    7894h
+0x18462c  push    0F32h
+0x18462f  call    sub_135C57
+0x184634  add     sp, 6
+0x184637  mov     dx, 7894h
+0x18463a  mov     es, dx
+0x18463c  mov     es:word_79D1E, ax
+0x184640  mov     [bp+var_2], 20h ; ' '
+0x184645  jmp     loc_18471D
+0x184648  mov     ax, 6E1Eh
+0x18464b  mov     es, ax
+0x18464d  les     bx, dword ptr es:byte_6E1C9+93h
+0x184652  add     bx, [bp+var_2]
+0x184655  cmp     byte ptr es:[bx], 0
+                ; comparing with 0
+0x184659  jnz     short loc_18465E
+0x18465b  jmp     loc_18471A
+0x18465e  xor     di, di
+0x184660  mov     al, byte ptr [bp+var_2]
+0x184663  or      al, 40h
+0x184665  push    ax
+0x184666  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x18466b  pop     cx
+0x18466c  mov     bx, 6E1Eh
+0x18466f  mov     es, bx
+0x184671  mov     word ptr es:byte_6E1C9+27h, dx
+0x184676  mov     word ptr es:byte_6E1C9+25h, ax
+0x18467a  push    602Eh
+0x18467d  push    1400h
+0x184680  mov     ax, 6E1Eh
+0x184683  mov     es, ax
+0x184685  les     bx, dword ptr es:byte_6E1C9+93h
+0x18468a  add     bx, [bp+var_2]
+0x18468d  mov     al, es:[bx]
+0x184690  mov     ah, 0
+0x184692  push    ax
+0x184693  call    int_to_string_converter
+0x184698  add     sp, 6
+0x18469b  push    7894h
+0x18469e  push    0F32h
+0x1846a1  push    ds
+0x1846a2  push    (offset asc_84790 - offset byte_7A320); " : " ...
+0x1846a5  mov     ax, 6E1Eh
+0x1846a8  mov     es, ax
+0x1846aa  push    word ptr es:byte_6E1C9+27h
+0x1846af  push    word ptr es:byte_6E1C9+25h
+0x1846b4  call    string_concatenate
+0x1846b9  add     sp, 0Ch
+0x1846bc  push    7894h
+0x1846bf  push    0F32h
+0x1846c2  push    602Eh
+0x1846c5  push    1400h
+0x1846c8  push    7894h
+0x1846cb  push    0F32h
+0x1846ce  call    string_concatenate
+0x1846d3  add     sp, 0Ch
+0x1846d6  push    7894h
+0x1846d9  push    0F32h
+0x1846dc  mov     ax, 602Eh
+0x1846df  mov     es, ax
+0x1846e1  push    word ptr es:aJ0+2; ".`\n"
+0x1846e6  push    word ptr es:aJ0; "J0.`\n"
+0x1846eb  push    7894h
+0x1846ee  push    0F32h
+0x1846f1  call    string_concatenate
+0x1846f6  add     sp, 0Ch
+0x1846f9  mov     ax, 7894h
+0x1846fc  mov     es, ax
+0x1846fe  push    es:word_79D1E
+0x184703  push    7894h
+0x184706  push    0F32h
+0x184709  call    sub_135C57
+0x18470e  add     sp, 6
+0x184711  mov     dx, 7894h
+0x184714  mov     es, dx
+0x184716  mov     es:word_79D1E, ax
+0x18471a  inc     [bp+var_2]
+0x18471d  cmp     [bp+var_2], 40h ; '@'
+0x184721  jge     short loc_184726
+0x184723  jmp     loc_184648
+0x184726  or      di, di
+0x184728  jz      short loc_18476C
+0x18472a  push    7894h
+0x18472d  push    0F32h
+0x184730  mov     ax, 602Eh
+0x184733  mov     es, ax
+0x184735  push    es:word_1516B9
+0x18473a  push    es:word_1516B7
+0x18473f  push    ds
+0x184740  push    (offset aNone_1 - offset byte_7A320); "NONE" ...
+0x184743  call    string_concatenate
+0x184748  add     sp, 0Ch
+0x18474b  mov     ax, 7894h
+0x18474e  mov     es, ax
+0x184750  push    es:word_79D1E
+0x184755  push    7894h
+0x184758  push    0F32h
+0x18475b  call    sub_135C57
+0x184760  add     sp, 6
+0x184763  mov     dx, 7894h
+0x184766  mov     es, dx
+0x184768  mov     es:word_79D1E, ax
+0x18476c  mov     di, 1
+0x18476f  push    7894h
+0x184772  push    0F32h
+0x184775  mov     ax, 6E1Eh
+0x184778  mov     es, ax
+0x18477a  push    es:word_6E777
+0x18477f  push    es:word_6E775
+0x184784  mov     ax, 602Eh
+0x184787  mov     es, ax
+0x184789  push    word ptr es:aJ0+2; ".`\n"
+0x18478e  push    word ptr es:aJ0; "J0.`\n"
+0x184793  call    string_concatenate
+0x184798  add     sp, 0Ch
+0x18479b  mov     ax, 7894h
+0x18479e  mov     es, ax
+0x1847a0  push    es:word_79D1E
+0x1847a5  push    7894h
+0x1847a8  push    0F32h
+0x1847ab  call    sub_135C57
+0x1847b0  add     sp, 6
+0x1847b3  mov     dx, 7894h
+0x1847b6  mov     es, dx
+0x1847b8  mov     es:word_79D1E, ax
+0x1847bc  mov     [bp+var_2], 0
+0x1847c1  jmp     loc_184899
+0x1847c4  mov     ax, 6E1Eh
+0x1847c7  mov     es, ax
+0x1847c9  les     bx, dword ptr es:byte_6E1C9+93h
+0x1847ce  add     bx, [bp+var_2]
+0x1847d1  cmp     byte ptr es:[bx], 0
+                ; comparing with 0
+0x1847d5  jnz     short loc_1847DA
+0x1847d7  jmp     loc_184896
+0x1847da  xor     di, di
+0x1847dc  mov     al, byte ptr [bp+var_2]
+0x1847df  or      al, 40h
+0x1847e1  push    ax
+0x1847e2  call    sub_127E5A; Calculate indexed pointer from table (116B, 16 calls)
+0x1847e7  pop     cx
+0x1847e8  mov     bx, 6E1Eh
+0x1847eb  mov     es, bx
+0x1847ed  mov     word ptr es:byte_6E1C9+27h, dx
+0x1847f2  mov     word ptr es:byte_6E1C9+25h, ax
+0x1847f6  push    602Eh
+0x1847f9  push    1400h
+0x1847fc  mov     ax, 6E1Eh
+0x1847ff  mov     es, ax
+0x184801  les     bx, dword ptr es:byte_6E1C9+93h
+0x184806  add     bx, [bp+var_2]
+0x184809  mov     al, es:[bx]
+0x18480c  mov     ah, 0
+0x18480e  push    ax
+0x18480f  call    int_to_string_converter
+0x184814  add     sp, 6
+0x184817  push    7894h
+0x18481a  push    0F32h
+0x18481d  push    ds
+0x18481e  push    (offset asc_84799 - offset byte_7A320); " : " ...
+0x184821  mov     ax, 6E1Eh
+0x184824  mov     es, ax
+0x184826  push    word ptr es:byte_6E1C9+27h
+0x18482b  push    word ptr es:byte_6E1C9+25h
+0x184830  call    string_concatenate
+0x184835  add     sp, 0Ch
+0x184838  push    7894h
+0x18483b  push    0F32h
+0x18483e  push    602Eh
+0x184841  push    1400h
+0x184844  push    7894h
+0x184847  push    0F32h
+0x18484a  call    string_concatenate
+0x18484f  add     sp, 0Ch
+0x184852  push    7894h
+0x184855  push    0F32h
+0x184858  mov     ax, 602Eh
+0x18485b  mov     es, ax
+0x18485d  push    word ptr es:aJ0+2; ".`\n"
+0x184862  push    word ptr es:aJ0; "J0.`\n"
+0x184867  push    7894h
+0x18486a  push    0F32h
+0x18486d  call    string_concatenate
+0x184872  add     sp, 0Ch
+0x184875  mov     ax, 7894h
+0x184878  mov     es, ax
+0x18487a  push    es:word_79D1E
+0x18487f  push    7894h
+0x184882  push    0F32h
+0x184885  call    sub_135C57
+0x18488a  add     sp, 6
+0x18488d  mov     dx, 7894h
+0x184890  mov     es, dx
+0x184892  mov     es:word_79D1E, ax
+0x184896  inc     [bp+var_2]
+0x184899  cmp     [bp+var_2], 20h ; ' '
+0x18489d  jge     short loc_1848A2
+0x18489f  jmp     loc_1847C4
+0x1848a2  or      di, di
+0x1848a4  jz      short loc_1848E8
+0x1848a6  push    7894h
+0x1848a9  push    0F32h
+0x1848ac  mov     ax, 602Eh
+0x1848af  mov     es, ax
+0x1848b1  push    es:word_1516B9
+0x1848b6  push    es:word_1516B7
+0x1848bb  push    ds
+0x1848bc  push    (offset aNone_2 - offset byte_7A320); "NONE" ...
+0x1848bf  call    string_concatenate
+0x1848c4  add     sp, 0Ch
+0x1848c7  mov     ax, 7894h
+0x1848ca  mov     es, ax
+0x1848cc  push    es:word_79D1E
+0x1848d1  push    7894h
+0x1848d4  push    0F32h
+0x1848d7  call    sub_135C57
+0x1848dc  add     sp, 6
+0x1848df  mov     dx, 7894h
+0x1848e2  mov     es, dx
+0x1848e4  mov     es:word_79D1E, ax
+0x1848e8  push    7894h
+0x1848eb  push    0F32h
+0x1848ee  mov     ax, 6E1Eh
+0x1848f1  mov     es, ax
+0x1848f3  push    es:word_6E77B
+0x1848f8  push    es:word_6E779
+0x1848fd  mov     ax, 602Eh
+0x184900  mov     es, ax
+0x184902  push    word ptr es:aJ0+2; ".`\n"
+0x184907  push    word ptr es:aJ0; "J0.`\n"
+0x18490c  call    string_concatenate
+0x184911  add     sp, 0Ch
+0x184914  push    7894h
+0x184917  push    0F32h
+0x18491a  mov     ax, 602Eh
+0x18491d  mov     es, ax
+0x18491f  push    word ptr es:aJ0+2; ".`\n"
+0x184924  push    word ptr es:aJ0; "J0.`\n"
+0x184929  push    7894h
+0x18492c  push    0F32h
+0x18492f  call    string_concatenate
+0x184934  add     sp, 0Ch
+0x184937  mov     ax, 7894h
+0x18493a  mov     es, ax
+0x18493c  push    es:word_79D1E
+0x184941  push    7894h
+0x184944  push    0F32h
+0x184947  call    sub_135C57
+0x18494c  add     sp, 6
+0x18494f  mov     dx, 7894h
+0x184952  mov     es, dx
+0x184954  mov     es:word_79D1E, ax
+0x184958  mov     [bp+var_2], 0
+0x18495d  jmp     loc_184AAF
+0x184960  mov     ax, [bp+var_2]
+0x184963  shl     ax, 1
+0x184965  mov     dx, 6E1Eh
+0x184968  mov     es, dx
+0x18496a  les     bx, dword ptr es:loc_6E2A1+3
+0x18496f  add     bx, ax
+0x184971  cmp     word ptr es:[bx], 0FFFFh
+0x184975  jnz     short loc_18497A
+0x184977  jmp     loc_184AAC
+0x18497a  push    7894h
+0x18497d  push    0F32h
+0x184980  mov     ax, 602Eh
+0x184983  mov     es, ax
+0x184985  push    word ptr es:a2_0+1; ".` "
+0x18498a  push    word ptr es:byte_151860
+0x18498f  mov     ax, [bp+var_2]
+0x184992  shl     ax, 1
+0x184994  mov     es, dx
+0x184996  les     bx, dword ptr es:loc_6E2A1+3
+0x18499b  add     bx, ax
+0x18499d  mov     ax, es:[bx]
+0x1849a0  mov     dx, 42h ; 'B'
+0x1849a3  imul    dx
+0x1849a5  mov     dx, 6E1Eh
+0x1849a8  mov     es, dx
+0x1849aa  les     bx, dword ptr es:byte_6E1C9+47h
+0x1849af  add     bx, ax
+0x1849b1  mov     al, es:[bx+1]
+0x1849b5  cbw
+0x1849b6  shl     ax, 2
+0x1849b9  mov     dx, 602Eh
+0x1849bc  mov     bx, ax
+0x1849be  mov     es, dx
+0x1849c0  push    word ptr es:[bx+1AD8h]
+0x1849c5  push    word ptr es:[bx+1AD6h]
+0x1849ca  call    string_concatenate
+0x1849cf  add     sp, 0Ch
+0x1849d2  push    7894h
+0x1849d5  push    0F32h
+0x1849d8  mov     ax, [bp+var_2]
+0x1849db  shl     ax, 1
+0x1849dd  mov     dx, 6E1Eh
+0x1849e0  mov     es, dx
+0x1849e2  les     bx, dword ptr es:loc_6E2A1+3
+0x1849e7  add     bx, ax
+0x1849e9  mov     ax, es:[bx]
+0x1849ec  mov     dx, 42h ; 'B'
+0x1849ef  imul    dx
+0x1849f1  mov     dx, 6E1Eh
+0x1849f4  mov     es, dx
+0x1849f6  mov     dx, word ptr es:byte_6E1C9+47h
+0x1849fb  add     dx, ax
+0x1849fd  inc     dx
+0x1849fe  inc     dx
+0x1849ff  push    word ptr es:byte_6E1C9+49h
+0x184a04  push    dx
+0x184a05  push    7894h
+0x184a08  push    0F32h
+0x184a0b  call    string_concatenate
+0x184a10  add     sp, 0Ch
+0x184a13  push    7894h
+0x184a16  push    0F32h
+0x184a19  mov     ax, 6E1Eh
+0x184a1c  mov     es, ax
+0x184a1e  push    es:word_6E83F
+0x184a23  push    es:word_6E83D
+0x184a28  push    7894h
+0x184a2b  push    0F32h
+0x184a2e  call    string_concatenate
+0x184a33  add     sp, 0Ch
+0x184a36  push    7894h
+0x184a39  push    0F32h
+0x184a3c  mov     ax, [bp+var_2]
+0x184a3f  shl     ax, 1
+0x184a41  mov     dx, 6E1Eh
+0x184a44  mov     es, dx
+0x184a46  les     bx, dword ptr es:loc_6E2A1+3
+0x184a4b  add     bx, ax
+0x184a4d  mov     ax, es:[bx]
+0x184a50  mov     dx, 42h ; 'B'
+0x184a53  imul    dx
+0x184a55  mov     dx, 6E1Eh
+0x184a58  mov     es, dx
+0x184a5a  les     bx, dword ptr es:byte_6E1C9+47h
+0x184a5f  add     bx, ax
+0x184a61  mov     al, es:[bx+26h]
+0x184a65  cbw
+0x184a66  and     ax, 0Fh
+0x184a69  shl     ax, 2
+0x184a6c  mov     dx, 602Eh
+0x184a6f  mov     bx, ax
+0x184a71  mov     es, dx
+0x184a73  push    word ptr es:[bx+1B9Bh]
+0x184a78  push    word ptr es:[bx+1B99h]
+0x184a7d  push    7894h
+0x184a80  push    0F32h
+0x184a83  call    string_concatenate
+0x184a88  add     sp, 0Ch
+0x184a8b  mov     ax, 7894h
+0x184a8e  mov     es, ax
+0x184a90  push    es:word_79D1E
+0x184a95  push    7894h
+0x184a98  push    0F32h
+0x184a9b  call    sub_135C57
+0x184aa0  add     sp, 6
+0x184aa3  mov     dx, 7894h
+0x184aa6  mov     es, dx
+0x184aa8  mov     es:word_79D1E, ax
+0x184aac  inc     [bp+var_2]
+0x184aaf  cmp     [bp+var_2], 8
+                ; comparing with 8
+0x184ab3  jge     short loc_184AB8
+0x184ab5  jmp     loc_184960
+0x184ab8  mov     ax, 4FC2h
+0x184abb  mov     es, ax
+0x184abd  mov     es:word_13E006, 0
+0x184ac4  mov     ax, 4FC2h
+0x184ac7  mov     es, ax
+0x184ac9  mov     es:word_13E008, 0
+0x184ad0  call    sub_13504F
+0x184ad5  call    undoc_12661D
+0x184ada  xor     si, si
+0x184adc  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184adf  call    undoc_11D941
+0x184ae4  call    undoc_12661D
+0x184ae9  push    1
+0x184aeb  call    loc_69C25
+0x184af0  pop     cx
+0x184af1  call    sub_12805C
+0x184af6  call    sub_12DB63
+0x184afb  mov     ax, 7894h
+0x184afe  mov     es, ax
+0x184b00  cmp     es:word_79B6C, 32h ; '2'
+0x184b06  jz      short loc_184B0B
+0x184b08  jmp     loc_184B90
+0x184b0b  mov     ax, 7894h
+0x184b0e  mov     es, ax
+0x184b10  mov     ax, es:input_scan_code_queue
+0x184b14  cmp     ax, 1
+                ; comparing with 1
+0x184b17  jz      short loc_184B33
+0x184b19  cmp     ax, 3
+                ; comparing with 3
+0x184b1c  jz      short loc_184B25
+0x184b1e  cmp     ax, 0FFh
+0x184b21  jz      short loc_184B36
+0x184b23  jmp     short loc_184B88
+0x184b25  mov     ax, 7894h
+0x184b28  mov     es, ax
+0x184b2a  mov     es:current_view_index, 7
+0x184b31  jmp     short loc_184BAA
+0x184b33  jmp     loc_1824A3; VIEW KEY HANDLER: Push view index 8, call view setup (likely padlock view)
+0x184b36  mov     ax, 4FC2h
+0x184b39  mov     es, ax
+0x184b3b  push    es:word_13E012
+0x184b40  call    sub_2C761; Overlay bridge trampoline (8B, 14 calls)
+0x184b45  pop     cx
+0x184b46  mov     ax, 7894h
+0x184b49  mov     es, ax
+0x184b4b  les     bx, es:menu_state_ptr
+0x184b50  dec     word ptr es:[bx]
+0x184b53  mov     ax, 4FC2h
+0x184b56  mov     es, ax
+0x184b58  push    es:word_13E012
+0x184b5d  call    far ptr menu_finalize_render
+0x184b62  pop     cx
+0x184b63  call    sub_11D274
+0x184b68  mov     ax, 7894h
+0x184b6b  mov     es, ax
+0x184b6d  les     bx, es:menu_state_ptr
+0x184b72  inc     word ptr es:[bx]
+0x184b75  mov     ax, 4FC2h
+0x184b78  mov     es, ax
+0x184b7a  push    es:word_13E012
+0x184b7f  call    far ptr menu_finalize_render
+0x184b84  pop     cx
+0x184b85  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184b88  call    menu_cursor_position_set
+0x184b8d  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184b90  mov     ax, 7894h
+0x184b93  mov     es, ax
+0x184b95  cmp     es:word_79B6C, 34h ; '4'
+0x184b9b  jz      short loc_184BAA
+0x184b9d  mov     es, ax
+0x184b9f  cmp     es:word_79B6C, 36h ; '6'
+0x184ba5  jz      short loc_184BAA
+0x184ba7  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184baa  mov     ax, 7894h
+0x184bad  mov     es, ax
+0x184baf  mov     bx, es:current_view_index
+0x184bb4  cmp     bx, 8; switch 9 cases
+                ; comparing with 8
+0x184bb7  jbe     short loc_184BBC
+0x184bb9  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184bbc  shl     bx, 1
+0x184bbe  jmp     cs:jpt_184BBE[bx]; switch jump
+0x184bc3  mov     ax, 7894h; jumptable 00184BBE case 0
+0x184bc6  mov     es, ax
+0x184bc8  cmp     es:word_79E80, 12Ch
+0x184bcf  jge     short loc_184BD4
+0x184bd1  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184bd4  mov     ax, 7894h
+0x184bd7  mov     es, ax
+0x184bd9  push    es:current_view_index
+0x184bde  call    far ptr loc_69E0E+1
+0x184be3  pop     cx
+0x184be4  call    sub_12805C
+0x184be9  jmp     short loc_184C1E
+0x184beb  mov     ax, 7894h
+0x184bee  mov     es, ax
+0x184bf0  cmp     es:word_79E32, 0
+                ; comparing with 0
+0x184bf6  jle     short loc_184BFF
+0x184bf8  mov     es, ax
+0x184bfa  dec     es:word_79E32
+0x184bff  call    far ptr loc_69EA9
+0x184c04  mov     ax, 7894h
+0x184c07  mov     es, ax
+0x184c09  push    es:current_view_index
+0x184c0e  call    far ptr loc_69E0E+1
+0x184c13  pop     cx
+0x184c14  call    sub_12805C
+0x184c19  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x184c1e  mov     ax, 7894h
+0x184c21  mov     es, ax
+0x184c23  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x184c29  jnz     short loc_184BEB
+0x184c2b  jmp     short loc_184CA1
+0x184c2d  mov     ax, 7894h; jumptable 00184BBE case 6
+0x184c30  mov     es, ax
+0x184c32  cmp     es:word_79E80, 12Ch
+0x184c39  jge     short loc_184C3E
+0x184c3b  jmp     def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184c3e  mov     ax, 7894h
+0x184c41  mov     es, ax
+0x184c43  push    es:current_view_index
+0x184c48  call    far ptr loc_69E0E+1
+0x184c4d  pop     cx
+0x184c4e  call    sub_12805C
+0x184c53  jmp     short loc_184C94
+0x184c55  mov     ax, 7894h
+0x184c58  mov     dx, 7894h
+0x184c5b  mov     es, dx
+0x184c5d  mov     dx, es:word_79D1E
+0x184c62  add     dx, 0FFF4h
+0x184c65  mov     es, ax
+0x184c67  cmp     es:word_79E32, dx
+                ; comparing with 2
+0x184c6c  jge     short loc_184C75
+0x184c6e  mov     es, ax
+0x184c70  inc     es:word_79E32
+0x184c75  call    far ptr loc_69EA9
+0x184c7a  mov     ax, 7894h
+0x184c7d  mov     es, ax
+0x184c7f  push    es:current_view_index
+0x184c84  call    far ptr loc_69E0E+1
+0x184c89  pop     cx
+0x184c8a  call    sub_12805C
+0x184c8f  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x184c94  mov     ax, 7894h
+0x184c97  mov     es, ax
+0x184c99  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x184c9f  jnz     short loc_184C55
+0x184ca1  call    undoc_130B39
+0x184ca6  jmp     short def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184ca8  push    7; jumptable 00184BBE case 7
+0x184caa  call    far ptr loc_69CBE
+0x184caf  pop     cx
+0x184cb0  call    sub_12805C
+0x184cb5  call    menu_cursor_position_set
+0x184cba  mov     si, 1
+0x184cbd  jmp     short def_184BBE; jumptable 00184BBE default case, cases 1-5
+0x184cbf  jmp     loc_1824A3; jumptable 00184BBE case 8
+0x184cc2  or      si, si; jumptable 00184BBE default case, cases 1-5
+0x184cc4  jnz     short loc_184CC9
+0x184cc6  jmp     loc_184ADF
+0x184cc9  call    ui_string_formatter_interactive
+0x184cce  mov     ax, 7894h
+0x184cd1  mov     es, ax
+0x184cd3  mov     es:word_79B74, 8
+0x184cda  mov     ax, 7894h
+0x184cdd  mov     es, ax
+0x184cdf  mov     es:word_79BD6, 0FFFFh
+0x184ce6  mov     ax, 7894h
+0x184ce9  mov     es, ax
+0x184ceb  mov     es:word_79B5A, 2
+0x184cf2  mov     ax, 7894h
+0x184cf5  mov     es, ax
+0x184cf7  mov     es:word_79E32, 0
+0x184cfe  mov     ax, 7894h
+0x184d01  mov     es, ax
+0x184d03  mov     es:word_79D1E, 0
+0x184d0a  mov     ax, 7894h
+0x184d0d  mov     es, ax
+0x184d0f  mov     es:word_79B60, 0
+0x184d16  mov     ax, 7894h
+0x184d19  mov     es, ax
+0x184d1b  mov     es:word_79E86, 1
+0x184d22  mov     ax, 4FC2h
+0x184d25  mov     es, ax
+0x184d27  mov     es:word_13E006, 0
+0x184d2e  mov     ax, 4FC2h
+0x184d31  mov     es, ax
+0x184d33  mov     es:word_13E008, 0
+0x184d3a  mov     ax, 7894h
+0x184d3d  mov     es, ax
+0x184d3f  mov     es:word_79B5E, 0
+0x184d46  call    sub_13504F
+0x184d4b  mov     ax, 602Eh
+0x184d4e  mov     es, ax
+0x184d50  test    es:word_14F8BE, 20h
+0x184d57  jnz     short loc_184D5C
+0x184d59  jmp     loc_184E02
+0x184d5c  call    undoc_11D20D
+0x184d61  call    sub_12805C
+0x184d66  call    far ptr sub_2C725
+0x184d6b  push    7894h
+0x184d6e  push    0F32h
+0x184d71  mov     ax, 602Eh
+0x184d74  mov     es, ax
+0x184d76  push    word ptr es:aMap+1; ".`.MAP"
+0x184d7b  push    word ptr es:byte_151349
+0x184d80  mov     ax, 602Eh
+0x184d83  mov     es, ax
+0x184d85  push    word ptr es:aOccupy+1; ".`OCCUPY"
+0x184d8a  push    word ptr es:byte_151274
+0x184d8f  call    string_concatenate
+0x184d94  add     sp, 0Ch
+0x184d97  call    mouse_gate_far_entry
+0x184d9c  push    7894h
+0x184d9f  push    0F32h
+0x184da2  push    0
+0x184da4  push    0
+0x184da6  push    4
+0x184da8  call    op_dispatch_far_entry
+0x184dad  add     sp, 0Ah
+0x184db0  mov     dx, 6E1Eh
+0x184db3  mov     es, dx
+0x184db5  mov     word ptr es:byte_6E1C9+4Bh, ax
+0x184db9  cmp     ax, 0FFFFh
+0x184dbc  jz      short loc_184E07
+0x184dbe  mov     ax, 7894h
+0x184dc1  mov     es, ax
+0x184dc3  push    word ptr es:dword_79D92+2
+0x184dc8  push    word ptr es:dword_79D92
+0x184dcd  push    0BB84h
+0x184dd0  mov     ax, 6E1Eh
+0x184dd3  mov     es, ax
+0x184dd5  push    word ptr es:byte_6E1C9+4Bh
+0x184dda  push    0Ch
+0x184ddc  call    op_dispatch_far_entry
+0x184de1  add     sp, 0Ah
+0x184de4  push    6E1Eh
+0x184de7  push    34h ; '4'
+0x184dea  push    0
+0x184dec  mov     ax, 6E1Eh
+0x184def  mov     es, ax
+0x184df1  push    word ptr es:byte_6E1C9+4Bh
+0x184df6  push    8
+0x184df8  call    op_dispatch_far_entry
+0x184dfd  add     sp, 0Ah
+0x184e00  jmp     short loc_184E07
+0x184e02  call    far ptr tail_bridge_to_ui_menu_frame_enter_b
+0x184e07  call    ui_text_render_setup
+0x184e0c  push    7894h
+0x184e0f  push    0F32h
+0x184e12  mov     ax, 6E1Eh
+0x184e15  mov     es, ax
+0x184e17  push    word ptr es:loc_6E33B+2
+0x184e1c  push    word ptr es:loc_6E33B
+0x184e21  call    string_copy_with_offset
+0x184e26  add     sp, 8
+0x184e29  push    7894h
+0x184e2c  push    0F32h
+0x184e2f  mov     ax, 602Eh
+0x184e32  mov     es, ax
+0x184e34  push    word ptr es:aJ0+2; ".`\n"
+0x184e39  push    word ptr es:aJ0; "J0.`\n"
+0x184e3e  push    7894h
+0x184e41  push    0F32h
+0x184e44  call    string_concatenate
+0x184e49  add     sp, 0Ch
+0x184e4c  push    7894h
+0x184e4f  push    0F32h
+0x184e52  mov     ax, 602Eh
+0x184e55  mov     es, ax
+0x184e57  push    word ptr es:aJ0+2; ".`\n"
+0x184e5c  push    word ptr es:aJ0; "J0.`\n"
+0x184e61  push    7894h
+0x184e64  push    0F32h
+0x184e67  call    string_concatenate
+0x184e6c  add     sp, 0Ch
+0x184e6f  push    7894h
+0x184e72  push    0F32h
+0x184e75  mov     ax, 6E1Eh
+0x184e78  mov     es, ax
+0x184e7a  push    word ptr es:loc_6E340+1
+0x184e7f  push    word ptr es:loc_6E33B+4
+0x184e84  push    7894h
+0x184e87  push    0F32h
+0x184e8a  call    string_concatenate
+0x184e8f  add     sp, 0Ch
+0x184e92  push    0
+0x184e94  call    loc_6A173+3
+0x184e99  pop     cx
+0x184e9a  mov     dx, 6E1Eh
+0x184e9d  mov     es, dx
+0x184e9f  mov     word ptr es:byte_6E1C9+17h, ax
+0x184ea3  push    602Eh
+0x184ea6  push    1400h
+0x184ea9  mov     ax, 6E1Eh
+0x184eac  mov     es, ax
+0x184eae  push    word ptr es:byte_6E1C9+17h
+0x184eb3  call    int_to_string_converter
+0x184eb8  add     sp, 6
+0x184ebb  push    7894h
+0x184ebe  push    0F32h
+0x184ec1  push    602Eh
+0x184ec4  push    1400h
+0x184ec7  push    7894h
+0x184eca  push    0F32h
+0x184ecd  call    string_concatenate
+0x184ed2  add     sp, 0Ch
+0x184ed5  push    7894h
+0x184ed8  push    0F32h
+0x184edb  mov     ax, 6E1Eh
+0x184ede  mov     es, ax
+0x184ee0  push    word ptr es:loc_6E346+3
+0x184ee5  push    word ptr es:loc_6E346+1
+0x184eea  push    7894h
+0x184eed  push    0F32h
+0x184ef0  call    string_concatenate
+0x184ef5  add     sp, 0Ch
+0x184ef8  push    7894h
+0x184efb  push    0F32h
+0x184efe  mov     ax, 602Eh
+0x184f01  mov     es, ax
+0x184f03  push    word ptr es:aJ0+2; ".`\n"
+0x184f08  push    word ptr es:aJ0; "J0.`\n"
+0x184f0d  push    7894h
+0x184f10  push    0F32h
+0x184f13  call    string_concatenate
+0x184f18  add     sp, 0Ch
+0x184f1b  push    7894h
+0x184f1e  push    0F32h
+0x184f21  mov     ax, 602Eh
+0x184f24  mov     es, ax
+0x184f26  push    word ptr es:aJ0+2; ".`\n"
+0x184f2b  push    word ptr es:aJ0; "J0.`\n"
+0x184f30  push    7894h
+0x184f33  push    0F32h
+0x184f36  call    string_concatenate
+0x184f3b  add     sp, 0Ch
+0x184f3e  push    7894h
+0x184f41  push    0F32h
+0x184f44  mov     ax, 6E1Eh
+0x184f47  mov     es, ax
+0x184f49  push    word ptr es:undoc_6E343+2
+0x184f4e  push    word ptr es:undoc_6E343
+0x184f53  push    7894h
+0x184f56  push    0F32h
+0x184f59  call    string_concatenate
+0x184f5e  add     sp, 0Ch
+0x184f61  push    1
+0x184f63  call    loc_6A173+3
+0x184f68  pop     cx
+0x184f69  mov     dx, 6E1Eh
+0x184f6c  mov     es, dx
+0x184f6e  mov     word ptr es:byte_6E1C9+17h, ax
+0x184f72  push    602Eh
+0x184f75  push    1400h
+0x184f78  mov     ax, 6E1Eh
+0x184f7b  mov     es, ax
+0x184f7d  push    word ptr es:byte_6E1C9+17h
+0x184f82  call    int_to_string_converter
+0x184f87  add     sp, 6
+0x184f8a  push    7894h
+0x184f8d  push    0F32h
+0x184f90  push    602Eh
+0x184f93  push    1400h
+0x184f96  push    7894h
+0x184f99  push    0F32h
+0x184f9c  call    string_concatenate
+0x184fa1  add     sp, 0Ch
+0x184fa4  push    7894h
+0x184fa7  push    0F32h
+0x184faa  mov     ax, 6E1Eh
+0x184fad  mov     es, ax
+0x184faf  push    word ptr es:loc_6E346+3
+0x184fb4  push    word ptr es:loc_6E346+1
+0x184fb9  push    7894h
+0x184fbc  push    0F32h
+0x184fbf  call    string_concatenate
+0x184fc4  add     sp, 0Ch
+0x184fc7  push    7894h
+0x184fca  push    0F32h
+0x184fcd  mov     ax, 602Eh
+0x184fd0  mov     es, ax
+0x184fd2  push    word ptr es:aJ0+2; ".`\n"
+0x184fd7  push    word ptr es:aJ0; "J0.`\n"
+0x184fdc  push    7894h
+0x184fdf  push    0F32h
+0x184fe2  call    string_concatenate
+0x184fe7  add     sp, 0Ch
+0x184fea  push    0
+0x184fec  push    7894h
+0x184fef  push    0F32h
+0x184ff2  call    sub_135C57
+0x184ff7  add     sp, 6
+0x184ffa  mov     dx, 7894h
+0x184ffd  mov     es, dx
+0x184fff  mov     es:word_79D1E, ax
+0x185003  mov     ax, 4FC2h
+0x185006  mov     es, ax
+0x185008  mov     es:word_13E006, 0
+0x18500f  mov     ax, 4FC2h
+0x185012  mov     es, ax
+0x185014  mov     es:word_13E008, 0
+0x18501b  call    sub_13504F
+0x185020  call    undoc_12661D
+0x185025  call    ui_text_render_setup
+0x18502a  push    9
+0x18502c  call    far ptr sub_2C351
+0x185031  pop     cx
+0x185032  push    1
+0x185034  call    far ptr loc_69D4C
+0x185039  pop     cx
+0x18503a  call    sub_12805C
+0x18503f  xor     si, si
+0x185041  call    undoc_11D941
+0x185046  jmp     loc_1851CC
+0x185049  call    sub_12805C
+0x18504e  call    sub_12DB63
+0x185053  mov     ax, 7894h
+0x185056  mov     es, ax
+0x185058  cmp     es:word_79B6C, 32h ; '2'
+0x18505e  jz      short loc_185063
+0x185060  jmp     loc_1850E9
+0x185063  mov     ax, 7894h
+0x185066  mov     es, ax
+0x185068  mov     ax, es:input_scan_code_queue
+0x18506c  cmp     ax, 1
+                ; comparing with 1
+0x18506f  jz      short loc_18507D
+0x185071  cmp     ax, 3
+                ; comparing with 3
+0x185074  jz      short loc_18507D
+0x185076  cmp     ax, 0FFh
+0x185079  jz      short loc_185082
+0x18507b  jmp     short loc_1850E6
+0x18507d  push    2
+0x18507f  jmp     loc_1851A0
+0x185082  mov     ax, 4FC2h
+0x185085  mov     es, ax
+0x185087  push    es:word_13E012
+0x18508c  call    sub_2C761; Overlay bridge trampoline (8B, 14 calls)
+0x185091  pop     cx
+0x185092  mov     ax, 7894h
+0x185095  mov     es, ax
+0x185097  les     bx, es:menu_state_ptr
+0x18509c  dec     word ptr es:[bx]
+0x18509f  mov     ax, 4FC2h
+0x1850a2  mov     es, ax
+0x1850a4  push    es:word_13E012
+0x1850a9  call    far ptr menu_finalize_render
+0x1850ae  pop     cx
+0x1850af  call    sub_11D274
+0x1850b4  mov     ax, 7894h
+0x1850b7  mov     es, ax
+0x1850b9  les     bx, es:menu_state_ptr
+0x1850be  inc     word ptr es:[bx]
+0x1850c1  mov     ax, 4FC2h
+0x1850c4  mov     es, ax
+0x1850c6  push    es:word_13E012
+0x1850cb  call    far ptr menu_finalize_render
+0x1850d0  pop     cx
+0x1850d1  call    undoc_12661D
+0x1850d6  push    1
+0x1850d8  call    far ptr loc_69D4C
+0x1850dd  pop     cx
+0x1850de  call    sub_12805C
+0x1850e3  jmp     loc_1851CC
+0x1850e6  jmp     def_185117; jumptable 00185117 default case, cases 1-5
+0x1850e9  mov     ax, 7894h
+0x1850ec  mov     es, ax
+0x1850ee  cmp     es:word_79B6C, 34h ; '4'
+0x1850f4  jz      short loc_185103
+0x1850f6  mov     es, ax
+0x1850f8  cmp     es:word_79B6C, 36h ; '6'
+0x1850fe  jz      short loc_185103
+0x185100  jmp     loc_1851CC
+0x185103  mov     ax, 7894h
+0x185106  mov     es, ax
+0x185108  mov     bx, es:current_view_index
+0x18510d  cmp     bx, 9; switch 10 cases
+                ; comparing with 9
+0x185110  jbe     short loc_185115
+0x185112  jmp     def_185117; jumptable 00185117 default case, cases 1-5
+0x185115  shl     bx, 1
+0x185117  jmp     cs:jpt_185117[bx]; switch jump
+0x18511c  mov     ax, 7894h; jumptable 00185117 cases 0,6
+0x18511f  mov     es, ax
+0x185121  cmp     es:word_79E80, 12Ch
+0x185128  jge     short loc_18512D
+0x18512a  jmp     loc_1851CC
+0x18512d  mov     ax, 7894h
+0x185130  mov     es, ax
+0x185132  push    es:current_view_index
+0x185137  call    far ptr loc_69CBE
+0x18513c  pop     cx
+0x18513d  call    sub_12805C
+0x185142  jmp     short loc_185149
+0x185144  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+0x185149  mov     ax, 7894h
+0x18514c  mov     es, ax
+0x18514e  cmp     es:input_flag_pending_1, 0
+                ; comparing with 0
+0x185154  jnz     short loc_185144
+0x185156  call    undoc_130B39
+0x18515b  jmp     short loc_1851CC
+0x18515d  mov     ax, 7894h; jumptable 00185117 case 7
+0x185160  mov     es, ax
+0x185162  push    es:current_view_index
+0x185167  call    far ptr loc_69E0E+1
+0x18516c  pop     cx
+0x18516d  call    undoc_133535
+0x185172  call    sub_135DF4; Utility function (473B, 16 calls) - needs investigation
+0x185177  call    campaign_save_temp_file_write
+0x18517c  call    mission_temp_file_load
+0x185181  call    sub_12805C
+0x185186  call    menu_cursor_position_set
+0x18518b  push    8
+0x18518d  call    far ptr sub_2C351
+0x185192  pop     cx
+0x185193  jmp     loc_18210C
+0x185196  mov     ax, 7894h; jumptable 00185117 case 8
+0x185199  mov     es, ax
+0x18519b  push    es:current_view_index
+0x1851a0  call    far ptr loc_69E0E+1
+0x1851a5  jmp     loc_1824AA
+0x1851a8  mov     ax, 7894h; jumptable 00185117 case 9
+0x1851ab  mov     es, ax
+0x1851ad  push    es:current_view_index
+0x1851b2  call    far ptr loc_69E0E+1
+0x1851b7  pop     cx
+0x1851b8  call    sub_12805C
+0x1851bd  call    menu_cursor_position_set
+0x1851c2  mov     si, 1
+0x1851c5  jmp     short loc_1851CC
+0x1851c7  call    menu_cursor_position_set; jumptable 00185117 default case, cases 1-5
+0x1851cc  or      si, si
+0x1851ce  jnz     short loc_1851D3
+0x1851d0  jmp     loc_185049
+0x1851d3  mov     ax, 7894h
+0x1851d6  mov     es, ax
+0x1851d8  mov     es:word_79B60, 28h ; '('
+0x1851df  mov     ax, 7894h
+0x1851e2  mov     es, ax
+0x1851e4  mov     es:word_79E86, 1
+0x1851eb  mov     ax, 7894h
+0x1851ee  mov     es, ax
+0x1851f0  mov     es:word_79B74, 2
+0x1851f7  mov     ax, 7894h
+0x1851fa  mov     es, ax
+0x1851fc  mov     es:word_79BD6, 0FFFFh
+0x185203  mov     ax, 7894h
+0x185206  mov     es, ax
+0x185208  mov     es:word_79B5A, 2
+0x18520f  mov     ax, 7894h
+0x185212  mov     es, ax
+0x185214  mov     es:word_79E32, 0
+0x18521b  mov     ax, 7894h
+0x18521e  mov     es, ax
+0x185220  mov     es:word_79D1E, 0
+0x185227  call    far ptr sub_2C3E7
+0x18522c  push    3
+0x18522e  call    loc_6A9A2
+0x185233  pop     cx
+0x185234  push    0
+0x185236  call    far ptr sub_2C351
+0x18523b  pop     cx
+0x18523c  call    far ptr sub_2C3E7
+0x185241  pop     di
+0x185242  pop     si
+0x185243  leave
+0x185244  retf
