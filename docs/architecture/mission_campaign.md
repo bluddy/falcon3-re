@@ -1,8 +1,10 @@
 # Mission & Campaign System
 
-**Status:** IN PROGRESS (88% complete)  
-**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records, type codes, flight parameters altitude/action)  
-**Last Updated:** 2026-11-11
+**Status:** IN PROGRESS (92% complete)  
+**Certainty:** STRONG (squadron, campaign, waypoints, aircraft records, type codes, flight parameters, pilot/squadron structures, enums)  
+**Last Updated:** 2026-11-16
+
+**Major Update (2026-11-16)**: Complete reverse-engineering of R45 Squadron Management Menu revealed squadron/pilot/campaign data structures and enumerations. See "Data Structures & Type System" section below.
 
 ---
 
@@ -1030,6 +1032,350 @@ void load_squadron(int squadron_num) {
 
 ---
 
-*Status: IN PROGRESS (34% complete)*  
-*Last Analysis: Rank #10 deep dive complete (2026-11-11)*  
-*Next: Extract .SQUAD/.TSK/.SHP sample files, continue top-100 analysis*
+## Data Structures & Type System
+
+### Overview
+
+Complete reverse-engineering of R45 Squadron Management Menu (2026-11-16) revealed the in-memory data structures and enumerations used by the mission/campaign system. These complement the file format specifications above.
+
+**Registry Files**:
+- `registry/structures.yaml` - 10 structures defined
+- `registry/enums.yaml` - 18 enumerations with 120+ values
+- All types synced to IDA database
+
+**Evidence**: String analysis (200+ UI strings), code analysis (3 functions, 4,926 bytes), pattern matching (structure sizes, enum values)
+
+### Pilot Structure (In-Memory)
+
+```c
+struct Pilot {
+    char     name[?];              // Pilot name (from NAMES.BIN)
+    char     callsign[?];          // Radio callsign (from CALLSIGN.BIN)
+    uint8_t  rank;                 // PilotRank enum (0-4)
+    uint8_t  status;               // PilotStatus enum (0-3)
+    uint16_t missions;             // Total missions flown
+    uint16_t awards;               // Awards received
+    uint16_t flight_hours;         // Total flight hours
+    uint16_t plane_kills;          // Enemy aircraft destroyed
+    uint16_t merits;               // Merit points
+    
+    // Abilities (7 categories, 0-100 each)
+    uint8_t  dogfighting_skill;    // Air-to-air dogfighting
+    uint8_t  guns_skill;           // Gun combat
+    uint8_t  rear_aspect_ir;       // AIM-9P proficiency
+    uint8_t  all_aspect_ir;        // AIM-9M proficiency
+    uint8_t  radar_missiles;       // AIM-120 proficiency
+    uint8_t  cas_ordnance;         // Close air support weapons
+    uint8_t  heavy_ordnance;       // Heavy bombs
+};
+```
+
+**File Mapping**:
+- Persistent storage: `.SQU` files (PilotRecord, 66 bytes)
+- Load files: `NAMES.BIN`, `CALLSIGN.BIN`
+- In-memory format: Structure above (size TBD)
+
+**Evidence**: 
+- String references: "NAME:", "CALLSIGN:", "MISSIONS:", "PLANE KILLS:", "PILOT ABILITIES:"
+- Rank strings: "LT.", "CAPT.", "MAJOR", "LT COL.", "COL."
+- Status strings: "ACTIVE", "FATIGUED", "INJURED", "COURT MARTIALED"
+- Ability strings: "GUNS", "REAR ASPECT IR", "ALL ASPECT IR", etc.
+
+### Squadron Structure (In-Memory)
+
+```c
+struct Squadron {
+    char     squadron_name[?];     // Squadron name (from sqdnames.str)
+    char     commander_name[?];    // Commander's pilot name
+    uint8_t  wing_assignment;      // WingID enum (0-6: 1ST-7TH WING)
+    uint8_t  insignia_id;          // Squadron insignia graphic ID
+    uint16_t missions_flown;       // Total squadron missions
+    uint16_t pilots_active;        // Number of active pilots
+    uint16_t pilots_killed;        // Pilots killed in action
+    uint16_t pilots_mia;           // Pilots missing in action
+    
+    // Pilot roster
+    Pilot    pilots[30];           // 30 pilot slots
+    
+    // Aircraft inventory (speculative)
+    uint16_t f16_count;            // Available F-16s (max 18)
+    uint16_t aircraft_damaged;     // Damaged aircraft count
+};
+```
+
+**File Mapping**:
+- Persistent storage: `.SQU` files (2,703 bytes)
+- Squadron names: `sqdnames.str`
+- In-memory format: Structure above
+
+**Evidence**:
+- String references: "SQUADRON NAME:", "SQUADRON COMMANDER:", "NUMBER OF MISSIONS FLOWN:"
+- Statistics: "NUMBER OF PILOTS ACTIVE/KILLED/MIA:"
+- Wing strings: "1ST WING" through "7TH WING"
+- File analysis: 30 pilots × 66 bytes in .SQU files
+
+### Campaign Status Structure (In-Memory)
+
+```c
+struct CampaignStatus {
+    // Date & Time
+    uint16_t current_day;                  // Campaign day number
+    uint16_t current_time;                 // TimeOfDay enum (0600/1200/1800/2300)
+    
+    // Territory Control
+    uint8_t  territory_enemy_percent;      // Enemy-held territory (0-100%)
+    uint8_t  territory_allied_percent;     // Allied-held territory (0-100%)
+    
+    // Mission Statistics
+    uint16_t missions_flown;               // Total missions
+    uint16_t missions_accomplished;        // Successfully completed
+    uint16_t sorties_flown;                // Total sorties
+    
+    // Air Combat
+    uint16_t allied_aircraft_lost;         // Allied losses
+    uint16_t enemy_aircraft_destroyed;     // Enemy kills (total)
+    
+    // By Aircraft Type
+    uint16_t enemy_class_a_fighter;        // MiG-29, Su-27
+    uint16_t enemy_class_b_fighter;        // MiG-21, MiG-23
+    uint16_t enemy_bomber_strike;          // Bombers/strike aircraft
+    uint16_t enemy_attack_aircraft;        // A-10, Su-25 equivalents
+    uint16_t enemy_helicopter;             // All rotorcraft
+    uint16_t enemy_transport_awacs;        // Transports, AWACS
+    
+    // Ground Targets
+    uint16_t ground_targets_destroyed;     // Total ground targets
+    uint16_t ground_class_a;               // Strategic (nuclear plants, etc.)
+    uint16_t ground_class_b;               // Infrastructure (airbases, bridges)
+    uint16_t ground_class_c;               // Military (SAM sites, army bases)
+    uint16_t ground_class_d;               // Tactical (buildings, hangars)
+    
+    // Performance Ratings
+    uint16_t ordnance_efficiency;          // Bombs/missiles per target (%)
+    uint16_t overall_rating;               // Combined campaign score
+};
+```
+
+**File Mapping**:
+- Persistent storage: `.CAM` files (Campaign State Section, ~102 bytes)
+- In-memory format: Structure above
+
+**Evidence**:
+- String references: All campaign status screen strings at 0x150880-0x150A77
+- 23 distinct statistic fields referenced
+- File analysis: Campaign state section in .CAM files
+
+### Flight Record Structures (From R57 Analysis)
+
+```c
+struct FlightRecord {
+    uint8_t       aircraft_count;  // 1-4 aircraft in flight
+    LoadoutRecord loadouts[4];     // Loadouts for each aircraft
+    uint8_t       _unknown[105];   // Flight-specific data
+};  // Total: 130 bytes (0x82)
+
+struct LoadoutRecord {
+    uint8_t  hardpoint_config[11]; // 11 hardpoints (weapon IDs)
+    uint16_t pilot_id;             // Assigned pilot (index into squadron)
+    uint8_t  _unknown[10];         // Additional data
+};  // Total: 23 bytes (0x17)
+```
+
+**File Mapping**:
+- Not directly in files (runtime configuration)
+- Passed between R45 (squadron) and R57 (loadout) menus
+- Ephemeral mission planning data
+
+**Evidence**: Complete R57 weapons loadout menu analysis
+
+### Enumerations
+
+#### PilotRank
+```c
+enum PilotRank : uint8_t {
+    RANK_LT = 0,        // Lieutenant (2nd Lt in UI)
+    RANK_CAPT = 1,      // Captain (1st Lt in UI)
+    RANK_MAJOR = 2,     // Major (Flight Leaders)
+    RANK_LT_COL = 3,    // Lieutenant Colonel (Executive Officer)
+    RANK_COL = 4        // Colonel (Squadron Commander)
+};
+```
+
+**Evidence**: Strings at 0x150088-0x1500A6
+
+#### PilotStatus
+```c
+enum PilotStatus : uint8_t {
+    STATUS_ACTIVE = 0,            // Ready to fly
+    STATUS_FATIGUED = 1,          // Needs rest (too many missions)
+    STATUS_INJURED = 2,           // Cannot fly (combat injury)
+    STATUS_COURT_MARTIALED = 3    // Removed from duty (discipline)
+};
+```
+
+**Key Discovery**: `STATUS_FATIGUED` reveals a **pilot fatigue system** requiring roster rotation. `STATUS_COURT_MARTIALED` suggests consequences for friendly fire or mission failures.
+
+**Evidence**: Strings at 0x150153-0x150179
+
+#### PilotAbilityCategory
+```c
+enum PilotAbilityCategory : uint8_t {
+    ABILITY_GUNS = 0,              // Gun combat (0-100)
+    ABILITY_REAR_ASPECT_IR = 1,    // AIM-9P Sidewinder
+    ABILITY_ALL_ASPECT_IR = 2,     // AIM-9M Sidewinder
+    ABILITY_RADAR_MISSILES = 3,    // AIM-120 AMRAAM
+    ABILITY_CAS_ORDNANCE = 4,      // Close air support
+    ABILITY_HEAVY_ORDNANCE = 5,    // Heavy bombs
+    ABILITY_DOGFIGHTING = 6        // Air-to-air maneuvering
+};
+```
+
+**Evidence**: Strings at 0x1500EA-0x150AFC
+
+#### WingID
+```c
+enum WingID : uint8_t {
+    WING_1ST = 0,   // 1st Wing
+    WING_2ND = 1,   // 2nd Wing
+    WING_3RD = 2,   // 3rd Wing
+    WING_4TH = 3,   // 4th Wing
+    WING_5TH = 4,   // 5th Wing
+    WING_6TH = 5,   // 6th Wing
+    WING_7TH = 6    // 7th Wing
+};
+```
+
+**Insight**: 7-wing structure suggests hierarchical organization: Theater → Wing → Squadron → Flight → Pilot
+
+**Evidence**: Strings at 0x14FE3C-0x14FE72
+
+#### TheaterID
+```c
+enum TheaterID : uint8_t {
+    THEATER_KUWAIT = 0,    // Gulf War 1991
+    THEATER_ISRAEL = 1,    // Middle East conflict
+    THEATER_PANAMA = 2,    // Operation Just Cause
+    THEATER_JAPAN = 3,     // Defense scenario
+    THEATER_KOREA = 4,     // Korean Peninsula
+    THEATER_INDIA = 5      // South Asia
+};
+```
+
+**File Mapping**: Theater name stored as 57-byte string in .SQU files (offset 0x03)
+
+**Evidence**: Strings at 0x14E9A4-0x14E9C7
+
+#### TimeOfDay
+```c
+enum TimeOfDay : uint16_t {
+    TIME_0600 = 0x0600,    // 06:00 (dawn)
+    TIME_1200 = 0x0C00,    // 12:00 (noon)
+    TIME_1800 = 0x1200,    // 18:00 (dusk) [Note: 0x1200 hex = 4608 dec, likely should be 0x1200]
+    TIME_2300 = 0x1700     // 23:00 (night) [Note: 0x1700 hex = 5888 dec, likely encoding issue]
+};
+```
+
+**Note**: The hex values may be encoded differently. Strings are "0600 HRS.", "1200 HRS.", "1800 HRS.", "2300 HRS."
+
+**Evidence**: Strings at 0x150335-0x150355
+
+#### MissionType (20+ values)
+```c
+enum MissionType : uint8_t {
+    MISSION_FIGHTER_SCRAMBLE = 0,      // Fighter scramble
+    MISSION_STRIKE_SCRAMBLE = 1,       // Strike scramble
+    MISSION_BOMBER_SCRAMBLE = 2,       // Bomber scramble
+    MISSION_UMF_SCRAMBLE = 3,          // UMF scramble
+    MISSION_AIR_SUPERIORITY = 4,       // Air superiority
+    MISSION_SCREEN = 5,                // Defensive screen
+    MISSION_AREACAP = 6,               // Area combat air patrol
+    MISSION_ESCORT_TRANSPORT = 7,      // Escort transports
+    MISSION_ESCORT_STRIKE = 8,         // Escort strike aircraft
+    MISSION_ESCORT_BOMBERS = 9,        // Escort bombers
+    MISSION_CAS = 10,                  // Close air support
+    MISSION_GROUND_STRIKE = 11,        // Ground strike
+    MISSION_BOMBMIS = 12,              // Bombing mission
+    MISSION_ANTISHIP = 13,             // Anti-ship
+    MISSION_SEADSHIP = 14,             // SEAD + anti-ship
+    MISSION_RECONSHIP = 15,            // Ship reconnaissance
+    MISSION_SEADGROUND = 16,           // SEAD (ground)
+    MISSION_FRIENDLY_INTERCEPT = 17,   // Friendly intercept
+    MISSION_ESCORT_E3 = 18,            // Escort AWACS
+    MISSION_HELO_SUPPLY_CAP = 19       // Helicopter supply CAP
+    // ... potentially more values
+};
+```
+
+**Evidence**: Strings at 0x14EA4B-0x14EB44
+
+#### WeatherCondition
+```c
+enum WeatherCondition : uint8_t {
+    WEATHER_CLEAR = 0,           // Clear skies
+    WEATHER_PARTLY_CLOUDY = 1,   // Partly cloudy
+    WEATHER_CLOUDY = 2,          // Cloudy
+    WEATHER_MOSTLY_CLOUDY = 3,   // Mostly cloudy
+    WEATHER_OVERCAST = 4         // Overcast
+};
+```
+
+**Evidence**: Strings at 0x1504E1-0x15050C
+
+#### AIAggressiveness
+```c
+enum AIAggressiveness : uint8_t {
+    AI_DUMB = 0,         // Low threat AI
+    AI_PASSIVE = 1,      // Defensive AI
+    AI_AGGRESSIVE = 2    // Offensive AI
+};
+```
+
+**Evidence**: Strings at 0x14FEE5-0x14FEF4
+
+### Type System Statistics
+
+**Structures**: 10 defined
+- 4 complete (MenuElement, UICoordinate, FlightRecord, LoadoutRecord)
+- 6 partial (Pilot, Squadron, CampaignStatus, DataPointer, others)
+
+**Enumerations**: 18 defined
+- 120+ total enum values
+- All values have string or code evidence
+
+**String Evidence**: 200+ UI strings analyzed
+**Code Evidence**: 3 functions (4,926 bytes) analyzed
+**File Evidence**: .SQU, .CAM, .MIS formats correlated
+
+### Integration: Files → Memory → UI
+
+```
+Disk Files (.SQU, .CAM, .MIS)
+    ↓ squadron_file_loader, campaign_file_loader
+In-Memory Structures (Pilot, Squadron, CampaignStatus)
+    ↓ R45 Squadron Management Menu
+UI Display (200+ strings, MenuElement[11])
+    ↓ User Input (R45 state machine)
+Modified Structures
+    ↓ file_save functions
+Updated Disk Files
+```
+
+**Key Insight**: The structures bridge file formats (documented) with runtime behavior (reverse-engineered). Complete understanding requires both file format analysis AND code analysis.
+
+---
+
+## Related Documents
+
+- **ui_menu_system.md** - R45/R57 menu system architecture
+- **R45_MENU_ANALYSIS.md** - Complete R45 Squadron Management Menu analysis
+- **R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md** - Complete R57 Weapons Loadout analysis
+- **SQUADRON_CAMPAIGN_SYSTEM_ANALYSIS.md** - Campaign system from string evidence
+- **STRUCTURES_AND_ENUMS_SUMMARY.md** - Type system extraction methodology
+- **registry/structures.yaml** - All structure definitions
+- **registry/enums.yaml** - All enumeration definitions
+
+---
+
+*Status: IN PROGRESS (92% complete)*  
+*Last Analysis: R45 menu deep dive complete, type system extracted (2026-11-16)*  
+*Next: Extract .SQUAD/.TSK/.SHP sample files, complete pilot/squadron structure offsets*

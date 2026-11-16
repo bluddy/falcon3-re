@@ -1,0 +1,433 @@
+---
+# Falcon 3.0 Data Structures Registry
+# Synced with IDA database
+#
+# Format:
+#   name: structure_name
+#   size: total size in bytes
+#   fields:
+#     - offset: hex offset from base
+#       name: field_name
+#       type: c_type (uint8_t, uint16_t, uint32_t, etc.)
+#       description: what this field does
+#       evidence: where we found this (code address, pattern, etc.)
+
+# ============================================================================
+# UI / MENU STRUCTURES
+# ============================================================================
+
+- name: MenuElement
+  size: 28  # 0x1C bytes
+  description: |
+    Menu element structure used by R45 squadron management menu.
+    Array of 11 elements (0x0B) initialized in position_calculator.
+    Base address: 0x4FC2:0x600
+  evidence:
+    - address: 0x156599
+      pattern: "mov dx, 1Ch; imul dx; loop to 0Bh"
+    - address: 0x1565C9
+      pattern: "cmp di, 0Bh; jl loop"
+  fields:
+    - offset: 0x604
+      name: data_ptr_low
+      type: uint16_t
+      description: Low word of far pointer to element data
+      evidence: "mov word ptr es:[bx+604h], 0"
+      
+    - offset: 0x606
+      name: data_ptr_high
+      type: uint16_t
+      description: High word of far pointer to element data (segment)
+      evidence: "mov word ptr es:[bx+606h], 0"
+      
+    - offset: 0x608
+      name: state_or_type
+      type: uint16_t
+      description: Element state or type (values 0, 3, 10 observed)
+      evidence: "mov word ptr es:[bx+608h], 3"
+
+# Structure appears to have more fields, but only 3 are currently identified
+
+- name: UICoordinate
+  size: 8  # Estimated from access patterns
+  description: |
+    UI coordinate structure containing position data.
+    Multiple instances referenced via far pointers (dword_79E3A, dword_79E2C, etc.)
+  evidence:
+    - address: 0x15621E
+      pattern: "les bx, es:dword_79E2C; push word ptr es:[bx+2]; push word ptr es:[bx]"
+  fields:
+    - offset: 0x0
+      name: x_or_low
+      type: uint16_t
+      description: X coordinate or low word
+      evidence: "push word ptr es:[bx]"
+      
+    - offset: 0x2
+      name: y_or_high
+      type: uint16_t
+      description: Y coordinate or high word
+      evidence: "push word ptr es:[bx+2]"
+      
+    - offset: 0x4
+      name: width_or_offset
+      type: uint16_t
+      description: Width or offset value
+      evidence: "add ax, es:[bx+4]"
+      
+    - offset: 0x6
+      name: height_or_offset2
+      type: uint16_t
+      description: Height or second offset value
+      evidence: "add ax, es:[bx+6]"
+
+- name: DataPointer
+  size: 8  # Approximate
+  description: |
+    Generic data pointer structure with sentinel/validity check.
+    Used throughout menus.
+  evidence:
+    - address: 0x156232
+      pattern: "cmp word ptr es:[bx+1], 0FFFFh"
+  fields:
+    - offset: 0x0
+      name: data_byte
+      type: uint8_t
+      description: Data or index byte
+      evidence: "cmp byte ptr es:[bx], 0FFh"
+      
+    - offset: 0x1
+      name: validity_flag
+      type: uint16_t
+      description: Validity flag (0xFFFF = invalid/end marker)
+      evidence: "cmp word ptr es:[bx+1], 0FFFFh"
+
+# ============================================================================
+# PILOT STRUCTURES  
+# ============================================================================
+
+- name: Pilot
+  size: null  # Unknown total size
+  description: |
+    Pilot record structure.
+    Stored in NAMES.BIN and CALLSIGN.BIN databases.
+    Contains pilot stats, status, abilities.
+  evidence:
+    - string_refs: "NAME:", "CALLSIGN:", "MISSIONS:", "PLANE KILLS:"
+  fields:
+    - offset: null
+      name: name
+      type: char[]
+      description: Pilot name string
+      evidence: String "NAME:" at 0x150033
+      
+    - offset: null
+      name: callsign
+      type: char[]
+      description: Pilot callsign string
+      evidence: String "CALLSIGN:" at 0x150AD1
+      
+    - offset: null
+      name: rank
+      type: PilotRank  # enum
+      description: Officer rank (LT, CAPT, MAJOR, LT COL, COL)
+      evidence: Rank strings at 0x150088-0x1500A6
+      
+    - offset: null
+      name: status
+      type: PilotStatus  # enum
+      description: Current pilot status
+      evidence: Status strings at 0x150153-0x150179
+      
+    - offset: null
+      name: missions
+      type: uint16_t
+      description: Number of missions flown
+      evidence: String "MISSIONS:" at 0x150049
+      
+    - offset: null
+      name: awards
+      type: uint16_t
+      description: Number of awards received
+      evidence: String "AWARDS:" at 0x150053
+      
+    - offset: null
+      name: flight_hours
+      type: uint16_t
+      description: Total flight hours
+      evidence: String "FLIGHT HOURS:" at 0x15005B
+      
+    - offset: null
+      name: plane_kills
+      type: uint16_t
+      description: Number of aircraft shot down
+      evidence: String "PLANE KILLS:" at 0x150069
+      
+    - offset: null
+      name: merits
+      type: uint16_t
+      description: Merit points or medals
+      evidence: String "MERITS:" at 0x150041
+      
+    - offset: null
+      name: dogfighting_skill
+      type: uint8_t
+      description: Dogfighting ability rating
+      evidence: String "-DOGFIGHTING:" at 0x150AFC
+
+# ============================================================================
+# SQUADRON STRUCTURES
+# ============================================================================
+
+- name: Squadron
+  size: null  # Unknown
+  description: |
+    Squadron record structure.
+    Squadron names in sqdnames.str file.
+  evidence:
+    - string_refs: "SQUADRON NAME:", "SQUADRON COMMANDER:", "NUMBER OF MISSIONS FLOWN:"
+  fields:
+    - offset: null
+      name: squadron_name
+      type: char[]
+      description: Squadron name string
+      evidence: String "SQUADRON NAME:" at 0x150C7B
+      
+    - offset: null
+      name: commander_name
+      type: char[]
+      description: Name of squadron commander
+      evidence: String "SQUADRON COMMANDER:" at 0x150C9D
+      
+    - offset: null
+      name: wing_assignment
+      type: WingID  # enum
+      description: Which wing (1ST through 7TH)
+      evidence: Wing strings at 0x14FE3C-0x14FE72
+      
+    - offset: null
+      name: insignia_id
+      type: uint8_t
+      description: Selected squadron insignia graphic ID
+      evidence: String "SELECT INSIGNIA" at 0x151947
+      
+    - offset: null
+      name: missions_flown
+      type: uint16_t
+      description: Total squadron missions
+      evidence: String "NUMBER OF MISSIONS FLOWN:" at 0x150CB1
+      
+    - offset: null
+      name: pilots_active
+      type: uint16_t
+      description: Number of active pilots
+      evidence: String "NUMBER OF PILOTS ACTIVE:" at 0x150DD7
+      
+    - offset: null
+      name: pilots_killed
+      type: uint16_t
+      description: Number of pilots KIA
+      evidence: String "NUMBER OF PILOTS KILLED:" at 0x150DF1
+      
+    - offset: null
+      name: pilots_mia
+      type: uint16_t
+      description: Number of pilots MIA
+      evidence: String "NUMBER OF PILOTS MIA:" at 0x150E0B
+
+# ============================================================================
+# CAMPAIGN STRUCTURES
+# ============================================================================
+
+- name: CampaignStatus
+  size: null  # Unknown
+  description: |
+    Campaign progress and statistics structure.
+  evidence:
+    - string_refs: "CURRENT DATE:", "MISSIONS ACCOMPLISHED:", "AIRCRAFT SHOT DOWN:"
+  fields:
+    - offset: null
+      name: current_day
+      type: uint16_t
+      description: Current campaign day number
+      evidence: String "CURRENT DATE: DAY" at 0x150881
+      
+    - offset: null
+      name: current_time
+      type: uint16_t
+      description: Current time (0600, 1200, 1800, 2300)
+      evidence: String "CURRENT TIME:" at 0x150894
+      
+    - offset: null
+      name: territory_enemy_percent
+      type: uint8_t
+      description: Percentage of territory held by enemy
+      evidence: String " PERCENT OCCUPIED BY ENEMY" at 0x1508B9
+      
+    - offset: null
+      name: territory_allied_percent
+      type: uint8_t
+      description: Percentage of territory held by allies
+      evidence: String " PERCENT OCCUPIED BY ALLIES" at 0x1508D4
+      
+    - offset: null
+      name: missions_flown
+      type: uint16_t
+      description: Total missions flown
+      evidence: String "MISSIONS FLOWN:" at 0x150902
+      
+    - offset: null
+      name: missions_accomplished
+      type: uint16_t
+      description: Missions successfully completed
+      evidence: String "MISSIONS ACCOMPLISHED:" at 0x150913
+      
+    - offset: null
+      name: sorties_flown
+      type: uint16_t
+      description: Total sorties flown
+      evidence: String "SORTIES FLOWN:" at 0x15092B
+      
+    - offset: null
+      name: allied_aircraft_lost
+      type: uint16_t
+      description: Allied aircraft shot down
+      evidence: String "ALLIED AIRCRAFT SHOT DOWN:" at 0x15093B
+      
+    - offset: null
+      name: enemy_aircraft_destroyed
+      type: uint16_t
+      description: Enemy aircraft shot down
+      evidence: String "ENEMY AIRCRAFT SHOT DOWN:" at 0x150956
+      
+    - offset: null
+      name: enemy_class_a_fighter
+      type: uint16_t
+      description: Class A fighters destroyed
+      evidence: String "-CLASS A FIGHTER:" at 0x150970
+      
+    - offset: null
+      name: enemy_class_b_fighter
+      type: uint16_t
+      description: Class B fighters destroyed
+      evidence: String "-CLASS B FIGHTER:" at 0x150983
+      
+    - offset: null
+      name: enemy_bomber_strike
+      type: uint16_t
+      description: Bombers/strike aircraft destroyed
+      evidence: String "-BOMBER/STRIKE:" at 0x150996
+      
+    - offset: null
+      name: enemy_attack_aircraft
+      type: uint16_t
+      description: Attack/CAS aircraft destroyed
+      evidence: String "-ATTACK/CLOSE AIR:" at 0x1509A7
+      
+    - offset: null
+      name: enemy_helicopter
+      type: uint16_t
+      description: Helicopters destroyed
+      evidence: String "-HELICOPTER:" at 0x1509BB
+      
+    - offset: null
+      name: enemy_transport_awacs
+      type: uint16_t
+      description: Transports/AWACS destroyed
+      evidence: String "-TRANSPORT/AWACS:" at 0x1509C9
+      
+    - offset: null
+      name: ground_targets_destroyed
+      type: uint16_t
+      description: Total ground targets destroyed
+      evidence: String "GROUND TARGETS DESTROYED:" at 0x1509DC
+      
+    - offset: null
+      name: ground_class_a
+      type: uint16_t
+      description: Class A (strategic) targets destroyed
+      evidence: String "-CLASS A TARGET:" at 0x1509F8
+      
+    - offset: null
+      name: ground_class_b
+      type: uint16_t
+      description: Class B (infrastructure) targets destroyed
+      evidence: String "-CLASS B TARGET:" at 0x150A0A
+      
+    - offset: null
+      name: ground_class_c
+      type: uint16_t
+      description: Class C (military) targets destroyed
+      evidence: String "-CLASS C TARGET:" at 0x150A1C
+      
+    - offset: null
+      name: ground_class_d
+      type: uint16_t
+      description: Class D (tactical) targets destroyed
+      evidence: String "-CLASS D TARGET:" at 0x150A2E
+      
+    - offset: null
+      name: ordnance_efficiency
+      type: uint16_t
+      description: Ordnance efficiency rating (percentage?)
+      evidence: String "ORDNANCE EFFICIENCY RATING:" at 0x150A40
+      
+    - offset: null
+      name: overall_rating
+      type: uint16_t
+      description: Overall campaign performance rating
+      evidence: String "OVERALL CAMPAIGN RATING:" at 0x150A5D
+
+# ============================================================================
+# FLIGHT/MISSION STRUCTURES
+# ============================================================================
+
+- name: FlightRecord
+  size: 130  # 0x82 bytes - from R57 analysis
+  description: |
+    Flight configuration record.
+    From R57 weapons loadout menu analysis.
+  evidence:
+    - address: 0x1A5B16  # From R57
+      pattern: "130-byte records, 0x82 multiplication"
+  fields:
+    - offset: null
+      name: aircraft_count
+      type: uint8_t
+      description: Number of aircraft in flight (1-4)
+      
+    - offset: null
+      name: loadouts
+      type: LoadoutRecord[4]
+      description: Array of 4 loadout records (23 bytes each)
+
+- name: LoadoutRecord
+  size: 23  # 0x17 bytes - from R57 analysis
+  description: |
+    Weapons loadout for single aircraft.
+    From R57 weapons loadout menu analysis.
+  evidence:
+    - address: 0x1A5970  # From R57
+      pattern: "23-byte structure access"
+  fields:
+    - offset: null
+      name: hardpoint_config
+      type: uint8_t[11]
+      description: Weapon configuration for 11 hardpoints
+      
+    - offset: null
+      name: pilot_id
+      type: uint16_t
+      description: Assigned pilot ID or index
+
+# ============================================================================
+# GLOBAL ARRAYS
+# ============================================================================
+
+- name: MenuElementArray
+  base_address: "0x4FC2:0x600"
+  element_type: MenuElement
+  element_count: 11  # 0x0B
+  description: |
+    Array of menu elements for R45 squadron management menu.
+    Initialized in loop at 0x156597-0x1565CC.

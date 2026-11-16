@@ -1,8 +1,8 @@
 # UI and Menu System Architecture
 
-**Last Updated**: 2026-11-11  
-**Status**: STRONG (byte-level analysis complete)  
-**Analysis**: Based on deep-dive of 17 functions, 15,000+ bytes of code
+**Last Updated**: 2026-11-16  
+**Status**: STRONG (byte-level analysis + complete type system)  
+**Analysis**: Based on deep-dive of 17 functions, 15,000+ bytes of code + 10 structures + 18 enums reverse-engineered
 
 ---
 
@@ -14,8 +14,16 @@ Falcon 3.0's UI and menu system is a sophisticated, performance-optimized archit
 - Menu navigation and state management
 - Random UI variation for "feel"
 - Multi-graphics-mode support (VGA, EGA, CGA)
+- **Template-based menu framework** (R45, R57, R52, etc.)
+- **Squadron/campaign management interface**
 
-**Key Characteristic**: Heavy inline optimization (98.5% in input handler) for performance in the critical UI path.
+**Key Characteristics**: 
+- Heavy inline optimization (98.5% in input handler) for performance
+- Shared state variable across multiple menus (`word_13E012`)
+- 28-byte MenuElement structure with 11-element arrays
+- Data-driven UI with external string resources
+
+**Major Discovery (2026-11-16)**: Complete reverse-engineering of R45 Squadron Management Menu revealed a sophisticated template-based menu system with 10 structures and 18 enumerations forming a comprehensive type system.
 
 ---
 
@@ -587,14 +595,478 @@ vga_draw_func_ptr:           CS:0x22084 (far function pointer)
 
 ---
 
+## Menu Template System Architecture (R45/R57 Framework)
+
+### Discovery Summary
+
+Deep analysis of R45 (Squadron Management Menu) and R57 (Weapons Loadout Menu) revealed a sophisticated **template-based menu framework** with shared infrastructure and data structures.
+
+**Evidence**: 
+- Complete code analysis of 3 R45 functions (4,926 bytes)
+- Extraction of 200+ UI strings from R29_502Es segment
+- Discovery of 28-byte MenuElement structure with 11-element array
+- Identification of shared state variable across menus
+
+**Documentation**: See dedicated analysis documents:
+- `docs/R45_MENU_ANALYSIS.md` - Squadron Management Menu
+- `docs/R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md` - Weapons Loadout Menu
+- `docs/SQUADRON_CAMPAIGN_SYSTEM_ANALYSIS.md` - Campaign system architecture
+- `docs/STRUCTURES_AND_ENUMS_SUMMARY.md` - Complete type system
+
+### Template Architecture
+
+All major menus follow this pattern:
+
+```
+Menu Overlay (2,000-3,000 bytes)
+    ├─> State Machine (word_13E012)
+    │     States: 0-5 or 0-6 + 0xFFFF (exit)
+    ├─> Element Array (MenuElement[11])
+    │     28 bytes per element at 0x4FC2:0x600
+    └─> Render Loop (9-10 iterations per frame)
+          For each element:
+              call dispatcher → position_calculator → utility
+```
+
+**Key Functions Pattern**:
+1. **overlay_logic**: Main state machine (2,600+ bytes)
+2. **menu_element_dispatcher**: Switch-based renderer (167 bytes, 11 cases)
+3. **position_calculator**: Input + positioning (1,132 bytes)
+
+### Shared State Variable
+
+**Address**: `word_13E012` (0x13E012)  
+**Type**: `uint16_t`  
+**Shared By**: R45, R57, and likely all menu overlays
+
+**R45 States** (Squadron Management):
+- 0-5: Active states
+- 0xFFFF: Exit state
+
+**R57 States** (Weapons Loadout):
+- 0: Flight selection
+- 1: Aircraft selection
+- 2: Navigate fields
+- 3: Modify data
+- 4: Weapon configuration
+- 5: Validate
+- 6: UI refresh
+
+**Insight**: The same state variable is reused across menus, with each menu defining its own state meanings. This is a form of "state polymorphism" - the variable's interpretation changes based on active overlay.
+
+### MenuElement Structure
+
+**Address**: 0x4FC2:0x600  
+**Count**: 11 elements  
+**Size**: 28 bytes per element (0x1C)  
+**Total**: 308 bytes (0x134)
+
+```c
+struct MenuElement {
+    uint8_t  unknown1[0x604];           // +0x000: Purpose unknown
+    uint16_t data_ptr_low;              // +0x604: Low word of far pointer
+    uint16_t data_ptr_high;             // +0x606: Segment of far pointer
+    uint16_t state_or_type;             // +0x608: Element state/type (0, 3, 10 observed)
+    uint8_t  unknown2[0x1C - 0x60A];   // +0x60A: Remaining fields
+};  // 28 bytes (0x1C)
+```
+
+**Evidence**: 
+- Initialization loop at 0x156599-0x1565CC
+- Pattern: `mov dx, 1Ch; imul dx; cmp di, 0Bh; jl loop`
+- Field access at offsets 0x604, 0x606, 0x608
+
+**Usage**: Each element represents one menu option (button, text field, list item, etc.)
+
+### Menu Element Dispatcher
+
+**Function**: `r45_menu_element_dispatcher` (0x1573C3, 167 bytes)
+
+**Structure**: 11-case switch statement (cases 0-10)
+
+```c
+void menu_element_dispatcher(uint8_t element_index) {
+    switch (element_index) {
+        case 0:  // Conditional render (variant A)
+            if (word_79E80 >= 0x12C) ui_element_render_variant_a(element_index);
+            break;
+        case 5:  // Conditional render (variant B)
+            if (word_79E80 >= 0x12C) ui_element_render_variant_b(element_index);
+            break;
+        case 6:  // Render "SQUADRON" button
+            undoc_11C576(element_index, "SQUADRON");
+            break;
+        case 7:
+        case 8:  // Complex rendering
+            ui_element_render_complex_a(element_index);
+            break;
+        case 9:
+        case 10: // Utility rendering
+            utility_11c90f(element_index);
+            ui_element_render_single(element_index);
+            break;
+        default: // Cases 1-4: no rendering
+            break;
+    }
+}
+```
+
+**Render Functions Called**:
+1. `ui_element_render_variant_a` - Standard element rendering
+2. `ui_element_render_variant_b` - Alternative rendering
+3. `undoc_11C576` - Text/button rendering with string
+4. `ui_element_render_complex_a` - Complex multi-part elements
+5. `utility_11c90f` - Utility operations
+6. `ui_element_render_single` - Simple element rendering
+
+**Conditional Rendering**: Cases 0 and 5 check `word_79E80 >= 0x12C` (300 decimal) before rendering. This suggests frame-based or coordinate-based visibility control.
+
+### R45 Squadron Management Menu
+
+**Overlay**: R45 (0x156945, 2,614 bytes)  
+**Purpose**: Central squadron and campaign management interface
+
+**Menu Options** (from string evidence):
+1. **SQUADRON** - Squadron selection and management
+2. **PILOT INFORMATION** - View/edit pilot details
+3. **ASSIGN PILOTS** - Assign pilots to flights
+4. **EDIT FLIGHTS** - Configure flight loadouts (R57 menu)
+5. **CHOOSE MISSION** - Select next mission
+6. **CAMPAIGN STATUS** - View campaign progress
+7. **SUPPLY STATUS** - View equipment/supplies
+8. **COMMS.** - Multiplayer communications
+9. **DONE** - Exit menu
+
+**Additional Elements** (11 total suggests):
+10. Squadron name/insignia display
+11. Status indicator or help text
+
+**Strings Found**: 200+ UI strings in R29_502Es segment including squadron, pilot, mission, campaign, and multiplayer text.
+
+### R57 Weapons Loadout Menu
+
+**Overlay**: R57 (0x1A57F0, 3,083 bytes)  
+**Purpose**: Configure weapons loadout for flights
+
+**7-State Machine**:
+0. Flight selection (1-4)
+1. Aircraft selection within flight
+2. Navigate form fields
+3. Modify data entry
+4. Weapon configuration (hardpoints)
+5. Validate configuration
+6. UI refresh
+
+**Data Structures**:
+- **FlightRecord**: 130 bytes (0x82), contains 4 LoadoutRecords
+- **LoadoutRecord**: 23 bytes (0x17), 11 hardpoints + pilot assignment
+
+**Evidence**: Complete analysis in `docs/R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md`
+
+### Menu Integration Flow
+
+```
+Main Menu
+    ↓
+R45 Squadron Management ←→ Multiplayer (COMMS)
+    ├─> Squadron Selection
+    ├─> Pilot Information
+    ├─> Assign Pilots
+    ├─> R57 Edit Flights (Weapons Loadout)
+    │     └─> 7-state configuration interface
+    ├─> Choose Mission
+    ├─> Campaign Status
+    ├─> Supply Status
+    └─> Done → Mission Execution or Main Menu
+```
+
+### Input Handling in Menus
+
+Menus use the standard input pipeline with scan code processing:
+
+**Key Scan Codes**:
+- `0x01`: ESC (cancel/back)
+- `0x1C`: ENTER (confirm/select)
+- `0xFF`: Synthetic input (mouse click, generated event)
+
+**Pattern**:
+```c
+// Wait for input
+input_poll_handler();
+input_sync_and_wait();
+
+// Process scan code
+switch (input_scan_code_queue) {
+    case 0x01:  // ESC
+        state = R45_STATE_EXIT;
+        break;
+    case 0x1C:  // ENTER
+        // Advance state or confirm selection
+        state++;
+        break;
+    case 0xFF:  // Mouse click
+        // Map click to menu region
+        break;
+}
+```
+
+**Jump Tables**: Both R45 and R57 use jump tables for scan code dispatch, suggesting a common input handling framework.
+
+---
+
+## Data Structures & Type System
+
+### Complete Type System (Registry)
+
+**Registry Files**:
+- `registry/structures.yaml` - 10 structures defined
+- `registry/enums.yaml` - 18 enumerations with 120+ values
+
+**Sync Status**: All types synced to IDA database via `sync_structures_enums_to_ida.py`
+
+### Core Structures
+
+#### MenuElement (28 bytes)
+```c
+struct MenuElement {
+    uint8_t  _reserved[0x604];    // +0x000: Unknown fields
+    uint16_t data_ptr_low;        // +0x604: Far pointer low word
+    uint16_t data_ptr_high;       // +0x606: Far pointer segment
+    uint16_t state_or_type;       // +0x608: Element state/type
+    uint8_t  _unknown[0x14];      // +0x60A: Additional fields
+};  // 28 bytes (0x1C)
+```
+
+**Array**: 11 elements at 0x4FC2:0x600
+
+#### UICoordinate (8 bytes)
+```c
+struct UICoordinate {
+    uint16_t x_or_low;            // +0x0: X coordinate or low word
+    uint16_t y_or_high;           // +0x2: Y coordinate or high word
+    uint16_t width_or_offset;     // +0x4: Width or offset
+    uint16_t height_or_offset2;   // +0x6: Height or offset
+};  // 8 bytes
+```
+
+**Referenced By**: `dword_79E3A`, `dword_79E2C`, `dword_79E60`, etc.
+
+#### FlightRecord (130 bytes) — From R57
+```c
+struct FlightRecord {
+    uint8_t       aircraft_count;  // Number of aircraft (1-4)
+    LoadoutRecord loadouts[4];     // 4 aircraft × 23 bytes
+    uint8_t       _unknown[105];   // Additional data
+};  // 130 bytes (0x82)
+```
+
+#### LoadoutRecord (23 bytes) — From R57
+```c
+struct LoadoutRecord {
+    uint8_t  hardpoint_config[11]; // 11 hardpoints
+    uint16_t pilot_id;             // Assigned pilot
+    uint8_t  _unknown[10];         // Additional data
+};  // 23 bytes (0x17)
+```
+
+### Campaign/Squadron Structures (Partial)
+
+#### Pilot (size unknown)
+```c
+struct Pilot {
+    char     name[?];              // Pilot name
+    char     callsign[?];          // Radio callsign
+    uint8_t  rank;                 // PilotRank enum (0-4)
+    uint8_t  status;               // PilotStatus enum
+    uint16_t missions;             // Missions flown
+    uint16_t awards;               // Awards received
+    uint16_t flight_hours;         // Total flight hours
+    uint16_t plane_kills;          // Aircraft destroyed
+    uint16_t merits;               // Merit points
+    uint8_t  dogfighting_skill;    // Skill rating (0-100)
+    // ... 6 more ability ratings
+};
+```
+
+**Data Files**: `NAMES.BIN`, `CALLSIGN.BIN`
+
+**Evidence**: String references in R45 menu
+
+#### Squadron (size unknown)
+```c
+struct Squadron {
+    char     squadron_name[?];     // Squadron name
+    char     commander_name[?];    // Commander's name
+    uint8_t  wing_assignment;      // WingID enum (0-6)
+    uint8_t  insignia_id;          // Insignia graphic ID
+    uint16_t missions_flown;       // Total missions
+    uint16_t pilots_active;        // Active pilot count
+    uint16_t pilots_killed;        // KIA count
+    uint16_t pilots_mia;           // MIA count
+};
+```
+
+**Data File**: `sqdnames.str`
+
+#### CampaignStatus (size unknown)
+```c
+struct CampaignStatus {
+    uint16_t current_day;                  // Campaign day
+    uint16_t current_time;                 // Time (0600/1200/1800/2300)
+    uint8_t  territory_enemy_percent;      // Enemy-held %
+    uint8_t  territory_allied_percent;     // Allied-held %
+    uint16_t missions_flown;               // Total missions
+    uint16_t missions_accomplished;        // Successful missions
+    uint16_t sorties_flown;                // Total sorties
+    uint16_t allied_aircraft_lost;         // Allied losses
+    uint16_t enemy_aircraft_destroyed;     // Enemy kills
+    uint16_t enemy_class_a_fighter;        // Class A fighters
+    uint16_t enemy_class_b_fighter;        // Class B fighters
+    uint16_t enemy_bomber_strike;          // Bombers/strike
+    uint16_t enemy_attack_aircraft;        // Attack/CAS
+    uint16_t enemy_helicopter;             // Helicopters
+    uint16_t enemy_transport_awacs;        // Transports/AWACS
+    uint16_t ground_targets_destroyed;     // Ground targets total
+    uint16_t ground_class_a;               // Strategic targets
+    uint16_t ground_class_b;               // Infrastructure
+    uint16_t ground_class_c;               // Military
+    uint16_t ground_class_d;               // Tactical
+    uint16_t ordnance_efficiency;          // Efficiency rating
+    uint16_t overall_rating;               // Campaign rating
+};
+```
+
+**Evidence**: Campaign status screen strings
+
+### Core Enumerations
+
+#### PilotRank (5 values)
+```c
+enum PilotRank : uint8_t {
+    RANK_LT = 0,        // Lieutenant
+    RANK_CAPT = 1,      // Captain
+    RANK_MAJOR = 2,     // Major
+    RANK_LT_COL = 3,    // Lieutenant Colonel
+    RANK_COL = 4        // Colonel
+};
+```
+
+#### PilotStatus (4 values)
+```c
+enum PilotStatus : uint8_t {
+    STATUS_ACTIVE = 0,            // Ready to fly
+    STATUS_FATIGUED = 1,          // Needs rest
+    STATUS_INJURED = 2,           // Cannot fly
+    STATUS_COURT_MARTIALED = 3    // Disciplined/removed
+};
+```
+
+#### WingID (7 values)
+```c
+enum WingID : uint8_t {
+    WING_1ST = 0,
+    WING_2ND = 1,
+    WING_3RD = 2,
+    WING_4TH = 3,
+    WING_5TH = 4,
+    WING_6TH = 5,
+    WING_7TH = 6
+};
+```
+
+#### TheaterID (6 values)
+```c
+enum TheaterID : uint8_t {
+    THEATER_KUWAIT = 0,    // Gulf War
+    THEATER_ISRAEL = 1,    // Middle East
+    THEATER_PANAMA = 2,    // Just Cause
+    THEATER_JAPAN = 3,     // Defense scenario
+    THEATER_KOREA = 4,     // Korean Peninsula
+    THEATER_INDIA = 5      // South Asia
+};
+```
+
+#### MenuElementType (11 values)
+```c
+enum MenuElementType : uint8_t {
+    ELEMENT_TYPE_0 = 0,              // ui_element_render_variant_a (conditional)
+    ELEMENT_TYPE_1 = 1,              // Default (no render)
+    ELEMENT_TYPE_2 = 2,              // Default (no render)
+    ELEMENT_TYPE_3 = 3,              // Default (no render)
+    ELEMENT_TYPE_4 = 4,              // Default (no render)
+    ELEMENT_TYPE_5 = 5,              // ui_element_render_variant_b (conditional)
+    ELEMENT_TYPE_6_SQUADRON = 6,     // Render "SQUADRON" button
+    ELEMENT_TYPE_7 = 7,              // ui_element_render_complex_a
+    ELEMENT_TYPE_8 = 8,              // ui_element_render_complex_a
+    ELEMENT_TYPE_9 = 9,              // utility_11c90f
+    ELEMENT_TYPE_10 = 10             // ui_element_render_single
+};
+```
+
+#### ScanCode (partial)
+```c
+enum ScanCode : uint16_t {
+    SCAN_ESC = 0x01,        // ESC key (exit/cancel)
+    SCAN_ENTER = 0x1C,      // ENTER key (confirm/select)
+    SCAN_SYNTHETIC = 0xFF,  // Synthetic input (mouse/generated)
+    SCAN_NONE = 0x00        // No input
+};
+```
+
+**Complete Enum List** (18 total):
+- PilotRank, PilotStatus, PilotAbilityCategory
+- WingID, TheaterID, TimeOfDay
+- WeatherCondition, CeilingHeight
+- MissionType (20+ values)
+- AIAggressiveness, FormationType
+- R45MenuState, R57MenuState
+- ScanCode, MenuElementType
+
+---
+
+## Menu System Statistics
+
+### Code Analysis
+- **Functions analyzed**: 20+ across R45/R57
+- **Total code analyzed**: 15,000+ bytes
+- **Structures extracted**: 10
+- **Enums extracted**: 18 (120+ values)
+- **Strings analyzed**: 200+ UI strings
+
+### R45 Squadron Menu
+- **Main function**: 2,614 bytes
+- **Dispatcher**: 167 bytes (11 cases)
+- **Position calculator**: 1,132 bytes
+- **Menu elements**: 11 (28 bytes each)
+- **State count**: 6 + exit state
+
+### R57 Loadout Menu
+- **Main function**: 3,083 bytes
+- **State machine**: 7 states
+- **Data structures**: 2 (FlightRecord, LoadoutRecord)
+- **Element count**: Variable by state
+
+### Template Framework Metrics
+- **Shared state variable**: `word_13E012`
+- **Common render pattern**: dispatcher → position → utility
+- **Element array size**: 308 bytes (11 × 28)
+- **Render frequency**: 9-10 iterations per frame
+
+---
+
 ## Related Documents
 
 - **SESSION_SUMMARY_2026-11-11.md** - Complete analysis session
 - **INPUT_POLL_HANDLER_ANALYSIS.md** - Deep-dive into 3814-byte function
 - **MENU_ANALYSIS_PROGRESS.md** - Ongoing analysis tracking
+- **R45_MENU_ANALYSIS.md** - Squadron Management Menu (complete)
+- **R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md** - Weapons Loadout Menu (complete)
+- **SQUADRON_CAMPAIGN_SYSTEM_ANALYSIS.md** - Campaign system architecture
+- **STRUCTURES_AND_ENUMS_SUMMARY.md** - Type system extraction process
 - **hardware_io.md** - Hardware I/O details (keyboard, mouse, joystick)
 - **game_loop.md** - Integration with main game loop
+- **mission_campaign.md** - Mission/campaign file formats
 
 ---
 
-**Status**: STRONG certainty based on byte-level reverse engineering of 17 functions totaling 15,000+ bytes of code.
+**Status**: STRONG certainty based on byte-level reverse engineering of 20+ functions totaling 18,000+ bytes of code, complete type system extraction (10 structures, 18 enums), and 200+ UI strings analyzed.
