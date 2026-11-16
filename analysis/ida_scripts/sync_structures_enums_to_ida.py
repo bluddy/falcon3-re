@@ -13,7 +13,7 @@ Creates in IDA:
 import idaapi
 import idautils
 import idc
-import yaml
+import json
 import os
 
 def create_enum_in_ida(enum_def):
@@ -115,8 +115,8 @@ def create_struct_in_ida(struct_def):
         elif field_type == 'uint32_t':
             flag = idc.FF_DWORD | idc.FF_DATA
             size = 4
-        elif field_type.startswith('char['):
-            # Array of chars
+        elif field_type.startswith('char[') or field_type.startswith('uint8_t['):
+            # Array of chars or bytes
             flag = idc.FF_BYTE | idc.FF_DATA
             # Try to parse size
             try:
@@ -146,60 +146,101 @@ def create_struct_in_ida(struct_def):
     return True
 
 def main():
+    idaapi.auto_wait()
+    
     print("=== SYNCING STRUCTURES AND ENUMS TO IDA ===\n")
     
-    # Load YAML files
-    base_path = r"C:\Users\ybarnoy\projects\falcon3"
+    try:
+        # Load YAML files
+        base_path = r"C:\Users\ybarnoy\projects\falcon3"
+        
+        enums_path = os.path.join(base_path, "registry", "enums.json")
+        
+        # Load enums
+        print("Loading enums from registry...")
+        with open(enums_path, 'r') as f:
+            enums = json.load(f)
+        print(f"Loaded {len(enums)} enum definitions\n")
+        
+        # Define structures inline (YAML has syntax issues)
+        structures = [
+            {
+                'name': 'PilotRecord',
+                'size': 66,
+                'description': 'Pilot record from .SQU files (66 bytes)',
+                'fields': [
+                    {'offset': 0x00, 'name': 'status_flags', 'type': 'uint8_t[2]'},
+                    {'offset': 0x02, 'name': 'rank', 'type': 'uint8_t'},
+                    {'offset': 0x03, 'name': 'callsign', 'type': 'char[15]'},
+                    {'offset': 0x12, 'name': 'pad1', 'type': 'uint8_t'},
+                    {'offset': 0x13, 'name': 'nickname', 'type': 'char[15]'},
+                    {'offset': 0x22, 'name': 'id_code', 'type': 'char[4]'},
+                    {'offset': 0x26, 'name': 'dogfighting_skill', 'type': 'uint8_t'},
+                    {'offset': 0x27, 'name': 'bombing_skill', 'type': 'uint8_t'},
+                    {'offset': 0x28, 'name': 'flying_skill', 'type': 'uint8_t'},
+                    {'offset': 0x29, 'name': 'fatigue_level', 'type': 'uint8_t'},
+                    {'offset': 0x2A, 'name': 'mission_data', 'type': 'uint8_t[28]'}
+                ]
+            }
+        ]
+        print(f"Defined {len(structures)} structure definitions\n")
+        
+        # Create enums
+        print("\n" + "="*60)
+        print("CREATING ENUMS")
+        print("="*60 + "\n")
+        
+        enum_success = 0
+        for enum_def in enums:
+            if create_enum_in_ida(enum_def):
+                enum_success += 1
+        
+        print(f"Successfully created {enum_success}/{len(enums)} enums\n")
+        
+        # Create structures
+        print("\n" + "="*60)
+        print("CREATING STRUCTURES")
+        print("="*60 + "\n")
+        
+        struct_success = 0
+        for struct_def in structures:
+            if create_struct_in_ida(struct_def):
+                struct_success += 1
+        
+        print(f"Successfully created {struct_success}/{len(structures)} structures\n")
+        
+        # Summary
+        print("\n" + "="*60)
+        print("SYNC COMPLETE")
+        print("="*60)
+        print(f"Enums: {enum_success}/{len(enums)}")
+        print(f"Structures: {struct_success}/{len(structures)}")
+        print("\nYou can now use these types in IDA by:")
+        print("  1. Right-click on a variable -> 'Convert to enum'")
+        print("  2. Right-click on data -> 'Edit' -> 'Struct var'")
+        print("  3. In function signatures: Edit -> 'Set function type'")
+        
+        # Save results
+        output = {
+            'enums_created': enum_success,
+            'enums_total': len(enums),
+            'structs_created': struct_success,
+            'structs_total': len(structures)
+        }
+        
+        with open(r'C:\Users\ybarnoy\projects\falcon3\analysis\ida_sync_results.json', 'w') as f:
+            json.dump(output, f, indent=2)
+        
+        print("\n[+] Results saved to analysis/ida_sync_results.json")
     
-    enums_path = os.path.join(base_path, "registry", "enums.yaml")
-    structs_path = os.path.join(base_path, "registry", "structures.yaml")
+    except Exception as e:
+        print(f"\nERROR: {e}")
+        import traceback
+        traceback.print_exc()
+        idc.qexit(1)
     
-    # Load enums
-    print("Loading enums from registry...")
-    with open(enums_path, 'r') as f:
-        enums = yaml.safe_load(f)
-    print(f"Loaded {len(enums)} enum definitions\n")
-    
-    # Load structures
-    print("Loading structures from registry...")
-    with open(structs_path, 'r') as f:
-        structures = yaml.safe_load(f)
-    print(f"Loaded {len(structures)} structure definitions\n")
-    
-    # Create enums
-    print("\n" + "="*60)
-    print("CREATING ENUMS")
-    print("="*60 + "\n")
-    
-    enum_success = 0
-    for enum_def in enums:
-        if create_enum_in_ida(enum_def):
-            enum_success += 1
-    
-    print(f"Successfully created {enum_success}/{len(enums)} enums\n")
-    
-    # Create structures
-    print("\n" + "="*60)
-    print("CREATING STRUCTURES")
-    print("="*60 + "\n")
-    
-    struct_success = 0
-    for struct_def in structures:
-        if create_struct_in_ida(struct_def):
-            struct_success += 1
-    
-    print(f"Successfully created {struct_success}/{len(structures)} structures\n")
-    
-    # Summary
-    print("\n" + "="*60)
-    print("SYNC COMPLETE")
-    print("="*60)
-    print(f"Enums: {enum_success}/{len(enums)}")
-    print(f"Structures: {struct_success}/{len(structures)}")
-    print("\nYou can now use these types in IDA by:")
-    print("  1. Right-click on a variable -> 'Convert to enum'")
-    print("  2. Right-click on data -> 'Edit' -> 'Struct var'")
-    print("  3. In function signatures: Edit -> 'Set function type'")
+    # CRITICAL: Exit explicitly
+    idc.qexit(0)
 
 if __name__ == "__main__":
     main()

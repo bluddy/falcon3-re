@@ -1,0 +1,779 @@
+[
+  {
+    "name": "PilotRank",
+    "type": "uint8_t",
+    "description": "Military officer ranks",
+    "evidence": [
+      {
+        "strings": "0x150088-0x1500A6"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "RANK_LT",
+        "description": "Lieutenant",
+        "evidence": "String \"LT.\" at 0x150088"
+      },
+      {
+        "value": 1,
+        "name": "RANK_CAPT",
+        "description": "Captain",
+        "evidence": "String \"CAPT.\" at 0x15008F"
+      },
+      {
+        "value": 2,
+        "name": "RANK_MAJOR",
+        "description": "Major",
+        "evidence": "String \"MAJOR\" at 0x150096"
+      },
+      {
+        "value": 3,
+        "name": "RANK_LT_COL",
+        "description": "Lieutenant Colonel",
+        "evidence": "String \"LT COL.\" at 0x15009D"
+      },
+      {
+        "value": 4,
+        "name": "RANK_COL",
+        "description": "Colonel",
+        "evidence": "String \"COL.\" at 0x1500A6"
+      }
+    ]
+  },
+  {
+    "name": "PilotStatus",
+    "type": "uint8_t",
+    "description": "Current pilot availability status",
+    "evidence": [
+      {
+        "strings": "0x150153-0x150179"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "STATUS_ACTIVE",
+        "description": "Active and ready to fly",
+        "evidence": "String \"ACTIVE\" at 0x150153"
+      },
+      {
+        "value": 1,
+        "name": "STATUS_FATIGUED",
+        "description": "Fatigued, needs rest",
+        "evidence": "String \"FATIGUED\" at 0x15015C"
+      },
+      {
+        "value": 2,
+        "name": "STATUS_INJURED",
+        "description": "Injured, cannot fly",
+        "evidence": "String \"INJURED\" at 0x150165"
+      },
+      {
+        "value": 3,
+        "name": "STATUS_COURT_MARTIALED",
+        "description": "Court martialed, removed from duty",
+        "evidence": "String \"COURT MARTIALED\" at 0x150179"
+      }
+    ]
+  },
+  {
+    "name": "PilotAbilityCategory",
+    "type": "uint8_t",
+    "description": "Pilot skill categories tracked by the game",
+    "evidence": [
+      {
+        "strings": "0x1500EA-0x150153"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "ABILITY_GUNS",
+        "description": "Gun combat proficiency",
+        "evidence": "String \"GUNS\" at 0x1500EA"
+      },
+      {
+        "value": 1,
+        "name": "ABILITY_REAR_ASPECT_IR",
+        "description": "Rear aspect IR missile (AIM-9P)",
+        "evidence": "String \"REAR ASPECT IR\" at 0x1500F1"
+      },
+      {
+        "value": 2,
+        "name": "ABILITY_ALL_ASPECT_IR",
+        "description": "All aspect IR missile (AIM-9M)",
+        "evidence": "String \"ALL ASPECT IR\" at 0x150100"
+      },
+      {
+        "value": 3,
+        "name": "ABILITY_RADAR_MISSILES",
+        "description": "Radar-guided missiles (AIM-120)",
+        "evidence": "String \"RADAR MISSILES\" at 0x15010E"
+      },
+      {
+        "value": 4,
+        "name": "ABILITY_CAS_ORDNANCE",
+        "description": "Close air support ordnance",
+        "evidence": "String \"CAS ORDNANCE\" at 0x15011D"
+      },
+      {
+        "value": 5,
+        "name": "ABILITY_HEAVY_ORDNANCE",
+        "description": "Heavy bombs and ordnance",
+        "evidence": "String \"HEAVY ORDNANCE\" at 0x15012A"
+      },
+      {
+        "value": 6,
+        "name": "ABILITY_DOGFIGHTING",
+        "description": "Air-to-air dogfighting skill",
+        "evidence": "String \"-DOGFIGHTING:\" at 0x150AFC"
+      }
+    ]
+  },
+  {
+    "name": "WingID",
+    "type": "uint8_t",
+    "description": "Wing assignment (1st through 7th Wing)",
+    "evidence": [
+      {
+        "strings": "0x14FE3C-0x14FE72"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "WING_1ST",
+        "description": "1st Wing",
+        "evidence": "String \"1ST WING\" at 0x14FE3C"
+      },
+      {
+        "value": 1,
+        "name": "WING_2ND",
+        "description": "2nd Wing",
+        "evidence": "String \"2ND WING\" at 0x14FE45"
+      },
+      {
+        "value": 2,
+        "name": "WING_3RD",
+        "description": "3rd Wing",
+        "evidence": "String \"3RD WING\" at 0x14FE4E"
+      },
+      {
+        "value": 3,
+        "name": "WING_4TH",
+        "description": "4th Wing",
+        "evidence": "String \"4TH WING\" at 0x14FE57"
+      },
+      {
+        "value": 4,
+        "name": "WING_5TH",
+        "description": "5th Wing",
+        "evidence": "String \"5TH WING\" at 0x14FE60"
+      },
+      {
+        "value": 5,
+        "name": "WING_6TH",
+        "description": "6th Wing",
+        "evidence": "String \"6TH WING\" at 0x14FE69"
+      },
+      {
+        "value": 6,
+        "name": "WING_7TH",
+        "description": "7th Wing",
+        "evidence": "String \"7TH WING\" at 0x14FE72"
+      }
+    ]
+  },
+  {
+    "name": "TheaterID",
+    "type": "uint8_t",
+    "description": "Available campaign theaters",
+    "evidence": [
+      {
+        "strings": "0x14E9A4-0x14E9C7"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "THEATER_KUWAIT",
+        "description": "Kuwait theater (Gulf War?)",
+        "evidence": "String \"Kuwait\" at 0x14E9A4"
+      },
+      {
+        "value": 1,
+        "name": "THEATER_ISRAEL",
+        "description": "Israel theater (Middle East)",
+        "evidence": "String \"Israel\" at 0x14E9AD"
+      },
+      {
+        "value": 2,
+        "name": "THEATER_PANAMA",
+        "description": "Panama theater (Just Cause?)",
+        "evidence": "String \"Panama\" at 0x14E9B4"
+      },
+      {
+        "value": 3,
+        "name": "THEATER_JAPAN",
+        "description": "Japan theater (Defense scenario)",
+        "evidence": "String \"Japan\" at 0x14E9BB"
+      },
+      {
+        "value": 4,
+        "name": "THEATER_KOREA",
+        "description": "Korea theater (Korean Peninsula)",
+        "evidence": "String \"Korea\" at 0x14E9C1"
+      },
+      {
+        "value": 5,
+        "name": "THEATER_INDIA",
+        "description": "India theater (South Asia)",
+        "evidence": "String \"India\" at 0x14E9C7"
+      }
+    ]
+  },
+  {
+    "name": "TimeOfDay",
+    "type": "uint16_t",
+    "description": "Mission start times (24-hour format)",
+    "evidence": [
+      {
+        "strings": "0x150335-0x150355"
+      }
+    ],
+    "values": [
+      {
+        "value": 1536,
+        "name": "TIME_0600",
+        "description": "06:00 (dawn)",
+        "evidence": "String \"0600 HRS.\" at 0x150335"
+      },
+      {
+        "value": 3072,
+        "name": "TIME_1200",
+        "description": "12:00 (noon)",
+        "evidence": "String \"1200 HRS.\" at 0x150341"
+      },
+      {
+        "value": 4608,
+        "name": "TIME_1800",
+        "description": "18:00 (dusk)",
+        "evidence": "String \"1800 HRS.\" at 0x15034B"
+      },
+      {
+        "value": 5888,
+        "name": "TIME_2300",
+        "description": "23:00 (night)",
+        "evidence": "String \"2300 HRS.\" at 0x150355"
+      }
+    ]
+  },
+  {
+    "name": "WeatherCondition",
+    "type": "uint8_t",
+    "description": "Weather conditions affecting missions",
+    "evidence": [
+      {
+        "strings": "0x1504E1-0x15050C"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "WEATHER_CLEAR",
+        "description": "Clear skies",
+        "evidence": "String \"CLEAR\" at 0x1504E1"
+      },
+      {
+        "value": 1,
+        "name": "WEATHER_PARTLY_CLOUDY",
+        "description": "Partly cloudy",
+        "evidence": "String \"PARTLY CLOUDY\" at 0x1504E9"
+      },
+      {
+        "value": 2,
+        "name": "WEATHER_CLOUDY",
+        "description": "Cloudy",
+        "evidence": "String \"CLOUDY\" at 0x1504F7"
+      },
+      {
+        "value": 3,
+        "name": "WEATHER_MOSTLY_CLOUDY",
+        "description": "Mostly cloudy",
+        "evidence": "String \"MOSTLY CLOUDY\" at 0x1504FE"
+      },
+      {
+        "value": 4,
+        "name": "WEATHER_OVERCAST",
+        "description": "Overcast",
+        "evidence": "String \"OVERCAST\" at 0x15050C"
+      }
+    ]
+  },
+  {
+    "name": "CeilingHeight",
+    "type": "uint8_t",
+    "description": "Cloud ceiling heights",
+    "evidence": [
+      {
+        "strings": "0x150515-0x150544"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "CEILING_VERY_LOW",
+        "description": "Very low ceiling (poor visibility)",
+        "evidence": "String CEILING VERY LOW at 0x150515"
+      },
+      {
+        "value": 1,
+        "name": "CEILING_LOW",
+        "description": "Low ceiling",
+        "evidence": "String CEILING LOW at 0x150527"
+      },
+      {
+        "value": 2,
+        "name": "CEILING_MEDIUM",
+        "description": "Medium ceiling",
+        "evidence": "String CEILING MEDIUM at 0x150534"
+      },
+      {
+        "value": 3,
+        "name": "CEILING_HIGH",
+        "description": "High ceiling (good visibility)",
+        "evidence": "String CEILING HIGH at 0x150544"
+      }
+    ]
+  },
+  {
+    "name": "MissionType",
+    "type": "uint8_t",
+    "description": "Available mission types",
+    "evidence": [
+      {
+        "strings": "0x14EA4B-0x14EB44"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "MISSION_FIGHTER_SCRAMBLE",
+        "description": "Fighter scramble mission",
+        "evidence": "String \"FIGHTER SCRAMBLE\" at 0x14EA4B"
+      },
+      {
+        "value": 1,
+        "name": "MISSION_STRIKE_SCRAMBLE",
+        "description": "Strike scramble mission",
+        "evidence": "String \"STRIKE SCRAMBLE\" at 0x14EA5E"
+      },
+      {
+        "value": 2,
+        "name": "MISSION_BOMBER_SCRAMBLE",
+        "description": "Bomber scramble mission",
+        "evidence": "String \"BOMBER SCRAMBLE\" at 0x14EA6E"
+      },
+      {
+        "value": 3,
+        "name": "MISSION_UMF_SCRAMBLE",
+        "description": "UMF scramble mission",
+        "evidence": "String \"UMF SCRAMBLE\" at 0x14EA7E"
+      },
+      {
+        "value": 4,
+        "name": "MISSION_AIR_SUPERIORITY",
+        "description": "Air superiority mission",
+        "evidence": "String \"AIR SUPERIORITY\" at 0x14EA8B"
+      },
+      {
+        "value": 5,
+        "name": "MISSION_SCREEN",
+        "description": "Defensive screen mission",
+        "evidence": "String \"SCREEN\" at 0x14EA9B"
+      },
+      {
+        "value": 6,
+        "name": "MISSION_AREACAP",
+        "description": "Area combat air patrol",
+        "evidence": "String \"AREACAP\" at 0x14EAA2"
+      },
+      {
+        "value": 7,
+        "name": "MISSION_ESCORT_TRANSPORT",
+        "description": "Escort transport aircraft",
+        "evidence": "String \"ESCORTTRANSPORT\" at 0x14EAAA"
+      },
+      {
+        "value": 8,
+        "name": "MISSION_ESCORT_STRIKE",
+        "description": "Escort strike aircraft",
+        "evidence": "String \"ESCORTSTRIKEAIRCRAFT\" at 0x14EABA"
+      },
+      {
+        "value": 9,
+        "name": "MISSION_ESCORT_BOMBERS",
+        "description": "Escort bombers",
+        "evidence": "String \"ESCORTBOMBERS\" at 0x14EACF"
+      },
+      {
+        "value": 10,
+        "name": "MISSION_CAS",
+        "description": "Close air support",
+        "evidence": "String \"CLOSEAIRSUPPORT\" at 0x14EADD"
+      },
+      {
+        "value": 11,
+        "name": "MISSION_GROUND_STRIKE",
+        "description": "Ground strike mission",
+        "evidence": "String \"GROUNDSTRIKE\" at 0x14EAED"
+      },
+      {
+        "value": 12,
+        "name": "MISSION_BOMBMIS",
+        "description": "Bombing mission",
+        "evidence": "String \"BOMBMIS\" at 0x14EAFA"
+      },
+      {
+        "value": 13,
+        "name": "MISSION_ANTISHIP",
+        "description": "Anti-ship mission",
+        "evidence": "String \"ANTISHIP\" at 0x14EB02"
+      },
+      {
+        "value": 14,
+        "name": "MISSION_SEADSHIP",
+        "description": "SEAD anti-ship mission",
+        "evidence": "String \"SEADSHIP\" at 0x14EB0B"
+      },
+      {
+        "value": 15,
+        "name": "MISSION_RECONSHIP",
+        "description": "Ship reconnaissance",
+        "evidence": "String \"RECONSHIP\" at 0x14EB14"
+      },
+      {
+        "value": 16,
+        "name": "MISSION_SEADGROUND",
+        "description": "SEAD ground targets",
+        "evidence": "String \"SEADGROUND\" at 0x14EB1E"
+      },
+      {
+        "value": 17,
+        "name": "MISSION_FRIENDLY_INTERCEPT",
+        "description": "Friendly intercept",
+        "evidence": "String \"FRIENDLYINTERCEPT\" at 0x14EB29"
+      },
+      {
+        "value": 18,
+        "name": "MISSION_ESCORT_E3",
+        "description": "Escort E-3 AWACS",
+        "evidence": "String \"ESCORTE3\" at 0x14EB3B"
+      },
+      {
+        "value": 19,
+        "name": "MISSION_HELO_SUPPLY_CAP",
+        "description": "Helicopter supply CAP",
+        "evidence": "String \"HELOSUPPLYCAP\" at 0x14EB44"
+      }
+    ]
+  },
+  {
+    "name": "AIAggressiveness",
+    "type": "uint8_t",
+    "description": "AI behavior aggressiveness setting",
+    "evidence": [
+      {
+        "strings": "0x14FEE5-0x14FEF4"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "AI_DUMB",
+        "description": "Dumb AI (low threat)",
+        "evidence": "String \"DUMB\" at 0x14FEE5"
+      },
+      {
+        "value": 1,
+        "name": "AI_PASSIVE",
+        "description": "Passive AI (defensive)",
+        "evidence": "String \"PASSIVE\" at 0x14FEEC"
+      },
+      {
+        "value": 2,
+        "name": "AI_AGGRESSIVE",
+        "description": "Aggressive AI (offensive)",
+        "evidence": "String \"AGGRESSIVE\" at 0x14FEF4"
+      }
+    ]
+  },
+  {
+    "name": "FormationType",
+    "type": "uint8_t",
+    "description": "Flight formation types",
+    "evidence": [
+      {
+        "strings": "0x14FDDE-0x14FE09"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "FORMATION_V_STACK",
+        "description": "Vertical stack formation",
+        "evidence": "String \"V STACK\" at 0x14FDDE"
+      },
+      {
+        "value": 1,
+        "name": "FORMATION_H_STACK",
+        "description": "Horizontal stack formation",
+        "evidence": "String \"H STACK\" at 0x14FDE8"
+      },
+      {
+        "value": 2,
+        "name": "FORMATION_C_STACK",
+        "description": "Combat stack formation",
+        "evidence": "String \"C STACK\" at 0x14FDF0"
+      },
+      {
+        "value": 3,
+        "name": "FORMATION_LADDER",
+        "description": "Ladder formation",
+        "evidence": "String \"LADDER\" at 0x14FDF8"
+      },
+      {
+        "value": 4,
+        "name": "FORMATION_WEDGE",
+        "description": "Wedge formation",
+        "evidence": "String \"WEDGE\" at 0x14FDFF"
+      },
+      {
+        "value": 5,
+        "name": "FORMATION_ECHELON",
+        "description": "Echelon formation",
+        "evidence": "String \"ECHELON\" at 0x14FE09"
+      }
+    ]
+  },
+  {
+    "name": "R45MenuState",
+    "type": "uint16_t",
+    "description": "R45 squadron menu state machine states.\nState variable: word_13E012 (0x13E012)\n",
+    "evidence": [
+      {
+        "address": 1403415,
+        "pattern": "cmp es:word_13E012, 5; jle"
+      },
+      {
+        "code_analysis": "R45 menu uses states 0-5 plus 0xFFFF exit"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "R45_STATE_0",
+        "description": "Initial state / squadron selection",
+        "evidence": "mov es:word_13E012, 0 at 0x156995"
+      },
+      {
+        "value": 1,
+        "name": "R45_STATE_1",
+        "description": "State 1 (purpose unknown)",
+        "evidence": "Incremented from state 0"
+      },
+      {
+        "value": 2,
+        "name": "R45_STATE_2",
+        "description": "State 2 (purpose unknown)",
+        "evidence": "Comparison value 2 at multiple locations"
+      },
+      {
+        "value": 3,
+        "name": "R45_STATE_3",
+        "description": "State 3 (purpose unknown)"
+      },
+      {
+        "value": 4,
+        "name": "R45_STATE_4",
+        "description": "State 4 (purpose unknown)"
+      },
+      {
+        "value": 5,
+        "name": "R45_STATE_5",
+        "description": "State 5 (final state before wrap)",
+        "evidence": "cmp es:word_13E012, 5 at 0x156A17"
+      },
+      {
+        "value": 65535,
+        "name": "R45_STATE_EXIT",
+        "description": "Exit state (return to previous menu)",
+        "evidence": "mov es:word_13E012, 0FFFFh at 0x156A4E"
+      }
+    ]
+  },
+  {
+    "name": "R57MenuState",
+    "type": "uint16_t",
+    "description": "R57 weapons loadout menu state machine states.\nState variable: word_13E012 (0x13E012) - SHARED with R45\n",
+    "evidence": [
+      {
+        "doc": "docs/R57_WEAPONS_LOADOUT_MENU_ANALYSIS.md"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "R57_STATE_FLIGHT_SELECT",
+        "description": "Select flight (1-4)"
+      },
+      {
+        "value": 1,
+        "name": "R57_STATE_AIRCRAFT_SELECT",
+        "description": "Select aircraft within flight"
+      },
+      {
+        "value": 2,
+        "name": "R57_STATE_NAVIGATE_FIELDS",
+        "description": "Navigate form fields"
+      },
+      {
+        "value": 3,
+        "name": "R57_STATE_MODIFY_DATA",
+        "description": "Modify data entry"
+      },
+      {
+        "value": 4,
+        "name": "R57_STATE_WEAPON_CONFIG",
+        "description": "Weapon configuration"
+      },
+      {
+        "value": 5,
+        "name": "R57_STATE_VALIDATE",
+        "description": "Validate and save"
+      },
+      {
+        "value": 6,
+        "name": "R57_STATE_UI_REFRESH",
+        "description": "UI refresh/render"
+      }
+    ]
+  },
+  {
+    "name": "ScanCode",
+    "type": "uint16_t",
+    "description": "Keyboard scan codes used by input system.\nStored in input_scan_code_queue (0x79B66)\n",
+    "evidence": [
+      {
+        "address": 1401553,
+        "pattern": "mov es:input_scan_code_queue, 1Ch"
+      }
+    ],
+    "values": [
+      {
+        "value": 1,
+        "name": "SCAN_ESC",
+        "description": "ESC key (exit/cancel)",
+        "evidence": "cmp ax, 1; jnz at 0x156714"
+      },
+      {
+        "value": 28,
+        "name": "SCAN_ENTER",
+        "description": "ENTER key (confirm/select)",
+        "evidence": "mov es:input_scan_code_queue, 1Ch at 0x1562D1"
+      },
+      {
+        "value": 255,
+        "name": "SCAN_SYNTHETIC",
+        "description": "Synthetic input (mouse click or generated)",
+        "evidence": "cmp ax, 0FFh at 0x156726"
+      },
+      {
+        "value": 0,
+        "name": "SCAN_NONE",
+        "description": "No input",
+        "evidence": "mov es:input_scan_code_queue, 0 at 0x1562A0"
+      }
+    ]
+  },
+  {
+    "name": "MenuElementType",
+    "type": "uint8_t",
+    "description": "Menu element rendering types for R45 dispatcher.\nDispatcher at 0x1573C3 switches on element index (0-10).\n",
+    "evidence": [
+      {
+        "address": 1405900,
+        "pattern": "cmp bx, 0Ah; jbe; switch 11 cases"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "ELEMENT_TYPE_0",
+        "description": "Render with ui_element_render_variant_a (conditional)",
+        "evidence": "call ui_element_render_variant_a at 0x1573EA"
+      },
+      {
+        "value": 1,
+        "name": "ELEMENT_TYPE_1",
+        "description": "Default case (no render?)",
+        "evidence": "Jump table case 1"
+      },
+      {
+        "value": 2,
+        "name": "ELEMENT_TYPE_2",
+        "description": "Default case (no render?)",
+        "evidence": "Jump table case 2"
+      },
+      {
+        "value": 3,
+        "name": "ELEMENT_TYPE_3",
+        "description": "Default case (no render?)",
+        "evidence": "Jump table case 3"
+      },
+      {
+        "value": 4,
+        "name": "ELEMENT_TYPE_4",
+        "description": "Default case (no render?)",
+        "evidence": "Jump table case 4"
+      },
+      {
+        "value": 5,
+        "name": "ELEMENT_TYPE_5",
+        "description": "Render with ui_element_render_variant_b (conditional)",
+        "evidence": "call ui_element_render_variant_b at 0x157400"
+      },
+      {
+        "value": 6,
+        "name": "ELEMENT_TYPE_6_SQUADRON",
+        "description": "Render \"SQUADRON\" button",
+        "evidence": "call undoc_11C576 with SQUADRON string at 0x157417"
+      },
+      {
+        "value": 7,
+        "name": "ELEMENT_TYPE_7",
+        "description": "Render with ui_element_render_complex_a",
+        "evidence": "call ui_element_render_complex_a at 0x157442"
+      },
+      {
+        "value": 8,
+        "name": "ELEMENT_TYPE_8",
+        "description": "Render with ui_element_render_complex_a (case 7-8 shared)",
+        "evidence": "Jump table case 8"
+      },
+      {
+        "value": 9,
+        "name": "ELEMENT_TYPE_9",
+        "description": "Render with utility_11c90f",
+        "evidence": "call utility_11c90f at 0x157459"
+      },
+      {
+        "value": 10,
+        "name": "ELEMENT_TYPE_10",
+        "description": "Render with ui_element_render_single or utility (case 9-10 shared)",
+        "evidence": "call ui_element_render_single at 0x157461"
+      }
+    ]
+  }
+]

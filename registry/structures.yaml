@@ -106,85 +106,197 @@
 # PILOT STRUCTURES  
 # ============================================================================
 
-- name: Pilot
-  size: null  # Unknown total size
+- name: PilotRecord
+  size: 66  # 0x42 bytes - EXACT SIZE FROM .SQU FILE FORMAT
   description: |
-    Pilot record structure.
-    Stored in NAMES.BIN and CALLSIGN.BIN databases.
-    Contains pilot stats, status, abilities.
+    Pilot record structure as stored in .SQU squadron files.
+    30 pilots per squadron starting at file offset 0x3C.
+    In-memory structures mirror file format.
   evidence:
-    - string_refs: "NAME:", "CALLSIGN:", "MISSIONS:", "PLANE KILLS:"
+    - file_format: SQUAD files specification
+    - loader_function: squad_campaign_file_loader at 0x6A651
+    - string_refs: NAME CALLSIGN MISSIONS PLANE KILLS
   fields:
-    - offset: null
-      name: name
-      type: char[]
-      description: Pilot name string
-      evidence: String "NAME:" at 0x150033
+    - offset: 0x00
+      name: status_flags
+      type: uint8_t[2]
+      description: Status flags (flying, dead, MIA, POW, etc.)
+      evidence: .SQU file offset 0x00
       
-    - offset: null
-      name: callsign
-      type: char[]
-      description: Pilot callsign string
-      evidence: String "CALLSIGN:" at 0x150AD1
-      
-    - offset: null
+    - offset: 0x02
       name: rank
-      type: PilotRank  # enum
-      description: Officer rank (LT, CAPT, MAJOR, LT COL, COL)
-      evidence: Rank strings at 0x150088-0x1500A6
+      type: uint8_t  # PilotRank enum
+      description: Officer rank (0=LT, 1=CAPT, 2=MAJOR, 3=LT COL, 4=COL)
+      evidence: .SQU file offset 0x02, rank strings at 0x150088-0x1500A6
       
-    - offset: null
-      name: status
-      type: PilotStatus  # enum
-      description: Current pilot status
-      evidence: Status strings at 0x150153-0x150179
+    - offset: 0x03
+      name: callsign
+      type: char[15]
+      description: Pilot callsign string (null-terminated)
+      evidence: .SQU file offset 0x03, string "CALLSIGN:" at 0x150AD1
       
-    - offset: null
-      name: missions
-      type: uint16_t
-      description: Number of missions flown
-      evidence: String "MISSIONS:" at 0x150049
+    - offset: 0x12
+      name: pad1
+      type: uint8_t
+      description: Padding byte
+      evidence: .SQU file offset 0x12
       
-    - offset: null
-      name: awards
-      type: uint16_t
-      description: Number of awards received
-      evidence: String "AWARDS:" at 0x150053
+    - offset: 0x13
+      name: nickname
+      type: char[15]
+      description: Pilot nickname/name string (null-terminated)
+      evidence: .SQU file offset 0x13, string "NAME:" at 0x150033
       
-    - offset: null
-      name: flight_hours
-      type: uint16_t
-      description: Total flight hours
-      evidence: String "FLIGHT HOURS:" at 0x15005B
+    - offset: 0x22
+      name: id_code
+      type: char[4]
+      description: 4-character pilot ID code
+      evidence: .SQU file offset 0x22
       
-    - offset: null
-      name: plane_kills
-      type: uint16_t
-      description: Number of aircraft shot down
-      evidence: String "PLANE KILLS:" at 0x150069
-      
-    - offset: null
-      name: merits
-      type: uint16_t
-      description: Merit points or medals
-      evidence: String "MERITS:" at 0x150041
-      
-    - offset: null
+    - offset: 0x26
       name: dogfighting_skill
       type: uint8_t
-      description: Dogfighting ability rating
-      evidence: String "-DOGFIGHTING:" at 0x150AFC
+      description: Dogfighting ability rating (0-255)
+      evidence: .SQU file offset 0x26, string "-DOGFIGHTING:" at 0x150AFC
+      
+    - offset: 0x27
+      name: bombing_skill
+      type: uint8_t
+      description: Bombing/strike ability rating (0-255)
+      evidence: .SQU file offset 0x27
+      
+    - offset: 0x28
+      name: flying_skill
+      type: uint8_t
+      description: General flying ability rating (0-255)
+      evidence: .SQU file offset 0x28
+      
+    - offset: 0x29
+      name: fatigue_level
+      type: uint8_t
+      description: Current fatigue level (affects performance)
+      evidence: .SQU file offset 0x29, string "FATIGUE" at 0x150C6D
+      
+    - offset: 0x2A
+      name: mission_data
+      type: uint8_t[28]
+      description: |
+        Mission statistics and history (28 bytes):
+        - missions flown
+        - flight hours
+        - kills (plane, ground)
+        - awards, merits
+        - ordnance efficiency
+        Layout TBD via reverse engineering
+      evidence: .SQU file offset 0x2A-0x45, strings at 0x150049-0x1500A6
+
+# Pilots 20-29 have extended records at 0x7F8 (same 66-byte format)
+
+- name: ExtendedPilotRecord
+  size: 66  # 0x42 bytes
+  description: |
+    Extended pilot record for pilots 20-29 in squadron.
+    Located at file offset 0x7F8 in .SQU files.
+    Same structure as PilotRecord.
+  evidence:
+    - file_format: SQUAD*.SQU file offset 0x7F8
+  fields:
+    # Same fields as PilotRecord
+    - offset: 0x00
+      name: status_flags
+      type: uint8_t[2]
+      
+    - offset: 0x02
+      name: rank
+      type: uint8_t
+      
+    - offset: 0x03
+      name: callsign
+      type: char[15]
+      
+    - offset: 0x12
+      name: pad1
+      type: uint8_t
+      
+    - offset: 0x13
+      name: nickname
+      type: char[15]
+      
+    - offset: 0x22
+      name: id_code
+      type: char[4]
+      
+    - offset: 0x26
+      name: dogfighting_skill
+      type: uint8_t
+      
+    - offset: 0x27
+      name: bombing_skill
+      type: uint8_t
+      
+    - offset: 0x28
+      name: flying_skill
+      type: uint8_t
+      
+    - offset: 0x29
+      name: fatigue_level
+      type: uint8_t
+      
+    - offset: 0x2A
+      name: mission_data
+      type: uint8_t[28]
 
 # ============================================================================
 # SQUADRON STRUCTURES
 # ============================================================================
 
-- name: Squadron
-  size: null  # Unknown
+- name: SquadronFile
+  size: 2703  # 0xA8F bytes - EXACT SIZE FROM FILE SYSTEM
   description: |
-    Squadron record structure.
-    Squadron names in sqdnames.str file.
+    Complete .SQU squadron file structure.
+    Header (60 bytes) + 30 pilots (1980 bytes) + extended pilots (660 bytes) + footer.
   evidence:
+    - file_format: SQUAD*.SQU files are all 2703 bytes
+    - loader_function: squad_campaign_file_loader at 0x6A651
+    - string_refs: "SQUADRON NAME:", "SQUADRON COMMANDER:"
+  fields:
+    - offset: 0x00
+      name: header
+      type: uint8_t[60]
+      description: |
+        Squadron header (60 bytes, 0x3C):
+        - squadron name
+        - wing assignment
+        - statistics (missions, kills, etc.)
+        Layout TBD via reverse engineering
+      evidence: Pilots start at 0x3C
+      
+    - offset: 0x3C
+      name: pilots
+      type: PilotRecord[30]
+      description: Array of 30 pilot records (30 × 66 = 1980 bytes, 0x7BC)
+      evidence: .SQU file format, 30 pilots × 0x42 bytes
+      
+    - offset: 0x7F8
+      name: extended_pilots
+      type: ExtendedPilotRecord[10]
+      description: Extended records for pilots 20-29 (10 × 66 = 660 bytes, 0x294)
+      evidence: .SQU file format
+      
+    - offset: 0xA8C
+      name: footer
+      type: uint8_t[3]
+      description: Footer data (3 bytes to reach 2703 total)
+      evidence: File size 2703 bytes
+
+- name: SquadronHeader
+  size: 60  # 0x3C bytes - estimated from pilot start offset
+  description: |
+    Squadron metadata header from .SQU file.
+    Contains name, wing, commander, statistics.
+    Exact field layout TBD via code analysis.
+  evidence:
+    - file_format: SQUAD*.SQU file offset 0x00-0x3B
     - string_refs: "SQUADRON NAME:", "SQUADRON COMMANDER:", "NUMBER OF MISSIONS FLOWN:"
   fields:
     - offset: null
@@ -194,15 +306,9 @@
       evidence: String "SQUADRON NAME:" at 0x150C7B
       
     - offset: null
-      name: commander_name
-      type: char[]
-      description: Name of squadron commander
-      evidence: String "SQUADRON COMMANDER:" at 0x150C9D
-      
-    - offset: null
       name: wing_assignment
-      type: WingID  # enum
-      description: Which wing (1ST through 7TH)
+      type: uint8_t  # WingID enum
+      description: Which wing (0=1ST through 6=7TH)
       evidence: Wing strings at 0x14FE3C-0x14FE72
       
     - offset: null
@@ -210,6 +316,12 @@
       type: uint8_t
       description: Selected squadron insignia graphic ID
       evidence: String "SELECT INSIGNIA" at 0x151947
+      
+    - offset: null
+      name: commander_id
+      type: uint8_t
+      description: Pilot index of squadron commander (0-29)
+      evidence: String "SQUADRON COMMANDER:" at 0x150C9D
       
     - offset: null
       name: missions_flown
@@ -234,6 +346,8 @@
       type: uint16_t
       description: Number of pilots MIA
       evidence: String "NUMBER OF PILOTS MIA:" at 0x150E0B
+      
+    # Additional fields exist but offsets unknown
 
 # ============================================================================
 # CAMPAIGN STRUCTURES
