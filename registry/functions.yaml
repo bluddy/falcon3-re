@@ -18445,3 +18445,232 @@ functions:
     calls: 0
     description: Sums byte values at offset +4 across 4 campaign entries (130-byte structures)
     source: 'top_500_analysis rank 427'
+  # TOP 500 BATCH 2 - RANKS 429-500 (27 functions)
+  # Menu/UI (10), Graphics (3), Campaign (3), 3D Rendering (2), Physics (2), AI (2), Text (2), Data (2), State (1), Hardware (1), Input (1)
+  
+  # MENU/UI SYSTEM
+  - address: 0x1854CF
+    name: menu_r53_button_dispatcher
+    system: menu
+    size: 134
+    calls: 4
+    description: Dispatches menu button rendering for R53 game mode based on button index (0-9)
+    source: 'top_500_analysis rank 429'
+
+  - address: 0x1A6AA6
+    name: menu_r57_flight_display_handler
+    system: menu
+    size: 850
+    calls: 14
+    description: Handles flight selection menu display with flight number formatting and aircraft type
+    source: 'top_500_analysis rank 430'
+
+  - address: 0x1A86C6
+    name: menu_r57_loadout_flight_display
+    system: menu
+    size: 572
+    calls: 14
+    description: Displays flight information in loadout selection screen
+    source: 'top_500_analysis rank 431'
+
+  - address: 0x11D346
+    name: ui_box_render_style1
+    system: ui
+    size: 66
+    calls: 2
+    description: Renders UI box with style 1 (raised/3D effect with +2 offset)
+    source: 'top_500_analysis rank 485'
+
+  - address: 0x11D388
+    name: ui_box_render_style3
+    system: ui
+    size: 66
+    calls: 2
+    description: Renders UI box with style 3 (different palette/shadow)
+    source: 'top_500_analysis rank 486'
+
+  - address: 0x11D3CA
+    name: ui_box_render_style3_alt
+    system: ui
+    size: 66
+    calls: 2
+    description: Renders UI box with alternate style 3 palette
+    source: 'top_500_analysis rank 487'
+
+  - address: 0x11FC1B
+    name: menu_pilot_select_validate
+    system: menu
+    size: 51
+    calls: 1
+    description: Validates and executes pilot selection from roster
+    source: 'top_500_analysis rank 488'
+
+  # GRAPHICS/TRANSITIONS
+  - address: 0x02978E
+    name: render_3d_polygon_visibility_test
+    system: graphics
+    size: 393
+    calls: 9
+    description: Tests polygon visibility using cross products and builds span records for rendering
+    source: 'top_500_analysis rank 465'
+
+  - address: 0x1298AB
+    name: ui_screen_transition_animate
+    system: graphics
+    size: 259
+    calls: 3
+    description: Animates screen transition effect with moving boxes
+    source: 'top_500_analysis rank 491'
+
+  - address: 0x1299AE
+    name: ui_grid_pattern_render
+    system: graphics
+    size: 217
+    calls: 3
+    description: Renders animated grid pattern for UI backgrounds
+    source: 'top_500_analysis rank 492'
+
+  - address: 0x129A87
+    name: ui_grid_pattern_render_alt
+    system: graphics
+    size: 217
+    calls: 3
+    description: Alternate grid pattern renderer (variant of 1299AE)
+    source: 'top_500_analysis rank 493'
+
+  # CAMPAIGN/SAVE SYSTEM
+  - address: 0x132182
+    name: campaign_squadron_data_load
+    system: campaign
+    size: 244
+    calls: 6
+    description: Loads squadron data from SQUAD.BIN file
+    source: 'top_500_analysis rank 497'
+
+  - address: 0x136133
+    name: campaign_save_temp_file_write
+    system: campaign
+    size: 368
+    calls: 17
+    description: Writes temporary campaign save file with state data
+    source: 'top_500_analysis rank 500'
+
+  - address: 0x13367B
+    name: ui_pilot_images_load_all
+    system: resource
+    size: 600
+    calls: 15
+    description: Loads pilot background, plane, and face images from resources
+    source: 'top_500_analysis rank 499'
+
+  # 3D RENDERING
+  - address: 0x04AAA4
+    name: farobj_calculate_screen_angle
+    system: graphics
+    size: 24
+    calls: 2
+    description: Calculates screen-space angle for far object rendering
+    source: 'top_500_analysis rank 480'
+
+  # PHYSICS/COLLISION
+  - address: 0x04AC1E
+    name: collision_layer_test_and_store
+    system: physics
+    size: 64
+    calls: 0
+    description: Tests collision between two objects and stores collision data
+    source: 'top_500_analysis rank 481'
+
+  - address: 0x04AE66
+    name: collision_aabb_distance_test
+    system: physics
+    size: 64
+    calls: 0
+    description: Tests if two AABBs are within threshold distance on all axes
+    source: 'top_500_analysis rank 482'
+
+  # AI SYSTEM
+  - address: 0x03F287
+    name: ai_waypoint_behavior_execute
+    system: ai
+    size: 289
+    calls: 5
+    description: Executes AI waypoint behavior, updating heading, pitch, and altitude targets
+    source: 'top_500_analysis rank 470'
+
+  - address: 0x047B68
+    name: entity_flags_update_state
+    system: entity
+    size: 94
+    calls: 1
+    description: Updates entity state flags and accumulates position vectors
+    source: 'top_500_analysis rank 477'
+
+  # TEXT SYSTEM
+  - address: 0x12BE93
+    name: ui_text_buffer_flush_to_screen
+    system: ui
+    size: 62
+    calls: 1
+    description: Flushes text buffer to screen display
+    source: 'top_500_analysis rank 494'
+
+  - address: 0x12BED1
+    name: ui_text_buffer_write_styled
+    system: ui
+    size: 61
+    calls: 1
+    description: Writes styled text to text buffer with formatting
+    source: 'top_500_analysis rank 495'
+
+  - address: 0x043842
+    name: hud_text_render_formatted
+    system: hud
+    size: 101
+    calls: 4
+    description: Renders formatted text to HUD display buffer with coordinate tracking
+    source: 'top_500_analysis rank 475'
+
+  # DATA MANAGEMENT
+  - address: 0x106B07
+    name: data_buffer_append_block
+    system: data
+    size: 32
+    calls: 0
+    description: Appends length-prefixed data block to buffer and updates cursor
+    source: 'top_500_analysis rank 484'
+
+  - address: 0x127FF6
+    name: data_struct_init_5params
+    system: data
+    size: 50
+    calls: 1
+    description: Initializes data structure with 5 parameters at segment 788Dh
+    source: 'top_500_analysis rank 489'
+
+  # STATE MANAGEMENT
+  - address: 0x03E01A
+    name: state_flags_increment_field
+    system: state
+    size: 20
+    calls: 0
+    description: Increments specific bit fields in state flags register at ds:15B4h
+    source: 'top_500_analysis rank 469'
+
+  # HARDWARE/NETWORK
+  - address: 0x12D4E3
+    name: netware_api_call_dispatch
+    system: hardware
+    size: 19
+    calls: 0
+    description: Dispatches Novell NetWare INT 7Ah API calls with function codes
+    source: 'top_500_analysis rank 496'
+
+  # INPUT SYSTEM
+  - address: 0x13296E
+    name: ui_numeric_input_handler
+    system: input
+    size: 408
+    calls: 11
+    description: Handles numeric text input with digit validation and backspace
+    source: 'top_500_analysis rank 498'
