@@ -250,6 +250,57 @@
 # SQUADRON STRUCTURES
 # ============================================================================
 
+- name: SquadronHeader
+  size: 60  # 0x3C bytes
+  description: |
+    Squadron metadata header from .SQU file.
+    Contains squadron slot, theater, and statistics.
+  evidence:
+    - file_format: SQUAD*.SQU file offset 0x00-0x3B
+    - analyzed: SQUAD0.SQU, SQUAD1.SQU headers
+  fields:
+    - offset: 0x00
+      name: squadron_slot
+      type: uint8_t
+      description: Squadron slot number (0-N)
+      evidence: SQUAD1.SQU byte 0 = 1
+      
+    - offset: 0x01
+      name: active_flag
+      type: uint8_t
+      description: Squadron active/enabled flag (0=inactive, 1=active, 0xFF=empty)
+      evidence: SQUAD0.SQU = 0, SQUAD1.SQU = 1, SQUAD2.SQU = 0xFF
+      
+    - offset: 0x02
+      name: theater_id
+      type: uint8_t  # TheaterID enum
+      description: Theater assignment (0=Israel, 1=Korea, etc.)
+      evidence: SQUAD1.SQU byte 2 = 0 (Israel theater)
+      
+    - offset: 0x03
+      name: theater_name
+      type: char[12]
+      description: Theater name string (null-padded)
+      evidence: SQUAD1.SQU bytes 3-14 = "Israel"
+      
+    - offset: 0x0F
+      name: wing_or_type
+      type: uint8_t
+      description: Wing assignment or squadron type
+      evidence: SQUAD1.SQU byte 0x0F = 4
+      
+    - offset: 0x10
+      name: statistics
+      type: uint8_t[44]
+      description: |
+        Squadron statistics (44 bytes):
+        - missions flown
+        - pilots active/killed/MIA
+        - kills (air, ground)
+        - awards
+        Layout TBD via menu analysis
+      evidence: Bytes 0x10-0x3B, strings from R45 menu
+
 - name: SquadronFile
   size: 2703  # 0xA8F bytes - EXACT SIZE FROM FILE SYSTEM
   description: |
