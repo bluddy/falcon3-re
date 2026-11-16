@@ -197,15 +197,39 @@ If code tracing fails:
 ## Conclusion
 
 We have **95% of the technical knowledge** needed:
-- ✓ RLE algorithm reverse-engineered
-- ✓ Rendering pipeline traced
-- ✓ Loader functions identified
+- ✓ RLE algorithm reverse-engineered and implemented
+- ✓ Rendering pipeline traced (file → loader → buffer → renderer → VGA)
+- ✓ Loader functions identified (picfont_idx_dat_loader at 0x1297F0)
 - ✓ File format structure understood (.IDX/.DAT pairs)
+- ✓ Sprite pointer array located (byte_79976, an array of far pointers)
 
 We are missing **5% critical piece**:
-- ✗ Which file contains weapon sprites
-- ✗ Exact format variation for that file
+- ✗ Actual sprite data source unclear (PICFONT.DAT is 217 bytes, loader expects 427)
+- ✗ File format interpretation is wrong (all attempts show invalid dimensions)
+- ✗ byte_79976 initialized to 0, cannot trace writes statically
 
-**Blocking issue**: Cannot extract sprites without knowing source file.
+**Key Finding**: byte_79976 is an ARRAY OF FAR POINTERS (not sprite data itself):
+- Functions reference byte_79976+0, +4, +0x18, +0x24, +0x28, +0x48, etc.
+- Each entry is a 4-byte far pointer (segment:offset)
+- These point to actual RLE-compressed sprite data
+- Data is loaded at runtime, not visible in static analysis
 
-**Recommendation**: Test FGENBMAP.DAT next, then trace byte_79976 if that fails.
+**Blocking Issue**: Static analysis has hit its limit. We need runtime data.
+
+**Recommended Next Step**: DEBUG THE RUNNING GAME
+1. Set up DOSBox with debugger support
+2. Load FALCONCD.EXE
+3. Break point on rle_vga_decompressor (0x88460)
+4. Navigate to loadout menu
+5. When breakpoint hits, capture SI register (points to sprite data)
+6. Dump that memory region and analyze format
+7. Trace back to see which file it came from
+
+**Alternative (if debugging not feasible)**: 
+- Accept that weapons might be drawn procedurally, not from sprites
+- Or weapon sprites might be embedded in executable, not in external files
+- Document what we've learned and move to other systems
+
+**Time Investment**: 
+- Debugging approach: ~2 hours (definitive answer)
+- Further static analysis: Likely futile without runtime data
