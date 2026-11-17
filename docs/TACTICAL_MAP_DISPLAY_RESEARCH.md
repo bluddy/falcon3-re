@@ -358,8 +358,8 @@ draw_from_struct(struct *draw_params) @ 0x02245A
 3. Where is the zoom factor stored and applied?
 4. Is there a camera/viewport structure?
 
-### Priority 2: Graphics Primitives ✅ PARTIALLY ANSWERED
-1. What screen resolution is used? (320x200, 640x480, mode 13h or mode 12h) - **TBD**
+### Priority 2: Graphics Primitives ✅ MOSTLY ANSWERED
+1. What screen resolution is used? - **320x200 256-color (VGA mode 13h)** ✅
 2. Are graphics drawn directly to VGA segment 0xA000 or to an off-screen buffer? - **TBD**
 3. What primitives exist? - **FOUND:**
    - **graphics_line_draw_bresenham** (0x028B08, 409 bytes) - Bresenham line algorithm
@@ -591,31 +591,36 @@ flight_record_handler          = 0x1231FB  # R29
 
 ## Completion Estimate
 
-**Current Status**: 35% complete (discovery + graphics primitives identified)
+**Current Status**: 40% complete (discovery + graphics + VGA mode confirmed)
 
 ### Breakdown
 - **Function Identification**: 90% complete (4 key functions found)
 - **Data Structure Identification**: 40% complete (sizes known, fields TBD)
-- **Coordinate Transformation**: 0% complete (needs algorithm analysis)
-- **Graphics Primitives**: 60% complete ⬆ (key functions found, algorithms partially known)
+- **Coordinate Transformation**: 0% complete (needs algorithm analysis) ⚠️ CRITICAL
+- **Graphics Primitives**: 70% complete ⬆ (key functions found, VGA mode confirmed)
   - ✅ Line drawing: graphics_line_draw_bresenham (Bresenham algorithm)
   - ✅ Rectangle fill: graphics_rect_fill_tiled
   - ✅ Text rendering: font_glyph_bitmap_render
   - ✅ Draw dispatcher: draw_from_struct (5-word struct pattern identified)
-  - ⏳ VGA mode: TBD
-  - ⏳ Screen buffer: TBD (0xA000 direct or off-screen?)
-- **Display Pipeline**: 50% complete ⬆ (hypothesis refined with draw_from_struct integration)
+  - ✅ VGA mode: 320x200 256-color (mode 13h)
+  - ⏳ Screen buffer: TBD (0xA000 direct or off-screen? Need to check Bresenham code)
+- **Display Pipeline**: 50% complete (hypothesis refined with draw_from_struct integration)
 - **IDA Documentation**: 30% complete (pointers named, functions need comments)
 
 ### To Reach 80-100%
-1. **Disassemble Functions** → +15% (critical for coordinate math)
-2. **Analyze Coordinate Math** → +25% (core algorithm understanding)
-3. **Verify Graphics Pipeline** → +10% (trace draw_from_struct calls from map code)
-4. **Document Data Structures** → +10% (18-byte input, 6-byte output, 5-word draw struct)
-5. **Trace Full Pipeline** → +5% (verify map → draw_from_struct flow)
-6. **IDA Sync and Comments** → +5% (documentation)
+1. **Disassemble waypoint_coordinate_processor** → +25% ⭐ CRITICAL (871 bytes, coordinate math)
+2. **Find zoom/camera variables** → +10% (world → screen transformation parameters)
+3. **Map data structure fields** → +10% (18-byte input, 6-byte output)
+4. **Verify graphics pipeline** → +5% (trace draw_from_struct calls from map code)
+5. **Verify VGA access** → +5% (check graphics_line_draw_bresenham for 0xA000 writes)
 
-**Total with all steps**: 35% + 70% = 105% → Target achieved at 100%
+**Total with all steps**: 40% + 55% = 95% → Target achieved
+
+**Critical Path**: waypoint_coordinate_processor disassembly is THE blocker.
+  - Contains coordinate transformation algorithm
+  - 871 bytes of code to analyze
+  - Requires IDA access
+  - Estimated 1-2 hours to fully understand
 
 ---
 
