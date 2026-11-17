@@ -1,0 +1,507 @@
+{
+  "goal": "Detailed damage system analysis",
+  "damage_event_dispatch": {
+    "name": "damage_event_dispatch_handler",
+    "address": "0x2eaa7",
+    "size": 190,
+    "disassembly": [
+      "0002EAA7: push    ds",
+      "0002EAA8: push    es",
+      "0002EAA9: mov     ax, cs",
+      "0002EAAB: mov     ds, ax",
+      "0002EAAD: mov     ax, 0",
+      "0002EAB0: mov     bx, 6",
+      "0002EAB3: call    r08_farptr_load_thunk",
+      "0002EAB8: mov     dx, 46h ; 'F'",
+      "0002EABB: jz      short loc_2EAC0",
+      "0002EABD: mov     dx, 52h ; 'R'",
+      "0002EAC0: call    op_dispatch",
+      "0002EAC5: mov     word_2EA26, ax",
+      "0002EAC8: mov     cx, 2",
+      "0002EACB: mov     bx, 0Ah",
+      "0002EACE: mov     dx, 18h",
+      "0002EAD1: call    op_dispatch",
+      "0002EAD6: mov     ax, word_2EA28",
+      "0002EAD9: push    ax",
+      "0002EADA: mov     bx, 0",
+      "0002EADD: call    op_dispatch",
+      "0002EAE2: mov     word_2EA54, ax",
+      "0002EAE5: mov     cx, 4",
+      "0002EAE8: xor     bx, bx",
+      "0002EAEA: push    cx",
+      "0002EAEB: push    bx",
+      "0002EAEC: mov     ax, word_2EA26",
+      "0002EAEF: mov     cx, 2",
+      "0002EAF2: mov     bx, 0Ah",
+      "0002EAF5: mov     dx, 18h",
+      "0002EAF8: call    op_dispatch",
+      "0002EAFD: mov     bp, sp",
+      "0002EAFF: mov     bx, [bp+0]",
+      "0002EB02: mov     ax, word_2EA28",
+      "0002EB05: mov     dx, word_2EA54",
+      "0002EB09: call    table_dword_set",
+      "0002EB0E: pop     bx",
+      "0002EB0F: pop     cx",
+      "0002EB10: inc     bx",
+      "0002EB11: loop    loc_2EAEA",
+      "0002EB13: call    r08_farptr_load_thunk",
+      "0002EB18: jz      short loc_2EB3B",
+      "0002EB1A: push    bx",
+      "0002EB1B: mov     ax, word_2EA26",
+      "0002EB1E: mov     cx, 2",
+      "0002EB21: mov     bx, 0Ah",
+      "0002EB24: mov     dx, 18h",
+      "0002EB27: call    op_dispatch",
+      "0002EB2C: pop     bx",
+      "0002EB2D: mov     ax, word_2EA28",
+      "0002EB30: mov     dx, word_2EA54",
+      "0002EB34: call    table_dword_set",
+      "0002EB39: jmp     short loc_2EB46",
+      "0002EB3B: mov     ax, 0FFFFh",
+      "0002EB3E: mov     dx, 0FFFFh",
+      "0002EB41: call    table_dword_set",
+      "0002EB46: mov     ax, word_2EA26",
+      "0002EB49: pop     cx",
+      "0002EB4A: push    ax",
+      "0002EB4B: xor     dx, dx",
+      "0002EB4D: mov     ds, word_2EA54",
+      "0002EB51: mov     bx, 0Ah",
+      "0002EB54: call    op_dispatch",
+      "0002EB59: pop     ax",
+      "0002EB5A: mov     bx, 8",
+      "0002EB5D: call    op_dispatch",
+      "0002EB62: pop     es",
+      "0002EB63: pop     ds",
+      "0002EB64: retf"
+    ],
+    "calls": [],
+    "data_refs": [
+      {
+        "offset": "0x58",
+        "operand": "[bp+0]",
+        "instruction": "mov     bx, [bp+0]"
+      }
+    ],
+    "constants": [
+      [
+        "46h",
+        70
+      ],
+      [
+        "52h",
+        82
+      ],
+      [
+        "0Ah",
+        10
+      ],
+      [
+        "18h",
+        24
+      ],
+      [
+        "0FFFFh",
+        65535
+      ]
+    ],
+    "callers": [
+      {
+        "name": "ems_farptr_table_init",
+        "call_site": "0x2eb6f"
+      }
+    ]
+  },
+  "subsystem_storage": [
+    {
+      "offset": "0x58",
+      "instruction": "mov     bx, [bp+0]",
+      "address": "0x2eaff"
+    }
+  ],
+  "damage_dispatch_patterns": [],
+  "impact_detection": {
+    "store_impact_step": {
+      "name": "store_impact_step",
+      "address": "0x397fb",
+      "size": 169,
+      "disassembly": [
+        "000397FB: call    ems_state_flags_709f",
+        "00039800: test    ax, 1",
+        "00039803: jz      short loc_39815",
+        "00039805: mov     ax, [si+7Ah]",
+        "00039808: sub     ax, ds:1360h",
+        "0003980C: call    entity_record_table_ops",
+        "00039811: jnz     short loc_39815",
+        "00039813: stc",
+        "00039814: retn",
+        "00039815: push    si",
+        "00039816: mov     ax, [si+7Ah]",
+        "00039819: push    ax",
+        "0003981A: neg     dx",
+        "0003981C: cmp     dx, 28h ; '('",
+        "0003981F: jge     short loc_39824",
+        "00039821: mov     dx, 28h ; '('",
+        "00039824: cmp     dx, 0FFh",
+        "00039828: jle     short loc_3982D",
+        "0003982A: mov     dx, 0FFh",
+        "0003982D: mov     bl, 10h",
+        "0003982F: mov     bh, dl",
+        "00039831: mov     bp, 0FFFFh",
+        "00039834: call    loc_41167",
+        "00039839: pop     ax",
+        "0003983A: pop     si",
+        "0003983B: call    r12_farptr_load_thunk",
+        "00039840: cmp     word ptr [di+0Ch], 4",
+        "00039844: jnz     short loc_39881",
+        "00039846: mov     bx, 0F09h",
+        "00039849: xor     cl, cl",
+        "0003984B: cmp     byte ptr [di+10h], 0FFh",
+        "0003984F: jnz     short loc_39853",
+        "00039851: mov     cl, 1",
+        "00039853: push    si",
+        "00039854: push    di",
+        "00039855: mov     dx, [si+50h]",
+        "00039858: mov     bp, [si+52h]",
+        "0003985B: mov     di, 0",
+        "0003985E: call    sprite_clip_bounds_check",
+        "00039863: pop     di",
+        "00039864: pop     si",
+        "00039865: cmp     byte ptr [di+10h], 0FFh",
+        "00039869: jz      short loc_39879",
+        "0003986B: mov     ax, 9",
+        "0003986E: push    si",
+        "0003986F: push    di",
+        "00039870: call    farobj_index_range_check",
+        "00039875: pop     di",
+        "00039876: pop     si",
+        "00039877: jmp     short loc_3987D",
+        "00039879: mov     byte ptr [di+10h], 0A0h",
+        "0003987D: or      byte ptr [si+74h], 4",
+        "00039881: mov     word ptr [si+34h], 0",
+        "00039886: mov     word ptr [si+36h], 0",
+        "0003988B: mov     word ptr [si+38h], 0",
+        "00039890: mov     ax, [si+14h]",
+        "00039893: mov     bx, ds:1356h",
+        "00039897: imul    bx",
+        "00039899: shl     ax, 1",
+        "0003989B: rcl     dx, 1",
+        "0003989D: shr     dx, 1",
+        "0003989F: mov     [si+14h], dx",
+        "000398A2: clc",
+        "000398A3: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0xa",
+          "operand": "[si+7Ah]",
+          "instruction": "mov     ax, [si+7Ah]"
+        },
+        {
+          "offset": "0x1b",
+          "operand": "[si+7Ah]",
+          "instruction": "mov     ax, [si+7Ah]"
+        },
+        {
+          "offset": "0x45",
+          "operand": "word ptr [di+0Ch]",
+          "instruction": "cmp     word ptr [di+0Ch], 4"
+        },
+        {
+          "offset": "0x50",
+          "operand": "byte ptr [di+10h]",
+          "instruction": "cmp     byte ptr [di+10h], 0FFh"
+        },
+        {
+          "offset": "0x5a",
+          "operand": "[si+50h]",
+          "instruction": "mov     dx, [si+50h]"
+        },
+        {
+          "offset": "0x5d",
+          "operand": "[si+52h]",
+          "instruction": "mov     bp, [si+52h]"
+        },
+        {
+          "offset": "0x6a",
+          "operand": "byte ptr [di+10h]",
+          "instruction": "cmp     byte ptr [di+10h], 0FFh"
+        },
+        {
+          "offset": "0x7e",
+          "operand": "byte ptr [di+10h]",
+          "instruction": "mov     byte ptr [di+10h], 0A0h"
+        },
+        {
+          "offset": "0x82",
+          "operand": "byte ptr [si+74h]",
+          "instruction": "or      byte ptr [si+74h], 4"
+        },
+        {
+          "offset": "0x86",
+          "operand": "word ptr [si+34h]",
+          "instruction": "mov     word ptr [si+34h], 0"
+        },
+        {
+          "offset": "0x8b",
+          "operand": "word ptr [si+36h]",
+          "instruction": "mov     word ptr [si+36h], 0"
+        },
+        {
+          "offset": "0x90",
+          "operand": "word ptr [si+38h]",
+          "instruction": "mov     word ptr [si+38h], 0"
+        },
+        {
+          "offset": "0x95",
+          "operand": "[si+14h]",
+          "instruction": "mov     ax, [si+14h]"
+        },
+        {
+          "offset": "0x98",
+          "operand": "ds:1356h",
+          "instruction": "mov     bx, ds:1356h"
+        },
+        {
+          "offset": "0xa4",
+          "operand": "[si+14h]",
+          "instruction": "mov     [si+14h], dx"
+        }
+      ],
+      "constants": [
+        [
+          "28h",
+          40
+        ],
+        [
+          "0FFh",
+          255
+        ],
+        [
+          "10h",
+          16
+        ],
+        [
+          "0FFFFh",
+          65535
+        ],
+        [
+          "0F09h",
+          3849
+        ]
+      ],
+      "callers": [
+        {
+          "name": "tile_sprite_strip_project",
+          "call_site": "0x397d0"
+        },
+        {
+          "name": "tile_sprite_strip_project",
+          "call_site": "0x397db"
+        }
+      ]
+    },
+    "collision_layer_test_and_store": {
+      "name": "collision_layer_test_and_store",
+      "address": "0x4ac1e",
+      "size": 64,
+      "disassembly": [
+        "0004AC1E: mov     al, [si+0Ch]",
+        "0004AC21: and     al, [di+0Ch]",
+        "0004AC24: test    al, 1",
+        "0004AC26: jz      short locret_4AC32",
+        "0004AC28: mov     al, [si+0Ch]",
+        "0004AC2B: xor     al, [di+0Ch]",
+        "0004AC2E: test    al, 2",
+        "0004AC30: jnz     short loc_4AC33",
+        "0004AC32: retn",
+        "0004AC33: cmp     word ptr [di], 0",
+        "0004AC36: jnz     short loc_4AC4B",
+        "0004AC38: test    word ptr [si+0Ah], 20h",
+        "0004AC3D: jz      short loc_4AC40",
+        "0004AC3F: retn",
+        "0004AC40: or      word ptr [si+0Ah], 20h",
+        "0004AC44: mov     [si+16h], di",
+        "0004AC47: mov     [si+18h], dx",
+        "0004AC4A: retn",
+        "0004AC4B: test    word ptr [si+0Ah], 40h",
+        "0004AC50: jz      short loc_4AC53",
+        "0004AC52: retn",
+        "0004AC53: or      word ptr [si+0Ah], 40h",
+        "0004AC57: mov     [si+1Ah], di",
+        "0004AC5A: mov     [si+1Ch], dx",
+        "0004AC5D: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x0",
+          "operand": "[si+0Ch]",
+          "instruction": "mov     al, [si+0Ch]"
+        },
+        {
+          "offset": "0x3",
+          "operand": "[di+0Ch]",
+          "instruction": "and     al, [di+0Ch]"
+        },
+        {
+          "offset": "0xa",
+          "operand": "[si+0Ch]",
+          "instruction": "mov     al, [si+0Ch]"
+        },
+        {
+          "offset": "0x15",
+          "operand": "word ptr [di]",
+          "instruction": "cmp     word ptr [di], 0"
+        },
+        {
+          "offset": "0x1a",
+          "operand": "word ptr [si+0Ah]",
+          "instruction": "test    word ptr [si+0Ah], 20h"
+        },
+        {
+          "offset": "0x22",
+          "operand": "word ptr [si+0Ah]",
+          "instruction": "or      word ptr [si+0Ah], 20h"
+        },
+        {
+          "offset": "0x26",
+          "operand": "[si+16h]",
+          "instruction": "mov     [si+16h], di"
+        },
+        {
+          "offset": "0x29",
+          "operand": "[si+18h]",
+          "instruction": "mov     [si+18h], dx"
+        },
+        {
+          "offset": "0x2d",
+          "operand": "word ptr [si+0Ah]",
+          "instruction": "test    word ptr [si+0Ah], 40h"
+        },
+        {
+          "offset": "0x35",
+          "operand": "word ptr [si+0Ah]",
+          "instruction": "or      word ptr [si+0Ah], 40h"
+        },
+        {
+          "offset": "0x39",
+          "operand": "[si+1Ah]",
+          "instruction": "mov     [si+1Ah], di"
+        },
+        {
+          "offset": "0x3c",
+          "operand": "[si+1Ch]",
+          "instruction": "mov     [si+1Ch], dx"
+        }
+      ],
+      "constants": [],
+      "callers": [
+        {
+          "name": "undoc_4AB06",
+          "call_site": "0x4ab6b"
+        },
+        {
+          "name": "undoc_4AB06",
+          "call_site": "0x4ab70"
+        },
+        {
+          "name": "undoc_4AB06",
+          "call_site": "0x4abf0"
+        },
+        {
+          "name": "undoc_4AB06",
+          "call_site": "0x4abfa"
+        },
+        {
+          "name": "undoc_4AB06",
+          "call_site": "0x4ac0e"
+        },
+        {
+          "name": "undoc_4AB06",
+          "call_site": "0x4ac18"
+        }
+      ]
+    },
+    "collision_aabb_distance_test": {
+      "name": "collision_aabb_distance_test",
+      "address": "0x4ae66",
+      "size": 64,
+      "disassembly": [
+        "0004AE66: mov     bx, 0",
+        "0004AE69: mov     cx, 2",
+        "0004AE6C: add     cx, ax",
+        "0004AE6E: mov     ax, es:[di]",
+        "0004AE71: mov     dx, es:[di+2]",
+        "0004AE75: sub     ax, [si]",
+        "0004AE77: sbb     dx, [si+2]",
+        "0004AE7A: jns     short loc_4AE88",
+        "0004AE7C: jz      short loc_4AE88",
+        "0004AE7E: not     ax",
+        "0004AE80: not     dx",
+        "0004AE82: add     ax, 1",
+        "0004AE85: adc     dx, 0",
+        "0004AE88: cmp     dx, 0",
+        "0004AE8B: jnz     short loc_4AEA3",
+        "0004AE8D: cmp     ax, bp",
+        "0004AE8F: ja      short loc_4AEA3",
+        "0004AE91: cmp     ax, bx",
+        "0004AE93: jbe     short loc_4AE97",
+        "0004AE95: mov     bx, ax",
+        "0004AE97: add     si, 4",
+        "0004AE9A: add     di, 4",
+        "0004AE9D: loop    loc_4AE6E",
+        "0004AE9F: mov     ax, 1",
+        "0004AEA2: retn",
+        "0004AEA3: xor     ax, ax",
+        "0004AEA5: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x8",
+          "operand": "es:[di]",
+          "instruction": "mov     ax, es:[di]"
+        },
+        {
+          "offset": "0xb",
+          "operand": "es:[di+2]",
+          "instruction": "mov     dx, es:[di+2]"
+        }
+      ],
+      "constants": [],
+      "callers": [
+        {
+          "name": "entity_move_project_step",
+          "call_site": "0x4a4a2"
+        },
+        {
+          "name": "undoc_4A505",
+          "call_site": "0x4a778"
+        },
+        {
+          "name": "mode_record_field_lookup",
+          "call_site": "0x4a857"
+        },
+        {
+          "name": "undoc_4A9E9",
+          "call_site": "0x4aa0c"
+        },
+        {
+          "name": "undoc_4B1E3",
+          "call_site": "0x4b203"
+        },
+        {
+          "name": "undoc_4B251",
+          "call_site": "0x4b271"
+        }
+      ]
+    }
+  },
+  "summary": {
+    "damage_handler_size": 190,
+    "damage_handler_calls": 0,
+    "subsystem_refs": 1,
+    "dispatch_patterns": 0
+  }
+}

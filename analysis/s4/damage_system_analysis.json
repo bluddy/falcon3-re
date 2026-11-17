@@ -1,0 +1,505 @@
+{
+  "goal": "Analyze damage model - subsystem damage on impact/crash",
+  "damage_functions": [
+    {
+      "name": "subsystem_init_multi_call",
+      "address": "0x122ae",
+      "size": 114,
+      "keyword": "subsystem"
+    },
+    {
+      "name": "terrain_attr_default_60",
+      "address": "0x12f1d",
+      "size": 10,
+      "keyword": "fault"
+    },
+    {
+      "name": "ds_swap_fail_ret",
+      "address": "0x13177",
+      "size": 21,
+      "keyword": "fail"
+    },
+    {
+      "name": "config_defaults_init",
+      "address": "0x229dd",
+      "size": 103,
+      "keyword": "fault"
+    },
+    {
+      "name": "view_proj_default",
+      "address": "0x23235",
+      "size": 41,
+      "keyword": "fault"
+    },
+    {
+      "name": "config_defaults_table_load",
+      "address": "0x2a96c",
+      "size": 142,
+      "keyword": "fault"
+    },
+    {
+      "name": "damage_event_dispatch_handler",
+      "address": "0x2eaa7",
+      "size": 190,
+      "keyword": "damage"
+    },
+    {
+      "name": "view_extent_default_reset",
+      "address": "0x34b01",
+      "size": 145,
+      "keyword": "fault"
+    },
+    {
+      "name": "sprite_pos_default_a032",
+      "address": "0x35d59",
+      "size": 71,
+      "keyword": "fault"
+    },
+    {
+      "name": "store_impact_step",
+      "address": "0x397fb",
+      "size": 169,
+      "keyword": "impact"
+    },
+    {
+      "name": "weapon_spawn_gate_validate",
+      "address": "0x3dc55",
+      "size": 501,
+      "keyword": "weapon"
+    },
+    {
+      "name": "ai_weapon_range_check",
+      "address": "0x3de4a",
+      "size": 37,
+      "keyword": "weapon"
+    },
+    {
+      "name": "ai_weapon_fire_check",
+      "address": "0x3ded9",
+      "size": 69,
+      "keyword": "weapon"
+    },
+    {
+      "name": "collision_layer_test_and_store",
+      "address": "0x4ac1e",
+      "size": 64,
+      "keyword": "collision"
+    },
+    {
+      "name": "collision_aabb_distance_test",
+      "address": "0x4ae66",
+      "size": 64,
+      "keyword": "collision"
+    },
+    {
+      "name": "weapon_type_initialize_dispatch",
+      "address": "0x4c19e",
+      "size": 548,
+      "keyword": "weapon"
+    },
+    {
+      "name": "weapon_helper_4d75f",
+      "address": "0x4d75f",
+      "size": 99,
+      "keyword": "weapon"
+    },
+    {
+      "name": "ui_loadout_weapon_selector",
+      "address": "0x1632cd",
+      "size": 517,
+      "keyword": "weapon"
+    },
+    {
+      "name": "menu_weapon_compatibility_check",
+      "address": "0x163c88",
+      "size": 69,
+      "keyword": "weapon"
+    },
+    {
+      "name": "ui_loadout_state_update_weapon",
+      "address": "0x163ccd",
+      "size": 102,
+      "keyword": "weapon"
+    },
+    {
+      "name": "menu_loadout_weapon_data_get",
+      "address": "0x163d33",
+      "size": 138,
+      "keyword": "weapon"
+    },
+    {
+      "name": "harpoon_missile_dat_loader",
+      "address": "0x1779a6",
+      "size": 511,
+      "keyword": "missile"
+    }
+  ],
+  "subsystem_data": [],
+  "collision_detection": [
+    {
+      "name": "view_bounds_distribute",
+      "address": "0x20ac1",
+      "size": 104
+    },
+    {
+      "name": "clip_bounds_save_far_thunk",
+      "address": "0x25849",
+      "size": 4
+    },
+    {
+      "name": "clip_bounds_save_2546c",
+      "address": "0x2584d",
+      "size": 33
+    },
+    {
+      "name": "clip_bounds_restore_far_thunk",
+      "address": "0x2586e",
+      "size": 4
+    },
+    {
+      "name": "clip_bounds_restore_25450",
+      "address": "0x25872",
+      "size": 33
+    },
+    {
+      "name": "mouse_bounds_clamp_25474",
+      "address": "0x2598a",
+      "size": 47
+    },
+    {
+      "name": "mouse_bounds_load_25474",
+      "address": "0x25a1c",
+      "size": 21
+    },
+    {
+      "name": "view_bounds_shadow_28e26",
+      "address": "0x28aa7",
+      "size": 33
+    },
+    {
+      "name": "ui_bounds_clip_entry",
+      "address": "0x2a248",
+      "size": 198
+    },
+    {
+      "name": "uibounds_top_bottom_dispatch",
+      "address": "0x2a30e",
+      "size": 50
+    },
+    {
+      "name": "uibounds_left_right_dispatch",
+      "address": "0x2a340",
+      "size": 54
+    },
+    {
+      "name": "uibounds_set_left_20",
+      "address": "0x2a376",
+      "size": 31
+    },
+    {
+      "name": "uibounds_set_right_40",
+      "address": "0x2a396",
+      "size": 31
+    },
+    {
+      "name": "uibounds_set_top_80",
+      "address": "0x2a3b6",
+      "size": 32
+    },
+    {
+      "name": "uibounds_set_bottom_100",
+      "address": "0x2a3d6",
+      "size": 32
+    },
+    {
+      "name": "uibounds_clip_horiz_body",
+      "address": "0x2a3f6",
+      "size": 290
+    },
+    {
+      "name": "uibounds_clip_vert_body",
+      "address": "0x2a518",
+      "size": 321
+    },
+    {
+      "name": "sprite_clip_bounds_check",
+      "address": "0x2e20a",
+      "size": 95
+    },
+    {
+      "name": "coord_window_bounds_test",
+      "address": "0x31ebf",
+      "size": 538
+    },
+    {
+      "name": "far_cb_rect_bounds",
+      "address": "0x36f82",
+      "size": 42
+    },
+    {
+      "name": "rect_bounds_test_6e",
+      "address": "0x37022",
+      "size": 47
+    },
+    {
+      "name": "floor_bounds_set_9f",
+      "address": "0x39d6c",
+      "size": 27
+    },
+    {
+      "name": "farobj_dist_bounds_4ac0",
+      "address": "0x3aa1c",
+      "size": 80
+    },
+    {
+      "name": "flight_kinematics_bounds_check",
+      "address": "0x3b618",
+      "size": 45
+    },
+    {
+      "name": "ai_index_bounds_check",
+      "address": "0x3f603",
+      "size": 35
+    },
+    {
+      "name": "farobj_angle_distance_gate",
+      "address": "0x3fbcc",
+      "size": 154
+    },
+    {
+      "name": "ai_distance_threshold_check",
+      "address": "0x3fc66",
+      "size": 123
+    },
+    {
+      "name": "ai_distance_range_check",
+      "address": "0x408e7",
+      "size": 24
+    },
+    {
+      "name": "hud_track_distance_draw",
+      "address": "0x426cc",
+      "size": 101
+    },
+    {
+      "name": "viewport_bounds_setup",
+      "address": "0x487b2",
+      "size": 17
+    }
+  ],
+  "aircraft_slot_flags": {
+    "error": "aircraft_slot_cycle_step not found"
+  },
+  "weapon_impact": [
+    {
+      "name": "weapon_spawn_gate_validate",
+      "address": "0x3dc55",
+      "size": 501,
+      "has_damage_call": false
+    },
+    {
+      "name": "ai_weapon_range_check",
+      "address": "0x3de4a",
+      "size": 37,
+      "has_damage_call": false
+    },
+    {
+      "name": "ai_weapon_fire_check",
+      "address": "0x3ded9",
+      "size": 69,
+      "has_damage_call": false
+    },
+    {
+      "name": "weapon_type_initialize_dispatch",
+      "address": "0x4c19e",
+      "size": 548,
+      "has_damage_call": false
+    },
+    {
+      "name": "weapon_helper_4d75f",
+      "address": "0x4d75f",
+      "size": 99,
+      "has_damage_call": false
+    },
+    {
+      "name": "ui_loadout_weapon_selector",
+      "address": "0x1632cd",
+      "size": 517,
+      "has_damage_call": false
+    },
+    {
+      "name": "menu_weapon_compatibility_check",
+      "address": "0x163c88",
+      "size": 69,
+      "has_damage_call": false
+    },
+    {
+      "name": "ui_loadout_state_update_weapon",
+      "address": "0x163ccd",
+      "size": 102,
+      "has_damage_call": false
+    },
+    {
+      "name": "menu_loadout_weapon_data_get",
+      "address": "0x163d33",
+      "size": 138,
+      "has_damage_call": false
+    },
+    {
+      "name": "harpoon_missile_dat_loader",
+      "address": "0x1779a6",
+      "size": 511,
+      "has_damage_call": false
+    }
+  ],
+  "damage_strings": [
+    {
+      "address": "0x55cb6",
+      "string": "ecm pod"
+    },
+    {
+      "address": "0x579c5",
+      "string": "i'm already engaged!"
+    },
+    {
+      "address": "0x579f1",
+      "string": "copy disengage...will resume."
+    },
+    {
+      "address": "0x57a0f",
+      "string": "i'm not engaged."
+    },
+    {
+      "address": "0x57b55",
+      "string": "be advised - fuel is low!"
+    },
+    {
+      "address": "0x57b6f",
+      "string": "fuel critical! fuel critical!"
+    },
+    {
+      "address": "0x57bdb",
+      "string": "request permission to engage."
+    },
+    {
+      "address": "0x57c17",
+      "string": "engaging!"
+    },
+    {
+      "address": "0x57e33",
+      "string": "radar contact+nnn degrees+nn miles."
+    },
+    {
+      "address": "0x57ec1",
+      "string": "from awacs: be advised - enemy ecm activity detect"
+    },
+    {
+      "address": "0x57f2e",
+      "string": "from awacs: you are violating rules of engagement!"
+    },
+    {
+      "address": "0x84700",
+      "string": "no fuel--waiting for resupply"
+    },
+    {
+      "address": "0x105f82",
+      "string": "connection failed"
+    },
+    {
+      "address": "0x12b342",
+      "string": "please select one"
+    },
+    {
+      "address": "0x12b48d",
+      "string": "use modem defaults?"
+    },
+    {
+      "address": "0x12b4a9",
+      "string": "connection failed"
+    },
+    {
+      "address": "0x12b63a",
+      "string": "your challenge"
+    },
+    {
+      "address": "0x12b7b4",
+      "string": "failure.   press"
+    },
+    {
+      "address": "0x14ff88",
+      "string": "radar site"
+    },
+    {
+      "address": "0x15010e",
+      "string": "radar missiles"
+    },
+    {
+      "address": "0x15023a",
+      "string": "radar"
+    },
+    {
+      "address": "0x1503ba",
+      "string": "radar"
+    },
+    {
+      "address": "0x15046d",
+      "string": "fuel300"
+    },
+    {
+      "address": "0x150475",
+      "string": "fuel370"
+    },
+    {
+      "address": "0x1510f4",
+      "string": "-alq-131 ecm pods: "
+    },
+    {
+      "address": "0x15111b",
+      "string": "pounds of fuel remaining: "
+    },
+    {
+      "address": "0x151199",
+      "string": ". possible radar activities."
+    },
+    {
+      "address": "0x1515f5",
+      "string": "y0.`default load"
+    },
+    {
+      "address": "0x1518bd",
+      "string": "!3.`radar missiles"
+    },
+    {
+      "address": "0x151947",
+      "string": "3.`select insignia"
+    },
+    {
+      "address": "0x15195b",
+      "string": "3.`select squadron"
+    },
+    {
+      "address": "0x189ad8",
+      "string": " damaged a primary target."
+    },
+    {
+      "address": "0x189cf7",
+      "string": "mission failure."
+    },
+    {
+      "address": "0x189de3",
+      "string": " for violating rules of engagement."
+    },
+    {
+      "address": "0x189eec",
+      "string": "mission failure."
+    }
+  ],
+  "summary": {
+    "damage_functions": 22,
+    "subsystem_variables": 0,
+    "collision_functions": 30,
+    "weapon_functions": 10,
+    "weapon_with_damage_calls": 0,
+    "damage_strings": 35
+  }
+}
