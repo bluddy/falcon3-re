@@ -1,0 +1,93 @@
+{
+  "sad_strings": [],
+  "hfr_strings": [],
+  "mode_switch_function": {
+    "name": "key_mode_switch_step",
+    "address": "0x33116",
+    "size": 206,
+    "disassembly": [
+      "00033116: call    key_state_machine_tick",
+      "00033119: cmp     cs:byte_2F6A9, 0",
+      "0003311F: jz      short loc_33124",
+      "00033121: jmp     near ptr key_mode_state_setup",
+      "00033124: mov     byte_55156, 0",
+      "00033129: mov     word_55034, 0FFFFh",
+      "0003312F: mov     ax, cs:word_2F667",
+      "00033133: add     ax, word_55E50",
+      "00033137: call    entity_search_63fd",
+      "0003313C: cmp     ax, 0FFFFh",
+      "0003313F: jz      short loc_33146",
+      "00033141: mov     word_55034, ax",
+      "00033144: jmp     short loc_33149",
+      "00033146: call    near ptr farobj_selection_gate",
+      "00033149: mov     word_54EFA, 1",
+      "0003314F: mov     word_54E42, offset aTrack; \"TRACK\" ...",
+      "00033155: mov     word_54E44, ds",
+      "00033159: call    mode_extent_recompute",
+      "0003315C: mov     word_54F9B, (offset loc_31BD6 - offset funcs_4E5C0)",
+      "00033162: mov     word_54F9D, cs",
+      "00033166: mov     ax, cs:word_2F669",
+      "0003316A: mov     cs:word_2F695, ds",
+      "0003316F: mov     cs:word_2F693, ax",
+      "00033173: retf",
+      "00033174: cmp     word_54F81, 0FFFFh",
+      "00033179: jz      short locret_3319D",
+      "0003317B: mov     word_54EFA, 0Ch",
+      "00033181: mov     byte_55156, 0",
+      "00033186: mov     word_54E42, offset aEject; \"EJECT\" ...",
+      "0003318C: mov     word_54E44, ds",
+      "00033190: call    mode_extent_recompute",
+      "00033193: mov     word_54F9B, (offset loc_31C34 - offset funcs_4E5C0)",
+      "00033199: mov     word_54F9D, cs",
+      "0003319D: retf",
+      "0003319E: mov     word_54EFA, 0Bh",
+      "000331A4: mov     byte_55156, 0",
+      "000331A9: mov     word_54E42, offset aDeath; \"DEATH\" ...",
+      "000331AF: mov     word_54E44, ds",
+      "000331B3: call    mode_extent_recompute",
+      "000331B6: mov     word_54F9B, (offset loc_31C5C+2 - offset funcs_4E5C0)",
+      "000331BC: mov     word_54F9D, cs",
+      "000331C0: retf",
+      "000331C1: mov     word_54EFA, 0Dh",
+      "000331C7: mov     byte_55156, 0",
+      "000331CC: mov     word_54E42, offset aPause; \"PAUSE\" ...",
+      "000331D2: mov     word_54E44, ds",
+      "000331D6: call    mode_extent_recompute",
+      "000331D9: mov     word_54F9B, (offset loc_31C7F+2 - offset funcs_4E5C0)",
+      "000331DF: mov     word_54F9D, cs",
+      "000331E3: retf"
+    ],
+    "string_references": [
+      {
+        "offset": "0x39",
+        "address": "0x3314f",
+        "string_addr": "0x54dfd",
+        "string": "TRACK",
+        "instruction": "mov     word_54E42, offset aTrack; \"TRACK\" ..."
+      },
+      {
+        "offset": "0x70",
+        "address": "0x33186",
+        "string_addr": "0x54e1f",
+        "string": "EJECT",
+        "instruction": "mov     word_54E42, offset aEject; \"EJECT\" ..."
+      },
+      {
+        "offset": "0x93",
+        "address": "0x331a9",
+        "string_addr": "0x54e25",
+        "string": "DEATH",
+        "instruction": "mov     word_54E42, offset aDeath; \"DEATH\" ..."
+      },
+      {
+        "offset": "0xb6",
+        "address": "0x331cc",
+        "string_addr": "0x54e3c",
+        "string": "PAUSE",
+        "instruction": "mov     word_54E42, offset aPause; \"PAUSE\" ..."
+      }
+    ]
+  },
+  "three_letter_strings": [],
+  "mode_string_tables": []
+}

@@ -1,0 +1,2803 @@
+{
+  "scancode_handlers": {
+    "F1": [
+      {
+        "function": "overlay_loader_main",
+        "address": "0x2cce8",
+        "scan_code": "0x3b",
+        "context": [
+          "0002CCE8: cmp     al, 3Bh ; ';'",
+          "0002CCEA: jz      short loc_2CCF1",
+          "0002CCEC: stosb",
+          "0002CCED: mov     ah, al",
+          "0002CCEF: jmp     short loc_2CCE3",
+          "0002CCF1: or      di, di",
+          "0002CCF3: jz      short loc_2CD0B",
+          "0002CCF5: mov     bl, al",
+          "0002CCF7: cmp     ah, 5Ch ; '\\'",
+          "0002CCFA: jz      short loc_2CD04"
+        ]
+      },
+      {
+        "function": "farobj_utility_1819",
+        "address": "0x4c991",
+        "scan_code": "0x3b",
+        "context": [
+          "0004C991: cmp     bx, 3Bh ; ';'",
+          "0004C994: jnz     short loc_4C9DD",
+          "0004C996: mov     [si], bp",
+          "0004C998: mov     byte ptr [si+2], 4Dh ; 'M'",
+          "0004C99C: mov     byte ptr [si+3], 0FFh",
+          "0004C9A0: mov     [si+4], bp",
+          "0004C9A3: mov     word ptr [si+6], 0Eh",
+          "0004C9A8: mov     word ptr [si+8], 12FCh",
+          "0004C9AD: mov     word ptr [si+0Ah], 18h",
+          "0004C9B2: call    fixed_vec3_accumulate_a; fixed_vec3_accumulate_a - 3D Vector Math Core (68 bytes)"
+        ]
+      }
+    ],
+    "F2": [
+      {
+        "function": "farobj_scan_74_gate_a",
+        "address": "0x34175",
+        "scan_code": "0x3c",
+        "context": [
+          "00034175: cmp     word ptr es:[di+24h], 3Ch ; '<'",
+          "0003417A: jl      short loc_3418B",
+          "0003417C: mov     ax, es:[di+7Ah]",
+          "00034180: call    ai_farptr_table_get",
+          "00034185: or      word ptr es:[di+24h], 8000h",
+          "0003418B: add     bx, 4",
+          "0003418E: loop    loc_3416C",
+          "00034190: pop     es",
+          "00034191: pop     ds",
+          "00034192: retf"
+        ]
+      },
+      {
+        "function": "ai_context_batch_processor",
+        "address": "0x4967f",
+        "scan_code": "0x3c",
+        "context": [
+          "0004967F: cmp     bx, 3Ch ; '<'",
+          "00049682: jle     short loc_496AD",
+          "00049684: pop     ax",
+          "00049685: call    farobj_copy_cond",
+          "0004968A: pop     si",
+          "0004968B: or      byte ptr [si], 2",
+          "0004968E: mov     bx, 0Dh",
+          "00049691: cmp     cs:byte_49609, 0",
+          "00049697: jz      short loc_4969F",
+          "00049699: mov     bx, 17h"
+        ]
+      },
+      {
+        "function": "farobj_utility_1819",
+        "address": "0x4c9dd",
+        "scan_code": "0x3c",
+        "context": [
+          "0004C9DD: cmp     bx, 3Ch ; '<'",
+          "0004C9E0: jnz     short loc_4CA05",
+          "0004C9E2: mov     [si], bp",
+          "0004C9E4: mov     byte ptr [si+2], 6Ch ; 'l'",
+          "0004C9E8: mov     cx, cs:word_4C1FF",
+          "0004C9ED: mov     [si+3], cl",
+          "0004C9F0: mov     word ptr [si+6], 6",
+          "0004C9F5: mov     word ptr [si+1Fh], 2F78h",
+          "0004C9FA: mov     word ptr [si+21h], 6",
+          "0004C9FF: mov     byte ptr [si+23h], 1"
+        ]
+      },
+      {
+        "function": "overlay_undecoded_body_106cd1",
+        "address": "0x106d12",
+        "scan_code": "0x3c",
+        "context": [
+          "00106D12: cmp     byte ptr ds:43h, 3Ch ; '<'",
+          "00106D17: ja      short loc_106D73",
+          "00106D19: mov     [bx+0AD5h], al",
+          "00106D1D: inc     bx",
+          "00106D1E: mov     byte ptr [bx+0AD5h], 0",
+          "00106D23: mov     ds:43h, bl",
+          "00106D27: jmp     short loc_106D73",
+          "00106D29: jmp     short loc_106D8B",
+          "00106D2B: or      bx, bx",
+          "00106D2D: jz      short loc_106D73"
+        ]
+      },
+      {
+        "function": "undoc_109139",
+        "address": "0x109154",
+        "scan_code": "0x3c",
+        "context": [
+          "00109154: cmp     cs:word_107660, 3Ch ; '<'",
+          "0010915A: jge     short loc_10915D",
+          "0010915C: retn",
+          "0010915D: mov     cs:word_107660, 0",
+          "00109164: inc     cs:word_10765E",
+          "00109169: cmp     cs:word_10765E, 3Ch ; '<'",
+          "0010916F: jge     short loc_109172",
+          "00109171: retn",
+          "00109172: mov     cs:word_10765E, 0",
+          "00109179: inc     cs:word_107662"
+        ]
+      },
+      {
+        "function": "undoc_109139",
+        "address": "0x109169",
+        "scan_code": "0x3c",
+        "context": [
+          "00109169: cmp     cs:word_10765E, 3Ch ; '<'",
+          "0010916F: jge     short loc_109172",
+          "00109171: retn",
+          "00109172: mov     cs:word_10765E, 0",
+          "00109179: inc     cs:word_107662",
+          "0010917E: cmp     cs:word_107662, 18h",
+          "00109184: jge     short loc_109187",
+          "00109186: retn",
+          "00109187: mov     cs:word_107662, 0",
+          "0010918E: retn"
+        ]
+      },
+      {
+        "function": "undoc_10E94A",
+        "address": "0x10ebff",
+        "scan_code": "0x3c",
+        "context": [
+          "0010EBFF: cmp     word ptr es:0AF80h, 3Ch ; '<'",
+          "0010EC05: jle     short loc_10EC10",
+          "0010EC07: mov     es, ax",
+          "0010EC09: mov     word ptr es:0AF80h, 3Ch ; '<'",
+          "0010EC10: mov     ax, 7A32h",
+          "0010EC13: mov     es, ax",
+          "0010EC15: mov     ax, es:0AF80h",
+          "0010EC19: mov     dx, 706Eh",
+          "0010EC1C: mov     es, dx",
+          "0010EC1E: mov     es:word_70737, ax"
+        ]
+      },
+      {
+        "function": "sub_12CCE9",
+        "address": "0x12cde6",
+        "scan_code": "0x3c",
+        "context": [
+          "0012CDE6: cmp     byte ptr ds:43h, 3Ch ; '<'",
+          "0012CDEB: jnb     short loc_12CDFB",
+          "0012CDED: mov     [bx+0AD6h], al",
+          "0012CDF1: inc     bx",
+          "0012CDF2: mov     byte ptr [bx+0AD6h], 0",
+          "0012CDF7: mov     ds:43h, bl",
+          "0012CDFB: jmp     short loc_12CE76",
+          "0012CDFD: jmp     loc_12CE94",
+          "0012CE00: mov     al, ah",
+          "0012CE02: call    flag_bits_clear"
+        ]
+      },
+      {
+        "function": "undoc_13C71C",
+        "address": "0x13c752",
+        "scan_code": "0x3c",
+        "context": [
+          "0013C752: cmp     di, 3Ch ; '<'",
+          "0013C755: jge     short loc_13C759",
+          "0013C757: jmp     short loc_13C76B",
+          "0013C759: mov     si, 3",
+          "0013C75C: jmp     loc_13C802",
+          "0013C75F: cmp     di, 4",
+          "0013C762: jge     short loc_13C766",
+          "0013C764: jmp     short loc_13C74C",
+          "0013C766: cmp     di, 0Ch",
+          "0013C769: jge     short loc_13C771"
+        ]
+      },
+      {
+        "function": "sub_15D508",
+        "address": "0x15d79d",
+        "scan_code": "0x3c",
+        "context": [
+          "0015D79D: cmp     di, 3Ch ; '<'",
+          "0015D7A0: jge     short loc_15D811",
+          "0015D7A2: mov     ax, si",
+          "0015D7A4: mov     dx, 4Eh ; 'N'",
+          "0015D7A7: imul    dx",
+          "0015D7A9: mov     dx, 7894h",
+          "0015D7AC: mov     es, dx",
+          "0015D7AE: les     bx, es:dword_79B6E",
+          "0015D7B3: add     bx, ax",
+          "0015D7B5: mov     al, es:[bx+0Ah]"
+        ]
+      },
+      {
+        "function": "undoc_162DE5",
+        "address": "0x162df0",
+        "scan_code": "0x3c",
+        "context": [
+          "00162DF0: cmp     si, 3Ch ; '<'",
+          "00162DF3: jge     short loc_162E07",
+          "00162DF5: call    loc_6883D",
+          "00162DFA: mov     ax, 602Eh",
+          "00162DFD: mov     es, ax",
+          "00162DFF: or      es:byte_14EC16, 10h",
+          "00162E05: jmp     short loc_162E42",
+          "00162E07: cmp     si, 55h ; 'U'",
+          "00162E0A: jge     short loc_162E27",
+          "00162E0C: push    0"
+        ]
+      },
+      {
+        "function": "ui_loadout_drag_weight_calc",
+        "address": "0x162efb",
+        "scan_code": "0x3c",
+        "context": [
+          "00162EFB: cmp     si, 3Ch ; '<'",
+          "00162EFE: jle     short loc_162F07",
+          "00162F00: call    loc_6889C+1",
+          "00162F05: jmp     short loc_162F63",
+          "00162F07: cmp     si, 4Bh ; 'K'",
+          "00162F0A: jle     short loc_162F37",
+          "00162F0C: mov     ax, 602Eh",
+          "00162F0F: mov     es, ax",
+          "00162F11: mov     al, es:byte_14EC16",
+          "00162F15: mov     ah, 0"
+        ]
+      },
+      {
+        "function": "undoc_16357B",
+        "address": "0x1635b3",
+        "scan_code": "0x3c",
+        "context": [
+          "001635B3: cmp     [bp+var_4], 3Ch ; '<'",
+          "001635B7: jle     short loc_1635C6",
+          "001635B9: push    0",
+          "001635BB: push    4",
+          "001635BD: push    0",
+          "001635BF: call    loc_68E49+2",
+          "001635C4: jmp     short loc_1635D1",
+          "001635C6: push    0",
+          "001635C8: push    4",
+          "001635CA: push    0"
+        ]
+      },
+      {
+        "function": "ui_loadout_pylon_config",
+        "address": "0x163624",
+        "scan_code": "0x3c",
+        "context": [
+          "00163624: cmp     [bp+var_4], 3Ch ; '<'",
+          "00163628: jle     short loc_163637",
+          "0016362A: push    0",
+          "0016362C: push    4",
+          "0016362E: push    0",
+          "00163630: call    loc_68E49+2",
+          "00163635: jmp     short loc_163642",
+          "00163637: push    0",
+          "00163639: push    4",
+          "0016363B: push    0"
+        ]
+      },
+      {
+        "function": "ui_loadout_stores_calculator",
+        "address": "0x1636b4",
+        "scan_code": "0x3c",
+        "context": [
+          "001636B4: cmp     [bp+var_4], 3Ch ; '<'",
+          "001636B8: jle     short loc_1636C7",
+          "001636BA: push    0",
+          "001636BC: push    4",
+          "001636BE: push    0",
+          "001636C0: call    loc_68E49+2",
+          "001636C5: jmp     short loc_1636D2",
+          "001636C7: push    0",
+          "001636C9: push    4",
+          "001636CB: push    0"
+        ]
+      },
+      {
+        "function": "undoc_1637EE",
+        "address": "0x1637fa",
+        "scan_code": "0x3c",
+        "context": [
+          "001637FA: cmp     [bp+var_2], 3Ch ; '<'",
+          "001637FE: jle     short loc_163812",
+          "00163800: call    loc_68A66",
+          "00163805: mov     ax, 602Eh",
+          "00163808: mov     es, ax",
+          "0016380A: mov     es:byte_151C49, 8",
+          "00163810: jmp     short locret_163823",
+          "00163812: push    602Eh",
+          "00163815: push    68Fh",
+          "00163818: push    2"
+        ]
+      },
+      {
+        "function": "r53_map_window_quota_step",
+        "address": "0x186754",
+        "scan_code": "0x3c",
+        "context": [
+          "00186754: cmp     byte ptr es:[bx+30h], 3Ch ; '<'",
+          "00186759: ja      short loc_18676E",
+          "0018675B: mov     ax, si",
+          "0018675D: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)",
+          "00186760: imul    dx",
+          "00186762: mov     bx, word ptr [bp+var_4]",
+          "00186765: add     bx, ax",
+          "00186767: cmp     byte ptr es:[bx+31h], 14h",
+          "0018676C: jbe     short loc_1867DE",
+          "0018676E: call    farobj_vec3_accum_b_ret; farobj_vec3_accum_b_ret - 3D Vector Projection Wrapper"
+        ]
+      },
+      {
+        "function": "r61_garbage_fragment",
+        "address": "0x19dfc6",
+        "scan_code": "0x3c",
+        "context": [
+          "0019DFC6: cmp     ax, 3Ch ; '<'",
+          "0019DFC9: jg      short loc_19DFF2",
+          "0019DFCB: add     [bp+var_2], 7",
+          "0019DFCF: jmp     short loc_19DFF2",
+          "0019DFD1: mov     di, [bp+var_2]",
+          "0019DFD4: inc     di",
+          "0019DFD5: mov     ax, di",
+          "0019DFD7: mov     bx, 8",
+          "0019DFDA: cwd",
+          "0019DFDB: idiv    bx"
+        ]
+      },
+      {
+        "function": "r61_garbage_fragment",
+        "address": "0x19dfea",
+        "scan_code": "0x3c",
+        "context": [
+          "0019DFEA: cmp     ax, 3Ch ; '<'",
+          "0019DFED: jg      short loc_19DFF2",
+          "0019DFEF: inc     [bp+var_2]",
+          "0019DFF2: mov     ax, [bp+var_2]",
+          "0019DFF5: mov     bx, 8",
+          "0019DFF8: cwd",
+          "0019DFF9: idiv    bx",
+          "0019DFFB: mov     [bp+var_2], dx",
+          "0019DFFE: cmp     [bp+var_2], 0",
+          "0019E002: jnz     short loc_19E078"
+        ]
+      },
+      {
+        "function": "r61_garbage_fragment",
+        "address": "0x19e04c",
+        "scan_code": "0x3c",
+        "context": [
+          "0019E04C: cmp     ax, 3Ch ; '<'",
+          "0019E04F: jg      short loc_19E078",
+          "0019E051: add     [bp+var_2], 7",
+          "0019E055: jmp     short loc_19E078",
+          "0019E057: mov     di, [bp+var_2]",
+          "0019E05A: inc     di",
+          "0019E05B: mov     ax, di",
+          "0019E05D: mov     bx, 8",
+          "0019E060: cwd",
+          "0019E061: idiv    bx"
+        ]
+      },
+      {
+        "function": "r61_garbage_fragment",
+        "address": "0x19e070",
+        "scan_code": "0x3c",
+        "context": [
+          "0019E070: cmp     ax, 3Ch ; '<'",
+          "0019E073: jg      short loc_19E078",
+          "0019E075: inc     [bp+var_2]",
+          "0019E078: mov     ax, 7894h",
+          "0019E07B: mov     es, ax",
+          "0019E07D: mov     ax, es:word_79D70",
+          "0019E081: mov     dx, 12h",
+          "0019E084: imul    dx",
+          "0019E086: mov     dx, 7894h",
+          "0019E089: mov     es, dx"
+        ]
+      },
+      {
+        "function": "r59_slope_slot_update_entry",
+        "address": "0x19f1f8",
+        "scan_code": "0x3c",
+        "context": [
+          "0019F1F8: cmp     ax, 3Ch ; '<'",
+          "0019F1FB: jg      short loc_19F224",
+          "0019F1FD: add     [bp+var_2], 7",
+          "0019F201: jmp     short loc_19F224",
+          "0019F203: mov     di, [bp+var_2]",
+          "0019F206: inc     di",
+          "0019F207: mov     ax, di",
+          "0019F209: mov     bx, 8",
+          "0019F20C: cwd",
+          "0019F20D: idiv    bx"
+        ]
+      },
+      {
+        "function": "r59_slope_slot_update_entry",
+        "address": "0x19f21c",
+        "scan_code": "0x3c",
+        "context": [
+          "0019F21C: cmp     ax, 3Ch ; '<'",
+          "0019F21F: jg      short loc_19F224",
+          "0019F221: inc     [bp+var_2]",
+          "0019F224: mov     ax, [bp+var_2]",
+          "0019F227: mov     bx, 8",
+          "0019F22A: cwd",
+          "0019F22B: idiv    bx",
+          "0019F22D: mov     [bp+var_2], dx",
+          "0019F230: cmp     [bp+var_2], 0",
+          "0019F234: jnz     short loc_19F2AA"
+        ]
+      },
+      {
+        "function": "r59_slope_slot_update_entry",
+        "address": "0x19f27e",
+        "scan_code": "0x3c",
+        "context": [
+          "0019F27E: cmp     ax, 3Ch ; '<'",
+          "0019F281: jg      short loc_19F2AA",
+          "0019F283: add     [bp+var_2], 7",
+          "0019F287: jmp     short loc_19F2AA",
+          "0019F289: mov     di, [bp+var_2]",
+          "0019F28C: inc     di",
+          "0019F28D: mov     ax, di",
+          "0019F28F: mov     bx, 8",
+          "0019F292: cwd",
+          "0019F293: idiv    bx"
+        ]
+      },
+      {
+        "function": "r59_slope_slot_update_entry",
+        "address": "0x19f2a2",
+        "scan_code": "0x3c",
+        "context": [
+          "0019F2A2: cmp     ax, 3Ch ; '<'",
+          "0019F2A5: jg      short loc_19F2AA",
+          "0019F2A7: inc     [bp+var_2]",
+          "0019F2AA: mov     ax, 7894h",
+          "0019F2AD: mov     es, ax",
+          "0019F2AF: mov     ax, es:word_79D70",
+          "0019F2B3: mov     dx, 12h",
+          "0019F2B6: imul    dx",
+          "0019F2B8: mov     dx, 7894h",
+          "0019F2BB: mov     es, dx"
+        ]
+      }
+    ],
+    "F3": [
+      {
+        "function": "overlay_verify_copy",
+        "address": "0x2cc10",
+        "scan_code": "0x3d",
+        "context": [
+          "0002CC10: cmp     byte ptr es:[di], 3Dh ; '='",
+          "0002CC14: jz      short loc_2CC29",
+          "0002CC16: jmp     short loc_2CC20",
+          "0002CC18: mov     ah, es:[di]",
+          "0002CC1B: inc     di",
+          "0002CC1C: cmp     al, ah",
+          "0002CC1E: jz      short loc_2CC0B",
+          "0002CC20: xor     al, al",
+          "0002CC22: mov     cx, 0FFFFh",
+          "0002CC25: repne scasb"
+        ]
+      },
+      {
+        "function": "farobj_utility_1819",
+        "address": "0x4ca05",
+        "scan_code": "0x3d",
+        "context": [
+          "0004CA05: cmp     bx, 3Dh ; '='",
+          "0004CA08: jnz     short loc_4CA4E",
+          "0004CA0A: mov     [si], bp",
+          "0004CA0C: mov     byte ptr [si+2], 3",
+          "0004CA10: mov     byte ptr [si+3], 0FFh",
+          "0004CA14: mov     [si+4], bp",
+          "0004CA17: mov     word ptr [si+6], 286h",
+          "0004CA1C: mov     word ptr [si+8], 4734h",
+          "0004CA21: mov     word ptr [si+0Ah], 10h",
+          "0004CA26: mov     word ptr [si+0Ch], 0"
+        ]
+      },
+      {
+        "function": "ui_text_render_engine",
+        "address": "0x1285b4",
+        "scan_code": "0x3d",
+        "context": [
+          "001285B4: cmp     [bp+arg_0], 3Dh ; '='",
+          "001285B8: jz      short loc_1285E0",
+          "001285BA: mov     ax, 602Eh",
+          "001285BD: mov     es, ax",
+          "001285BF: mov     al, es:render_config_byte_1",
+          "001285C3: push    ax",
+          "001285C4: mov     ax, 602Eh",
+          "001285C7: mov     es, ax",
+          "001285C9: mov     al, es:render_config_byte_2",
+          "001285CD: push    ax"
+        ]
+      },
+      {
+        "function": "ui_text_render_engine",
+        "address": "0x12880a",
+        "scan_code": "0x3d",
+        "context": [
+          "0012880A: cmp     [bp+arg_0], 3Dh ; '='; jumptable 00128615 case 250",
+          "0012880E: jz      short loc_128836",
+          "00128810: mov     ax, 602Eh",
+          "00128813: mov     es, ax",
+          "00128815: mov     al, es:render_config_byte_1",
+          "00128819: push    ax",
+          "0012881A: mov     ax, 602Eh",
+          "0012881D: mov     es, ax",
+          "0012881F: mov     al, es:render_config_byte_2",
+          "00128823: push    ax"
+        ]
+      },
+      {
+        "function": "ui_text_render_simple",
+        "address": "0x128c20",
+        "scan_code": "0x3d",
+        "context": [
+          "00128C20: cmp     [bp+arg_0], 3Dh ; '='",
+          "00128C24: jz      short loc_128C4D",
+          "00128C26: mov     ax, 602Eh",
+          "00128C29: mov     dl, [bp+arg_0]",
+          "00128C2C: mov     es, ax",
+          "00128C2E: mov     es:render_config_byte_2, dl",
+          "00128C33: mov     ax, 602Eh",
+          "00128C36: mov     dl, [bp+var_D]",
+          "00128C39: mov     es, ax",
+          "00128C3B: mov     es:render_config_byte_1, dl"
+        ]
+      },
+      {
+        "function": "ui_text_render_simple",
+        "address": "0x128c93",
+        "scan_code": "0x3d",
+        "context": [
+          "00128C93: cmp     [bp+arg_0], 3Dh ; '='",
+          "00128C97: jz      short loc_128CFC",
+          "00128C99: mov     ax, 602Eh",
+          "00128C9C: mov     es, ax",
+          "00128C9E: mov     al, es:render_config_byte_1",
+          "00128CA2: push    ax",
+          "00128CA3: mov     ax, 602Eh",
+          "00128CA6: mov     es, ax",
+          "00128CA8: mov     al, es:render_config_byte_2",
+          "00128CAC: push    ax"
+        ]
+      },
+      {
+        "function": "ui_text_render_simple",
+        "address": "0x128d20",
+        "scan_code": "0x3d",
+        "context": [
+          "00128D20: cmp     [bp+arg_0], 3Dh ; '='",
+          "00128D24: jz      short loc_128D56",
+          "00128D26: xor     si, si",
+          "00128D28: jmp     short loc_128D51",
+          "00128D2A: mov     ax, 602Eh",
+          "00128D2D: mov     es, ax",
+          "00128D2F: mov     al, es:render_config_byte_1",
+          "00128D33: push    ax",
+          "00128D34: mov     ax, 602Eh",
+          "00128D37: mov     es, ax"
+        ]
+      },
+      {
+        "function": "undoc_1290EA",
+        "address": "0x129170",
+        "scan_code": "0x3d",
+        "context": [
+          "00129170: cmp     byte ptr es:[bx+3], 3Dh ; '='",
+          "00129175: jz      short loc_12917B",
+          "00129177: mov     [bp+var_B], 1",
+          "0012917B: push    word ptr [bp+var_4+2]",
+          "0012917E: push    word ptr [bp+var_4]",
+          "00129181: call    sub_12B001",
+          "00129186: pop     cx",
+          "00129187: pop     cx",
+          "00129188: mov     al, [bp+var_B]",
+          "0012918B: mov     ah, 0"
+        ]
+      }
+    ],
+    "F4": [
+      {
+        "function": "farobj_utility_1819",
+        "address": "0x4ca4e",
+        "scan_code": "0x3e",
+        "context": [
+          "0004CA4E: cmp     bx, 3Eh ; '>'",
+          "0004CA51: jnz     short loc_4CA97",
+          "0004CA53: mov     [si], bp",
+          "0004CA55: mov     byte ptr [si+2], 8",
+          "0004CA59: mov     byte ptr [si+3], 0FFh",
+          "0004CA5D: mov     [si+4], bp",
+          "0004CA60: mov     word ptr [si+6], 286h",
+          "0004CA65: mov     word ptr [si+8], 4734h",
+          "0004CA6A: mov     word ptr [si+0Ah], 10h",
+          "0004CA6F: mov     word ptr [si+0Ch], 0"
+        ]
+      }
+    ],
+    "F5": [
+      {
+        "function": "stream_command_interpret",
+        "address": "0x1cd9f",
+        "scan_code": "0x3f",
+        "context": [
+          "0001CD9F: cmp     byte ptr es:[bx+2], 3Fh ; '?'",
+          "0001CDA4: jnz     short loc_1CDD9",
+          "0001CDA6: mov     ax, 7894h",
+          "0001CDA9: mov     es, ax",
+          "0001CDAB: cmp     word ptr es:byte_78B06+0D18h, 0",
+          "0001CDB1: jnz     short loc_1CDD9",
+          "0001CDB3: mov     ax, word ptr [bp+var_4]",
+          "0001CDB6: add     ax, 5",
+          "0001CDB9: push    word ptr [bp+var_4+2]",
+          "0001CDBC: push    ax"
+        ]
+      },
+      {
+        "function": "farobj_config_state_entry",
+        "address": "0x2f15a",
+        "scan_code": "0x3f",
+        "context": [
+          "0002F15A: cmp     ah, 3Fh ; '?'",
+          "0002F15D: jnb     short loc_2F172",
+          "0002F15F: mov     bl, ah",
+          "0002F161: xor     bl, 3Fh",
+          "0002F164: call    palette_delta_blend",
+          "0002F169: or      cs:byte_2F05E, 1",
+          "0002F16F: pop     es",
+          "0002F170: pop     ds",
+          "0002F171: retf",
+          "0002F172: test    cs:byte_2F05E, 1"
+        ]
+      },
+      {
+        "function": "sub_38778",
+        "address": "0x38bd5",
+        "scan_code": "0x3f",
+        "context": [
+          "00038BD5: cmp     ax, 3Fh ; '?'",
+          "00038BD8: jle     short loc_38BDC",
+          "00038BDA: mov     al, 3Fh ; '?'",
+          "00038BDC: mov     ah, al",
+          "00038BDE: xor     al, al",
+          "00038BE0: mov     cs:word_389A4, ax",
+          "00038BE4: cmp     ah, 3Fh ; '?'",
+          "00038BE7: jz      short loc_38BF0",
+          "00038BE9: and     byte ptr cs:loc_389AA, 0FEh",
+          "00038BEF: retn"
+        ]
+      },
+      {
+        "function": "sub_38778",
+        "address": "0x38be4",
+        "scan_code": "0x3f",
+        "context": [
+          "00038BE4: cmp     ah, 3Fh ; '?'",
+          "00038BE7: jz      short loc_38BF0",
+          "00038BE9: and     byte ptr cs:loc_389AA, 0FEh",
+          "00038BEF: retn",
+          "00038BF0: test    byte ptr cs:loc_389AA, 1",
+          "00038BF6: jnz     short locret_38C17",
+          "00038BF8: or      byte ptr cs:loc_389AA, 1",
+          "00038BFE: mov     bx, word ptr cs:loc_38987+1",
+          "00038C03: cmp     cs:word_3898E, bx",
+          "00038C08: jle     short loc_38C0F"
+        ]
+      },
+      {
+        "function": "sub_38778",
+        "address": "0x38c46",
+        "scan_code": "0x3f",
+        "context": [
+          "00038C46: cmp     al, 3Fh ; '?'",
+          "00038C48: jle     short loc_38C4C",
+          "00038C4A: mov     al, 3Fh ; '?'",
+          "00038C4C: mov     ah, al",
+          "00038C4E: mov     al, 1",
+          "00038C50: mov     cs:word_389A4, ax",
+          "00038C54: retn",
+          "00038C55: mov     ax, 3Fh ; '?'",
+          "00038C58: mov     bx, cs:word_2F679",
+          "00038C5D: mul     bx"
+        ]
+      },
+      {
+        "function": "farobj_view_project_step",
+        "address": "0x3f10c",
+        "scan_code": "0x3f",
+        "context": [
+          "0003F10C: cmp     byte ptr [si+10h], 3Fh ; '?'",
+          "0003F110: jbe     short loc_3F114",
+          "0003F112: jmp     short loc_3F0D0",
+          "0003F114: cmp     byte ptr ds:45Eh, 0",
+          "0003F119: jnz     short locret_3F129",
+          "0003F11B: mov     cs:byte_43A65, 2",
+          "0003F121: nop",
+          "0003F122: mov     al, [si+10h]",
+          "0003F125: mov     cs:byte_43A67, al",
+          "0003F129: retn"
+        ]
+      },
+      {
+        "function": "farobj_utility_1819",
+        "address": "0x4ca97",
+        "scan_code": "0x3f",
+        "context": [
+          "0004CA97: cmp     bx, 3Fh ; '?'",
+          "0004CA9A: jnz     short loc_4CAE0",
+          "0004CA9C: mov     [si], bp",
+          "0004CA9E: mov     byte ptr [si+2], 0Ah",
+          "0004CAA2: mov     byte ptr [si+3], 0FFh",
+          "0004CAA6: mov     [si+4], bp",
+          "0004CAA9: mov     word ptr [si+6], 286h",
+          "0004CAAE: mov     word ptr [si+8], 4734h",
+          "0004CAB3: mov     word ptr [si+0Ah], 10h",
+          "0004CAB8: mov     word ptr [si+0Ch], 0"
+        ]
+      },
+      {
+        "function": "sub_4F5CB",
+        "address": "0x4f674",
+        "scan_code": "0x3f",
+        "context": [
+          "0004F674: cmp     ax, 3Fh ; '?'",
+          "0004F677: jbe     short loc_4F67C",
+          "0004F679: mov     ax, 3Fh ; '?'",
+          "0004F67C: cmp     al, byte_5F81F",
+          "0004F680: jz      short loc_4F68A",
+          "0004F682: mov     byte ptr word_5F823, 1",
+          "0004F687: mov     byte_5F81F, al",
+          "0004F68A: sub     al, 3Fh ; '?'",
+          "0004F68C: neg     al",
+          "0004F68E: shl     al, 1"
+        ]
+      },
+      {
+        "function": "r34_farobj_proc",
+        "address": "0x4f6a0",
+        "scan_code": "0x3f",
+        "context": [
+          "0004F6A0: cmp     ax, 3Fh ; '?'",
+          "0004F6A3: jbe     short loc_4F6A8",
+          "0004F6A5: mov     ax, 3Fh ; '?'",
+          "0004F6A8: cmp     al, ds:byte_85050",
+          "0004F6AC: jz      short loc_4F6B6",
+          "0004F6AE: mov     ds:byte_85053, 1",
+          "0004F6B3: mov     ds:byte_85050, al",
+          "0004F6B6: sub     al, 3Fh ; '?'",
+          "0004F6B8: neg     al",
+          "0004F6BA: shl     al, 1"
+        ]
+      },
+      {
+        "function": "undoc_4F7F0",
+        "address": "0x4f800",
+        "scan_code": "0x3f",
+        "context": [
+          "0004F800: cmp     al, 3Fh ; '?'",
+          "0004F802: jnz     short loc_4F810",
+          "0004F804: mov     ax, 3Fh ; '?'",
+          "0004F807: xor     bx, bx",
+          "0004F809: stosb",
+          "0004F80A: xchg    ax, bx",
+          "0004F80B: stosw",
+          "0004F80C: xchg    ax, bx",
+          "0004F80D: loop    loc_4F809",
+          "0004F80F: retn"
+        ]
+      },
+      {
+        "function": "undoc_4F7F0",
+        "address": "0x4f826",
+        "scan_code": "0x3f",
+        "context": [
+          "0004F826: cmp     al, 3Fh ; '?'",
+          "0004F828: jnz     short loc_4F835",
+          "0004F82A: xor     ax, ax",
+          "0004F82C: mov     bx, cx",
+          "0004F82E: shl     bx, 1",
+          "0004F830: add     cx, bx",
+          "0004F832: rep stosb",
+          "0004F834: retn",
+          "0004F835: test    byte_5F82B, 1Ch",
+          "0004F83A: jnz     short loc_4F848"
+        ]
+      },
+      {
+        "function": "palette_delta_blend",
+        "address": "0x4fabe",
+        "scan_code": "0x3f",
+        "context": [
+          "0004FABE: cmp     bl, 3Fh ; '?'",
+          "0004FAC1: jz      short loc_4FB0A",
+          "0004FAC3: mov     cx, 92h",
+          "0004FAC6: mov     si, 0A670h",
+          "0004FAC9: lodsb",
+          "0004FACA: mov     dl, al",
+          "0004FACC: sub     al, ds:byte_85061",
+          "0004FAD0: neg     al",
+          "0004FAD2: imul    bl",
+          "0004FAD4: shl     ax, 1"
+        ]
+      },
+      {
+        "function": "sub_4FC2D",
+        "address": "0x4fc5e",
+        "scan_code": "0x3f",
+        "context": [
+          "0004FC5E: cmp     bl, 3Fh ; '?'",
+          "0004FC61: jz      short loc_4FCAA",
+          "0004FC63: mov     cx, 0F0h",
+          "0004FC66: mov     si, 0A556h",
+          "0004FC69: lodsb",
+          "0004FC6A: mov     dl, al",
+          "0004FC6C: sub     al, ds:byte_85064",
+          "0004FC70: neg     al",
+          "0004FC72: imul    bl",
+          "0004FC74: shl     ax, 1"
+        ]
+      },
+      {
+        "function": "mission_briefing_coordinator",
+        "address": "0x182423",
+        "scan_code": "0x3f",
+        "context": [
+          "00182423: cmp     [bp+var_A], 3Fh ; '?'",
+          "00182427: jl      short loc_18240F",
+          "00182429: mov     ax, 7894h",
+          "0018242C: mov     es, ax",
+          "0018242E: mov     ax, es:word_79F14",
+          "00182432: mov     dx, 7894h",
+          "00182435: mov     es, dx",
+          "00182437: sub     ax, es:game_status_word",
+          "0018243C: push    ax",
+          "0018243D: call    loc_6DCB2+3"
+        ]
+      }
+    ],
+    "F6": [
+      {
+        "function": "entity_state_load",
+        "address": "0x1510d",
+        "scan_code": "0x40",
+        "context": [
+          "0001510D: cmp     dx, 40h ; '@'",
+          "00015110: jb      short loc_1511B",
+          "00015112: mov     cs:byte_11C69, 0",
+          "00015118: jmp     loc_153A2",
+          "0001511B: mov     ax, cs:word_11CF8",
+          "0001511F: mov     dx, cs:word_11CFA",
+          "00015124: mov     cx, 4",
+          "00015127: add     cx, cs:word_11D04",
+          "0001512C: mov     bx, cs:word_11D10",
+          "00015131: mov     bp, cs:word_11D12"
+        ]
+      },
+      {
+        "function": "entity_state_load",
+        "address": "0x15206",
+        "scan_code": "0x40",
+        "context": [
+          "00015206: cmp     dx, 40h ; '@'",
+          "00015209: jb      short loc_1521A",
+          "0001520B: or      cs:byte_11C69, 2",
+          "00015211: and     cs:byte_11C69, 0FEh",
+          "00015217: jmp     loc_1529A",
+          "0001521A: or      dx, dx",
+          "0001521C: jz      short loc_15224",
+          "0001521E: or      cs:byte_11C69, 2",
+          "00015224: mov     si, 46E9h",
+          "00015227: mov     bx, 1C65h"
+        ]
+      },
+      {
+        "function": "entity_state_load",
+        "address": "0x152a5",
+        "scan_code": "0x40",
+        "context": [
+          "000152A5: cmp     dx, 40h ; '@'",
+          "000152A8: jb      short loc_152B3",
+          "000152AA: and     cs:byte_11C69, 0FDh",
+          "000152B0: jmp     short loc_1532B",
+          "000152B2: db 90h",
+          "000152B3: mov     si, 4769h",
+          "000152B6: mov     bx, 1465h",
+          "000152B9: mov     di, 0C65h",
+          "000152BC: mov     cx, 40h ; '@'",
+          "000152BF: lodsb"
+        ]
+      },
+      {
+        "function": "entity_state_load",
+        "address": "0x15336",
+        "scan_code": "0x40",
+        "context": [
+          "00015336: cmp     dx, 40h ; '@'",
+          "00015339: jb      short loc_15344",
+          "0001533B: and     cs:byte_11C69, 0FBh",
+          "00015341: jmp     short loc_153A2",
+          "00015343: align 2",
+          "00015344: mov     si, 47A9h",
+          "00015347: mov     bx, 0C65h",
+          "0001534A: mov     cx, 40h ; '@'",
+          "0001534D: lodsb",
+          "0001534E: cmp     al, 5Fh ; '_'"
+        ]
+      },
+      {
+        "function": "terrain_strip_sample_and_draw",
+        "address": "0x160c4",
+        "scan_code": "0x40",
+        "context": [
+          "000160C4: cmp     dx, 40h ; '@'",
+          "000160C7: jnb     short locret_160DD",
+          "000160C9: push    dx",
+          "000160CA: mov     bx, 47E9h",
+          "000160CD: mov     si, 46E9h",
+          "000160D0: mov     di, 4AE9h",
+          "000160D3: mov     cs:byte_11CAF, 1",
+          "000160D9: call    graphics_rect_fill_tiled",
+          "000160DC: pop     dx",
+          "000160DD: retn"
+        ]
+      },
+      {
+        "function": "terrain_attr_scan_draw_a",
+        "address": "0x1610a",
+        "scan_code": "0x40",
+        "context": [
+          "0001610A: cmp     dx, 40h ; '@'",
+          "0001610D: jnb     short locret_16123",
+          "0001610F: push    dx",
+          "00016110: mov     bx, 48E9h",
+          "00016113: mov     si, 4769h",
+          "00016116: mov     di, 4B69h",
+          "00016119: mov     cs:byte_11CAF, 1",
+          "0001611F: call    tile_clip_draw_1426a",
+          "00016122: pop     dx",
+          "00016123: retn"
+        ]
+      },
+      {
+        "function": "terrain_attr_scan_draw_b",
+        "address": "0x16162",
+        "scan_code": "0x40",
+        "context": [
+          "00016162: cmp     dx, 40h ; '@'",
+          "00016165: jnb     short locret_1617B",
+          "00016167: push    dx",
+          "00016168: mov     bx, 49E9h",
+          "0001616B: mov     si, 47A9h",
+          "0001616E: mov     di, 4BE9h",
+          "00016171: mov     cs:byte_11CAF, 4",
+          "00016177: call    tile_clip_draw_1426a",
+          "0001617A: pop     dx",
+          "0001617B: retn"
+        ]
+      },
+      {
+        "function": "mode_stream_select_step",
+        "address": "0x39e62",
+        "scan_code": "0x40",
+        "context": [
+          "00039E62: cmp     bx, 40h ; '@'",
+          "00039E65: jl      short loc_39E69",
+          "00039E67: sub     bx, bx",
+          "00039E69: cmp     bx, 4444h",
+          "00039E6D: jz      short loc_39E93",
+          "00039E6F: les     di, [bx+1734h]",
+          "00039E73: mov     al, es:[di+74h]",
+          "00039E77: test    al, 1",
+          "00039E79: jz      short loc_39E93",
+          "00039E7B: test    al, 40h"
+        ]
+      },
+      {
+        "function": "steerpoint_scan_update",
+        "address": "0x39f48",
+        "scan_code": "0x40",
+        "context": [
+          "00039F48: cmp     bx, 40h ; '@'",
+          "00039F4B: jl      short loc_39F4F",
+          "00039F4D: xor     bx, bx",
+          "00039F4F: les     si, [bx+1734h]",
+          "00039F53: mov     al, es:[si+74h]",
+          "00039F57: test    al, 1",
+          "00039F59: jz      short loc_39F89",
+          "00039F5B: test    al, 40h",
+          "00039F5D: jz      short loc_39F89",
+          "00039F5F: test    byte ptr es:[si+79h], 1"
+        ]
+      },
+      {
+        "function": "undoc_4A505",
+        "address": "0x4a6b6",
+        "scan_code": "0x40",
+        "context": [
+          "0004A6B6: cmp     byte ptr [si+10h], 40h ; '@'",
+          "0004A6BA: jnb     short loc_4A6BF",
+          "0004A6BC: jmp     short loc_4A700",
+          "0004A6BE: nop",
+          "0004A6BF: test    byte ptr [si+0Fh], 2",
+          "0004A6C3: jnz     short loc_4A700",
+          "0004A6C5: call    fixed_vec3_accumulate_a; fixed_vec3_accumulate_a - 3D Vector Math Core (68 bytes)",
+          "0004A6CA: and     cl, 3Fh",
+          "0004A6CD: cmp     cl, [si+10h]",
+          "0004A6D0: ja      short loc_4A700"
+        ]
+      },
+      {
+        "function": "sub_4D9FC",
+        "address": "0x4da29",
+        "scan_code": "0x40",
+        "context": [
+          "0004DA29: cmp     cx, 40h ; '@'",
+          "0004DA2C: ja      short locret_4DA39",
+          "0004DA2E: mov     ax, 1Ah",
+          "0004DA31: mov     cx, 20Dh",
+          "0004DA34: call    farobj_slot_create",
+          "0004DA39: retn",
+          "0004DA3A: db 0"
+        ]
+      },
+      {
+        "function": "r39_farptr_call_gate",
+        "address": "0x4da56",
+        "scan_code": "0x40",
+        "context": [
+          "0004DA56: cmp     cx, 40h ; '@'",
+          "0004DA59: ja      short loc_4DA6E",
+          "0004DA5B: mov     ax, 12h",
+          "0004DA5E: test    cs:byte_4DA3A, 20h",
+          "0004DA64: jnz     short loc_4DA7E",
+          "0004DA66: mov     cx, 314h",
+          "0004DA69: call    farobj_slot_create",
+          "0004DA6E: mov     ax, 1Ah",
+          "0004DA71: test    cs:byte_4DA3A, 20h",
+          "0004DA77: jnz     short locret_4DA86"
+        ]
+      },
+      {
+        "function": "undoc_4E945",
+        "address": "0x4e97d",
+        "scan_code": "0x40",
+        "context": [
+          "0004E97D: cmp     bx, 40h ; '@'",
+          "0004E980: jl      short loc_4E9A6",
+          "0004E982: cmp     bx, 0C0h",
+          "0004E986: jg      short loc_4E98E",
+          "0004E988: call    near ptr nullsub_36",
+          "0004E98B: jmp     locret_4EA52",
+          "0004E98E: cmp     bx, 100h",
+          "0004E992: jg      short loc_4E99A",
+          "0004E994: call    near ptr sub_4EC58",
+          "0004E997: jmp     locret_4EA52"
+        ]
+      },
+      {
+        "function": "undoc_4E945",
+        "address": "0x4ea00",
+        "scan_code": "0x40",
+        "context": [
+          "0004EA00: cmp     bx, 40h ; '@'",
+          "0004EA03: jl      short loc_4EA26",
+          "0004EA05: cmp     bx, 0C0h",
+          "0004EA09: jg      short loc_4EA10",
+          "0004EA0B: call    near ptr nullsub_36",
+          "0004EA0E: jmp     short loc_4EA2E",
+          "0004EA10: cmp     bx, 100h",
+          "0004EA14: jg      short loc_4EA1B",
+          "0004EA16: call    near ptr sub_4EC58",
+          "0004EA19: jmp     short loc_4EA2E"
+        ]
+      },
+      {
+        "function": "undoc_6CE4C",
+        "address": "0x6ce7a",
+        "scan_code": "0x40",
+        "context": [
+          "0006CE7A: cmp     si, 40h ; '@'",
+          "0006CE7D: jl      short near ptr unk_6CE81",
+          "0006CE7F: xor     si, si",
+          "0006CE83: dw 4444h",
+          "0006CE85: jnz     short loc_6CE8F",
+          "0006CE87: add     si, 4",
+          "0006CE8A: loop    loc_6CE7A",
+          "0006CE8C: jmp     loc_6CF29",
+          "0006CE8F: push    cx",
+          "0006CE90: mov     cx, si"
+        ]
+      },
+      {
+        "function": "sub_12C08E",
+        "address": "0x12c0cf",
+        "scan_code": "0x40",
+        "context": [
+          "0012C0CF: cmp     bx, 40h ; '@'",
+          "0012C0D2: jl      short loc_12C0E0",
+          "0012C0D4: cmp     bx, 0C0h",
+          "0012C0D8: jg      short loc_12C0E0",
+          "0012C0DA: call    sub_12C2A4",
+          "0012C0DD: jmp     locret_12C17D",
+          "0012C0E0: cmp     bx, cs:off_12BF94",
+          "0012C0E5: jg      short loc_12C0B2",
+          "0012C0E7: call    cs:funcs_12C0E7[bx]",
+          "0012C0EC: jmp     locret_12C17D"
+        ]
+      },
+      {
+        "function": "sub_12C08E",
+        "address": "0x12c141",
+        "scan_code": "0x40",
+        "context": [
+          "0012C141: cmp     bx, 40h ; '@'",
+          "0012C144: jl      short loc_12C151",
+          "0012C146: cmp     bx, 0C0h",
+          "0012C14A: jg      short loc_12C151",
+          "0012C14C: call    sub_12C2A4",
+          "0012C14F: jmp     short loc_12C15D",
+          "0012C151: cmp     bx, cs:off_12BF94",
+          "0012C156: jg      short locret_12C17D",
+          "0012C158: call    cs:funcs_12C0E7[bx]",
+          "0012C15D: mov     al, ds:byte_70A55"
+        ]
+      },
+      {
+        "function": "undoc_137B44",
+        "address": "0x137be3",
+        "scan_code": "0x40",
+        "context": [
+          "00137BE3: cmp     di, 40h ; '@'",
+          "00137BE6: jl      short loc_137BCE",
+          "00137BE8: inc     si",
+          "00137BE9: mov     ax, 7894h",
+          "00137BEC: mov     es, ax",
+          "00137BEE: cmp     es:word_79EEC, si",
+          "00137BF3: jg      short loc_137B8D",
+          "00137BF5: mov     es, ax",
+          "00137BF7: dec     es:word_79EEC",
+          "00137BFC: mov     es, ax"
+        ]
+      },
+      {
+        "function": "undoc_13844B",
+        "address": "0x1384ea",
+        "scan_code": "0x40",
+        "context": [
+          "001384EA: cmp     di, 40h ; '@'",
+          "001384ED: jl      short loc_1384D5",
+          "001384EF: inc     si",
+          "001384F0: mov     ax, 7894h",
+          "001384F3: mov     es, ax",
+          "001384F5: cmp     es:word_79EA4, si",
+          "001384FA: jg      short loc_138494",
+          "001384FC: mov     es, ax",
+          "001384FE: dec     es:word_79EA4",
+          "00138503: mov     es, ax"
+        ]
+      },
+      {
+        "function": "undoc_1387AD",
+        "address": "0x13884d",
+        "scan_code": "0x40",
+        "context": [
+          "0013884D: cmp     di, 40h ; '@'",
+          "00138850: jl      short loc_138838",
+          "00138852: inc     si",
+          "00138853: mov     ax, 7894h",
+          "00138856: mov     es, ax",
+          "00138858: mov     ax, es:word_79F36",
+          "0013885C: add     ax, 4",
+          "0013885F: cmp     ax, si",
+          "00138861: jg      short loc_1387F7",
+          "00138863: mov     ax, 7894h"
+        ]
+      },
+      {
+        "function": "undoc_13C71C",
+        "address": "0x13c7cd",
+        "scan_code": "0x40",
+        "context": [
+          "0013C7CD: cmp     di, 40h ; '@'",
+          "0013C7D0: jge     short loc_13C7D7",
+          "0013C7D2: mov     si, 0Ch",
+          "0013C7D5: jmp     short loc_13C802",
+          "0013C7D7: cmp     di, 46h ; 'F'",
+          "0013C7DA: jge     short loc_13C7E1",
+          "0013C7DC: mov     si, 0Dh",
+          "0013C7DF: jmp     short loc_13C802",
+          "0013C7E1: cmp     di, 4Ch ; 'L'",
+          "0013C7E4: jge     short loc_13C7EB"
+        ]
+      },
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17b48e",
+        "scan_code": "0x40",
+        "context": [
+          "0017B48E: cmp     di, 40h ; '@'",
+          "0017B491: jl      short loc_17B45E",
+          "0017B493: call    sub_13AA6A; Call initialization routine",
+          "0017B498: mov     ax, 7894h",
+          "0017B49B: mov     es, ax",
+          "0017B49D: mov     ax, word ptr es:mission_data_ptr+2; Pointer to additional mission data",
+          "0017B4A1: mov     dx, word ptr es:mission_data_ptr; Pointer to additional mission data",
+          "0017B4A6: mov     bx, 602Eh",
+          "0017B4A9: mov     es, bx",
+          "0017B4AB: mov     word ptr es:dword_151BFC+2, ax"
+        ]
+      },
+      {
+        "function": "mission_briefing_coordinator",
+        "address": "0x184427",
+        "scan_code": "0x40",
+        "context": [
+          "00184427: cmp     [bp+var_2], 40h ; '@'",
+          "0018442B: jge     short loc_184430",
+          "0018442D: jmp     loc_184354",
+          "00184430: or      di, di",
+          "00184432: jz      short loc_184476",
+          "00184434: push    7894h",
+          "00184437: push    0F32h",
+          "0018443A: mov     ax, 602Eh",
+          "0018443D: mov     es, ax",
+          "0018443F: push    es:word_1516B9"
+        ]
+      },
+      {
+        "function": "mission_briefing_coordinator",
+        "address": "0x18471d",
+        "scan_code": "0x40",
+        "context": [
+          "0018471D: cmp     [bp+var_2], 40h ; '@'",
+          "00184721: jge     short loc_184726",
+          "00184723: jmp     loc_184648",
+          "00184726: or      di, di",
+          "00184728: jz      short loc_18476C",
+          "0018472A: push    7894h",
+          "0018472D: push    0F32h",
+          "00184730: mov     ax, 602Eh",
+          "00184733: mov     es, ax",
+          "00184735: push    es:word_1516B9"
+        ]
+      },
+      {
+        "function": "undoc_189375",
+        "address": "0x1893b1",
+        "scan_code": "0x40",
+        "context": [
+          "001893B1: cmp     si, 40h ; '@'",
+          "001893B4: jl      short loc_189386",
+          "001893B6: mov     ax, 7894h",
+          "001893B9: mov     es, ax",
+          "001893BB: mov     ax, es:word_79E72",
+          "001893BF: mov     dx, es:word_79E70",
+          "001893C4: mov     word ptr [bp+var_C+2], ax",
+          "001893C7: mov     word ptr [bp+var_C], dx",
+          "001893CA: add     word ptr [bp+var_C], 0F8h",
+          "001893CF: xor     si, si"
+        ]
+      },
+      {
+        "function": "undoc_189375",
+        "address": "0x189540",
+        "scan_code": "0x40",
+        "context": [
+          "00189540: cmp     [bp+var_3], 40h ; '@'",
+          "00189544: jge     short loc_189576",
+          "00189546: cmp     [bp+var_3], 20h ; ' '",
+          "0018954A: jl      short loc_189576",
+          "0018954C: mov     ax, 602Eh",
+          "0018954F: mov     es, ax",
+          "00189551: les     bx, es:dword_151B86",
+          "00189556: mov     al, [bp+var_1]",
+          "00189559: mov     ah, 0",
+          "0018955B: add     bx, ax"
+        ]
+      },
+      {
+        "function": "undoc_189375",
+        "address": "0x1895b7",
+        "scan_code": "0x40",
+        "context": [
+          "001895B7: cmp     ax, 40h ; '@'",
+          "001895BA: jge     short loc_1895EF",
+          "001895BC: mov     al, es:[bx]",
+          "001895BF: mov     ah, 0",
+          "001895C1: and     ax, 3Fh",
+          "001895C4: cmp     ax, 20h ; ' '",
+          "001895C7: jl      short loc_1895EF",
+          "001895C9: mov     ax, 6E1Eh",
+          "001895CC: mov     es, ax",
+          "001895CE: les     bx, dword ptr es:byte_6E1C9+93h"
+        ]
+      },
+      {
+        "function": "overlay_r55_main_loop",
+        "address": "0x18c96d",
+        "scan_code": "0x40",
+        "context": [
+          "0018C96D: cmp     [bp+var_1E], 40h ; '@'",
+          "0018C971: jl      short loc_18C97A",
+          "0018C973: mov     [bp+var_1E], 8",
+          "0018C978: jmp     short loc_18C9CD",
+          "0018C97A: cmp     [bp+var_1E], 31h ; '1'",
+          "0018C97E: jl      short loc_18C987",
+          "0018C980: mov     [bp+var_1E], 7",
+          "0018C985: jmp     short loc_18C9CD",
+          "0018C987: cmp     [bp+var_1E], 24h ; '$'",
+          "0018C98B: jl      short loc_18C994"
+        ]
+      },
+      {
+        "function": "overlay_r55_main_loop",
+        "address": "0x18cd68",
+        "scan_code": "0x40",
+        "context": [
+          "0018CD68: cmp     [bp+var_1E], 40h ; '@'",
+          "0018CD6C: jl      short loc_18CD75",
+          "0018CD6E: mov     [bp+var_1E], 8",
+          "0018CD73: jmp     short loc_18CDC8",
+          "0018CD75: cmp     [bp+var_1E], 31h ; '1'",
+          "0018CD79: jl      short loc_18CD82",
+          "0018CD7B: mov     [bp+var_1E], 7",
+          "0018CD80: jmp     short loc_18CDC8",
+          "0018CD82: cmp     [bp+var_1E], 24h ; '$'",
+          "0018CD86: jl      short loc_18CD8F"
+        ]
+      },
+      {
+        "function": "overlay_r55_main_loop",
+        "address": "0x18d12e",
+        "scan_code": "0x40",
+        "context": [
+          "0018D12E: cmp     [bp+var_1E], 40h ; '@'",
+          "0018D132: jl      short loc_18D13B",
+          "0018D134: mov     [bp+var_1E], 8",
+          "0018D139: jmp     short loc_18D18E",
+          "0018D13B: cmp     [bp+var_1E], 31h ; '1'",
+          "0018D13F: jl      short loc_18D148",
+          "0018D141: mov     [bp+var_1E], 7",
+          "0018D146: jmp     short loc_18D18E",
+          "0018D148: cmp     [bp+var_1E], 24h ; '$'",
+          "0018D14C: jl      short loc_18D155"
+        ]
+      },
+      {
+        "function": "overlay_r55_main_loop",
+        "address": "0x18d51a",
+        "scan_code": "0x40",
+        "context": [
+          "0018D51A: cmp     [bp+var_1E], 40h ; '@'",
+          "0018D51E: jl      short loc_18D527",
+          "0018D520: mov     [bp+var_1E], 8",
+          "0018D525: jmp     short loc_18D57A",
+          "0018D527: cmp     [bp+var_1E], 31h ; '1'",
+          "0018D52B: jl      short loc_18D534",
+          "0018D52D: mov     [bp+var_1E], 7",
+          "0018D532: jmp     short loc_18D57A",
+          "0018D534: cmp     [bp+var_1E], 24h ; '$'",
+          "0018D538: jl      short loc_18D541"
+        ]
+      },
+      {
+        "function": "r55_entity_flags_op_step",
+        "address": "0x18e739",
+        "scan_code": "0x40",
+        "context": [
+          "0018E739: cmp     [bp+var_1C], 40h ; '@'",
+          "0018E73D: jl      short loc_18E746",
+          "0018E73F: mov     [bp+var_1C], 8",
+          "0018E744: jmp     short loc_18E799",
+          "0018E746: cmp     [bp+var_1C], 31h ; '1'",
+          "0018E74A: jl      short loc_18E753",
+          "0018E74C: mov     [bp+var_1C], 7",
+          "0018E751: jmp     short loc_18E799",
+          "0018E753: cmp     [bp+var_1C], 24h ; '$'",
+          "0018E757: jl      short loc_18E760"
+        ]
+      },
+      {
+        "function": "r55_entity_flags_op_step",
+        "address": "0x18eb71",
+        "scan_code": "0x40",
+        "context": [
+          "0018EB71: cmp     [bp+var_1C], 40h ; '@'",
+          "0018EB75: jl      short loc_18EB7E",
+          "0018EB77: mov     [bp+var_1C], 8",
+          "0018EB7C: jmp     short loc_18EBD1",
+          "0018EB7E: cmp     [bp+var_1C], 31h ; '1'",
+          "0018EB82: jl      short loc_18EB8B",
+          "0018EB84: mov     [bp+var_1C], 7",
+          "0018EB89: jmp     short loc_18EBD1",
+          "0018EB8B: cmp     [bp+var_1C], 24h ; '$'",
+          "0018EB8F: jl      short loc_18EB98"
+        ]
+      },
+      {
+        "function": "undoc_191B42",
+        "address": "0x191c93",
+        "scan_code": "0x40",
+        "context": [
+          "00191C93: cmp     es:mission_word_D1E, 40h ; '@'; Mission-related word",
+          "00191C99: jge     short loc_191C9E",
+          "00191C9B: jmp     loc_191BCA",
+          "00191C9E: pop     bp",
+          "00191C9F: retf"
+        ]
+      },
+      {
+        "function": "r67_flags_op_garbage_fragment",
+        "address": "0x1a9588",
+        "scan_code": "0x40",
+        "context": [
+          "001A9588: cmp     si, 40h ; '@'",
+          "001A958B: jl      short loc_1A9592",
+          "001A958D: mov     si, 8",
+          "001A9590: jmp     short loc_1A95D1",
+          "001A9592: cmp     si, 31h ; '1'",
+          "001A9595: jl      short loc_1A959C",
+          "001A9597: mov     si, 7",
+          "001A959A: jmp     short loc_1A95D1",
+          "001A959C: cmp     si, 24h ; '$'",
+          "001A959F: jl      short loc_1A95A6"
+        ]
+      }
+    ],
+    "F7": [
+      {
+        "function": "overlay_loader_main",
+        "address": "0x2cc6f",
+        "scan_code": "0x41",
+        "context": [
+          "0002CC6F: cmp     al, 41h ; 'A'",
+          "0002CC71: jnz     short loc_2CC76",
+          "0002CC73: jmp     loc_2CD43",
+          "0002CC76: add     sp, 2",
+          "0002CC79: pop     si",
+          "0002CC7A: jmp     short loc_2CC52",
+          "0002CC7C: pop     si",
+          "0002CC7D: jb      short loc_2CC8A",
+          "0002CC7F: mov     [bp+var_s10], ax",
+          "0002CC82: test    cs:byte_2CE46, 0FFh"
+        ]
+      },
+      {
+        "function": "undoc_42A4D",
+        "address": "0x42a85",
+        "scan_code": "0x41",
+        "context": [
+          "00042A85: cmp     al, 41h ; 'A'",
+          "00042A87: jz      short loc_42AA5",
+          "00042A89: test    word ptr [di+8], 2",
+          "00042A8E: jnz     short loc_42A9F",
+          "00042A90: test    word ptr [di+8], 4",
+          "00042A95: jz      short loc_42AA5",
+          "00042A97: test    cs:byte_42984, 1",
+          "00042A9D: jz      short loc_42AA5",
+          "00042A9F: or      cs:byte_42984, 4",
+          "00042AA5: mov     ax, 0Fh"
+        ]
+      },
+      {
+        "function": "undoc_42A4D",
+        "address": "0x42ad7",
+        "scan_code": "0x41",
+        "context": [
+          "00042AD7: cmp     al, 41h ; 'A'",
+          "00042AD9: jz      short locret_42AF9",
+          "00042ADB: test    word ptr [di+8], 2",
+          "00042AE0: jnz     short loc_42AF1",
+          "00042AE2: test    word ptr [di+8], 4",
+          "00042AE7: jz      short locret_42AF9",
+          "00042AE9: test    cs:byte_42984, 2",
+          "00042AEF: jz      short locret_42AF9",
+          "00042AF1: test    cs:byte_42984, 4",
+          "00042AF7: jnz     short near ptr undoc_42AFA"
+        ]
+      },
+      {
+        "function": "sub_456A3",
+        "address": "0x45781",
+        "scan_code": "0x41",
+        "context": [
+          "00045781: cmp     dl, 41h ; 'A'",
+          "00045784: jnb     short loc_4578D",
+          "00045786: cmp     dl, 28h ; '('",
+          "00045789: jbe     short loc_4578D",
+          "0004578B: mov     dl, 41h ; 'A'",
+          "0004578D: test    ah, cl",
+          "0004578F: jnz     short loc_457A1",
+          "00045791: add     sp, 2",
+          "00045794: retn",
+          "00045795: shr     ax, 5"
+        ]
+      },
+      {
+        "function": "undoc_1121E9",
+        "address": "0x112275",
+        "scan_code": "0x41",
+        "context": [
+          "00112275: cmp     ax, 41h ; 'A'",
+          "00112278: jle     short loc_112280",
+          "0011227A: add     cs:word_111ADF, 6",
+          "00112280: mov     cs:byte_111AE7, 0",
+          "00112286: retn",
+          "00112287: push    ds",
+          "00112288: mov     ds, cs:word_111AD9",
+          "0011228D: mov     si, cs:word_111AE1",
+          "00112292: lodsb",
+          "00112293: pop     ds"
+        ]
+      },
+      {
+        "function": "sub_11E1AB",
+        "address": "0x11e1d7",
+        "scan_code": "0x41",
+        "context": [
+          "0011E1D7: cmp     word ptr es:[bx+158h], 41h ; 'A'",
+          "0011E1DD: jl      short loc_11E1E2",
+          "0011E1DF: jmp     loc_11E295",
+          "0011E1E2: mov     ax, 7894h",
+          "0011E1E5: mov     es, ax",
+          "0011E1E7: mov     bx, es:word_79B5E",
+          "0011E1EC: shl     bx, 1",
+          "0011E1EE: mov     ax, 4FC2h",
+          "0011E1F1: mov     es, ax",
+          "0011E1F3: mov     ax, es:[bx+158h]"
+        ]
+      },
+      {
+        "function": "utility_1859",
+        "address": "0x122a94",
+        "scan_code": "0x41",
+        "context": [
+          "00122A94: cmp     word ptr es:[bx+158h], 41h ; 'A'",
+          "00122A9A: jl      short loc_122A72",
+          "00122A9C: mov     ax, 7894h",
+          "00122A9F: mov     es, ax",
+          "00122AA1: mov     bx, es:word_79B5E",
+          "00122AA6: shl     bx, 1",
+          "00122AA8: mov     ax, 4FC2h",
+          "00122AAB: mov     es, ax",
+          "00122AAD: mov     ax, es:[bx+158h]",
+          "00122AB2: sar     ax, 3"
+        ]
+      },
+      {
+        "function": "undoc_132B06",
+        "address": "0x132cb2",
+        "scan_code": "0x41",
+        "context": [
+          "00132CB2: cmp     [bp+var_6], 41h ; 'A'",
+          "00132CB6: jl      short loc_132CBE",
+          "00132CB8: cmp     [bp+var_6], 5Ah ; 'Z'",
+          "00132CBC: jle     short loc_132CD0",
+          "00132CBE: cmp     [bp+var_6], 30h ; '0'",
+          "00132CC2: jge     short loc_132CC7",
+          "00132CC4: jmp     loc_132B55",
+          "00132CC7: cmp     [bp+var_6], 39h ; '9'",
+          "00132CCB: jle     short loc_132CD0",
+          "00132CCD: jmp     loc_132B55"
+        ]
+      },
+      {
+        "function": "undoc_162E45",
+        "address": "0x162e70",
+        "scan_code": "0x41",
+        "context": [
+          "00162E70: cmp     si, 41h ; 'A'",
+          "00162E73: jle     short loc_162E7C",
+          "00162E75: call    loc_6889C+1",
+          "00162E7A: jmp     short loc_162EDF",
+          "00162E7C: cmp     si, 37h ; '7'",
+          "00162E7F: jle     short loc_162E9C",
+          "00162E81: push    0",
+          "00162E83: push    0",
+          "00162E85: push    0",
+          "00162E87: call    loc_68C9C+1"
+        ]
+      },
+      {
+        "function": "ui_loadout_pylon_config",
+        "address": "0x163608",
+        "scan_code": "0x41",
+        "context": [
+          "00163608: cmp     [bp+var_2], 41h ; 'A'",
+          "0016360C: jle     short loc_163615",
+          "0016360E: call    loc_689A3+4",
+          "00163613: jmp     short loc_16365B",
+          "00163615: mov     ax, 7894h",
+          "00163618: mov     es, ax",
+          "0016361A: mov     al, es:byte_7A302",
+          "0016361E: mov     ah, 0",
+          "00163620: or      ax, ax",
+          "00163622: jnz     short loc_163650"
+        ]
+      },
+      {
+        "function": "undoc_163728",
+        "address": "0x163743",
+        "scan_code": "0x41",
+        "context": [
+          "00163743: cmp     [bp+var_2], 41h ; 'A'",
+          "00163747: jle     short loc_163756",
+          "00163749: push    0",
+          "0016374B: push    1",
+          "0016374D: push    1",
+          "0016374F: call    loc_68C12+1",
+          "00163754: jmp     short loc_163761",
+          "00163756: push    0",
+          "00163758: push    1",
+          "0016375A: push    1"
+        ]
+      }
+    ],
+    "F8": [
+      {
+        "function": "flight_aircraft_slot_physics_step",
+        "address": "0x49703",
+        "scan_code": "0x42",
+        "context": [
+          "00049703: cmp     ax, 42h ; 'B'",
+          "00049706: jle     short loc_49714",
+          "00049708: mov     ax, [si+5]",
+          "0004970B: mov     cl, 6",
+          "0004970D: sar     ax, cl",
+          "0004970F: sub     [si+5], ax",
+          "00049712: jmp     short loc_49723",
+          "00049714: add     word ptr [si+5], 0FFFFh",
+          "00049718: cmp     word ptr [si+5], 0FFBEh",
+          "0004971C: jge     short loc_49723"
+        ]
+      },
+      {
+        "function": "ui_menu_transition_renderer",
+        "address": "0x12aaa4",
+        "scan_code": "0x42",
+        "context": [
+          "0012AAA4: cmp     [bp+var_2], 42h ; 'B'",
+          "0012AAA8: jl      short loc_12AA6B",
+          "0012AAAA: mov     [bp+var_14], 1",
+          "0012AAAF: call    ui_animation_step",
+          "0012AAB4: mov     [bp+var_2], 1",
+          "0012AAB9: jmp     short loc_12AAFF",
+          "0012AABB: mov     ax, [bp+var_14]",
+          "0012AABE: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)",
+          "0012AAC1: imul    dx",
+          "0012AAC3: mov     dx, 7894h"
+        ]
+      },
+      {
+        "function": "ui_menu_transition_renderer",
+        "address": "0x12ad5b",
+        "scan_code": "0x42",
+        "context": [
+          "0012AD5B: cmp     [bp+var_2], 42h ; 'B'",
+          "0012AD5F: jl      short loc_12AD22",
+          "0012AD61: mov     [bp+var_14], 1",
+          "0012AD66: mov     [bp+var_2], 1",
+          "0012AD6B: jmp     loc_12ADF3",
+          "0012AD6E: les     bx, [bp+var_6]",
+          "0012AD71: cmp     byte ptr es:[bx], 0",
+          "0012AD75: jnz     short loc_12ADBD",
+          "0012AD77: mov     ax, [bp+var_14]",
+          "0012AD7A: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)"
+        ]
+      },
+      {
+        "function": "input_poll_handler",
+        "address": "0x12fdac",
+        "scan_code": "0x42",
+        "context": [
+          "0012FDAC: cmp     bx, 42h",
+          "0012FDAF: jbe     short loc_12FDB4",
+          "0012FDB1: jmp     def_12FDB6; jumptable 0012FDB6 default case, cases 16-21,25-31,33-35,39-44,46-48,53-70,74,78",
+          "0012FDB4: shl     bx, 1",
+          "0012FDB6: jmp     cs:jpt_12FDB6[bx]; switch jump",
+          "0012FDBB: call    bda_kb_flag_get; jumptable 0012FDB6 case 49",
+          "0012FDC0: mov     [bp+var_4], ax",
+          "0012FDC3: test    [bp+var_4], 8",
+          "0012FDC8: jnz     short loc_12FDCD",
+          "0012FDCA: jmp     def_12FDB6; jumptable 0012FDB6 default case, cases 16-21,25-31,33-35,39-44,46-48,53-70,74,78"
+        ]
+      },
+      {
+        "function": "undoc_131D5F",
+        "address": "0x131ddc",
+        "scan_code": "0x42",
+        "context": [
+          "00131DDC: cmp     cx, 42h ; 'B'",
+          "00131DDF: jl      short loc_131DC9",
+          "00131DE1: inc     di",
+          "00131DE2: cmp     di, 0Ah",
+          "00131DE5: jl      short loc_131D9B",
+          "00131DE7: mov     ax, si",
+          "00131DE9: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)",
+          "00131DEC: imul    dx",
+          "00131DEE: mov     dx, 7894h",
+          "00131DF1: mov     es, dx"
+        ]
+      },
+      {
+        "function": "sub_1371DF",
+        "address": "0x137281",
+        "scan_code": "0x42",
+        "context": [
+          "00137281: cmp     cx, 42h ; 'B'",
+          "00137284: jl      short loc_13726E",
+          "00137286: inc     si",
+          "00137287: inc     di",
+          "00137288: cmp     di, 0Ah",
+          "0013728B: jl      short loc_13721A",
+          "0013728D: jmp     short loc_1372F6",
+          "0013728F: mov     ax, si",
+          "00137291: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)",
+          "00137294: imul    dx"
+        ]
+      },
+      {
+        "function": "sub_1371DF",
+        "address": "0x137473",
+        "scan_code": "0x42",
+        "context": [
+          "00137473: cmp     cx, 42h ; 'B'",
+          "00137476: jl      short loc_137460",
+          "00137478: dec     [bp+var_A]",
+          "0013747B: cmp     [bp+var_A], di",
+          "0013747E: jg      short loc_13742F",
+          "00137480: mov     ax, di",
+          "00137482: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)",
+          "00137485: imul    dx",
+          "00137487: mov     dx, word ptr [bp+var_8+2]",
+          "0013748A: mov     bx, word ptr [bp+var_8]"
+        ]
+      },
+      {
+        "function": "sub_1371DF",
+        "address": "0x1374c1",
+        "scan_code": "0x42",
+        "context": [
+          "001374C1: cmp     cx, 42h ; 'B'",
+          "001374C4: jl      short loc_1374AE",
+          "001374C6: mov     di, 0Ah",
+          "001374C9: inc     di",
+          "001374CA: cmp     di, 0Ah",
+          "001374CD: jge     short loc_1374D2",
+          "001374CF: jmp     loc_13739F",
+          "001374D2: inc     si",
+          "001374D3: mov     ax, 7894h",
+          "001374D6: mov     es, ax"
+        ]
+      },
+      {
+        "function": "overlay_r45_logic",
+        "address": "0x156c56",
+        "scan_code": "0x42",
+        "context": [
+          "00156C56: cmp     di, 42h ; 'B'",
+          "00156C59: jl      short loc_156C31",
+          "00156C5B: mov     ax, 7894h",
+          "00156C5E: mov     es, ax",
+          "00156C60: mov     ax, es:word_79D20",
+          "00156C64: mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)",
+          "00156C67: imul    dx",
+          "00156C69: les     bx, [bp+var_A]",
+          "00156C6C: add     bx, ax",
+          "00156C6E: mov     al, es:[bx+3Fh]"
+        ]
+      },
+      {
+        "function": "undoc_1578E1",
+        "address": "0x157a32",
+        "scan_code": "0x42",
+        "context": [
+          "00157A32: cmp     [bp+var_2], 42h ; 'B'",
+          "00157A36: jl      short loc_157A0B",
+          "00157A38: dec     di",
+          "00157A39: mov     ax, 7894h",
+          "00157A3C: mov     es, ax",
+          "00157A3E: les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)",
+          "00157A43: dec     word ptr es:[bx+0A8Dh]",
+          "00157A48: inc     si",
+          "00157A49: mov     ax, 7894h",
+          "00157A4C: mov     es, ax"
+        ]
+      },
+      {
+        "function": "undoc_1578E1",
+        "address": "0x157b0d",
+        "scan_code": "0x42",
+        "context": [
+          "00157B0D: cmp     [bp+var_2], 42h ; 'B'",
+          "00157B11: jl      short loc_157AE6",
+          "00157B13: inc     si",
+          "00157B14: mov     ax, 7894h",
+          "00157B17: mov     es, ax",
+          "00157B19: les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)",
+          "00157B1E: cmp     es:[bx+0A8Dh], si",
+          "00157B23: jbe     short loc_157B28",
+          "00157B25: jmp     loc_157A6B",
+          "00157B28: inc     di"
+        ]
+      },
+      {
+        "function": "overlay_r55_main_loop",
+        "address": "0x18bafa",
+        "scan_code": "0x42",
+        "context": [
+          "0018BAFA: cmp     [bp+var_18], 42h ; 'B'",
+          "0018BAFE: jl      short loc_18BAE5",
+          "0018BB00: inc     [bp+var_4C]",
+          "0018BB03: mov     ax, 7894h",
+          "0018BB06: mov     es, ax",
+          "0018BB08: les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)",
+          "0018BB0D: mov     ax, es:[bx+0A8Dh]",
+          "0018BB12: mov     [bp+var_16], ax",
+          "0018BB15: inc     [bp+var_16]",
+          "0018BB18: mov     ax, 7894h"
+        ]
+      }
+    ],
+    "F9": [
+      {
+        "function": "overlay_loader_main",
+        "address": "0x2cc5c",
+        "scan_code": "0x43",
+        "context": [
+          "0002CC5C: cmp     al, 43h ; 'C'",
+          "0002CC5E: jnz     short loc_2CC62",
+          "0002CC60: jmp     short loc_2CCA3",
+          "0002CC62: cmp     al, 45h ; 'E'",
+          "0002CC64: jnz     short loc_2CC68",
+          "0002CC66: jmp     short loc_2CCB1",
+          "0002CC68: cmp     al, 50h ; 'P'",
+          "0002CC6A: jnz     short loc_2CC6F",
+          "0002CC6C: jmp     loc_2CD11",
+          "0002CC6F: cmp     al, 41h ; 'A'"
+        ]
+      }
+    ],
+    "F10": [
+      {
+        "function": "undoc_131001",
+        "address": "0x13104f",
+        "scan_code": "0x44",
+        "context": [
+          "0013104F: cmp     word ptr es:byte_7A278+3Ah, 44h ; 'D'",
+          "00131055: jge     short loc_13106D",
+          "00131057: mov     ax, 7894h",
+          "0013105A: mov     es, ax",
+          "0013105C: mov     word ptr es:dword_79E2C+2, 4FC2h",
+          "00131063: mov     word ptr es:dword_79E2C, 638h",
+          "0013106A: jmp     loc_131175",
+          "0013106D: mov     ax, 7894h",
+          "00131070: mov     es, ax",
+          "00131072: cmp     word ptr es:byte_7A278+3Ah, 54h ; 'T'"
+        ]
+      }
+    ],
+    "R": [
+      {
+        "function": "terrain_attr_walk_13110",
+        "address": "0x1312e",
+        "scan_code": "0x13",
+        "context": [
+          "0001312E: cmp     cx, 13h",
+          "00013131: jl      short loc_13139",
+          "00013133: mov     cs:byte_11C8B, 0",
+          "00013139: push    dx",
+          "0001313A: push    bx",
+          "0001313B: push    cx",
+          "0001313C: lodsb",
+          "0001313D: cbw",
+          "0001313E: add     dx, ax",
+          "00013140: lodsb"
+        ]
+      },
+      {
+        "function": "sbi_request_dispatch",
+        "address": "0x16b3d",
+        "scan_code": "0x13",
+        "context": [
+          "00016B3D: cmp     ax, 13h",
+          "00016B40: jnz     short loc_16B65",
+          "00016B42: mov     ax, word ptr ds:byte_774F3+235h",
+          "00016B45: mov     word ptr es:byte_774F3+247h, ax",
+          "00016B49: mov     ax, word ptr ds:byte_774F3+231h",
+          "00016B4C: mov     word ptr es:byte_774F3+249h, ax",
+          "00016B50: mov     ax, word ptr ds:byte_774F3+233h",
+          "00016B53: mov     word ptr es:byte_774F3+24Bh, ax",
+          "00016B57: mov     word ptr es:byte_774F3+24Dh, 1",
+          "00016B5E: call    pit_period_set_dsys"
+        ]
+      },
+      {
+        "function": "kb_record_key_event",
+        "address": "0x1934b",
+        "scan_code": "0x13",
+        "context": [
+          "0001934B: cmp     si, 13h",
+          "0001934E: jnz     short loc_19359",
+          "00019350: sub     [bp+var_A], 3A98h",
+          "00019355: sbb     [bp+var_8], 0",
+          "00019359: mov     ax, [bp+var_4]",
+          "0001935C: mov     [bp+var_12], ax",
+          "0001935F: jmp     short loc_1936D",
+          "00019361: inc     [bp+var_12]",
+          "00019364: sub     [bp+var_A], 4000h",
+          "00019369: sbb     [bp+var_8], 0"
+        ]
+      },
+      {
+        "function": "weapon_type_initialize_dispatch",
+        "address": "0x4c1a9",
+        "scan_code": "0x13",
+        "context": [
+          "0004C1A9: cmp     bx, 13h",
+          "0004C1AC: jbe     short loc_4C1B8",
+          "0004C1AE: cmp     bx, 33h ; '3'",
+          "0004C1B1: jb      short loc_4C1DD",
+          "0004C1B3: cmp     bx, 37h ; '7'",
+          "0004C1B6: ja      short loc_4C1DD",
+          "0004C1B8: cmp     cs:word_4C0DC, 0",
+          "0004C1BE: jz      short loc_4C1DB",
+          "0004C1C0: mov     si, cs:word_4C0DA",
+          "0004C1C5: push    cs"
+        ]
+      },
+      {
+        "function": "weapon_type_initialize_dispatch",
+        "address": "0x4c26c",
+        "scan_code": "0x13",
+        "context": [
+          "0004C26C: cmp     bx, 13h",
+          "0004C26F: jnz     short loc_4C2A0",
+          "0004C271: mov     [si], bp",
+          "0004C273: mov     word ptr [si+2], 812h",
+          "0004C278: mov     word ptr [si+4], 0C3CFh",
+          "0004C27D: mov     word ptr [si+6], 14h",
+          "0004C282: mov     word ptr [si+8], 0",
+          "0004C287: mov     word ptr [si+0Ah], 828Ah",
+          "0004C28C: mov     word ptr [si+0Ch], 4734h",
+          "0004C291: mov     word ptr [si+0Eh], 400h"
+        ]
+      },
+      {
+        "function": "r06_init_call_43270_c",
+        "address": "0x6c6dc",
+        "scan_code": "0x13",
+        "context": [
+          "0006C6DC: cmp     es:word_6E185, 13h",
+          "0006C6E2: jle     short loc_6C6ED",
+          "0006C6E4: mov     es, ax",
+          "0006C6E6: mov     es:word_6E185, 0",
+          "0006C6ED: mov     ax, 6DE8h",
+          "0006C6F0: mov     es, ax",
+          "0006C6F2: mov     ax, es:word_6E185",
+          "0006C6F6: shl     ax, 2",
+          "0006C6F9: mov     dx, 6DE8h",
+          "0006C6FC: mov     es, dx"
+        ]
+      },
+      {
+        "function": "overlay_undecoded_body_10ca",
+        "address": "0x10cbb3",
+        "scan_code": "0x13",
+        "context": [
+          "0010CBB3: cmp     si, 13h",
+          "0010CBB6: jl      short loc_10CB9B",
+          "0010CBB8: call    bda_kb_flag_10000_get",
+          "0010CBBD: mov     dx, 7894h",
+          "0010CBC0: mov     es, dx",
+          "0010CBC2: mov     es:word_79870, ax",
+          "0010CBC6: call    sub_2BE8D",
+          "0010CBCB: mov     dx, 7A32h",
+          "0010CBCE: mov     es, dx",
+          "0010CBD0: mov     es:0AF95h, al"
+        ]
+      },
+      {
+        "function": "r27_state_buffer_init_entry",
+        "address": "0x10cde0",
+        "scan_code": "0x13",
+        "context": [
+          "0010CDE0: cmp     si, 13h",
+          "0010CDE3: jl      short loc_10CDC8",
+          "0010CDE5: call    bda_kb_flag_10000_get",
+          "0010CDEA: mov     dx, 7894h",
+          "0010CDED: mov     es, dx",
+          "0010CDEF: mov     es:word_79870, ax",
+          "0010CDF3: push    0FFh",
+          "0010CDF6: push    cs",
+          "0010CDF7: call    near ptr sub_10CE05",
+          "0010CDFA: nop"
+        ]
+      },
+      {
+        "function": "utility_2429",
+        "address": "0x10edae",
+        "scan_code": "0x13",
+        "context": [
+          "0010EDAE: cmp     si, 13h",
+          "0010EDB1: jge     short loc_10EDB6",
+          "0010EDB3: jmp     loc_10EC8F",
+          "0010EDB6: mov     ax, 7A32h",
+          "0010EDB9: mov     es, ax",
+          "0010EDBB: mov     es:0AF7Ah, di",
+          "0010EDC0: jmp     loc_10F51A",
+          "0010EDC3: mov     ax, 7A32h",
+          "0010EDC6: mov     es, ax",
+          "0010EDC8: mov     bx, es:0AF7Ah"
+        ]
+      },
+      {
+        "function": "sub_135C57",
+        "address": "0x135d67",
+        "scan_code": "0x13",
+        "context": [
+          "00135D67: cmp     ax, 13h",
+          "00135D6A: jl      short loc_135DDB",
+          "00135D6C: mov     [bp+var_4], di",
+          "00135D6F: jmp     short loc_135D74",
+          "00135D71: dec     [bp+var_4]",
+          "00135D74: cmp     [bp+var_4], si",
+          "00135D77: jle     short loc_135D85",
+          "00135D79: les     bx, [bp+arg_0]",
+          "00135D7C: add     bx, [bp+var_4]",
+          "00135D7F: cmp     byte ptr es:[bx], 20h ; ' '"
+        ]
+      },
+      {
+        "function": "overlay_r57_logic",
+        "address": "0x1a2ff3",
+        "scan_code": "0x13",
+        "context": [
+          "001A2FF3: cmp     bx, 13h; switch 20 cases",
+          "001A2FF6: jbe     short loc_1A2FFB",
+          "001A2FF8: jmp     def_1A2FFD; jumptable 001A2FFD default case, cases 9,13",
+          "001A2FFB: shl     bx, 1",
+          "001A2FFD: jmp     cs:jpt_1A2FFD[bx]; switch jump",
+          "001A3002: cmp     [bp+var_6], 0; jumptable 001A2FFD cases 0,1",
+          "001A3006: jz      short loc_1A300E",
+          "001A3008: cmp     [bp+var_6], 8",
+          "001A300C: jnz     short loc_1A3020",
+          "001A300E: mov     ax, 7894h"
+        ]
+      },
+      {
+        "function": "overlay_r57_logic",
+        "address": "0x1a3341",
+        "scan_code": "0x13",
+        "context": [
+          "001A3341: cmp     bx, 13h; switch 20 cases",
+          "001A3344: jbe     short loc_1A3349",
+          "001A3346: jmp     def_1A334B; jumptable 001A334B default case",
+          "001A3349: shl     bx, 1",
+          "001A334B: jmp     cs:jpt_1A334B[bx]; switch jump",
+          "001A3350: cmp     [bp+var_6], 0; jumptable 001A334B cases 0,1",
+          "001A3354: jz      short loc_1A335C",
+          "001A3356: cmp     [bp+var_6], 8",
+          "001A335A: jnz     short loc_1A336E",
+          "001A335C: mov     ax, 7894h"
+        ]
+      },
+      {
+        "function": "sub_1A4875",
+        "address": "0x1a48d3",
+        "scan_code": "0x13",
+        "context": [
+          "001A48D3: cmp     bx, 13h; switch 20 cases",
+          "001A48D6: jbe     short loc_1A48DB",
+          "001A48D8: jmp     def_1A48DD; jumptable 001A48DD default case",
+          "001A48DB: shl     bx, 1",
+          "001A48DD: jmp     cs:jpt_1A48DD[bx]; switch jump",
+          "001A48E2: mov     ax, 7894h; jumptable 001A48DD case 0",
+          "001A48E5: mov     es, ax",
+          "001A48E7: les     bx, es:dword_79E50",
+          "001A48EC: cmp     es:[bx+4], si",
+          "001A48F0: jl      short loc_1A48F5"
+        ]
+      },
+      {
+        "function": "undoc_1A4BA6",
+        "address": "0x1a4bad",
+        "scan_code": "0x13",
+        "context": [
+          "001A4BAD: cmp     bx, 13h; switch 20 cases",
+          "001A4BB0: jbe     short loc_1A4BB5",
+          "001A4BB2: jmp     def_1A4BB7; jumptable 001A4BB7 default case",
+          "001A4BB5: shl     bx, 1",
+          "001A4BB7: jmp     cs:jpt_1A4BB7[bx]; switch jump",
+          "001A4BBC: mov     ax, 7894h; jumptable 001A4BB7 case 0",
+          "001A4BBF: mov     es, ax",
+          "001A4BC1: les     bx, es:dword_79E50",
+          "001A4BC6: mov     si, es:[bx+4]",
+          "001A4BCA: jmp     loc_1A4D1D"
+        ]
+      },
+      {
+        "function": "r57_menu_state_machine",
+        "address": "0x1a6100",
+        "scan_code": "0x13",
+        "context": [
+          "001A6100: cmp     es:word_79EA0, 13h",
+          "001A6106: jl      short loc_1A60AC",
+          "001A6108: mov     ax, 7894h",
+          "001A610B: mov     es, ax",
+          "001A610D: mov     bx, es:word_79EA0",
+          "001A6112: shl     bx, 1",
+          "001A6114: mov     ax, 4FC2h",
+          "001A6117: mov     es, ax",
+          "001A6119: push    word ptr es:[bx+30Ah]",
+          "001A611E: call    overlay_bridge_to_68f9e"
+        ]
+      },
+      {
+        "function": "r57_loadout_display_handler",
+        "address": "0x1a7e27",
+        "scan_code": "0x13",
+        "context": [
+          "001A7E27: cmp     es:word_79EA0, 13h",
+          "001A7E2D: jl      short loc_1A7DD3",
+          "001A7E2F: mov     ax, 7894h",
+          "001A7E32: mov     es, ax",
+          "001A7E34: mov     bx, es:word_79EA0",
+          "001A7E39: shl     bx, 1",
+          "001A7E3B: mov     ax, 4FC2h",
+          "001A7E3E: mov     es, ax",
+          "001A7E40: push    word ptr es:[bx+30Ah]",
+          "001A7E45: call    overlay_bridge_to_68f9e"
+        ]
+      }
+    ],
+    "Z": [
+      {
+        "function": "kbd_scancode_xlat_shift",
+        "address": "0x25431",
+        "scan_code": "0x2c",
+        "context": [
+          "00025431: cmp     ah, 2Ch ; ','",
+          "00025434: jge     short loc_25448",
+          "00025436: cmp     ah, 19h",
+          "00025439: jle     short loc_25448",
+          "0002543B: cmp     ah, 1Eh",
+          "0002543E: jl      short loc_25445",
+          "00025440: cmp     ah, 26h ; '&'",
+          "00025443: jle     short loc_25448",
+          "00025445: mov     bx, 3A1Dh",
+          "00025448: mov     al, ah"
+        ]
+      },
+      {
+        "function": "overlay_loader_main",
+        "address": "0x2cc92",
+        "scan_code": "0x2c",
+        "context": [
+          "0002CC92: cmp     al, 2Ch ; ','",
+          "0002CC94: jz      short loc_2CC52",
+          "0002CC96: jmp     short loc_2CC8D",
+          "0002CC98: stc",
+          "0002CC99: pop     es",
+          "0002CC9A: pop     ds",
+          "0002CC9B: pop     bp",
+          "0002CC9C: pop     si",
+          "0002CC9D: pop     di",
+          "0002CC9E: pop     dx"
+        ]
+      },
+      {
+        "function": "overlay_loader_main",
+        "address": "0x2ccb7",
+        "scan_code": "0x2c",
+        "context": [
+          "0002CCB7: cmp     al, 2Ch ; ','",
+          "0002CCB9: jnz     short loc_2CCB2",
+          "0002CCBB: mov     di, si",
+          "0002CCBD: dec     di",
+          "0002CCBE: mov     byte ptr [di], 0",
+          "0002CCC1: pop     si",
+          "0002CCC2: push    ax",
+          "0002CCC3: push    di",
+          "0002CCC4: mov     es, [bp+var_sC]",
+          "0002CCC7: mov     di, 50h ; 'P'"
+        ]
+      },
+      {
+        "function": "flight_aerodynamics_speed_authority",
+        "address": "0x39224",
+        "scan_code": "0x2c",
+        "context": [
+          "00039224: cmp     byte ptr [si+75h], 2Ch ; ','",
+          "00039228: jz      short loc_39287",
+          "0003922A: cmp     byte ptr [si+75h], 2Bh ; '+'",
+          "0003922E: jz      short loc_39287",
+          "00039230: cmp     byte ptr [si+75h], 0Dh",
+          "00039234: jz      short loc_39287",
+          "00039236: cmp     byte ptr [si+75h], 0Fh",
+          "0003923A: jz      short loc_39287",
+          "0003923C: cmp     byte ptr [si+75h], 2Fh ; '/'",
+          "00039240: jz      short loc_39287"
+        ]
+      },
+      {
+        "function": "undoc_4A23D",
+        "address": "0x4a23d",
+        "scan_code": "0x2c",
+        "context": [
+          "0004A23D: cmp     bx, 2Ch ; ','",
+          "0004A240: jnz     short undoc_4A273",
+          "0004A242: mov     word ptr [si], 3",
+          "0004A246: mov     byte ptr [si+0Dh], 4",
+          "0004A24A: mov     byte ptr [si+0Eh], 1",
+          "0004A24E: mov     word ptr [si+12h], 2",
+          "0004A253: mov     word ptr [si+14h], 100h",
+          "0004A258: mov     word ptr [si+36h], 23h ; '#'",
+          "0004A25D: mov     word ptr [si+38h], 47Eh",
+          "0004A262: mov     di, [si+8]"
+        ]
+      },
+      {
+        "function": "utility_2429",
+        "address": "0x10ecfa",
+        "scan_code": "0x2c",
+        "context": [
+          "0010ECFA: cmp     byte ptr es:[si-5166h], 2Ch ; ','",
+          "0010ED00: jnz     short loc_10ED2B",
+          "0010ED02: mov     ax, 7A32h",
+          "0010ED05: mov     es, ax",
+          "0010ED07: les     bx, es:0AF44h",
+          "0010ED0C: mov     ax, es:[bx+136h]",
+          "0010ED11: mov     dx, 7A32h",
+          "0010ED14: mov     es, dx",
+          "0010ED16: mov     es:0AF6Ch, ax",
+          "0010ED1A: mov     ax, 7A32h"
+        ]
+      },
+      {
+        "function": "undoc_13C71C",
+        "address": "0x13c7af",
+        "scan_code": "0x2c",
+        "context": [
+          "0013C7AF: cmp     di, 2Ch ; ','",
+          "0013C7B2: jge     short loc_13C7B9",
+          "0013C7B4: mov     si, 9",
+          "0013C7B7: jmp     short loc_13C802",
+          "0013C7B9: cmp     di, 32h ; '2'",
+          "0013C7BC: jge     short loc_13C7C3",
+          "0013C7BE: mov     si, 0Ah",
+          "0013C7C1: jmp     short loc_13C802",
+          "0013C7C3: cmp     di, 3Ah ; ':'",
+          "0013C7C6: jge     short loc_13C7CD"
+        ]
+      },
+      {
+        "function": "sub_1A1DB9",
+        "address": "0x1a1e62",
+        "scan_code": "0x2c",
+        "context": [
+          "001A1E62: cmp     byte ptr es:[bx+4], 2Ch ; ','",
+          "001A1E67: jnz     short loc_1A1E7C",
+          "001A1E69: mov     ax, si",
+          "001A1E6B: mov     dx, 6",
+          "001A1E6E: imul    dx",
+          "001A1E70: les     bx, [bp+arg_0]",
+          "001A1E73: add     bx, ax",
+          "001A1E75: mov     byte ptr es:[bx+5], 82h",
+          "001A1E7A: jmp     short loc_1A1E8D",
+          "001A1E7C: mov     ax, si"
+        ]
+      }
+    ]
+  },
+  "radar_state_variables": [],
+  "fkey_dispatchers": [
+    {
+      "function": "farobj_utility_1819",
+      "address": "0x4c3c7",
+      "size": 1819,
+      "fkey_count": 5,
+      "fkeys": [
+        {
+          "offset": "0x5ca",
+          "address": "0x4c991",
+          "scan_code": "0x3b",
+          "key": "F1",
+          "instruction": "cmp     bx, 3Bh ; ';'"
+        },
+        {
+          "offset": "0x616",
+          "address": "0x4c9dd",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     bx, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x63e",
+          "address": "0x4ca05",
+          "scan_code": "0x3d",
+          "key": "F3",
+          "instruction": "cmp     bx, 3Dh ; '='"
+        },
+        {
+          "offset": "0x687",
+          "address": "0x4ca4e",
+          "scan_code": "0x3e",
+          "key": "F4",
+          "instruction": "cmp     bx, 3Eh ; '>'"
+        },
+        {
+          "offset": "0x6d0",
+          "address": "0x4ca97",
+          "scan_code": "0x3f",
+          "key": "F5",
+          "instruction": "cmp     bx, 3Fh ; '?'"
+        }
+      ]
+    },
+    {
+      "function": "overlay_r55_main_loop",
+      "address": "0x18b912",
+      "size": 9641,
+      "fkey_count": 5,
+      "fkeys": [
+        {
+          "offset": "0x1e8",
+          "address": "0x18bafa",
+          "scan_code": "0x42",
+          "key": "F8",
+          "instruction": "cmp     [bp+var_18], 42h ; 'B'"
+        },
+        {
+          "offset": "0x105b",
+          "address": "0x18c96d",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     [bp+var_1E], 40h ; '@'"
+        },
+        {
+          "offset": "0x1456",
+          "address": "0x18cd68",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     [bp+var_1E], 40h ; '@'"
+        },
+        {
+          "offset": "0x181c",
+          "address": "0x18d12e",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     [bp+var_1E], 40h ; '@'"
+        },
+        {
+          "offset": "0x1c08",
+          "address": "0x18d51a",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     [bp+var_1E], 40h ; '@'"
+        }
+      ]
+    },
+    {
+      "function": "entity_state_load",
+      "address": "0x1509e",
+      "size": 775,
+      "fkey_count": 4,
+      "fkeys": [
+        {
+          "offset": "0x6f",
+          "address": "0x1510d",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     dx, 40h ; '@'"
+        },
+        {
+          "offset": "0x168",
+          "address": "0x15206",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     dx, 40h ; '@'"
+        },
+        {
+          "offset": "0x207",
+          "address": "0x152a5",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     dx, 40h ; '@'"
+        },
+        {
+          "offset": "0x298",
+          "address": "0x15336",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     dx, 40h ; '@'"
+        }
+      ]
+    },
+    {
+      "function": "r61_garbage_fragment",
+      "address": "0x19d990",
+      "size": 1918,
+      "fkey_count": 4,
+      "fkeys": [
+        {
+          "offset": "0x636",
+          "address": "0x19dfc6",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x65a",
+          "address": "0x19dfea",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x6bc",
+          "address": "0x19e04c",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x6e0",
+          "address": "0x19e070",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        }
+      ]
+    },
+    {
+      "function": "r59_slope_slot_update_entry",
+      "address": "0x19ebfb",
+      "size": 1861,
+      "fkey_count": 4,
+      "fkeys": [
+        {
+          "offset": "0x5fd",
+          "address": "0x19f1f8",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x621",
+          "address": "0x19f21c",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x683",
+          "address": "0x19f27e",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        },
+        {
+          "offset": "0x6a7",
+          "address": "0x19f2a2",
+          "scan_code": "0x3c",
+          "key": "F2",
+          "instruction": "cmp     ax, 3Ch ; '<'"
+        }
+      ]
+    },
+    {
+      "function": "overlay_loader_main",
+      "address": "0x2cc47",
+      "size": 264,
+      "fkey_count": 3,
+      "fkeys": [
+        {
+          "offset": "0x15",
+          "address": "0x2cc5c",
+          "scan_code": "0x43",
+          "key": "F9",
+          "instruction": "cmp     al, 43h ; 'C'"
+        },
+        {
+          "offset": "0x28",
+          "address": "0x2cc6f",
+          "scan_code": "0x41",
+          "key": "F7",
+          "instruction": "cmp     al, 41h ; 'A'"
+        },
+        {
+          "offset": "0xa1",
+          "address": "0x2cce8",
+          "scan_code": "0x3b",
+          "key": "F1",
+          "instruction": "cmp     al, 3Bh ; ';'"
+        }
+      ]
+    },
+    {
+      "function": "sub_38778",
+      "address": "0x38778",
+      "size": 1289,
+      "fkey_count": 3,
+      "fkeys": [
+        {
+          "offset": "0x45d",
+          "address": "0x38bd5",
+          "scan_code": "0x3f",
+          "key": "F5",
+          "instruction": "cmp     ax, 3Fh ; '?'"
+        },
+        {
+          "offset": "0x46c",
+          "address": "0x38be4",
+          "scan_code": "0x3f",
+          "key": "F5",
+          "instruction": "cmp     ah, 3Fh ; '?'"
+        },
+        {
+          "offset": "0x4ce",
+          "address": "0x38c46",
+          "scan_code": "0x3f",
+          "key": "F5",
+          "instruction": "cmp     al, 3Fh ; '?'"
+        }
+      ]
+    },
+    {
+      "function": "ui_text_render_simple",
+      "address": "0x128aa6",
+      "size": 692,
+      "fkey_count": 3,
+      "fkeys": [
+        {
+          "offset": "0x17a",
+          "address": "0x128c20",
+          "scan_code": "0x3d",
+          "key": "F3",
+          "instruction": "cmp     [bp+arg_0], 3Dh ; '='"
+        },
+        {
+          "offset": "0x1ed",
+          "address": "0x128c93",
+          "scan_code": "0x3d",
+          "key": "F3",
+          "instruction": "cmp     [bp+arg_0], 3Dh ; '='"
+        },
+        {
+          "offset": "0x27a",
+          "address": "0x128d20",
+          "scan_code": "0x3d",
+          "key": "F3",
+          "instruction": "cmp     [bp+arg_0], 3Dh ; '='"
+        }
+      ]
+    },
+    {
+      "function": "sub_1371DF",
+      "address": "0x1371df",
+      "size": 780,
+      "fkey_count": 3,
+      "fkeys": [
+        {
+          "offset": "0xa2",
+          "address": "0x137281",
+          "scan_code": "0x42",
+          "key": "F8",
+          "instruction": "cmp     cx, 42h ; 'B'"
+        },
+        {
+          "offset": "0x294",
+          "address": "0x137473",
+          "scan_code": "0x42",
+          "key": "F8",
+          "instruction": "cmp     cx, 42h ; 'B'"
+        },
+        {
+          "offset": "0x2e2",
+          "address": "0x1374c1",
+          "scan_code": "0x42",
+          "key": "F8",
+          "instruction": "cmp     cx, 42h ; 'B'"
+        }
+      ]
+    },
+    {
+      "function": "mission_briefing_coordinator",
+      "address": "0x1820b0",
+      "size": 12693,
+      "fkey_count": 3,
+      "fkeys": [
+        {
+          "offset": "0x373",
+          "address": "0x182423",
+          "scan_code": "0x3f",
+          "key": "F5",
+          "instruction": "cmp     [bp+var_A], 3Fh ; '?'"
+        },
+        {
+          "offset": "0x2377",
+          "address": "0x184427",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     [bp+var_2], 40h ; '@'"
+        },
+        {
+          "offset": "0x266d",
+          "address": "0x18471d",
+          "scan_code": "0x40",
+          "key": "F6",
+          "instruction": "cmp     [bp+var_2], 40h ; '@'"
+        }
+      ]
+    }
+  ],
+  "external_view_functions": [
+    {
+      "name": "external_terrain_camera_setup",
+      "address": "0x128cd",
+      "size": 67,
+      "keyword": "external",
+      "string_refs": []
+    },
+    {
+      "name": "external_terrain_frame_update",
+      "address": "0x12910",
+      "size": 43,
+      "keyword": "external",
+      "string_refs": []
+    },
+    {
+      "name": "viewobj_project_select",
+      "address": "0x12b62",
+      "size": 20,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_scroll_rotate_apply",
+      "address": "0x1f769",
+      "size": 111,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_scroll_clamp_1f702",
+      "address": "0x202bf",
+      "size": 28,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_get_quad",
+      "address": "0x20587",
+      "size": 17,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_compute_1f6da",
+      "address": "0x20598",
+      "size": 34,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_scroll_quad_update",
+      "address": "0x20726",
+      "size": 183,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_shadow_save_far",
+      "address": "0x20843",
+      "size": 4,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_shadow_save",
+      "address": "0x20847",
+      "size": 66,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_shadow_restore_far",
+      "address": "0x20897",
+      "size": 4,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_shadow_restore",
+      "address": "0x2089b",
+      "size": 76,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_bounds_distribute",
+      "address": "0x20ac1",
+      "size": 104,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_extent_init_0c",
+      "address": "0x20b4d",
+      "size": 53,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_projection",
+      "address": "0x20bdb",
+      "size": 1076,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_proj_matmul_3896",
+      "address": "0x22ea2",
+      "size": 70,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_proj_default",
+      "address": "0x23235",
+      "size": 41,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_proj_preset_1",
+      "address": "0x2325e",
+      "size": 29,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_proj_preset_2",
+      "address": "0x2327b",
+      "size": 29,
+      "keyword": "view",
+      "string_refs": []
+    },
+    {
+      "name": "view_proj_preset_4",
+      "address": "0x23298",
+      "size": 26,
+      "keyword": "view",
+      "string_refs": []
+    }
+  ],
+  "sad_hfr_raw_search": [],
+  "summary": {
+    "keys_found": [
+      "F1",
+      "F2",
+      "F3",
+      "F4",
+      "F5",
+      "F6",
+      "F7",
+      "F8",
+      "F9",
+      "F10",
+      "R",
+      "Z"
+    ],
+    "radar_vars": 0,
+    "dispatchers": 10,
+    "view_funcs": 20,
+    "sad_hfr_found": 0
+  }
+}
