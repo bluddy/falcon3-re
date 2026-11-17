@@ -291,21 +291,26 @@ structs:
   - name: EntitySlotRecord
     size: 92         # 0x5C bytes; 16 slots at 0x54AF:0x386F
     status: confirmed
-    source: "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_MODE_STATE_MACHINE.md"
+    source: "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_DETECTION_COMPLETE.md"
     notes: >
       Active entity slot record. 16 slots at segment 0x54AF, offset 0x386F.
       Updated 3-pass every frame by farobj_slot_update_driver. Contains per-frame
       processing state, update flags, and links to farobj instances.
-      Radar system uses fields +0x74, +0x79, +0x96, +0x98, +0x9A for target scanning.
+      Radar system uses fields +0x08/0x0A (distance), +0x74/+0x79 (flags),
+      +0x8E (azimuth), +0x92 (range), +0x96/98/9A (position) for detection and tracking.
     fields:
       - {offset: 0x00, size: 6, name: header,          type: bytes,   comment: "Unknown header fields"}
       - {offset: 0x06, size: 2, name: farobj_slot,     type: uint16,  comment: "FarObj main table slot index"}
-      - {offset: 0x08, size: 2, name: update_flags,    type: flags16, comment: "Per-frame update flags"}
-      - {offset: 0x0A, size: 2, name: state_word,      type: uint16,  comment: "Entity state"}
-      - {offset: 0x0C, size: 104, name: data_0C_73,    type: bytes,   comment: "Entity data bytes 0x0C-0x73"}
-      - {offset: 0x74, size: 1, name: status_flags,    type: flags8,  comment: "EntityStatusFlags: bit 0=active, bit 6=aircraft_type"}
-      - {offset: 0x75, size: 4, name: data_75_78,      type: bytes,   comment: "Unknown bytes 0x75-0x78"}
-      - {offset: 0x79, size: 1, name: tracking_flags,  type: flags8,  comment: "EntityTrackingFlags: bit 0=radar_visible/trackable"}
+      - {offset: 0x08, size: 2, name: distance_lo,     type: uint16,  comment: "Distance to player lo word (32-bit pair with +0x0A)"}
+      - {offset: 0x0A, size: 2, name: distance_hi,     type: uint16,  comment: "Distance to player hi word"}
+      - {offset: 0x0C, size: 98, name: data_0C_6D,     type: bytes,   comment: "Entity data bytes 0x0C-0x6D"}
+      - {offset: 0x74, size: 1, name: status_flags,    type: flags8,  comment: "EntityStatusFlags: bit 0=ACTIVE, bit 6=AIRCRAFT_TYPE"}
+      - {offset: 0x75, size: 25, name: data_75_8D,     type: bytes,   comment: "Unknown bytes 0x75-0x8D"}
+      - {offset: 0x8E, size: 2, name: angle_azimuth,   type: uint16,  comment: "Azimuth angle from player (14-bit, 0x0000-0x3FFF), used for radar cone detection"}
+      - {offset: 0x90, size: 2, name: data_90_91,      type: bytes,   comment: "Unknown bytes (possibly elevation angle)"}
+      - {offset: 0x92, size: 2, name: range,           type: uint16,  comment: "Computed range/distance to player (game units), compared against F8 radar range setting"}
+      - {offset: 0x94, size: 5, name: data_94_78,      type: bytes,   comment: "Unknown bytes 0x94-0x78"}
+      - {offset: 0x79, size: 1, name: tracking_flags,  type: flags8,  comment: "EntityTrackingFlags: bit 0=RADAR_VISIBLE (set by detection functions)"}
       - {offset: 0x7A, size: 28, name: data_7A_95,     type: bytes,   comment: "Unknown bytes 0x7A-0x95"}
       - {offset: 0x96, size: 2, name: position_x,      type: int16,   comment: "World X position (used by radar scanner)"}
       - {offset: 0x98, size: 2, name: position_y,      type: int16,   comment: "World Y position (used by radar scanner)"}

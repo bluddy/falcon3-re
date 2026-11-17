@@ -1,0 +1,98 @@
+
+======================================================================
+Function: farobj_floor_match_dispatch
+Address: 0x3A9B7 - 0x3AA1C
+Size: 101 bytes
+======================================================================
+
+0x3A9B7:  cmp     byte_595B2, 3
+0x3A9BC:  jz      short loc_3A9DE
+0x3A9BE:  cmp     byte_595B4, 0
+0x3A9C3:  jz      short loc_3A9DE
+0x3A9C5:  mov     di, cs:word_2F66B
+0x3A9CA:  cmp     si, [di+1734h]
+0x3A9CE:  jnz     short loc_3A9DE
+0x3A9D0:  mov     ax, es
+0x3A9D2:  cmp     ax, [di+1736h]
+0x3A9D6:  jnz     short loc_3A9DE
+0x3A9D8:  call    floor_copy_4aa3
+0x3A9DB:  jmp     loc_3AA96
+0x3A9DE:  mov     ax, es:[si+8Eh]
+0x3A9E3:  cmp     ax, 2000h
+0x3A9E6:  jbe     short loc_3A9ED
+0x3A9E8:  sub     ax, 4000h
+0x3A9EB:  neg     ax
+0x3A9ED:  sub     ax, 1000h
+0x3A9F0:  cwd
+0x3A9F1:  xor     ax, dx
+0x3A9F3:  sub     ax, dx
+0x3A9F5:  cmp     ax, 0E3h
+0x3A9F8:  jbe     short loc_3AA16
+0x3A9FA:  cmp     byte_59573, 1
+0x3A9FF:  jz      short loc_3AA06
+0x3AA01:  call    farobj_dist_bounds_4ac0
+0x3AA04:  jnb     short loc_3AA16
+0x3AA06:  mov     ax, es:[si+92h]
+0x3AA0B:  call    bound_table_check_49b8
+0x3AA0E:  jnb     short loc_3AA16
+0x3AA10:  or      byte ptr es:[si+79h], 1 <-- RADAR_VISIBLE FLAG
+0x3AA15:  retn
+0x3AA16:  and     byte ptr es:[si+79h], 0FEh <-- RADAR_VISIBLE FLAG
+0x3AA1B:  retn
+
+
+======================================================================
+Function: bound_range_check_4aad
+Address: 0x3AA7E - 0x3AB1B
+Size: 157 bytes
+======================================================================
+
+0x3AA7E:  shr     dx, 1
+0x3AA80:  rcr     ax, 1
+0x3AA82:  or      dx, dx
+0x3AA84:  jnz     short loc_3AA94
+0x3AA86:  cmp     ax, ds:4AADh
+0x3AA8A:  ja      short loc_3AA94
+0x3AA8C:  cmp     ax, ds:4AAFh
+0x3AA90:  jb      short loc_3AA94
+0x3AA92:  clc
+0x3AA93:  retn
+0x3AA94:  stc
+0x3AA95:  retn
+0x3AA96:  test    byte ptr es:[si+74h], 1 <-- STATUS FLAGS
+0x3AA9B:  jz      short loc_3AACB
+0x3AA9D:  mov     ax, es:[si+92h]
+0x3AAA2:  call    bound_table_check_49b8
+0x3AAA5:  jb      short loc_3AAE1
+0x3AAA7:  cmp     byte ptr ds:4AC2h, 1
+0x3AAAC:  jnz     short loc_3AACB
+0x3AAAE:  mov     ax, ds:4A93h
+0x3AAB1:  sub     ax, cs:word_2F679
+0x3AAB6:  jg      short loc_3AADD
+0x3AAB8:  mov     byte ptr ds:4AC5h, 1
+0x3AABD:  mov     word ptr ds:4A91h, 0A00h
+0x3AAC3:  mov     byte ptr ds:4AC3h, 0
+0x3AAC8:  mov     ax, 500h
+0x3AACB:  and     byte ptr es:[si+79h], 0FEh <-- RADAR_VISIBLE FLAG
+0x3AAD0:  mov     byte ptr ds:4AC4h, 0
+0x3AAD5:  mov     bl, ds:4AC3h
+0x3AAD9:  mov     ds:4AC2h, bl
+0x3AADD:  mov     ds:4A93h, ax
+0x3AAE0:  retn
+0x3AAE1:  cmp     byte ptr ds:4AC2h, 2
+0x3AAE6:  jz      short loc_3AB15
+0x3AAE8:  cmp     byte ptr ds:4A83h, 1
+0x3AAED:  jz      short loc_3AB15
+0x3AAEF:  mov     ax, es:[si+8]
+0x3AAF3:  mov     dx, es:[si+0Ah]
+0x3AAF7:  call    bound_range_check_4aad
+0x3AAFA:  jb      short loc_3AACB
+0x3AAFC:  mov     ax, es:[si+92h]
+0x3AB01:  cmp     ax, 240h
+0x3AB04:  jnb     short loc_3AB15
+0x3AB06:  mov     byte ptr ds:4ABDh, 0
+0x3AB0B:  mov     byte ptr ds:4AC3h, 0
+0x3AB10:  mov     byte ptr ds:4AC2h, 2
+0x3AB15:  or      byte ptr es:[si+79h], 1 <-- RADAR_VISIBLE FLAG
+0x3AB1A:  retn
+
