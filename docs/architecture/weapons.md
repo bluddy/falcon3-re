@@ -382,11 +382,67 @@ From WEAPON_TYPES_DECODED.md analysis of `weapon_type_initialize_dispatch` @ 0x4
 
 These globals likely exist but have not been located yet:
 
-- `radar_lock_status` - Radar missile lock state (integrates with radar STT mode @ 0x595B2)
 - `harm_lock_status` - HARM lock state (tracking emitter)
 - `selected_weapon_type` - Currently selected weapon (0x12/0x13/0x33/etc.)
 - `trigger_pressed` - Fire button state (space bar)
 - Entity field: `radar_emitter_active` for HARM lock targeting
+
+### Radar Lock System (AIM-120 AMRAAM) — ✅ 95% COMPLETE
+
+From analysis of `radar_acm_target_step` @ 0x39E13 (RADAR_LOCK_ANALYSIS.md):
+
+**Key finding:** Radar lock is **not a separate system** - it's STT (Single Target Track) mode of the existing radar system!
+
+**Reuses existing radar globals:**
+
+- **`radar_mode_state`** @ `ds:0x595B2` (byte)
+  - Value 5 = STT mode (radar locked on target)
+  - Same global used for NAM/ACM/etc. modes
+  - Lock maintained while in STT mode
+
+- **`radar_selected_target_index`** @ `ds:0x5959B` (word)
+  - Current locked target slot index
+  - 0xFFFF = no target selected
+  - Slot table index: 0, 4, 8, ... 60 (16 slots × 4 bytes)
+
+**Reuses existing entity fields:**
+
+- **`status_flags`** @ EntitySlotRecord +0x74 (byte)
+  - Bit 0 (ACTIVE): Entity is alive
+  - Bit 6 (AIRCRAFT_TYPE): Is aircraft vs ground unit
+
+- **`tracking_flags`** @ EntitySlotRecord +0x79 (byte)
+  - Bit 0 (RADAR_VISIBLE): Detected by radar
+  - Set by radar_detection_azimuth_range_check
+  - Checked by target selection algorithm
+
+**Lock Algorithm:**
+- Cycles through 16 entity slots (stride 4 bytes)
+- Checks entity must be: ACTIVE, AIRCRAFT, RADAR_VISIBLE
+- If valid: Enters STT mode (radar_mode_state = 5)
+- Stores target in radar_selected_target_index
+- Z key toggles lock on/off
+
+**Lock Maintenance:**
+- `radar_stt_locked_target_handler` @ 0x2C12B maintains lock
+- Checks if target still valid (active, in range, radar_visible)
+- If target lost: Exits STT mode, clears lock
+- Provides lock tone feedback
+
+**Fire Control:**
+- AIM-120 requires radar_mode_state == 5 to fire
+- Target index passed to missile guidance
+- Missile homes on locked target
+
+**Integration:**
+- Fully integrated with radar detection system
+- No new globals needed (reuses radar system)
+- No new entity fields needed (reuses radar_visible flag)
+
+**Remaining 5%:**
+- Document radar_stt_locked_target_handler details
+- Find Z key lock toggle handler
+- Confirm AIM-120 fire validation checks
 
 ### IR Lock System (AIM-9 Sidewinder) — ✅ IDENTIFIED
 
