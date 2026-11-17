@@ -1,0 +1,345 @@
+================================================================================
+tactical_screen_coordinator Disassembly
+================================================================================
+Address: 0x12DB6A
+Size: 1024 bytes (0x400)
+Segment: R29_2F8As
+================================================================================
+
+   0 | +0x0001 | 0x12DB6B | call    undoc_130B39
+   1 | +0x0006 | 0x12DB70 | mov     ax, 7894h
+   2 | +0x0009 | 0x12DB73 | mov     es, ax
+   3 | +0x000B | 0x12DB75 | cmp     es:byte_7A30D, 4
+   4 | +0x0011 | 0x12DB7B | jbe     short loc_12DB8B
+   5 | +0x0013 | 0x12DB7D | mov     ax, 7894h
+   6 | +0x0016 | 0x12DB80 | mov     es, ax
+   7 | +0x0018 | 0x12DB82 | mov     es:byte_7A30D, 0
+   8 | +0x001E | 0x12DB88 | jmp     loc_12DF22
+   9 | +0x0021 | 0x12DB8B | jmp     loc_12DF0E
+  10 | +0x0024 | 0x12DB8E | mov     ax, 709Fh
+  11 | +0x0027 | 0x12DB91 | mov     es, ax
+  12 | +0x0029 | 0x12DB93 | mov     al, byte ptr es:word_70A2A
+  13 | +0x002D | 0x12DB97 | cbw
+  14 | +0x002E | 0x12DB98 | shl     ax, 2
+  15 | +0x0031 | 0x12DB9B | mov     dx, 602Eh
+  16 | +0x0034 | 0x12DB9E | mov     bx, ax
+  17 | +0x0036 | 0x12DBA0 | mov     es, dx
+  18 | +0x0038 | 0x12DBA2 | cmp     byte ptr es:[bx+2], 0
+  19 | +0x003E | 0x12DBA8 | jnz     short loc_12DBBA
+  20 | +0x0040 | 0x12DBAA | mov     ax, 7894h
+  21 | +0x0043 | 0x12DBAD | mov     es, ax
+  22 | +0x0045 | 0x12DBAF | cmp     es:graphics_mode_flag, 0
+  23 | +0x004B | 0x12DBB5 | jz      short loc_12DBBA
+  24 | +0x004D | 0x12DBB7 | jmp     loc_12DDC8
+  25 | +0x0050 | 0x12DBBA | call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+  26 | +0x0055 | 0x12DBBF | mov     ax, 7894h
+  27 | +0x0058 | 0x12DBC2 | mov     es, ax
+  28 | +0x005A | 0x12DBC4 | cmp     es:graphics_mode_flag, 3
+  29 | +0x0060 | 0x12DBCA | jnz     short loc_12DBD1
+  30 | +0x0062 | 0x12DBCC | call    ui_text_render_state_machine
+  31 | +0x0067 | 0x12DBD1 | mov     ax, 7894h
+  32 | +0x006A | 0x12DBD4 | mov     es, ax
+  33 | +0x006C | 0x12DBD6 | cmp     es:input_flag_pending_1, 0
+  34 | +0x0072 | 0x12DBDC | jnz     short loc_12DBEE
+  35 | +0x0074 | 0x12DBDE | mov     ax, 7894h
+  36 | +0x0077 | 0x12DBE1 | mov     es, ax
+  37 | +0x0079 | 0x12DBE3 | cmp     es:input_scan_code_queue, 0
+  38 | +0x007F | 0x12DBE9 | jnz     short loc_12DBEE
+  39 | +0x0081 | 0x12DBEB | jmp     loc_12DF22
+  40 | +0x0084 | 0x12DBEE | mov     ax, 7894h
+  41 | +0x0087 | 0x12DBF1 | mov     es, ax
+  42 | +0x0089 | 0x12DBF3 | cmp     es:graphics_mode_flag, 0
+  43 | +0x008F | 0x12DBF9 | jnz     short loc_12DBFE
+  44 | +0x0091 | 0x12DBFB | jmp     loc_12DF22
+  45 | +0x0094 | 0x12DBFE | mov     ax, 709Fh
+  46 | +0x0097 | 0x12DC01 | mov     es, ax
+  47 | +0x0099 | 0x12DC03 | mov     al, byte ptr es:word_70A2A
+  48 | +0x009D | 0x12DC07 | cbw
+  49 | +0x009E | 0x12DC08 | shl     ax, 2
+  50 | +0x00A1 | 0x12DC0B | mov     dx, 602Eh
+  51 | +0x00A4 | 0x12DC0E | mov     bx, ax
+  52 | +0x00A6 | 0x12DC10 | mov     es, dx
+  53 | +0x00A8 | 0x12DC12 | cmp     byte ptr es:[bx+2], 0
+  54 | +0x00AE | 0x12DC18 | jnz     short loc_12DC1D
+  55 | +0x00B0 | 0x12DC1A | jmp     loc_12DF22
+  56 | +0x00B3 | 0x12DC1D | mov     ax, 4FC2h
+  57 | +0x00B6 | 0x12DC20 | mov     es, ax
+  58 | +0x00B8 | 0x12DC22 | mov     ax, es:word_13E006
+  59 | +0x00BC | 0x12DC26 | mov     dx, 602Eh
+  60 | +0x00BF | 0x12DC29 | mov     es, dx
+  61 | +0x00C1 | 0x12DC2B | les     bx, es:dword_14F994
+  62 | +0x00C6 | 0x12DC30 | mov     es:[bx], ax
+  63 | +0x00C9 | 0x12DC33 | mov     ax, 602Eh
+  64 | +0x00CC | 0x12DC36 | mov     es, ax
+  65 | +0x00CE | 0x12DC38 | les     bx, es:dword_14F994
+  66 | +0x00D3 | 0x12DC3D | mov     ax, 4FC2h
+  67 | +0x00D6 | 0x12DC40 | push    es
+  68 | +0x00D7 | 0x12DC41 | mov     es, ax
+  69 | +0x00D9 | 0x12DC43 | mov     ax, es:word_13E008
+  70 | +0x00DD | 0x12DC47 | pop     es
+  71 | +0x00DE | 0x12DC48 | mov     es:[bx+2], ax
+  72 | +0x00E2 | 0x12DC4C | mov     ax, 602Eh
+  73 | +0x00E5 | 0x12DC4F | mov     es, ax
+  74 | +0x00E7 | 0x12DC51 | les     bx, es:dword_14F994
+  75 | +0x00EC | 0x12DC56 | mov     ax, 4FC2h
+  76 | +0x00EF | 0x12DC59 | push    es
+  77 | +0x00F0 | 0x12DC5A | mov     es, ax
+  78 | +0x00F2 | 0x12DC5C | mov     ax, es:word_13E002
+  79 | +0x00F6 | 0x12DC60 | pop     es
+  80 | +0x00F7 | 0x12DC61 | mov     es:[bx+4], ax
+  81 | +0x00FB | 0x12DC65 | mov     ax, 602Eh
+  82 | +0x00FE | 0x12DC68 | mov     es, ax
+  83 | +0x0100 | 0x12DC6A | les     bx, es:dword_14F994
+  84 | +0x0105 | 0x12DC6F | mov     ax, 4FC2h
+  85 | +0x0108 | 0x12DC72 | push    es
+  86 | +0x0109 | 0x12DC73 | mov     es, ax
+  87 | +0x010B | 0x12DC75 | mov     ax, es:word_13E004
+  88 | +0x010F | 0x12DC79 | pop     es
+  89 | +0x0110 | 0x12DC7A | mov     es:[bx+6], ax
+  90 | +0x0114 | 0x12DC7E | mov     ax, 602Eh
+  91 | +0x0117 | 0x12DC81 | mov     es, ax
+  92 | +0x0119 | 0x12DC83 | les     bx, es:dword_14F994
+  93 | +0x011E | 0x12DC88 | mov     ax, 4FC2h
+  94 | +0x0121 | 0x12DC8B | push    es
+  95 | +0x0122 | 0x12DC8C | mov     es, ax
+  96 | +0x0124 | 0x12DC8E | mov     ax, es:word_13E00E
+  97 | +0x0128 | 0x12DC92 | pop     es
+  98 | +0x0129 | 0x12DC93 | mov     es:[bx+8], ax
+  99 | +0x012D | 0x12DC97 | mov     ax, 602Eh
+ 100 | +0x0130 | 0x12DC9A | mov     es, ax
+ 101 | +0x0132 | 0x12DC9C | les     bx, es:dword_14F994
+ 102 | +0x0137 | 0x12DCA1 | mov     ax, 4FC2h
+ 103 | +0x013A | 0x12DCA4 | push    es
+ 104 | +0x013B | 0x12DCA5 | mov     es, ax
+ 105 | +0x013D | 0x12DCA7 | mov     ax, es:word_13E010
+ 106 | +0x0141 | 0x12DCAB | pop     es
+ 107 | +0x0142 | 0x12DCAC | mov     es:[bx+0Ah], ax
+ 108 | +0x0146 | 0x12DCB0 | mov     ax, 602Eh
+ 109 | +0x0149 | 0x12DCB3 | mov     es, ax
+ 110 | +0x014B | 0x12DCB5 | les     bx, es:dword_14F994
+ 111 | +0x0150 | 0x12DCBA | mov     ax, 7894h
+ 112 | +0x0153 | 0x12DCBD | push    es
+ 113 | +0x0154 | 0x12DCBE | mov     es, ax
+ 114 | +0x0156 | 0x12DCC0 | mov     ax, es:word_79E40
+ 115 | +0x015A | 0x12DCC4 | pop     es
+ 116 | +0x015B | 0x12DCC5 | mov     es:[bx+0Ch], ax
+ 117 | +0x015F | 0x12DCC9 | mov     ax, 602Eh
+ 118 | +0x0162 | 0x12DCCC | mov     es, ax
+ 119 | +0x0164 | 0x12DCCE | les     bx, es:dword_14F994
+ 120 | +0x0169 | 0x12DCD3 | mov     ax, 7894h
+ 121 | +0x016C | 0x12DCD6 | push    es
+ 122 | +0x016D | 0x12DCD7 | mov     es, ax
+ 123 | +0x016F | 0x12DCD9 | mov     ax, es:word_79E3E
+ 124 | +0x0173 | 0x12DCDD | pop     es
+ 125 | +0x0174 | 0x12DCDE | mov     es:[bx+0Eh], ax
+ 126 | +0x0178 | 0x12DCE2 | mov     ax, 602Eh
+ 127 | +0x017B | 0x12DCE5 | mov     es, ax
+ 128 | +0x017D | 0x12DCE7 | les     bx, es:dword_14F994
+ 129 | +0x0182 | 0x12DCEC | mov     ax, 7894h
+ 130 | +0x0185 | 0x12DCEF | push    es
+ 131 | +0x0186 | 0x12DCF0 | mov     es, ax
+ 132 | +0x0188 | 0x12DCF2 | mov     ax, es:input_flag_pending_1
+ 133 | +0x018C | 0x12DCF6 | pop     es
+ 134 | +0x018D | 0x12DCF7 | mov     es:[bx+10h], ax
+ 135 | +0x0191 | 0x12DCFB | mov     ax, 602Eh
+ 136 | +0x0194 | 0x12DCFE | mov     es, ax
+ 137 | +0x0196 | 0x12DD00 | les     bx, es:dword_14F994
+ 138 | +0x019B | 0x12DD05 | mov     ax, 7894h
+ 139 | +0x019E | 0x12DD08 | push    es
+ 140 | +0x019F | 0x12DD09 | mov     es, ax
+ 141 | +0x01A1 | 0x12DD0B | mov     ax, es:input_scan_code_queue
+ 142 | +0x01A5 | 0x12DD0F | pop     es
+ 143 | +0x01A6 | 0x12DD10 | mov     es:[bx+12h], ax
+ 144 | +0x01AA | 0x12DD14 | mov     ax, 602Eh
+ 145 | +0x01AD | 0x12DD17 | mov     es, ax
+ 146 | +0x01AF | 0x12DD19 | les     bx, es:dword_14F994
+ 147 | +0x01B4 | 0x12DD1E | mov     ax, 7894h
+ 148 | +0x01B7 | 0x12DD21 | push    es
+ 149 | +0x01B8 | 0x12DD22 | mov     es, ax
+ 150 | +0x01BA | 0x12DD24 | mov     ax, es:current_flight_index; Current flight index (word)
+ 151 | +0x01BE | 0x12DD28 | pop     es
+ 152 | +0x01BF | 0x12DD29 | mov     es:[bx+1Ah], ax
+ 153 | +0x01C3 | 0x12DD2D | mov     ax, 602Eh
+ 154 | +0x01C6 | 0x12DD30 | mov     es, ax
+ 155 | +0x01C8 | 0x12DD32 | les     bx, es:dword_14F994
+ 156 | +0x01CD | 0x12DD37 | mov     ax, 7894h
+ 157 | +0x01D0 | 0x12DD3A | push    es
+ 158 | +0x01D1 | 0x12DD3B | mov     es, ax
+ 159 | +0x01D3 | 0x12DD3D | mov     ax, es:word_79D6A
+ 160 | +0x01D7 | 0x12DD41 | pop     es
+ 161 | +0x01D8 | 0x12DD42 | mov     es:[bx+1Ch], ax
+ 162 | +0x01DC | 0x12DD46 | mov     ax, 7894h
+ 163 | +0x01DF | 0x12DD49 | mov     es, ax
+ 164 | +0x01E1 | 0x12DD4B | cmp     es:input_scan_code_queue, 0FFh
+ 165 | +0x01E8 | 0x12DD52 | jnz     short loc_12DD7F
+ 166 | +0x01EA | 0x12DD54 | mov     ax, 7894h
+ 167 | +0x01ED | 0x12DD57 | mov     es, ax
+ 168 | +0x01EF | 0x12DD59 | cmp     es:graphics_mode_flag, 3
+ 169 | +0x01F5 | 0x12DD5F | jnz     short loc_12DD7F
+ 170 | +0x01F7 | 0x12DD61 | mov     ax, 602Eh
+ 171 | +0x01FA | 0x12DD64 | mov     es, ax
+ 172 | +0x01FC | 0x12DD66 | push    word ptr es:dword_14F994+2
+ 173 | +0x0201 | 0x12DD6B | push    word ptr es:dword_14F994
+ 174 | +0x0206 | 0x12DD70 | push    1Eh
+ 175 | +0x0208 | 0x12DD72 | push    2Fh ; '/'
+ 176 | +0x020A | 0x12DD74 | call    undoc_1295A9
+ 177 | +0x020F | 0x12DD79 | add     sp, 8
+ 178 | +0x0212 | 0x12DD7C | jmp     loc_12DF22
+ 179 | +0x0215 | 0x12DD7F | mov     ax, 7894h
+ 180 | +0x0218 | 0x12DD82 | mov     es, ax
+ 181 | +0x021A | 0x12DD84 | cmp     es:input_scan_code_queue, 0FFh
+ 182 | +0x0221 | 0x12DD8B | jnz     short loc_12DD90
+ 183 | +0x0223 | 0x12DD8D | jmp     loc_12DF22
+ 184 | +0x0226 | 0x12DD90 | mov     ax, 602Eh
+ 185 | +0x0229 | 0x12DD93 | mov     es, ax
+ 186 | +0x022B | 0x12DD95 | push    word ptr es:dword_14F994+2
+ 187 | +0x0230 | 0x12DD9A | push    word ptr es:dword_14F994
+ 188 | +0x0235 | 0x12DD9F | push    1Eh
+ 189 | +0x0237 | 0x12DDA1 | mov     ax, 7894h
+ 190 | +0x023A | 0x12DDA4 | mov     es, ax
+ 191 | +0x023C | 0x12DDA6 | mov     al, es:byte_7A30D
+ 192 | +0x0240 | 0x12DDAA | mov     ah, 0
+ 193 | +0x0242 | 0x12DDAC | push    ax
+ 194 | +0x0243 | 0x12DDAD | call    ui_text_render_multi_mode
+ 195 | +0x0248 | 0x12DDB2 | add     sp, 8
+ 196 | +0x024B | 0x12DDB5 | mov     ax, 7894h
+ 197 | +0x024E | 0x12DDB8 | mov     es, ax
+ 198 | +0x0250 | 0x12DDBA | cmp     es:byte_7A30D, 4
+ 199 | +0x0256 | 0x12DDC0 | jbe     short loc_12DDC5
+ 200 | +0x0258 | 0x12DDC2 | jmp     loc_12DB7D
+ 201 | +0x025B | 0x12DDC5 | jmp     loc_12DF0E
+ 202 | +0x025E | 0x12DDC8 | mov     ax, 602Eh
+ 203 | +0x0261 | 0x12DDCB | mov     es, ax
+ 204 | +0x0263 | 0x12DDCD | push    word ptr es:dword_14F994+2
+ 205 | +0x0268 | 0x12DDD2 | push    word ptr es:dword_14F994
+ 206 | +0x026D | 0x12DDD7 | mov     ax, 7894h
+ 207 | +0x0270 | 0x12DDDA | mov     es, ax
+ 208 | +0x0272 | 0x12DDDC | mov     al, es:byte_7A30D
+ 209 | +0x0276 | 0x12DDE0 | mov     ah, 0
+ 210 | +0x0278 | 0x12DDE2 | push    ax
+ 211 | +0x0279 | 0x12DDE3 | call    ui_text_render_single_mode
+ 212 | +0x027E | 0x12DDE8 | add     sp, 6
+ 213 | +0x0281 | 0x12DDEB | mov     ax, 602Eh
+ 214 | +0x0284 | 0x12DDEE | mov     es, ax
+ 215 | +0x0286 | 0x12DDF0 | les     bx, es:dword_14F994
+ 216 | +0x028B | 0x12DDF5 | mov     ax, es:[bx]
+ 217 | +0x028E | 0x12DDF8 | mov     dx, 4FC2h
+ 218 | +0x0291 | 0x12DDFB | mov     es, dx
+ 219 | +0x0293 | 0x12DDFD | mov     es:word_13E006, ax
+ 220 | +0x0297 | 0x12DE01 | mov     ax, 602Eh
+ 221 | +0x029A | 0x12DE04 | mov     es, ax
+ 222 | +0x029C | 0x12DE06 | les     bx, es:dword_14F994
+ 223 | +0x02A1 | 0x12DE0B | mov     ax, es:[bx+2]
+ 224 | +0x02A5 | 0x12DE0F | mov     dx, 4FC2h
+ 225 | +0x02A8 | 0x12DE12 | mov     es, dx
+ 226 | +0x02AA | 0x12DE14 | mov     es:word_13E008, ax
+ 227 | +0x02AE | 0x12DE18 | mov     ax, 602Eh
+ 228 | +0x02B1 | 0x12DE1B | mov     es, ax
+ 229 | +0x02B3 | 0x12DE1D | les     bx, es:dword_14F994
+ 230 | +0x02B8 | 0x12DE22 | mov     ax, es:[bx+4]
+ 231 | +0x02BC | 0x12DE26 | mov     dx, 4FC2h
+ 232 | +0x02BF | 0x12DE29 | mov     es, dx
+ 233 | +0x02C1 | 0x12DE2B | mov     es:word_13E002, ax
+ 234 | +0x02C5 | 0x12DE2F | mov     ax, 602Eh
+ 235 | +0x02C8 | 0x12DE32 | mov     es, ax
+ 236 | +0x02CA | 0x12DE34 | les     bx, es:dword_14F994
+ 237 | +0x02CF | 0x12DE39 | mov     ax, es:[bx+6]
+ 238 | +0x02D3 | 0x12DE3D | mov     dx, 4FC2h
+ 239 | +0x02D6 | 0x12DE40 | mov     es, dx
+ 240 | +0x02D8 | 0x12DE42 | mov     es:word_13E004, ax
+ 241 | +0x02DC | 0x12DE46 | mov     ax, 602Eh
+ 242 | +0x02DF | 0x12DE49 | mov     es, ax
+ 243 | +0x02E1 | 0x12DE4B | les     bx, es:dword_14F994
+ 244 | +0x02E6 | 0x12DE50 | mov     ax, es:[bx+8]
+ 245 | +0x02EA | 0x12DE54 | mov     dx, 4FC2h
+ 246 | +0x02ED | 0x12DE57 | mov     es, dx
+ 247 | +0x02EF | 0x12DE59 | mov     es:word_13E00E, ax
+ 248 | +0x02F3 | 0x12DE5D | mov     ax, 602Eh
+ 249 | +0x02F6 | 0x12DE60 | mov     es, ax
+ 250 | +0x02F8 | 0x12DE62 | les     bx, es:dword_14F994
+ 251 | +0x02FD | 0x12DE67 | mov     ax, es:[bx+0Ah]
+ 252 | +0x0301 | 0x12DE6B | mov     dx, 4FC2h
+ 253 | +0x0304 | 0x12DE6E | mov     es, dx
+ 254 | +0x0306 | 0x12DE70 | mov     es:word_13E010, ax
+ 255 | +0x030A | 0x12DE74 | mov     ax, 602Eh
+ 256 | +0x030D | 0x12DE77 | mov     es, ax
+ 257 | +0x030F | 0x12DE79 | les     bx, es:dword_14F994
+ 258 | +0x0314 | 0x12DE7E | mov     ax, es:[bx+0Ch]
+ 259 | +0x0318 | 0x12DE82 | mov     dx, 7894h
+ 260 | +0x031B | 0x12DE85 | mov     es, dx
+ 261 | +0x031D | 0x12DE87 | mov     es:word_79E40, ax
+ 262 | +0x0321 | 0x12DE8B | mov     ax, 602Eh
+ 263 | +0x0324 | 0x12DE8E | mov     es, ax
+ 264 | +0x0326 | 0x12DE90 | les     bx, es:dword_14F994
+ 265 | +0x032B | 0x12DE95 | mov     ax, es:[bx+0Eh]
+ 266 | +0x032F | 0x12DE99 | mov     dx, 7894h
+ 267 | +0x0332 | 0x12DE9C | mov     es, dx
+ 268 | +0x0334 | 0x12DE9E | mov     es:word_79E3E, ax
+ 269 | +0x0338 | 0x12DEA2 | mov     ax, 602Eh
+ 270 | +0x033B | 0x12DEA5 | mov     es, ax
+ 271 | +0x033D | 0x12DEA7 | les     bx, es:dword_14F994
+ 272 | +0x0342 | 0x12DEAC | mov     ax, es:[bx+10h]
+ 273 | +0x0346 | 0x12DEB0 | mov     dx, 7894h
+ 274 | +0x0349 | 0x12DEB3 | mov     es, dx
+ 275 | +0x034B | 0x12DEB5 | mov     es:input_flag_pending_1, ax
+ 276 | +0x034F | 0x12DEB9 | mov     ax, 602Eh
+ 277 | +0x0352 | 0x12DEBC | mov     es, ax
+ 278 | +0x0354 | 0x12DEBE | les     bx, es:dword_14F994
+ 279 | +0x0359 | 0x12DEC3 | mov     ax, es:[bx+12h]
+ 280 | +0x035D | 0x12DEC7 | mov     dx, 7894h
+ 281 | +0x0360 | 0x12DECA | mov     es, dx
+ 282 | +0x0362 | 0x12DECC | mov     es:input_scan_code_queue, ax
+ 283 | +0x0366 | 0x12DED0 | mov     ax, 602Eh
+ 284 | +0x0369 | 0x12DED3 | mov     es, ax
+ 285 | +0x036B | 0x12DED5 | les     bx, es:dword_14F994
+ 286 | +0x0370 | 0x12DEDA | mov     ax, es:[bx+1Ah]
+ 287 | +0x0374 | 0x12DEDE | mov     dx, 7894h
+ 288 | +0x0377 | 0x12DEE1 | mov     es, dx
+ 289 | +0x0379 | 0x12DEE3 | mov     es:current_flight_index, ax; Current flight index (word)
+ 290 | +0x037D | 0x12DEE7 | mov     ax, 602Eh
+ 291 | +0x0380 | 0x12DEEA | mov     es, ax
+ 292 | +0x0382 | 0x12DEEC | les     bx, es:dword_14F994
+ 293 | +0x0387 | 0x12DEF1 | mov     ax, es:[bx+1Ch]
+ 294 | +0x038B | 0x12DEF5 | mov     dx, 7894h
+ 295 | +0x038E | 0x12DEF8 | mov     es, dx
+ 296 | +0x0390 | 0x12DEFA | mov     es:word_79D6A, ax
+ 297 | +0x0394 | 0x12DEFE | mov     ax, 7894h
+ 298 | +0x0397 | 0x12DF01 | mov     es, ax
+ 299 | +0x0399 | 0x12DF03 | cmp     es:byte_7A30D, 4
+ 300 | +0x039F | 0x12DF09 | jbe     short loc_12DF0E
+ 301 | +0x03A1 | 0x12DF0B | jmp     loc_12DB7D
+ 302 | +0x03A4 | 0x12DF0E | mov     ax, 7894h
+ 303 | +0x03A7 | 0x12DF11 | mov     es, ax
+ 304 | +0x03A9 | 0x12DF13 | mov     al, es:byte_7A30D
+ 305 | +0x03AD | 0x12DF17 | inc     al
+ 306 | +0x03AF | 0x12DF19 | mov     dx, 7894h
+ 307 | +0x03B2 | 0x12DF1C | mov     es, dx
+ 308 | +0x03B4 | 0x12DF1E | mov     es:byte_7A30D, al
+ 309 | +0x03B8 | 0x12DF22 | mov     ax, 7894h
+ 310 | +0x03BB | 0x12DF25 | mov     es, ax
+ 311 | +0x03BD | 0x12DF27 | cmp     es:input_flag_pending_1, 0
+ 312 | +0x03C3 | 0x12DF2D | jnz     short loc_12DF3F
+ 313 | +0x03C5 | 0x12DF2F | mov     ax, 7894h
+ 314 | +0x03C8 | 0x12DF32 | mov     es, ax
+ 315 | +0x03CA | 0x12DF34 | cmp     es:input_scan_code_queue, 0
+ 316 | +0x03D0 | 0x12DF3A | jnz     short loc_12DF3F
+ 317 | +0x03D2 | 0x12DF3C | jmp     loc_12DB8E
+ 318 | +0x03D5 | 0x12DF3F | mov     ax, 7894h
+ 319 | +0x03D8 | 0x12DF42 | mov     es, ax
+ 320 | +0x03DA | 0x12DF44 | mov     ax, es:word_79E40
+ 321 | +0x03DE | 0x12DF48 | mov     dx, 7894h
+ 322 | +0x03E1 | 0x12DF4B | mov     es, dx
+ 323 | +0x03E3 | 0x12DF4D | mov     es:word_79E80, ax
+ 324 | +0x03E7 | 0x12DF51 | mov     ax, 7894h
+ 325 | +0x03EA | 0x12DF54 | mov     es, ax
+ 326 | +0x03EC | 0x12DF56 | mov     ax, es:word_79E3E
+ 327 | +0x03F0 | 0x12DF5A | mov     dx, 7894h
+ 328 | +0x03F3 | 0x12DF5D | mov     es, dx
+ 329 | +0x03F5 | 0x12DF5F | mov     es:word_79E7E, ax
+ 330 | +0x03F9 | 0x12DF63 | call    r29_tactical_screen_coordinator; R29 overlay tactical planning/mission editor screen coordinator.
+ 331 | +0x03FE | 0x12DF68 | pop     bp
+ 332 | +0x03FF | 0x12DF69 | retf
+
+================================================================================
+Total instructions: 333
+================================================================================

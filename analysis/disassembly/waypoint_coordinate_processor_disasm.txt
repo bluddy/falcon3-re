@@ -1,0 +1,330 @@
+================================================================================
+waypoint_coordinate_processor Disassembly
+================================================================================
+Address: 0x1A2441
+Size: 871 bytes (0x367)
+Segment: R63_569Fs
+================================================================================
+
+   0 | +0x0000 | 0x1A2441 | enter   4, 0
+   1 | +0x0004 | 0x1A2445 | push    si
+   2 | +0x0005 | 0x1A2446 | push    di
+   3 | +0x0006 | 0x1A2447 | xor     si, si
+   4 | +0x0008 | 0x1A2449 | push    7894h
+   5 | +0x000B | 0x1A244C | push    0F32h
+   6 | +0x000E | 0x1A244F | mov     ax, 602Eh
+   7 | +0x0011 | 0x1A2452 | mov     es, ax
+   8 | +0x0013 | 0x1A2454 | push    word ptr es:aBin+1; ".`.BIN"
+   9 | +0x0018 | 0x1A2459 | push    word ptr es:byte_15131C
+  10 | +0x001D | 0x1A245E | mov     ax, 602Eh
+  11 | +0x0020 | 0x1A2461 | mov     es, ax
+  12 | +0x0022 | 0x1A2463 | push    word ptr es:aStores+2; ".`STORES"
+  13 | +0x0027 | 0x1A2468 | push    word ptr es:aStores; ";-.`STORES"
+  14 | +0x002C | 0x1A246D | call    string_concatenate
+  15 | +0x0031 | 0x1A2472 | add     sp, 0Ch
+  16 | +0x0034 | 0x1A2475 | push    7894h
+  17 | +0x0037 | 0x1A2478 | push    0F32h
+  18 | +0x003A | 0x1A247B | push    0
+  19 | +0x003C | 0x1A247D | push    0
+  20 | +0x003E | 0x1A247F | push    6
+  21 | +0x0040 | 0x1A2481 | call    op_dispatch_far_entry
+  22 | +0x0045 | 0x1A2486 | add     sp, 0Ah
+  23 | +0x0048 | 0x1A2489 | mov     dx, 7894h
+  24 | +0x004B | 0x1A248C | mov     es, dx
+  25 | +0x004D | 0x1A248E | mov     es:word_7A2F2, ax
+  26 | +0x0051 | 0x1A2492 | push    ss
+  27 | +0x0052 | 0x1A2493 | lea     ax, [bp+var_2]
+  28 | +0x0055 | 0x1A2496 | push    ax
+  29 | +0x0056 | 0x1A2497 | push    2
+  30 | +0x0058 | 0x1A2499 | mov     ax, 7894h
+  31 | +0x005B | 0x1A249C | mov     es, ax
+  32 | +0x005D | 0x1A249E | push    es:word_7A2F2
+  33 | +0x0062 | 0x1A24A3 | push    0Ah
+  34 | +0x0064 | 0x1A24A5 | call    op_dispatch_far_entry
+  35 | +0x0069 | 0x1A24AA | add     sp, 0Ah
+  36 | +0x006C | 0x1A24AD | mov     ax, 7894h
+  37 | +0x006F | 0x1A24B0 | mov     es, ax
+  38 | +0x0071 | 0x1A24B2 | push    es:word_7A2EA
+  39 | +0x0076 | 0x1A24B7 | push    es:word_7A2E8
+  40 | +0x007B | 0x1A24BC | push    [bp+var_2]
+  41 | +0x007E | 0x1A24BF | mov     ax, 7894h
+  42 | +0x0081 | 0x1A24C2 | mov     es, ax
+  43 | +0x0083 | 0x1A24C4 | push    es:word_7A2F2
+  44 | +0x0088 | 0x1A24C9 | push    0Ah
+  45 | +0x008A | 0x1A24CB | call    op_dispatch_far_entry
+  46 | +0x008F | 0x1A24D0 | add     sp, 0Ah
+  47 | +0x0092 | 0x1A24D3 | mov     [bp+var_2], 0
+  48 | +0x0097 | 0x1A24D8 | jmp     loc_1A26CF
+  49 | +0x009A | 0x1A24DB | mov     ax, [bp+var_2]
+  50 | +0x009D | 0x1A24DE | mov     dx, 12h
+  51 | +0x00A0 | 0x1A24E1 | imul    dx
+  52 | +0x00A2 | 0x1A24E3 | les     bx, [bp+arg_0]
+  53 | +0x00A5 | 0x1A24E6 | add     bx, ax
+  54 | +0x00A7 | 0x1A24E8 | cmp     byte ptr es:[bx], 0
+  55 | +0x00AB | 0x1A24EC | jnz     short loc_1A24F1
+  56 | +0x00AD | 0x1A24EE | jmp     loc_1A26CC
+  57 | +0x00B0 | 0x1A24F1 | xor     di, di
+  58 | +0x00B2 | 0x1A24F3 | jmp     loc_1A26C4
+  59 | +0x00B5 | 0x1A24F6 | mov     [bp+var_4], 0
+  60 | +0x00BA | 0x1A24FB | jmp     loc_1A26A9
+  61 | +0x00BD | 0x1A24FE | mov     ax, si
+  62 | +0x00BF | 0x1A2500 | mov     dx, 6
+  63 | +0x00C2 | 0x1A2503 | imul    dx
+  64 | +0x00C4 | 0x1A2505 | les     bx, [bp+arg_4]
+  65 | +0x00C7 | 0x1A2508 | add     bx, ax
+  66 | +0x00C9 | 0x1A250A | mov     ax, si
+  67 | +0x00CB | 0x1A250C | add     ax, 11h
+  68 | +0x00CE | 0x1A250F | mov     es:[bx], ax
+  69 | +0x00D1 | 0x1A2512 | mov     ax, di
+  70 | +0x00D3 | 0x1A2514 | mov     dx, 6
+  71 | +0x00D6 | 0x1A2517 | imul    dx
+  72 | +0x00D8 | 0x1A2519 | push    ax
+  73 | +0x00D9 | 0x1A251A | mov     ax, [bp+var_2]
+  74 | +0x00DC | 0x1A251D | mov     dx, 12h
+  75 | +0x00DF | 0x1A2520 | imul    dx
+  76 | +0x00E1 | 0x1A2522 | les     bx, [bp+arg_0]
+  77 | +0x00E4 | 0x1A2525 | add     bx, ax
+  78 | +0x00E6 | 0x1A2527 | mov     al, es:[bx+1]
+  79 | +0x00EA | 0x1A252B | cbw
+  80 | +0x00EB | 0x1A252C | mov     dx, 3
+  81 | +0x00EE | 0x1A252F | imul    dx
+  82 | +0x00F0 | 0x1A2531 | pop     dx
+  83 | +0x00F1 | 0x1A2532 | add     dx, ax
+  84 | +0x00F3 | 0x1A2534 | mov     ax, 7894h
+  85 | +0x00F6 | 0x1A2537 | mov     es, ax
+  86 | +0x00F8 | 0x1A2539 | mov     ax, es:word_7A2EA
+  87 | +0x00FC | 0x1A253D | add     dx, es:word_7A2E8
+  88 | +0x0101 | 0x1A2542 | mov     bx, dx
+  89 | +0x0103 | 0x1A2544 | mov     es, ax
+  90 | +0x0105 | 0x1A2546 | mov     al, es:[bx]
+  91 | +0x0108 | 0x1A2549 | cbw
+  92 | +0x0109 | 0x1A254A | push    ax
+  93 | +0x010A | 0x1A254B | mov     ax, si
+  94 | +0x010C | 0x1A254D | mov     dx, 6
+  95 | +0x010F | 0x1A2550 | imul    dx
+  96 | +0x0111 | 0x1A2552 | les     bx, [bp+arg_4]
+  97 | +0x0114 | 0x1A2555 | add     bx, ax
+  98 | +0x0116 | 0x1A2557 | pop     ax
+  99 | +0x0117 | 0x1A2558 | mov     es:[bx+2], ax
+ 100 | +0x011B | 0x1A255C | mov     ax, di
+ 101 | +0x011D | 0x1A255E | mov     dx, 6
+ 102 | +0x0120 | 0x1A2561 | imul    dx
+ 103 | +0x0122 | 0x1A2563 | push    ax
+ 104 | +0x0123 | 0x1A2564 | mov     ax, [bp+var_2]
+ 105 | +0x0126 | 0x1A2567 | mov     dx, 12h
+ 106 | +0x0129 | 0x1A256A | imul    dx
+ 107 | +0x012B | 0x1A256C | les     bx, [bp+arg_0]
+ 108 | +0x012E | 0x1A256F | add     bx, ax
+ 109 | +0x0130 | 0x1A2571 | mov     al, es:[bx+1]
+ 110 | +0x0134 | 0x1A2575 | cbw
+ 111 | +0x0135 | 0x1A2576 | mov     dx, 3
+ 112 | +0x0138 | 0x1A2579 | imul    dx
+ 113 | +0x013A | 0x1A257B | pop     dx
+ 114 | +0x013B | 0x1A257C | add     dx, ax
+ 115 | +0x013D | 0x1A257E | mov     ax, 7894h
+ 116 | +0x0140 | 0x1A2581 | mov     es, ax
+ 117 | +0x0142 | 0x1A2583 | mov     ax, es:word_7A2EA
+ 118 | +0x0146 | 0x1A2587 | add     dx, es:word_7A2E8
+ 119 | +0x014B | 0x1A258C | mov     bx, dx
+ 120 | +0x014D | 0x1A258E | mov     es, ax
+ 121 | +0x014F | 0x1A2590 | mov     al, es:[bx+1]
+ 122 | +0x0153 | 0x1A2594 | push    ax
+ 123 | +0x0154 | 0x1A2595 | mov     ax, si
+ 124 | +0x0156 | 0x1A2597 | mov     dx, 6
+ 125 | +0x0159 | 0x1A259A | imul    dx
+ 126 | +0x015B | 0x1A259C | les     bx, [bp+arg_4]
+ 127 | +0x015E | 0x1A259F | add     bx, ax
+ 128 | +0x0160 | 0x1A25A1 | pop     ax
+ 129 | +0x0161 | 0x1A25A2 | mov     es:[bx+4], al
+ 130 | +0x0165 | 0x1A25A6 | mov     ax, di
+ 131 | +0x0167 | 0x1A25A8 | mov     dx, 6
+ 132 | +0x016A | 0x1A25AB | imul    dx
+ 133 | +0x016C | 0x1A25AD | push    ax
+ 134 | +0x016D | 0x1A25AE | mov     ax, [bp+var_2]
+ 135 | +0x0170 | 0x1A25B1 | mov     dx, 12h
+ 136 | +0x0173 | 0x1A25B4 | imul    dx
+ 137 | +0x0175 | 0x1A25B6 | les     bx, [bp+arg_0]
+ 138 | +0x0178 | 0x1A25B9 | add     bx, ax
+ 139 | +0x017A | 0x1A25BB | mov     al, es:[bx+1]
+ 140 | +0x017E | 0x1A25BF | cbw
+ 141 | +0x017F | 0x1A25C0 | mov     dx, 3
+ 142 | +0x0182 | 0x1A25C3 | imul    dx
+ 143 | +0x0184 | 0x1A25C5 | pop     dx
+ 144 | +0x0185 | 0x1A25C6 | add     dx, ax
+ 145 | +0x0187 | 0x1A25C8 | mov     ax, 7894h
+ 146 | +0x018A | 0x1A25CB | mov     es, ax
+ 147 | +0x018C | 0x1A25CD | mov     ax, es:word_7A2EA
+ 148 | +0x0190 | 0x1A25D1 | add     dx, es:word_7A2E8
+ 149 | +0x0195 | 0x1A25D6 | mov     bx, dx
+ 150 | +0x0197 | 0x1A25D8 | mov     es, ax
+ 151 | +0x0199 | 0x1A25DA | mov     al, es:[bx+2]
+ 152 | +0x019D | 0x1A25DE | push    ax
+ 153 | +0x019E | 0x1A25DF | mov     ax, si
+ 154 | +0x01A0 | 0x1A25E1 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 155 | +0x01A3 | 0x1A25E4 | imul    dx
+ 156 | +0x01A5 | 0x1A25E6 | mov     dx, 7894h
+ 157 | +0x01A8 | 0x1A25E9 | mov     es, dx
+ 158 | +0x01AA | 0x1A25EB | mov     dx, es:word_7A2F6
+ 159 | +0x01AF | 0x1A25F0 | add     ax, es:word_7A2F4
+ 160 | +0x01B4 | 0x1A25F5 | mov     bx, ax
+ 161 | +0x01B6 | 0x1A25F7 | mov     es, dx
+ 162 | +0x01B8 | 0x1A25F9 | pop     ax
+ 163 | +0x01B9 | 0x1A25FA | mov     es:[bx+9], al
+ 164 | +0x01BD | 0x1A25FE | mov     ax, si
+ 165 | +0x01BF | 0x1A2600 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 166 | +0x01C2 | 0x1A2603 | imul    dx
+ 167 | +0x01C4 | 0x1A2605 | mov     dx, 7894h
+ 168 | +0x01C7 | 0x1A2608 | mov     es, dx
+ 169 | +0x01C9 | 0x1A260A | mov     dx, es:word_7A2F6
+ 170 | +0x01CE | 0x1A260F | add     ax, es:word_7A2F4
+ 171 | +0x01D3 | 0x1A2614 | mov     bx, ax
+ 172 | +0x01D5 | 0x1A2616 | mov     es, dx
+ 173 | +0x01D7 | 0x1A2618 | mov     byte ptr es:[bx+0Ah], 0
+ 174 | +0x01DC | 0x1A261D | mov     ax, di
+ 175 | +0x01DE | 0x1A261F | mov     dx, 6
+ 176 | +0x01E1 | 0x1A2622 | imul    dx
+ 177 | +0x01E3 | 0x1A2624 | push    ax
+ 178 | +0x01E4 | 0x1A2625 | mov     ax, [bp+var_2]
+ 179 | +0x01E7 | 0x1A2628 | mov     dx, 12h
+ 180 | +0x01EA | 0x1A262B | imul    dx
+ 181 | +0x01EC | 0x1A262D | les     bx, [bp+arg_0]
+ 182 | +0x01EF | 0x1A2630 | add     bx, ax
+ 183 | +0x01F1 | 0x1A2632 | mov     al, es:[bx+1]
+ 184 | +0x01F5 | 0x1A2636 | cbw
+ 185 | +0x01F6 | 0x1A2637 | mov     dx, 3
+ 186 | +0x01F9 | 0x1A263A | imul    dx
+ 187 | +0x01FB | 0x1A263C | pop     dx
+ 188 | +0x01FC | 0x1A263D | add     dx, ax
+ 189 | +0x01FE | 0x1A263F | mov     ax, 7894h
+ 190 | +0x0201 | 0x1A2642 | mov     es, ax
+ 191 | +0x0203 | 0x1A2644 | mov     ax, es:word_7A2EA
+ 192 | +0x0207 | 0x1A2648 | add     dx, es:word_7A2E8
+ 193 | +0x020C | 0x1A264D | mov     bx, dx
+ 194 | +0x020E | 0x1A264F | mov     es, ax
+ 195 | +0x0210 | 0x1A2651 | mov     al, es:[bx+2]
+ 196 | +0x0214 | 0x1A2655 | push    ax
+ 197 | +0x0215 | 0x1A2656 | mov     ax, si
+ 198 | +0x0217 | 0x1A2658 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 199 | +0x021A | 0x1A265B | imul    dx
+ 200 | +0x021C | 0x1A265D | mov     dx, 7894h
+ 201 | +0x021F | 0x1A2660 | mov     es, dx
+ 202 | +0x0221 | 0x1A2662 | mov     dx, es:word_7A2F6
+ 203 | +0x0226 | 0x1A2667 | add     ax, es:word_7A2F4
+ 204 | +0x022B | 0x1A266C | mov     bx, ax
+ 205 | +0x022D | 0x1A266E | mov     es, dx
+ 206 | +0x022F | 0x1A2670 | pop     ax
+ 207 | +0x0230 | 0x1A2671 | mov     es:[bx+13h], al
+ 208 | +0x0234 | 0x1A2675 | mov     ax, si
+ 209 | +0x0236 | 0x1A2677 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 210 | +0x0239 | 0x1A267A | imul    dx
+ 211 | +0x023B | 0x1A267C | mov     dx, 7894h
+ 212 | +0x023E | 0x1A267F | mov     es, dx
+ 213 | +0x0240 | 0x1A2681 | mov     dx, es:word_7A2F6
+ 214 | +0x0245 | 0x1A2686 | add     ax, es:word_7A2F4
+ 215 | +0x024A | 0x1A268B | mov     bx, ax
+ 216 | +0x024C | 0x1A268D | mov     es, dx
+ 217 | +0x024E | 0x1A268F | mov     byte ptr es:[bx+14h], 0
+ 218 | +0x0253 | 0x1A2694 | mov     ax, si
+ 219 | +0x0255 | 0x1A2696 | mov     dx, 6
+ 220 | +0x0258 | 0x1A2699 | imul    dx
+ 221 | +0x025A | 0x1A269B | les     bx, [bp+arg_4]
+ 222 | +0x025D | 0x1A269E | add     bx, ax
+ 223 | +0x025F | 0x1A26A0 | mov     byte ptr es:[bx+5], 81h
+ 224 | +0x0264 | 0x1A26A5 | inc     si
+ 225 | +0x0265 | 0x1A26A6 | inc     [bp+var_4]
+ 226 | +0x0268 | 0x1A26A9 | mov     ax, [bp+var_2]
+ 227 | +0x026B | 0x1A26AC | mov     dx, 12h
+ 228 | +0x026E | 0x1A26AF | imul    dx
+ 229 | +0x0270 | 0x1A26B1 | les     bx, [bp+arg_0]
+ 230 | +0x0273 | 0x1A26B4 | add     bx, ax
+ 231 | +0x0275 | 0x1A26B6 | mov     al, es:[bx+di+2]
+ 232 | +0x0279 | 0x1A26BA | cbw
+ 233 | +0x027A | 0x1A26BB | cmp     ax, [bp+var_4]
+ 234 | +0x027D | 0x1A26BE | jle     short loc_1A26C3
+ 235 | +0x027F | 0x1A26C0 | jmp     loc_1A24FE
+ 236 | +0x0282 | 0x1A26C3 | inc     di
+ 237 | +0x0283 | 0x1A26C4 | cmp     di, 8
+ 238 | +0x0286 | 0x1A26C7 | jge     short loc_1A26CC
+ 239 | +0x0288 | 0x1A26C9 | jmp     loc_1A24F6
+ 240 | +0x028B | 0x1A26CC | inc     [bp+var_2]
+ 241 | +0x028E | 0x1A26CF | cmp     [bp+var_2], 4
+ 242 | +0x0292 | 0x1A26D3 | jge     short loc_1A26D8
+ 243 | +0x0294 | 0x1A26D5 | jmp     loc_1A24DB
+ 244 | +0x0297 | 0x1A26D8 | or      si, si
+ 245 | +0x0299 | 0x1A26DA | jz      short loc_1A26DF
+ 246 | +0x029B | 0x1A26DC | jmp     loc_1A27A4
+ 247 | +0x029E | 0x1A26DF | mov     ax, si
+ 248 | +0x02A0 | 0x1A26E1 | mov     dx, 6
+ 249 | +0x02A3 | 0x1A26E4 | imul    dx
+ 250 | +0x02A5 | 0x1A26E6 | les     bx, [bp+arg_4]
+ 251 | +0x02A8 | 0x1A26E9 | add     bx, ax
+ 252 | +0x02AA | 0x1A26EB | mov     ax, si
+ 253 | +0x02AC | 0x1A26ED | add     ax, 11h
+ 254 | +0x02AF | 0x1A26F0 | mov     es:[bx], ax
+ 255 | +0x02B2 | 0x1A26F3 | mov     ax, si
+ 256 | +0x02B4 | 0x1A26F5 | mov     dx, 6
+ 257 | +0x02B7 | 0x1A26F8 | imul    dx
+ 258 | +0x02B9 | 0x1A26FA | mov     bx, word ptr [bp+arg_4]
+ 259 | +0x02BC | 0x1A26FD | add     bx, ax
+ 260 | +0x02BE | 0x1A26FF | mov     word ptr es:[bx+2], 3
+ 261 | +0x02C4 | 0x1A2705 | mov     ax, si
+ 262 | +0x02C6 | 0x1A2707 | mov     dx, 6
+ 263 | +0x02C9 | 0x1A270A | imul    dx
+ 264 | +0x02CB | 0x1A270C | mov     bx, word ptr [bp+arg_4]
+ 265 | +0x02CE | 0x1A270F | add     bx, ax
+ 266 | +0x02D0 | 0x1A2711 | mov     byte ptr es:[bx+4], 0
+ 267 | +0x02D5 | 0x1A2716 | mov     ax, si
+ 268 | +0x02D7 | 0x1A2718 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 269 | +0x02DA | 0x1A271B | imul    dx
+ 270 | +0x02DC | 0x1A271D | mov     dx, 7894h
+ 271 | +0x02DF | 0x1A2720 | mov     es, dx
+ 272 | +0x02E1 | 0x1A2722 | mov     dx, es:word_7A2F6
+ 273 | +0x02E6 | 0x1A2727 | add     ax, es:word_7A2F4
+ 274 | +0x02EB | 0x1A272C | mov     bx, ax
+ 275 | +0x02ED | 0x1A272E | mov     es, dx
+ 276 | +0x02EF | 0x1A2730 | mov     byte ptr es:[bx+9], 0Ah
+ 277 | +0x02F4 | 0x1A2735 | mov     ax, si
+ 278 | +0x02F6 | 0x1A2737 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 279 | +0x02F9 | 0x1A273A | imul    dx
+ 280 | +0x02FB | 0x1A273C | mov     dx, 7894h
+ 281 | +0x02FE | 0x1A273F | mov     es, dx
+ 282 | +0x0300 | 0x1A2741 | mov     dx, es:word_7A2F6
+ 283 | +0x0305 | 0x1A2746 | add     ax, es:word_7A2F4
+ 284 | +0x030A | 0x1A274B | mov     bx, ax
+ 285 | +0x030C | 0x1A274D | mov     es, dx
+ 286 | +0x030E | 0x1A274F | mov     byte ptr es:[bx+0Ah], 0
+ 287 | +0x0313 | 0x1A2754 | mov     ax, si
+ 288 | +0x0315 | 0x1A2756 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 289 | +0x0318 | 0x1A2759 | imul    dx
+ 290 | +0x031A | 0x1A275B | mov     dx, 7894h
+ 291 | +0x031D | 0x1A275E | mov     es, dx
+ 292 | +0x031F | 0x1A2760 | mov     dx, es:word_7A2F6
+ 293 | +0x0324 | 0x1A2765 | add     ax, es:word_7A2F4
+ 294 | +0x0329 | 0x1A276A | mov     bx, ax
+ 295 | +0x032B | 0x1A276C | mov     es, dx
+ 296 | +0x032D | 0x1A276E | mov     byte ptr es:[bx+13h], 0Ah
+ 297 | +0x0332 | 0x1A2773 | mov     ax, si
+ 298 | +0x0334 | 0x1A2775 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+ 299 | +0x0337 | 0x1A2778 | imul    dx
+ 300 | +0x0339 | 0x1A277A | mov     dx, 7894h
+ 301 | +0x033C | 0x1A277D | mov     es, dx
+ 302 | +0x033E | 0x1A277F | mov     dx, es:word_7A2F6
+ 303 | +0x0343 | 0x1A2784 | add     ax, es:word_7A2F4
+ 304 | +0x0348 | 0x1A2789 | mov     bx, ax
+ 305 | +0x034A | 0x1A278B | mov     es, dx
+ 306 | +0x034C | 0x1A278D | mov     byte ptr es:[bx+14h], 0
+ 307 | +0x0351 | 0x1A2792 | mov     ax, si
+ 308 | +0x0353 | 0x1A2794 | mov     dx, 6
+ 309 | +0x0356 | 0x1A2797 | imul    dx
+ 310 | +0x0358 | 0x1A2799 | les     bx, [bp+arg_4]
+ 311 | +0x035B | 0x1A279C | add     bx, ax
+ 312 | +0x035D | 0x1A279E | mov     byte ptr es:[bx+5], 81h
+ 313 | +0x0362 | 0x1A27A3 | inc     si
+ 314 | +0x0363 | 0x1A27A4 | pop     di
+ 315 | +0x0364 | 0x1A27A5 | pop     si
+ 316 | +0x0365 | 0x1A27A6 | leave
+ 317 | +0x0366 | 0x1A27A7 | retf
+
+================================================================================
+Total instructions: 318
+================================================================================

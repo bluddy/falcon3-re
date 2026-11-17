@@ -1,0 +1,5960 @@
+{
+  "dos_operations": {
+    "int_21h_calls": [
+      {
+        "addr": "0x10062",
+        "function": "mouse_driver_init",
+        "segment": "seg000",
+        "context": [
+          {
+            "addr": "0x10057",
+            "disasm": "pop     ax"
+          },
+          {
+            "addr": "0x10058",
+            "disasm": "popf"
+          },
+          {
+            "addr": "0x10059",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x1005a",
+            "disasm": "call    pending_task_run"
+          },
+          {
+            "addr": "0x1005f",
+            "disasm": "mov     ax, 3533h"
+          }
+        ]
+      },
+      {
+        "addr": "0x105ec",
+        "function": "ems_ems_detect_3d44",
+        "segment": "seg001",
+        "context": [
+          {
+            "addr": "0x105e0",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x105e1",
+            "disasm": "mov     ax, cs:word_1023D"
+          },
+          {
+            "addr": "0x105e5",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x105e6",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x105e9",
+            "disasm": "mov     ax, 3D00h"
+          }
+        ]
+      },
+      {
+        "addr": "0x105f5",
+        "function": "ems_ems_detect_3d44",
+        "segment": "seg001",
+        "context": [
+          {
+            "addr": "0x105e9",
+            "disasm": "mov     ax, 3D00h"
+          },
+          {
+            "addr": "0x105ec",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x105ee",
+            "disasm": "jb      short loc_10612"
+          },
+          {
+            "addr": "0x105f0",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x105f2",
+            "disasm": "mov     ax, 4400h"
+          }
+        ]
+      },
+      {
+        "addr": "0x10602",
+        "function": "ems_ems_detect_3d44",
+        "segment": "seg001",
+        "context": [
+          {
+            "addr": "0x105f5",
+            "disasm": "int     21h; DOS - 2+ - IOCTL - GET DEVICE INFORMATION"
+          },
+          {
+            "addr": "0x105f7",
+            "disasm": "jb      short loc_10612"
+          },
+          {
+            "addr": "0x105f9",
+            "disasm": "and     dx, 80h"
+          },
+          {
+            "addr": "0x105fd",
+            "disasm": "jz      short loc_10612"
+          },
+          {
+            "addr": "0x105ff",
+            "disasm": "mov     ax, 4407h"
+          }
+        ]
+      },
+      {
+        "addr": "0x1060c",
+        "function": "ems_ems_detect_3d44",
+        "segment": "seg001",
+        "context": [
+          {
+            "addr": "0x10602",
+            "disasm": "int     21h; DOS - 2+ - IOCTL -"
+          },
+          {
+            "addr": "0x10604",
+            "disasm": "jb      short loc_10612"
+          },
+          {
+            "addr": "0x10606",
+            "disasm": "or      al, al"
+          },
+          {
+            "addr": "0x10608",
+            "disasm": "jz      short loc_10612"
+          },
+          {
+            "addr": "0x1060a",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x10862",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10852",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x10853",
+            "disasm": "mov     word ptr cs:byte_10842, ds"
+          },
+          {
+            "addr": "0x10858",
+            "disasm": "call    state_word_27470_set_ds"
+          },
+          {
+            "addr": "0x1085d",
+            "disasm": "mov     ah, 48h ; 'H'"
+          },
+          {
+            "addr": "0x1085f",
+            "disasm": "mov     bx, 0FFFFh"
+          }
+        ]
+      },
+      {
+        "addr": "0x10874",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10868",
+            "disasm": "ja      short loc_1087A"
+          },
+          {
+            "addr": "0x1086a",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x1086d",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x1086f",
+            "disasm": "mov     dx, 14Ah"
+          },
+          {
+            "addr": "0x10872",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x10878",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x1086d",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x1086f",
+            "disasm": "mov     dx, 14Ah"
+          },
+          {
+            "addr": "0x10872",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x10874",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x10876",
+            "disasm": "mov     ah, 4Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x10886",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x1087a",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x1087d",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x1087f",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x10881",
+            "disasm": "mov     al, 0"
+          },
+          {
+            "addr": "0x10883",
+            "disasm": "mov     dx, 292h"
+          }
+        ]
+      },
+      {
+        "addr": "0x10899",
+        "function": "quit_with_msg",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x1088d",
+            "disasm": "jnb     short loc_108A6"
+          },
+          {
+            "addr": "0x1088f",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x10892",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x10894",
+            "disasm": "mov     dx, 223h"
+          },
+          {
+            "addr": "0x10897",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x1089d",
+        "function": "quit_with_msg",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10892",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x10894",
+            "disasm": "mov     dx, 223h"
+          },
+          {
+            "addr": "0x10897",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x10899",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x1089b",
+            "disasm": "mov     ah, 4Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x108a4",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10899",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x1089b",
+            "disasm": "mov     ah, 4Ch"
+          },
+          {
+            "addr": "0x1089d",
+            "disasm": "int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)"
+          },
+          {
+            "addr": "0x1089f",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x108a1",
+            "disasm": "mov     ax, 3E00h"
+          }
+        ]
+      },
+      {
+        "addr": "0x108c4",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x108af",
+            "disasm": "call    sub_2BD9D"
+          },
+          {
+            "addr": "0x108b4",
+            "disasm": "mov     word ptr cs:byte_10842+6, ax"
+          },
+          {
+            "addr": "0x108b8",
+            "disasm": "call    sub_2BDA7"
+          },
+          {
+            "addr": "0x108bd",
+            "disasm": "mov     cs:byte_1084B, al"
+          },
+          {
+            "addr": "0x108c1",
+            "disasm": "mov     ax, 5800h"
+          }
+        ]
+      },
+      {
+        "addr": "0x108d5",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x108c6",
+            "disasm": "jnb     short loc_108CB"
+          },
+          {
+            "addr": "0x108c8",
+            "disasm": "mov     ax, 0FFFFh"
+          },
+          {
+            "addr": "0x108cb",
+            "disasm": "mov     cs:word_1084E, ax"
+          },
+          {
+            "addr": "0x108cf",
+            "disasm": "mov     ax, 5801h"
+          },
+          {
+            "addr": "0x108d2",
+            "disasm": "mov     bx, 1"
+          }
+        ]
+      },
+      {
+        "addr": "0x10b3f",
+        "function": "sub_10B1C",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10b29",
+            "disasm": "call    mode_check_wrap"
+          },
+          {
+            "addr": "0x10b2e",
+            "disasm": "mov     al, cs:byte_10850"
+          },
+          {
+            "addr": "0x10b32",
+            "disasm": "call    bda_417_store_al"
+          },
+          {
+            "addr": "0x10b37",
+            "disasm": "mov     bx, cs:word_1084E"
+          },
+          {
+            "addr": "0x10b3c",
+            "disasm": "mov     ax, 5801h"
+          }
+        ]
+      },
+      {
+        "addr": "0x10c88",
+        "function": "malloc",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10c7d",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x10c7e",
+            "disasm": "mov     al, cs:byte_1084D"
+          },
+          {
+            "addr": "0x10c82",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x10c83",
+            "disasm": "mov     ah, 48h ; 'H'"
+          },
+          {
+            "addr": "0x10c85",
+            "disasm": "mov     bx, 0FFFFh"
+          }
+        ]
+      },
+      {
+        "addr": "0x10dc1",
+        "function": "overlay_poll_loop_1000_016c",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x10db9",
+            "disasm": "pop     si"
+          },
+          {
+            "addr": "0x10dba",
+            "disasm": "pop     bp"
+          },
+          {
+            "addr": "0x10dbb",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x10dbc",
+            "disasm": "mov     ah, 48h ; 'H'"
+          },
+          {
+            "addr": "0x10dbe",
+            "disasm": "mov     bx, 0FFFFh"
+          }
+        ]
+      },
+      {
+        "addr": "0x110cd",
+        "function": "mscdex_drive_string_setup",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x110c1",
+            "disasm": "loop    loc_110A2"
+          },
+          {
+            "addr": "0x110c3",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x110c6",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x110c8",
+            "disasm": "mov     dx, 247h"
+          },
+          {
+            "addr": "0x110cb",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x110e4",
+        "function": "mscdex_drive_string_setup",
+        "segment": "seg002",
+        "context": [
+          {
+            "addr": "0x110d9",
+            "disasm": "jz      short loc_110D5"
+          },
+          {
+            "addr": "0x110db",
+            "disasm": "cmp     ah, 1"
+          },
+          {
+            "addr": "0x110de",
+            "disasm": "jz      short loc_110E2"
+          },
+          {
+            "addr": "0x110e0",
+            "disasm": "jmp     short loc_11074"
+          },
+          {
+            "addr": "0x110e2",
+            "disasm": "mov     ah, 4Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x16e5d",
+        "function": "sbi_pit_period_gate_1",
+        "segment": "seg006",
+        "context": [
+          {
+            "addr": "0x16e4e",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x16e4f",
+            "disasm": "mov     ax, 7772h"
+          },
+          {
+            "addr": "0x16e52",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x16e54",
+            "disasm": "mov     word ptr ds:byte_774F3+2D0h, 0"
+          },
+          {
+            "addr": "0x16e5a",
+            "disasm": "mov     ax, 3508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x16e7c",
+        "function": "sbi_pit_period_gate_1",
+        "segment": "seg006",
+        "context": [
+          {
+            "addr": "0x16e6e",
+            "disasm": "call    near ptr pit_period_set_1000"
+          },
+          {
+            "addr": "0x16e71",
+            "disasm": "mov     dx, 2E0h"
+          },
+          {
+            "addr": "0x16e74",
+            "disasm": "mov     ax, seg seg006"
+          },
+          {
+            "addr": "0x16e77",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x16e79",
+            "disasm": "mov     ax, 2508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x16eb7",
+        "function": "sbi_pit_period_gate_0",
+        "segment": "seg006",
+        "context": [
+          {
+            "addr": "0x16ea8",
+            "disasm": "call    near ptr pit_period_set_1000"
+          },
+          {
+            "addr": "0x16eab",
+            "disasm": "mov     dx, word ptr ds:byte_774F3+2EFh"
+          },
+          {
+            "addr": "0x16eaf",
+            "disasm": "mov     ax, word ptr ds:byte_774F3+2F1h"
+          },
+          {
+            "addr": "0x16eb2",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x16eb4",
+            "disasm": "mov     ax, 2508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x174e0",
+        "function": "int8_vector_hook",
+        "segment": "seg006",
+        "context": [
+          {
+            "addr": "0x174d5",
+            "disasm": "mov     ax, ds"
+          },
+          {
+            "addr": "0x174d7",
+            "disasm": "mov     word ptr es:byte_777F4+0Ah, ax"
+          },
+          {
+            "addr": "0x174db",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x174dc",
+            "disasm": "mov     ah, 35h ; '5'"
+          },
+          {
+            "addr": "0x174de",
+            "disasm": "mov     al, 8"
+          }
+        ]
+      },
+      {
+        "addr": "0x174fa",
+        "function": "int8_vector_hook",
+        "segment": "seg006",
+        "context": [
+          {
+            "addr": "0x174ef",
+            "disasm": "mov     ah, 25h ; '%'"
+          },
+          {
+            "addr": "0x174f1",
+            "disasm": "mov     al, 8"
+          },
+          {
+            "addr": "0x174f3",
+            "disasm": "mov     dx, 0C57h"
+          },
+          {
+            "addr": "0x174f6",
+            "disasm": "mov     bx, cs"
+          },
+          {
+            "addr": "0x174f8",
+            "disasm": "mov     ds, bx"
+          }
+        ]
+      },
+      {
+        "addr": "0x1751d",
+        "function": "int8_vector_unhook",
+        "segment": "seg006",
+        "context": [
+          {
+            "addr": "0x1750d",
+            "disasm": "mov     ah, 25h ; '%'"
+          },
+          {
+            "addr": "0x1750f",
+            "disasm": "mov     al, 8"
+          },
+          {
+            "addr": "0x17511",
+            "disasm": "mov     dx, word ptr es:byte_777F4+8"
+          },
+          {
+            "addr": "0x17516",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x17518",
+            "disasm": "mov     dx, word ptr es:byte_777F4+6"
+          }
+        ]
+      },
+      {
+        "addr": "0x1bd01",
+        "function": "irq_unmask_and_query",
+        "segment": "seg014",
+        "context": [
+          {
+            "addr": "0x1bcfa",
+            "disasm": "push    bp"
+          },
+          {
+            "addr": "0x1bcfb",
+            "disasm": "mov     bp, sp"
+          },
+          {
+            "addr": "0x1bcfd",
+            "disasm": "push    si"
+          },
+          {
+            "addr": "0x1bcfe",
+            "disasm": "xor     si, si"
+          },
+          {
+            "addr": "0x1bd00",
+            "disasm": "push    ax"
+          }
+        ]
+      },
+      {
+        "addr": "0x1bd05",
+        "function": "irq_unmask_and_query",
+        "segment": "seg014",
+        "context": [
+          {
+            "addr": "0x1bcfd",
+            "disasm": "push    si"
+          },
+          {
+            "addr": "0x1bcfe",
+            "disasm": "xor     si, si"
+          },
+          {
+            "addr": "0x1bd00",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x1bd01",
+            "disasm": "in      al, 21h; Interrupt controller, 8259A."
+          },
+          {
+            "addr": "0x1bd03",
+            "disasm": "and     al, 0FCh"
+          }
+        ]
+      },
+      {
+        "addr": "0x22267",
+        "function": "program_terminate",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2225b",
+            "disasm": "call    op_26400_release"
+          },
+          {
+            "addr": "0x22260",
+            "disasm": "push    cs"
+          },
+          {
+            "addr": "0x22261",
+            "disasm": "call    near ptr vector_shutdown_chain"
+          },
+          {
+            "addr": "0x22264",
+            "disasm": "nop"
+          },
+          {
+            "addr": "0x22265",
+            "disasm": "mov     ah, 4Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x224ef",
+        "function": "error_display_terminate",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x224e0",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x224e2",
+            "disasm": "test    cs:byte_22248, 80h"
+          },
+          {
+            "addr": "0x224e8",
+            "disasm": "jz      short loc_2250B"
+          },
+          {
+            "addr": "0x224ea",
+            "disasm": "mov     dx, 3792h"
+          },
+          {
+            "addr": "0x224ed",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x224fe",
+        "function": "error_display_terminate",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x224ef",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x224f1",
+            "disasm": "mov     bl, cs:byte_22249"
+          },
+          {
+            "addr": "0x224f6",
+            "disasm": "sub     bh, bh"
+          },
+          {
+            "addr": "0x224f8",
+            "disasm": "mov     dx, [bx+362Ch]"
+          },
+          {
+            "addr": "0x224fc",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x22505",
+        "function": "error_display_terminate",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x224f8",
+            "disasm": "mov     dx, [bx+362Ch]"
+          },
+          {
+            "addr": "0x224fc",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x224fe",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x22500",
+            "disasm": "mov     dx, 3792h"
+          },
+          {
+            "addr": "0x22503",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x22509",
+        "function": "error_display_terminate",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x224fe",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x22500",
+            "disasm": "mov     dx, 3792h"
+          },
+          {
+            "addr": "0x22503",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x22505",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x22507",
+            "disasm": "mov     ah, 4Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x22611",
+        "function": "dos_mem_alloc",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22607",
+            "disasm": "shr     ax, 1"
+          },
+          {
+            "addr": "0x22609",
+            "disasm": "shr     ax, 1"
+          },
+          {
+            "addr": "0x2260b",
+            "disasm": "shr     ax, 1"
+          },
+          {
+            "addr": "0x2260d",
+            "disasm": "add     bx, ax"
+          },
+          {
+            "addr": "0x2260f",
+            "disasm": "mov     ah, 48h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2262b",
+        "function": "dos_mem_free",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22624",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x22625",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x22626",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x22627",
+            "disasm": "mov     es, ax"
+          },
+          {
+            "addr": "0x22629",
+            "disasm": "mov     ah, 49h"
+          }
+        ]
+      },
+      {
+        "addr": "0x226a1",
+        "function": "file_create",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22698",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x22699",
+            "disasm": "call    str_upper_copy_3676"
+          },
+          {
+            "addr": "0x2269c",
+            "disasm": "push    cx"
+          },
+          {
+            "addr": "0x2269d",
+            "disasm": "mov     cx, ax"
+          },
+          {
+            "addr": "0x2269f",
+            "disasm": "mov     ah, 3Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x226bd",
+        "function": "file_open",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x226b5",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x226b6",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x226b7",
+            "disasm": "call    str_upper_copy_3676"
+          },
+          {
+            "addr": "0x226ba",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x226bc",
+            "disasm": "push    ax"
+          }
+        ]
+      },
+      {
+        "addr": "0x226c5",
+        "function": "file_open",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x226bc",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x226bd",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x226bf",
+            "disasm": "jnb     short loc_226DA"
+          },
+          {
+            "addr": "0x226c1",
+            "disasm": "call    str_upper_copy_3795"
+          },
+          {
+            "addr": "0x226c4",
+            "disasm": "pop     ax"
+          }
+        ]
+      },
+      {
+        "addr": "0x226e4",
+        "function": "file_close",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x226dd",
+            "disasm": "pop     ds"
+          },
+          {
+            "addr": "0x226de",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x226df",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x226e0",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x226e2",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x226f5",
+        "function": "file_read",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x226e9",
+            "disasm": "mov     cs:byte_2224B, 1"
+          },
+          {
+            "addr": "0x226ef",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x226f0",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x226f1",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x226f3",
+            "disasm": "mov     ah, 3Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2271f",
+        "function": "file_write",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22713",
+            "disasm": "mov     cs:byte_2224B, 1"
+          },
+          {
+            "addr": "0x22719",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x2271a",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x2271b",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2271d",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2274d",
+        "function": "file_lseek",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22744",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x22745",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x22747",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x22749",
+            "disasm": "mov     al, ch"
+          },
+          {
+            "addr": "0x2274b",
+            "disasm": "sub     ch, ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x22771",
+        "function": "file_find_first",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22765",
+            "disasm": "mov     cs:byte_2224B, 1"
+          },
+          {
+            "addr": "0x2276b",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x2276c",
+            "disasm": "mov     cx, ax"
+          },
+          {
+            "addr": "0x2276e",
+            "disasm": "push    cx"
+          },
+          {
+            "addr": "0x2276f",
+            "disasm": "mov     ah, 4Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2277e",
+        "function": "file_find_first",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22773",
+            "disasm": "mov     ax, 1"
+          },
+          {
+            "addr": "0x22776",
+            "disasm": "jnb     short loc_2278A"
+          },
+          {
+            "addr": "0x22778",
+            "disasm": "call    str_upper_copy_3795"
+          },
+          {
+            "addr": "0x2277b",
+            "disasm": "pop     cx"
+          },
+          {
+            "addr": "0x2277c",
+            "disasm": "mov     ah, 4Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x227a1",
+        "function": "file_find_next",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22796",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x22797",
+            "disasm": "cli"
+          },
+          {
+            "addr": "0x22798",
+            "disasm": "mov     cs:byte_2224B, 1"
+          },
+          {
+            "addr": "0x2279e",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x2279f",
+            "disasm": "mov     ah, 4Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x227b7",
+        "function": "file_get_dta",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x227ac",
+            "disasm": "mov     cs:byte_2224B, 0"
+          },
+          {
+            "addr": "0x227b2",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x227b3",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x227b4",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x227b5",
+            "disasm": "mov     ah, 2Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x227d8",
+        "function": "file_delete",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x227ce",
+            "disasm": "adc     cx, cx"
+          },
+          {
+            "addr": "0x227d0",
+            "disasm": "rep stosb"
+          },
+          {
+            "addr": "0x227d2",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x227d3",
+            "disasm": "call    str_upper_copy_3676"
+          },
+          {
+            "addr": "0x227d6",
+            "disasm": "mov     ah, 41h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2281c",
+        "function": "dos_print_str",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22815",
+            "disasm": "pop     ax"
+          },
+          {
+            "addr": "0x22816",
+            "disasm": "pop     di"
+          },
+          {
+            "addr": "0x22817",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x22818",
+            "disasm": "mov     dx, si"
+          },
+          {
+            "addr": "0x2281a",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x22a49",
+        "function": "int0_vector_hook",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22a42",
+            "disasm": "pop     ds"
+          },
+          {
+            "addr": "0x22a43",
+            "disasm": "retf"
+          },
+          {
+            "addr": "0x22a44",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x22a45",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x22a46",
+            "disasm": "mov     ax, 3500h"
+          }
+        ]
+      },
+      {
+        "addr": "0x22a5f",
+        "function": "int0_vector_hook",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22a50",
+            "disasm": "mov     cs:word_2221A, es"
+          },
+          {
+            "addr": "0x22a55",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x22a57",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x22a59",
+            "disasm": "mov     dx, 342Bh"
+          },
+          {
+            "addr": "0x22a5c",
+            "disasm": "mov     ax, 2500h"
+          }
+        ]
+      },
+      {
+        "addr": "0x22aa7",
+        "function": "int8_vector_hook_343f",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22aa0",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x22aa1",
+            "disasm": "push    dx"
+          },
+          {
+            "addr": "0x22aa2",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x22aa3",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x22aa4",
+            "disasm": "mov     ax, 3508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x22abe",
+        "function": "int8_vector_hook_343f",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22aae",
+            "disasm": "mov     word ptr cs:dword_2221C+2, es"
+          },
+          {
+            "addr": "0x22ab3",
+            "disasm": "mov     dx, 343Fh"
+          },
+          {
+            "addr": "0x22ab6",
+            "disasm": "mov     ax, seg seg020"
+          },
+          {
+            "addr": "0x22ab9",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x22abb",
+            "disasm": "mov     ax, 2508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x22ad6",
+        "function": "int8_vector_restore_2221c",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x22ac7",
+            "disasm": "push    dx"
+          },
+          {
+            "addr": "0x22ac8",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x22ac9",
+            "disasm": "mov     dx, word ptr cs:dword_2221C"
+          },
+          {
+            "addr": "0x22ace",
+            "disasm": "mov     ds, word ptr cs:dword_2221C+2"
+          },
+          {
+            "addr": "0x22ad3",
+            "disasm": "mov     ax, 2508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x252ed",
+        "function": "int9_vector_hook_5c7d",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x252e1",
+            "disasm": "mov     es, ax"
+          },
+          {
+            "addr": "0x252e3",
+            "disasm": "xor     ax, ax"
+          },
+          {
+            "addr": "0x252e5",
+            "disasm": "mov     cx, 0Bh"
+          },
+          {
+            "addr": "0x252e8",
+            "disasm": "rep stosw"
+          },
+          {
+            "addr": "0x252ea",
+            "disasm": "mov     ax, 3509h"
+          }
+        ]
+      },
+      {
+        "addr": "0x25303",
+        "function": "int9_vector_hook_5c7d",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x252f4",
+            "disasm": "mov     word ptr cs:dword_24E38+2, es"
+          },
+          {
+            "addr": "0x252f9",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x252fb",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x252fd",
+            "disasm": "mov     dx, 5C7Dh"
+          },
+          {
+            "addr": "0x25300",
+            "disasm": "mov     ax, 2509h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2531d",
+        "function": "int9_vector_unhook",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2530e",
+            "disasm": "push    dx"
+          },
+          {
+            "addr": "0x2530f",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x25310",
+            "disasm": "mov     dx, word ptr cs:dword_24E38"
+          },
+          {
+            "addr": "0x25315",
+            "disasm": "mov     ds, word ptr cs:dword_24E38+2"
+          },
+          {
+            "addr": "0x2531a",
+            "disasm": "mov     ax, 2509h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a70f",
+        "function": "module_open_3d00",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a703",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x2a705",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x2a707",
+            "disasm": "mov     es, ax"
+          },
+          {
+            "addr": "0x2a709",
+            "disasm": "mov     ax, 3D00h"
+          },
+          {
+            "addr": "0x2a70c",
+            "disasm": "mov     dx, 0AFA8h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a71d",
+        "function": "module_open_3d00",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a713",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2a714",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2a716",
+            "disasm": "sub     dx, dx"
+          },
+          {
+            "addr": "0x2a718",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x2a71a",
+            "disasm": "mov     ax, 4202h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a724",
+        "function": "module_open_3d00",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a71d",
+            "disasm": "int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)"
+          },
+          {
+            "addr": "0x2a71f",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2a720",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2a721",
+            "disasm": "push    dx"
+          },
+          {
+            "addr": "0x2a722",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a748",
+        "function": "module_open_3d00",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a73e",
+            "disasm": "shr     ax, 1"
+          },
+          {
+            "addr": "0x2a740",
+            "disasm": "shr     ax, 1"
+          },
+          {
+            "addr": "0x2a742",
+            "disasm": "shr     ax, 1"
+          },
+          {
+            "addr": "0x2a744",
+            "disasm": "add     bx, ax"
+          },
+          {
+            "addr": "0x2a746",
+            "disasm": "mov     ah, 48h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a75e",
+        "function": "module_open_3d00",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a74f",
+            "disasm": "mov     word_2A664, ax"
+          },
+          {
+            "addr": "0x2a752",
+            "disasm": "mov     word_2A666, ax"
+          },
+          {
+            "addr": "0x2a755",
+            "disasm": "mov     dx, 0AFA8h"
+          },
+          {
+            "addr": "0x2a758",
+            "disasm": "mov     bx, 0AFA4h"
+          },
+          {
+            "addr": "0x2a75b",
+            "disasm": "mov     ax, 4B03h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a775",
+        "function": "ems_seg_free_21_49",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a76b",
+            "disasm": "cmp     ax, 0FFFFh"
+          },
+          {
+            "addr": "0x2a76e",
+            "disasm": "jz      short locret_2A77F"
+          },
+          {
+            "addr": "0x2a770",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x2a771",
+            "disasm": "mov     es, ax"
+          },
+          {
+            "addr": "0x2a773",
+            "disasm": "mov     ah, 49h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2a9b6",
+        "function": "config_defaults_table_load",
+        "segment": "seg020",
+        "context": [
+          {
+            "addr": "0x2a9a8",
+            "disasm": "mov     bx, 7B0Eh"
+          },
+          {
+            "addr": "0x2a9ab",
+            "disasm": "mov     ds, bx"
+          },
+          {
+            "addr": "0x2a9ad",
+            "disasm": "mov     dx, 3676h"
+          },
+          {
+            "addr": "0x2a9b0",
+            "disasm": "mov     bx, 0B0C4h"
+          },
+          {
+            "addr": "0x2a9b3",
+            "disasm": "mov     ax, 4B03h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ad62",
+        "function": "overlay_segment_load",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2ad55",
+            "disasm": "adc     cx, es:[di+2]"
+          },
+          {
+            "addr": "0x2ad59",
+            "disasm": "pop     di"
+          },
+          {
+            "addr": "0x2ad5a",
+            "disasm": "pop     es"
+          },
+          {
+            "addr": "0x2ad5b",
+            "disasm": "mov     bx, word_2B4BE"
+          },
+          {
+            "addr": "0x2ad5f",
+            "disasm": "mov     ax, 4200h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ad9a",
+        "function": "overlay_segment_load",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2ad90",
+            "disasm": "mov     cl, 4"
+          },
+          {
+            "addr": "0x2ad92",
+            "disasm": "shl     ax, cl"
+          },
+          {
+            "addr": "0x2ad94",
+            "disasm": "mov     cx, ax"
+          },
+          {
+            "addr": "0x2ad96",
+            "disasm": "xor     dx, dx"
+          },
+          {
+            "addr": "0x2ad98",
+            "disasm": "mov     ah, 3Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ae2e",
+        "function": "overlay_segment_load",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2ae22",
+            "disasm": "pop     di"
+          },
+          {
+            "addr": "0x2ae23",
+            "disasm": "pop     es"
+          },
+          {
+            "addr": "0x2ae24",
+            "disasm": "mov     si, [bx+0Ah]"
+          },
+          {
+            "addr": "0x2ae27",
+            "disasm": "mov     bx, word_2B4BE"
+          },
+          {
+            "addr": "0x2ae2b",
+            "disasm": "mov     ax, 4200h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ae49",
+        "function": "overlay_segment_load",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2ae3f",
+            "disasm": "push    cx"
+          },
+          {
+            "addr": "0x2ae40",
+            "disasm": "shl     cx, 1"
+          },
+          {
+            "addr": "0x2ae42",
+            "disasm": "shl     cx, 1"
+          },
+          {
+            "addr": "0x2ae44",
+            "disasm": "mov     dx, 0A92h"
+          },
+          {
+            "addr": "0x2ae47",
+            "disasm": "mov     ah, 3Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2aec9",
+        "function": "overlay_file_open",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2aebc",
+            "disasm": "cmp     si, word_2B4BC"
+          },
+          {
+            "addr": "0x2aec0",
+            "disasm": "jnz     short loc_2AEC5"
+          },
+          {
+            "addr": "0x2aec2",
+            "disasm": "jmp     loc_2AFB4"
+          },
+          {
+            "addr": "0x2aec5",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2aec7",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2aedc",
+        "function": "overlay_file_open",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2aecf",
+            "disasm": "test    byte ptr [si-1], 1"
+          },
+          {
+            "addr": "0x2aed3",
+            "disasm": "jz      short loc_2AEF0"
+          },
+          {
+            "addr": "0x2aed5",
+            "disasm": "mov     dx, si"
+          },
+          {
+            "addr": "0x2aed7",
+            "disasm": "mov     al, byte_2B4B5"
+          },
+          {
+            "addr": "0x2aeda",
+            "disasm": "mov     ah, 3Dh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2af3a",
+        "function": "overlay_file_open",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2af2d",
+            "disasm": "jb      short loc_2AF52"
+          },
+          {
+            "addr": "0x2af2f",
+            "disasm": "cmp     bx, 0FFFFh"
+          },
+          {
+            "addr": "0x2af32",
+            "disasm": "jz      short loc_2AF40"
+          },
+          {
+            "addr": "0x2af34",
+            "disasm": "mov     al, cs:byte_2B4B5"
+          },
+          {
+            "addr": "0x2af38",
+            "disasm": "mov     ah, 3Dh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2b25b",
+        "function": "startup_overlay_init",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2b254",
+            "disasm": "popf"
+          },
+          {
+            "addr": "0x2b255",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x2b256",
+            "disasm": "pushf"
+          },
+          {
+            "addr": "0x2b257",
+            "disasm": "cld"
+          },
+          {
+            "addr": "0x2b258",
+            "disasm": "mov     ax, 3000h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2b442",
+        "function": "undoc_2B424",
+        "segment": "seg021",
+        "context": [
+          {
+            "addr": "0x2b430",
+            "disasm": "mov     ax, 0"
+          },
+          {
+            "addr": "0x2b433",
+            "disasm": "cmp     es:word_2B4BC, 0"
+          },
+          {
+            "addr": "0x2b439",
+            "disasm": "jz      short loc_2B455"
+          },
+          {
+            "addr": "0x2b43b",
+            "disasm": "mov     bx, es:word_2B4BE"
+          },
+          {
+            "addr": "0x2b440",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2c9cd",
+        "function": "dos_indirect_dispatch_2c9ba",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2c9c2",
+            "disasm": "dw 0"
+          },
+          {
+            "addr": "0x2c9c4",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x2c9c5",
+            "disasm": "mov     bx, 2"
+          },
+          {
+            "addr": "0x2c9c8",
+            "disasm": "mov     cx, 1"
+          },
+          {
+            "addr": "0x2c9cb",
+            "disasm": "mov     ah, 46h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2c9db",
+        "function": "dos_indirect_dispatch_2c9ba",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2c9d0",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x2c9d1",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x2c9d3",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x2c9d5",
+            "disasm": "mov     dx, word_2CB7B"
+          },
+          {
+            "addr": "0x2c9d9",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x2c9ed",
+        "function": "dos_indirect_dispatch_2c9ba",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2c9e4",
+            "disasm": "lodsb"
+          },
+          {
+            "addr": "0x2c9e5",
+            "disasm": "or      al, al"
+          },
+          {
+            "addr": "0x2c9e7",
+            "disasm": "jz      short loc_2C9F1"
+          },
+          {
+            "addr": "0x2c9e9",
+            "disasm": "mov     dl, al"
+          },
+          {
+            "addr": "0x2c9eb",
+            "disasm": "mov     ah, 2"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ca0c",
+        "function": "dos_indirect_dispatch_2c9ba",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ca00",
+            "disasm": "jbe     short loc_2CA12"
+          },
+          {
+            "addr": "0x2ca02",
+            "disasm": "cmp     al, 7"
+          },
+          {
+            "addr": "0x2ca04",
+            "disasm": "jz      short loc_2CA12"
+          },
+          {
+            "addr": "0x2ca06",
+            "disasm": "mov     dx, word_2CB7D"
+          },
+          {
+            "addr": "0x2ca0a",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ca10",
+        "function": "dos_indirect_dispatch_2c9ba",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ca04",
+            "disasm": "jz      short loc_2CA12"
+          },
+          {
+            "addr": "0x2ca06",
+            "disasm": "mov     dx, word_2CB7D"
+          },
+          {
+            "addr": "0x2ca0a",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x2ca0c",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x2ca0e",
+            "disasm": "mov     ah, 7"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ca15",
+        "function": "dos_indirect_dispatch_2c9ba",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ca0a",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x2ca0c",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x2ca0e",
+            "disasm": "mov     ah, 7"
+          },
+          {
+            "addr": "0x2ca10",
+            "disasm": "int     21h; DOS - DIRECT STDIN INPUT, NO ECHO"
+          },
+          {
+            "addr": "0x2ca12",
+            "disasm": "mov     ax, 4C01h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cd14",
+        "function": "overlay_loader_main",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cd0b",
+            "disasm": "or      bl, bl"
+          },
+          {
+            "addr": "0x2cd0d",
+            "disasm": "jnz     short loc_2CCE1"
+          },
+          {
+            "addr": "0x2cd0f",
+            "disasm": "stc"
+          },
+          {
+            "addr": "0x2cd10",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x2cd11",
+            "disasm": "mov     ax, 3000h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cd5a",
+        "function": "drive_path_build",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cd52",
+            "disasm": "push    si"
+          },
+          {
+            "addr": "0x2cd53",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x2cd54",
+            "disasm": "or      al, al"
+          },
+          {
+            "addr": "0x2cd56",
+            "disasm": "jnz     short loc_2CD5E"
+          },
+          {
+            "addr": "0x2cd58",
+            "disasm": "mov     ah, 19h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cd6f",
+        "function": "drive_path_build",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cd66",
+            "disasm": "stosw"
+          },
+          {
+            "addr": "0x2cd67",
+            "disasm": "mov     si, di"
+          },
+          {
+            "addr": "0x2cd69",
+            "disasm": "mov     ax, es"
+          },
+          {
+            "addr": "0x2cd6b",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x2cd6d",
+            "disasm": "mov     ah, 47h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cd9b",
+        "function": "dos_version_ge3_check",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cd92",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x2cd93",
+            "disasm": "push    bp"
+          },
+          {
+            "addr": "0x2cd94",
+            "disasm": "mov     bp, sp"
+          },
+          {
+            "addr": "0x2cd96",
+            "disasm": "mov     di, ax"
+          },
+          {
+            "addr": "0x2cd98",
+            "disasm": "mov     ax, 3000h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce05",
+        "function": "fname_open_3d00",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cdfa",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x2cdfb",
+            "disasm": "mov     ds, word ptr [bp+0Ch]"
+          },
+          {
+            "addr": "0x2cdfe",
+            "disasm": "xor     dx, dx"
+          },
+          {
+            "addr": "0x2ce00",
+            "disasm": "mov     al, [bp+0Eh]"
+          },
+          {
+            "addr": "0x2ce03",
+            "disasm": "mov     ah, 3Dh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce4b",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce44",
+            "disasm": "pop     ax"
+          },
+          {
+            "addr": "0x2ce45",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x2ce46",
+            "disasm": "db 0"
+          },
+          {
+            "addr": "0x2ce47",
+            "disasm": "xor     bx, bx"
+          },
+          {
+            "addr": "0x2ce49",
+            "disasm": "mov     ah, 45h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce53",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce49",
+            "disasm": "mov     ah, 45h"
+          },
+          {
+            "addr": "0x2ce4b",
+            "disasm": "int     21h; DOS - 2+ - CREATE DUPLICATE HANDLE (DUP)"
+          },
+          {
+            "addr": "0x2ce4d",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2ce4e",
+            "disasm": "mov     bx, 1"
+          },
+          {
+            "addr": "0x2ce51",
+            "disasm": "mov     ah, 45h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce5d",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce53",
+            "disasm": "int     21h; DOS - 2+ - CREATE DUPLICATE HANDLE (DUP)"
+          },
+          {
+            "addr": "0x2ce55",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2ce56",
+            "disasm": "mov     bx, 2"
+          },
+          {
+            "addr": "0x2ce59",
+            "disasm": "xor     cx, cx"
+          },
+          {
+            "addr": "0x2ce5b",
+            "disasm": "mov     ah, 46h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce67",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce5b",
+            "disasm": "mov     ah, 46h"
+          },
+          {
+            "addr": "0x2ce5d",
+            "disasm": "int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)"
+          },
+          {
+            "addr": "0x2ce5f",
+            "disasm": "mov     bx, 2"
+          },
+          {
+            "addr": "0x2ce62",
+            "disasm": "mov     cx, 1"
+          },
+          {
+            "addr": "0x2ce65",
+            "disasm": "mov     ah, 46h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce73",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce67",
+            "disasm": "int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)"
+          },
+          {
+            "addr": "0x2ce69",
+            "disasm": "mov     bx, cs"
+          },
+          {
+            "addr": "0x2ce6b",
+            "disasm": "mov     ds, bx"
+          },
+          {
+            "addr": "0x2ce6d",
+            "disasm": "mov     dx, word ptr byte_2CF1F"
+          },
+          {
+            "addr": "0x2ce71",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce87",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce7c",
+            "disasm": "mov     es, word ptr [bp+0Ch]"
+          },
+          {
+            "addr": "0x2ce7f",
+            "disasm": "stosb"
+          },
+          {
+            "addr": "0x2ce80",
+            "disasm": "mov     ds, word ptr [bp+0Ch]"
+          },
+          {
+            "addr": "0x2ce83",
+            "disasm": "xor     dx, dx"
+          },
+          {
+            "addr": "0x2ce85",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ce91",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce85",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x2ce87",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x2ce89",
+            "disasm": "mov     ds, bx"
+          },
+          {
+            "addr": "0x2ce8b",
+            "disasm": "mov     dx, ds:5B1h"
+          },
+          {
+            "addr": "0x2ce8f",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cea0",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ce91",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x2ce93",
+            "disasm": "mov     ds, word ptr [bp+0Ch]"
+          },
+          {
+            "addr": "0x2ce96",
+            "disasm": "mov     dx, 50h ; 'P'"
+          },
+          {
+            "addr": "0x2ce99",
+            "disasm": "mov     byte ptr ds:50h, 0FEh"
+          },
+          {
+            "addr": "0x2ce9e",
+            "disasm": "mov     ah, 0Ah"
+          }
+        ]
+      },
+      {
+        "addr": "0x2ceae",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cea0",
+            "disasm": "int     21h; DOS - BUFFERED KEYBOARD INPUT"
+          },
+          {
+            "addr": "0x2cea2",
+            "disasm": "mov     cl, ds:51h"
+          },
+          {
+            "addr": "0x2cea6",
+            "disasm": "mov     ds, bx"
+          },
+          {
+            "addr": "0x2cea8",
+            "disasm": "mov     dx, ds:5B3h"
+          },
+          {
+            "addr": "0x2ceac",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cee1",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2ced6",
+            "disasm": "sub     al, 40h ; '@'"
+          },
+          {
+            "addr": "0x2ced8",
+            "disasm": "jmp     short loc_2CEEC"
+          },
+          {
+            "addr": "0x2ceda",
+            "disasm": "cmp     byte ptr [si], 5Ch ; '\\'"
+          },
+          {
+            "addr": "0x2cedd",
+            "disasm": "jnz     short loc_2CEEA"
+          },
+          {
+            "addr": "0x2cedf",
+            "disasm": "mov     ah, 19h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cf0a",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cf01",
+            "disasm": "lahf"
+          },
+          {
+            "addr": "0x2cf02",
+            "disasm": "mov     dx, ax"
+          },
+          {
+            "addr": "0x2cf04",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2cf05",
+            "disasm": "mov     cx, 1"
+          },
+          {
+            "addr": "0x2cf08",
+            "disasm": "mov     ah, 46h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cf0e",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cf04",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2cf05",
+            "disasm": "mov     cx, 1"
+          },
+          {
+            "addr": "0x2cf08",
+            "disasm": "mov     ah, 46h"
+          },
+          {
+            "addr": "0x2cf0a",
+            "disasm": "int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)"
+          },
+          {
+            "addr": "0x2cf0c",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cf15",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cf0c",
+            "disasm": "mov     ah, 3Eh"
+          },
+          {
+            "addr": "0x2cf0e",
+            "disasm": "int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2cf10",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2cf11",
+            "disasm": "xor     cx, cx"
+          },
+          {
+            "addr": "0x2cf13",
+            "disasm": "mov     ah, 46h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cf19",
+        "function": "dos_handle_dup_path",
+        "segment": "seg022",
+        "context": [
+          {
+            "addr": "0x2cf10",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2cf11",
+            "disasm": "xor     cx, cx"
+          },
+          {
+            "addr": "0x2cf13",
+            "disasm": "mov     ah, 46h"
+          },
+          {
+            "addr": "0x2cf15",
+            "disasm": "int     21h; DOS - 2+ - FORCE DUPLICATE HANDLE (FORCDUP,DUP2)"
+          },
+          {
+            "addr": "0x2cf17",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cf9e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2cf92",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x2cf94",
+            "disasm": "mov     es, ax"
+          },
+          {
+            "addr": "0x2cf96",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cf98",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cf9b",
+            "disasm": "mov     dx, 6"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cfcc",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2cfbe",
+            "disasm": "movsw"
+          },
+          {
+            "addr": "0x2cfbf",
+            "disasm": "inc     cs:word_2CF60"
+          },
+          {
+            "addr": "0x2cfc4",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfc6",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfc9",
+            "disasm": "mov     dx, 19h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2cfed",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2cfdd",
+            "disasm": "jnz     short loc_2CFFA"
+          },
+          {
+            "addr": "0x2cfdf",
+            "disasm": "mov     cs:byte_2CF87, 1"
+          },
+          {
+            "addr": "0x2cfe5",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfe7",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfea",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d001",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2cff1",
+            "disasm": "mov     cs:byte_2CF87, 0"
+          },
+          {
+            "addr": "0x2cff7",
+            "disasm": "jmp     loc_2D0B8"
+          },
+          {
+            "addr": "0x2cffa",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x2cffc",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2cffe",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d00e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d004",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2d006",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x2d008",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2d00a",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x2d00c",
+            "disasm": "sub     dx, dx"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d01c",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d011",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2d012",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2d014",
+            "disasm": "mov     cx, 0Bh"
+          },
+          {
+            "addr": "0x2d017",
+            "disasm": "mov     dx, 19h"
+          },
+          {
+            "addr": "0x2d01a",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d028",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d01e",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d01f",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x2d020",
+            "disasm": "mov     cx, 2"
+          },
+          {
+            "addr": "0x2d023",
+            "disasm": "mov     dx, 28h ; '('"
+          },
+          {
+            "addr": "0x2d026",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d02d",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d023",
+            "disasm": "mov     dx, 28h ; '('"
+          },
+          {
+            "addr": "0x2d026",
+            "disasm": "mov     ah, 40h"
+          },
+          {
+            "addr": "0x2d028",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d02a",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d02b",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d045",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d036",
+            "disasm": "mov     es, dx"
+          },
+          {
+            "addr": "0x2d038",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d03b",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d040",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d042",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d08d",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d07e",
+            "disasm": "int     10h; - VIDEO - READ BLOCK OF DAC REGISTERS (EGA, VGA/MCGA)"
+          },
+          {
+            "addr": "0x2d080",
+            "disasm": "mov     cx, 0FD00h"
+          },
+          {
+            "addr": "0x2d083",
+            "disasm": "mov     bx, cs:word_2CF64"
+          },
+          {
+            "addr": "0x2d088",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d08a",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d09e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d08f",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x2d091",
+            "disasm": "mov     al, 0"
+          },
+          {
+            "addr": "0x2d093",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2d096",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d099",
+            "disasm": "mov     bx, cs:word_2CF62"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d0ad",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d09e",
+            "disasm": "int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)"
+          },
+          {
+            "addr": "0x2d0a0",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d0a3",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d0a8",
+            "disasm": "mov     ah, 3Fh ; '?'"
+          },
+          {
+            "addr": "0x2d0aa",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d0b6",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d0a8",
+            "disasm": "mov     ah, 3Fh ; '?'"
+          },
+          {
+            "addr": "0x2d0aa",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d0ad",
+            "disasm": "int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d0af",
+            "disasm": "mov     ah, 3Eh ; '>'"
+          },
+          {
+            "addr": "0x2d0b1",
+            "disasm": "mov     bx, cs:word_2CF64"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d0bf",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d0af",
+            "disasm": "mov     ah, 3Eh ; '>'"
+          },
+          {
+            "addr": "0x2d0b1",
+            "disasm": "mov     bx, cs:word_2CF64"
+          },
+          {
+            "addr": "0x2d0b6",
+            "disasm": "int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d0b8",
+            "disasm": "mov     ah, 3Eh ; '>'"
+          },
+          {
+            "addr": "0x2d0ba",
+            "disasm": "mov     bx, cs:word_2CF62"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d365",
+        "function": "stack_switch_7a32",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d35b",
+            "disasm": "mov     dx, es"
+          },
+          {
+            "addr": "0x2d35d",
+            "disasm": "sub     ax, dx"
+          },
+          {
+            "addr": "0x2d35f",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2d361",
+            "disasm": "mov     ah, 4Ah ; 'J'"
+          },
+          {
+            "addr": "0x2d363",
+            "disasm": "mov     es, dx"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d373",
+        "function": "stack_switch_7a32",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d365",
+            "disasm": "int     21h; DOS - 2+ - ADJUST MEMORY BLOCK SIZE (SETBLOCK)"
+          },
+          {
+            "addr": "0x2d367",
+            "disasm": "mov     dx, ds"
+          },
+          {
+            "addr": "0x2d369",
+            "disasm": "mov     es, dx"
+          },
+          {
+            "addr": "0x2d36b",
+            "disasm": "call    far ptr alloc_read_mscdex"
+          },
+          {
+            "addr": "0x2d370",
+            "disasm": "mov     ax, 4C00h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d3b2",
+        "function": "sub_2D38C",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d3a6",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x2d3a8",
+            "disasm": "mov     bx, 7FFFh"
+          },
+          {
+            "addr": "0x2d3ab",
+            "disasm": "xor     di, di"
+          },
+          {
+            "addr": "0x2d3ad",
+            "disasm": "xor     si, si"
+          },
+          {
+            "addr": "0x2d3af",
+            "disasm": "mov     cx, 400h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d3b7",
+        "function": "sub_2D38C",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d3ad",
+            "disasm": "xor     si, si"
+          },
+          {
+            "addr": "0x2d3af",
+            "disasm": "mov     cx, 400h"
+          },
+          {
+            "addr": "0x2d3b2",
+            "disasm": "in      al, 21h; Interrupt controller, 8259A."
+          },
+          {
+            "addr": "0x2d3b4",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2d3b5",
+            "disasm": "mov     al, 0FEh"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d3ea",
+        "function": "sub_2D38C",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d3e0",
+            "disasm": "mov     bp, cs:word_2CF68"
+          },
+          {
+            "addr": "0x2d3e5",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x2d3e6",
+            "disasm": "pop     dx"
+          },
+          {
+            "addr": "0x2d3e7",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2d3e8",
+            "disasm": "mov     al, dl"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d469",
+        "function": "interrupt_get_set_vector",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d461",
+            "disasm": "out     40h, al; Timer 8253-5 (AT: 8254.2)."
+          },
+          {
+            "addr": "0x2d463",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x2d464",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x2d465",
+            "disasm": "push    es"
+          },
+          {
+            "addr": "0x2d466",
+            "disasm": "mov     ax, 3508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d480",
+        "function": "interrupt_get_set_vector",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d475",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x2d476",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x2d478",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x2d47a",
+            "disasm": "mov     dx, 0C0h"
+          },
+          {
+            "addr": "0x2d47d",
+            "disasm": "mov     ax, 2508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x2d499",
+        "function": "interrupt_set_vector",
+        "segment": "R01_1CF6",
+        "context": [
+          {
+            "addr": "0x2d48a",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x2d48b",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x2d48c",
+            "disasm": "mov     dx, word ptr cs:loc_2CF6C+2"
+          },
+          {
+            "addr": "0x2d491",
+            "disasm": "mov     ds, word ptr cs:loc_2CF70"
+          },
+          {
+            "addr": "0x2d496",
+            "disasm": "mov     ax, 2508h"
+          }
+        ]
+      },
+      {
+        "addr": "0x30929",
+        "function": "ems_extended_memory_handler",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x3091e",
+            "disasm": "inc     di"
+          },
+          {
+            "addr": "0x3091f",
+            "disasm": "mov     dx, 8980h"
+          },
+          {
+            "addr": "0x30922",
+            "disasm": "mov     cx, 4"
+          },
+          {
+            "addr": "0x30925",
+            "disasm": "push    cx"
+          },
+          {
+            "addr": "0x30926",
+            "disasm": "mov     ax, 3D00h"
+          }
+        ]
+      },
+      {
+        "addr": "0x30937",
+        "function": "ems_extended_memory_handler",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x3092d",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x3092e",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x30930",
+            "disasm": "mov     ax, 4202h"
+          },
+          {
+            "addr": "0x30933",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x30935",
+            "disasm": "sub     dx, dx"
+          }
+        ]
+      },
+      {
+        "addr": "0x3095b",
+        "function": "ems_extended_memory_handler",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x30952",
+            "disasm": "stosw"
+          },
+          {
+            "addr": "0x30953",
+            "disasm": "push    cx"
+          },
+          {
+            "addr": "0x30954",
+            "disasm": "mov     ax, 4200h"
+          },
+          {
+            "addr": "0x30957",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x30959",
+            "disasm": "sub     dx, dx"
+          }
+        ]
+      },
+      {
+        "addr": "0x30966",
+        "function": "ems_extended_memory_handler",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x3095d",
+            "disasm": "pop     cx"
+          },
+          {
+            "addr": "0x3095e",
+            "disasm": "mov     ax, es"
+          },
+          {
+            "addr": "0x30960",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x30962",
+            "disasm": "mov     dx, di"
+          },
+          {
+            "addr": "0x30964",
+            "disasm": "mov     ah, 3Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x3096c",
+        "function": "ems_extended_memory_handler",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x30962",
+            "disasm": "mov     dx, di"
+          },
+          {
+            "addr": "0x30964",
+            "disasm": "mov     ah, 3Fh"
+          },
+          {
+            "addr": "0x30966",
+            "disasm": "int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x30968",
+            "disasm": "add     di, ax"
+          },
+          {
+            "addr": "0x3096a",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x37801",
+        "function": "mode_toggle_105f",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x377f8",
+            "disasm": "mul     ah"
+          },
+          {
+            "addr": "0x377fa",
+            "disasm": "sub     bh, bh"
+          },
+          {
+            "addr": "0x377fc",
+            "disasm": "add     ax, bx"
+          },
+          {
+            "addr": "0x377fe",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x377ff",
+            "disasm": "mov     ah, 2Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x37832",
+        "function": "terrain_angle_time_step",
+        "segment": "R05_1F64",
+        "context": [
+          {
+            "addr": "0x37822",
+            "disasm": "mov     bx, 4"
+          },
+          {
+            "addr": "0x37825",
+            "disasm": "mov     bp, 18h"
+          },
+          {
+            "addr": "0x37828",
+            "disasm": "mov     ax, 1"
+          },
+          {
+            "addr": "0x3782b",
+            "disasm": "call    farwrap_25a1c"
+          },
+          {
+            "addr": "0x37830",
+            "disasm": "mov     ah, 2Ch"
+          }
+        ]
+      },
+      {
+        "addr": "0x6e5f3",
+        "function": "r69_pending_session_step",
+        "segment": "R14_5E0B",
+        "context": [
+          {
+            "addr": "0x6e5dd",
+            "disasm": "mov     cs:word_6E0C0, 88h"
+          },
+          {
+            "addr": "0x6e5e4",
+            "disasm": "cmp     cs:word_6E10A, 0"
+          },
+          {
+            "addr": "0x6e5ea",
+            "disasm": "jle     short loc_6E62E"
+          },
+          {
+            "addr": "0x6e5ec",
+            "disasm": "mov     ah, 41h ; 'A'"
+          },
+          {
+            "addr": "0x6e5ee",
+            "disasm": "mov     dx, cs:word_6E0C0"
+          }
+        ]
+      },
+      {
+        "addr": "0x1062cc",
+        "function": "sub_10626E",
+        "segment": "R12_5DFFs",
+        "context": [
+          {
+            "addr": "0x1062c0",
+            "disasm": "call    near ptr sub_106533"
+          },
+          {
+            "addr": "0x1062c3",
+            "disasm": "nop"
+          },
+          {
+            "addr": "0x1062c4",
+            "disasm": "mov     cx, 1Eh"
+          },
+          {
+            "addr": "0x1062c7",
+            "disasm": "call    r12_farptr_helper_b"
+          },
+          {
+            "addr": "0x1062ca",
+            "disasm": "mov     al, 18h"
+          }
+        ]
+      },
+      {
+        "addr": "0x106311",
+        "function": "sub_10626E",
+        "segment": "R12_5DFFs",
+        "context": [
+          {
+            "addr": "0x106307",
+            "disasm": "jnz     short loc_10630D"
+          },
+          {
+            "addr": "0x106309",
+            "disasm": "or      dx, dx"
+          },
+          {
+            "addr": "0x10630b",
+            "disasm": "jz      short loc_106323"
+          },
+          {
+            "addr": "0x10630d",
+            "disasm": "mov     al, 0Bh"
+          },
+          {
+            "addr": "0x10630f",
+            "disasm": "mov     ah, 25h"
+          }
+        ]
+      },
+      {
+        "addr": "0x106321",
+        "function": "sub_10626E",
+        "segment": "R12_5DFFs",
+        "context": [
+          {
+            "addr": "0x106314",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x106315",
+            "disasm": "mov     al, 0Ch"
+          },
+          {
+            "addr": "0x106317",
+            "disasm": "mov     dx, word ptr ds:byte_70A82+2"
+          },
+          {
+            "addr": "0x10631b",
+            "disasm": "mov     ds, word ptr ds:byte_70A82"
+          },
+          {
+            "addr": "0x10631f",
+            "disasm": "mov     ah, 25h"
+          }
+        ]
+      },
+      {
+        "addr": "0x106659",
+        "function": "sub_106607",
+        "segment": "R12_5DFFs",
+        "context": [
+          {
+            "addr": "0x10664f",
+            "disasm": "call    near ptr overlay_undecoded_body_10633e"
+          },
+          {
+            "addr": "0x106652",
+            "disasm": "push    cs"
+          },
+          {
+            "addr": "0x106653",
+            "disasm": "call    near ptr overlay_undecoded_body_10633e"
+          },
+          {
+            "addr": "0x106656",
+            "disasm": "pop     ds"
+          },
+          {
+            "addr": "0x106657",
+            "disasm": "mov     al, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x12ba13",
+        "function": "interrupt_dma",
+        "segment": "R29_2CF3s",
+        "context": [
+          {
+            "addr": "0x12ba07",
+            "disasm": "call    near ptr serial_uart_transmit_polled"
+          },
+          {
+            "addr": "0x12ba0a",
+            "disasm": "nop"
+          },
+          {
+            "addr": "0x12ba0b",
+            "disasm": "mov     cx, 1Eh"
+          },
+          {
+            "addr": "0x12ba0e",
+            "disasm": "call    bios_timer_delay_ticks"
+          },
+          {
+            "addr": "0x12ba11",
+            "disasm": "mov     al, 18h"
+          }
+        ]
+      },
+      {
+        "addr": "0x12ba51",
+        "function": "interrupt_dma",
+        "segment": "R29_2CF3s",
+        "context": [
+          {
+            "addr": "0x12ba44",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x12ba45",
+            "disasm": "mov     dx, ds:word_70A7E"
+          },
+          {
+            "addr": "0x12ba49",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x12ba4b",
+            "disasm": "mov     ah, 25h ; '%'"
+          },
+          {
+            "addr": "0x12ba4d",
+            "disasm": "mov     dx, ds:90h"
+          }
+        ]
+      },
+      {
+        "addr": "0x12ba63",
+        "function": "interrupt_dma",
+        "segment": "R29_2CF3s",
+        "context": [
+          {
+            "addr": "0x12ba55",
+            "disasm": "mov     al, 0Ch"
+          },
+          {
+            "addr": "0x12ba57",
+            "disasm": "mov     dx, word ptr ds:byte_70A82"
+          },
+          {
+            "addr": "0x12ba5b",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x12ba5d",
+            "disasm": "mov     ah, 25h ; '%'"
+          },
+          {
+            "addr": "0x12ba5f",
+            "disasm": "mov     dx, ds:94h"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c4d8",
+        "function": "sub_12C4CB",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c4cc",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x12c4ce",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x12c4d0",
+            "disasm": "mov     dx, 3Bh ; ';'"
+          },
+          {
+            "addr": "0x12c4d3",
+            "disasm": "mov     ax, 3D00h"
+          },
+          {
+            "addr": "0x12c4d6",
+            "disasm": "xor     cx, cx"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c4e9",
+        "function": "sub_12C4DE",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c4de",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x12c4e0",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x12c4e1",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c4e4",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x12c4e7",
+            "disasm": "mov     ah, 3Fh"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c4ee",
+        "function": "sub_12C4DE",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c4e4",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x12c4e7",
+            "disasm": "mov     ah, 3Fh"
+          },
+          {
+            "addr": "0x12c4e9",
+            "disasm": "int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x12c4eb",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x12c4ec",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c4fe",
+        "function": "sub_12C4F2",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c4f3",
+            "disasm": "mov     ax, cs"
+          },
+          {
+            "addr": "0x12c4f5",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x12c4f7",
+            "disasm": "mov     dx, 3Bh ; ';'"
+          },
+          {
+            "addr": "0x12c4fa",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x12c4fc",
+            "disasm": "xor     cx, cx"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c50f",
+        "function": "fwrite",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c504",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x12c506",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x12c507",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x12c509",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c50c",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c514",
+        "function": "fwrite",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c509",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c50c",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x12c50f",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x12c511",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x12c512",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c545",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c537",
+            "disasm": "mov     ds:word_70A78, ax"
+          },
+          {
+            "addr": "0x12c53a",
+            "disasm": "mov     ds:word_70A74, ax"
+          },
+          {
+            "addr": "0x12c53d",
+            "disasm": "mov     ds:word_70A7C, ax"
+          },
+          {
+            "addr": "0x12c540",
+            "disasm": "mov     ds:word_70A72, ax"
+          },
+          {
+            "addr": "0x12c543",
+            "disasm": "xor     al, al"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c5a9",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c59d",
+            "disasm": "jz      short loc_12C5B6"
+          },
+          {
+            "addr": "0x12c59f",
+            "disasm": "call    sub_12C683"
+          },
+          {
+            "addr": "0x12c5a2",
+            "disasm": "cmp     cx, 0FFFEh"
+          },
+          {
+            "addr": "0x12c5a5",
+            "disasm": "jnz     short loc_12C5AE"
+          },
+          {
+            "addr": "0x12c5a7",
+            "disasm": "mov     al, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c5ba",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c5ae",
+            "disasm": "mov     di, cx"
+          },
+          {
+            "addr": "0x12c5b0",
+            "disasm": "mov     cx, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x12c5b3",
+            "disasm": "call    sub_12C951"
+          },
+          {
+            "addr": "0x12c5b6",
+            "disasm": "mov     al, 0Bh"
+          },
+          {
+            "addr": "0x12c5b8",
+            "disasm": "mov     ah, 35h"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c5c8",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c5ba",
+            "disasm": "int     21h; DOS - 2+ - GET INTERRUPT VECTOR"
+          },
+          {
+            "addr": "0x12c5bc",
+            "disasm": "mov     ds:word_70A80, bx"
+          },
+          {
+            "addr": "0x12c5c0",
+            "disasm": "mov     ds:word_70A7E, es"
+          },
+          {
+            "addr": "0x12c5c4",
+            "disasm": "mov     al, 0Ch"
+          },
+          {
+            "addr": "0x12c5c6",
+            "disasm": "mov     ah, 35h"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c5e6",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c5da",
+            "disasm": "mov     al, 0Bh"
+          },
+          {
+            "addr": "0x12c5dc",
+            "disasm": "mov     dx, 1156h"
+          },
+          {
+            "addr": "0x12c5df",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x12c5e1",
+            "disasm": "mov     ah, 25h ; '%'"
+          },
+          {
+            "addr": "0x12c5e3",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c5f7",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c5eb",
+            "disasm": "mov     al, 0Ch"
+          },
+          {
+            "addr": "0x12c5ed",
+            "disasm": "mov     dx, 1156h"
+          },
+          {
+            "addr": "0x12c5f0",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x12c5f2",
+            "disasm": "mov     ah, 25h ; '%'"
+          },
+          {
+            "addr": "0x12c5f4",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "addr": "0x12c613",
+        "function": "undoc_12C518",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12c60a",
+            "disasm": "in      al, dx"
+          },
+          {
+            "addr": "0x12c60b",
+            "disasm": "mov     ds:byte_70A88, al"
+          },
+          {
+            "addr": "0x12c60e",
+            "disasm": "mov     al, 3"
+          },
+          {
+            "addr": "0x12c610",
+            "disasm": "out     dx, al"
+          },
+          {
+            "addr": "0x12c611",
+            "disasm": "xor     al, al"
+          }
+        ]
+      },
+      {
+        "addr": "0x12cc56",
+        "function": "sub_12CB2A",
+        "segment": "R29_2E0Fs",
+        "context": [
+          {
+            "addr": "0x12cc4a",
+            "disasm": "dec     bx"
+          },
+          {
+            "addr": "0x12cc4b",
+            "disasm": "mov     dx, [si+4]"
+          },
+          {
+            "addr": "0x12cc4e",
+            "disasm": "add     si, 6"
+          },
+          {
+            "addr": "0x12cc51",
+            "disasm": "xchg    dx, si"
+          },
+          {
+            "addr": "0x12cc53",
+            "disasm": "mov     ax, 4300h"
+          }
+        ]
+      },
+      {
+        "addr": "0x12d652",
+        "function": "sub_12D650",
+        "segment": "R29_2EBEs",
+        "context": [
+          {
+            "addr": "0x12d643",
+            "disasm": "mov     es:[si+2Ah], bx"
+          },
+          {
+            "addr": "0x12d647",
+            "disasm": "mov     es:[si+2Ch], ax"
+          },
+          {
+            "addr": "0x12d64b",
+            "disasm": "mov     es:[si+2Eh], cx"
+          },
+          {
+            "addr": "0x12d64f",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x12d650",
+            "disasm": "mov     ah, 0DCh"
+          }
+        ]
+      },
+      {
+        "addr": "0x12d685",
+        "function": "undoc_12D657",
+        "segment": "R29_2EBEs",
+        "context": [
+          {
+            "addr": "0x12d67f",
+            "disasm": "rep stosw"
+          },
+          {
+            "addr": "0x12d681",
+            "disasm": "pop     ax"
+          },
+          {
+            "addr": "0x12d682",
+            "disasm": "pop     di"
+          },
+          {
+            "addr": "0x12d683",
+            "disasm": "pop     cx"
+          },
+          {
+            "addr": "0x12d684",
+            "disasm": "push    bx"
+          }
+        ]
+      },
+      {
+        "addr": "0x12d6ae",
+        "function": "sub_12D692",
+        "segment": "R29_2EBEs",
+        "context": [
+          {
+            "addr": "0x12d69c",
+            "disasm": "mov     word ptr [si], 2"
+          },
+          {
+            "addr": "0x12d6a0",
+            "disasm": "mov     byte ptr [si+2], 13h"
+          },
+          {
+            "addr": "0x12d6a4",
+            "disasm": "mov     [si+3], bl"
+          },
+          {
+            "addr": "0x12d6a7",
+            "disasm": "mov     word ptr es:[di], 0Ch"
+          },
+          {
+            "addr": "0x12d6ac",
+            "disasm": "mov     ah, 0E3h"
+          }
+        ]
+      }
+    ],
+    "file_write_candidates": [
+      {
+        "int_addr": "0x10886",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x1087f",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x10881",
+            "disasm": "mov     al, 0"
+          },
+          {
+            "addr": "0x10883",
+            "disasm": "mov     dx, 292h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x10899",
+        "function": "quit_with_msg",
+        "segment": "seg002",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x10881",
+            "disasm": "mov     al, 0"
+          },
+          {
+            "addr": "0x10883",
+            "disasm": "mov     dx, 292h"
+          },
+          {
+            "addr": "0x10886",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x10888",
+            "disasm": "jnb     short loc_1089F"
+          },
+          {
+            "addr": "0x1088a",
+            "disasm": "call    mscdex_drive_string_setup"
+          },
+          {
+            "addr": "0x1088d",
+            "disasm": "jnb     short loc_108A6"
+          },
+          {
+            "addr": "0x1088f",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x10892",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x10894",
+            "disasm": "mov     dx, 223h"
+          },
+          {
+            "addr": "0x10897",
+            "disasm": "mov     ah, 9"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x1089d",
+        "function": "quit_with_msg",
+        "segment": "seg002",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x10886",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x10888",
+            "disasm": "jnb     short loc_1089F"
+          },
+          {
+            "addr": "0x1088a",
+            "disasm": "call    mscdex_drive_string_setup"
+          },
+          {
+            "addr": "0x1088d",
+            "disasm": "jnb     short loc_108A6"
+          },
+          {
+            "addr": "0x1088f",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x10892",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x10894",
+            "disasm": "mov     dx, 223h"
+          },
+          {
+            "addr": "0x10897",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x10899",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x1089b",
+            "disasm": "mov     ah, 4Ch"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x108a4",
+        "function": "alloc_read_mscdex",
+        "segment": "seg002",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x1088d",
+            "disasm": "jnb     short loc_108A6"
+          },
+          {
+            "addr": "0x1088f",
+            "disasm": "mov     ax, 7075h"
+          },
+          {
+            "addr": "0x10892",
+            "disasm": "mov     ds, ax"
+          },
+          {
+            "addr": "0x10894",
+            "disasm": "mov     dx, 223h"
+          },
+          {
+            "addr": "0x10897",
+            "disasm": "mov     ah, 9"
+          },
+          {
+            "addr": "0x10899",
+            "disasm": "int     21h; DOS - PRINT STRING"
+          },
+          {
+            "addr": "0x1089b",
+            "disasm": "mov     ah, 4Ch"
+          },
+          {
+            "addr": "0x1089d",
+            "disasm": "int     21h; DOS - 2+ - QUIT WITH EXIT CODE (EXIT)"
+          },
+          {
+            "addr": "0x1089f",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x108a1",
+            "disasm": "mov     ax, 3E00h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x226a1",
+        "function": "file_create",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2269f",
+            "disasm": "mov     ah, 3Ch"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x226bd",
+        "function": "file_open",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x226ba",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x226bc",
+            "disasm": "push    ax"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x226bd",
+        "function": "file_open",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x226a3",
+            "disasm": "jnb     short loc_226B4"
+          },
+          {
+            "addr": "0x226a5",
+            "disasm": "or      cs:byte_22248, 1"
+          },
+          {
+            "addr": "0x226ab",
+            "disasm": "mov     cs:byte_22249, 2"
+          },
+          {
+            "addr": "0x226b1",
+            "disasm": "mov     ax, 0FFFFh"
+          },
+          {
+            "addr": "0x226b4",
+            "disasm": "pop     cx"
+          },
+          {
+            "addr": "0x226b5",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x226b6",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x226b7",
+            "disasm": "call    str_upper_copy_3676"
+          },
+          {
+            "addr": "0x226ba",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x226bc",
+            "disasm": "push    ax"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x226c5",
+        "function": "file_open",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x226ba",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x226bc",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x226bd",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x226bf",
+            "disasm": "jnb     short loc_226DA"
+          },
+          {
+            "addr": "0x226c1",
+            "disasm": "call    str_upper_copy_3795"
+          },
+          {
+            "addr": "0x226c4",
+            "disasm": "pop     ax"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x226c5",
+        "function": "file_open",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x226b4",
+            "disasm": "pop     cx"
+          },
+          {
+            "addr": "0x226b5",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x226b6",
+            "disasm": "push    ds"
+          },
+          {
+            "addr": "0x226b7",
+            "disasm": "call    str_upper_copy_3676"
+          },
+          {
+            "addr": "0x226ba",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x226bc",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x226bd",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x226bf",
+            "disasm": "jnb     short loc_226DA"
+          },
+          {
+            "addr": "0x226c1",
+            "disasm": "call    str_upper_copy_3795"
+          },
+          {
+            "addr": "0x226c4",
+            "disasm": "pop     ax"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x226e4",
+        "function": "file_close",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x226c9",
+            "disasm": "or      cs:byte_22248, 1"
+          },
+          {
+            "addr": "0x226cf",
+            "disasm": "mov     cs:byte_22249, 4"
+          },
+          {
+            "addr": "0x226d5",
+            "disasm": "mov     ax, 0FFFFh"
+          },
+          {
+            "addr": "0x226d8",
+            "disasm": "jmp     short loc_226DD"
+          },
+          {
+            "addr": "0x226da",
+            "disasm": "add     sp, 2"
+          },
+          {
+            "addr": "0x226dd",
+            "disasm": "pop     ds"
+          },
+          {
+            "addr": "0x226de",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x226df",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x226e0",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x226e2",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2271f",
+        "function": "file_write",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2271d",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2274d",
+        "function": "file_lseek",
+        "segment": "seg020",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2273a",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x2273b",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x2273c",
+            "disasm": "cli"
+          },
+          {
+            "addr": "0x2273d",
+            "disasm": "mov     cs:byte_2224B, 1"
+          },
+          {
+            "addr": "0x22743",
+            "disasm": "sti"
+          },
+          {
+            "addr": "0x22744",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x22745",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x22747",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x22749",
+            "disasm": "mov     al, ch"
+          },
+          {
+            "addr": "0x2274b",
+            "disasm": "sub     ch, ch"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2aedc",
+        "function": "overlay_file_open",
+        "segment": "seg021",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2aeda",
+            "disasm": "mov     ah, 3Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2af3a",
+        "function": "overlay_file_open",
+        "segment": "seg021",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2af38",
+            "disasm": "mov     ah, 3Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2ce05",
+        "function": "fname_open_3d00",
+        "segment": "seg022",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2ce03",
+            "disasm": "mov     ah, 3Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2cf9e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cf96",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cf98",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cf9b",
+            "disasm": "mov     dx, 6"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2cfcc",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cfc4",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfc6",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfc9",
+            "disasm": "mov     dx, 19h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2cfcc",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cfaf",
+            "disasm": "mov     si, 21h ; '!'"
+          },
+          {
+            "addr": "0x2cfb2",
+            "disasm": "call    int32_to_ascii_short"
+          },
+          {
+            "addr": "0x2cfb7",
+            "disasm": "mov     di, 21h ; '!'"
+          },
+          {
+            "addr": "0x2cfba",
+            "disasm": "mov     si, 23h ; '#'"
+          },
+          {
+            "addr": "0x2cfbd",
+            "disasm": "movsw"
+          },
+          {
+            "addr": "0x2cfbe",
+            "disasm": "movsw"
+          },
+          {
+            "addr": "0x2cfbf",
+            "disasm": "inc     cs:word_2CF60"
+          },
+          {
+            "addr": "0x2cfc4",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfc6",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfc9",
+            "disasm": "mov     dx, 19h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2cfed",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cfe5",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfe7",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfea",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2cfed",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cfcc",
+            "disasm": "int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)"
+          },
+          {
+            "addr": "0x2cfce",
+            "disasm": "jnb     short loc_2CFD3"
+          },
+          {
+            "addr": "0x2cfd0",
+            "disasm": "jmp     loc_2D0B8"
+          },
+          {
+            "addr": "0x2cfd3",
+            "disasm": "mov     cs:word_2CF64, ax"
+          },
+          {
+            "addr": "0x2cfd7",
+            "disasm": "cmp     cs:byte_2CF87, 0"
+          },
+          {
+            "addr": "0x2cfdd",
+            "disasm": "jnz     short loc_2CFFA"
+          },
+          {
+            "addr": "0x2cfdf",
+            "disasm": "mov     cs:byte_2CF87, 1"
+          },
+          {
+            "addr": "0x2cfe5",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfe7",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfea",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d001",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cffa",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x2cffc",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2cffe",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d001",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cfe5",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfe7",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfea",
+            "disasm": "mov     dx, 0Dh"
+          },
+          {
+            "addr": "0x2cfed",
+            "disasm": "int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)"
+          },
+          {
+            "addr": "0x2cfef",
+            "disasm": "jnb     short loc_2D011"
+          },
+          {
+            "addr": "0x2cff1",
+            "disasm": "mov     cs:byte_2CF87, 0"
+          },
+          {
+            "addr": "0x2cff7",
+            "disasm": "jmp     loc_2D0B8"
+          },
+          {
+            "addr": "0x2cffa",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x2cffc",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2cffe",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d001",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cfe5",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x2cfe7",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2cfea",
+            "disasm": "mov     dx, 0Dh"
+          },
+          {
+            "addr": "0x2cfed",
+            "disasm": "int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)"
+          },
+          {
+            "addr": "0x2cfef",
+            "disasm": "jnb     short loc_2D011"
+          },
+          {
+            "addr": "0x2cff1",
+            "disasm": "mov     cs:byte_2CF87, 0"
+          },
+          {
+            "addr": "0x2cff7",
+            "disasm": "jmp     loc_2D0B8"
+          },
+          {
+            "addr": "0x2cffa",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x2cffc",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2cffe",
+            "disasm": "mov     dx, 0Dh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d00e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cffa",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x2cffc",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2cffe",
+            "disasm": "mov     dx, 0Dh"
+          },
+          {
+            "addr": "0x2d001",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d003",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2d004",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2d006",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x2d008",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2d00a",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x2d00c",
+            "disasm": "sub     dx, dx"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d00e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2cffa",
+            "disasm": "mov     ah, 3Dh ; '='"
+          },
+          {
+            "addr": "0x2cffc",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2cffe",
+            "disasm": "mov     dx, 0Dh"
+          },
+          {
+            "addr": "0x2d001",
+            "disasm": "int     21h; DOS - 2+ - OPEN DISK FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d003",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2d004",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2d006",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x2d008",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2d00a",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x2d00c",
+            "disasm": "sub     dx, dx"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d01c",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d01a",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d01c",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d008",
+            "disasm": "mov     al, 2"
+          },
+          {
+            "addr": "0x2d00a",
+            "disasm": "sub     cx, cx"
+          },
+          {
+            "addr": "0x2d00c",
+            "disasm": "sub     dx, dx"
+          },
+          {
+            "addr": "0x2d00e",
+            "disasm": "int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)"
+          },
+          {
+            "addr": "0x2d010",
+            "disasm": "pop     ax"
+          },
+          {
+            "addr": "0x2d011",
+            "disasm": "push    ax"
+          },
+          {
+            "addr": "0x2d012",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x2d014",
+            "disasm": "mov     cx, 0Bh"
+          },
+          {
+            "addr": "0x2d017",
+            "disasm": "mov     dx, 19h"
+          },
+          {
+            "addr": "0x2d01a",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d028",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d026",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d028",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d01a",
+            "disasm": "mov     ah, 40h"
+          },
+          {
+            "addr": "0x2d01c",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d01e",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d01f",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x2d020",
+            "disasm": "mov     cx, 2"
+          },
+          {
+            "addr": "0x2d023",
+            "disasm": "mov     dx, 28h ; '('"
+          },
+          {
+            "addr": "0x2d026",
+            "disasm": "mov     ah, 40h"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d02d",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d026",
+            "disasm": "mov     ah, 40h"
+          },
+          {
+            "addr": "0x2d028",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d02a",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d02b",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d02d",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d01a",
+            "disasm": "mov     ah, 40h"
+          },
+          {
+            "addr": "0x2d01c",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d01e",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d01f",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x2d020",
+            "disasm": "mov     cx, 2"
+          },
+          {
+            "addr": "0x2d023",
+            "disasm": "mov     dx, 28h ; '('"
+          },
+          {
+            "addr": "0x2d026",
+            "disasm": "mov     ah, 40h"
+          },
+          {
+            "addr": "0x2d028",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d02a",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d02b",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d045",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d040",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d042",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d045",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d02a",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d02b",
+            "disasm": "mov     ah, 3Eh"
+          },
+          {
+            "addr": "0x2d02d",
+            "disasm": "int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d02f",
+            "disasm": "call    state_word_26400_get_zero"
+          },
+          {
+            "addr": "0x2d034",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x2d036",
+            "disasm": "mov     es, dx"
+          },
+          {
+            "addr": "0x2d038",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d03b",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d040",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d042",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d045",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d02a",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x2d02b",
+            "disasm": "mov     ah, 3Eh"
+          },
+          {
+            "addr": "0x2d02d",
+            "disasm": "int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d02f",
+            "disasm": "call    state_word_26400_get_zero"
+          },
+          {
+            "addr": "0x2d034",
+            "disasm": "mov     ds, dx"
+          },
+          {
+            "addr": "0x2d036",
+            "disasm": "mov     es, dx"
+          },
+          {
+            "addr": "0x2d038",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d03b",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d040",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d042",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d08d",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d088",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d08a",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d09e",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d088",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x2d08a",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d08d",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d08f",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x2d091",
+            "disasm": "mov     al, 0"
+          },
+          {
+            "addr": "0x2d093",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2d096",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d099",
+            "disasm": "mov     bx, cs:word_2CF62"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d0ad",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d08f",
+            "disasm": "mov     ah, 42h ; 'B'"
+          },
+          {
+            "addr": "0x2d091",
+            "disasm": "mov     al, 0"
+          },
+          {
+            "addr": "0x2d093",
+            "disasm": "mov     cx, 0"
+          },
+          {
+            "addr": "0x2d096",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d099",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d09e",
+            "disasm": "int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)"
+          },
+          {
+            "addr": "0x2d0a0",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d0a3",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d0a8",
+            "disasm": "mov     ah, 3Fh ; '?'"
+          },
+          {
+            "addr": "0x2d0aa",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d0b6",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d096",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d099",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d09e",
+            "disasm": "int     21h; DOS - 2+ - MOVE FILE READ/WRITE POINTER (LSEEK)"
+          },
+          {
+            "addr": "0x2d0a0",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d0a3",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d0a8",
+            "disasm": "mov     ah, 3Fh ; '?'"
+          },
+          {
+            "addr": "0x2d0aa",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d0ad",
+            "disasm": "int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d0af",
+            "disasm": "mov     ah, 3Eh ; '>'"
+          },
+          {
+            "addr": "0x2d0b1",
+            "disasm": "mov     bx, cs:word_2CF64"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x2d0bf",
+        "function": "r01_file_create_3ch",
+        "segment": "R01_1CF6",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x2d0a0",
+            "disasm": "mov     cx, 0FE00h"
+          },
+          {
+            "addr": "0x2d0a3",
+            "disasm": "mov     bx, cs:word_2CF62"
+          },
+          {
+            "addr": "0x2d0a8",
+            "disasm": "mov     ah, 3Fh ; '?'"
+          },
+          {
+            "addr": "0x2d0aa",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x2d0ad",
+            "disasm": "int     21h; DOS - 2+ - READ FROM FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d0af",
+            "disasm": "mov     ah, 3Eh ; '>'"
+          },
+          {
+            "addr": "0x2d0b1",
+            "disasm": "mov     bx, cs:word_2CF64"
+          },
+          {
+            "addr": "0x2d0b6",
+            "disasm": "int     21h; DOS - 2+ - CLOSE A FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x2d0b8",
+            "disasm": "mov     ah, 3Eh ; '>'"
+          },
+          {
+            "addr": "0x2d0ba",
+            "disasm": "mov     bx, cs:word_2CF62"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x12c4fe",
+        "function": "sub_12C4F2",
+        "segment": "R29_2E0Fs",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x12c4fa",
+            "disasm": "mov     ah, 3Ch ; '<'"
+          },
+          {
+            "addr": "0x12c4fc",
+            "disasm": "xor     cx, cx"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x12c50f",
+        "function": "fwrite",
+        "segment": "R29_2E0Fs",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x12c507",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x12c509",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c50c",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x12c50f",
+        "function": "fwrite",
+        "segment": "R29_2E0Fs",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x12c4fc",
+            "disasm": "xor     cx, cx"
+          },
+          {
+            "addr": "0x12c4fe",
+            "disasm": "int     21h; DOS - 2+ - CREATE A FILE WITH HANDLE (CREAT)"
+          },
+          {
+            "addr": "0x12c500",
+            "disasm": "jnb     short fwrite"
+          },
+          {
+            "addr": "0x12c502",
+            "disasm": "pop     ds"
+          },
+          {
+            "addr": "0x12c503",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x12c504",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x12c506",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x12c507",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x12c509",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c50c",
+            "disasm": "mov     dx, 0"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x12c514",
+        "function": "fwrite",
+        "segment": "R29_2E0Fs",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x12c507",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x12c509",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c50c",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x12c50f",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x12c511",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x12c512",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      },
+      {
+        "int_addr": "0x12c514",
+        "function": "fwrite",
+        "segment": "R29_2E0Fs",
+        "operation": "40h=write, 3Ch=create, 3Dh=open",
+        "context": [
+          {
+            "addr": "0x12c502",
+            "disasm": "pop     ds"
+          },
+          {
+            "addr": "0x12c503",
+            "disasm": "retn"
+          },
+          {
+            "addr": "0x12c504",
+            "disasm": "mov     bx, ax"
+          },
+          {
+            "addr": "0x12c506",
+            "disasm": "push    bx"
+          },
+          {
+            "addr": "0x12c507",
+            "disasm": "mov     ah, 40h ; '@'"
+          },
+          {
+            "addr": "0x12c509",
+            "disasm": "mov     cx, 24h ; '$'"
+          },
+          {
+            "addr": "0x12c50c",
+            "disasm": "mov     dx, 0"
+          },
+          {
+            "addr": "0x12c50f",
+            "disasm": "int     21h; DOS - 2+ - WRITE TO FILE WITH HANDLE"
+          },
+          {
+            "addr": "0x12c511",
+            "disasm": "pop     bx"
+          },
+          {
+            "addr": "0x12c512",
+            "disasm": "mov     ah, 3Eh"
+          }
+        ]
+      }
+    ],
+    "file_handle_refs": []
+  },
+  "file_references": {
+    "mis_strings": [
+      {
+        "string": "MISSILE",
+        "string_addr": "0x54e10",
+        "xref_addr": "0x333f0",
+        "xref_func": "key_event_mode_gate",
+        "xref_segment": "R05_1F64"
+      },
+      {
+        "string": "MISSION CONVERSION NOT IMPLEMENTED",
+        "string_addr": "0x846d0",
+        "xref_addr": "0x166e3d",
+        "xref_func": "undoc_166DF2",
+        "xref_segment": "R37_569Fs"
+      },
+      {
+        "string": "mission.dmp",
+        "string_addr": "0x846f4",
+        "xref_addr": "0x1753aa",
+        "xref_func": "game_mode_r48_main_coordinator",
+        "xref_segment": "R48_569Fs"
+      },
+      {
+        "string": "CHOOSE MISSION",
+        "string_addr": "0x8481e",
+        "xref_addr": "0x16f482",
+        "xref_func": "undoc_16F47D",
+        "xref_segment": "R41_569Fs"
+      },
+      {
+        "string": ".`MISSION.",
+        "string_addr": "0x14e967",
+        "xref_addr": "0x13d7ba",
+        "xref_func": "string_format_builder",
+        "xref_segment": "R29_39F7s"
+      },
+      {
+        "string": ".`MISSION.",
+        "string_addr": "0x14e967",
+        "xref_addr": "0x13d8a7",
+        "xref_func": "sub_13D869",
+        "xref_segment": "R29_39F7s"
+      },
+      {
+        "string": "\r0.`CLEAR MISSION",
+        "string_addr": "0x1515a9",
+        "xref_addr": "0x1909f6",
+        "xref_func": "undoc_1909A0",
+        "xref_segment": "R56_569Fs"
+      },
+      {
+        "string": "\r0.`CLEAR MISSION",
+        "string_addr": "0x1515a9",
+        "xref_addr": "0x190b0f",
+        "xref_func": "undoc_190AEA",
+        "xref_segment": "R56_569Fs"
+      },
+      {
+        "string": "G2.`LOAD MISSION",
+        "string_addr": "0x1517e3",
+        "xref_addr": "0x190a1b",
+        "xref_func": "undoc_1909A0",
+        "xref_segment": "R56_569Fs"
+      },
+      {
+        "string": "G2.`LOAD MISSION",
+        "string_addr": "0x1517e3",
+        "xref_addr": "0x190a2c",
+        "xref_func": "undoc_1909A0",
+        "xref_segment": "R56_569Fs"
+      },
+      {
+        "string": "G2.`LOAD MISSION",
+        "string_addr": "0x1517e3",
+        "xref_addr": "0x190b34",
+        "xref_func": "undoc_190AEA",
+        "xref_segment": "R56_569Fs"
+      },
+      {
+        "string": "G2.`LOAD MISSION",
+        "string_addr": "0x1517e3",
+        "xref_addr": "0x190b45",
+        "xref_func": "undoc_190AEA",
+        "xref_segment": "R56_569Fs"
+      },
+      {
+        "string": "86.`misstext.bin",
+        "string_addr": "0x151bd4",
+        "xref_addr": "0x17b770",
+        "xref_func": "squadron_mission_file_loader",
+        "xref_segment": "R49_569Fs"
+      }
+    ],
+    "squad_strings": [
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6a6be",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6a7ae",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6a8a3",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6a998",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6aa8d",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6ab82",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6ac77",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x6ad6c",
+        "xref_func": "squad_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x132041",
+        "xref_func": "undoc_132012"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x1320f7",
+        "xref_func": "ui_font_config_apply"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x1321b9",
+        "xref_func": "campaign_squadron_data_load"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x158224",
+        "xref_func": "sub_1581E5"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x15a94e",
+        "xref_func": "theater_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x15afab",
+        "xref_func": "theater_campaign_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x15b4be",
+        "xref_func": "overlay_r46_processor_950"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x15b574",
+        "xref_func": "overlay_r46_processor_950"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x15b6b4",
+        "xref_func": "overlay_r46_processor_950"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x15c3b5",
+        "xref_func": "overlay_r46_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x1605eb",
+        "xref_func": "undoc_16042A"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x162454",
+        "xref_func": "sub_1623FE"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x164356",
+        "xref_func": "r35_field_scale_op_step"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x16634b",
+        "xref_func": "overlay_undecoded_body_166313"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x175458",
+        "xref_func": "game_mode_r48_main_coordinator"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17625e",
+        "xref_func": "game_mode_r48_main_coordinator"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x176369",
+        "xref_func": "game_mode_r48_main_coordinator"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x176b3a",
+        "xref_func": "r48_arg_forward_stub"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17720e",
+        "xref_func": "r48_mouse_event_entry"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x178bf5",
+        "xref_func": "overlay_undecoded_body_178ba9"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x178c9c",
+        "xref_func": "overlay_undecoded_body_178ba9"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179789",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x1798ee",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179a5c",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179b4a",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179c4e",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179d52",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179eb0",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x179fa4",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17a088",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17a171",
+        "xref_func": "overlay_r4F_handler"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17b53c",
+        "xref_func": "squadron_mission_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17b5d2",
+        "xref_func": "squadron_mission_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17b6a1",
+        "xref_func": "squadron_mission_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x17c4d1",
+        "xref_func": "squadron_mission_file_loader"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x190fd3",
+        "xref_func": "overlay_undecoded_body_190f"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x1914aa",
+        "xref_func": "r56_head_fragment"
+      },
+      {
+        "string": "S-.`SQUAD",
+        "string_addr": "0x1512ef",
+        "xref_addr": "0x1a15bb",
+        "xref_func": "overlay_r57_processor_2"
+      }
+    ]
+  },
+  "buffer_patterns": {
+    "memcpy_patterns": [],
+    "buffer_fill_loops": []
+  },
+  "nearby_functions": {
+    "nearby_functions": [
+      {
+        "name": "undoc_191B42",
+        "addr": "0x191b42",
+        "size": 350,
+        "offset_from_editor": "0x5f1a",
+        "has_int_21h": false,
+        "has_file_ops": true
+      },
+      {
+        "name": "sub_1921C2",
+        "addr": "0x1921c2",
+        "size": 1670,
+        "offset_from_editor": "0x659a",
+        "has_int_21h": false,
+        "has_file_ops": true
+      },
+      {
+        "name": "undoc_192888",
+        "addr": "0x192888",
+        "size": 103,
+        "offset_from_editor": "0x6c60",
+        "has_int_21h": false,
+        "has_file_ops": true
+      },
+      {
+        "name": "sub_19B6B0",
+        "addr": "0x19b6b0",
+        "size": 552,
+        "offset_from_editor": "0xfa88",
+        "has_int_21h": false,
+        "has_file_ops": true
+      }
+    ]
+  }
+}
