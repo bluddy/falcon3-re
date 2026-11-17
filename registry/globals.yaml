@@ -169,6 +169,17 @@ globals:
   # WEAPONS / COMBAT SYSTEM
   # ===========================================================================
   
+  - address: 0x55C55
+    name: weapon_name_table
+    size: 114
+    type: string_table
+    doc: |
+      Weapon name string table for loadout display. Contains null-terminated weapon names:
+      AIM9P, AIM9M, AIM120 (A-A missiles), AGM88, AGM65B, AGM65D, AGM45 (A-G missiles),
+      MK82HD (bombs), CBU84 (cluster), GBU15 (guided), AGM84 (Harpoon). Accessed by offset
+      calculation from weapon type ID. No direct xrefs - indexed dynamically by menu system.
+    source: weapon_names.json, analyze_weapon_table.py
+  
   - address: 0x15B3
     name: weapon_game_mode
     size: 1

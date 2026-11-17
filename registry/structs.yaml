@@ -422,19 +422,52 @@ enums:
 
   - name: WeaponType
     type: uint8
-    source: "WEAPON_TYPES_DECODED.md, IR_LOCK_ANALYSIS.md, weapon_type_initialize_dispatch @ 0x4C19E"
-    description: "Weapon type identifier used throughout weapon spawn and fire systems"
+    source: "WEAPON_TYPES_DECODED.md, IR_LOCK_ANALYSIS.md, AG_WEAPONS_ANALYSIS.md, weapon_names.json"
+    description: "Weapon type identifier used throughout weapon spawn and fire systems. Weapon names found at 0x55c55."
     values:
-      - {value: 0x12, name: AIM9_SIDEWINDER,    comment: "AIM-9 Sidewinder IR heat-seeking missile (type 0x12)"}
-      - {value: 0x13, name: AIM120_AMRAAM,      comment: "AIM-120 AMRAAM radar-guided missile (type 0x13)"}
-      - {value: 0x14, name: AG_WEAPON_START,    comment: "Start of A-G weapon range (bombs, AGMs)"}
-      - {value: 0x19, name: AGM88_HARM,         comment: "AGM-88 HARM anti-radiation missile (type 0x19)"}
-      - {value: 0x32, name: AG_WEAPON_END,      comment: "End of A-G weapon range"}
-      - {value: 0x33, name: M61A1_VULCAN,       comment: "M61A1 Vulcan 20mm cannon (type 0x33)"}
-      - {value: 0x34, name: GUN_VARIANT_1,      comment: "Gun variant 1 (type 0x34)"}
-      - {value: 0x35, name: GUN_VARIANT_2,      comment: "Gun variant 2 (type 0x35)"}
-      - {value: 0x36, name: GUN_VARIANT_3,      comment: "Gun variant 3 (type 0x36)"}
-      - {value: 0x37, name: GUN_VARIANT_4,      comment: "Gun variant 4 (type 0x37)"}
+      # A-A Missiles (0x12-0x13)
+      - {value: 0x12, name: AIM9_SIDEWINDER,    comment: "AIM-9P/M/R Sidewinder IR heat-seeking missile"}
+      - {value: 0x13, name: AIM120_AMRAAM,      comment: "AIM-120/E AMRAAM radar-guided missile"}
+      
+      # A-G Weapons (0x14-0x32) - 31 weapon types
+      - {value: 0x14, name: AG_WEAPON_TYPE_14,  comment: "A-G weapon type 0x14 (unknown)"}
+      - {value: 0x15, name: AGM65_MAVERICK_TV,  comment: "AGM-65B Maverick TV-guided (vel 4860, dmg 200)"}
+      - {value: 0x16, name: AGM65_MAVERICK_IR,  comment: "AGM-65D Maverick IR-guided (likely)"}
+      - {value: 0x17, name: AG_WEAPON_TYPE_17,  comment: "A-G weapon type 0x17 (unknown, Maverick variant?)"}
+      - {value: 0x18, name: AG_WEAPON_TYPE_18,  comment: "A-G weapon type 0x18 (unknown)"}
+      - {value: 0x19, name: AGM88_HARM,         comment: "AGM-88A HARM anti-radiation missile"}
+      - {value: 0x1A, name: AGM45_SHRIKE,       comment: "AGM-45A Shrike anti-radiation missile (older than HARM)"}
+      - {value: 0x1B, name: AG_WEAPON_TYPE_1B,  comment: "A-G weapon type 0x1B (unknown)"}
+      - {value: 0x1C, name: AG_WEAPON_TYPE_1C,  comment: "A-G weapon type 0x1C (unknown)"}
+      - {value: 0x1D, name: AG_WEAPON_TYPE_1D,  comment: "A-G weapon type 0x1D (unknown)"}
+      - {value: 0x1E, name: AG_WEAPON_TYPE_1E,  comment: "A-G weapon type 0x1E (unknown)"}
+      - {value: 0x1F, name: AG_WEAPON_TYPE_1F,  comment: "A-G weapon type 0x1F (unknown)"}
+      - {value: 0x20, name: AG_WEAPON_TYPE_20,  comment: "A-G weapon type 0x20 (unknown)"}
+      - {value: 0x21, name: AG_WEAPON_TYPE_21,  comment: "A-G weapon type 0x21 (unknown)"}
+      - {value: 0x22, name: AG_WEAPON_TYPE_22,  comment: "A-G weapon type 0x22 (unknown)"}
+      - {value: 0x23, name: AG_WEAPON_TYPE_23,  comment: "A-G weapon type 0x23 (unknown)"}
+      - {value: 0x24, name: AG_WEAPON_TYPE_24,  comment: "A-G weapon type 0x24 (unknown)"}
+      - {value: 0x25, name: AG_WEAPON_TYPE_25,  comment: "A-G weapon type 0x25 (unknown, LGB?)"}
+      - {value: 0x26, name: AG_WEAPON_TYPE_26,  comment: "A-G weapon type 0x26 (unknown, LGB?)"}
+      - {value: 0x27, name: AG_WEAPON_TYPE_27,  comment: "A-G weapon type 0x27 (unknown, LGB?)"}
+      - {value: 0x28, name: MK82_BOMB,          comment: "Mk-82 500lb bomb or rocket (vel 3280, dmg 2)"}
+      - {value: 0x29, name: AG_WEAPON_TYPE_29,  comment: "A-G weapon type 0x29 (unknown)"}
+      - {value: 0x2A, name: AG_WEAPON_TYPE_2A,  comment: "A-G weapon type 0x2A (unknown)"}
+      - {value: 0x2B, name: AG_WEAPON_TYPE_2B,  comment: "A-G weapon type 0x2B (vel 3690, dmg 20)"}
+      - {value: 0x2C, name: AG_WEAPON_TYPE_2C,  comment: "A-G weapon type 0x2C (unknown)"}
+      - {value: 0x2D, name: CBU84_CLUSTER,      comment: "CBU-84 cluster bomb unit (likely)"}
+      - {value: 0x2E, name: GBU15_GUIDED,       comment: "GBU-15 electro-optical guided bomb (likely)"}
+      - {value: 0x2F, name: AG_WEAPON_TYPE_2F,  comment: "A-G weapon type 0x2F (unknown)"}
+      - {value: 0x30, name: AGM84_HARPOON,      comment: "AGM-84 Harpoon anti-ship missile (vel 3526, dmg 200)"}
+      - {value: 0x31, name: AG_WEAPON_TYPE_31,  comment: "A-G weapon type 0x31 (unknown)"}
+      - {value: 0x32, name: AG_WEAPON_TYPE_32,  comment: "A-G weapon type 0x32 (unknown)"}
+      
+      # Guns (0x33-0x37)
+      - {value: 0x33, name: M61A1_VULCAN,       comment: "M61A1 Vulcan 20mm cannon (6-barrel Gatling)"}
+      - {value: 0x34, name: GUN_VARIANT_34,     comment: "Gun variant 0x34 (reduced ROF or damage?)"}
+      - {value: 0x35, name: GUN_VARIANT_35,     comment: "Gun variant 0x35"}
+      - {value: 0x36, name: GUN_VARIANT_36,     comment: "Gun variant 0x36"}
+      - {value: 0x37, name: GUN_VARIANT_37,     comment: "Gun variant 0x37"}
 
   - name: IRLockSearchMode
     type: uint8
