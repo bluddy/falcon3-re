@@ -382,12 +382,56 @@ From WEAPON_TYPES_DECODED.md analysis of `weapon_type_initialize_dispatch` @ 0x4
 
 These globals likely exist but have not been located yet:
 
-- `ir_lock_status` - IR missile lock state (tone on/off)
 - `radar_lock_status` - Radar missile lock state (integrates with radar STT mode @ 0x595B2)
 - `harm_lock_status` - HARM lock state (tracking emitter)
 - `selected_weapon_type` - Currently selected weapon (0x12/0x13/0x33/etc.)
 - `trigger_pressed` - Fire button state (space bar)
-- Entity fields: `heat_signature`, `radar_emitter_active` for lock targeting
+- Entity field: `radar_emitter_active` for HARM lock targeting
+
+### IR Lock System (AIM-9 Sidewinder) — ✅ IDENTIFIED
+
+From analysis of `weapon_aim9_seeker_lock_check` @ 0x32B7F (IR_LOCK_ANALYSIS.md):
+
+**Lock State Variables:**
+
+- **`ir_lock_target_index`** @ `ds:0x44AA` (word)
+  - Current IR lock target index or lock state
+  - Values 0-3 in mode 0 (simple), 4-16 in mode 1 (extended)
+  - When stable → IR lock acquired
+
+- **`ir_lock_cycle_index_mode0`** @ `ds:0x44DB` (byte)
+  - Cycle counter for simple search (4 targets, 0-3)
+  - Incremented with (ax+1) & 3 pattern
+
+- **`ir_lock_cycle_index_mode1`** @ `ds:0x44DC` (byte)
+  - Cycle counter for extended search (13 targets, 4-16)
+  - Wraps: if > 16, reset to 4
+
+- **`ir_lock_status_byte`** @ `ds:0x4890` (byte)
+  - Lock gate condition, compared to high byte of lock index
+  - Enables/disables IR seeker
+
+- **`ir_lock_entity_base`** @ `ds:0x48BA` (word)
+  - Pointer to entity base for IR lock checks
+  - Used as base for heat_signature field access @ [bx+si+0xAE]
+
+- **`ir_lock_slot_mapping`** @ `ds:0x487E` (array[16])
+  - Entity slot index mapping
+  - Translates lock index (0-15) → entity slot ID
+
+**IR Lock Algorithm:**
+- 2 search modes controlled by `cs:ir_lock_search_mode`
+- Mode 0: 4 potential targets (simple cycle 0-3)
+- Mode 1: 13 potential targets (extended cycle 4-16)
+- Cycles through targets each frame, checks `entity.heat_signature @ +0xAE`
+- If heat_signature == 0: Target is cold, no lock
+- If heat_signature != 0: Target is hot, can lock
+- Lock tone triggered when `detection_mode_state` == 5
+
+**Entity Field:**
+- **`heat_signature`** @ EntitySlotRecord +0xAE (byte)
+  - 0 = cold (no IR lock possible)
+  - Non-zero = hot (IR lockable, likely from jet engines/exhaust)
 
 **Next Steps:**
 1. Analyze `weapon_aim9_seeker_lock_check` (0x32B8A) for IR lock globals
