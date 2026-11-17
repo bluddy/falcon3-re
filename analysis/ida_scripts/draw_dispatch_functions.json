@@ -1,0 +1,790 @@
+{
+  "clip_or_draw_dispatch": {
+    "name": "clip_or_draw_dispatch",
+    "address": "0x26099",
+    "size": 16,
+    "xrefs_to_count": 32,
+    "xrefs_to": [
+      {
+        "from": "0x35c93",
+        "caller": "hud_draw_chain_step"
+      },
+      {
+        "from": "0x35fbb",
+        "caller": "rot_segment_strip_draw"
+      },
+      {
+        "from": "0x35fcc",
+        "caller": "rot_segment_strip_draw"
+      },
+      {
+        "from": "0x36314",
+        "caller": "terrain_strip_project_to_screen"
+      },
+      {
+        "from": "0x36341",
+        "caller": "terrain_strip_project_to_screen"
+      },
+      {
+        "from": "0x36429",
+        "caller": "view_rect_strip_draw"
+      },
+      {
+        "from": "0x3658d",
+        "caller": "mode_draw_dispatch"
+      },
+      {
+        "from": "0x365b0",
+        "caller": "mode_draw_dispatch"
+      },
+      {
+        "from": "0x365c2",
+        "caller": "mode_draw_dispatch"
+      },
+      {
+        "from": "0x365d4",
+        "caller": "mode_draw_dispatch"
+      },
+      {
+        "from": "0x36f63",
+        "caller": "sprite_rect_strip_draw"
+      },
+      {
+        "from": "0x36f7c",
+        "caller": "sprite_rect_strip_draw"
+      },
+      {
+        "from": "0x37368",
+        "caller": "hud_terrain_strip_render"
+      },
+      {
+        "from": "0x373d4",
+        "caller": "hud_terrain_strip_render"
+      },
+      {
+        "from": "0x3748e",
+        "caller": "hud_terrain_strip_render"
+      },
+      {
+        "from": "0x374fa",
+        "caller": "hud_terrain_strip_render"
+      },
+      {
+        "from": "0x3a806",
+        "caller": "box_edge_strip_draw"
+      },
+      {
+        "from": "0x3a817",
+        "caller": "box_edge_strip_draw"
+      },
+      {
+        "from": "0x3a82f",
+        "caller": "box_edge_strip_draw"
+      },
+      {
+        "from": "0x3a840",
+        "caller": "box_edge_strip_draw"
+      }
+    ],
+    "calls_from": [],
+    "disasm": [
+      {
+        "offset": 0,
+        "address": "0x26099",
+        "disasm": "or      ax, ax"
+      },
+      {
+        "offset": 2,
+        "address": "0x2609b",
+        "disasm": "js      short loc_260A3"
+      },
+      {
+        "offset": 4,
+        "address": "0x2609d",
+        "disasm": "call    cs:opcode_handler_5"
+      },
+      {
+        "offset": 9,
+        "address": "0x260a2",
+        "disasm": "retf"
+      },
+      {
+        "offset": 10,
+        "address": "0x260a3",
+        "disasm": "call    dword ptr cs:byte_220C8"
+      },
+      {
+        "offset": 15,
+        "address": "0x260a8",
+        "disasm": "retf"
+      }
+    ]
+  },
+  "draw_from_struct": {
+    "name": "draw_from_struct",
+    "address": "0x2245a",
+    "size": 104,
+    "xrefs_to_count": 4,
+    "xrefs_to": [
+      {
+        "from": "0x3239e",
+        "caller": "explosion_visual_effect_update"
+      },
+      {
+        "from": "0x323a6",
+        "caller": "explosion_visual_effect_update"
+      },
+      {
+        "from": "0x350db",
+        "caller": "mode_axis_state_select"
+      },
+      {
+        "from": "0x13da5e",
+        "caller": "r29_draw_from_struct_far_wrapper"
+      }
+    ],
+    "calls_from": [],
+    "disasm": [
+      {
+        "offset": 0,
+        "address": "0x2245a",
+        "disasm": "push    ds"
+      },
+      {
+        "offset": 1,
+        "address": "0x2245b",
+        "disasm": "push    es"
+      },
+      {
+        "offset": 2,
+        "address": "0x2245c",
+        "disasm": "mov     ax, 7B0Eh"
+      },
+      {
+        "offset": 5,
+        "address": "0x2245f",
+        "disasm": "mov     es, ax"
+      },
+      {
+        "offset": 7,
+        "address": "0x22461",
+        "disasm": "mov     di, 379Eh"
+      },
+      {
+        "offset": 10,
+        "address": "0x22464",
+        "disasm": "mov     cx, 5"
+      },
+      {
+        "offset": 13,
+        "address": "0x22467",
+        "disasm": "rep movsw"
+      },
+      {
+        "offset": 15,
+        "address": "0x22469",
+        "disasm": "movsb"
+      },
+      {
+        "offset": 16,
+        "address": "0x2246a",
+        "disasm": "mov     ax, es"
+      },
+      {
+        "offset": 18,
+        "address": "0x2246c",
+        "disasm": "mov     ds, ax"
+      },
+      {
+        "offset": 20,
+        "address": "0x2246e",
+        "disasm": "mov     si, 379Eh"
+      },
+      {
+        "offset": 23,
+        "address": "0x22471",
+        "disasm": "call    draw_struct_args_dispatch"
+      },
+      {
+        "offset": 26,
+        "address": "0x22474",
+        "disasm": "mov     si, 379Eh"
+      },
+      {
+        "offset": 29,
+        "address": "0x22477",
+        "disasm": "mov     bx, [si]"
+      },
+      {
+        "offset": 31,
+        "address": "0x22479",
+        "disasm": "mov     cx, [si+4]"
+      },
+      {
+        "offset": 34,
+        "address": "0x2247c",
+        "disasm": "dec     cx"
+      },
+      {
+        "offset": 35,
+        "address": "0x2247d",
+        "disasm": "mov     di, [si+2]"
+      },
+      {
+        "offset": 38,
+        "address": "0x22480",
+        "disasm": "mov     al, [si+9]"
+      },
+      {
+        "offset": 41,
+        "address": "0x22483",
+        "disasm": "push    cs"
+      },
+      {
+        "offset": 42,
+        "address": "0x22484",
+        "disasm": "call    near ptr far_cb_3"
+      },
+      {
+        "offset": 45,
+        "address": "0x22487",
+        "disasm": "mov     si, 379Eh"
+      },
+      {
+        "offset": 48,
+        "address": "0x2248a",
+        "disasm": "mov     bx, [si]"
+      },
+      {
+        "offset": 50,
+        "address": "0x2248c",
+        "disasm": "mov     cx, [si+4]"
+      },
+      {
+        "offset": 53,
+        "address": "0x2248f",
+        "disasm": "mov     di, [si+6]"
+      },
+      {
+        "offset": 56,
+        "address": "0x22492",
+        "disasm": "mov     al, [si+0Ah]"
+      },
+      {
+        "offset": 59,
+        "address": "0x22495",
+        "disasm": "push    cs"
+      },
+      {
+        "offset": 60,
+        "address": "0x22496",
+        "disasm": "call    near ptr far_cb_3"
+      },
+      {
+        "offset": 63,
+        "address": "0x22499",
+        "disasm": "mov     si, 379Eh"
+      },
+      {
+        "offset": 66,
+        "address": "0x2249c",
+        "disasm": "mov     bx, [si]"
+      },
+      {
+        "offset": 68,
+        "address": "0x2249e",
+        "disasm": "mov     di, [si+2]"
+      },
+      {
+        "offset": 71,
+        "address": "0x224a1",
+        "disasm": "mov     cx, [si+6]"
+      },
+      {
+        "offset": 74,
+        "address": "0x224a4",
+        "disasm": "dec     cx"
+      },
+      {
+        "offset": 75,
+        "address": "0x224a5",
+        "disasm": "mov     al, [si+9]"
+      },
+      {
+        "offset": 78,
+        "address": "0x224a8",
+        "disasm": "push    cs"
+      },
+      {
+        "offset": 79,
+        "address": "0x224a9",
+        "disasm": "call    near ptr far_cb_7"
+      },
+      {
+        "offset": 82,
+        "address": "0x224ac",
+        "disasm": "mov     si, 379Eh"
+      },
+      {
+        "offset": 85,
+        "address": "0x224af",
+        "disasm": "mov     bx, [si+4]"
+      },
+      {
+        "offset": 88,
+        "address": "0x224b2",
+        "disasm": "mov     di, [si+2]"
+      },
+      {
+        "offset": 91,
+        "address": "0x224b5",
+        "disasm": "mov     cx, [si+6]"
+      },
+      {
+        "offset": 94,
+        "address": "0x224b8",
+        "disasm": "mov     al, [si+0Ah]"
+      },
+      {
+        "offset": 97,
+        "address": "0x224bb",
+        "disasm": "push    cs"
+      },
+      {
+        "offset": 98,
+        "address": "0x224bc",
+        "disasm": "call    near ptr far_cb_7"
+      },
+      {
+        "offset": 101,
+        "address": "0x224bf",
+        "disasm": "pop     es"
+      },
+      {
+        "offset": 102,
+        "address": "0x224c0",
+        "disasm": "pop     ds"
+      },
+      {
+        "offset": 103,
+        "address": "0x224c1",
+        "disasm": "retf"
+      }
+    ]
+  },
+  "draw_struct_args_dispatch": {
+    "name": "draw_struct_args_dispatch",
+    "address": "0x224c2",
+    "size": 17,
+    "xrefs_to_count": 1,
+    "xrefs_to": [
+      {
+        "from": "0x22471",
+        "caller": "draw_from_struct"
+      }
+    ],
+    "calls_from": [],
+    "disasm": [
+      {
+        "offset": 0,
+        "address": "0x224c2",
+        "disasm": "mov     ax, [si]"
+      },
+      {
+        "offset": 2,
+        "address": "0x224c4",
+        "disasm": "mov     di, [si+2]"
+      },
+      {
+        "offset": 5,
+        "address": "0x224c7",
+        "disasm": "mov     bx, [si+4]"
+      },
+      {
+        "offset": 8,
+        "address": "0x224ca",
+        "disasm": "mov     bp, [si+6]"
+      },
+      {
+        "offset": 11,
+        "address": "0x224cd",
+        "disasm": "mov     cl, [si+8]"
+      },
+      {
+        "offset": 14,
+        "address": "0x224d0",
+        "disasm": "jmp     dispatch_22084_near"
+      }
+    ]
+  },
+  "sub_3A8B1": {
+    "name": "sub_3A8B1",
+    "address": "0x3a8b1",
+    "size": 236,
+    "xrefs_to_count": 1,
+    "xrefs_to": [
+      {
+        "from": "0x47931",
+        "caller": "map_view_entity_project"
+      }
+    ],
+    "calls_from": [],
+    "disasm": [
+      {
+        "offset": 0,
+        "address": "0x3a8b1",
+        "disasm": "test    bl, 80h"
+      },
+      {
+        "offset": 3,
+        "address": "0x3a8b4",
+        "disasm": "jz      short loc_3A8C2"
+      },
+      {
+        "offset": 5,
+        "address": "0x3a8b6",
+        "disasm": "xchg    ax, dx"
+      },
+      {
+        "offset": 6,
+        "address": "0x3a8b7",
+        "disasm": "mov     bl, ah"
+      },
+      {
+        "offset": 8,
+        "address": "0x3a8b9",
+        "disasm": "mov     si, 4816h"
+      },
+      {
+        "offset": 11,
+        "address": "0x3a8bc",
+        "disasm": "mov     di, 4822h"
+      },
+      {
+        "offset": 14,
+        "address": "0x3a8bf",
+        "disasm": "jmp     short loc_3A930"
+      },
+      {
+        "offset": 16,
+        "address": "0x3a8c1",
+        "disasm": "nop"
+      },
+      {
+        "offset": 17,
+        "address": "0x3a8c2",
+        "disasm": "push    ax"
+      },
+      {
+        "offset": 18,
+        "address": "0x3a8c3",
+        "disasm": "mov     ax, offset byte_59716"
+      },
+      {
+        "offset": 21,
+        "address": "0x3a8c6",
+        "disasm": "mov     dx, ds"
+      },
+      {
+        "offset": 23,
+        "address": "0x3a8c8",
+        "disasm": "call    active_farptr_set"
+      },
+      {
+        "offset": 28,
+        "address": "0x3a8cd",
+        "disasm": "mov     al, 0FFh"
+      },
+      {
+        "offset": 30,
+        "address": "0x3a8cf",
+        "disasm": "call    sub_20313"
+      },
+      {
+        "offset": 35,
+        "address": "0x3a8d4",
+        "disasm": "mov     word_594B8, 0A3h"
+      },
+      {
+        "offset": 41,
+        "address": "0x3a8da",
+        "disasm": "mov     word_594BA, 98h"
+      },
+      {
+        "offset": 47,
+        "address": "0x3a8e0",
+        "disasm": "mov     si, 49C0h"
+      },
+      {
+        "offset": 50,
+        "address": "0x3a8e3",
+        "disasm": "call    view_extent_shadow_save_far"
+      },
+      {
+        "offset": 55,
+        "address": "0x3a8e8",
+        "disasm": "mov     ax, 555h"
+      },
+      {
+        "offset": 58,
+        "address": "0x3a8eb",
+        "disasm": "call    view_extent_compute_1f6da"
+      },
+      {
+        "offset": 63,
+        "address": "0x3a8f0",
+        "disasm": "call    seg7b0e_copy_3820_to_3808"
+      },
+      {
+        "offset": 68,
+        "address": "0x3a8f5",
+        "disasm": "mov     si, 4822h"
+      },
+      {
+        "offset": 71,
+        "address": "0x3a8f8",
+        "disasm": "call    angle_matrix_far_invoke"
+      },
+      {
+        "offset": 76,
+        "address": "0x3a8fd",
+        "disasm": "call    es_ptr_slots_init"
+      },
+      {
+        "offset": 81,
+        "address": "0x3a902",
+        "disasm": "pop     ax"
+      },
+      {
+        "offset": 82,
+        "address": "0x3a903",
+        "disasm": "mov     bx, 4816h"
+      },
+      {
+        "offset": 85,
+        "address": "0x3a906",
+        "disasm": "call    viewobj_project_advance"
+      },
+      {
+        "offset": 90,
+        "address": "0x3a90b",
+        "disasm": "call    farobj_sort_and_step"
+      },
+      {
+        "offset": 95,
+        "address": "0x3a910",
+        "disasm": "call    seg7b0e_copy_3808_to_3820"
+      },
+      {
+        "offset": 100,
+        "address": "0x3a915",
+        "disasm": "call    view_extent_shadow_restore_far"
+      },
+      {
+        "offset": 105,
+        "address": "0x3a91a",
+        "disasm": "xor     al, al"
+      },
+      {
+        "offset": 107,
+        "address": "0x3a91c",
+        "disasm": "call    sub_20313"
+      },
+      {
+        "offset": 112,
+        "address": "0x3a921",
+        "disasm": "call    active_farptr_restore"
+      },
+      {
+        "offset": 117,
+        "address": "0x3a926",
+        "disasm": "retf"
+      },
+      {
+        "offset": 118,
+        "address": "0x3a927",
+        "disasm": "cmp     cs:byte_39AA8, 0"
+      },
+      {
+        "offset": 124,
+        "address": "0x3a92d",
+        "disasm": "jz      short loc_3A930"
+      },
+      {
+        "offset": 126,
+        "address": "0x3a92f",
+        "disasm": "retf"
+      },
+      {
+        "offset": 127,
+        "address": "0x3a930",
+        "disasm": "push    di"
+      },
+      {
+        "offset": 128,
+        "address": "0x3a931",
+        "disasm": "call    tile_base_search_11caa"
+      },
+      {
+        "offset": 133,
+        "address": "0x3a936",
+        "disasm": "pop     di"
+      },
+      {
+        "offset": 134,
+        "address": "0x3a937",
+        "disasm": "jb      short locret_3A92F"
+      },
+      {
+        "offset": 136,
+        "address": "0x3a939",
+        "disasm": "push    ds"
+      },
+      {
+        "offset": 137,
+        "address": "0x3a93a",
+        "disasm": "push    bx"
+      },
+      {
+        "offset": 138,
+        "address": "0x3a93b",
+        "disasm": "push    di"
+      },
+      {
+        "offset": 139,
+        "address": "0x3a93c",
+        "disasm": "call    seg7b0e_copy_3820_to_3808"
+      },
+      {
+        "offset": 144,
+        "address": "0x3a941",
+        "disasm": "pop     si"
+      },
+      {
+        "offset": 145,
+        "address": "0x3a942",
+        "disasm": "call    angle_matrix_far_invoke"
+      },
+      {
+        "offset": 150,
+        "address": "0x3a947",
+        "disasm": "mov     ax, 54AFh"
+      },
+      {
+        "offset": 153,
+        "address": "0x3a94a",
+        "disasm": "mov     ds, ax"
+      },
+      {
+        "offset": 155,
+        "address": "0x3a94c",
+        "disasm": "mov     ax, (offset loc_49714+2 - offset off_44AF0)"
+      },
+      {
+        "offset": 158,
+        "address": "0x3a94f",
+        "disasm": "mov     dx, ds"
+      },
+      {
+        "offset": 160,
+        "address": "0x3a951",
+        "disasm": "call    active_farptr_set"
+      },
+      {
+        "offset": 165,
+        "address": "0x3a956",
+        "disasm": "mov     si, 49A4h"
+      },
+      {
+        "offset": 168,
+        "address": "0x3a959",
+        "disasm": "call    view_extent_shadow_save_far"
+      },
+      {
+        "offset": 173,
+        "address": "0x3a95e",
+        "disasm": "mov     ax, 555h"
+      },
+      {
+        "offset": 176,
+        "address": "0x3a961",
+        "disasm": "call    view_extent_compute_1f6da"
+      },
+      {
+        "offset": 181,
+        "address": "0x3a966",
+        "disasm": "mov     al, 0FFh"
+      },
+      {
+        "offset": 183,
+        "address": "0x3a968",
+        "disasm": "call    sub_20313"
+      },
+      {
+        "offset": 188,
+        "address": "0x3a96d",
+        "disasm": "call    es_ptr_slots_init"
+      },
+      {
+        "offset": 193,
+        "address": "0x3a972",
+        "disasm": "pop     si"
+      },
+      {
+        "offset": 194,
+        "address": "0x3a973",
+        "disasm": "call    undoc_12418"
+      },
+      {
+        "offset": 199,
+        "address": "0x3a978",
+        "disasm": "call    farobj_sort_and_step"
+      },
+      {
+        "offset": 204,
+        "address": "0x3a97d",
+        "disasm": "call    seg7b0e_copy_3808_to_3820"
+      },
+      {
+        "offset": 209,
+        "address": "0x3a982",
+        "disasm": "call    view_extent_shadow_restore_far"
+      },
+      {
+        "offset": 214,
+        "address": "0x3a987",
+        "disasm": "mov     ax, 555h"
+      },
+      {
+        "offset": 217,
+        "address": "0x3a98a",
+        "disasm": "call    view_extent_compute_1f6da"
+      },
+      {
+        "offset": 222,
+        "address": "0x3a98f",
+        "disasm": "xor     al, al"
+      },
+      {
+        "offset": 224,
+        "address": "0x3a991",
+        "disasm": "call    sub_20313"
+      },
+      {
+        "offset": 229,
+        "address": "0x3a996",
+        "disasm": "call    active_farptr_restore"
+      },
+      {
+        "offset": 234,
+        "address": "0x3a99b",
+        "disasm": "pop     ds"
+      },
+      {
+        "offset": 235,
+        "address": "0x3a99c",
+        "disasm": "retf"
+      }
+    ]
+  }
+}

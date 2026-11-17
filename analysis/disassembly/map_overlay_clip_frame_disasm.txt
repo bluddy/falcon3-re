@@ -1,0 +1,92 @@
+================================================================================
+map_overlay_clip_frame Disassembly
+================================================================================
+Address: 0x3a5d2
+Size: 223 bytes (0xDF)
+================================================================================
+
+Called by 1 functions:
+  0x33c63 - undoc_33C1B
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x3a5d2 | cmp     byte_595B2, 4
+   1 | +0x0005 | 0x3a5d7 | jz      short loc_3A600
+   2 | +0x0007 | 0x3a5d9 | cmp     byte_595B4, 0
+   3 | +0x000C | 0x3a5de | jz      short loc_3A600
+   4 | +0x000E | 0x3a5e0 | mov     ax, cs:word_2F66B
+   5 | +0x0012 | 0x3a5e4 | cmp     ax, 0FFFFh
+   6 | +0x0015 | 0x3a5e7 | jz      short loc_3A600
+   7 | +0x0017 | 0x3a5e9 | shr     ax, 1
+   8 | +0x0019 | 0x3a5eb | shr     ax, 1
+   9 | +0x001B | 0x3a5ed | add     ax, 1
+  10 | +0x001E | 0x3a5f0 | push    es
+  11 | +0x001F | 0x3a5f1 | call    r12_farptr_load_thunk
+  12 | +0x0024 | 0x3a5f6 | test    byte ptr es:[di+0Ah], 2
+  13 | +0x0029 | 0x3a5fb | pop     es
+  14 | +0x002A | 0x3a5fc | jnz     short loc_3A600
+  15 | +0x002C | 0x3a5fe | stc
+  16 | +0x002D | 0x3a5ff | retn
+  17 | +0x002E | 0x3a600 | clc
+  18 | +0x002F | 0x3a601 | retn
+  19 | +0x0030 | 0x3a602 | cmp     cs:byte_39AA8, 0
+  20 | +0x0036 | 0x3a608 | jz      short loc_3A60B
+  21 | +0x0038 | 0x3a60a | retn
+  22 | +0x0039 | 0x3a60b | mov     cl, 3Dh ; '='
+  23 | +0x003B | 0x3a60d | mov     ax, 98h
+  24 | +0x003E | 0x3a610 | mov     bx, 0AAh
+  25 | +0x0041 | 0x3a613 | mov     di, 97h
+  26 | +0x0044 | 0x3a616 | mov     bp, 9Ch
+  27 | +0x0047 | 0x3a619 | call    stub_to_205c3; Far call dispatcher stub (Path B) - Used by HUD metrics, explosions, terrain, map overlay (20 callers)
+  28 | +0x004C | 0x3a61e | call    clip_bounds_save_far_thunk
+  29 | +0x0051 | 0x3a623 | mov     si, 49C0h
+  30 | +0x0054 | 0x3a626 | call    lodsw_quad_to_state_25450
+  31 | +0x0059 | 0x3a62b | mov     cx, 5
+  32 | +0x005C | 0x3a62e | mov     bp, 2
+  33 | +0x005F | 0x3a631 | mov     si, 4B11h
+  34 | +0x0062 | 0x3a634 | mov     bx, 0B4h
+  35 | +0x0065 | 0x3a637 | mov     di, 73h ; 's'
+  36 | +0x0068 | 0x3a63a | push    es
+  37 | +0x0069 | 0x3a63b | push    si
+  38 | +0x006A | 0x3a63c | mov     si, 2F64h
+  39 | +0x006D | 0x3a63f | mov     es, si
+  40 | +0x006F | 0x3a641 | mov     si, 0A462h
+  41 | +0x0072 | 0x3a644 | mov     es, word ptr es:[si]
+  42 | +0x0075 | 0x3a647 | pop     si
+  43 | +0x0076 | 0x3a648 | call    hud_external_vector_dispatch
+  44 | +0x007B | 0x3a64d | pop     es
+  45 | +0x007C | 0x3a64e | xor     ax, ax
+  46 | +0x007E | 0x3a650 | call    sub_2C21B
+  47 | +0x0083 | 0x3a655 | jz      short loc_3A65A
+  48 | +0x0085 | 0x3a657 | add     ax, 2
+  49 | +0x0088 | 0x3a65a | mov     si, ax
+  50 | +0x008A | 0x3a65c | shl     ax, 1
+  51 | +0x008C | 0x3a65e | add     si, ax
+  52 | +0x008E | 0x3a660 | add     si, 4C17h
+  53 | +0x0092 | 0x3a664 | mov     bx, 0C4h
+  54 | +0x0095 | 0x3a667 | mov     di, 73h ; 's'
+  55 | +0x0098 | 0x3a66a | call    hud_external_far_callback
+  56 | +0x009D | 0x3a66f | mov     al, byte_595AD
+  57 | +0x00A0 | 0x3a672 | mov     si, word_593AA
+  58 | +0x00A4 | 0x3a676 | mov     dx, cs:word_2F679
+  59 | +0x00A9 | 0x3a67b | call    sub_2C26B
+  60 | +0x00AE | 0x3a680 | call    sub_2C243
+  61 | +0x00B3 | 0x3a685 | pushf
+  62 | +0x00B4 | 0x3a686 | mov     di, bx
+  63 | +0x00B6 | 0x3a688 | mov     bx, ax
+  64 | +0x00B8 | 0x3a68a | sub     di, 7
+  65 | +0x00BB | 0x3a68d | sub     bx, 0Ch
+  66 | +0x00BE | 0x3a690 | mov     cx, 0Fh
+  67 | +0x00C1 | 0x3a693 | mov     bp, 3
+  68 | +0x00C4 | 0x3a696 | mov     si, 4BDEh
+  69 | +0x00C7 | 0x3a699 | push    es
+  70 | +0x00C8 | 0x3a69a | mov     es, word ptr cs:byte_39AA2
+  71 | +0x00CD | 0x3a69f | call    hud_cockpit_rect_arg_store
+  72 | +0x00D2 | 0x3a6a4 | pop     es
+  73 | +0x00D3 | 0x3a6a5 | popf
+  74 | +0x00D4 | 0x3a6a6 | jb      short loc_3A6AB
+  75 | +0x00D6 | 0x3a6a8 | call    hud_map_overlay_frame
+  76 | +0x00D9 | 0x3a6ab | call    clip_bounds_restore_far_thunk
+  77 | +0x00DE | 0x3a6b0 | retn

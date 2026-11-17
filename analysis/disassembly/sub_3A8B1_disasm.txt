@@ -1,0 +1,85 @@
+================================================================================
+sub_3A8B1 Disassembly
+================================================================================
+Address: 0x3a8b1
+Size: 236 bytes (0xEC)
+================================================================================
+
+Called by 1 functions (showing first 20):
+  0x47931 - map_view_entity_project
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x3a8b1 | test    bl, 80h
+   1 | +0x0003 | 0x3a8b4 | jz      short loc_3A8C2
+   2 | +0x0005 | 0x3a8b6 | xchg    ax, dx
+   3 | +0x0006 | 0x3a8b7 | mov     bl, ah
+   4 | +0x0008 | 0x3a8b9 | mov     si, 4816h
+   5 | +0x000B | 0x3a8bc | mov     di, 4822h
+   6 | +0x000E | 0x3a8bf | jmp     short loc_3A930
+   7 | +0x0010 | 0x3a8c1 | nop
+   8 | +0x0011 | 0x3a8c2 | push    ax
+   9 | +0x0012 | 0x3a8c3 | mov     ax, offset byte_59716
+  10 | +0x0015 | 0x3a8c6 | mov     dx, ds
+  11 | +0x0017 | 0x3a8c8 | call    active_farptr_set
+  12 | +0x001C | 0x3a8cd | mov     al, 0FFh
+  13 | +0x001E | 0x3a8cf | call    sub_20313
+  14 | +0x0023 | 0x3a8d4 | mov     word_594B8, 0A3h
+  15 | +0x0029 | 0x3a8da | mov     word_594BA, 98h
+  16 | +0x002F | 0x3a8e0 | mov     si, 49C0h
+  17 | +0x0032 | 0x3a8e3 | call    view_extent_shadow_save_far
+  18 | +0x0037 | 0x3a8e8 | mov     ax, 555h
+  19 | +0x003A | 0x3a8eb | call    view_extent_compute_1f6da
+  20 | +0x003F | 0x3a8f0 | call    seg7b0e_copy_3820_to_3808
+  21 | +0x0044 | 0x3a8f5 | mov     si, 4822h
+  22 | +0x0047 | 0x3a8f8 | call    angle_matrix_far_invoke
+  23 | +0x004C | 0x3a8fd | call    es_ptr_slots_init
+  24 | +0x0051 | 0x3a902 | pop     ax
+  25 | +0x0052 | 0x3a903 | mov     bx, 4816h
+  26 | +0x0055 | 0x3a906 | call    viewobj_project_advance
+  27 | +0x005A | 0x3a90b | call    farobj_sort_and_step
+  28 | +0x005F | 0x3a910 | call    seg7b0e_copy_3808_to_3820
+  29 | +0x0064 | 0x3a915 | call    view_extent_shadow_restore_far
+  30 | +0x0069 | 0x3a91a | xor     al, al
+  31 | +0x006B | 0x3a91c | call    sub_20313
+  32 | +0x0070 | 0x3a921 | call    active_farptr_restore
+  33 | +0x0075 | 0x3a926 | retf
+  34 | +0x0076 | 0x3a927 | cmp     cs:byte_39AA8, 0
+  35 | +0x007C | 0x3a92d | jz      short loc_3A930
+  36 | +0x007E | 0x3a92f | retf
+  37 | +0x007F | 0x3a930 | push    di
+  38 | +0x0080 | 0x3a931 | call    tile_base_search_11caa
+  39 | +0x0085 | 0x3a936 | pop     di
+  40 | +0x0086 | 0x3a937 | jb      short locret_3A92F
+  41 | +0x0088 | 0x3a939 | push    ds
+  42 | +0x0089 | 0x3a93a | push    bx
+  43 | +0x008A | 0x3a93b | push    di
+  44 | +0x008B | 0x3a93c | call    seg7b0e_copy_3820_to_3808
+  45 | +0x0090 | 0x3a941 | pop     si
+  46 | +0x0091 | 0x3a942 | call    angle_matrix_far_invoke
+  47 | +0x0096 | 0x3a947 | mov     ax, 54AFh
+  48 | +0x0099 | 0x3a94a | mov     ds, ax
+  49 | +0x009B | 0x3a94c | mov     ax, (offset loc_49714+2 - offset off_44AF0)
+  50 | +0x009E | 0x3a94f | mov     dx, ds
+  51 | +0x00A0 | 0x3a951 | call    active_farptr_set
+  52 | +0x00A5 | 0x3a956 | mov     si, 49A4h
+  53 | +0x00A8 | 0x3a959 | call    view_extent_shadow_save_far
+  54 | +0x00AD | 0x3a95e | mov     ax, 555h
+  55 | +0x00B0 | 0x3a961 | call    view_extent_compute_1f6da
+  56 | +0x00B5 | 0x3a966 | mov     al, 0FFh
+  57 | +0x00B7 | 0x3a968 | call    sub_20313
+  58 | +0x00BC | 0x3a96d | call    es_ptr_slots_init
+  59 | +0x00C1 | 0x3a972 | pop     si
+  60 | +0x00C2 | 0x3a973 | call    undoc_12418
+  61 | +0x00C7 | 0x3a978 | call    farobj_sort_and_step
+  62 | +0x00CC | 0x3a97d | call    seg7b0e_copy_3808_to_3820
+  63 | +0x00D1 | 0x3a982 | call    view_extent_shadow_restore_far
+  64 | +0x00D6 | 0x3a987 | mov     ax, 555h
+  65 | +0x00D9 | 0x3a98a | call    view_extent_compute_1f6da
+  66 | +0x00DE | 0x3a98f | xor     al, al
+  67 | +0x00E0 | 0x3a991 | call    sub_20313
+  68 | +0x00E5 | 0x3a996 | call    active_farptr_restore
+  69 | +0x00EA | 0x3a99b | pop     ds
+  70 | +0x00EB | 0x3a99c | retf

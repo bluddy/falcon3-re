@@ -1,0 +1,98 @@
+================================================================================
+map_view_entity_project Disassembly
+================================================================================
+Address: 0x47871
+Size: 198 bytes (0xC6)
+================================================================================
+
+Called by 1 functions:
+  0x31e3e - view_terrain_frame_step
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x47871 | mov     bx, ds:445Eh
+   1 | +0x0004 | 0x47875 | or      bx, bx
+   2 | +0x0006 | 0x47877 | jl      short locret_478C3
+   3 | +0x0008 | 0x47879 | shl     bx, 1
+   4 | +0x000A | 0x4787b | mov     bx, [bx+4866h]
+   5 | +0x000E | 0x4787f | mov     si, ds:48BAh
+   6 | +0x0012 | 0x47883 | mov     di, 4816h
+   7 | +0x0015 | 0x47886 | movsw
+   8 | +0x0016 | 0x47887 | movsw
+   9 | +0x0017 | 0x47888 | movsw
+  10 | +0x0018 | 0x47889 | movsw
+  11 | +0x0019 | 0x4788a | movsw
+  12 | +0x001A | 0x4788b | movsw
+  13 | +0x001B | 0x4788c | movsw
+  14 | +0x001C | 0x4788d | movsw
+  15 | +0x001D | 0x4788e | movsw
+  16 | +0x001E | 0x4788f | mov     si, bx
+  17 | +0x0020 | 0x47891 | mov     bx, [si+2]
+  18 | +0x0023 | 0x47894 | push    bx
+  19 | +0x0024 | 0x47895 | test    bl, 80h
+  20 | +0x0027 | 0x47898 | jz      short loc_478C4
+  21 | +0x0029 | 0x4789a | mov     ax, [si+4]
+  22 | +0x002C | 0x4789d | push    ax
+  23 | +0x002D | 0x4789e | mov     bl, ah
+  24 | +0x002F | 0x478a0 | mov     cl, 1
+  25 | +0x0031 | 0x478a2 | mov     dx, [si]
+  26 | +0x0033 | 0x478a4 | push    dx
+  27 | +0x0034 | 0x478a5 | push    es
+  28 | +0x0035 | 0x478a6 | mov     di, 47D6h
+  29 | +0x0038 | 0x478a9 | call    entity_step_flags
+  30 | +0x003D | 0x478ae | mov     si, 47D6h
+  31 | +0x0040 | 0x478b1 | call    terrain_farobj_tile_copy_resolve
+  32 | +0x0045 | 0x478b6 | cwd
+  33 | +0x0046 | 0x478b7 | mov     ds:47DEh, ax
+  34 | +0x0049 | 0x478ba | mov     ds:47E0h, dx
+  35 | +0x004D | 0x478be | mov     di, 47D6h
+  36 | +0x0050 | 0x478c1 | jmp     short loc_478D0
+  37 | +0x0052 | 0x478c3 | retf
+  38 | +0x0053 | 0x478c4 | mov     ax, [si]
+  39 | +0x0055 | 0x478c6 | sub     sp, 2
+  40 | +0x0058 | 0x478c9 | push    ax
+  41 | +0x0059 | 0x478ca | push    es
+  42 | +0x005A | 0x478cb | call    ai_farptr_table_get
+  43 | +0x005F | 0x478d0 | push    di
+  44 | +0x0060 | 0x478d1 | mov     si, 4816h
+  45 | +0x0063 | 0x478d4 | call    angle_xy_far
+  46 | +0x0068 | 0x478d9 | mov     ds:4822h, ax
+  47 | +0x006B | 0x478dc | mov     bp, sp
+  48 | +0x006D | 0x478de | mov     di, [bp+0]
+  49 | +0x0070 | 0x478e1 | mov     si, 4816h
+  50 | +0x0073 | 0x478e4 | call    angle_aux_far
+  51 | +0x0078 | 0x478e9 | mov     ds:4824h, ax
+  52 | +0x007B | 0x478ec | pop     di
+  53 | +0x007C | 0x478ed | mov     si, 4816h
+  54 | +0x007F | 0x478f0 | mov     cx, 3
+  55 | +0x0082 | 0x478f3 | mov     ax, [si]
+  56 | +0x0084 | 0x478f5 | mov     dx, [si+2]
+  57 | +0x0087 | 0x478f8 | sub     ax, es:[di]
+  58 | +0x008A | 0x478fb | sbb     dx, es:[di+2]
+  59 | +0x008E | 0x478ff | mov     bx, cx
+  60 | +0x0090 | 0x47901 | mov     cx, 6
+  61 | +0x0093 | 0x47904 | sar     dx, 1
+  62 | +0x0095 | 0x47906 | rcr     ax, 1
+  63 | +0x0097 | 0x47908 | loop    loc_47904
+  64 | +0x0099 | 0x4790a | mov     [si], ax
+  65 | +0x009B | 0x4790c | mov     [si+2], dx
+  66 | +0x009E | 0x4790f | sar     dx, 1
+  67 | +0x00A0 | 0x47911 | rcr     ax, 1
+  68 | +0x00A2 | 0x47913 | sar     dx, 1
+  69 | +0x00A4 | 0x47915 | rcr     ax, 1
+  70 | +0x00A6 | 0x47917 | add     ax, es:[di]
+  71 | +0x00A9 | 0x4791a | adc     dx, es:[di+2]
+  72 | +0x00AD | 0x4791e | add     [si], ax
+  73 | +0x00AF | 0x47920 | adc     [si+2], dx
+  74 | +0x00B2 | 0x47923 | mov     cx, bx
+  75 | +0x00B4 | 0x47925 | add     si, 4
+  76 | +0x00B7 | 0x47928 | add     di, 4
+  77 | +0x00BA | 0x4792b | loop    loc_478F3
+  78 | +0x00BC | 0x4792d | pop     es
+  79 | +0x00BD | 0x4792e | pop     ax
+  80 | +0x00BE | 0x4792f | pop     dx
+  81 | +0x00BF | 0x47930 | pop     bx
+  82 | +0x00C0 | 0x47931 | call    sub_3A8B1
+  83 | +0x00C5 | 0x47936 | retf

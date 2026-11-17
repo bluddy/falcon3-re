@@ -1,0 +1,62 @@
+================================================================================
+draw_from_struct Disassembly
+================================================================================
+Address: 0x2245a
+Size: 104 bytes (0x68)
+================================================================================
+
+Called by 4 functions (showing first 20):
+  0x3239e - explosion_visual_effect_update
+  0x323a6 - explosion_visual_effect_update
+  0x350db - mode_axis_state_select
+  0x13da5e - r29_draw_from_struct_far_wrapper
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x2245a | push    ds
+   1 | +0x0001 | 0x2245b | push    es
+   2 | +0x0002 | 0x2245c | mov     ax, 7B0Eh
+   3 | +0x0005 | 0x2245f | mov     es, ax
+   4 | +0x0007 | 0x22461 | mov     di, 379Eh
+   5 | +0x000A | 0x22464 | mov     cx, 5
+   6 | +0x000D | 0x22467 | rep movsw
+   7 | +0x000F | 0x22469 | movsb
+   8 | +0x0010 | 0x2246a | mov     ax, es
+   9 | +0x0012 | 0x2246c | mov     ds, ax
+  10 | +0x0014 | 0x2246e | mov     si, 379Eh
+  11 | +0x0017 | 0x22471 | call    draw_struct_args_dispatch
+  12 | +0x001A | 0x22474 | mov     si, 379Eh
+  13 | +0x001D | 0x22477 | mov     bx, [si]
+  14 | +0x001F | 0x22479 | mov     cx, [si+4]
+  15 | +0x0022 | 0x2247c | dec     cx
+  16 | +0x0023 | 0x2247d | mov     di, [si+2]
+  17 | +0x0026 | 0x22480 | mov     al, [si+9]
+  18 | +0x0029 | 0x22483 | push    cs
+  19 | +0x002A | 0x22484 | call    near ptr far_cb_3
+  20 | +0x002D | 0x22487 | mov     si, 379Eh
+  21 | +0x0030 | 0x2248a | mov     bx, [si]
+  22 | +0x0032 | 0x2248c | mov     cx, [si+4]
+  23 | +0x0035 | 0x2248f | mov     di, [si+6]
+  24 | +0x0038 | 0x22492 | mov     al, [si+0Ah]
+  25 | +0x003B | 0x22495 | push    cs
+  26 | +0x003C | 0x22496 | call    near ptr far_cb_3
+  27 | +0x003F | 0x22499 | mov     si, 379Eh
+  28 | +0x0042 | 0x2249c | mov     bx, [si]
+  29 | +0x0044 | 0x2249e | mov     di, [si+2]
+  30 | +0x0047 | 0x224a1 | mov     cx, [si+6]
+  31 | +0x004A | 0x224a4 | dec     cx
+  32 | +0x004B | 0x224a5 | mov     al, [si+9]
+  33 | +0x004E | 0x224a8 | push    cs
+  34 | +0x004F | 0x224a9 | call    near ptr far_cb_7
+  35 | +0x0052 | 0x224ac | mov     si, 379Eh
+  36 | +0x0055 | 0x224af | mov     bx, [si+4]
+  37 | +0x0058 | 0x224b2 | mov     di, [si+2]
+  38 | +0x005B | 0x224b5 | mov     cx, [si+6]
+  39 | +0x005E | 0x224b8 | mov     al, [si+0Ah]
+  40 | +0x0061 | 0x224bb | push    cs
+  41 | +0x0062 | 0x224bc | call    near ptr far_cb_7
+  42 | +0x0065 | 0x224bf | pop     es
+  43 | +0x0066 | 0x224c0 | pop     ds
+  44 | +0x0067 | 0x224c1 | retf
