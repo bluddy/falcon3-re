@@ -418,3 +418,53 @@ enums:
       - {value: 1, name: MODE_1, comment: "Medium bounds, clamped to [0x555, 0xFAAB]"}
       - {value: 2, name: MODE_2, comment: "Standard bounds, no clamping"}
 
+  # ========== WEAPON SYSTEM ENUMS ==========
+
+  - name: WeaponType
+    type: uint8
+    source: "WEAPON_TYPES_DECODED.md, IR_LOCK_ANALYSIS.md, weapon_type_initialize_dispatch @ 0x4C19E"
+    description: "Weapon type identifier used throughout weapon spawn and fire systems"
+    values:
+      - {value: 0x12, name: AIM9_SIDEWINDER,    comment: "AIM-9 Sidewinder IR heat-seeking missile (type 0x12)"}
+      - {value: 0x13, name: AIM120_AMRAAM,      comment: "AIM-120 AMRAAM radar-guided missile (type 0x13)"}
+      - {value: 0x14, name: AG_WEAPON_START,    comment: "Start of A-G weapon range (bombs, AGMs)"}
+      - {value: 0x19, name: AGM88_HARM,         comment: "AGM-88 HARM anti-radiation missile (type 0x19)"}
+      - {value: 0x32, name: AG_WEAPON_END,      comment: "End of A-G weapon range"}
+      - {value: 0x33, name: M61A1_VULCAN,       comment: "M61A1 Vulcan 20mm cannon (type 0x33)"}
+      - {value: 0x34, name: GUN_VARIANT_1,      comment: "Gun variant 1 (type 0x34)"}
+      - {value: 0x35, name: GUN_VARIANT_2,      comment: "Gun variant 2 (type 0x35)"}
+      - {value: 0x36, name: GUN_VARIANT_3,      comment: "Gun variant 3 (type 0x36)"}
+      - {value: 0x37, name: GUN_VARIANT_4,      comment: "Gun variant 4 (type 0x37)"}
+
+  - name: IRLockSearchMode
+    type: uint8
+    source: "IR_LOCK_ANALYSIS.md; cs:ir_lock_search_mode, weapon_aim9_seeker_lock_check @ 0x32B7F"
+    description: "IR missile seeker search pattern mode for AIM-9 Sidewinder"
+    values:
+      - {value: 0, name: SIMPLE,    comment: "Simple 4-target cycle (indices 0-3)"}
+      - {value: 1, name: EXTENDED,  comment: "Extended 13-target cycle (indices 4-16)"}
+
+  - name: WeaponKeyCode
+    type: uint8
+    source: "WEAPON_SELECTION_NOTES.md; manual/extracted/f3keys.txt"
+    description: "Keyboard scan codes for weapon control keys (from manual)"
+    values:
+      - {value: 0x0E, name: BACKSPACE_AG_SELECT,      comment: "Backspace: Select A-G weapon (bombs, AGMs)"}
+      - {value: 0x1C, name: ENTER_AA_SELECT,          comment: "Enter: Select A-A weapon (missiles, gun)"}
+      - {value: 0x27, name: SEMICOLON_RIPPLE_MINUS,   comment: "Semicolon (;): Decrease bomb ripple count"}
+      - {value: 0x28, name: APOSTROPHE_RIPPLE_PLUS,   comment: "Apostrophe ('): Increase bomb ripple count"}
+      - {value: 0x2C, name: Z_RADAR_LOCK,             comment: "Z: Radar lock on/off toggle"}
+      - {value: 0x39, name: SPACE_FIRE,               comment: "Space: Fire weapon"}
+
+  - name: DetectionModeState
+    type: uint8
+    source: "IR_LOCK_ANALYSIS.md; ds:0x4AC2 (detection_mode_state global)"
+    description: "Detection/lock mode state shared by radar and IR lock systems"
+    values:
+      - {value: 0, name: INACTIVE,     comment: "Detection inactive"}
+      - {value: 1, name: MODE_1,       comment: "Detection mode 1"}
+      - {value: 2, name: MODE_2,       comment: "Detection mode 2"}
+      - {value: 3, name: MODE_3,       comment: "Detection mode 3"}
+      - {value: 4, name: MODE_4,       comment: "Detection mode 4"}
+      - {value: 5, name: ACTIVE_LOCK,  comment: "Active lock mode (triggers IR tone @ value 5, radar STT integration)"}
+
