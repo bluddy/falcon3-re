@@ -250,17 +250,17 @@
 
 **Progress by subsystem:**
 - Weapon queue/ammo: ████████████████████ 100%
-- IR lock (AIM-9): ███████████████████░ 95%
+- IR lock (AIM-9): ████████████████████ 100%
+- Radar lock (AIM-120): ███████████████████░ 95%
 - Weapon types: ██████████████████░░ 90%
 - A-G weapons: ████████░░░░░░░░░░░░ 40%
 - Weapon selection: ██░░░░░░░░░░░░░░░░░░ 10%
-- Radar lock (AIM-120): ░░░░░░░░░░░░░░░░░░░░ 0%
 - HARM lock: ░░░░░░░░░░░░░░░░░░░░ 0%
 - Fire button: ████░░░░░░░░░░░░░░░░ 20%
 - Guidance algorithms: ██████░░░░░░░░░░░░░░ 30%
 - Bombs: ░░░░░░░░░░░░░░░░░░░░ 0%
 
-**Overall: ████████████████░░░░ 80%**
+**Overall: █████████████████░░░ 90%**
 
 **Registry additions:**
 - Globals: 14 weapons-related (5 queue + 9 IR lock)
