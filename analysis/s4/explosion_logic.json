@@ -1,0 +1,177 @@
+{
+  "explosion_functions": [
+    {
+      "name": "explosion_visual_effect_update",
+      "address": "0x32393",
+      "size": 192,
+      "keyword": "explo"
+    },
+    {
+      "name": "explosion_sound_effect_trigger",
+      "address": "0x327be",
+      "size": 10,
+      "keyword": "explo"
+    }
+  ],
+  "damage_threshold_checks": [
+    {
+      "function": "flight_physics_integration_engine",
+      "address": "0x4118b",
+      "instruction": "cmp     [di+0C9h], al; Entity damage accumulator (0-255)",
+      "threshold": null,
+      "next_instruction": "jb      short loc_41193",
+      "next_mnemonic": "jb",
+      "context": [
+        "00041181: mov     si, di",
+        "00041182: mov     di, [si+6]",
+        "00041185: pop     bx",
+        "00041186: mov     al, [si+56h]",
+        "00041189: shl     al, 1",
+        "0004118B: cmp     [di+0C9h], al; Entity damage accumulator (0-255)",
+        "0004118F: jb      short loc_41193",
+        "00041191: pop     ds",
+        "00041192: retf",
+        "00041193: cmp     cs:byte_4115D, 1"
+      ]
+    },
+    {
+      "function": "flight_physics_integration_engine",
+      "address": "0x41231",
+      "instruction": "cmp     [di+0C9h], bh; Entity damage accumulator (0-255)",
+      "threshold": null,
+      "next_instruction": "jb      short loc_4123A",
+      "next_mnemonic": "jb",
+      "context": [
+        "00041227: push    si",
+        "00041228: call    undoc_33D83",
+        "0004122D: pop     si",
+        "0004122E: mov     bh, [si+56h]",
+        "00041231: cmp     [di+0C9h], bh; Entity damage accumulator (0-255)",
+        "00041235: jb      short loc_4123A",
+        "00041237: jmp     loc_412E3",
+        "0004123A: push    cx"
+      ]
+    },
+    {
+      "function": "flight_physics_integration_engine",
+      "address": "0x412e5",
+      "instruction": "cmp     [di+0C9h], bh; Entity damage accumulator (0-255)",
+      "threshold": null,
+      "next_instruction": "jnb     short loc_41352",
+      "next_mnemonic": "jnb",
+      "context": [
+        "000412DB: mov     cs:byte_4115C, 1",
+        "000412E0: jmp     loc_413FC",
+        "000412E3: shl     bh, 1",
+        "000412E5: cmp     [di+0C9h], bh; Entity damage accumulator (0-255)",
+        "000412E9: jnb     short loc_41352",
+        "000412EB: cmp     word ptr [si+0Ch], 4"
+      ]
+    }
+  ],
+  "aircraft_type_data": [
+    {
+      "aircraft_type": "F-16",
+      "template_address": "0x22cf0",
+      "threshold_offset": "0x56",
+      "damage_threshold": 159,
+      "surrounding_data": [
+        "0x4a",
+        "0x3e",
+        "0xfb",
+        "0x3e",
+        "0x26",
+        "0x3c",
+        "0x9f",
+        "0x3f",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x0",
+        "0x7d",
+        "0x0"
+      ]
+    },
+    {
+      "aircraft_type": "Heavy Aircraft",
+      "template_address": "0x22d0a",
+      "threshold_offset": "0x56",
+      "damage_threshold": 220,
+      "surrounding_data": [
+        "0x26",
+        "0x2",
+        "0x8a",
+        "0x2",
+        "0xe8",
+        "0x3",
+        "0xdc",
+        "0x5",
+        "0xd0",
+        "0x7",
+        "0xc4",
+        "0x9",
+        "0xb2",
+        "0xc",
+        "0xa0",
+        "0xf"
+      ]
+    },
+    {
+      "aircraft_type": "Light Aircraft",
+      "template_address": "0x22d24",
+      "threshold_offset": "0x56",
+      "damage_threshold": 245,
+      "surrounding_data": [
+        "0xa9",
+        "0x1",
+        "0xd",
+        "0x2",
+        "0x1",
+        "0x4",
+        "0xf5",
+        "0x5",
+        "0xe9",
+        "0x7",
+        "0xdd",
+        "0x9",
+        "0xc5",
+        "0xd",
+        "0xad",
+        "0x11"
+      ]
+    },
+    {
+      "note": "Template candidates found nearby",
+      "candidates": [
+        {
+          "address": "0x22cf0",
+          "threshold": 46
+        },
+        {
+          "address": "0x22d0a",
+          "threshold": 46
+        },
+        {
+          "address": "0x22d3e",
+          "threshold": 61
+        }
+      ]
+    }
+  ],
+  "instant_kill_operations": [
+    {
+      "function": "sub_415FD",
+      "address": "0x4163d",
+      "instruction": "or      word ptr [di+0CAh], STATUS_ALL_SUBSYSTEMS; Entity damage status bitfield (DAMAGE_STATUS_FLAGS)",
+      "mask": "0x3fff",
+      "type": "bitfield_set"
+    }
+  ],
+  "summary": {
+    "explosion_funcs": 2,
+    "threshold_checks": 3,
+    "instant_kills": 1
+  }
+}
