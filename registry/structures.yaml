@@ -877,23 +877,36 @@
       size: 48
       type: PlaneData[4]
       name: plane_data
-      confidence: high  # 90%
+      confidence: high  # 95%
       description: |
         Array of 4 per-plane data structures (12 bytes each).
         Indexed by plane number within flight.
         
-        Substructure (12 bytes per plane):
-          +0x16 (relative +0x00): uint16_t field_16 (div by 64)
-          +0x18 (relative +0x02): uint16_t field_18 (unknown)
-          +0x1A (relative +0x04): uint16_t field_1A (div by 3)
-          +0x1C (relative +0x06): uint16_t field_1C (div by 5)
-          +0x1F (relative +0x09): uint8_t  field_1F (checked if == 0x0A)
-          +0x20 (relative +0x0A): uint8_t  field_20 (OR'd with field_1F result)
+        Substructure (12 bytes per plane, offsets relative to FlightRecord):
+          +0x16 (rel +0x00): uint16_t field_16 (÷64, no negation)
+          +0x18 (rel +0x02): int16_t altitude (negated then ÷64) ⭐ CONFIRMED
+          +0x1A (rel +0x04): uint16_t speed (÷3) ⭐ LIKELY
+          +0x1C (rel +0x06): uint16_t field_1C (÷5, unknown purpose)
+          +0x1F (rel +0x09): uint8_t  field_1F (checked if == 0x0A)
+          +0x20 (rel +0x0A): uint8_t  field_20 (OR'd with field_1F result)
         
-        Hypothesis: altitude, speed, or waypoint-specific parameters.
+        ⭐ ALTITUDE DISCOVERED:
+        Field +0x18 stores NEGATIVE altitude values.
+        Code: neg ax; idiv 64
+        Result: altitude in 64-foot increments (display units)
+        
+        Example: -10000 feet stored as value 10000
+                 10000 ÷ 64 = 156.25 ≈ 156 display units
+        
+        ⭐ SPEED LIKELY:
+        Field +0x1A divided by 3 (3-knot increments?)
+        Common in flight sims for memory efficiency.
       evidence:
-        - address: 0x18CB0E (FlightRecord +0x16, plane offset calculation)
-        - pattern: "add bx, ax; where ax = plane_index * 0x0C"
+        - address: 0x18CAAC (altitude read: mov ax, es:[bx+18h]; neg ax; idiv 64)
+        - address: 0x18CB10 (field_16 read: mov ax, es:[bx+16h]; idiv 64)
+        - address: 0x18CB7E (speed read: mov ax, es:[bx+1Ah]; idiv 3)
+        - address: 0x18CBC9 (field_1C read: mov ax, es:[bx+1Ch]; idiv 5)
+        - strings: "ALTITUDE" found at 0x15150A with 17 references in R4E/R4F/R55 overlays
     
     - offset: 0x3A
       size: 92

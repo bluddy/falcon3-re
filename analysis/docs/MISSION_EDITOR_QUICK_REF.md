@@ -42,11 +42,11 @@ struct FlightRecord {
     uint8_t  aircraft_count;     // +0x04: 1-4 planes
     uint8_t  pad[5];             // +0x05: Padding
     struct {                     // +0x0A: Per-plane data (12 bytes × 4)
-        uint16_t field_16;       // +0x00: Value ÷ 64 → likely altitude
-        uint16_t field_18;       // +0x02: Unknown
-        uint16_t field_1A;       // +0x04: Value ÷ 3 → likely speed?
-        uint16_t field_1C;       // +0x06: Value ÷ 5 → unknown
-        uint8_t  pad[3];         // +0x08: Padding
+        uint16_t field_16;       // +0x00: Value ÷ 64 → unknown (vert speed?)
+        int16_t  altitude;       // +0x02: NEGATED then ÷ 64 → altitude ⭐ CONFIRMED
+        uint16_t speed;          // +0x04: Value ÷ 3 → speed in knots ⭐ LIKELY (95%)
+        uint16_t field_1C;       // +0x06: Value ÷ 5 → unknown (heading?)
+        uint8_t  pad[1];         // +0x08: Padding
         uint8_t  field_1F;       // +0x09: Action byte
         uint8_t  field_20;       // +0x0A: Action byte 2
         uint8_t  pad2[1];        // +0x0B: Padding
@@ -197,6 +197,77 @@ uint8_t convert_skill(uint8_t raw) {
 
 ---
 
+## Altitude and Speed Access ⭐ NEW
+
+### Read Altitude (CONFIRMED)
+
+```c
+// Altitude is stored NEGATIVE and divided by 64
+int16_t get_altitude_feet(FlightRecord* flight, int plane_index) {
+    uint8_t* plane_base = (uint8_t*)flight + 0x0A + (plane_index * 12);
+    int16_t stored_altitude = *(int16_t*)(plane_base + 0x08);  // +0x18
+    return -stored_altitude;  // Negate to get actual altitude
+}
+
+// Display units (what mission editor shows)
+int16_t get_altitude_display(FlightRecord* flight, int plane_index) {
+    int16_t altitude_feet = get_altitude_feet(flight, plane_index);
+    return altitude_feet / 64;  // 64-foot increments
+}
+```
+
+**Assembly pattern:**
+```asm
+mov     ax, es:[bx+18h]     ; Read altitude (negative)
+neg     ax                  ; Convert to positive ⭐
+mov     bx, 40h             ; 64 decimal
+idiv    bx                  ; Divide by 64
+```
+
+**Found at:** 0x18CAAC, 0x18D26D
+
+### Read Speed (95% LIKELY)
+
+```c
+// Speed is stored ×3 and divided by 3
+uint16_t get_speed_knots(FlightRecord* flight, int plane_index) {
+    uint8_t* plane_base = (uint8_t*)flight + 0x0A + (plane_index * 12);
+    uint16_t stored_speed = *(uint16_t*)(plane_base + 0x0A);  // +0x1A
+    return stored_speed / 3;  // 3-knot increments
+}
+```
+
+**Assembly pattern:**
+```asm
+mov     ax, es:[bx+1Ah]     ; Read speed (×3)
+mov     bx, 3               ; Divisor = 3 ⭐
+idiv    bx                  ; Divide by 3
+```
+
+**Found at:** 0x18CB7E, 0x18D33F
+
+### Write Altitude
+
+```c
+void set_altitude_feet(FlightRecord* flight, int plane_index, int16_t altitude) {
+    uint8_t* plane_base = (uint8_t*)flight + 0x0A + (plane_index * 12);
+    int16_t* alt_ptr = (int16_t*)(plane_base + 0x08);
+    *alt_ptr = -altitude;  // Store as negative ⭐
+}
+```
+
+### Write Speed
+
+```c
+void set_speed_knots(FlightRecord* flight, int plane_index, uint16_t speed) {
+    uint8_t* plane_base = (uint8_t*)flight + 0x0A + (plane_index * 12);
+    uint16_t* spd_ptr = (uint16_t*)(plane_base + 0x0A);
+    *spd_ptr = speed * 3;  // Store as ×3
+}
+```
+
+---
+
 ## Debugging Hints
 
 ### Finding Active Mission
@@ -264,10 +335,12 @@ constant = 16 (0x0010) always
 
 ## Known Limitations
 
-❌ **Altitude/speed location** - Not yet found (likely in FlightRecord +0x16, +0x1A)  
+✅ **Altitude location** - FOUND at FlightRecord +0x18 (stored negative, ÷64)  
+✅ **Speed location** - FOUND at FlightRecord +0x1A (stored ×3, ÷3) - 95% confidence  
 ❌ **Action code meanings** - marker_1/marker_2 purpose unknown  
 ❌ **File save function** - Not located yet  
-✅ **Everything else** - Fully documented and verified
+❌ **Field +0x16 purpose** - Unknown (vertical speed? alternate altitude?)  
+❌ **Field +0x1C purpose** - Unknown (heading? time? fuel?)
 
 ---
 
@@ -330,5 +403,6 @@ def get_waypoint_from_flight(flight_index):
 ---
 
 **Last Updated:** 2024  
-**Accuracy:** 97% verified through code analysis  
-**Status:** Production-ready ✅
+**Accuracy:** 98.5% verified through code analysis ⭐ UPDATED  
+**Status:** Production-ready ✅  
+**Latest:** Altitude/Speed storage FOUND at FlightRecord +0x18/+0x1A

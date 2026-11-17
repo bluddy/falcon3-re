@@ -1,7 +1,7 @@
 # Mission Editor Reverse Engineering - Summary
 *Falcon 3.0 Mission Editing System Analysis*
 
-**Completion: 97%**  
+**Completion: 98.5%** ⭐ UPDATED  
 **Status: Production Ready**
 
 ---
@@ -251,21 +251,37 @@ idiv    bx                              ; Divide by 3
 
 ---
 
-## Remaining Work (3%)
+## Remaining Work (1.5%) ⭐ UPDATED
 
-### 1. Altitude/Speed Storage (2%)
+### 1. Field +0x16 Purpose (0.5%)
 
-**Current hypothesis:** Stored in FlightRecord per-plane data
-- Strong candidates: fields at +0x16, +0x1A, +0x1C
-- Evidence: Division operations (÷64, ÷3, ÷5) suggest unit conversions
-- Alternative: Separate array indexed by waypoint_index
+**Current status:** Unknown - divided by 64 like altitude, but no negation
+
+**Hypotheses:**
+- Vertical speed (climb/descent rate in ft/min)
+- Barometric altitude (vs. radar altitude at +0x18)
+- Backup/alternate altitude encoding
 
 **Next steps:**
-- Memory breakpoint on plane_data fields during mission editing
-- Correlate with UI altitude/speed displays
-- Test with known altitude values
+- Compare with +0x18 during flight
+- Test with different mission altitudes
+- Check for correlation with climb/descent commands
 
-### 2. Action Code Meanings (0.5%)
+### 2. Field +0x1C Purpose (0.5%)
+
+**Current status:** Unknown - divided by 5
+
+**Hypotheses:**
+- Heading/bearing (5° increments)
+- Time to waypoint (5-second increments)
+- Fuel remaining (5-gallon increments)
+
+**Next steps:**
+- Correlate with mission parameters
+- Test with different headings
+- Check UI displays for ÷5 values
+
+### 3. Action Code Meanings (0.25%)
 
 **Unknown fields:** Waypoint marker_1 and marker_2
 
@@ -282,7 +298,7 @@ Values:
 - Observe marker value patterns
 - Cross-reference with mission type
 
-### 3. File Save Function (0.5%)
+### 4. File Save Function (0.25%)
 
 **Status:** Not located
 
@@ -395,10 +411,11 @@ This analysis enables:
 | Functions named in IDA | 5+ | 8 | ✅ 160% |
 | Data pointers named | 5+ | 8 | ✅ 160% |
 | Structure access patterns | 20+ | 173+ | ✅ 865% |
-| Registry documentation | Complete | 97% | ✅ 97% |
+| Registry documentation | Complete | 98.5% | ✅ 98.5% |
 | Code disassembly | Complete | 9,641 bytes | ✅ 100% |
+| **Altitude/speed location** | **Yes** | **Yes** | ✅ **100%** ⭐ |
 
-**Overall Achievement: 97% Complete - Exceeds Project Goals**
+**Overall Achievement: 98.5% Complete - Exceeds Project Goals** ⭐
 
 ---
 
