@@ -9017,10 +9017,19 @@ functions:
     doc: '26B, in=2 (mode_session_state_reset, mode_record_field_lookup). ds:4AC2h==5 sub_3FD89 path); else retn. conf: high'
     source: 'old_registry (was: mode_sprite_angle_gate)'
   - address: 0x03a9b7
-    name: farobj_floor_match_dispatch
-    system: farobj
-    doc: '101B retn, cd=0, callees farobj_dist_bounds_4ac0 + bound_table_check_49b8 + bound-check dispatch chain. conf: med'
-    source: 'old_registry (was: farobj_floor_match_dispatch)'
+    name: radar_detection_azimuth_range_check
+    system: radar
+    size: 101
+    doc: >
+      Primary radar detection function that sets/clears entity RADAR_VISIBLE flag (entity+0x79 bit 0).
+      Checks: (1) radar_mode_state != 3 and radar_mode_flag != 0 for special handling,
+      (2) Azimuth cone: abs(entity.angle_azimuth - 0x1000) <= 0xE3 (±5° from forward, 14-bit angle system),
+      (3) Radar type branching: if radar_type_selector==1 (SAM) skips distance check, else calls farobj_dist_bounds_4ac0,
+      (4) Range check: calls bound_table_check_49b8(entity.range) against F8 bounds (radar_range_min/max).
+      If all checks pass: OR entity+0x79, 0x01 (set RADAR_VISIBLE). If any fail: AND entity+0x79, 0xFE (clear).
+      The 0xE3 constant is likely the narrowest F9 azimuth setting and may be dynamically modified.
+      Originally farobj_floor_match_dispatch.
+    source: RADAR_DETECTION_COMPLETE.md, radar_detection_functions.txt
 
   # BOUND SYSTEM
   - address: 0x03aa1c
@@ -9036,10 +9045,20 @@ functions:
 
   # FLOOR SYSTEM
   - address: 0x03aa7e
-    name: bound_range_check_4aad
-    system: bound
-    doc: '157B retn, caller_dyn=0 in=7, callee bound_table_check_49b8. Range check of a halved DX:AX against the ds:4AAD..4AAF window (CF=0 in range). conf: high'
-    source: 'old_registry (was: bound_range_check_4aad)'
+    name: radar_detection_range_gate
+    system: radar
+    size: 157
+    doc: >
+      Range-based radar detection gating with state machine integration. First part (0x3AA7E-0x3AA95) 
+      is bound_range_check helper: takes 32-bit distance in DX:AX, shifts right by 1 (divide by 2), 
+      compares against radar_range_min (DS:4AAF) and radar_range_max (DS:4AAD), returns CF=0 if in range.
+      Second part (0x3AA96-0x3AB1A) is detection wrapper: checks entity.status_flags bit 0 (ACTIVE), 
+      calls bound_table_check_49b8(entity.range), integrates with detection_mode_state (DS:4AC2) 
+      state machine (values 1 and 2 trigger different paths), checks entity.distance fields (+0x08/0x0A), 
+      compares entity.range against threshold 0x240 (576). Sets RADAR_VISIBLE flag (OR entity+0x79, 1) 
+      if all checks pass, clears flag (AND 0xFE) otherwise. Updates detection state flags at DS:4ABD/4AC3/4AC4.
+      Originally bound_range_check_4aad.
+    source: RADAR_DETECTION_COMPLETE.md, radar_detection_functions.txt
 
   # ENTITY SYSTEM
   - address: 0x03ab1b

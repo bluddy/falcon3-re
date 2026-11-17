@@ -1013,3 +1013,100 @@ globals:
       Configuration flag, set to 0 or 4 by record_script_coord_entry based on 
       radar_config_byte_related value. Set to 4 when radar_config_byte_related is 0.
     source: radar_key_handlers.txt
+
+  # ===========================================================================
+  # RADAR DETECTION SYSTEM
+  # ===========================================================================
+  
+  - address: 0x4AAD
+    name: radar_range_max
+    size: 2
+    type: word
+    doc: >
+      Maximum detection range threshold (game units). Set by F8 key handler based on 
+      selected range mode (10/20/40/80 nm). Used by bound_range_check_4aad to determine 
+      if target is within radar range. Compared against entity.range field (+0x92).
+    source: RADAR_DETECTION_COMPLETE.md
+  
+  - address: 0x4AAF
+    name: radar_range_min
+    size: 2
+    type: word
+    doc: >
+      Minimum detection range threshold (game units). Set by F8 key handler. 
+      Targets closer than this are out of detection bounds. Used with radar_range_max 
+      to define the detection band for current F8 setting.
+    source: RADAR_DETECTION_COMPLETE.md
+  
+  - address: 0x4AC2
+    name: detection_mode_state
+    size: 1
+    type: byte
+    doc: >
+      Detection state machine mode variable. Checked for values 1 and 2 by 
+      bound_range_check_4aad. Value 2 triggers RADAR_VISIBLE flag setting. 
+      Part of complex state machine that gates detection logic.
+    source: RADAR_DETECTION_COMPLETE.md, radar_detection_functions.txt
+  
+  - address: 0x4A83
+    name: detection_gate_flag
+    size: 1
+    type: byte
+    doc: >
+      Detection enable gate flag. When set to 1, bypasses certain detection checks 
+      and allows RADAR_VISIBLE flag to be set. Used by bound_range_check_4aad.
+    source: RADAR_DETECTION_COMPLETE.md
+  
+  - address: 0x4ABD
+    name: detection_state_flag_1
+    size: 1
+    type: byte
+    doc: >
+      Detection state machine flag. Cleared to 0 when entering certain detection states 
+      in bound_range_check_4aad. Part of multi-flag state tracking system.
+    source: radar_detection_functions.txt
+  
+  - address: 0x4AC3
+    name: detection_state_flag_2
+    size: 1
+    type: byte
+    doc: >
+      Detection state machine flag. Cleared to 0 alongside detection_state_flag_1. 
+      Read and written by detection logic to track state transitions.
+    source: radar_detection_functions.txt
+  
+  - address: 0x4AC4
+    name: detection_state_flag_3
+    size: 1
+    type: byte
+    doc: >
+      Detection state machine flag. Cleared to 0 when RADAR_VISIBLE flag is cleared. 
+      Used in detection enable/disable logic.
+    source: radar_detection_functions.txt
+  
+  - address: 0x4AC5
+    name: detection_state_flag_4
+    size: 1
+    type: byte
+    doc: >
+      Detection state machine flag. Set to 1 under specific detection conditions. 
+      Part of timer/threshold state management at 0x3AAB8 in bound_range_check_4aad.
+    source: radar_detection_functions.txt
+  
+  - address: 0x4A93
+    name: detection_timer
+    size: 2
+    type: word
+    doc: >
+      Detection timer/counter. Compared against cs:word_2F679 and modified during 
+      detection state transitions. Set to 0xA00 (2560) under certain conditions.
+    source: radar_detection_functions.txt
+  
+  - address: 0x4A91
+    name: detection_threshold
+    size: 2
+    type: word
+    doc: >
+      Detection threshold value. Set to 0xA00 (2560) by detection logic at 0x3AABD. 
+      Used in conjunction with detection_timer for time-based state management.
+    source: radar_detection_functions.txt
