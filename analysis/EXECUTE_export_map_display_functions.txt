@@ -1,0 +1,103 @@
+# IDA Python script to export map display functions
+# Run this in IDA Pro with FALCON3.IDB open
+# Save output to C:\Users\ybarnoy\projects\falcon3\analysis\
+
+import idc
+import idaapi
+import idautils
+
+# Target functions for map display analysis
+functions = {
+    'waypoint_coordinate_processor': 0x1A2441,
+    'waypoint_display_processor': 0x1A0F10,
+    'waypoint_display_helper': 0x1A163A,
+    'tactical_screen_coordinator': 0x12DB6A,
+}
+
+output_dir = r'C:\Users\ybarnoy\projects\falcon3\analysis'
+
+for func_name, func_addr in functions.items():
+    print(f"\n{'='*80}")
+    print(f"Disassembling {func_name} @ 0x{func_addr:X}")
+    print(f"{'='*80}")
+    
+    func_ea = func_addr
+    func = idaapi.get_func(func_ea)
+    
+    if not func:
+        print(f"ERROR: No function at 0x{func_ea:X}")
+        continue
+    
+    func_start = func.start_ea
+    func_end = func.end_ea
+    func_size = func_end - func_start
+    
+    print(f"Function bounds: 0x{func_start:X} - 0x{func_end:X} ({func_size} bytes)")
+    
+    # Open output file
+    output_file = f"{output_dir}\\{func_name}_disasm.txt"
+    with open(output_file, 'w') as f:
+        f.write(f"{'='*80}\n")
+        f.write(f"Function: {func_name}\n")
+        f.write(f"Address: 0x{func_start:X} - 0x{func_end:X}\n")
+        f.write(f"Size: {func_size} bytes (0x{func_size:X})\n")
+        f.write(f"{'='*80}\n\n")
+        
+        # Disassemble each instruction
+        ea = func_start
+        while ea < func_end:
+            # Get disassembly line
+            disasm = idc.generate_disasm_line(ea, 0)
+            
+            # Get instruction bytes
+            item_size = idc.get_item_size(ea)
+            bytes_str = ' '.join([f'{idc.get_wide_byte(ea+i):02X}' for i in range(item_size)])
+            
+            # Get any comments
+            comment = idc.get_cmt(ea, 0)
+            repeat_comment = idc.get_cmt(ea, 1)
+            
+            # Format output line
+            f.write(f"0x{ea:08X}  {bytes_str:24s}  {disasm}")
+            
+            if comment:
+                f.write(f"  ; {comment}")
+            if repeat_comment:
+                f.write(f"  ; {repeat_comment}")
+                
+            f.write("\n")
+            
+            # Get cross-references FROM this address
+            xrefs_from = list(idautils.XrefsFrom(ea, 0))
+            if xrefs_from:
+                for xref in xrefs_from:
+                    if xref.type in [idc.fl_CN, idc.fl_CF]:  # Call or jump
+                        target_name = idc.get_name(xref.to)
+                        if target_name:
+                            f.write(f"                              -> calls/jumps to: {target_name} @ 0x{xref.to:X}\n")
+            
+            ea = idc.next_head(ea, func_end)
+        
+        # List all data cross-references used by this function
+        f.write(f"\n{'='*80}\n")
+        f.write(f"DATA CROSS-REFERENCES\n")
+        f.write(f"{'='*80}\n\n")
+        
+        data_refs = set()
+        ea = func_start
+        while ea < func_end:
+            for xref in idautils.XrefsFrom(ea, 0):
+                if xref.type == idc.dr_O:  # Data offset
+                    data_refs.add(xref.to)
+            ea = idc.next_head(ea, func_end)
+        
+        for data_ea in sorted(data_refs):
+            data_name = idc.get_name(data_ea)
+            data_value = idc.get_wide_dword(data_ea)
+            f.write(f"0x{data_ea:08X}  {data_name if data_name else '(unnamed)':30s}  = 0x{data_value:08X}\n")
+    
+    print(f"Exported to: {output_file}")
+
+print(f"\n{'='*80}")
+print("Export complete!")
+print(f"{'='*80}")
