@@ -232,6 +232,83 @@ globals:
       is set during burst fire. Decremented per projectile in burst.
     source: WEAPON_TYPES_DECODED.md
   
+  # IR Lock System (AIM-9 Sidewinder)
+  
+  - address: 0x44AA
+    name: ir_lock_target_index
+    size: 2
+    type: word
+    doc: |
+      Current IR lock target index or lock state. Values 0-3 in mode 0 (simple), 4-16 in mode 1 (extended).
+      Read/written multiple times per frame during lock search. When stable, IR lock is acquired.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x44DB
+    name: ir_lock_cycle_index_mode0
+    size: 1
+    type: byte
+    doc: |
+      IR lock cycle counter for mode 0 (simple search). Values 0-3, cycles through 4 potential targets.
+      Incremented each frame with (ax+1) & 3 pattern until valid heat signature found.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x44DC
+    name: ir_lock_cycle_index_mode1
+    size: 1
+    type: byte
+    doc: |
+      IR lock cycle counter for mode 1 (extended search). Values 4-16 (0x4-0x10), wider search range
+      for 13 potential targets. Wraps: if > 16, reset to 4.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x4890
+    name: ir_lock_status_byte
+    size: 1
+    type: byte
+    doc: |
+      IR lock status gate condition. Compared to high byte of lock index before checking entity
+      heat signature. Exact semantics unclear, likely enables/disables IR seeker.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x48BA
+    name: ir_lock_entity_base
+    size: 2
+    type: word
+    doc: |
+      Pointer to entity base for IR lock checks. Loaded into SI, used as base for entity field access
+      at [bx+si+0xAE] to check heat_signature field.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x487E
+    name: ir_lock_slot_mapping
+    size: 16
+    type: array[16]
+    doc: |
+      Entity slot index mapping array. Indexed by lock cycle value to get actual entity slot ID.
+      Translates lock index (0-15) → entity slot for heat signature check.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x1075
+    name: ir_lock_temp_byte_1075
+    size: 1
+    type: byte
+    doc: Cleared to 0 at IR lock function entry. Temporary variable, purpose unclear.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x44D4
+    name: ir_lock_temp_byte_44d4
+    size: 1
+    type: byte
+    doc: Cleared to 0 at IR lock function entry. Temporary variable, purpose unclear.
+    source: IR_LOCK_ANALYSIS.md
+    
+  - address: 0x499E
+    name: ir_lock_temp_byte_499e
+    size: 1
+    type: byte
+    doc: Cleared to 0 at IR lock function entry. Temporary variable, purpose unclear.
+    source: IR_LOCK_ANALYSIS.md
+  
   # ===========================================================================
   # COORDINATE / WORLD TRANSFORM
   # ===========================================================================

@@ -289,15 +289,16 @@ structs:
       - {offset: 0x09, size: 15, name: data,           type: bytes,   comment: "Type-specific data (15 bytes)"}
 
   - name: EntitySlotRecord
-    size: 92         # 0x5C bytes; 16 slots at 0x54AF:0x386F
+    size: 175        # 0xAF bytes minimum; 16 slots at 0x54AF:0x386F
     status: confirmed
-    source: "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_DETECTION_COMPLETE.md"
+    source: "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_DETECTION_COMPLETE.md; IR_LOCK_ANALYSIS.md"
     notes: >
       Active entity slot record. 16 slots at segment 0x54AF, offset 0x386F.
       Updated 3-pass every frame by farobj_slot_update_driver. Contains per-frame
       processing state, update flags, and links to farobj instances.
       Radar system uses fields +0x08/0x0A (distance), +0x74/+0x79 (flags),
       +0x8E (azimuth), +0x92 (range), +0x96/98/9A (position) for detection and tracking.
+      IR lock system uses field +0xAE (heat_signature) for AIM-9 seeker targeting.
     fields:
       - {offset: 0x00, size: 6, name: header,          type: bytes,   comment: "Unknown header fields"}
       - {offset: 0x06, size: 2, name: farobj_slot,     type: uint16,  comment: "FarObj main table slot index"}
@@ -315,7 +316,10 @@ structs:
       - {offset: 0x96, size: 2, name: position_x,      type: int16,   comment: "World X position (used by radar scanner)"}
       - {offset: 0x98, size: 2, name: position_y,      type: int16,   comment: "World Y position (used by radar scanner)"}
       - {offset: 0x9A, size: 2, name: position_z,      type: int16,   comment: "World Z position / altitude (used by radar scanner)"}
-      - {offset: 0x9C, size: 0, name: end_marker,      type: bytes,   comment: "End of confirmed fields at +0x9C (size may be larger)"}
+      - {offset: 0x9C, size: 18, name: data_9C_AD,     type: bytes,   comment: "Unknown bytes 0x9C-0xAD"}
+      - {offset: 0xAE, size: 1, name: heat_signature,  type: uint8,   comment: "IR visibility (0=cold/no lock, non-zero=hot/IR lockable). Checked by weapon_aim9_seeker_lock_check for AIM-9 IR missiles."}
+      - {offset: 0xAF, size: 0, name: end_marker,      type: bytes,   comment: "End of confirmed fields at +0xAF (actual size may be larger)"}
+
 
   # ---- 3D Object Model Format (docs/architecture/3d_objects.md) ----
 
