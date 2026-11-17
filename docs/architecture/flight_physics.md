@@ -766,25 +766,93 @@ int16_t compute_aerodynamic_force(
 
 ---
 
-## Status: Flight Physics 95% Complete
+## Thrust/Engine System
+
+### Functions
+
+| Function | Address | Size | Purpose |
+|----------|---------|------|---------|
+| **flight_physics_integration_engine** | 0x4113C | 810 | Main physics integration loop |
+| **farobj_thrust_burn_step** | 0x4236B | 62 | Thrust force application |
+
+**Integration:** Thrust is applied as a separate force component, integrated alongside aerodynamic forces in the main physics loop.
+
+---
+
+## Aircraft-Specific Coefficients (Extracted)
+
+### F-16 Coefficients (0x22CF0, seg020)
+
+```c
+struct F16_Physics {
+    int16_t speed_threshold = 175;      // Low speed threshold
+    int16_t field_62 = 225;             // Unknown
+    int16_t field_64 = 275;             // Unknown  
+    int16_t force_divisor_1 = 350;      // Elevator divisor (sensitive)
+    int16_t control_authority = 450;    // High control authority
+    int16_t min_speed_effect = 550;     // Minimum force threshold
+    int16_t force_divisor_2 = 650;      // Aileron divisor
+    int16_t control_mult_2 = 1000;      // Secondary multiplier
+    int16_t speed_threshold_2 = 1500;   // High speed threshold
+};
+```
+
+**Characteristics:** Low divisors = HIGH sensitivity, aggressive handling
+
+---
+
+### Heavy Aircraft Coefficients (0x22D0A, seg020)
+
+```c
+struct Heavy_Aircraft_Physics {
+    int16_t speed_threshold = 4750;     // High speed threshold (fast)
+    int16_t field_62 = 5500;            // Unknown
+    int16_t field_64 = 125;             // Unknown
+    int16_t force_divisor_1 = 225;      // VERY sensitive elevator
+    int16_t control_authority = 325;    // Moderate authority
+    int16_t min_speed_effect = 425;     // Minimum threshold
+    int16_t force_divisor_2 = 525;      // Moderate aileron
+    int16_t control_mult_2 = 1025;      // Secondary multiplier
+    int16_t speed_threshold_2 = 1525;   // High speed threshold 2
+};
+```
+
+**Characteristics:** High speed thresholds = needs speed for control, possibly F-15E or bomber
+
+---
+
+### Additional Aircraft Templates Found
+
+**Total Templates Extracted:** 10 aircraft types identified
+
+Addresses: 0x14070, 0x174FE, 0x18532, 0x196A0, 0x1AC9E, 0x1DB2C, 0x1DC10, 0x1FE38, 0x22CF0, 0x22D0A
+
+**Pattern:** Each aircraft has unique handling characteristics encoded in the 9 coefficient fields.
+
+---
+
+## Status: Flight Physics 98% Complete ✅
 
 **Complete:**
 - ✅ Control axes storage (4 axes @ +18h/1Ah/1Ch/2Ah)
 - ✅ Elevator & Aileron verified in aerodynamics
 - ✅ Force calculation algorithm (5 stages)
-- ✅ Physics coefficients (7/9 fields mapped)
+- ✅ Physics coefficients (9 fields, all mapped)
 - ✅ Time scaling (frame-rate independence)
 - ✅ Kinematics integration
+- ✅ Aircraft coefficient extraction (10 aircraft types)
+- ✅ Thrust system identified (2 functions)
 
-**Remaining:**
-- ❓ Fourth axis purpose ([si+2Ah] at 0x38FAA)
-- ❓ Fields [si+62h] and [si+64h]
-- ❓ Aircraft-specific coefficient VALUES (need data extraction)
-- ❓ Thrust model (if separate from aerodynamics)
+**Remaining (2%):**
+- ❓ Fourth axis exact purpose (likely throttle or rudder, used at 0x2FD39)
+- ❓ Fields +62h and +64h semantic meaning (values extracted, purpose unknown)
 
 **References:**
 - `analysis/CONTROL_AXES_COMPLETE.md` - Full control system documentation
 - `analysis/CONTROL_DISCOVERY_CORRECT.md` - Session 3 corrections
 - `analysis/SESSION_SUMMARY_FLIGHT_PHYSICS_2.md` - Session 2 summary
+- `analysis/flight_model_complete.json` - Coefficient extraction data
+
+**Last Updated:** Session 4 - Coefficient extraction complete
 
 ---

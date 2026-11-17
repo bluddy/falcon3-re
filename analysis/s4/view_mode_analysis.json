@@ -1,0 +1,135 @@
+{
+  "question": "Is mode 3 really front cockpit, or is it side view?",
+  "hypothesis": "Front cockpit = 2D bitmap, only side views need 3D projection",
+  "mode_checks": [
+    {
+      "function": "viewmode3_vector_project",
+      "call_site": "0x2f535",
+      "check_at": "0x2f53a",
+      "comparison": "cmp     ax, 3",
+      "mode_value": "3",
+      "context": [
+        "cmp     ax, 3",
+        "jz      short loc_2F540",
+        "retf"
+      ]
+    },
+    {
+      "function": "undoc_3C03D",
+      "call_site": "0x3c04a",
+      "check_at": "0x3c04f",
+      "comparison": "cmp     ax, 3",
+      "mode_value": "3",
+      "context": [
+        "cmp     ax, 3",
+        "jnz     short loc_3C05E",
+        "mov     ax, [si+16h]"
+      ]
+    },
+    {
+      "function": "sub_40CC5",
+      "call_site": "0x40cfc",
+      "check_at": "0x40d01",
+      "comparison": "cmp     ax, 3",
+      "mode_value": "3",
+      "context": [
+        "cmp     ax, 3",
+        "jnz     short loc_40D0C",
+        "mov     cx, 120Ch"
+      ]
+    },
+    {
+      "function": "terrain_vm_buffer_decay",
+      "call_site": "0x4f472",
+      "check_at": "0x4f477",
+      "comparison": "cmp     ax, 3",
+      "mode_value": "3",
+      "context": [
+        "cmp     ax, 3",
+        "jnz     short loc_4F47F",
+        "mov     dx, 0AC59h"
+      ]
+    }
+  ],
+  "viewmode3_callers": [
+    {
+      "caller": "game_frame_pipeline_step",
+      "call_site": "0x2fdae",
+      "context": [
+        "0002FD9A: call    terrain_vm_flag_gate",
+        "0002FD9E: call    flag_gate_zero_abc",
+        "0002FDA3: mov     ds:4EAh, al",
+        "0002FDA6: test    al, 1",
+        "0002FDA8: jnz     short loc_2FDAE",
+        "0002FDAA: test    al, 2",
+        "0002FDAC: jnz     short loc_2FDBE",
+        "0002FDAE: call    viewmode3_vector_project",
+        "0002FDB3: mov     bx, 20h ; ' '",
+        "0002FDB6: mov     ax, ds:24Dh",
+        "0002FDB9: call    indexed_table_dispatch_7b0e_4287",
+        "0002FDBE: mov     bx, 2Ch ; ','",
+        "0002FDC1: mov     si, 14h"
+      ]
+    }
+  ],
+  "view_strings": [
+    {
+      "address": "0x54dde",
+      "string": "view ="
+    },
+    {
+      "address": "0x54f44",
+      "string": "cockpit"
+    },
+    {
+      "address": "0x5790a",
+      "string": "breaking right."
+    },
+    {
+      "address": "0x5791a",
+      "string": "breaking left."
+    },
+    {
+      "address": "0x57953",
+      "string": "copy bracket right."
+    },
+    {
+      "address": "0x57967",
+      "string": "copy bracket left."
+    },
+    {
+      "address": "0x5797a",
+      "string": "copy drag right...don't miss!"
+    },
+    {
+      "address": "0x57998",
+      "string": "copy drag left...nail him!"
+    },
+    {
+      "address": "0x106150",
+      "string": "left the game"
+    },
+    {
+      "address": "0x1500f1",
+      "string": "rear aspect ir"
+    },
+    {
+      "address": "0x1506ab",
+      "string": "  front line screen"
+    },
+    {
+      "address": "0x1518d0",
+      "string": "43.`rear aspect ir"
+    }
+  ],
+  "game_frame_pipeline": {
+    "address": "0x2fd42",
+    "view_related_calls": []
+  },
+  "summary": {
+    "total_mode_checks": 4,
+    "mode_3_specific": 4,
+    "viewmode3_call_count": 1,
+    "view_strings_found": 12
+  }
+}
