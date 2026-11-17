@@ -1,0 +1,3309 @@
+====================================================================================================
+FUNCTION: waypoint_flags_processor
+Address: 0x0018DE3B
+Size: 9641 bytes (3258 instructions)
+====================================================================================================
+
+STATISTICS:
+  Function calls: 71
+  Data references: 0
+  Waypoint operations: 1
+  Branch/loop instructions: 268
+
+WAYPOINT OPERATIONS:
+----------------------------------------------------------------------------------------------------
+  +0x1416 @ 0x18CD28: mov     dx, 15h; Waypoint size (21 bytes)
+
+FUNCTION CALLS:
+----------------------------------------------------------------------------------------------------
+  +0x0037 @ 0x18B949: call 0x2ED8
+  +0x005C @ 0x18B96E: call 0x2ED8
+  +0x007E @ 0x18B990: call 0x2ED8
+  +0x0092 @ 0x18B9A4: call 0x2ED8
+  +0x0340 @ 0x18BC52: call 0x6809
+  +0x0347 @ 0x18BC59: call 0x67E8
+  +0x0358 @ 0x18BC6A: call 0x806
+  +0x0360 @ 0x18BC72: call 0x6809
+  +0x0367 @ 0x18BC79: call 0x67E8
+  +0x0393 @ 0x18BCA5: call 0x806
+  +0x0404 @ 0x18BD16: call 0x6809
+  +0x040B @ 0x18BD1D: call 0x67E8
+  +0x041E @ 0x18BD30: call 0x806
+  +0x0454 @ 0x18BD66: call 0x6809
+  +0x045B @ 0x18BD6D: call 0x67E8
+  +0x046F @ 0x18BD81: call 0x806
+  +0x04C3 @ 0x18BDD5: call 0x6809
+  +0x04CA @ 0x18BDDC: call 0x67E8
+  +0x04DD @ 0x18BDEF: call 0x806
+  +0x051A @ 0x18BE2C: call 0x6809
+  +0x0521 @ 0x18BE33: call 0x67E8
+  +0x0535 @ 0x18BE47: call 0x806
+  +0x05B2 @ 0x18BEC4: call 0x6809
+  +0x05B9 @ 0x18BECB: call 0x67E8
+  +0x05CD @ 0x18BEDF: call 0x806
+  +0x062F @ 0x18BF41: call 0x6809
+  +0x0636 @ 0x18BF48: call 0x67E8
+  +0x064A @ 0x18BF5C: call 0x806
+  +0x06BB @ 0x18BFCD: call 0x6809
+  +0x06C2 @ 0x18BFD4: call 0x67E8
+
+COMPLETE DISASSEMBLY:
+----------------------------------------------------------------------------------------------------
+   0 | +0x0000 | 0x18B912 | enter   5Ch, 0
+   1 | +0x0004 | 0x18B916 | push    si
+   2 | +0x0005 | 0x18B917 | push    di
+   3 | +0x0006 | 0x18B918 | mov     [bp+var_41], 0
+   4 | +0x000A | 0x18B91C | mov     ax, 7894h
+   5 | +0x000D | 0x18B91F | mov     es, ax
+   6 | +0x000F | 0x18B921 | mov     ax, word ptr es:dword_79E6C+2
+   7 | +0x0013 | 0x18B925 | mov     dx, word ptr es:dword_79E6C
+   8 | +0x0018 | 0x18B92A | mov     [bp+var_50], ax
+   9 | +0x001B | 0x18B92D | mov     [bp+var_52], dx
+  10 | +0x001E | 0x18B930 | mov     [bp+var_38], 0
+  11 | +0x0023 | 0x18B935 | mov     [bp+var_3A], 0
+  12 | +0x0028 | 0x18B93A | mov     [bp+var_56], 8
+  13 | +0x002D | 0x18B93F | push    ds
+  14 | +0x002E | 0x18B940 | push    (offset byte_847C1+2 - offset byte_7A320)
+  15 | +0x0031 | 0x18B943 | push    0
+  16 | +0x0033 | 0x18B945 | push    0
+  17 | +0x0035 | 0x18B947 | push    4
+  18 | +0x0037 | 0x18B949 | call    op_dispatch_far_entry
+  19 | +0x003C | 0x18B94E | add     sp, 0Ah
+  20 | +0x003F | 0x18B951 | mov     [bp+var_30], ax
+  21 | +0x0042 | 0x18B954 | mov     ax, 7894h
+  22 | +0x0045 | 0x18B957 | mov     es, ax
+  23 | +0x0047 | 0x18B959 | mov     ax, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+  24 | +0x004B | 0x18B95D | add     ax, 7F9h
+  25 | +0x004E | 0x18B960 | push    word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+  26 | +0x0053 | 0x18B965 | push    ax
+  27 | +0x0054 | 0x18B966 | push    294h
+  28 | +0x0057 | 0x18B969 | push    [bp+var_30]
+  29 | +0x005A | 0x18B96C | push    0Ch
+  30 | +0x005C | 0x18B96E | call    op_dispatch_far_entry
+  31 | +0x0061 | 0x18B973 | add     sp, 0Ah
+  32 | +0x0064 | 0x18B976 | mov     ax, 7894h
+  33 | +0x0067 | 0x18B979 | mov     es, ax
+  34 | +0x0069 | 0x18B97B | mov     ax, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+  35 | +0x006D | 0x18B97F | add     ax, 565h
+  36 | +0x0070 | 0x18B982 | push    word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+  37 | +0x0075 | 0x18B987 | push    ax
+  38 | +0x0076 | 0x18B988 | push    294h
+  39 | +0x0079 | 0x18B98B | push    [bp+var_30]
+  40 | +0x007C | 0x18B98E | push    0Ch
+  41 | +0x007E | 0x18B990 | call    op_dispatch_far_entry
+  42 | +0x0083 | 0x18B995 | add     sp, 0Ah
+  43 | +0x0086 | 0x18B998 | push    ss
+  44 | +0x0087 | 0x18B999 | lea     ax, [bp+var_30]
+  45 | +0x008A | 0x18B99C | push    ax
+  46 | +0x008B | 0x18B99D | push    0
+  47 | +0x008D | 0x18B99F | push    [bp+var_30]
+  48 | +0x0090 | 0x18B9A2 | push    8
+  49 | +0x0092 | 0x18B9A4 | call    op_dispatch_far_entry
+  50 | +0x0097 | 0x18B9A9 | add     sp, 0Ah
+  51 | +0x009A | 0x18B9AC | mov     [bp+var_34], 0
+  52 | +0x009F | 0x18B9B1 | mov     [bp+var_4A], 0
+  53 | +0x00A4 | 0x18B9B6 | mov     ax, 709Fh
+  54 | +0x00A7 | 0x18B9B9 | mov     es, ax
+  55 | +0x00A9 | 0x18B9BB | mov     al, byte ptr es:word_70A2A
+  56 | +0x00AD | 0x18B9BF | cbw
+  57 | +0x00AE | 0x18B9C0 | shl     ax, 2
+  58 | +0x00B1 | 0x18B9C3 | mov     dx, 602Eh
+  59 | +0x00B4 | 0x18B9C6 | mov     bx, ax
+  60 | +0x00B6 | 0x18B9C8 | mov     es, dx
+  61 | +0x00B8 | 0x18B9CA | cmp     byte ptr es:[bx+2], 0
+  62 | +0x00BE | 0x18B9D0 | jnz     short loc_18B9D5
+  63 | +0x00C0 | 0x18B9D2 | jmp     loc_18C246
+  64 | +0x00C3 | 0x18B9D5 | mov     ax, 709Fh
+  65 | +0x00C6 | 0x18B9D8 | mov     es, ax
+  66 | +0x00C8 | 0x18B9DA | mov     al, byte ptr es:word_70A2A
+  67 | +0x00CC | 0x18B9DE | cbw
+  68 | +0x00CD | 0x18B9DF | shl     ax, 2
+  69 | +0x00D0 | 0x18B9E2 | mov     dx, 602Eh
+  70 | +0x00D3 | 0x18B9E5 | mov     bx, ax
+  71 | +0x00D5 | 0x18B9E7 | mov     es, dx
+  72 | +0x00D7 | 0x18B9E9 | mov     al, es:[bx+3]
+  73 | +0x00DC | 0x18B9EE | mov     ah, 0
+  74 | +0x00DE | 0x18B9F0 | inc     ax
+  75 | +0x00DF | 0x18B9F1 | mov     [bp+var_36], ax
+  76 | +0x00E2 | 0x18B9F4 | mov     [bp+var_16], 0
+  77 | +0x00E7 | 0x18B9F9 | jmp     short loc_18BA1A
+  78 | +0x00E9 | 0x18B9FB | mov     ax, [bp+var_16]
+  79 | +0x00EC | 0x18B9FE | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+  80 | +0x00EF | 0x18BA01 | imul    dx
+  81 | +0x00F1 | 0x18BA03 | mov     dx, 7894h
+  82 | +0x00F4 | 0x18BA06 | mov     es, dx
+  83 | +0x00F6 | 0x18BA08 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+  84 | +0x00FB | 0x18BA0D | add     bx, ax
+  85 | +0x00FD | 0x18BA0F | mov     al, es:[bx+4]
+  86 | +0x0101 | 0x18BA13 | cbw
+  87 | +0x0102 | 0x18BA14 | add     [bp+var_34], ax
+  88 | +0x0105 | 0x18BA17 | inc     [bp+var_16]
+  89 | +0x0108 | 0x18BA1A | mov     ax, 7894h
+  90 | +0x010B | 0x18BA1D | mov     es, ax
+  91 | +0x010D | 0x18BA1F | mov     ax, es:word_79EEC
+  92 | +0x0111 | 0x18BA23 | cmp     ax, [bp+var_16]
+  93 | +0x0114 | 0x18BA26 | jg      short loc_18B9FB
+  94 | +0x0116 | 0x18BA28 | mov     ax, [bp+var_34]
+  95 | +0x0119 | 0x18BA2B | add     [bp+var_4A], ax
+  96 | +0x011C | 0x18BA2E | mov     [bp+var_4C], 0
+  97 | +0x0121 | 0x18BA33 | mov     [bp+var_1A], 0
+  98 | +0x0126 | 0x18BA38 | jmp     loc_18BB32
+  99 | +0x0129 | 0x18BA3B | mov     [bp+var_16], 0
+ 100 | +0x012E | 0x18BA40 | jmp     loc_18BB18
+ 101 | +0x0131 | 0x18BA43 | mov     ax, [bp+var_16]
+ 102 | +0x0134 | 0x18BA46 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 103 | +0x0137 | 0x18BA49 | imul    dx
+ 104 | +0x0139 | 0x18BA4B | mov     dx, 7894h
+ 105 | +0x013C | 0x18BA4E | mov     es, dx
+ 106 | +0x013E | 0x18BA50 | les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 107 | +0x0143 | 0x18BA55 | add     bx, ax
+ 108 | +0x0145 | 0x18BA57 | mov     al, es:[bx+7Eh]
+ 109 | +0x0149 | 0x18BA5B | cbw
+ 110 | +0x014A | 0x18BA5C | cmp     ax, [bp+var_1A]
+ 111 | +0x014D | 0x18BA5F | jz      short loc_18BA64
+ 112 | +0x014F | 0x18BA61 | jmp     loc_18BB15
+ 113 | +0x0152 | 0x18BA64 | mov     ax, [bp+var_16]
+ 114 | +0x0155 | 0x18BA67 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 115 | +0x0158 | 0x18BA6A | imul    dx
+ 116 | +0x015A | 0x18BA6C | mov     dx, 7894h
+ 117 | +0x015D | 0x18BA6F | mov     es, dx
+ 118 | +0x015F | 0x18BA71 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 119 | +0x0164 | 0x18BA76 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 120 | +0x0169 | 0x18BA7B | add     bx, ax
+ 121 | +0x016B | 0x18BA7D | add     bx, 3Dh ; '='
+ 122 | +0x016E | 0x18BA80 | mov     word ptr [bp+var_2A+2], dx
+ 123 | +0x0171 | 0x18BA83 | mov     word ptr [bp+var_2A], bx
+ 124 | +0x0174 | 0x18BA86 | mov     ax, [bp+var_1A]
+ 125 | +0x0177 | 0x18BA89 | cmp     ax, [bp+var_36]
+ 126 | +0x017A | 0x18BA8C | jge     short loc_18BAB6
+ 127 | +0x017C | 0x18BA8E | mov     ax, [bp+var_38]
+ 128 | +0x017F | 0x18BA91 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 129 | +0x0182 | 0x18BA94 | imul    dx
+ 130 | +0x0184 | 0x18BA96 | mov     dx, 7894h
+ 131 | +0x0187 | 0x18BA99 | mov     es, dx
+ 132 | +0x0189 | 0x18BA9B | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 133 | +0x018E | 0x18BAA0 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 134 | +0x0193 | 0x18BAA5 | add     bx, ax
+ 135 | +0x0195 | 0x18BAA7 | add     bx, 7F9h
+ 136 | +0x0199 | 0x18BAAB | mov     word ptr [bp+var_2E+2], dx
+ 137 | +0x019C | 0x18BAAE | mov     word ptr [bp+var_2E], bx
+ 138 | +0x019F | 0x18BAB1 | inc     [bp+var_38]
+ 139 | +0x01A2 | 0x18BAB4 | jmp     short loc_18BADE
+ 140 | +0x01A4 | 0x18BAB6 | mov     ax, [bp+var_3A]
+ 141 | +0x01A7 | 0x18BAB9 | add     ax, 14h
+ 142 | +0x01AA | 0x18BABC | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 143 | +0x01AD | 0x18BABF | imul    dx
+ 144 | +0x01AF | 0x18BAC1 | mov     dx, 7894h
+ 145 | +0x01B2 | 0x18BAC4 | mov     es, dx
+ 146 | +0x01B4 | 0x18BAC6 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 147 | +0x01B9 | 0x18BACB | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 148 | +0x01BE | 0x18BAD0 | add     bx, ax
+ 149 | +0x01C0 | 0x18BAD2 | add     bx, 3Dh ; '='
+ 150 | +0x01C3 | 0x18BAD5 | mov     word ptr [bp+var_2E+2], dx
+ 151 | +0x01C6 | 0x18BAD8 | mov     word ptr [bp+var_2E], bx
+ 152 | +0x01C9 | 0x18BADB | inc     [bp+var_3A]
+ 153 | +0x01CC | 0x18BADE | mov     [bp+var_18], 0
+ 154 | +0x01D1 | 0x18BAE3 | jmp     short loc_18BAFA
+ 155 | +0x01D3 | 0x18BAE5 | les     bx, [bp+var_2A]
+ 156 | +0x01D6 | 0x18BAE8 | add     bx, [bp+var_18]
+ 157 | +0x01D9 | 0x18BAEB | mov     al, es:[bx]
+ 158 | +0x01DC | 0x18BAEE | les     bx, [bp+var_2E]
+ 159 | +0x01DF | 0x18BAF1 | add     bx, [bp+var_18]
+ 160 | +0x01E2 | 0x18BAF4 | mov     es:[bx], al
+ 161 | +0x01E5 | 0x18BAF7 | inc     [bp+var_18]
+ 162 | +0x01E8 | 0x18BAFA | cmp     [bp+var_18], 42h ; 'B'
+ 163 | +0x01EC | 0x18BAFE | jl      short loc_18BAE5
+ 164 | +0x01EE | 0x18BB00 | inc     [bp+var_4C]
+ 165 | +0x01F1 | 0x18BB03 | mov     ax, 7894h
+ 166 | +0x01F4 | 0x18BB06 | mov     es, ax
+ 167 | +0x01F6 | 0x18BB08 | les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 168 | +0x01FB | 0x18BB0D | mov     ax, es:[bx+0A8Dh]
+ 169 | +0x0200 | 0x18BB12 | mov     [bp+var_16], ax
+ 170 | +0x0203 | 0x18BB15 | inc     [bp+var_16]
+ 171 | +0x0206 | 0x18BB18 | mov     ax, 7894h
+ 172 | +0x0209 | 0x18BB1B | mov     es, ax
+ 173 | +0x020B | 0x18BB1D | les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 174 | +0x0210 | 0x18BB22 | mov     ax, es:[bx+0A8Dh]
+ 175 | +0x0215 | 0x18BB27 | cmp     ax, [bp+var_16]
+ 176 | +0x0218 | 0x18BB2A | jbe     short loc_18BB2F
+ 177 | +0x021A | 0x18BB2C | jmp     loc_18BA43
+ 178 | +0x021D | 0x18BB2F | inc     [bp+var_1A]
+ 179 | +0x0220 | 0x18BB32 | mov     ax, [bp+var_1A]
+ 180 | +0x0223 | 0x18BB35 | cmp     ax, [bp+var_34]
+ 181 | +0x0226 | 0x18BB38 | jge     short loc_18BB3D
+ 182 | +0x0228 | 0x18BB3A | jmp     loc_18BA3B
+ 183 | +0x022B | 0x18BB3D | mov     ax, [bp+var_4C]
+ 184 | +0x022E | 0x18BB40 | cmp     ax, [bp+var_36]
+ 185 | +0x0231 | 0x18BB43 | jg      short loc_18BB48
+ 186 | +0x0233 | 0x18BB45 | jmp     loc_18BC06
+ 187 | +0x0236 | 0x18BB48 | mov     ax, 7894h
+ 188 | +0x0239 | 0x18BB4B | mov     es, ax
+ 189 | +0x023B | 0x18BB4D | mov     ax, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 190 | +0x023F | 0x18BB51 | mov     dx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 191 | +0x0244 | 0x18BB56 | add     dx, 565h
+ 192 | +0x0248 | 0x18BB5A | mov     word ptr [bp+var_A+2], ax
+ 193 | +0x024B | 0x18BB5D | mov     word ptr [bp+var_A], dx
+ 194 | +0x024E | 0x18BB60 | mov     ax, [bp+var_36]
+ 195 | +0x0251 | 0x18BB63 | mov     [bp+var_16], ax
+ 196 | +0x0254 | 0x18BB66 | jmp     loc_18BBFB
+ 197 | +0x0257 | 0x18BB69 | mov     ax, [bp+var_16]
+ 198 | +0x025A | 0x18BB6C | sub     ax, [bp+var_36]
+ 199 | +0x025D | 0x18BB6F | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 200 | +0x0260 | 0x18BB72 | imul    dx
+ 201 | +0x0262 | 0x18BB74 | les     bx, [bp+var_A]
+ 202 | +0x0265 | 0x18BB77 | add     bx, ax
+ 203 | +0x0267 | 0x18BB79 | mov     al, es:[bx+41h]
+ 204 | +0x026B | 0x18BB7D | cbw
+ 205 | +0x026C | 0x18BB7E | mov     [bp+var_1A], ax
+ 206 | +0x026F | 0x18BB81 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+ 207 | +0x0272 | 0x18BB84 | imul    dx
+ 208 | +0x0274 | 0x18BB86 | mov     dx, 7894h
+ 209 | +0x0277 | 0x18BB89 | mov     es, dx
+ 210 | +0x0279 | 0x18BB8B | mov     dx, word ptr es:dword_79E6C+2
+ 211 | +0x027E | 0x18BB90 | mov     bx, word ptr es:dword_79E6C
+ 212 | +0x0283 | 0x18BB95 | add     bx, ax
+ 213 | +0x0285 | 0x18BB97 | mov     word ptr [bp+var_2A+2], dx
+ 214 | +0x0288 | 0x18BB9A | mov     word ptr [bp+var_2A], bx
+ 215 | +0x028B | 0x18BB9D | mov     ax, [bp+var_56]
+ 216 | +0x028E | 0x18BBA0 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+ 217 | +0x0291 | 0x18BBA3 | imul    dx
+ 218 | +0x0293 | 0x18BBA5 | mov     dx, 7894h
+ 219 | +0x0296 | 0x18BBA8 | mov     es, dx
+ 220 | +0x0298 | 0x18BBAA | mov     dx, word ptr es:dword_79E6C+2
+ 221 | +0x029D | 0x18BBAF | mov     bx, word ptr es:dword_79E6C
+ 222 | +0x02A2 | 0x18BBB4 | add     bx, ax
+ 223 | +0x02A4 | 0x18BBB6 | mov     word ptr [bp+var_2E+2], dx
+ 224 | +0x02A7 | 0x18BBB9 | mov     word ptr [bp+var_2E], bx
+ 225 | +0x02AA | 0x18BBBC | mov     [bp+var_18], 0
+ 226 | +0x02AF | 0x18BBC1 | jmp     short loc_18BBD8
+ 227 | +0x02B1 | 0x18BBC3 | les     bx, [bp+var_2A]
+ 228 | +0x02B4 | 0x18BBC6 | add     bx, [bp+var_18]
+ 229 | +0x02B7 | 0x18BBC9 | mov     al, es:[bx]
+ 230 | +0x02BA | 0x18BBCC | les     bx, [bp+var_2E]
+ 231 | +0x02BD | 0x18BBCF | add     bx, [bp+var_18]
+ 232 | +0x02C0 | 0x18BBD2 | mov     es:[bx], al
+ 233 | +0x02C3 | 0x18BBD5 | inc     [bp+var_18]
+ 234 | +0x02C6 | 0x18BBD8 | cmp     [bp+var_18], 17h
+ 235 | +0x02CA | 0x18BBDC | jl      short loc_18BBC3
+ 236 | +0x02CC | 0x18BBDE | mov     ax, [bp+var_16]
+ 237 | +0x02CF | 0x18BBE1 | sub     ax, [bp+var_36]
+ 238 | +0x02D2 | 0x18BBE4 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 239 | +0x02D5 | 0x18BBE7 | imul    dx
+ 240 | +0x02D7 | 0x18BBE9 | les     bx, [bp+var_A]
+ 241 | +0x02DA | 0x18BBEC | add     bx, ax
+ 242 | +0x02DC | 0x18BBEE | mov     al, byte ptr [bp+var_56]
+ 243 | +0x02DF | 0x18BBF1 | mov     es:[bx+41h], al
+ 244 | +0x02E3 | 0x18BBF5 | inc     [bp+var_56]
+ 245 | +0x02E6 | 0x18BBF8 | inc     [bp+var_16]
+ 246 | +0x02E9 | 0x18BBFB | mov     ax, [bp+var_16]
+ 247 | +0x02EC | 0x18BBFE | cmp     ax, [bp+var_4C]
+ 248 | +0x02EF | 0x18BC01 | jge     short loc_18BC06
+ 249 | +0x02F1 | 0x18BC03 | jmp     loc_18BB69
+ 250 | +0x02F4 | 0x18BC06 | mov     al, byte ptr [bp+var_3A]
+ 251 | +0x02F7 | 0x18BC09 | mov     [bp+var_3B], al
+ 252 | +0x02FA | 0x18BC0C | mov     ax, 7894h
+ 253 | +0x02FD | 0x18BC0F | mov     es, ax
+ 254 | +0x02FF | 0x18BC11 | cmp     es:graphics_mode_flag, 3
+ 255 | +0x0305 | 0x18BC17 | jz      short loc_18BC1C
+ 256 | +0x0307 | 0x18BC19 | jmp     loc_18BFAE
+ 257 | +0x030A | 0x18BC1C | mov     [bp+var_16], 1
+ 258 | +0x030F | 0x18BC21 | mov     [bp+var_44], 0
+ 259 | +0x0314 | 0x18BC26 | mov     bx, [bp+var_16]
+ 260 | +0x0317 | 0x18BC29 | shl     bx, 2
+ 261 | +0x031A | 0x18BC2C | mov     ax, 602Eh
+ 262 | +0x031D | 0x18BC2F | mov     es, ax
+ 263 | +0x031F | 0x18BC31 | cmp     byte ptr es:[bx+1], 2
+ 264 | +0x0325 | 0x18BC37 | jnz     short loc_18BCAF
+ 265 | +0x0327 | 0x18BC39 | mov     bx, [bp+var_16]
+ 266 | +0x032A | 0x18BC3C | shl     bx, 2
+ 267 | +0x032D | 0x18BC3F | mov     ax, 602Eh
+ 268 | +0x0330 | 0x18BC42 | mov     es, ax
+ 269 | +0x0332 | 0x18BC44 | cmp     byte ptr es:[bx+2], 0
+ 270 | +0x0338 | 0x18BC4A | jz      short loc_18BCAF
+ 271 | +0x033A | 0x18BC4C | mov     al, byte ptr [bp+var_16]
+ 272 | +0x033D | 0x18BC4F | mov     [bp+var_4E], al
+ 273 | +0x0340 | 0x18BC52 | call    far_cb_1
+ 274 | +0x0345 | 0x18BC57 | push    0
+ 275 | +0x0347 | 0x18BC59 | call    dispatch_220f0_invoke_1arg
+ 276 | +0x034C | 0x18BC5E | pop     cx
+ 277 | +0x034D | 0x18BC5F | push    ss
+ 278 | +0x034E | 0x18BC60 | lea     ax, [bp+var_44]
+ 279 | +0x0351 | 0x18BC63 | push    ax
+ 280 | +0x0352 | 0x18BC64 | mov     al, byte ptr [bp+var_16]
+ 281 | +0x0355 | 0x18BC67 | push    ax
+ 282 | +0x0356 | 0x18BC68 | push    0Bh
+ 283 | +0x0358 | 0x18BC6A | call    ui_text_render_simple
+ 284 | +0x035D | 0x18BC6F | add     sp, 8
+ 285 | +0x0360 | 0x18BC72 | call    far_cb_1
+ 286 | +0x0365 | 0x18BC77 | push    0
+ 287 | +0x0367 | 0x18BC79 | call    dispatch_220f0_invoke_1arg
+ 288 | +0x036C | 0x18BC7E | pop     cx
+ 289 | +0x036D | 0x18BC7F | mov     ax, 7894h
+ 290 | +0x0370 | 0x18BC82 | mov     es, ax
+ 291 | +0x0372 | 0x18BC84 | mov     ax, es:word_79EEC
+ 292 | +0x0376 | 0x18BC88 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+ 293 | +0x0379 | 0x18BC8B | imul    dx
+ 294 | +0x037B | 0x18BC8D | mov     dx, 7894h
+ 295 | +0x037E | 0x18BC90 | mov     es, dx
+ 296 | +0x0380 | 0x18BC92 | mov     dx, word ptr es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+ 297 | +0x0385 | 0x18BC97 | add     dx, ax
+ 298 | +0x0387 | 0x18BC99 | push    word ptr es:flight_array_ptr+2; Pointer to flight array (N × 130 bytes)
+ 299 | +0x038C | 0x18BC9E | push    dx
+ 300 | +0x038D | 0x18BC9F | mov     al, byte ptr [bp+var_16]
+ 301 | +0x0390 | 0x18BCA2 | push    ax
+ 302 | +0x0391 | 0x18BCA3 | push    0Ch
+ 303 | +0x0393 | 0x18BCA5 | call    ui_text_render_simple
+ 304 | +0x0398 | 0x18BCAA | add     sp, 8
+ 305 | +0x039B | 0x18BCAD | jmp     short loc_18BCB8
+ 306 | +0x039D | 0x18BCAF | inc     [bp+var_16]
+ 307 | +0x03A0 | 0x18BCB2 | cmp     [bp+var_16], 6
+ 308 | +0x03A4 | 0x18BCB6 | jnz     short loc_18BCBD
+ 309 | +0x03A6 | 0x18BCB8 | mov     [bp+var_16], 0FFFFh
+ 310 | +0x03AB | 0x18BCBD | cmp     [bp+var_16], 0
+ 311 | +0x03AF | 0x18BCC1 | jle     short loc_18BCC6
+ 312 | +0x03B1 | 0x18BCC3 | jmp     loc_18BC26
+ 313 | +0x03B4 | 0x18BCC6 | cmp     [bp+var_44], 0
+ 314 | +0x03B8 | 0x18BCCA | jnz     short loc_18BCCF
+ 315 | +0x03BA | 0x18BCCC | jmp     loc_18C246
+ 316 | +0x03BD | 0x18BCCF | mov     [bp+var_3E], 0
+ 317 | +0x03C2 | 0x18BCD4 | mov     ax, 7894h
+ 318 | +0x03C5 | 0x18BCD7 | mov     es, ax
+ 319 | +0x03C7 | 0x18BCD9 | mov     ax, es:word_79EEC
+ 320 | +0x03CB | 0x18BCDD | mov     [bp+var_16], ax
+ 321 | +0x03CE | 0x18BCE0 | jmp     short loc_18BD01
+ 322 | +0x03D0 | 0x18BCE2 | mov     ax, [bp+var_16]
+ 323 | +0x03D3 | 0x18BCE5 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+ 324 | +0x03D6 | 0x18BCE8 | imul    dx
+ 325 | +0x03D8 | 0x18BCEA | mov     dx, 7894h
+ 326 | +0x03DB | 0x18BCED | mov     es, dx
+ 327 | +0x03DD | 0x18BCEF | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+ 328 | +0x03E2 | 0x18BCF4 | add     bx, ax
+ 329 | +0x03E4 | 0x18BCF6 | mov     al, es:[bx+4]
+ 330 | +0x03E8 | 0x18BCFA | cbw
+ 331 | +0x03E9 | 0x18BCFB | add     [bp+var_3E], ax
+ 332 | +0x03EC | 0x18BCFE | inc     [bp+var_16]
+ 333 | +0x03EF | 0x18BD01 | mov     ax, 7894h
+ 334 | +0x03F2 | 0x18BD04 | mov     es, ax
+ 335 | +0x03F4 | 0x18BD06 | mov     ax, es:word_79EEC
+ 336 | +0x03F8 | 0x18BD0A | add     ax, [bp+var_44]
+ 337 | +0x03FB | 0x18BD0D | cmp     ax, [bp+var_16]
+ 338 | +0x03FE | 0x18BD10 | jg      short loc_18BCE2
+ 339 | +0x0400 | 0x18BD12 | mov     [bp+var_4D], 5
+ 340 | +0x0404 | 0x18BD16 | call    far_cb_1
+ 341 | +0x0409 | 0x18BD1B | push    0
+ 342 | +0x040B | 0x18BD1D | call    dispatch_220f0_invoke_1arg
+ 343 | +0x0410 | 0x18BD22 | pop     cx
+ 344 | +0x0411 | 0x18BD23 | push    ss
+ 345 | +0x0412 | 0x18BD24 | lea     ax, [bp+var_3F]
+ 346 | +0x0415 | 0x18BD27 | push    ax
+ 347 | +0x0416 | 0x18BD28 | mov     al, [bp+var_4E]
+ 348 | +0x0419 | 0x18BD2B | push    ax
+ 349 | +0x041A | 0x18BD2C | mov     al, [bp+var_4D]
+ 350 | +0x041D | 0x18BD2F | push    ax
+ 351 | +0x041E | 0x18BD30 | call    ui_text_render_simple
+ 352 | +0x0423 | 0x18BD35 | add     sp, 8
+ 353 | +0x0426 | 0x18BD38 | mov     [bp+var_4D], 6
+ 354 | +0x042A | 0x18BD3C | mov     [bp+var_16], 0
+ 355 | +0x042F | 0x18BD41 | jmp     short loc_18BDC0
+ 356 | +0x0431 | 0x18BD43 | mov     ax, [bp+var_38]
+ 357 | +0x0434 | 0x18BD46 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 358 | +0x0437 | 0x18BD49 | imul    dx
+ 359 | +0x0439 | 0x18BD4B | mov     dx, 7894h
+ 360 | +0x043C | 0x18BD4E | mov     es, dx
+ 361 | +0x043E | 0x18BD50 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 362 | +0x0443 | 0x18BD55 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 363 | +0x0448 | 0x18BD5A | add     bx, ax
+ 364 | +0x044A | 0x18BD5C | add     bx, 7F9h
+ 365 | +0x044E | 0x18BD60 | mov     word ptr [bp+var_A+2], dx
+ 366 | +0x0451 | 0x18BD63 | mov     word ptr [bp+var_A], bx
+ 367 | +0x0454 | 0x18BD66 | call    far_cb_1
+ 368 | +0x0459 | 0x18BD6B | push    0
+ 369 | +0x045B | 0x18BD6D | call    dispatch_220f0_invoke_1arg
+ 370 | +0x0460 | 0x18BD72 | pop     cx
+ 371 | +0x0461 | 0x18BD73 | push    word ptr [bp+var_A+2]
+ 372 | +0x0464 | 0x18BD76 | push    word ptr [bp+var_A]
+ 373 | +0x0467 | 0x18BD79 | mov     al, [bp+var_4E]
+ 374 | +0x046A | 0x18BD7C | push    ax
+ 375 | +0x046B | 0x18BD7D | mov     al, [bp+var_4D]
+ 376 | +0x046E | 0x18BD80 | push    ax
+ 377 | +0x046F | 0x18BD81 | call    ui_text_render_simple
+ 378 | +0x0474 | 0x18BD86 | add     sp, 8
+ 379 | +0x0477 | 0x18BD89 | les     bx, [bp+var_A]
+ 380 | +0x047A | 0x18BD8C | mov     al, es:[bx+3Fh]
+ 381 | +0x047E | 0x18BD90 | mov     dx, 7894h
+ 382 | +0x0481 | 0x18BD93 | mov     es, dx
+ 383 | +0x0483 | 0x18BD95 | add     al, byte ptr es:word_79EEC
+ 384 | +0x0488 | 0x18BD9A | mov     es, word ptr [bp+var_A+2]
+ 385 | +0x048B | 0x18BD9D | mov     es:[bx+3Fh], al
+ 386 | +0x048F | 0x18BDA1 | mov     al, byte ptr [bp+var_38]
+ 387 | +0x0492 | 0x18BDA4 | mov     es:[bx+41h], al
+ 388 | +0x0496 | 0x18BDA8 | mov     al, [bp+var_4D]
+ 389 | +0x0499 | 0x18BDAB | inc     al
+ 390 | +0x049B | 0x18BDAD | mov     [bp+var_4D], al
+ 391 | +0x049E | 0x18BDB0 | inc     [bp+var_38]
+ 392 | +0x04A1 | 0x18BDB3 | cmp     [bp+var_4D], 9
+ 393 | +0x04A5 | 0x18BDB7 | jbe     short loc_18BDBD
+ 394 | +0x04A7 | 0x18BDB9 | mov     [bp+var_4D], 5
+ 395 | +0x04AB | 0x18BDBD | inc     [bp+var_16]
+ 396 | +0x04AE | 0x18BDC0 | mov     al, [bp+var_3F]
+ 397 | +0x04B1 | 0x18BDC3 | mov     ah, 0
+ 398 | +0x04B3 | 0x18BDC5 | cmp     ax, [bp+var_16]
+ 399 | +0x04B6 | 0x18BDC8 | jle     short loc_18BDCD
+ 400 | +0x04B8 | 0x18BDCA | jmp     loc_18BD43
+ 401 | +0x04BB | 0x18BDCD | mov     al, [bp+var_4D]
+ 402 | +0x04BE | 0x18BDD0 | inc     al
+ 403 | +0x04C0 | 0x18BDD2 | mov     [bp+var_4D], al
+ 404 | +0x04C3 | 0x18BDD5 | call    far_cb_1
+ 405 | +0x04C8 | 0x18BDDA | push    0
+ 406 | +0x04CA | 0x18BDDC | call    dispatch_220f0_invoke_1arg
+ 407 | +0x04CF | 0x18BDE1 | pop     cx
+ 408 | +0x04D0 | 0x18BDE2 | push    ss
+ 409 | +0x04D1 | 0x18BDE3 | lea     ax, [bp+var_40]
+ 410 | +0x04D4 | 0x18BDE6 | push    ax
+ 411 | +0x04D5 | 0x18BDE7 | mov     al, [bp+var_4E]
+ 412 | +0x04D8 | 0x18BDEA | push    ax
+ 413 | +0x04D9 | 0x18BDEB | mov     al, [bp+var_4D]
+ 414 | +0x04DC | 0x18BDEE | push    ax
+ 415 | +0x04DD | 0x18BDEF | call    ui_text_render_simple
+ 416 | +0x04E2 | 0x18BDF4 | add     sp, 8
+ 417 | +0x04E5 | 0x18BDF7 | mov     al, [bp+var_4D]
+ 418 | +0x04E8 | 0x18BDFA | inc     al
+ 419 | +0x04EA | 0x18BDFC | mov     [bp+var_4D], al
+ 420 | +0x04ED | 0x18BDFF | mov     [bp+var_16], 0
+ 421 | +0x04F2 | 0x18BE04 | jmp     loc_18BE86
+ 422 | +0x04F5 | 0x18BE07 | mov     ax, [bp+var_3A]
+ 423 | +0x04F8 | 0x18BE0A | add     ax, 14h
+ 424 | +0x04FB | 0x18BE0D | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 425 | +0x04FE | 0x18BE10 | imul    dx
+ 426 | +0x0500 | 0x18BE12 | mov     dx, 7894h
+ 427 | +0x0503 | 0x18BE15 | mov     es, dx
+ 428 | +0x0505 | 0x18BE17 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 429 | +0x050A | 0x18BE1C | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 430 | +0x050F | 0x18BE21 | add     bx, ax
+ 431 | +0x0511 | 0x18BE23 | add     bx, 3Dh ; '='
+ 432 | +0x0514 | 0x18BE26 | mov     word ptr [bp+var_A+2], dx
+ 433 | +0x0517 | 0x18BE29 | mov     word ptr [bp+var_A], bx
+ 434 | +0x051A | 0x18BE2C | call    far_cb_1
+ 435 | +0x051F | 0x18BE31 | push    0
+ 436 | +0x0521 | 0x18BE33 | call    dispatch_220f0_invoke_1arg
+ 437 | +0x0526 | 0x18BE38 | pop     cx
+ 438 | +0x0527 | 0x18BE39 | push    word ptr [bp+var_A+2]
+ 439 | +0x052A | 0x18BE3C | push    word ptr [bp+var_A]
+ 440 | +0x052D | 0x18BE3F | mov     al, [bp+var_4E]
+ 441 | +0x0530 | 0x18BE42 | push    ax
+ 442 | +0x0531 | 0x18BE43 | mov     al, [bp+var_4D]
+ 443 | +0x0534 | 0x18BE46 | push    ax
+ 444 | +0x0535 | 0x18BE47 | call    ui_text_render_simple
+ 445 | +0x053A | 0x18BE4C | add     sp, 8
+ 446 | +0x053D | 0x18BE4F | les     bx, [bp+var_A]
+ 447 | +0x0540 | 0x18BE52 | mov     al, es:[bx+3Fh]
+ 448 | +0x0544 | 0x18BE56 | mov     dx, 7894h
+ 449 | +0x0547 | 0x18BE59 | mov     es, dx
+ 450 | +0x0549 | 0x18BE5B | add     al, byte ptr es:word_79EEC
+ 451 | +0x054E | 0x18BE60 | mov     es, word ptr [bp+var_A+2]
+ 452 | +0x0551 | 0x18BE63 | mov     es:[bx+3Fh], al
+ 453 | +0x0555 | 0x18BE67 | mov     al, byte ptr [bp+var_3A]
+ 454 | +0x0558 | 0x18BE6A | mov     es:[bx+41h], al
+ 455 | +0x055C | 0x18BE6E | mov     al, [bp+var_4D]
+ 456 | +0x055F | 0x18BE71 | inc     al
+ 457 | +0x0561 | 0x18BE73 | mov     [bp+var_4D], al
+ 458 | +0x0564 | 0x18BE76 | inc     [bp+var_3A]
+ 459 | +0x0567 | 0x18BE79 | cmp     [bp+var_4D], 9
+ 460 | +0x056B | 0x18BE7D | jbe     short loc_18BE83
+ 461 | +0x056D | 0x18BE7F | mov     [bp+var_4D], 5
+ 462 | +0x0571 | 0x18BE83 | inc     [bp+var_16]
+ 463 | +0x0574 | 0x18BE86 | mov     al, [bp+var_40]
+ 464 | +0x0577 | 0x18BE89 | mov     ah, 0
+ 465 | +0x0579 | 0x18BE8B | cmp     ax, [bp+var_16]
+ 466 | +0x057C | 0x18BE8E | jle     short loc_18BE93
+ 467 | +0x057E | 0x18BE90 | jmp     loc_18BE07
+ 468 | +0x0581 | 0x18BE93 | mov     al, [bp+var_4D]
+ 469 | +0x0584 | 0x18BE96 | inc     al
+ 470 | +0x0586 | 0x18BE98 | mov     [bp+var_4D], al
+ 471 | +0x0589 | 0x18BE9B | mov     [bp+var_16], 0
+ 472 | +0x058E | 0x18BEA0 | jmp     short loc_18BEFC
+ 473 | +0x0590 | 0x18BEA2 | mov     ax, [bp+var_36]
+ 474 | +0x0593 | 0x18BEA5 | add     ax, [bp+var_16]
+ 475 | +0x0596 | 0x18BEA8 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+ 476 | +0x0599 | 0x18BEAB | imul    dx
+ 477 | +0x059B | 0x18BEAD | mov     dx, 7894h
+ 478 | +0x059E | 0x18BEB0 | mov     es, dx
+ 479 | +0x05A0 | 0x18BEB2 | mov     dx, word ptr es:dword_79E6C+2
+ 480 | +0x05A5 | 0x18BEB7 | mov     bx, word ptr es:dword_79E6C
+ 481 | +0x05AA | 0x18BEBC | add     bx, ax
+ 482 | +0x05AC | 0x18BEBE | mov     [bp+var_50], dx
+ 483 | +0x05AF | 0x18BEC1 | mov     [bp+var_52], bx
+ 484 | +0x05B2 | 0x18BEC4 | call    far_cb_1
+ 485 | +0x05B7 | 0x18BEC9 | push    0
+ 486 | +0x05B9 | 0x18BECB | call    dispatch_220f0_invoke_1arg
+ 487 | +0x05BE | 0x18BED0 | pop     cx
+ 488 | +0x05BF | 0x18BED1 | push    [bp+var_50]
+ 489 | +0x05C2 | 0x18BED4 | push    [bp+var_52]
+ 490 | +0x05C5 | 0x18BED7 | mov     al, [bp+var_4E]
+ 491 | +0x05C8 | 0x18BEDA | push    ax
+ 492 | +0x05C9 | 0x18BEDB | mov     al, [bp+var_4D]
+ 493 | +0x05CC | 0x18BEDE | push    ax
+ 494 | +0x05CD | 0x18BEDF | call    ui_text_render_simple
+ 495 | +0x05D2 | 0x18BEE4 | add     sp, 8
+ 496 | +0x05D5 | 0x18BEE7 | mov     al, [bp+var_4D]
+ 497 | +0x05D8 | 0x18BEEA | inc     al
+ 498 | +0x05DA | 0x18BEEC | mov     [bp+var_4D], al
+ 499 | +0x05DD | 0x18BEEF | cmp     [bp+var_4D], 9
+ 500 | +0x05E1 | 0x18BEF3 | jbe     short loc_18BEF9
+ 501 | +0x05E3 | 0x18BEF5 | mov     [bp+var_4D], 5
+ 502 | +0x05E7 | 0x18BEF9 | inc     [bp+var_16]
+ 503 | +0x05EA | 0x18BEFC | mov     al, [bp+var_3F]
+ 504 | +0x05ED | 0x18BEFF | mov     ah, 0
+ 505 | +0x05EF | 0x18BF01 | cmp     ax, [bp+var_16]
+ 506 | +0x05F2 | 0x18BF04 | jg      short loc_18BEA2
+ 507 | +0x05F4 | 0x18BF06 | mov     al, [bp+var_3F]
+ 508 | +0x05F7 | 0x18BF09 | mov     ah, 0
+ 509 | +0x05F9 | 0x18BF0B | mov     dx, [bp+var_36]
+ 510 | +0x05FC | 0x18BF0E | add     dx, ax
+ 511 | +0x05FE | 0x18BF10 | mov     [bp+var_54], dx
+ 512 | +0x0601 | 0x18BF13 | mov     al, [bp+var_4D]
+ 513 | +0x0604 | 0x18BF16 | inc     al
+ 514 | +0x0606 | 0x18BF18 | mov     [bp+var_4D], al
+ 515 | +0x0609 | 0x18BF1B | mov     [bp+var_16], 0
+ 516 | +0x060E | 0x18BF20 | jmp     short loc_18BF7C
+ 517 | +0x0610 | 0x18BF22 | mov     ax, [bp+var_56]
+ 518 | +0x0613 | 0x18BF25 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+ 519 | +0x0616 | 0x18BF28 | imul    dx
+ 520 | +0x0618 | 0x18BF2A | mov     dx, 7894h
+ 521 | +0x061B | 0x18BF2D | mov     es, dx
+ 522 | +0x061D | 0x18BF2F | mov     dx, word ptr es:dword_79E6C+2
+ 523 | +0x0622 | 0x18BF34 | mov     bx, word ptr es:dword_79E6C
+ 524 | +0x0627 | 0x18BF39 | add     bx, ax
+ 525 | +0x0629 | 0x18BF3B | mov     [bp+var_50], dx
+ 526 | +0x062C | 0x18BF3E | mov     [bp+var_52], bx
+ 527 | +0x062F | 0x18BF41 | call    far_cb_1
+ 528 | +0x0634 | 0x18BF46 | push    0
+ 529 | +0x0636 | 0x18BF48 | call    dispatch_220f0_invoke_1arg
+ 530 | +0x063B | 0x18BF4D | pop     cx
+ 531 | +0x063C | 0x18BF4E | push    [bp+var_50]
+ 532 | +0x063F | 0x18BF51 | push    [bp+var_52]
+ 533 | +0x0642 | 0x18BF54 | mov     al, [bp+var_4E]
+ 534 | +0x0645 | 0x18BF57 | push    ax
+ 535 | +0x0646 | 0x18BF58 | mov     al, [bp+var_4D]
+ 536 | +0x0649 | 0x18BF5B | push    ax
+ 537 | +0x064A | 0x18BF5C | call    ui_text_render_simple
+ 538 | +0x064F | 0x18BF61 | add     sp, 8
+ 539 | +0x0652 | 0x18BF64 | mov     al, [bp+var_4D]
+ 540 | +0x0655 | 0x18BF67 | inc     al
+ 541 | +0x0657 | 0x18BF69 | mov     [bp+var_4D], al
+ 542 | +0x065A | 0x18BF6C | inc     [bp+var_56]
+ 543 | +0x065D | 0x18BF6F | cmp     [bp+var_4D], 9
+ 544 | +0x0661 | 0x18BF73 | jbe     short loc_18BF79
+ 545 | +0x0663 | 0x18BF75 | mov     [bp+var_4D], 5
+ 546 | +0x0667 | 0x18BF79 | inc     [bp+var_16]
+ 547 | +0x066A | 0x18BF7C | mov     al, [bp+var_40]
+ 548 | +0x066D | 0x18BF7F | mov     ah, 0
+ 549 | +0x066F | 0x18BF81 | cmp     ax, [bp+var_16]
+ 550 | +0x0672 | 0x18BF84 | jg      short loc_18BF22
+ 551 | +0x0674 | 0x18BF86 | mov     ax, 7894h
+ 552 | +0x0677 | 0x18BF89 | mov     es, ax
+ 553 | +0x0679 | 0x18BF8B | mov     ax, es:word_79EEC
+ 554 | +0x067D | 0x18BF8F | mov     [bp+var_46], ax
+ 555 | +0x0680 | 0x18BF92 | mov     ax, [bp+var_44]
+ 556 | +0x0683 | 0x18BF95 | mov     [bp+var_48], ax
+ 557 | +0x0686 | 0x18BF98 | mov     ax, 7894h
+ 558 | +0x0689 | 0x18BF9B | mov     dx, [bp+var_44]
+ 559 | +0x068C | 0x18BF9E | mov     es, ax
+ 560 | +0x068E | 0x18BFA0 | add     es:word_79EEC, dx
+ 561 | +0x0693 | 0x18BFA5 | mov     ax, [bp+var_3E]
+ 562 | +0x0696 | 0x18BFA8 | add     [bp+var_4A], ax
+ 563 | +0x0699 | 0x18BFAB | jmp     loc_18C246
+ 564 | +0x069C | 0x18BFAE | mov     ax, 709Fh
+ 565 | +0x069F | 0x18BFB1 | mov     es, ax
+ 566 | +0x06A1 | 0x18BFB3 | mov     al, byte ptr es:word_70A2A
+ 567 | +0x06A5 | 0x18BFB7 | cbw
+ 568 | +0x06A6 | 0x18BFB8 | shl     ax, 2
+ 569 | +0x06A9 | 0x18BFBB | mov     dx, 602Eh
+ 570 | +0x06AC | 0x18BFBE | mov     bx, ax
+ 571 | +0x06AE | 0x18BFC0 | mov     es, dx
+ 572 | +0x06B0 | 0x18BFC2 | cmp     byte ptr es:[bx+2], 0
+ 573 | +0x06B6 | 0x18BFC8 | jnz     short loc_18BFCD
+ 574 | +0x06B8 | 0x18BFCA | jmp     loc_18C246
+ 575 | +0x06BB | 0x18BFCD | call    far_cb_1
+ 576 | +0x06C0 | 0x18BFD2 | push    0
+ 577 | +0x06C2 | 0x18BFD4 | call    dispatch_220f0_invoke_1arg
+ 578 | +0x06C7 | 0x18BFD9 | pop     cx
+ 579 | +0x06C8 | 0x18BFDA | push    7894h
+ 580 | +0x06CB | 0x18BFDD | push    15ACh
+ 581 | +0x06CE | 0x18BFE0 | push    2
+ 582 | +0x06D0 | 0x18BFE2 | push    0
+ 583 | +0x06D2 | 0x18BFE4 | push    0Bh
+ 584 | +0x06D4 | 0x18BFE6 | call    ui_text_render_engine
+ 585 | +0x06D9 | 0x18BFEB | add     sp, 0Ah
+ 586 | +0x06DC | 0x18BFEE | call    far_cb_1
+ 587 | +0x06E1 | 0x18BFF3 | push    0
+ 588 | +0x06E3 | 0x18BFF5 | call    dispatch_220f0_invoke_1arg
+ 589 | +0x06E8 | 0x18BFFA | pop     cx
+ 590 | +0x06E9 | 0x18BFFB | mov     ax, 7894h
+ 591 | +0x06EC | 0x18BFFE | mov     es, ax
+ 592 | +0x06EE | 0x18C000 | push    word ptr es:flight_array_ptr+2; Pointer to flight array (N × 130 bytes)
+ 593 | +0x06F3 | 0x18C005 | push    word ptr es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+ 594 | +0x06F8 | 0x18C00A | mov     ax, 7894h
+ 595 | +0x06FB | 0x18C00D | mov     es, ax
+ 596 | +0x06FD | 0x18C00F | mov     ax, es:word_79EEC
+ 597 | +0x0701 | 0x18C013 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+ 598 | +0x0704 | 0x18C016 | imul    dx
+ 599 | +0x0706 | 0x18C018 | push    ax
+ 600 | +0x0707 | 0x18C019 | push    0
+ 601 | +0x0709 | 0x18C01B | push    0Ch
+ 602 | +0x070B | 0x18C01D | call    ui_text_render_engine
+ 603 | +0x0710 | 0x18C022 | add     sp, 0Ah
+ 604 | +0x0713 | 0x18C025 | mov     [bp+var_4D], 5
+ 605 | +0x0717 | 0x18C029 | call    far_cb_1
+ 606 | +0x071C | 0x18C02E | push    0
+ 607 | +0x071E | 0x18C030 | call    dispatch_220f0_invoke_1arg
+ 608 | +0x0723 | 0x18C035 | pop     cx
+ 609 | +0x0724 | 0x18C036 | push    ss
+ 610 | +0x0725 | 0x18C037 | lea     ax, [bp+var_36]
+ 611 | +0x0728 | 0x18C03A | push    ax
+ 612 | +0x0729 | 0x18C03B | push    1
+ 613 | +0x072B | 0x18C03D | push    0
+ 614 | +0x072D | 0x18C03F | mov     al, [bp+var_4D]
+ 615 | +0x0730 | 0x18C042 | push    ax
+ 616 | +0x0731 | 0x18C043 | call    ui_text_render_engine
+ 617 | +0x0736 | 0x18C048 | add     sp, 0Ah
+ 618 | +0x0739 | 0x18C04B | mov     [bp+var_4D], 6
+ 619 | +0x073D | 0x18C04F | mov     [bp+var_16], 0
+ 620 | +0x0742 | 0x18C054 | jmp     short loc_18C0B1
+ 621 | +0x0744 | 0x18C056 | mov     ax, [bp+var_16]
+ 622 | +0x0747 | 0x18C059 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 623 | +0x074A | 0x18C05C | imul    dx
+ 624 | +0x074C | 0x18C05E | mov     dx, 7894h
+ 625 | +0x074F | 0x18C061 | mov     es, dx
+ 626 | +0x0751 | 0x18C063 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 627 | +0x0756 | 0x18C068 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 628 | +0x075B | 0x18C06D | add     bx, ax
+ 629 | +0x075D | 0x18C06F | add     bx, 7F9h
+ 630 | +0x0761 | 0x18C073 | mov     word ptr [bp+var_A+2], dx
+ 631 | +0x0764 | 0x18C076 | mov     word ptr [bp+var_A], bx
+ 632 | +0x0767 | 0x18C079 | call    far_cb_1
+ 633 | +0x076C | 0x18C07E | push    0
+ 634 | +0x076E | 0x18C080 | call    dispatch_220f0_invoke_1arg
+ 635 | +0x0773 | 0x18C085 | pop     cx
+ 636 | +0x0774 | 0x18C086 | push    word ptr [bp+var_A+2]
+ 637 | +0x0777 | 0x18C089 | push    word ptr [bp+var_A]
+ 638 | +0x077A | 0x18C08C | push    42h ; 'B'
+ 639 | +0x077C | 0x18C08E | push    0
+ 640 | +0x077E | 0x18C090 | mov     al, [bp+var_4D]
+ 641 | +0x0781 | 0x18C093 | push    ax
+ 642 | +0x0782 | 0x18C094 | call    ui_text_render_engine
+ 643 | +0x0787 | 0x18C099 | add     sp, 0Ah
+ 644 | +0x078A | 0x18C09C | mov     al, [bp+var_4D]
+ 645 | +0x078D | 0x18C09F | inc     al
+ 646 | +0x078F | 0x18C0A1 | mov     [bp+var_4D], al
+ 647 | +0x0792 | 0x18C0A4 | cmp     [bp+var_4D], 9
+ 648 | +0x0796 | 0x18C0A8 | jbe     short loc_18C0AE
+ 649 | +0x0798 | 0x18C0AA | mov     [bp+var_4D], 5
+ 650 | +0x079C | 0x18C0AE | inc     [bp+var_16]
+ 651 | +0x079F | 0x18C0B1 | mov     ax, [bp+var_16]
+ 652 | +0x07A2 | 0x18C0B4 | cmp     ax, [bp+var_36]
+ 653 | +0x07A5 | 0x18C0B7 | jl      short loc_18C056
+ 654 | +0x07A7 | 0x18C0B9 | mov     al, [bp+var_4D]
+ 655 | +0x07AA | 0x18C0BC | inc     al
+ 656 | +0x07AC | 0x18C0BE | mov     [bp+var_4D], al
+ 657 | +0x07AF | 0x18C0C1 | mov     al, byte ptr [bp+var_34]
+ 658 | +0x07B2 | 0x18C0C4 | sub     al, byte ptr [bp+var_36]
+ 659 | +0x07B5 | 0x18C0C7 | mov     [bp+var_40], al
+ 660 | +0x07B8 | 0x18C0CA | call    far_cb_1
+ 661 | +0x07BD | 0x18C0CF | push    0
+ 662 | +0x07BF | 0x18C0D1 | call    dispatch_220f0_invoke_1arg
+ 663 | +0x07C4 | 0x18C0D6 | pop     cx
+ 664 | +0x07C5 | 0x18C0D7 | push    ss
+ 665 | +0x07C6 | 0x18C0D8 | lea     ax, [bp+var_40]
+ 666 | +0x07C9 | 0x18C0DB | push    ax
+ 667 | +0x07CA | 0x18C0DC | push    1
+ 668 | +0x07CC | 0x18C0DE | push    0
+ 669 | +0x07CE | 0x18C0E0 | mov     al, [bp+var_4D]
+ 670 | +0x07D1 | 0x18C0E3 | push    ax
+ 671 | +0x07D2 | 0x18C0E4 | call    ui_text_render_engine
+ 672 | +0x07D7 | 0x18C0E9 | add     sp, 0Ah
+ 673 | +0x07DA | 0x18C0EC | mov     al, [bp+var_4D]
+ 674 | +0x07DD | 0x18C0EF | inc     al
+ 675 | +0x07DF | 0x18C0F1 | mov     [bp+var_4D], al
+ 676 | +0x07E2 | 0x18C0F4 | mov     [bp+var_16], 0
+ 677 | +0x07E7 | 0x18C0F9 | jmp     short loc_18C158
+ 678 | +0x07E9 | 0x18C0FB | mov     ax, [bp+var_16]
+ 679 | +0x07EC | 0x18C0FE | add     ax, 14h
+ 680 | +0x07EF | 0x18C101 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 681 | +0x07F2 | 0x18C104 | imul    dx
+ 682 | +0x07F4 | 0x18C106 | mov     dx, 7894h
+ 683 | +0x07F7 | 0x18C109 | mov     es, dx
+ 684 | +0x07F9 | 0x18C10B | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 685 | +0x07FE | 0x18C110 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 686 | +0x0803 | 0x18C115 | add     bx, ax
+ 687 | +0x0805 | 0x18C117 | add     bx, 3Dh ; '='
+ 688 | +0x0808 | 0x18C11A | mov     word ptr [bp+var_A+2], dx
+ 689 | +0x080B | 0x18C11D | mov     word ptr [bp+var_A], bx
+ 690 | +0x080E | 0x18C120 | call    far_cb_1
+ 691 | +0x0813 | 0x18C125 | push    0
+ 692 | +0x0815 | 0x18C127 | call    dispatch_220f0_invoke_1arg
+ 693 | +0x081A | 0x18C12C | pop     cx
+ 694 | +0x081B | 0x18C12D | push    word ptr [bp+var_A+2]
+ 695 | +0x081E | 0x18C130 | push    word ptr [bp+var_A]
+ 696 | +0x0821 | 0x18C133 | push    42h ; 'B'
+ 697 | +0x0823 | 0x18C135 | push    0
+ 698 | +0x0825 | 0x18C137 | mov     al, [bp+var_4D]
+ 699 | +0x0828 | 0x18C13A | push    ax
+ 700 | +0x0829 | 0x18C13B | call    ui_text_render_engine
+ 701 | +0x082E | 0x18C140 | add     sp, 0Ah
+ 702 | +0x0831 | 0x18C143 | mov     al, [bp+var_4D]
+ 703 | +0x0834 | 0x18C146 | inc     al
+ 704 | +0x0836 | 0x18C148 | mov     [bp+var_4D], al
+ 705 | +0x0839 | 0x18C14B | cmp     [bp+var_4D], 9
+ 706 | +0x083D | 0x18C14F | jbe     short loc_18C155
+ 707 | +0x083F | 0x18C151 | mov     [bp+var_4D], 5
+ 708 | +0x0843 | 0x18C155 | inc     [bp+var_16]
+ 709 | +0x0846 | 0x18C158 | mov     al, [bp+var_40]
+ 710 | +0x0849 | 0x18C15B | mov     ah, 0
+ 711 | +0x084B | 0x18C15D | cmp     ax, [bp+var_16]
+ 712 | +0x084E | 0x18C160 | jg      short loc_18C0FB
+ 713 | +0x0850 | 0x18C162 | mov     al, [bp+var_4D]
+ 714 | +0x0853 | 0x18C165 | inc     al
+ 715 | +0x0855 | 0x18C167 | mov     [bp+var_4D], al
+ 716 | +0x0858 | 0x18C16A | mov     [bp+var_16], 0
+ 717 | +0x085D | 0x18C16F | jmp     short loc_18C1C8
+ 718 | +0x085F | 0x18C171 | mov     ax, [bp+var_16]
+ 719 | +0x0862 | 0x18C174 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+ 720 | +0x0865 | 0x18C177 | imul    dx
+ 721 | +0x0867 | 0x18C179 | mov     dx, 7894h
+ 722 | +0x086A | 0x18C17C | mov     es, dx
+ 723 | +0x086C | 0x18C17E | mov     dx, word ptr es:dword_79E6C+2
+ 724 | +0x0871 | 0x18C183 | mov     bx, word ptr es:dword_79E6C
+ 725 | +0x0876 | 0x18C188 | add     bx, ax
+ 726 | +0x0878 | 0x18C18A | mov     [bp+var_50], dx
+ 727 | +0x087B | 0x18C18D | mov     [bp+var_52], bx
+ 728 | +0x087E | 0x18C190 | call    far_cb_1
+ 729 | +0x0883 | 0x18C195 | push    0
+ 730 | +0x0885 | 0x18C197 | call    dispatch_220f0_invoke_1arg
+ 731 | +0x088A | 0x18C19C | pop     cx
+ 732 | +0x088B | 0x18C19D | push    [bp+var_50]
+ 733 | +0x088E | 0x18C1A0 | push    [bp+var_52]
+ 734 | +0x0891 | 0x18C1A3 | push    17h
+ 735 | +0x0893 | 0x18C1A5 | push    0
+ 736 | +0x0895 | 0x18C1A7 | mov     al, [bp+var_4D]
+ 737 | +0x0898 | 0x18C1AA | push    ax
+ 738 | +0x0899 | 0x18C1AB | call    ui_text_render_engine
+ 739 | +0x089E | 0x18C1B0 | add     sp, 0Ah
+ 740 | +0x08A1 | 0x18C1B3 | mov     al, [bp+var_4D]
+ 741 | +0x08A4 | 0x18C1B6 | inc     al
+ 742 | +0x08A6 | 0x18C1B8 | mov     [bp+var_4D], al
+ 743 | +0x08A9 | 0x18C1BB | cmp     [bp+var_4D], 9
+ 744 | +0x08AD | 0x18C1BF | jbe     short loc_18C1C5
+ 745 | +0x08AF | 0x18C1C1 | mov     [bp+var_4D], 5
+ 746 | +0x08B3 | 0x18C1C5 | inc     [bp+var_16]
+ 747 | +0x08B6 | 0x18C1C8 | mov     ax, [bp+var_16]
+ 748 | +0x08B9 | 0x18C1CB | cmp     ax, [bp+var_36]
+ 749 | +0x08BC | 0x18C1CE | jl      short loc_18C171
+ 750 | +0x08BE | 0x18C1D0 | mov     al, [bp+var_4D]
+ 751 | +0x08C1 | 0x18C1D3 | inc     al
+ 752 | +0x08C3 | 0x18C1D5 | mov     [bp+var_4D], al
+ 753 | +0x08C6 | 0x18C1D8 | mov     [bp+var_16], 0
+ 754 | +0x08CB | 0x18C1DD | jmp     short loc_18C23C
+ 755 | +0x08CD | 0x18C1DF | mov     ax, [bp+var_16]
+ 756 | +0x08D0 | 0x18C1E2 | add     ax, 8
+ 757 | +0x08D3 | 0x18C1E5 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+ 758 | +0x08D6 | 0x18C1E8 | imul    dx
+ 759 | +0x08D8 | 0x18C1EA | mov     dx, 7894h
+ 760 | +0x08DB | 0x18C1ED | mov     es, dx
+ 761 | +0x08DD | 0x18C1EF | mov     dx, word ptr es:dword_79E6C+2
+ 762 | +0x08E2 | 0x18C1F4 | mov     bx, word ptr es:dword_79E6C
+ 763 | +0x08E7 | 0x18C1F9 | add     bx, ax
+ 764 | +0x08E9 | 0x18C1FB | mov     [bp+var_50], dx
+ 765 | +0x08EC | 0x18C1FE | mov     [bp+var_52], bx
+ 766 | +0x08EF | 0x18C201 | call    far_cb_1
+ 767 | +0x08F4 | 0x18C206 | push    0
+ 768 | +0x08F6 | 0x18C208 | call    dispatch_220f0_invoke_1arg
+ 769 | +0x08FB | 0x18C20D | pop     cx
+ 770 | +0x08FC | 0x18C20E | push    [bp+var_50]
+ 771 | +0x08FF | 0x18C211 | push    [bp+var_52]
+ 772 | +0x0902 | 0x18C214 | push    17h
+ 773 | +0x0904 | 0x18C216 | push    0
+ 774 | +0x0906 | 0x18C218 | mov     al, [bp+var_4D]
+ 775 | +0x0909 | 0x18C21B | push    ax
+ 776 | +0x090A | 0x18C21C | call    ui_text_render_engine
+ 777 | +0x090F | 0x18C221 | add     sp, 0Ah
+ 778 | +0x0912 | 0x18C224 | mov     al, [bp+var_4D]
+ 779 | +0x0915 | 0x18C227 | inc     al
+ 780 | +0x0917 | 0x18C229 | mov     [bp+var_4D], al
+ 781 | +0x091A | 0x18C22C | inc     [bp+var_56]
+ 782 | +0x091D | 0x18C22F | cmp     [bp+var_4D], 9
+ 783 | +0x0921 | 0x18C233 | jbe     short loc_18C239
+ 784 | +0x0923 | 0x18C235 | mov     [bp+var_4D], 5
+ 785 | +0x0927 | 0x18C239 | inc     [bp+var_16]
+ 786 | +0x092A | 0x18C23C | mov     al, [bp+var_40]
+ 787 | +0x092D | 0x18C23F | mov     ah, 0
+ 788 | +0x092F | 0x18C241 | cmp     ax, [bp+var_16]
+ 789 | +0x0932 | 0x18C244 | jg      short loc_18C1DF
+ 790 | +0x0934 | 0x18C246 | mov     [bp+var_16], 0
+ 791 | +0x0939 | 0x18C24B | jmp     short loc_18C25E
+ 792 | +0x093B | 0x18C24D | mov     ax, 7894h
+ 793 | +0x093E | 0x18C250 | mov     bx, [bp+var_16]
+ 794 | +0x0941 | 0x18C253 | mov     es, ax
+ 795 | +0x0943 | 0x18C255 | mov     byte ptr es:[bx+0EE8h], 0FFh
+ 796 | +0x0949 | 0x18C25B | inc     [bp+var_16]
+ 797 | +0x094C | 0x18C25E | cmp     [bp+var_16], 6
+ 798 | +0x0950 | 0x18C262 | jl      short loc_18C24D
+ 799 | +0x0952 | 0x18C264 | mov     [bp+var_18], 0
+ 800 | +0x0957 | 0x18C269 | mov     [bp+var_16], 0
+ 801 | +0x095C | 0x18C26E | jmp     short loc_18C2D0
+ 802 | +0x095E | 0x18C270 | mov     bx, [bp+var_16]
+ 803 | +0x0961 | 0x18C273 | shl     bx, 2
+ 804 | +0x0964 | 0x18C276 | mov     ax, 602Eh
+ 805 | +0x0967 | 0x18C279 | mov     es, ax
+ 806 | +0x0969 | 0x18C27B | mov     al, es:[bx+1]
+ 807 | +0x096E | 0x18C280 | mov     ah, 0
+ 808 | +0x0970 | 0x18C282 | cmp     ax, 1
+ 809 | +0x0973 | 0x18C285 | jz      short loc_18C293
+ 810 | +0x0975 | 0x18C287 | cmp     ax, 2
+ 811 | +0x0978 | 0x18C28A | jz      short loc_18C2AC
+ 812 | +0x097A | 0x18C28C | cmp     ax, 3
+ 813 | +0x097D | 0x18C28F | jz      short loc_18C2BC
+ 814 | +0x097F | 0x18C291 | jmp     short loc_18C2CD
+ 815 | +0x0981 | 0x18C293 | mov     ax, 7894h
+ 816 | +0x0984 | 0x18C296 | mov     bx, [bp+var_18]
+ 817 | +0x0987 | 0x18C299 | mov     dx, 7891h
+ 818 | +0x098A | 0x18C29C | mov     es, dx
+ 819 | +0x098C | 0x18C29E | mov     dl, byte ptr es:word_78910
+ 820 | +0x0991 | 0x18C2A3 | mov     es, ax
+ 821 | +0x0993 | 0x18C2A5 | mov     es:[bx+0EE8h], dl
+ 822 | +0x0998 | 0x18C2AA | jmp     short loc_18C2CA
+ 823 | +0x099A | 0x18C2AC | mov     ax, 7894h
+ 824 | +0x099D | 0x18C2AF | mov     bx, [bp+var_18]
+ 825 | +0x09A0 | 0x18C2B2 | mov     es, ax
+ 826 | +0x09A2 | 0x18C2B4 | mov     byte ptr es:[bx+0EE8h], 20h ; ' '
+ 827 | +0x09A8 | 0x18C2BA | jmp     short loc_18C2CA
+ 828 | +0x09AA | 0x18C2BC | mov     ax, 7894h
+ 829 | +0x09AD | 0x18C2BF | mov     bx, [bp+var_18]
+ 830 | +0x09B0 | 0x18C2C2 | mov     es, ax
+ 831 | +0x09B2 | 0x18C2C4 | mov     byte ptr es:[bx+0EE8h], 4
+ 832 | +0x09B8 | 0x18C2CA | inc     [bp+var_18]
+ 833 | +0x09BB | 0x18C2CD | inc     [bp+var_16]
+ 834 | +0x09BE | 0x18C2D0 | cmp     [bp+var_16], 6
+ 835 | +0x09C2 | 0x18C2D4 | jl      short loc_18C270
+ 836 | +0x09C4 | 0x18C2D6 | mov     ax, 7894h
+ 837 | +0x09C7 | 0x18C2D9 | mov     es, ax
+ 838 | +0x09C9 | 0x18C2DB | cmp     es:byte_7A30B, 1
+ 839 | +0x09CF | 0x18C2E1 | jz      short loc_18C348
+ 840 | +0x09D1 | 0x18C2E3 | cmp     [bp+var_18], 6
+ 841 | +0x09D5 | 0x18C2E7 | jge     short loc_18C348
+ 842 | +0x09D7 | 0x18C2E9 | mov     [bp+var_16], 0
+ 843 | +0x09DC | 0x18C2EE | jmp     short loc_18C313
+ 844 | +0x09DE | 0x18C2F0 | cmp     [bp+var_18], 6
+ 845 | +0x09E2 | 0x18C2F4 | jge     short loc_18C30D
+ 846 | +0x09E4 | 0x18C2F6 | mov     ax, 7894h
+ 847 | +0x09E7 | 0x18C2F9 | mov     bx, [bp+var_18]
+ 848 | +0x09EA | 0x18C2FC | mov     dx, 7891h
+ 849 | +0x09ED | 0x18C2FF | mov     es, dx
+ 850 | +0x09EF | 0x18C301 | mov     dl, byte ptr es:word_78910
+ 851 | +0x09F4 | 0x18C306 | mov     es, ax
+ 852 | +0x09F6 | 0x18C308 | mov     es:[bx+0EE8h], dl
+ 853 | +0x09FB | 0x18C30D | inc     [bp+var_18]
+ 854 | +0x09FE | 0x18C310 | inc     [bp+var_16]
+ 855 | +0x0A01 | 0x18C313 | mov     al, [bp+var_3B]
+ 856 | +0x0A04 | 0x18C316 | mov     ah, 0
+ 857 | +0x0A06 | 0x18C318 | cmp     ax, [bp+var_16]
+ 858 | +0x0A09 | 0x18C31B | jg      short loc_18C2F0
+ 859 | +0x0A0B | 0x18C31D | mov     [bp+var_16], 0
+ 860 | +0x0A10 | 0x18C322 | jmp     short loc_18C33E
+ 861 | +0x0A12 | 0x18C324 | cmp     [bp+var_18], 6
+ 862 | +0x0A16 | 0x18C328 | jge     short loc_18C338
+ 863 | +0x0A18 | 0x18C32A | mov     ax, 7894h
+ 864 | +0x0A1B | 0x18C32D | mov     bx, [bp+var_18]
+ 865 | +0x0A1E | 0x18C330 | mov     es, ax
+ 866 | +0x0A20 | 0x18C332 | mov     byte ptr es:[bx+0EE8h], 20h ; ' '
+ 867 | +0x0A26 | 0x18C338 | inc     [bp+var_18]
+ 868 | +0x0A29 | 0x18C33B | inc     [bp+var_16]
+ 869 | +0x0A2C | 0x18C33E | mov     al, [bp+var_40]
+ 870 | +0x0A2F | 0x18C341 | mov     ah, 0
+ 871 | +0x0A31 | 0x18C343 | cmp     ax, [bp+var_16]
+ 872 | +0x0A34 | 0x18C346 | jg      short loc_18C324
+ 873 | +0x0A36 | 0x18C348 | mov     [bp+var_58], 0
+ 874 | +0x0A3A | 0x18C34C | mov     [bp+var_16], 0
+ 875 | +0x0A3F | 0x18C351 | jmp     short loc_18C36E
+ 876 | +0x0A41 | 0x18C353 | mov     ax, 7894h
+ 877 | +0x0A44 | 0x18C356 | mov     bx, [bp+var_16]
+ 878 | +0x0A47 | 0x18C359 | mov     es, ax
+ 879 | +0x0A49 | 0x18C35B | cmp     byte ptr es:[bx+0EE8h], 0FFh
+ 880 | +0x0A4F | 0x18C361 | jz      short loc_18C36B
+ 881 | +0x0A51 | 0x18C363 | mov     al, [bp+var_58]
+ 882 | +0x0A54 | 0x18C366 | inc     al
+ 883 | +0x0A56 | 0x18C368 | mov     [bp+var_58], al
+ 884 | +0x0A59 | 0x18C36B | inc     [bp+var_16]
+ 885 | +0x0A5C | 0x18C36E | cmp     [bp+var_16], 6
+ 886 | +0x0A60 | 0x18C372 | jl      short loc_18C353
+ 887 | +0x0A62 | 0x18C374 | mov     al, [bp+var_58]
+ 888 | +0x0A65 | 0x18C377 | mov     ah, 0
+ 889 | +0x0A67 | 0x18C379 | mov     dx, 7894h
+ 890 | +0x0A6A | 0x18C37C | mov     es, dx
+ 891 | +0x0A6C | 0x18C37E | mov     es:word_79F14, ax
+ 892 | +0x0A70 | 0x18C382 | mov     ax, 7894h
+ 893 | +0x0A73 | 0x18C385 | mov     es, ax
+ 894 | +0x0A75 | 0x18C387 | mov     ax, es:word_79EDC
+ 895 | +0x0A79 | 0x18C38B | mov     dx, es:word_79EDA
+ 896 | +0x0A7E | 0x18C390 | mov     word ptr [bp+var_6+2], ax
+ 897 | +0x0A81 | 0x18C393 | mov     word ptr [bp+var_6], dx
+ 898 | +0x0A84 | 0x18C396 | xor     si, si
+ 899 | +0x0A86 | 0x18C398 | jmp     short loc_18C3A5
+ 900 | +0x0A88 | 0x18C39A | les     bx, [bp+var_6]
+ 901 | +0x0A8B | 0x18C39D | mov     byte ptr es:[bx], 0FFh
+ 902 | +0x0A8F | 0x18C3A1 | inc     word ptr [bp+var_6]
+ 903 | +0x0A92 | 0x18C3A4 | inc     si
+ 904 | +0x0A93 | 0x18C3A5 | cmp     si, 80h
+ 905 | +0x0A97 | 0x18C3A9 | jl      short loc_18C39A
+ 906 | +0x0A99 | 0x18C3AB | mov     ax, 7894h
+ 907 | +0x0A9C | 0x18C3AE | mov     es, ax
+ 908 | +0x0A9E | 0x18C3B0 | mov     ax, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 909 | +0x0AA2 | 0x18C3B4 | mov     dx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 910 | +0x0AA7 | 0x18C3B9 | add     dx, 7F9h
+ 911 | +0x0AAB | 0x18C3BD | mov     word ptr [bp+var_A+2], ax
+ 912 | +0x0AAE | 0x18C3C0 | mov     word ptr [bp+var_A], dx
+ 913 | +0x0AB1 | 0x18C3C3 | mov     [bp+var_16], 0
+ 914 | +0x0AB6 | 0x18C3C8 | jmp     short loc_18C428
+ 915 | +0x0AB8 | 0x18C3CA | mov     ax, 7894h
+ 916 | +0x0ABB | 0x18C3CD | mov     es, ax
+ 917 | +0x0ABD | 0x18C3CF | mov     ax, es:word_79EDC
+ 918 | +0x0AC1 | 0x18C3D3 | mov     dx, es:word_79EDA
+ 919 | +0x0AC6 | 0x18C3D8 | mov     word ptr [bp+var_6+2], ax
+ 920 | +0x0AC9 | 0x18C3DB | mov     word ptr [bp+var_6], dx
+ 921 | +0x0ACC | 0x18C3DE | mov     ax, [bp+var_16]
+ 922 | +0x0ACF | 0x18C3E1 | shl     ax, 4
+ 923 | +0x0AD2 | 0x18C3E4 | add     word ptr [bp+var_6], ax
+ 924 | +0x0AD5 | 0x18C3E7 | mov     al, byte ptr [bp+var_16]
+ 925 | +0x0AD8 | 0x18C3EA | add     al, 31h ; '1'
+ 926 | +0x0ADA | 0x18C3EC | les     bx, [bp+var_6]
+ 927 | +0x0ADD | 0x18C3EF | mov     es:[bx], al
+ 928 | +0x0AE0 | 0x18C3F2 | mov     [bp+var_18], 0
+ 929 | +0x0AE5 | 0x18C3F7 | jmp     short loc_18C408
+ 930 | +0x0AE7 | 0x18C3F9 | les     bx, [bp+var_6]
+ 931 | +0x0AEA | 0x18C3FC | mov     al, [bp+var_1]
+ 932 | +0x0AED | 0x18C3FF | mov     es:[bx], al
+ 933 | +0x0AF0 | 0x18C402 | inc     [bp+var_18]
+ 934 | +0x0AF3 | 0x18C405 | inc     word ptr [bp+var_6]
+ 935 | +0x0AF6 | 0x18C408 | mov     ax, [bp+var_16]
+ 936 | +0x0AF9 | 0x18C40B | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 937 | +0x0AFC | 0x18C40E | imul    dx
+ 938 | +0x0AFE | 0x18C410 | les     bx, [bp+var_A]
+ 939 | +0x0B01 | 0x18C413 | add     bx, ax
+ 940 | +0x0B03 | 0x18C415 | add     bx, [bp+var_18]
+ 941 | +0x0B06 | 0x18C418 | mov     al, es:[bx+12h]
+ 942 | +0x0B0A | 0x18C41C | mov     [bp+var_1], al
+ 943 | +0x0B0D | 0x18C41F | cmp     [bp+var_1], 0
+ 944 | +0x0B11 | 0x18C423 | jnz     short loc_18C3F9
+ 945 | +0x0B13 | 0x18C425 | inc     [bp+var_16]
+ 946 | +0x0B16 | 0x18C428 | mov     ax, [bp+var_16]
+ 947 | +0x0B19 | 0x18C42B | cmp     ax, [bp+var_38]
+ 948 | +0x0B1C | 0x18C42E | jl      short loc_18C3CA
+ 949 | +0x0B1E | 0x18C430 | mov     ax, 7894h
+ 950 | +0x0B21 | 0x18C433 | mov     es, ax
+ 951 | +0x0B23 | 0x18C435 | mov     ax, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+ 952 | +0x0B27 | 0x18C439 | mov     dx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+ 953 | +0x0B2C | 0x18C43E | add     dx, 565h
+ 954 | +0x0B30 | 0x18C442 | mov     word ptr [bp+var_A+2], ax
+ 955 | +0x0B33 | 0x18C445 | mov     word ptr [bp+var_A], dx
+ 956 | +0x0B36 | 0x18C448 | mov     [bp+var_16], 0
+ 957 | +0x0B3B | 0x18C44D | jmp     short loc_18C4B3
+ 958 | +0x0B3D | 0x18C44F | mov     ax, 7894h
+ 959 | +0x0B40 | 0x18C452 | mov     es, ax
+ 960 | +0x0B42 | 0x18C454 | mov     ax, es:word_79EDC
+ 961 | +0x0B46 | 0x18C458 | mov     dx, es:word_79EDA
+ 962 | +0x0B4B | 0x18C45D | mov     word ptr [bp+var_6+2], ax
+ 963 | +0x0B4E | 0x18C460 | mov     word ptr [bp+var_6], dx
+ 964 | +0x0B51 | 0x18C463 | mov     ax, [bp+var_16]
+ 965 | +0x0B54 | 0x18C466 | add     ax, [bp+var_38]
+ 966 | +0x0B57 | 0x18C469 | shl     ax, 4
+ 967 | +0x0B5A | 0x18C46C | add     word ptr [bp+var_6], ax
+ 968 | +0x0B5D | 0x18C46F | mov     al, byte ptr [bp+var_16]
+ 969 | +0x0B60 | 0x18C472 | add     al, byte ptr [bp+var_38]
+ 970 | +0x0B63 | 0x18C475 | add     al, 31h ; '1'
+ 971 | +0x0B65 | 0x18C477 | les     bx, [bp+var_6]
+ 972 | +0x0B68 | 0x18C47A | mov     es:[bx], al
+ 973 | +0x0B6B | 0x18C47D | mov     [bp+var_18], 0
+ 974 | +0x0B70 | 0x18C482 | jmp     short loc_18C493
+ 975 | +0x0B72 | 0x18C484 | les     bx, [bp+var_6]
+ 976 | +0x0B75 | 0x18C487 | mov     al, [bp+var_1]
+ 977 | +0x0B78 | 0x18C48A | mov     es:[bx], al
+ 978 | +0x0B7B | 0x18C48D | inc     [bp+var_18]
+ 979 | +0x0B7E | 0x18C490 | inc     word ptr [bp+var_6]
+ 980 | +0x0B81 | 0x18C493 | mov     ax, [bp+var_16]
+ 981 | +0x0B84 | 0x18C496 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+ 982 | +0x0B87 | 0x18C499 | imul    dx
+ 983 | +0x0B89 | 0x18C49B | les     bx, [bp+var_A]
+ 984 | +0x0B8C | 0x18C49E | add     bx, ax
+ 985 | +0x0B8E | 0x18C4A0 | add     bx, [bp+var_18]
+ 986 | +0x0B91 | 0x18C4A3 | mov     al, es:[bx+12h]
+ 987 | +0x0B95 | 0x18C4A7 | mov     [bp+var_1], al
+ 988 | +0x0B98 | 0x18C4AA | cmp     [bp+var_1], 0
+ 989 | +0x0B9C | 0x18C4AE | jnz     short loc_18C484
+ 990 | +0x0B9E | 0x18C4B0 | inc     [bp+var_16]
+ 991 | +0x0BA1 | 0x18C4B3 | mov     ax, [bp+var_16]
+ 992 | +0x0BA4 | 0x18C4B6 | cmp     ax, [bp+var_3A]
+ 993 | +0x0BA7 | 0x18C4B9 | jl      short loc_18C44F
+ 994 | +0x0BA9 | 0x18C4BB | mov     ax, 7894h
+ 995 | +0x0BAC | 0x18C4BE | mov     es, ax
+ 996 | +0x0BAE | 0x18C4C0 | mov     ax, es:word_79EDC
+ 997 | +0x0BB2 | 0x18C4C4 | mov     dx, es:word_79EDA
+ 998 | +0x0BB7 | 0x18C4C9 | mov     word ptr [bp+var_6+2], ax
+ 999 | +0x0BBA | 0x18C4CC | mov     word ptr [bp+var_6], dx
+1000 | +0x0BBD | 0x18C4CF | add     word ptr [bp+var_6], 80h
+1001 | +0x0BC2 | 0x18C4D4 | mov     ax, 7894h
+1002 | +0x0BC5 | 0x18C4D7 | mov     es, ax
+1003 | +0x0BC7 | 0x18C4D9 | mov     ax, es:word_79EA2
+1004 | +0x0BCB | 0x18C4DD | mov     dx, 4Eh ; 'N'
+1005 | +0x0BCE | 0x18C4E0 | imul    dx
+1006 | +0x0BD0 | 0x18C4E2 | mov     dx, 7894h
+1007 | +0x0BD3 | 0x18C4E5 | mov     es, dx
+1008 | +0x0BD5 | 0x18C4E7 | les     bx, es:dword_79B6E
+1009 | +0x0BDA | 0x18C4EC | add     bx, ax
+1010 | +0x0BDC | 0x18C4EE | mov     al, es:[bx+10h]
+1011 | +0x0BE0 | 0x18C4F2 | les     bx, [bp+var_6]
+1012 | +0x0BE3 | 0x18C4F5 | mov     es:[bx], al
+1013 | +0x0BE6 | 0x18C4F8 | inc     word ptr [bp+var_6]
+1014 | +0x0BE9 | 0x18C4FB | mov     ax, 7894h
+1015 | +0x0BEC | 0x18C4FE | mov     es, ax
+1016 | +0x0BEE | 0x18C500 | mov     ax, es:word_79EA2
+1017 | +0x0BF2 | 0x18C504 | mov     dx, 4Eh ; 'N'
+1018 | +0x0BF5 | 0x18C507 | imul    dx
+1019 | +0x0BF7 | 0x18C509 | mov     dx, 7894h
+1020 | +0x0BFA | 0x18C50C | mov     es, dx
+1021 | +0x0BFC | 0x18C50E | les     bx, es:dword_79B6E
+1022 | +0x0C01 | 0x18C513 | add     bx, ax
+1023 | +0x0C03 | 0x18C515 | mov     al, es:[bx+18h]
+1024 | +0x0C07 | 0x18C519 | les     bx, [bp+var_6]
+1025 | +0x0C0A | 0x18C51C | mov     es:[bx], al
+1026 | +0x0C0D | 0x18C51F | inc     word ptr [bp+var_6]
+1027 | +0x0C10 | 0x18C522 | mov     ax, 7894h
+1028 | +0x0C13 | 0x18C525 | mov     es, ax
+1029 | +0x0C15 | 0x18C527 | mov     ax, es:word_79EA2
+1030 | +0x0C19 | 0x18C52B | mov     dx, 4Eh ; 'N'
+1031 | +0x0C1C | 0x18C52E | imul    dx
+1032 | +0x0C1E | 0x18C530 | mov     dx, 7894h
+1033 | +0x0C21 | 0x18C533 | mov     es, dx
+1034 | +0x0C23 | 0x18C535 | les     bx, es:dword_79B6E
+1035 | +0x0C28 | 0x18C53A | add     bx, ax
+1036 | +0x0C2A | 0x18C53C | mov     al, es:[bx+20h]
+1037 | +0x0C2E | 0x18C540 | les     bx, [bp+var_6]
+1038 | +0x0C31 | 0x18C543 | mov     es:[bx], al
+1039 | +0x0C34 | 0x18C546 | inc     word ptr [bp+var_6]
+1040 | +0x0C37 | 0x18C549 | mov     ax, 7894h
+1041 | +0x0C3A | 0x18C54C | mov     es, ax
+1042 | +0x0C3C | 0x18C54E | mov     ax, es:word_79EA2
+1043 | +0x0C40 | 0x18C552 | mov     dx, 4Eh ; 'N'
+1044 | +0x0C43 | 0x18C555 | imul    dx
+1045 | +0x0C45 | 0x18C557 | mov     dx, 7894h
+1046 | +0x0C48 | 0x18C55A | mov     es, dx
+1047 | +0x0C4A | 0x18C55C | les     bx, es:dword_79B6E
+1048 | +0x0C4F | 0x18C561 | add     bx, ax
+1049 | +0x0C51 | 0x18C563 | mov     al, es:[bx+11h]
+1050 | +0x0C55 | 0x18C567 | les     bx, [bp+var_6]
+1051 | +0x0C58 | 0x18C56A | mov     es:[bx], al
+1052 | +0x0C5B | 0x18C56D | inc     word ptr [bp+var_6]
+1053 | +0x0C5E | 0x18C570 | mov     ax, 7894h
+1054 | +0x0C61 | 0x18C573 | mov     es, ax
+1055 | +0x0C63 | 0x18C575 | mov     ax, es:word_79EA2
+1056 | +0x0C67 | 0x18C579 | mov     dx, 4Eh ; 'N'
+1057 | +0x0C6A | 0x18C57C | imul    dx
+1058 | +0x0C6C | 0x18C57E | mov     dx, 7894h
+1059 | +0x0C6F | 0x18C581 | mov     es, dx
+1060 | +0x0C71 | 0x18C583 | les     bx, es:dword_79B6E
+1061 | +0x0C76 | 0x18C588 | add     bx, ax
+1062 | +0x0C78 | 0x18C58A | mov     al, es:[bx+19h]
+1063 | +0x0C7C | 0x18C58E | les     bx, [bp+var_6]
+1064 | +0x0C7F | 0x18C591 | mov     es:[bx], al
+1065 | +0x0C82 | 0x18C594 | inc     word ptr [bp+var_6]
+1066 | +0x0C85 | 0x18C597 | mov     ax, 7894h
+1067 | +0x0C88 | 0x18C59A | mov     es, ax
+1068 | +0x0C8A | 0x18C59C | mov     ax, es:word_79EA2
+1069 | +0x0C8E | 0x18C5A0 | mov     dx, 4Eh ; 'N'
+1070 | +0x0C91 | 0x18C5A3 | imul    dx
+1071 | +0x0C93 | 0x18C5A5 | mov     dx, 7894h
+1072 | +0x0C96 | 0x18C5A8 | mov     es, dx
+1073 | +0x0C98 | 0x18C5AA | les     bx, es:dword_79B6E
+1074 | +0x0C9D | 0x18C5AF | add     bx, ax
+1075 | +0x0C9F | 0x18C5B1 | mov     al, es:[bx+21h]
+1076 | +0x0CA3 | 0x18C5B5 | les     bx, [bp+var_6]
+1077 | +0x0CA6 | 0x18C5B8 | mov     es:[bx], al
+1078 | +0x0CA9 | 0x18C5BB | inc     word ptr [bp+var_6]
+1079 | +0x0CAC | 0x18C5BE | mov     ax, 7894h
+1080 | +0x0CAF | 0x18C5C1 | mov     es, ax
+1081 | +0x0CB1 | 0x18C5C3 | mov     ax, es:word_79EA2
+1082 | +0x0CB5 | 0x18C5C7 | mov     dx, 4Eh ; 'N'
+1083 | +0x0CB8 | 0x18C5CA | imul    dx
+1084 | +0x0CBA | 0x18C5CC | mov     dx, 7894h
+1085 | +0x0CBD | 0x18C5CF | mov     es, dx
+1086 | +0x0CBF | 0x18C5D1 | les     bx, es:dword_79B6E
+1087 | +0x0CC4 | 0x18C5D6 | add     bx, ax
+1088 | +0x0CC6 | 0x18C5D8 | mov     al, es:[bx+12h]
+1089 | +0x0CCA | 0x18C5DC | les     bx, [bp+var_6]
+1090 | +0x0CCD | 0x18C5DF | mov     es:[bx], al
+1091 | +0x0CD0 | 0x18C5E2 | inc     word ptr [bp+var_6]
+1092 | +0x0CD3 | 0x18C5E5 | mov     ax, 7894h
+1093 | +0x0CD6 | 0x18C5E8 | mov     es, ax
+1094 | +0x0CD8 | 0x18C5EA | mov     ax, es:word_79EA2
+1095 | +0x0CDC | 0x18C5EE | mov     dx, 4Eh ; 'N'
+1096 | +0x0CDF | 0x18C5F1 | imul    dx
+1097 | +0x0CE1 | 0x18C5F3 | mov     dx, 7894h
+1098 | +0x0CE4 | 0x18C5F6 | mov     es, dx
+1099 | +0x0CE6 | 0x18C5F8 | les     bx, es:dword_79B6E
+1100 | +0x0CEB | 0x18C5FD | add     bx, ax
+1101 | +0x0CED | 0x18C5FF | mov     al, es:[bx+1Ah]
+1102 | +0x0CF1 | 0x18C603 | les     bx, [bp+var_6]
+1103 | +0x0CF4 | 0x18C606 | mov     es:[bx], al
+1104 | +0x0CF7 | 0x18C609 | inc     word ptr [bp+var_6]
+1105 | +0x0CFA | 0x18C60C | mov     ax, 7894h
+1106 | +0x0CFD | 0x18C60F | mov     es, ax
+1107 | +0x0CFF | 0x18C611 | mov     ax, es:word_79EA2
+1108 | +0x0D03 | 0x18C615 | mov     dx, 4Eh ; 'N'
+1109 | +0x0D06 | 0x18C618 | imul    dx
+1110 | +0x0D08 | 0x18C61A | mov     dx, 7894h
+1111 | +0x0D0B | 0x18C61D | mov     es, dx
+1112 | +0x0D0D | 0x18C61F | les     bx, es:dword_79B6E
+1113 | +0x0D12 | 0x18C624 | add     bx, ax
+1114 | +0x0D14 | 0x18C626 | mov     al, es:[bx+22h]
+1115 | +0x0D18 | 0x18C62A | les     bx, [bp+var_6]
+1116 | +0x0D1B | 0x18C62D | mov     es:[bx], al
+1117 | +0x0D1E | 0x18C630 | inc     word ptr [bp+var_6]
+1118 | +0x0D21 | 0x18C633 | mov     ax, 7894h
+1119 | +0x0D24 | 0x18C636 | mov     es, ax
+1120 | +0x0D26 | 0x18C638 | mov     ax, es:word_79EA2
+1121 | +0x0D2A | 0x18C63C | mov     dx, 4Eh ; 'N'
+1122 | +0x0D2D | 0x18C63F | imul    dx
+1123 | +0x0D2F | 0x18C641 | mov     dx, 7894h
+1124 | +0x0D32 | 0x18C644 | mov     es, dx
+1125 | +0x0D34 | 0x18C646 | les     bx, es:dword_79B6E
+1126 | +0x0D39 | 0x18C64B | add     bx, ax
+1127 | +0x0D3B | 0x18C64D | mov     al, es:[bx+13h]
+1128 | +0x0D3F | 0x18C651 | les     bx, [bp+var_6]
+1129 | +0x0D42 | 0x18C654 | mov     es:[bx], al
+1130 | +0x0D45 | 0x18C657 | inc     word ptr [bp+var_6]
+1131 | +0x0D48 | 0x18C65A | mov     ax, 7894h
+1132 | +0x0D4B | 0x18C65D | mov     es, ax
+1133 | +0x0D4D | 0x18C65F | mov     ax, es:word_79EA2
+1134 | +0x0D51 | 0x18C663 | mov     dx, 4Eh ; 'N'
+1135 | +0x0D54 | 0x18C666 | imul    dx
+1136 | +0x0D56 | 0x18C668 | mov     dx, 7894h
+1137 | +0x0D59 | 0x18C66B | mov     es, dx
+1138 | +0x0D5B | 0x18C66D | les     bx, es:dword_79B6E
+1139 | +0x0D60 | 0x18C672 | add     bx, ax
+1140 | +0x0D62 | 0x18C674 | mov     al, es:[bx+1Bh]
+1141 | +0x0D66 | 0x18C678 | les     bx, [bp+var_6]
+1142 | +0x0D69 | 0x18C67B | mov     es:[bx], al
+1143 | +0x0D6C | 0x18C67E | inc     word ptr [bp+var_6]
+1144 | +0x0D6F | 0x18C681 | mov     ax, 7894h
+1145 | +0x0D72 | 0x18C684 | mov     es, ax
+1146 | +0x0D74 | 0x18C686 | mov     ax, es:word_79EA2
+1147 | +0x0D78 | 0x18C68A | mov     dx, 4Eh ; 'N'
+1148 | +0x0D7B | 0x18C68D | imul    dx
+1149 | +0x0D7D | 0x18C68F | mov     dx, 7894h
+1150 | +0x0D80 | 0x18C692 | mov     es, dx
+1151 | +0x0D82 | 0x18C694 | les     bx, es:dword_79B6E
+1152 | +0x0D87 | 0x18C699 | add     bx, ax
+1153 | +0x0D89 | 0x18C69B | mov     al, es:[bx+23h]
+1154 | +0x0D8D | 0x18C69F | les     bx, [bp+var_6]
+1155 | +0x0D90 | 0x18C6A2 | mov     es:[bx], al
+1156 | +0x0D93 | 0x18C6A5 | inc     word ptr [bp+var_6]
+1157 | +0x0D96 | 0x18C6A8 | mov     ax, 7894h
+1158 | +0x0D99 | 0x18C6AB | mov     es, ax
+1159 | +0x0D9B | 0x18C6AD | mov     ax, es:word_79EA2
+1160 | +0x0D9F | 0x18C6B1 | mov     dx, 4Eh ; 'N'
+1161 | +0x0DA2 | 0x18C6B4 | imul    dx
+1162 | +0x0DA4 | 0x18C6B6 | mov     dx, 7894h
+1163 | +0x0DA7 | 0x18C6B9 | mov     es, dx
+1164 | +0x0DA9 | 0x18C6BB | les     bx, es:dword_79B6E
+1165 | +0x0DAE | 0x18C6C0 | add     bx, ax
+1166 | +0x0DB0 | 0x18C6C2 | mov     al, es:[bx+14h]
+1167 | +0x0DB4 | 0x18C6C6 | les     bx, [bp+var_6]
+1168 | +0x0DB7 | 0x18C6C9 | mov     es:[bx], al
+1169 | +0x0DBA | 0x18C6CC | inc     word ptr [bp+var_6]
+1170 | +0x0DBD | 0x18C6CF | mov     ax, 7894h
+1171 | +0x0DC0 | 0x18C6D2 | mov     es, ax
+1172 | +0x0DC2 | 0x18C6D4 | mov     ax, es:word_79EA2
+1173 | +0x0DC6 | 0x18C6D8 | mov     dx, 4Eh ; 'N'
+1174 | +0x0DC9 | 0x18C6DB | imul    dx
+1175 | +0x0DCB | 0x18C6DD | mov     dx, 7894h
+1176 | +0x0DCE | 0x18C6E0 | mov     es, dx
+1177 | +0x0DD0 | 0x18C6E2 | les     bx, es:dword_79B6E
+1178 | +0x0DD5 | 0x18C6E7 | add     bx, ax
+1179 | +0x0DD7 | 0x18C6E9 | mov     al, es:[bx+1Ch]
+1180 | +0x0DDB | 0x18C6ED | les     bx, [bp+var_6]
+1181 | +0x0DDE | 0x18C6F0 | mov     es:[bx], al
+1182 | +0x0DE1 | 0x18C6F3 | inc     word ptr [bp+var_6]
+1183 | +0x0DE4 | 0x18C6F6 | mov     ax, 7894h
+1184 | +0x0DE7 | 0x18C6F9 | mov     es, ax
+1185 | +0x0DE9 | 0x18C6FB | mov     ax, es:word_79EA2
+1186 | +0x0DED | 0x18C6FF | mov     dx, 4Eh ; 'N'
+1187 | +0x0DF0 | 0x18C702 | imul    dx
+1188 | +0x0DF2 | 0x18C704 | mov     dx, 7894h
+1189 | +0x0DF5 | 0x18C707 | mov     es, dx
+1190 | +0x0DF7 | 0x18C709 | les     bx, es:dword_79B6E
+1191 | +0x0DFC | 0x18C70E | add     bx, ax
+1192 | +0x0DFE | 0x18C710 | mov     al, es:[bx+24h]
+1193 | +0x0E02 | 0x18C714 | les     bx, [bp+var_6]
+1194 | +0x0E05 | 0x18C717 | mov     es:[bx], al
+1195 | +0x0E08 | 0x18C71A | inc     word ptr [bp+var_6]
+1196 | +0x0E0B | 0x18C71D | mov     ax, 7894h
+1197 | +0x0E0E | 0x18C720 | mov     es, ax
+1198 | +0x0E10 | 0x18C722 | mov     ax, es:word_79EA2
+1199 | +0x0E14 | 0x18C726 | mov     dx, 4Eh ; 'N'
+1200 | +0x0E17 | 0x18C729 | imul    dx
+1201 | +0x0E19 | 0x18C72B | mov     dx, 7894h
+1202 | +0x0E1C | 0x18C72E | mov     es, dx
+1203 | +0x0E1E | 0x18C730 | les     bx, es:dword_79B6E
+1204 | +0x0E23 | 0x18C735 | add     bx, ax
+1205 | +0x0E25 | 0x18C737 | mov     al, es:[bx+15h]
+1206 | +0x0E29 | 0x18C73B | les     bx, [bp+var_6]
+1207 | +0x0E2C | 0x18C73E | mov     es:[bx], al
+1208 | +0x0E2F | 0x18C741 | inc     word ptr [bp+var_6]
+1209 | +0x0E32 | 0x18C744 | mov     ax, 7894h
+1210 | +0x0E35 | 0x18C747 | mov     es, ax
+1211 | +0x0E37 | 0x18C749 | mov     ax, es:word_79EA2
+1212 | +0x0E3B | 0x18C74D | mov     dx, 4Eh ; 'N'
+1213 | +0x0E3E | 0x18C750 | imul    dx
+1214 | +0x0E40 | 0x18C752 | mov     dx, 7894h
+1215 | +0x0E43 | 0x18C755 | mov     es, dx
+1216 | +0x0E45 | 0x18C757 | les     bx, es:dword_79B6E
+1217 | +0x0E4A | 0x18C75C | add     bx, ax
+1218 | +0x0E4C | 0x18C75E | mov     al, es:[bx+1Dh]
+1219 | +0x0E50 | 0x18C762 | les     bx, [bp+var_6]
+1220 | +0x0E53 | 0x18C765 | mov     es:[bx], al
+1221 | +0x0E56 | 0x18C768 | inc     word ptr [bp+var_6]
+1222 | +0x0E59 | 0x18C76B | mov     ax, 7894h
+1223 | +0x0E5C | 0x18C76E | mov     es, ax
+1224 | +0x0E5E | 0x18C770 | mov     ax, es:word_79EA2
+1225 | +0x0E62 | 0x18C774 | mov     dx, 4Eh ; 'N'
+1226 | +0x0E65 | 0x18C777 | imul    dx
+1227 | +0x0E67 | 0x18C779 | mov     dx, 7894h
+1228 | +0x0E6A | 0x18C77C | mov     es, dx
+1229 | +0x0E6C | 0x18C77E | les     bx, es:dword_79B6E
+1230 | +0x0E71 | 0x18C783 | add     bx, ax
+1231 | +0x0E73 | 0x18C785 | mov     al, es:[bx+25h]
+1232 | +0x0E77 | 0x18C789 | les     bx, [bp+var_6]
+1233 | +0x0E7A | 0x18C78C | mov     es:[bx], al
+1234 | +0x0E7D | 0x18C78F | inc     word ptr [bp+var_6]
+1235 | +0x0E80 | 0x18C792 | mov     ax, 7894h
+1236 | +0x0E83 | 0x18C795 | mov     es, ax
+1237 | +0x0E85 | 0x18C797 | mov     ax, es:word_79EA2
+1238 | +0x0E89 | 0x18C79B | mov     dx, 4Eh ; 'N'
+1239 | +0x0E8C | 0x18C79E | imul    dx
+1240 | +0x0E8E | 0x18C7A0 | mov     dx, 7894h
+1241 | +0x0E91 | 0x18C7A3 | mov     es, dx
+1242 | +0x0E93 | 0x18C7A5 | les     bx, es:dword_79B6E
+1243 | +0x0E98 | 0x18C7AA | add     bx, ax
+1244 | +0x0E9A | 0x18C7AC | mov     al, es:[bx+16h]
+1245 | +0x0E9E | 0x18C7B0 | les     bx, [bp+var_6]
+1246 | +0x0EA1 | 0x18C7B3 | mov     es:[bx], al
+1247 | +0x0EA4 | 0x18C7B6 | inc     word ptr [bp+var_6]
+1248 | +0x0EA7 | 0x18C7B9 | mov     ax, 7894h
+1249 | +0x0EAA | 0x18C7BC | mov     es, ax
+1250 | +0x0EAC | 0x18C7BE | mov     ax, es:word_79EA2
+1251 | +0x0EB0 | 0x18C7C2 | mov     dx, 4Eh ; 'N'
+1252 | +0x0EB3 | 0x18C7C5 | imul    dx
+1253 | +0x0EB5 | 0x18C7C7 | mov     dx, 7894h
+1254 | +0x0EB8 | 0x18C7CA | mov     es, dx
+1255 | +0x0EBA | 0x18C7CC | les     bx, es:dword_79B6E
+1256 | +0x0EBF | 0x18C7D1 | add     bx, ax
+1257 | +0x0EC1 | 0x18C7D3 | mov     al, es:[bx+1Eh]
+1258 | +0x0EC5 | 0x18C7D7 | les     bx, [bp+var_6]
+1259 | +0x0EC8 | 0x18C7DA | mov     es:[bx], al
+1260 | +0x0ECB | 0x18C7DD | inc     word ptr [bp+var_6]
+1261 | +0x0ECE | 0x18C7E0 | mov     ax, 7894h
+1262 | +0x0ED1 | 0x18C7E3 | mov     es, ax
+1263 | +0x0ED3 | 0x18C7E5 | mov     ax, es:word_79EA2
+1264 | +0x0ED7 | 0x18C7E9 | mov     dx, 4Eh ; 'N'
+1265 | +0x0EDA | 0x18C7EC | imul    dx
+1266 | +0x0EDC | 0x18C7EE | mov     dx, 7894h
+1267 | +0x0EDF | 0x18C7F1 | mov     es, dx
+1268 | +0x0EE1 | 0x18C7F3 | les     bx, es:dword_79B6E
+1269 | +0x0EE6 | 0x18C7F8 | add     bx, ax
+1270 | +0x0EE8 | 0x18C7FA | mov     al, es:[bx+26h]
+1271 | +0x0EEC | 0x18C7FE | les     bx, [bp+var_6]
+1272 | +0x0EEF | 0x18C801 | mov     es:[bx], al
+1273 | +0x0EF2 | 0x18C804 | inc     word ptr [bp+var_6]
+1274 | +0x0EF5 | 0x18C807 | mov     ax, 7894h
+1275 | +0x0EF8 | 0x18C80A | mov     es, ax
+1276 | +0x0EFA | 0x18C80C | mov     ax, es:word_79EA2
+1277 | +0x0EFE | 0x18C810 | mov     dx, 4Eh ; 'N'
+1278 | +0x0F01 | 0x18C813 | imul    dx
+1279 | +0x0F03 | 0x18C815 | mov     dx, 7894h
+1280 | +0x0F06 | 0x18C818 | mov     es, dx
+1281 | +0x0F08 | 0x18C81A | les     bx, es:dword_79B6E
+1282 | +0x0F0D | 0x18C81F | add     bx, ax
+1283 | +0x0F0F | 0x18C821 | mov     al, es:[bx+17h]
+1284 | +0x0F13 | 0x18C825 | les     bx, [bp+var_6]
+1285 | +0x0F16 | 0x18C828 | mov     es:[bx], al
+1286 | +0x0F19 | 0x18C82B | inc     word ptr [bp+var_6]
+1287 | +0x0F1C | 0x18C82E | mov     ax, 7894h
+1288 | +0x0F1F | 0x18C831 | mov     es, ax
+1289 | +0x0F21 | 0x18C833 | mov     ax, es:word_79EA2
+1290 | +0x0F25 | 0x18C837 | mov     dx, 4Eh ; 'N'
+1291 | +0x0F28 | 0x18C83A | imul    dx
+1292 | +0x0F2A | 0x18C83C | mov     dx, 7894h
+1293 | +0x0F2D | 0x18C83F | mov     es, dx
+1294 | +0x0F2F | 0x18C841 | les     bx, es:dword_79B6E
+1295 | +0x0F34 | 0x18C846 | add     bx, ax
+1296 | +0x0F36 | 0x18C848 | mov     al, es:[bx+1Fh]
+1297 | +0x0F3A | 0x18C84C | les     bx, [bp+var_6]
+1298 | +0x0F3D | 0x18C84F | mov     es:[bx], al
+1299 | +0x0F40 | 0x18C852 | inc     word ptr [bp+var_6]
+1300 | +0x0F43 | 0x18C855 | mov     ax, 7894h
+1301 | +0x0F46 | 0x18C858 | mov     es, ax
+1302 | +0x0F48 | 0x18C85A | mov     ax, es:word_79EA2
+1303 | +0x0F4C | 0x18C85E | mov     dx, 4Eh ; 'N'
+1304 | +0x0F4F | 0x18C861 | imul    dx
+1305 | +0x0F51 | 0x18C863 | mov     dx, 7894h
+1306 | +0x0F54 | 0x18C866 | mov     es, dx
+1307 | +0x0F56 | 0x18C868 | les     bx, es:dword_79B6E
+1308 | +0x0F5B | 0x18C86D | add     bx, ax
+1309 | +0x0F5D | 0x18C86F | mov     al, es:[bx+27h]
+1310 | +0x0F61 | 0x18C873 | les     bx, [bp+var_6]
+1311 | +0x0F64 | 0x18C876 | mov     es:[bx], al
+1312 | +0x0F67 | 0x18C879 | inc     word ptr [bp+var_6]
+1313 | +0x0F6A | 0x18C87C | mov     [bp+var_1], 6
+1314 | +0x0F6E | 0x18C880 | les     bx, [bp+var_6]
+1315 | +0x0F71 | 0x18C883 | mov     al, [bp+var_1]
+1316 | +0x0F74 | 0x18C886 | mov     es:[bx], al
+1317 | +0x0F77 | 0x18C889 | inc     word ptr [bp+var_6]
+1318 | +0x0F7A | 0x18C88C | mov     [bp+var_24], 0
+1319 | +0x0F7F | 0x18C891 | mov     [bp+var_1C], 0
+1320 | +0x0F84 | 0x18C896 | mov     ax, 7894h
+1321 | +0x0F87 | 0x18C899 | mov     es, ax
+1322 | +0x0F89 | 0x18C89B | mov     es:current_flight_index, 0; Current flight index (word)
+1323 | +0x0F90 | 0x18C8A2 | mov     ax, 7894h
+1324 | +0x0F93 | 0x18C8A5 | mov     es, ax
+1325 | +0x0F95 | 0x18C8A7 | cmp     es:current_flight_index, 0; Current flight index (word)
+1326 | +0x0F9B | 0x18C8AD | jnz     short loc_18C8D2
+1327 | +0x0F9D | 0x18C8AF | mov     ax, 7894h
+1328 | +0x0FA0 | 0x18C8B2 | mov     es, ax
+1329 | +0x0FA2 | 0x18C8B4 | mov     ax, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+1330 | +0x0FA6 | 0x18C8B8 | mov     dx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+1331 | +0x0FAB | 0x18C8BD | add     dx, 7F9h
+1332 | +0x0FAF | 0x18C8C1 | mov     word ptr [bp+var_A+2], ax
+1333 | +0x0FB2 | 0x18C8C4 | mov     word ptr [bp+var_A], dx
+1334 | +0x0FB5 | 0x18C8C7 | mov     ax, [bp+var_24]
+1335 | +0x0FB8 | 0x18C8CA | mov     [bp+var_22], ax
+1336 | +0x0FBB | 0x18C8CD | mov     si, [bp+var_36]
+1337 | +0x0FBE | 0x18C8D0 | jmp     short loc_18C902
+1338 | +0x0FC0 | 0x18C8D2 | mov     ax, [bp+var_36]
+1339 | +0x0FC3 | 0x18C8D5 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1340 | +0x0FC6 | 0x18C8D8 | imul    dx
+1341 | +0x0FC8 | 0x18C8DA | mov     dx, 7894h
+1342 | +0x0FCB | 0x18C8DD | mov     es, dx
+1343 | +0x0FCD | 0x18C8DF | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+1344 | +0x0FD2 | 0x18C8E4 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+1345 | +0x0FD7 | 0x18C8E9 | add     bx, ax
+1346 | +0x0FD9 | 0x18C8EB | add     bx, 7F9h
+1347 | +0x0FDD | 0x18C8EF | mov     word ptr [bp+var_A+2], dx
+1348 | +0x0FE0 | 0x18C8F2 | mov     word ptr [bp+var_A], bx
+1349 | +0x0FE3 | 0x18C8F5 | mov     ax, [bp+var_24]
+1350 | +0x0FE6 | 0x18C8F8 | mov     [bp+var_22], ax
+1351 | +0x0FE9 | 0x18C8FB | mov     al, [bp+var_3F]
+1352 | +0x0FEC | 0x18C8FE | mov     ah, 0
+1353 | +0x0FEE | 0x18C900 | mov     si, ax
+1354 | +0x0FF0 | 0x18C902 | or      si, si
+1355 | +0x0FF2 | 0x18C904 | jg      short loc_18C909
+1356 | +0x0FF4 | 0x18C906 | jmp     loc_18CF0F
+1357 | +0x0FF7 | 0x18C909 | mov     ax, 7894h
+1358 | +0x0FFA | 0x18C90C | mov     es, ax
+1359 | +0x0FFC | 0x18C90E | mov     ax, es:current_flight_index; Current flight index (word)
+1360 | +0x1000 | 0x18C912 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1361 | +0x1003 | 0x18C915 | imul    dx
+1362 | +0x1005 | 0x18C917 | mov     dx, 7894h
+1363 | +0x1008 | 0x18C91A | mov     es, dx
+1364 | +0x100A | 0x18C91C | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1365 | +0x100F | 0x18C921 | add     bx, ax
+1366 | +0x1011 | 0x18C923 | mov     al, es:[bx+15h]
+1367 | +0x1015 | 0x18C927 | cbw
+1368 | +0x1016 | 0x18C928 | mov     [bp+var_16], ax
+1369 | +0x1019 | 0x18C92B | cmp     [bp+var_16], 1
+1370 | +0x101D | 0x18C92F | jg      short loc_18C934
+1371 | +0x101F | 0x18C931 | jmp     loc_18CF0C
+1372 | +0x1022 | 0x18C934 | dec     [bp+var_16]
+1373 | +0x1025 | 0x18C937 | mov     al, byte ptr [bp+var_16]
+1374 | +0x1028 | 0x18C93A | mov     [bp+var_1], al
+1375 | +0x102B | 0x18C93D | mov     ax, [bp+var_24]
+1376 | +0x102E | 0x18C940 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1377 | +0x1031 | 0x18C943 | imul    dx
+1378 | +0x1033 | 0x18C945 | les     bx, [bp+var_A]
+1379 | +0x1036 | 0x18C948 | add     bx, ax
+1380 | +0x1038 | 0x18C94A | mov     al, es:[bx+25h]
+1381 | +0x103C | 0x18C94E | mov     ah, 0
+1382 | +0x103E | 0x18C950 | mov     [bp+var_1E], ax
+1383 | +0x1041 | 0x18C953 | cmp     [bp+var_1E], 63h ; 'c'
+1384 | +0x1045 | 0x18C957 | jl      short loc_18C960
+1385 | +0x1047 | 0x18C959 | mov     [bp+var_1E], 0Ah
+1386 | +0x104C | 0x18C95E | jmp     short loc_18C9CD
+1387 | +0x104E | 0x18C960 | cmp     [bp+var_1E], 51h ; 'Q'
+1388 | +0x1052 | 0x18C964 | jl      short loc_18C96D
+1389 | +0x1054 | 0x18C966 | mov     [bp+var_1E], 9
+1390 | +0x1059 | 0x18C96B | jmp     short loc_18C9CD
+1391 | +0x105B | 0x18C96D | cmp     [bp+var_1E], 40h ; '@'
+1392 | +0x105F | 0x18C971 | jl      short loc_18C97A
+1393 | +0x1061 | 0x18C973 | mov     [bp+var_1E], 8
+1394 | +0x1066 | 0x18C978 | jmp     short loc_18C9CD
+1395 | +0x1068 | 0x18C97A | cmp     [bp+var_1E], 31h ; '1'
+1396 | +0x106C | 0x18C97E | jl      short loc_18C987
+1397 | +0x106E | 0x18C980 | mov     [bp+var_1E], 7
+1398 | +0x1073 | 0x18C985 | jmp     short loc_18C9CD
+1399 | +0x1075 | 0x18C987 | cmp     [bp+var_1E], 24h ; '$'
+1400 | +0x1079 | 0x18C98B | jl      short loc_18C994
+1401 | +0x107B | 0x18C98D | mov     [bp+var_1E], 6
+1402 | +0x1080 | 0x18C992 | jmp     short loc_18C9CD
+1403 | +0x1082 | 0x18C994 | cmp     [bp+var_1E], 19h
+1404 | +0x1086 | 0x18C998 | jl      short loc_18C9A1
+1405 | +0x1088 | 0x18C99A | mov     [bp+var_1E], 5
+1406 | +0x108D | 0x18C99F | jmp     short loc_18C9CD
+1407 | +0x108F | 0x18C9A1 | cmp     [bp+var_1E], 10h
+1408 | +0x1093 | 0x18C9A5 | jl      short loc_18C9AE
+1409 | +0x1095 | 0x18C9A7 | mov     [bp+var_1E], 4
+1410 | +0x109A | 0x18C9AC | jmp     short loc_18C9CD
+1411 | +0x109C | 0x18C9AE | cmp     [bp+var_1E], 9
+1412 | +0x10A0 | 0x18C9B2 | jl      short loc_18C9BB
+1413 | +0x10A2 | 0x18C9B4 | mov     [bp+var_1E], 3
+1414 | +0x10A7 | 0x18C9B9 | jmp     short loc_18C9CD
+1415 | +0x10A9 | 0x18C9BB | cmp     [bp+var_1E], 4
+1416 | +0x10AD | 0x18C9BF | jl      short loc_18C9C8
+1417 | +0x10AF | 0x18C9C1 | mov     [bp+var_1E], 2
+1418 | +0x10B4 | 0x18C9C6 | jmp     short loc_18C9CD
+1419 | +0x10B6 | 0x18C9C8 | mov     [bp+var_1E], 1
+1420 | +0x10BB | 0x18C9CD | mov     ax, [bp+var_24]
+1421 | +0x10BE | 0x18C9D0 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1422 | +0x10C1 | 0x18C9D3 | imul    dx
+1423 | +0x10C3 | 0x18C9D5 | les     bx, [bp+var_A]
+1424 | +0x10C6 | 0x18C9D8 | add     bx, ax
+1425 | +0x10C8 | 0x18C9DA | mov     al, es:[bx+24h]
+1426 | +0x10CC | 0x18C9DE | mov     ah, 0
+1427 | +0x10CE | 0x18C9E0 | imul    [bp+var_1E]
+1428 | +0x10D1 | 0x18C9E3 | mov     [bp+var_20], ax
+1429 | +0x10D4 | 0x18C9E6 | mov     bx, 0Ah
+1430 | +0x10D7 | 0x18C9E9 | cwd
+1431 | +0x10D8 | 0x18C9EA | idiv    bx
+1432 | +0x10DA | 0x18C9EC | mov     [bp+var_20], ax
+1433 | +0x10DD | 0x18C9EF | cmp     [bp+var_20], 1
+1434 | +0x10E1 | 0x18C9F3 | jge     short loc_18C9FA
+1435 | +0x10E3 | 0x18C9F5 | mov     [bp+var_20], 5
+1436 | +0x10E8 | 0x18C9FA | les     bx, [bp+var_6]
+1437 | +0x10EB | 0x18C9FD | mov     al, byte ptr [bp+var_20]
+1438 | +0x10EE | 0x18CA00 | mov     es:[bx], al
+1439 | +0x10F1 | 0x18CA03 | inc     word ptr [bp+var_6]
+1440 | +0x10F4 | 0x18CA06 | mov     ax, [bp+var_24]
+1441 | +0x10F7 | 0x18CA09 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1442 | +0x10FA | 0x18CA0C | imul    dx
+1443 | +0x10FC | 0x18CA0E | les     bx, [bp+var_A]
+1444 | +0x10FF | 0x18CA11 | add     bx, ax
+1445 | +0x1101 | 0x18CA13 | mov     al, es:[bx+22h]
+1446 | +0x1105 | 0x18CA17 | mov     ah, 0
+1447 | +0x1107 | 0x18CA19 | imul    [bp+var_1E]
+1448 | +0x110A | 0x18CA1C | mov     [bp+var_20], ax
+1449 | +0x110D | 0x18CA1F | mov     bx, 0Ah
+1450 | +0x1110 | 0x18CA22 | cwd
+1451 | +0x1111 | 0x18CA23 | idiv    bx
+1452 | +0x1113 | 0x18CA25 | mov     [bp+var_20], ax
+1453 | +0x1116 | 0x18CA28 | cmp     [bp+var_20], 1
+1454 | +0x111A | 0x18CA2C | jge     short loc_18CA33
+1455 | +0x111C | 0x18CA2E | mov     [bp+var_20], 5
+1456 | +0x1121 | 0x18CA33 | les     bx, [bp+var_6]
+1457 | +0x1124 | 0x18CA36 | mov     al, byte ptr [bp+var_20]
+1458 | +0x1127 | 0x18CA39 | mov     es:[bx], al
+1459 | +0x112A | 0x18CA3C | inc     word ptr [bp+var_6]
+1460 | +0x112D | 0x18CA3F | mov     ax, [bp+var_24]
+1461 | +0x1130 | 0x18CA42 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1462 | +0x1133 | 0x18CA45 | imul    dx
+1463 | +0x1135 | 0x18CA47 | les     bx, [bp+var_A]
+1464 | +0x1138 | 0x18CA4A | add     bx, ax
+1465 | +0x113A | 0x18CA4C | mov     al, es:[bx+23h]
+1466 | +0x113E | 0x18CA50 | mov     ah, 0
+1467 | +0x1140 | 0x18CA52 | imul    [bp+var_1E]
+1468 | +0x1143 | 0x18CA55 | mov     [bp+var_20], ax
+1469 | +0x1146 | 0x18CA58 | mov     bx, 0Ah
+1470 | +0x1149 | 0x18CA5B | cwd
+1471 | +0x114A | 0x18CA5C | idiv    bx
+1472 | +0x114C | 0x18CA5E | mov     [bp+var_20], ax
+1473 | +0x114F | 0x18CA61 | cmp     [bp+var_20], 1
+1474 | +0x1153 | 0x18CA65 | jge     short loc_18CA6C
+1475 | +0x1155 | 0x18CA67 | mov     [bp+var_20], 5
+1476 | +0x115A | 0x18CA6C | les     bx, [bp+var_6]
+1477 | +0x115D | 0x18CA6F | mov     al, byte ptr [bp+var_20]
+1478 | +0x1160 | 0x18CA72 | mov     es:[bx], al
+1479 | +0x1163 | 0x18CA75 | inc     word ptr [bp+var_6]
+1480 | +0x1166 | 0x18CA78 | les     bx, [bp+var_6]
+1481 | +0x1169 | 0x18CA7B | mov     al, [bp+var_1]
+1482 | +0x116C | 0x18CA7E | mov     es:[bx], al
+1483 | +0x116F | 0x18CA81 | inc     word ptr [bp+var_6]
+1484 | +0x1172 | 0x18CA84 | xor     di, di
+1485 | +0x1174 | 0x18CA86 | jmp     loc_18CCE3
+1486 | +0x1177 | 0x18CA89 | mov     ax, 7894h
+1487 | +0x117A | 0x18CA8C | mov     es, ax
+1488 | +0x117C | 0x18CA8E | mov     ax, es:current_flight_index; Current flight index (word)
+1489 | +0x1180 | 0x18CA92 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1490 | +0x1183 | 0x18CA95 | imul    dx
+1491 | +0x1185 | 0x18CA97 | mov     dx, 7894h
+1492 | +0x1188 | 0x18CA9A | mov     es, dx
+1493 | +0x118A | 0x18CA9C | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1494 | +0x118F | 0x18CAA1 | add     bx, ax
+1495 | +0x1191 | 0x18CAA3 | mov     ax, di
+1496 | +0x1193 | 0x18CAA5 | mov     dx, 0Ch
+1497 | +0x1196 | 0x18CAA8 | imul    dx
+1498 | +0x1198 | 0x18CAAA | add     bx, ax
+1499 | +0x119A | 0x18CAAC | mov     ax, es:[bx+18h]
+1500 | +0x119E | 0x18CAB0 | neg     ax
+1501 | +0x11A0 | 0x18CAB2 | mov     bx, 40h ; '@'
+1502 | +0x11A3 | 0x18CAB5 | cwd
+1503 | +0x11A4 | 0x18CAB6 | idiv    bx
+1504 | +0x11A6 | 0x18CAB8 | mov     [bp+var_1E], ax
+1505 | +0x11A9 | 0x18CABB | mov     al, byte ptr [bp+var_1E]
+1506 | +0x11AC | 0x18CABE | mov     [bp+var_1], al
+1507 | +0x11AF | 0x18CAC1 | les     bx, [bp+var_6]
+1508 | +0x11B2 | 0x18CAC4 | mov     es:[bx], al
+1509 | +0x11B5 | 0x18CAC7 | mov     ax, 7894h
+1510 | +0x11B8 | 0x18CACA | mov     es, ax
+1511 | +0x11BA | 0x18CACC | cmp     es:current_flight_index, 0; Current flight index (word)
+1512 | +0x11C0 | 0x18CAD2 | jnz     short loc_18CAEA
+1513 | +0x11C2 | 0x18CAD4 | or      di, di
+1514 | +0x11C4 | 0x18CAD6 | jnz     short loc_18CAEA
+1515 | +0x11C6 | 0x18CAD8 | mov     ax, 7894h
+1516 | +0x11C9 | 0x18CADB | mov     es, ax
+1517 | +0x11CB | 0x18CADD | les     bx, es:dword_79E5C
+1518 | +0x11D0 | 0x18CAE2 | mov     al, [bp+var_1]
+1519 | +0x11D3 | 0x18CAE5 | mov     es:[bx+2BD4h], al
+1520 | +0x11D8 | 0x18CAEA | inc     word ptr [bp+var_6]
+1521 | +0x11DB | 0x18CAED | mov     ax, 7894h
+1522 | +0x11DE | 0x18CAF0 | mov     es, ax
+1523 | +0x11E0 | 0x18CAF2 | mov     ax, es:current_flight_index; Current flight index (word)
+1524 | +0x11E4 | 0x18CAF6 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1525 | +0x11E7 | 0x18CAF9 | imul    dx
+1526 | +0x11E9 | 0x18CAFB | mov     dx, 7894h
+1527 | +0x11EC | 0x18CAFE | mov     es, dx
+1528 | +0x11EE | 0x18CB00 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1529 | +0x11F3 | 0x18CB05 | add     bx, ax
+1530 | +0x11F5 | 0x18CB07 | mov     ax, di
+1531 | +0x11F7 | 0x18CB09 | mov     dx, 0Ch
+1532 | +0x11FA | 0x18CB0C | imul    dx
+1533 | +0x11FC | 0x18CB0E | add     bx, ax
+1534 | +0x11FE | 0x18CB10 | mov     ax, es:[bx+16h]
+1535 | +0x1202 | 0x18CB14 | mov     bx, 40h ; '@'
+1536 | +0x1205 | 0x18CB17 | cwd
+1537 | +0x1206 | 0x18CB18 | idiv    bx
+1538 | +0x1208 | 0x18CB1A | mov     [bp+var_1E], ax
+1539 | +0x120B | 0x18CB1D | mov     al, byte ptr [bp+var_1E]
+1540 | +0x120E | 0x18CB20 | mov     [bp+var_1], al
+1541 | +0x1211 | 0x18CB23 | les     bx, [bp+var_6]
+1542 | +0x1214 | 0x18CB26 | mov     es:[bx], al
+1543 | +0x1217 | 0x18CB29 | mov     ax, 7894h
+1544 | +0x121A | 0x18CB2C | mov     es, ax
+1545 | +0x121C | 0x18CB2E | cmp     es:current_flight_index, 0; Current flight index (word)
+1546 | +0x1222 | 0x18CB34 | jnz     short loc_18CB4C
+1547 | +0x1224 | 0x18CB36 | or      di, di
+1548 | +0x1226 | 0x18CB38 | jnz     short loc_18CB4C
+1549 | +0x1228 | 0x18CB3A | mov     ax, 7894h
+1550 | +0x122B | 0x18CB3D | mov     es, ax
+1551 | +0x122D | 0x18CB3F | les     bx, es:dword_79E5C
+1552 | +0x1232 | 0x18CB44 | mov     al, [bp+var_1]
+1553 | +0x1235 | 0x18CB47 | mov     es:[bx+2BD5h], al
+1554 | +0x123A | 0x18CB4C | inc     word ptr [bp+var_6]
+1555 | +0x123D | 0x18CB4F | mov     ax, word ptr [bp+var_6+2]
+1556 | +0x1240 | 0x18CB52 | mov     dx, word ptr [bp+var_6]
+1557 | +0x1243 | 0x18CB55 | mov     word ptr [bp+var_E+2], ax
+1558 | +0x1246 | 0x18CB58 | mov     word ptr [bp+var_E], dx
+1559 | +0x1249 | 0x18CB5B | mov     ax, 7894h
+1560 | +0x124C | 0x18CB5E | mov     es, ax
+1561 | +0x124E | 0x18CB60 | mov     ax, es:current_flight_index; Current flight index (word)
+1562 | +0x1252 | 0x18CB64 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1563 | +0x1255 | 0x18CB67 | imul    dx
+1564 | +0x1257 | 0x18CB69 | mov     dx, 7894h
+1565 | +0x125A | 0x18CB6C | mov     es, dx
+1566 | +0x125C | 0x18CB6E | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1567 | +0x1261 | 0x18CB73 | add     bx, ax
+1568 | +0x1263 | 0x18CB75 | mov     ax, di
+1569 | +0x1265 | 0x18CB77 | mov     dx, 0Ch
+1570 | +0x1268 | 0x18CB7A | imul    dx
+1571 | +0x126A | 0x18CB7C | add     bx, ax
+1572 | +0x126C | 0x18CB7E | mov     ax, es:[bx+1Ah]
+1573 | +0x1270 | 0x18CB82 | mov     bx, 3
+1574 | +0x1273 | 0x18CB85 | cwd
+1575 | +0x1274 | 0x18CB86 | idiv    bx
+1576 | +0x1276 | 0x18CB88 | mov     [bp+var_1E], ax
+1577 | +0x1279 | 0x18CB8B | mov     al, byte ptr [bp+var_1E]
+1578 | +0x127C | 0x18CB8E | mov     [bp+var_F], al
+1579 | +0x127F | 0x18CB91 | les     bx, [bp+var_E]
+1580 | +0x1282 | 0x18CB94 | mov     es:[bx], al
+1581 | +0x1285 | 0x18CB97 | inc     word ptr [bp+var_E]
+1582 | +0x1288 | 0x18CB9A | mov     ax, word ptr [bp+var_E+2]
+1583 | +0x128B | 0x18CB9D | mov     dx, word ptr [bp+var_E]
+1584 | +0x128E | 0x18CBA0 | mov     word ptr [bp+var_6+2], ax
+1585 | +0x1291 | 0x18CBA3 | mov     word ptr [bp+var_6], dx
+1586 | +0x1294 | 0x18CBA6 | mov     ax, 7894h
+1587 | +0x1297 | 0x18CBA9 | mov     es, ax
+1588 | +0x1299 | 0x18CBAB | mov     ax, es:current_flight_index; Current flight index (word)
+1589 | +0x129D | 0x18CBAF | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1590 | +0x12A0 | 0x18CBB2 | imul    dx
+1591 | +0x12A2 | 0x18CBB4 | mov     dx, 7894h
+1592 | +0x12A5 | 0x18CBB7 | mov     es, dx
+1593 | +0x12A7 | 0x18CBB9 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1594 | +0x12AC | 0x18CBBE | add     bx, ax
+1595 | +0x12AE | 0x18CBC0 | mov     ax, di
+1596 | +0x12B0 | 0x18CBC2 | mov     dx, 0Ch
+1597 | +0x12B3 | 0x18CBC5 | imul    dx
+1598 | +0x12B5 | 0x18CBC7 | add     bx, ax
+1599 | +0x12B7 | 0x18CBC9 | mov     ax, es:[bx+1Ch]
+1600 | +0x12BB | 0x18CBCD | mov     bx, 5
+1601 | +0x12BE | 0x18CBD0 | cwd
+1602 | +0x12BF | 0x18CBD1 | idiv    bx
+1603 | +0x12C1 | 0x18CBD3 | mov     [bp+var_16], ax
+1604 | +0x12C4 | 0x18CBD6 | les     bx, [bp+var_6]
+1605 | +0x12C7 | 0x18CBD9 | mov     al, byte ptr [bp+var_16]
+1606 | +0x12CA | 0x18CBDC | mov     es:[bx], al
+1607 | +0x12CD | 0x18CBDF | inc     word ptr [bp+var_6]
+1608 | +0x12D0 | 0x18CBE2 | mov     ax, word ptr [bp+var_6+2]
+1609 | +0x12D3 | 0x18CBE5 | mov     dx, word ptr [bp+var_6]
+1610 | +0x12D6 | 0x18CBE8 | mov     word ptr [bp+var_E+2], ax
+1611 | +0x12D9 | 0x18CBEB | mov     word ptr [bp+var_E], dx
+1612 | +0x12DC | 0x18CBEE | mov     ax, 7894h
+1613 | +0x12DF | 0x18CBF1 | mov     es, ax
+1614 | +0x12E1 | 0x18CBF3 | mov     ax, es:current_flight_index; Current flight index (word)
+1615 | +0x12E5 | 0x18CBF7 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1616 | +0x12E8 | 0x18CBFA | imul    dx
+1617 | +0x12EA | 0x18CBFC | mov     dx, 7894h
+1618 | +0x12ED | 0x18CBFF | mov     es, dx
+1619 | +0x12EF | 0x18CC01 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1620 | +0x12F4 | 0x18CC06 | add     bx, ax
+1621 | +0x12F6 | 0x18CC08 | mov     ax, di
+1622 | +0x12F8 | 0x18CC0A | mov     dx, 0Ch
+1623 | +0x12FB | 0x18CC0D | imul    dx
+1624 | +0x12FD | 0x18CC0F | add     bx, ax
+1625 | +0x12FF | 0x18CC11 | mov     al, es:[bx+1Fh]
+1626 | +0x1303 | 0x18CC15 | cbw
+1627 | +0x1304 | 0x18CC16 | mov     [bp+var_1E], ax
+1628 | +0x1307 | 0x18CC19 | push    [bp+var_1E]
+1629 | +0x130A | 0x18CC1C | call    sub_2C81F
+1630 | +0x130F | 0x18CC21 | pop     cx
+1631 | +0x1310 | 0x18CC22 | mov     [bp+var_F], al
+1632 | +0x1313 | 0x18CC25 | cmp     [bp+var_1E], 0Ah
+1633 | +0x1317 | 0x18CC29 | jnz     short loc_18CC55
+1634 | +0x1319 | 0x18CC2B | mov     ax, 7894h
+1635 | +0x131C | 0x18CC2E | mov     es, ax
+1636 | +0x131E | 0x18CC30 | mov     ax, es:current_flight_index; Current flight index (word)
+1637 | +0x1322 | 0x18CC34 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1638 | +0x1325 | 0x18CC37 | imul    dx
+1639 | +0x1327 | 0x18CC39 | mov     dx, 7894h
+1640 | +0x132A | 0x18CC3C | mov     es, dx
+1641 | +0x132C | 0x18CC3E | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1642 | +0x1331 | 0x18CC43 | add     bx, ax
+1643 | +0x1333 | 0x18CC45 | mov     ax, di
+1644 | +0x1335 | 0x18CC47 | mov     dx, 0Ch
+1645 | +0x1338 | 0x18CC4A | imul    dx
+1646 | +0x133A | 0x18CC4C | add     bx, ax
+1647 | +0x133C | 0x18CC4E | mov     al, es:[bx+20h]
+1648 | +0x1340 | 0x18CC52 | or      [bp+var_F], al
+1649 | +0x1343 | 0x18CC55 | cmp     [bp+var_1E], 4
+1650 | +0x1347 | 0x18CC59 | jnz     short loc_18CCA8
+1651 | +0x1349 | 0x18CC5B | mov     ax, 7894h
+1652 | +0x134C | 0x18CC5E | mov     es, ax
+1653 | +0x134E | 0x18CC60 | cmp     es:word_79B56, 2
+1654 | +0x1354 | 0x18CC66 | jnz     short loc_18CC94
+1655 | +0x1356 | 0x18CC68 | mov     ax, 7894h
+1656 | +0x1359 | 0x18CC6B | mov     es, ax
+1657 | +0x135B | 0x18CC6D | mov     ax, es:current_flight_index; Current flight index (word)
+1658 | +0x135F | 0x18CC71 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1659 | +0x1362 | 0x18CC74 | imul    dx
+1660 | +0x1364 | 0x18CC76 | mov     dx, 7894h
+1661 | +0x1367 | 0x18CC79 | mov     es, dx
+1662 | +0x1369 | 0x18CC7B | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1663 | +0x136E | 0x18CC80 | add     bx, ax
+1664 | +0x1370 | 0x18CC82 | mov     ax, di
+1665 | +0x1372 | 0x18CC84 | mov     dx, 0Ch
+1666 | +0x1375 | 0x18CC87 | imul    dx
+1667 | +0x1377 | 0x18CC89 | add     bx, ax
+1668 | +0x1379 | 0x18CC8B | mov     al, es:[bx+20h]
+1669 | +0x137D | 0x18CC8F | or      [bp+var_F], al
+1670 | +0x1380 | 0x18CC92 | jmp     short loc_18CCA8
+1671 | +0x1382 | 0x18CC94 | mov     al, byte ptr [bp+var_1C]
+1672 | +0x1385 | 0x18CC97 | or      [bp+var_F], al
+1673 | +0x1388 | 0x18CC9A | inc     [bp+var_1C]
+1674 | +0x138B | 0x18CC9D | cmp     [bp+var_1C], 7
+1675 | +0x138F | 0x18CCA1 | jle     short loc_18CCA8
+1676 | +0x1391 | 0x18CCA3 | mov     [bp+var_1C], 7
+1677 | +0x1396 | 0x18CCA8 | mov     ax, 7894h
+1678 | +0x1399 | 0x18CCAB | mov     es, ax
+1679 | +0x139B | 0x18CCAD | cmp     es:current_flight_index, 0; Current flight index (word)
+1680 | +0x13A1 | 0x18CCB3 | jnz     short loc_18CCCA
+1681 | +0x13A3 | 0x18CCB5 | or      di, di
+1682 | +0x13A5 | 0x18CCB7 | jnz     short loc_18CCCA
+1683 | +0x13A7 | 0x18CCB9 | mov     ax, 7894h
+1684 | +0x13AA | 0x18CCBC | mov     es, ax
+1685 | +0x13AC | 0x18CCBE | cmp     es:word_79B56, 2
+1686 | +0x13B2 | 0x18CCC4 | jnz     short loc_18CCCA
+1687 | +0x13B4 | 0x18CCC6 | or      [bp+var_F], 1
+1688 | +0x13B8 | 0x18CCCA | les     bx, [bp+var_E]
+1689 | +0x13BB | 0x18CCCD | mov     al, [bp+var_F]
+1690 | +0x13BE | 0x18CCD0 | mov     es:[bx], al
+1691 | +0x13C1 | 0x18CCD3 | inc     word ptr [bp+var_E]
+1692 | +0x13C4 | 0x18CCD6 | mov     ax, word ptr [bp+var_E+2]
+1693 | +0x13C7 | 0x18CCD9 | mov     dx, word ptr [bp+var_E]
+1694 | +0x13CA | 0x18CCDC | mov     word ptr [bp+var_6+2], ax
+1695 | +0x13CD | 0x18CCDF | mov     word ptr [bp+var_6], dx
+1696 | +0x13D0 | 0x18CCE2 | inc     di
+1697 | +0x13D1 | 0x18CCE3 | mov     ax, 7894h
+1698 | +0x13D4 | 0x18CCE6 | mov     es, ax
+1699 | +0x13D6 | 0x18CCE8 | mov     ax, es:current_flight_index; Current flight index (word)
+1700 | +0x13DA | 0x18CCEC | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1701 | +0x13DD | 0x18CCEF | imul    dx
+1702 | +0x13DF | 0x18CCF1 | mov     dx, 7894h
+1703 | +0x13E2 | 0x18CCF4 | mov     es, dx
+1704 | +0x13E4 | 0x18CCF6 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1705 | +0x13E9 | 0x18CCFB | add     bx, ax
+1706 | +0x13EB | 0x18CCFD | mov     al, es:[bx+15h]
+1707 | +0x13EF | 0x18CD01 | cbw
+1708 | +0x13F0 | 0x18CD02 | cmp     ax, di
+1709 | +0x13F2 | 0x18CD04 | jle     short loc_18CD09
+1710 | +0x13F4 | 0x18CD06 | jmp     loc_18CA89
+1711 | +0x13F7 | 0x18CD09 | mov     ax, 7894h
+1712 | +0x13FA | 0x18CD0C | mov     es, ax
+1713 | +0x13FC | 0x18CD0E | mov     ax, es:current_flight_index; Current flight index (word)
+1714 | +0x1400 | 0x18CD12 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1715 | +0x1403 | 0x18CD15 | imul    dx
+1716 | +0x1405 | 0x18CD17 | mov     dx, 7894h
+1717 | +0x1408 | 0x18CD1A | mov     es, dx
+1718 | +0x140A | 0x18CD1C | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1719 | +0x140F | 0x18CD21 | add     bx, ax
+1720 | +0x1411 | 0x18CD23 | mov     al, es:[bx+2]
+1721 | +0x1415 | 0x18CD27 | cbw
+1722 | +0x1416 | 0x18CD28 | mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+1723 | +0x1419 | 0x18CD2B | imul    dx
+1724 | +0x141B | 0x18CD2D | mov     [bp+var_26], ax
+1725 | +0x141E | 0x18CD30 | mov     di, 1
+1726 | +0x1421 | 0x18CD33 | jmp     loc_18CF05
+1727 | +0x1424 | 0x18CD36 | mov     ax, [bp+var_24]
+1728 | +0x1427 | 0x18CD39 | add     ax, di
+1729 | +0x1429 | 0x18CD3B | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1730 | +0x142C | 0x18CD3E | imul    dx
+1731 | +0x142E | 0x18CD40 | les     bx, [bp+var_A]
+1732 | +0x1431 | 0x18CD43 | add     bx, ax
+1733 | +0x1433 | 0x18CD45 | mov     al, es:[bx+25h]
+1734 | +0x1437 | 0x18CD49 | mov     ah, 0
+1735 | +0x1439 | 0x18CD4B | mov     [bp+var_1E], ax
+1736 | +0x143C | 0x18CD4E | cmp     [bp+var_1E], 63h ; 'c'
+1737 | +0x1440 | 0x18CD52 | jl      short loc_18CD5B
+1738 | +0x1442 | 0x18CD54 | mov     [bp+var_1E], 0Ah
+1739 | +0x1447 | 0x18CD59 | jmp     short loc_18CDC8
+1740 | +0x1449 | 0x18CD5B | cmp     [bp+var_1E], 51h ; 'Q'
+1741 | +0x144D | 0x18CD5F | jl      short loc_18CD68
+1742 | +0x144F | 0x18CD61 | mov     [bp+var_1E], 9
+1743 | +0x1454 | 0x18CD66 | jmp     short loc_18CDC8
+1744 | +0x1456 | 0x18CD68 | cmp     [bp+var_1E], 40h ; '@'
+1745 | +0x145A | 0x18CD6C | jl      short loc_18CD75
+1746 | +0x145C | 0x18CD6E | mov     [bp+var_1E], 8
+1747 | +0x1461 | 0x18CD73 | jmp     short loc_18CDC8
+1748 | +0x1463 | 0x18CD75 | cmp     [bp+var_1E], 31h ; '1'
+1749 | +0x1467 | 0x18CD79 | jl      short loc_18CD82
+1750 | +0x1469 | 0x18CD7B | mov     [bp+var_1E], 7
+1751 | +0x146E | 0x18CD80 | jmp     short loc_18CDC8
+1752 | +0x1470 | 0x18CD82 | cmp     [bp+var_1E], 24h ; '$'
+1753 | +0x1474 | 0x18CD86 | jl      short loc_18CD8F
+1754 | +0x1476 | 0x18CD88 | mov     [bp+var_1E], 6
+1755 | +0x147B | 0x18CD8D | jmp     short loc_18CDC8
+1756 | +0x147D | 0x18CD8F | cmp     [bp+var_1E], 19h
+1757 | +0x1481 | 0x18CD93 | jl      short loc_18CD9C
+1758 | +0x1483 | 0x18CD95 | mov     [bp+var_1E], 5
+1759 | +0x1488 | 0x18CD9A | jmp     short loc_18CDC8
+1760 | +0x148A | 0x18CD9C | cmp     [bp+var_1E], 10h
+1761 | +0x148E | 0x18CDA0 | jl      short loc_18CDA9
+1762 | +0x1490 | 0x18CDA2 | mov     [bp+var_1E], 4
+1763 | +0x1495 | 0x18CDA7 | jmp     short loc_18CDC8
+1764 | +0x1497 | 0x18CDA9 | cmp     [bp+var_1E], 9
+1765 | +0x149B | 0x18CDAD | jl      short loc_18CDB6
+1766 | +0x149D | 0x18CDAF | mov     [bp+var_1E], 3
+1767 | +0x14A2 | 0x18CDB4 | jmp     short loc_18CDC8
+1768 | +0x14A4 | 0x18CDB6 | cmp     [bp+var_1E], 4
+1769 | +0x14A8 | 0x18CDBA | jl      short loc_18CDC3
+1770 | +0x14AA | 0x18CDBC | mov     [bp+var_1E], 2
+1771 | +0x14AF | 0x18CDC1 | jmp     short loc_18CDC8
+1772 | +0x14B1 | 0x18CDC3 | mov     [bp+var_1E], 1
+1773 | +0x14B6 | 0x18CDC8 | mov     ax, [bp+var_24]
+1774 | +0x14B9 | 0x18CDCB | add     ax, di
+1775 | +0x14BB | 0x18CDCD | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1776 | +0x14BE | 0x18CDD0 | imul    dx
+1777 | +0x14C0 | 0x18CDD2 | les     bx, [bp+var_A]
+1778 | +0x14C3 | 0x18CDD5 | add     bx, ax
+1779 | +0x14C5 | 0x18CDD7 | mov     al, es:[bx+24h]
+1780 | +0x14C9 | 0x18CDDB | mov     ah, 0
+1781 | +0x14CB | 0x18CDDD | imul    [bp+var_1E]
+1782 | +0x14CE | 0x18CDE0 | mov     [bp+var_20], ax
+1783 | +0x14D1 | 0x18CDE3 | mov     bx, 0Ah
+1784 | +0x14D4 | 0x18CDE6 | cwd
+1785 | +0x14D5 | 0x18CDE7 | idiv    bx
+1786 | +0x14D7 | 0x18CDE9 | mov     [bp+var_20], ax
+1787 | +0x14DA | 0x18CDEC | cmp     [bp+var_20], 5
+1788 | +0x14DE | 0x18CDF0 | jge     short loc_18CDF7
+1789 | +0x14E0 | 0x18CDF2 | mov     [bp+var_20], 5
+1790 | +0x14E5 | 0x18CDF7 | les     bx, [bp+var_6]
+1791 | +0x14E8 | 0x18CDFA | mov     al, byte ptr [bp+var_20]
+1792 | +0x14EB | 0x18CDFD | mov     es:[bx], al
+1793 | +0x14EE | 0x18CE00 | inc     word ptr [bp+var_6]
+1794 | +0x14F1 | 0x18CE03 | mov     ax, [bp+var_24]
+1795 | +0x14F4 | 0x18CE06 | add     ax, di
+1796 | +0x14F6 | 0x18CE08 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1797 | +0x14F9 | 0x18CE0B | imul    dx
+1798 | +0x14FB | 0x18CE0D | les     bx, [bp+var_A]
+1799 | +0x14FE | 0x18CE10 | add     bx, ax
+1800 | +0x1500 | 0x18CE12 | mov     al, es:[bx+22h]
+1801 | +0x1504 | 0x18CE16 | mov     ah, 0
+1802 | +0x1506 | 0x18CE18 | imul    [bp+var_1E]
+1803 | +0x1509 | 0x18CE1B | mov     [bp+var_20], ax
+1804 | +0x150C | 0x18CE1E | mov     bx, 0Ah
+1805 | +0x150F | 0x18CE21 | cwd
+1806 | +0x1510 | 0x18CE22 | idiv    bx
+1807 | +0x1512 | 0x18CE24 | mov     [bp+var_20], ax
+1808 | +0x1515 | 0x18CE27 | cmp     [bp+var_20], 5
+1809 | +0x1519 | 0x18CE2B | jge     short loc_18CE32
+1810 | +0x151B | 0x18CE2D | mov     [bp+var_20], 5
+1811 | +0x1520 | 0x18CE32 | les     bx, [bp+var_6]
+1812 | +0x1523 | 0x18CE35 | mov     al, byte ptr [bp+var_20]
+1813 | +0x1526 | 0x18CE38 | mov     es:[bx], al
+1814 | +0x1529 | 0x18CE3B | inc     word ptr [bp+var_6]
+1815 | +0x152C | 0x18CE3E | mov     ax, [bp+var_24]
+1816 | +0x152F | 0x18CE41 | add     ax, di
+1817 | +0x1531 | 0x18CE43 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1818 | +0x1534 | 0x18CE46 | imul    dx
+1819 | +0x1536 | 0x18CE48 | les     bx, [bp+var_A]
+1820 | +0x1539 | 0x18CE4B | add     bx, ax
+1821 | +0x153B | 0x18CE4D | mov     al, es:[bx+23h]
+1822 | +0x153F | 0x18CE51 | mov     ah, 0
+1823 | +0x1541 | 0x18CE53 | imul    [bp+var_1E]
+1824 | +0x1544 | 0x18CE56 | mov     [bp+var_20], ax
+1825 | +0x1547 | 0x18CE59 | mov     bx, 0Ah
+1826 | +0x154A | 0x18CE5C | cwd
+1827 | +0x154B | 0x18CE5D | idiv    bx
+1828 | +0x154D | 0x18CE5F | mov     [bp+var_20], ax
+1829 | +0x1550 | 0x18CE62 | cmp     [bp+var_20], 5
+1830 | +0x1554 | 0x18CE66 | jge     short loc_18CE6D
+1831 | +0x1556 | 0x18CE68 | mov     [bp+var_20], 5
+1832 | +0x155B | 0x18CE6D | les     bx, [bp+var_6]
+1833 | +0x155E | 0x18CE70 | mov     al, byte ptr [bp+var_20]
+1834 | +0x1561 | 0x18CE73 | mov     es:[bx], al
+1835 | +0x1564 | 0x18CE76 | inc     word ptr [bp+var_6]
+1836 | +0x1567 | 0x18CE79 | les     bx, [bp+var_6]
+1837 | +0x156A | 0x18CE7C | mov     byte ptr es:[bx], 0FFh
+1838 | +0x156E | 0x18CE80 | inc     word ptr [bp+var_6]
+1839 | +0x1571 | 0x18CE83 | les     bx, [bp+var_6]
+1840 | +0x1574 | 0x18CE86 | mov     al, byte ptr [bp+var_22]
+1841 | +0x1577 | 0x18CE89 | mov     es:[bx], al
+1842 | +0x157A | 0x18CE8C | inc     word ptr [bp+var_6]
+1843 | +0x157D | 0x18CE8F | mov     ax, word ptr [bp+var_6+2]
+1844 | +0x1580 | 0x18CE92 | mov     dx, word ptr [bp+var_6]
+1845 | +0x1583 | 0x18CE95 | mov     word ptr [bp+var_14+2], ax
+1846 | +0x1586 | 0x18CE98 | mov     word ptr [bp+var_14], dx
+1847 | +0x1589 | 0x18CE9B | mov     ax, 4FC2h
+1848 | +0x158C | 0x18CE9E | mov     bx, [bp+var_26]
+1849 | +0x158F | 0x18CEA1 | mov     es, ax
+1850 | +0x1591 | 0x18CEA3 | mov     al, es:[bx+168h]
+1851 | +0x1596 | 0x18CEA8 | mov     ah, 0
+1852 | +0x1598 | 0x18CEAA | shl     ax, 6
+1853 | +0x159B | 0x18CEAD | les     bx, [bp+var_14]
+1854 | +0x159E | 0x18CEB0 | mov     es:[bx], ax
+1855 | +0x15A1 | 0x18CEB3 | add     word ptr [bp+var_14], 2
+1856 | +0x15A5 | 0x18CEB7 | inc     [bp+var_26]
+1857 | +0x15A8 | 0x18CEBA | mov     ax, 4FC2h
+1858 | +0x15AB | 0x18CEBD | mov     bx, [bp+var_26]
+1859 | +0x15AE | 0x18CEC0 | mov     es, ax
+1860 | +0x15B0 | 0x18CEC2 | mov     al, es:[bx+168h]
+1861 | +0x15B5 | 0x18CEC7 | mov     ah, 0
+1862 | +0x15B7 | 0x18CEC9 | shl     ax, 6
+1863 | +0x15BA | 0x18CECC | les     bx, [bp+var_14]
+1864 | +0x15BD | 0x18CECF | mov     es:[bx], ax
+1865 | +0x15C0 | 0x18CED2 | add     word ptr [bp+var_14], 2
+1866 | +0x15C4 | 0x18CED6 | inc     [bp+var_26]
+1867 | +0x15C7 | 0x18CED9 | mov     ax, 4FC2h
+1868 | +0x15CA | 0x18CEDC | mov     bx, [bp+var_26]
+1869 | +0x15CD | 0x18CEDF | mov     es, ax
+1870 | +0x15CF | 0x18CEE1 | mov     al, es:[bx+168h]
+1871 | +0x15D4 | 0x18CEE6 | mov     ah, 0
+1872 | +0x15D6 | 0x18CEE8 | shl     ax, 6
+1873 | +0x15D9 | 0x18CEEB | les     bx, [bp+var_14]
+1874 | +0x15DC | 0x18CEEE | mov     es:[bx], ax
+1875 | +0x15DF | 0x18CEF1 | add     word ptr [bp+var_14], 2
+1876 | +0x15E3 | 0x18CEF5 | inc     [bp+var_26]
+1877 | +0x15E6 | 0x18CEF8 | mov     ax, word ptr [bp+var_14+2]
+1878 | +0x15E9 | 0x18CEFB | mov     dx, word ptr [bp+var_14]
+1879 | +0x15EC | 0x18CEFE | mov     word ptr [bp+var_6+2], ax
+1880 | +0x15EF | 0x18CF01 | mov     word ptr [bp+var_6], dx
+1881 | +0x15F2 | 0x18CF04 | inc     di
+1882 | +0x15F3 | 0x18CF05 | cmp     di, si
+1883 | +0x15F5 | 0x18CF07 | jge     short loc_18CF0C
+1884 | +0x15F7 | 0x18CF09 | jmp     loc_18CD36
+1885 | +0x15FA | 0x18CF0C | add     [bp+var_24], si
+1886 | +0x15FD | 0x18CF0F | mov     ax, 7894h
+1887 | +0x1600 | 0x18CF12 | mov     es, ax
+1888 | +0x1602 | 0x18CF14 | cmp     es:current_flight_index, 0; Current flight index (word)
+1889 | +0x1608 | 0x18CF1A | jnz     short loc_18CF2E
+1890 | +0x160A | 0x18CF1C | mov     dx, [bp+var_46]
+1891 | +0x160D | 0x18CF1F | mov     es, ax
+1892 | +0x160F | 0x18CF21 | mov     es:current_flight_index, dx; Current flight index (word)
+1893 | +0x1614 | 0x18CF26 | mov     ax, [bp+var_26]
+1894 | +0x1617 | 0x18CF29 | mov     [bp+var_5A], ax
+1895 | +0x161A | 0x18CF2C | jmp     short loc_18CF40
+1896 | +0x161C | 0x18CF2E | mov     ax, 7894h
+1897 | +0x161F | 0x18CF31 | mov     es, ax
+1898 | +0x1621 | 0x18CF33 | mov     es:current_flight_index, 0; Current flight index (word)
+1899 | +0x1628 | 0x18CF3A | mov     ax, [bp+var_26]
+1900 | +0x162B | 0x18CF3D | mov     [bp+var_5C], ax
+1901 | +0x162E | 0x18CF40 | mov     ax, 7894h
+1902 | +0x1631 | 0x18CF43 | mov     es, ax
+1903 | +0x1633 | 0x18CF45 | cmp     es:current_flight_index, 0; Current flight index (word)
+1904 | +0x1639 | 0x18CF4B | jz      short loc_18CF50
+1905 | +0x163B | 0x18CF4D | jmp     loc_18C8A2
+1906 | +0x163E | 0x18CF50 | mov     es, ax
+1907 | +0x1640 | 0x18CF52 | mov     es:current_flight_index, 0; Current flight index (word)
+1908 | +0x1647 | 0x18CF59 | jmp     loc_18D6CB
+1909 | +0x164A | 0x18CF5C | mov     ax, 7894h
+1910 | +0x164D | 0x18CF5F | mov     es, ax
+1911 | +0x164F | 0x18CF61 | cmp     es:current_flight_index, 0; Current flight index (word)
+1912 | +0x1655 | 0x18CF67 | jnz     short loc_18CFB2
+1913 | +0x1657 | 0x18CF69 | mov     ax, 7894h
+1914 | +0x165A | 0x18CF6C | mov     es, ax
+1915 | +0x165C | 0x18CF6E | mov     ax, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+1916 | +0x1660 | 0x18CF72 | mov     dx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+1917 | +0x1665 | 0x18CF77 | add     dx, 565h
+1918 | +0x1669 | 0x18CF7B | mov     word ptr [bp+var_A+2], ax
+1919 | +0x166C | 0x18CF7E | mov     word ptr [bp+var_A], dx
+1920 | +0x166F | 0x18CF81 | mov     [bp+var_22], 0
+1921 | +0x1674 | 0x18CF86 | mov     ax, 7894h
+1922 | +0x1677 | 0x18CF89 | mov     es, ax
+1923 | +0x1679 | 0x18CF8B | mov     ax, es:current_flight_index; Current flight index (word)
+1924 | +0x167D | 0x18CF8F | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1925 | +0x1680 | 0x18CF92 | imul    dx
+1926 | +0x1682 | 0x18CF94 | mov     dx, 7894h
+1927 | +0x1685 | 0x18CF97 | mov     es, dx
+1928 | +0x1687 | 0x18CF99 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1929 | +0x168C | 0x18CF9E | add     bx, ax
+1930 | +0x168E | 0x18CFA0 | mov     al, es:[bx+4]
+1931 | +0x1692 | 0x18CFA4 | cbw
+1932 | +0x1693 | 0x18CFA5 | sub     ax, [bp+var_36]
+1933 | +0x1696 | 0x18CFA8 | mov     si, ax
+1934 | +0x1698 | 0x18CFAA | inc     si
+1935 | +0x1699 | 0x18CFAB | mov     [bp+var_57], 1
+1936 | +0x169D | 0x18CFAF | jmp     loc_18D0B2
+1937 | +0x16A0 | 0x18CFB2 | mov     ax, 7894h
+1938 | +0x16A3 | 0x18CFB5 | mov     es, ax
+1939 | +0x16A5 | 0x18CFB7 | mov     ax, es:current_flight_index; Current flight index (word)
+1940 | +0x16A9 | 0x18CFBB | cmp     ax, [bp+var_46]
+1941 | +0x16AC | 0x18CFBE | jnz     short loc_18D015
+1942 | +0x16AE | 0x18CFC0 | mov     al, [bp+var_3B]
+1943 | +0x16B1 | 0x18CFC3 | mov     ah, 0
+1944 | +0x16B3 | 0x18CFC5 | add     ax, 14h
+1945 | +0x16B6 | 0x18CFC8 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+1946 | +0x16B9 | 0x18CFCB | imul    dx
+1947 | +0x16BB | 0x18CFCD | mov     dx, 7894h
+1948 | +0x16BE | 0x18CFD0 | mov     es, dx
+1949 | +0x16C0 | 0x18CFD2 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+1950 | +0x16C5 | 0x18CFD7 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+1951 | +0x16CA | 0x18CFDC | add     bx, ax
+1952 | +0x16CC | 0x18CFDE | add     bx, 3Dh ; '='
+1953 | +0x16CF | 0x18CFE1 | mov     word ptr [bp+var_A+2], dx
+1954 | +0x16D2 | 0x18CFE4 | mov     word ptr [bp+var_A], bx
+1955 | +0x16D5 | 0x18CFE7 | mov     ax, [bp+var_36]
+1956 | +0x16D8 | 0x18CFEA | mov     [bp+var_22], ax
+1957 | +0x16DB | 0x18CFED | mov     ax, 7894h
+1958 | +0x16DE | 0x18CFF0 | mov     es, ax
+1959 | +0x16E0 | 0x18CFF2 | mov     ax, es:current_flight_index; Current flight index (word)
+1960 | +0x16E4 | 0x18CFF6 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1961 | +0x16E7 | 0x18CFF9 | imul    dx
+1962 | +0x16E9 | 0x18CFFB | mov     dx, 7894h
+1963 | +0x16EC | 0x18CFFE | mov     es, dx
+1964 | +0x16EE | 0x18D000 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1965 | +0x16F3 | 0x18D005 | add     bx, ax
+1966 | +0x16F5 | 0x18D007 | mov     al, es:[bx+4]
+1967 | +0x16F9 | 0x18D00B | cbw
+1968 | +0x16FA | 0x18D00C | mov     dl, [bp+var_3F]
+1969 | +0x16FD | 0x18D00F | mov     dh, 0
+1970 | +0x16FF | 0x18D011 | sub     ax, dx
+1971 | +0x1701 | 0x18D013 | jmp     short loc_18CFA8
+1972 | +0x1703 | 0x18D015 | mov     ax, 7894h
+1973 | +0x1706 | 0x18D018 | mov     es, ax
+1974 | +0x1708 | 0x18D01A | mov     ax, es:current_flight_index; Current flight index (word)
+1975 | +0x170C | 0x18D01E | cmp     ax, [bp+var_46]
+1976 | +0x170F | 0x18D021 | jge     short loc_18D03A
+1977 | +0x1711 | 0x18D023 | mov     ax, 7894h
+1978 | +0x1714 | 0x18D026 | mov     es, ax
+1979 | +0x1716 | 0x18D028 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1980 | +0x171B | 0x18D02D | mov     al, es:[bx+4]
+1981 | +0x171F | 0x18D031 | cbw
+1982 | +0x1720 | 0x18D032 | sub     ax, [bp+var_36]
+1983 | +0x1723 | 0x18D035 | mov     [bp+var_16], ax
+1984 | +0x1726 | 0x18D038 | jmp     short loc_18D065
+1985 | +0x1728 | 0x18D03A | mov     ax, [bp+var_46]
+1986 | +0x172B | 0x18D03D | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+1987 | +0x172E | 0x18D040 | imul    dx
+1988 | +0x1730 | 0x18D042 | mov     dx, 7894h
+1989 | +0x1733 | 0x18D045 | mov     es, dx
+1990 | +0x1735 | 0x18D047 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+1991 | +0x173A | 0x18D04C | add     bx, ax
+1992 | +0x173C | 0x18D04E | mov     al, es:[bx+4]
+1993 | +0x1740 | 0x18D052 | cbw
+1994 | +0x1741 | 0x18D053 | mov     dl, [bp+var_3F]
+1995 | +0x1744 | 0x18D056 | mov     dh, 0
+1996 | +0x1746 | 0x18D058 | sub     ax, dx
+1997 | +0x1748 | 0x18D05A | mov     [bp+var_16], ax
+1998 | +0x174B | 0x18D05D | mov     al, [bp+var_3B]
+1999 | +0x174E | 0x18D060 | mov     ah, 0
+2000 | +0x1750 | 0x18D062 | add     ax, [bp+var_16]
+2001 | +0x1753 | 0x18D065 | add     ax, 14h
+2002 | +0x1756 | 0x18D068 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2003 | +0x1759 | 0x18D06B | imul    dx
+2004 | +0x175B | 0x18D06D | mov     dx, 7894h
+2005 | +0x175E | 0x18D070 | mov     es, dx
+2006 | +0x1760 | 0x18D072 | mov     dx, word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+2007 | +0x1765 | 0x18D077 | mov     bx, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+2008 | +0x176A | 0x18D07C | add     bx, ax
+2009 | +0x176C | 0x18D07E | add     bx, 3Dh ; '='
+2010 | +0x176F | 0x18D081 | mov     word ptr [bp+var_A+2], dx
+2011 | +0x1772 | 0x18D084 | mov     word ptr [bp+var_A], bx
+2012 | +0x1775 | 0x18D087 | mov     ax, [bp+var_24]
+2013 | +0x1778 | 0x18D08A | mov     [bp+var_22], ax
+2014 | +0x177B | 0x18D08D | mov     ax, 7894h
+2015 | +0x177E | 0x18D090 | mov     es, ax
+2016 | +0x1780 | 0x18D092 | mov     ax, es:current_flight_index; Current flight index (word)
+2017 | +0x1784 | 0x18D096 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2018 | +0x1787 | 0x18D099 | imul    dx
+2019 | +0x1789 | 0x18D09B | mov     dx, 7894h
+2020 | +0x178C | 0x18D09E | mov     es, dx
+2021 | +0x178E | 0x18D0A0 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2022 | +0x1793 | 0x18D0A5 | add     bx, ax
+2023 | +0x1795 | 0x18D0A7 | mov     al, es:[bx+4]
+2024 | +0x1799 | 0x18D0AB | cbw
+2025 | +0x179A | 0x18D0AC | mov     si, ax
+2026 | +0x179C | 0x18D0AE | mov     [bp+var_57], 0
+2027 | +0x17A0 | 0x18D0B2 | or      si, si
+2028 | +0x17A2 | 0x18D0B4 | jg      short loc_18D0B9
+2029 | +0x17A4 | 0x18D0B6 | jmp     loc_18D6C1
+2030 | +0x17A7 | 0x18D0B9 | mov     [bp+var_32], 0
+2031 | +0x17AC | 0x18D0BE | mov     al, [bp+var_57]
+2032 | +0x17AF | 0x18D0C1 | mov     ah, 0
+2033 | +0x17B1 | 0x18D0C3 | or      ax, ax
+2034 | +0x17B3 | 0x18D0C5 | jz      short loc_18D0CA
+2035 | +0x17B5 | 0x18D0C7 | jmp     loc_18D4CA
+2036 | +0x17B8 | 0x18D0CA | mov     ax, 7894h
+2037 | +0x17BB | 0x18D0CD | mov     es, ax
+2038 | +0x17BD | 0x18D0CF | mov     ax, es:current_flight_index; Current flight index (word)
+2039 | +0x17C1 | 0x18D0D3 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2040 | +0x17C4 | 0x18D0D6 | imul    dx
+2041 | +0x17C6 | 0x18D0D8 | mov     dx, 7894h
+2042 | +0x17C9 | 0x18D0DB | mov     es, dx
+2043 | +0x17CB | 0x18D0DD | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2044 | +0x17D0 | 0x18D0E2 | add     bx, ax
+2045 | +0x17D2 | 0x18D0E4 | mov     al, es:[bx+15h]
+2046 | +0x17D6 | 0x18D0E8 | cbw
+2047 | +0x17D7 | 0x18D0E9 | mov     [bp+var_16], ax
+2048 | +0x17DA | 0x18D0EC | cmp     [bp+var_16], 1
+2049 | +0x17DE | 0x18D0F0 | jg      short loc_18D0F5
+2050 | +0x17E0 | 0x18D0F2 | jmp     loc_18D4CA
+2051 | +0x17E3 | 0x18D0F5 | dec     [bp+var_16]
+2052 | +0x17E6 | 0x18D0F8 | mov     al, byte ptr [bp+var_16]
+2053 | +0x17E9 | 0x18D0FB | mov     [bp+var_1], al
+2054 | +0x17EC | 0x18D0FE | mov     ax, [bp+var_32]
+2055 | +0x17EF | 0x18D101 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2056 | +0x17F2 | 0x18D104 | imul    dx
+2057 | +0x17F4 | 0x18D106 | les     bx, [bp+var_A]
+2058 | +0x17F7 | 0x18D109 | add     bx, ax
+2059 | +0x17F9 | 0x18D10B | mov     al, es:[bx+25h]
+2060 | +0x17FD | 0x18D10F | mov     ah, 0
+2061 | +0x17FF | 0x18D111 | mov     [bp+var_1E], ax
+2062 | +0x1802 | 0x18D114 | cmp     [bp+var_1E], 63h ; 'c'
+2063 | +0x1806 | 0x18D118 | jl      short loc_18D121
+2064 | +0x1808 | 0x18D11A | mov     [bp+var_1E], 0Ah
+2065 | +0x180D | 0x18D11F | jmp     short loc_18D18E
+2066 | +0x180F | 0x18D121 | cmp     [bp+var_1E], 51h ; 'Q'
+2067 | +0x1813 | 0x18D125 | jl      short loc_18D12E
+2068 | +0x1815 | 0x18D127 | mov     [bp+var_1E], 9
+2069 | +0x181A | 0x18D12C | jmp     short loc_18D18E
+2070 | +0x181C | 0x18D12E | cmp     [bp+var_1E], 40h ; '@'
+2071 | +0x1820 | 0x18D132 | jl      short loc_18D13B
+2072 | +0x1822 | 0x18D134 | mov     [bp+var_1E], 8
+2073 | +0x1827 | 0x18D139 | jmp     short loc_18D18E
+2074 | +0x1829 | 0x18D13B | cmp     [bp+var_1E], 31h ; '1'
+2075 | +0x182D | 0x18D13F | jl      short loc_18D148
+2076 | +0x182F | 0x18D141 | mov     [bp+var_1E], 7
+2077 | +0x1834 | 0x18D146 | jmp     short loc_18D18E
+2078 | +0x1836 | 0x18D148 | cmp     [bp+var_1E], 24h ; '$'
+2079 | +0x183A | 0x18D14C | jl      short loc_18D155
+2080 | +0x183C | 0x18D14E | mov     [bp+var_1E], 6
+2081 | +0x1841 | 0x18D153 | jmp     short loc_18D18E
+2082 | +0x1843 | 0x18D155 | cmp     [bp+var_1E], 19h
+2083 | +0x1847 | 0x18D159 | jl      short loc_18D162
+2084 | +0x1849 | 0x18D15B | mov     [bp+var_1E], 5
+2085 | +0x184E | 0x18D160 | jmp     short loc_18D18E
+2086 | +0x1850 | 0x18D162 | cmp     [bp+var_1E], 10h
+2087 | +0x1854 | 0x18D166 | jl      short loc_18D16F
+2088 | +0x1856 | 0x18D168 | mov     [bp+var_1E], 4
+2089 | +0x185B | 0x18D16D | jmp     short loc_18D18E
+2090 | +0x185D | 0x18D16F | cmp     [bp+var_1E], 9
+2091 | +0x1861 | 0x18D173 | jl      short loc_18D17C
+2092 | +0x1863 | 0x18D175 | mov     [bp+var_1E], 3
+2093 | +0x1868 | 0x18D17A | jmp     short loc_18D18E
+2094 | +0x186A | 0x18D17C | cmp     [bp+var_1E], 4
+2095 | +0x186E | 0x18D180 | jl      short loc_18D189
+2096 | +0x1870 | 0x18D182 | mov     [bp+var_1E], 2
+2097 | +0x1875 | 0x18D187 | jmp     short loc_18D18E
+2098 | +0x1877 | 0x18D189 | mov     [bp+var_1E], 1
+2099 | +0x187C | 0x18D18E | mov     ax, [bp+var_32]
+2100 | +0x187F | 0x18D191 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2101 | +0x1882 | 0x18D194 | imul    dx
+2102 | +0x1884 | 0x18D196 | les     bx, [bp+var_A]
+2103 | +0x1887 | 0x18D199 | add     bx, ax
+2104 | +0x1889 | 0x18D19B | mov     al, es:[bx+24h]
+2105 | +0x188D | 0x18D19F | mov     ah, 0
+2106 | +0x188F | 0x18D1A1 | imul    [bp+var_1E]
+2107 | +0x1892 | 0x18D1A4 | mov     [bp+var_20], ax
+2108 | +0x1895 | 0x18D1A7 | mov     bx, 0Ah
+2109 | +0x1898 | 0x18D1AA | cwd
+2110 | +0x1899 | 0x18D1AB | idiv    bx
+2111 | +0x189B | 0x18D1AD | mov     [bp+var_20], ax
+2112 | +0x189E | 0x18D1B0 | cmp     [bp+var_20], 1
+2113 | +0x18A2 | 0x18D1B4 | jge     short loc_18D1BB
+2114 | +0x18A4 | 0x18D1B6 | mov     [bp+var_20], 5
+2115 | +0x18A9 | 0x18D1BB | les     bx, [bp+var_6]
+2116 | +0x18AC | 0x18D1BE | mov     al, byte ptr [bp+var_20]
+2117 | +0x18AF | 0x18D1C1 | mov     es:[bx], al
+2118 | +0x18B2 | 0x18D1C4 | inc     word ptr [bp+var_6]
+2119 | +0x18B5 | 0x18D1C7 | mov     ax, [bp+var_32]
+2120 | +0x18B8 | 0x18D1CA | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2121 | +0x18BB | 0x18D1CD | imul    dx
+2122 | +0x18BD | 0x18D1CF | les     bx, [bp+var_A]
+2123 | +0x18C0 | 0x18D1D2 | add     bx, ax
+2124 | +0x18C2 | 0x18D1D4 | mov     al, es:[bx+22h]
+2125 | +0x18C6 | 0x18D1D8 | mov     ah, 0
+2126 | +0x18C8 | 0x18D1DA | imul    [bp+var_1E]
+2127 | +0x18CB | 0x18D1DD | mov     [bp+var_20], ax
+2128 | +0x18CE | 0x18D1E0 | mov     bx, 0Ah
+2129 | +0x18D1 | 0x18D1E3 | cwd
+2130 | +0x18D2 | 0x18D1E4 | idiv    bx
+2131 | +0x18D4 | 0x18D1E6 | mov     [bp+var_20], ax
+2132 | +0x18D7 | 0x18D1E9 | cmp     [bp+var_20], 1
+2133 | +0x18DB | 0x18D1ED | jge     short loc_18D1F4
+2134 | +0x18DD | 0x18D1EF | mov     [bp+var_20], 5
+2135 | +0x18E2 | 0x18D1F4 | les     bx, [bp+var_6]
+2136 | +0x18E5 | 0x18D1F7 | mov     al, byte ptr [bp+var_20]
+2137 | +0x18E8 | 0x18D1FA | mov     es:[bx], al
+2138 | +0x18EB | 0x18D1FD | inc     word ptr [bp+var_6]
+2139 | +0x18EE | 0x18D200 | mov     ax, [bp+var_32]
+2140 | +0x18F1 | 0x18D203 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2141 | +0x18F4 | 0x18D206 | imul    dx
+2142 | +0x18F6 | 0x18D208 | les     bx, [bp+var_A]
+2143 | +0x18F9 | 0x18D20B | add     bx, ax
+2144 | +0x18FB | 0x18D20D | mov     al, es:[bx+23h]
+2145 | +0x18FF | 0x18D211 | mov     ah, 0
+2146 | +0x1901 | 0x18D213 | imul    [bp+var_1E]
+2147 | +0x1904 | 0x18D216 | mov     [bp+var_20], ax
+2148 | +0x1907 | 0x18D219 | mov     bx, 0Ah
+2149 | +0x190A | 0x18D21C | cwd
+2150 | +0x190B | 0x18D21D | idiv    bx
+2151 | +0x190D | 0x18D21F | mov     [bp+var_20], ax
+2152 | +0x1910 | 0x18D222 | cmp     [bp+var_20], 1
+2153 | +0x1914 | 0x18D226 | jge     short loc_18D22D
+2154 | +0x1916 | 0x18D228 | mov     [bp+var_20], 5
+2155 | +0x191B | 0x18D22D | les     bx, [bp+var_6]
+2156 | +0x191E | 0x18D230 | mov     al, byte ptr [bp+var_20]
+2157 | +0x1921 | 0x18D233 | mov     es:[bx], al
+2158 | +0x1924 | 0x18D236 | inc     word ptr [bp+var_6]
+2159 | +0x1927 | 0x18D239 | les     bx, [bp+var_6]
+2160 | +0x192A | 0x18D23C | mov     al, [bp+var_1]
+2161 | +0x192D | 0x18D23F | mov     es:[bx], al
+2162 | +0x1930 | 0x18D242 | inc     word ptr [bp+var_6]
+2163 | +0x1933 | 0x18D245 | xor     di, di
+2164 | +0x1935 | 0x18D247 | jmp     loc_18D4A4
+2165 | +0x1938 | 0x18D24A | mov     ax, 7894h
+2166 | +0x193B | 0x18D24D | mov     es, ax
+2167 | +0x193D | 0x18D24F | mov     ax, es:current_flight_index; Current flight index (word)
+2168 | +0x1941 | 0x18D253 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2169 | +0x1944 | 0x18D256 | imul    dx
+2170 | +0x1946 | 0x18D258 | mov     dx, 7894h
+2171 | +0x1949 | 0x18D25B | mov     es, dx
+2172 | +0x194B | 0x18D25D | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2173 | +0x1950 | 0x18D262 | add     bx, ax
+2174 | +0x1952 | 0x18D264 | mov     ax, di
+2175 | +0x1954 | 0x18D266 | mov     dx, 0Ch
+2176 | +0x1957 | 0x18D269 | imul    dx
+2177 | +0x1959 | 0x18D26B | add     bx, ax
+2178 | +0x195B | 0x18D26D | mov     ax, es:[bx+18h]
+2179 | +0x195F | 0x18D271 | neg     ax
+2180 | +0x1961 | 0x18D273 | mov     bx, 40h ; '@'
+2181 | +0x1964 | 0x18D276 | cwd
+2182 | +0x1965 | 0x18D277 | idiv    bx
+2183 | +0x1967 | 0x18D279 | mov     [bp+var_1E], ax
+2184 | +0x196A | 0x18D27C | mov     al, byte ptr [bp+var_1E]
+2185 | +0x196D | 0x18D27F | mov     [bp+var_1], al
+2186 | +0x1970 | 0x18D282 | les     bx, [bp+var_6]
+2187 | +0x1973 | 0x18D285 | mov     es:[bx], al
+2188 | +0x1976 | 0x18D288 | mov     ax, 7894h
+2189 | +0x1979 | 0x18D28B | mov     es, ax
+2190 | +0x197B | 0x18D28D | cmp     es:current_flight_index, 0; Current flight index (word)
+2191 | +0x1981 | 0x18D293 | jnz     short loc_18D2AB
+2192 | +0x1983 | 0x18D295 | or      di, di
+2193 | +0x1985 | 0x18D297 | jnz     short loc_18D2AB
+2194 | +0x1987 | 0x18D299 | mov     ax, 7894h
+2195 | +0x198A | 0x18D29C | mov     es, ax
+2196 | +0x198C | 0x18D29E | les     bx, es:dword_79E5C
+2197 | +0x1991 | 0x18D2A3 | mov     al, [bp+var_1]
+2198 | +0x1994 | 0x18D2A6 | mov     es:[bx+2BD4h], al
+2199 | +0x1999 | 0x18D2AB | inc     word ptr [bp+var_6]
+2200 | +0x199C | 0x18D2AE | mov     ax, 7894h
+2201 | +0x199F | 0x18D2B1 | mov     es, ax
+2202 | +0x19A1 | 0x18D2B3 | mov     ax, es:current_flight_index; Current flight index (word)
+2203 | +0x19A5 | 0x18D2B7 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2204 | +0x19A8 | 0x18D2BA | imul    dx
+2205 | +0x19AA | 0x18D2BC | mov     dx, 7894h
+2206 | +0x19AD | 0x18D2BF | mov     es, dx
+2207 | +0x19AF | 0x18D2C1 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2208 | +0x19B4 | 0x18D2C6 | add     bx, ax
+2209 | +0x19B6 | 0x18D2C8 | mov     ax, di
+2210 | +0x19B8 | 0x18D2CA | mov     dx, 0Ch
+2211 | +0x19BB | 0x18D2CD | imul    dx
+2212 | +0x19BD | 0x18D2CF | add     bx, ax
+2213 | +0x19BF | 0x18D2D1 | mov     ax, es:[bx+16h]
+2214 | +0x19C3 | 0x18D2D5 | mov     bx, 40h ; '@'
+2215 | +0x19C6 | 0x18D2D8 | cwd
+2216 | +0x19C7 | 0x18D2D9 | idiv    bx
+2217 | +0x19C9 | 0x18D2DB | mov     [bp+var_1E], ax
+2218 | +0x19CC | 0x18D2DE | mov     al, byte ptr [bp+var_1E]
+2219 | +0x19CF | 0x18D2E1 | mov     [bp+var_1], al
+2220 | +0x19D2 | 0x18D2E4 | les     bx, [bp+var_6]
+2221 | +0x19D5 | 0x18D2E7 | mov     es:[bx], al
+2222 | +0x19D8 | 0x18D2EA | mov     ax, 7894h
+2223 | +0x19DB | 0x18D2ED | mov     es, ax
+2224 | +0x19DD | 0x18D2EF | cmp     es:current_flight_index, 0; Current flight index (word)
+2225 | +0x19E3 | 0x18D2F5 | jnz     short loc_18D30D
+2226 | +0x19E5 | 0x18D2F7 | or      di, di
+2227 | +0x19E7 | 0x18D2F9 | jnz     short loc_18D30D
+2228 | +0x19E9 | 0x18D2FB | mov     ax, 7894h
+2229 | +0x19EC | 0x18D2FE | mov     es, ax
+2230 | +0x19EE | 0x18D300 | les     bx, es:dword_79E5C
+2231 | +0x19F3 | 0x18D305 | mov     al, [bp+var_1]
+2232 | +0x19F6 | 0x18D308 | mov     es:[bx+2BD5h], al
+2233 | +0x19FB | 0x18D30D | inc     word ptr [bp+var_6]
+2234 | +0x19FE | 0x18D310 | mov     ax, word ptr [bp+var_6+2]
+2235 | +0x1A01 | 0x18D313 | mov     dx, word ptr [bp+var_6]
+2236 | +0x1A04 | 0x18D316 | mov     word ptr [bp+var_E+2], ax
+2237 | +0x1A07 | 0x18D319 | mov     word ptr [bp+var_E], dx
+2238 | +0x1A0A | 0x18D31C | mov     ax, 7894h
+2239 | +0x1A0D | 0x18D31F | mov     es, ax
+2240 | +0x1A0F | 0x18D321 | mov     ax, es:current_flight_index; Current flight index (word)
+2241 | +0x1A13 | 0x18D325 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2242 | +0x1A16 | 0x18D328 | imul    dx
+2243 | +0x1A18 | 0x18D32A | mov     dx, 7894h
+2244 | +0x1A1B | 0x18D32D | mov     es, dx
+2245 | +0x1A1D | 0x18D32F | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2246 | +0x1A22 | 0x18D334 | add     bx, ax
+2247 | +0x1A24 | 0x18D336 | mov     ax, di
+2248 | +0x1A26 | 0x18D338 | mov     dx, 0Ch
+2249 | +0x1A29 | 0x18D33B | imul    dx
+2250 | +0x1A2B | 0x18D33D | add     bx, ax
+2251 | +0x1A2D | 0x18D33F | mov     ax, es:[bx+1Ah]
+2252 | +0x1A31 | 0x18D343 | mov     bx, 3
+2253 | +0x1A34 | 0x18D346 | cwd
+2254 | +0x1A35 | 0x18D347 | idiv    bx
+2255 | +0x1A37 | 0x18D349 | mov     [bp+var_1E], ax
+2256 | +0x1A3A | 0x18D34C | mov     al, byte ptr [bp+var_1E]
+2257 | +0x1A3D | 0x18D34F | mov     [bp+var_F], al
+2258 | +0x1A40 | 0x18D352 | les     bx, [bp+var_E]
+2259 | +0x1A43 | 0x18D355 | mov     es:[bx], al
+2260 | +0x1A46 | 0x18D358 | inc     word ptr [bp+var_E]
+2261 | +0x1A49 | 0x18D35B | mov     ax, word ptr [bp+var_E+2]
+2262 | +0x1A4C | 0x18D35E | mov     dx, word ptr [bp+var_E]
+2263 | +0x1A4F | 0x18D361 | mov     word ptr [bp+var_6+2], ax
+2264 | +0x1A52 | 0x18D364 | mov     word ptr [bp+var_6], dx
+2265 | +0x1A55 | 0x18D367 | mov     ax, 7894h
+2266 | +0x1A58 | 0x18D36A | mov     es, ax
+2267 | +0x1A5A | 0x18D36C | mov     ax, es:current_flight_index; Current flight index (word)
+2268 | +0x1A5E | 0x18D370 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2269 | +0x1A61 | 0x18D373 | imul    dx
+2270 | +0x1A63 | 0x18D375 | mov     dx, 7894h
+2271 | +0x1A66 | 0x18D378 | mov     es, dx
+2272 | +0x1A68 | 0x18D37A | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2273 | +0x1A6D | 0x18D37F | add     bx, ax
+2274 | +0x1A6F | 0x18D381 | mov     ax, di
+2275 | +0x1A71 | 0x18D383 | mov     dx, 0Ch
+2276 | +0x1A74 | 0x18D386 | imul    dx
+2277 | +0x1A76 | 0x18D388 | add     bx, ax
+2278 | +0x1A78 | 0x18D38A | mov     ax, es:[bx+1Ch]
+2279 | +0x1A7C | 0x18D38E | mov     bx, 5
+2280 | +0x1A7F | 0x18D391 | cwd
+2281 | +0x1A80 | 0x18D392 | idiv    bx
+2282 | +0x1A82 | 0x18D394 | mov     [bp+var_16], ax
+2283 | +0x1A85 | 0x18D397 | les     bx, [bp+var_6]
+2284 | +0x1A88 | 0x18D39A | mov     al, byte ptr [bp+var_16]
+2285 | +0x1A8B | 0x18D39D | mov     es:[bx], al
+2286 | +0x1A8E | 0x18D3A0 | inc     word ptr [bp+var_6]
+2287 | +0x1A91 | 0x18D3A3 | mov     ax, word ptr [bp+var_6+2]
+2288 | +0x1A94 | 0x18D3A6 | mov     dx, word ptr [bp+var_6]
+2289 | +0x1A97 | 0x18D3A9 | mov     word ptr [bp+var_E+2], ax
+2290 | +0x1A9A | 0x18D3AC | mov     word ptr [bp+var_E], dx
+2291 | +0x1A9D | 0x18D3AF | mov     ax, 7894h
+2292 | +0x1AA0 | 0x18D3B2 | mov     es, ax
+2293 | +0x1AA2 | 0x18D3B4 | mov     ax, es:current_flight_index; Current flight index (word)
+2294 | +0x1AA6 | 0x18D3B8 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2295 | +0x1AA9 | 0x18D3BB | imul    dx
+2296 | +0x1AAB | 0x18D3BD | mov     dx, 7894h
+2297 | +0x1AAE | 0x18D3C0 | mov     es, dx
+2298 | +0x1AB0 | 0x18D3C2 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2299 | +0x1AB5 | 0x18D3C7 | add     bx, ax
+2300 | +0x1AB7 | 0x18D3C9 | mov     ax, di
+2301 | +0x1AB9 | 0x18D3CB | mov     dx, 0Ch
+2302 | +0x1ABC | 0x18D3CE | imul    dx
+2303 | +0x1ABE | 0x18D3D0 | add     bx, ax
+2304 | +0x1AC0 | 0x18D3D2 | mov     al, es:[bx+1Fh]
+2305 | +0x1AC4 | 0x18D3D6 | cbw
+2306 | +0x1AC5 | 0x18D3D7 | mov     [bp+var_1E], ax
+2307 | +0x1AC8 | 0x18D3DA | push    [bp+var_1E]
+2308 | +0x1ACB | 0x18D3DD | call    sub_2C81F
+2309 | +0x1AD0 | 0x18D3E2 | pop     cx
+2310 | +0x1AD1 | 0x18D3E3 | mov     [bp+var_F], al
+2311 | +0x1AD4 | 0x18D3E6 | cmp     [bp+var_1E], 0Ah
+2312 | +0x1AD8 | 0x18D3EA | jnz     short loc_18D416
+2313 | +0x1ADA | 0x18D3EC | mov     ax, 7894h
+2314 | +0x1ADD | 0x18D3EF | mov     es, ax
+2315 | +0x1ADF | 0x18D3F1 | mov     ax, es:current_flight_index; Current flight index (word)
+2316 | +0x1AE3 | 0x18D3F5 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2317 | +0x1AE6 | 0x18D3F8 | imul    dx
+2318 | +0x1AE8 | 0x18D3FA | mov     dx, 7894h
+2319 | +0x1AEB | 0x18D3FD | mov     es, dx
+2320 | +0x1AED | 0x18D3FF | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2321 | +0x1AF2 | 0x18D404 | add     bx, ax
+2322 | +0x1AF4 | 0x18D406 | mov     ax, di
+2323 | +0x1AF6 | 0x18D408 | mov     dx, 0Ch
+2324 | +0x1AF9 | 0x18D40B | imul    dx
+2325 | +0x1AFB | 0x18D40D | add     bx, ax
+2326 | +0x1AFD | 0x18D40F | mov     al, es:[bx+20h]
+2327 | +0x1B01 | 0x18D413 | or      [bp+var_F], al
+2328 | +0x1B04 | 0x18D416 | cmp     [bp+var_1E], 4
+2329 | +0x1B08 | 0x18D41A | jnz     short loc_18D469
+2330 | +0x1B0A | 0x18D41C | mov     ax, 7894h
+2331 | +0x1B0D | 0x18D41F | mov     es, ax
+2332 | +0x1B0F | 0x18D421 | cmp     es:word_79B56, 2
+2333 | +0x1B15 | 0x18D427 | jnz     short loc_18D455
+2334 | +0x1B17 | 0x18D429 | mov     ax, 7894h
+2335 | +0x1B1A | 0x18D42C | mov     es, ax
+2336 | +0x1B1C | 0x18D42E | mov     ax, es:current_flight_index; Current flight index (word)
+2337 | +0x1B20 | 0x18D432 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2338 | +0x1B23 | 0x18D435 | imul    dx
+2339 | +0x1B25 | 0x18D437 | mov     dx, 7894h
+2340 | +0x1B28 | 0x18D43A | mov     es, dx
+2341 | +0x1B2A | 0x18D43C | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2342 | +0x1B2F | 0x18D441 | add     bx, ax
+2343 | +0x1B31 | 0x18D443 | mov     ax, di
+2344 | +0x1B33 | 0x18D445 | mov     dx, 0Ch
+2345 | +0x1B36 | 0x18D448 | imul    dx
+2346 | +0x1B38 | 0x18D44A | add     bx, ax
+2347 | +0x1B3A | 0x18D44C | mov     al, es:[bx+20h]
+2348 | +0x1B3E | 0x18D450 | or      [bp+var_F], al
+2349 | +0x1B41 | 0x18D453 | jmp     short loc_18D469
+2350 | +0x1B43 | 0x18D455 | mov     al, byte ptr [bp+var_1C]
+2351 | +0x1B46 | 0x18D458 | or      [bp+var_F], al
+2352 | +0x1B49 | 0x18D45B | inc     [bp+var_1C]
+2353 | +0x1B4C | 0x18D45E | cmp     [bp+var_1C], 7
+2354 | +0x1B50 | 0x18D462 | jle     short loc_18D469
+2355 | +0x1B52 | 0x18D464 | mov     [bp+var_1C], 7
+2356 | +0x1B57 | 0x18D469 | mov     ax, 7894h
+2357 | +0x1B5A | 0x18D46C | mov     es, ax
+2358 | +0x1B5C | 0x18D46E | cmp     es:current_flight_index, 0; Current flight index (word)
+2359 | +0x1B62 | 0x18D474 | jnz     short loc_18D48B
+2360 | +0x1B64 | 0x18D476 | or      di, di
+2361 | +0x1B66 | 0x18D478 | jnz     short loc_18D48B
+2362 | +0x1B68 | 0x18D47A | mov     ax, 7894h
+2363 | +0x1B6B | 0x18D47D | mov     es, ax
+2364 | +0x1B6D | 0x18D47F | cmp     es:word_79B56, 2
+2365 | +0x1B73 | 0x18D485 | jnz     short loc_18D48B
+2366 | +0x1B75 | 0x18D487 | or      [bp+var_F], 1
+2367 | +0x1B79 | 0x18D48B | les     bx, [bp+var_E]
+2368 | +0x1B7C | 0x18D48E | mov     al, [bp+var_F]
+2369 | +0x1B7F | 0x18D491 | mov     es:[bx], al
+2370 | +0x1B82 | 0x18D494 | inc     word ptr [bp+var_E]
+2371 | +0x1B85 | 0x18D497 | mov     ax, word ptr [bp+var_E+2]
+2372 | +0x1B88 | 0x18D49A | mov     dx, word ptr [bp+var_E]
+2373 | +0x1B8B | 0x18D49D | mov     word ptr [bp+var_6+2], ax
+2374 | +0x1B8E | 0x18D4A0 | mov     word ptr [bp+var_6], dx
+2375 | +0x1B91 | 0x18D4A3 | inc     di
+2376 | +0x1B92 | 0x18D4A4 | mov     ax, 7894h
+2377 | +0x1B95 | 0x18D4A7 | mov     es, ax
+2378 | +0x1B97 | 0x18D4A9 | mov     ax, es:current_flight_index; Current flight index (word)
+2379 | +0x1B9B | 0x18D4AD | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2380 | +0x1B9E | 0x18D4B0 | imul    dx
+2381 | +0x1BA0 | 0x18D4B2 | mov     dx, 7894h
+2382 | +0x1BA3 | 0x18D4B5 | mov     es, dx
+2383 | +0x1BA5 | 0x18D4B7 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2384 | +0x1BAA | 0x18D4BC | add     bx, ax
+2385 | +0x1BAC | 0x18D4BE | mov     al, es:[bx+15h]
+2386 | +0x1BB0 | 0x18D4C2 | cbw
+2387 | +0x1BB1 | 0x18D4C3 | cmp     ax, di
+2388 | +0x1BB3 | 0x18D4C5 | jle     short loc_18D4CA
+2389 | +0x1BB5 | 0x18D4C7 | jmp     loc_18D24A
+2390 | +0x1BB8 | 0x18D4CA | mov     ax, 7894h
+2391 | +0x1BBB | 0x18D4CD | mov     es, ax
+2392 | +0x1BBD | 0x18D4CF | cmp     es:current_flight_index, 0; Current flight index (word)
+2393 | +0x1BC3 | 0x18D4D5 | jnz     short loc_18D4DC
+2394 | +0x1BC5 | 0x18D4D7 | mov     ax, [bp+var_5A]
+2395 | +0x1BC8 | 0x18D4DA | jmp     short loc_18D4DF
+2396 | +0x1BCA | 0x18D4DC | mov     ax, [bp+var_5C]
+2397 | +0x1BCD | 0x18D4DF | mov     [bp+var_26], ax
+2398 | +0x1BD0 | 0x18D4E2 | mov     di, 1
+2399 | +0x1BD3 | 0x18D4E5 | jmp     loc_18D6B7
+2400 | +0x1BD6 | 0x18D4E8 | mov     ax, [bp+var_32]
+2401 | +0x1BD9 | 0x18D4EB | add     ax, di
+2402 | +0x1BDB | 0x18D4ED | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2403 | +0x1BDE | 0x18D4F0 | imul    dx
+2404 | +0x1BE0 | 0x18D4F2 | les     bx, [bp+var_A]
+2405 | +0x1BE3 | 0x18D4F5 | add     bx, ax
+2406 | +0x1BE5 | 0x18D4F7 | mov     al, es:[bx+25h]
+2407 | +0x1BE9 | 0x18D4FB | mov     ah, 0
+2408 | +0x1BEB | 0x18D4FD | mov     [bp+var_1E], ax
+2409 | +0x1BEE | 0x18D500 | cmp     [bp+var_1E], 63h ; 'c'
+2410 | +0x1BF2 | 0x18D504 | jl      short loc_18D50D
+2411 | +0x1BF4 | 0x18D506 | mov     [bp+var_1E], 0Ah
+2412 | +0x1BF9 | 0x18D50B | jmp     short loc_18D57A
+2413 | +0x1BFB | 0x18D50D | cmp     [bp+var_1E], 51h ; 'Q'
+2414 | +0x1BFF | 0x18D511 | jl      short loc_18D51A
+2415 | +0x1C01 | 0x18D513 | mov     [bp+var_1E], 9
+2416 | +0x1C06 | 0x18D518 | jmp     short loc_18D57A
+2417 | +0x1C08 | 0x18D51A | cmp     [bp+var_1E], 40h ; '@'
+2418 | +0x1C0C | 0x18D51E | jl      short loc_18D527
+2419 | +0x1C0E | 0x18D520 | mov     [bp+var_1E], 8
+2420 | +0x1C13 | 0x18D525 | jmp     short loc_18D57A
+2421 | +0x1C15 | 0x18D527 | cmp     [bp+var_1E], 31h ; '1'
+2422 | +0x1C19 | 0x18D52B | jl      short loc_18D534
+2423 | +0x1C1B | 0x18D52D | mov     [bp+var_1E], 7
+2424 | +0x1C20 | 0x18D532 | jmp     short loc_18D57A
+2425 | +0x1C22 | 0x18D534 | cmp     [bp+var_1E], 24h ; '$'
+2426 | +0x1C26 | 0x18D538 | jl      short loc_18D541
+2427 | +0x1C28 | 0x18D53A | mov     [bp+var_1E], 6
+2428 | +0x1C2D | 0x18D53F | jmp     short loc_18D57A
+2429 | +0x1C2F | 0x18D541 | cmp     [bp+var_1E], 19h
+2430 | +0x1C33 | 0x18D545 | jl      short loc_18D54E
+2431 | +0x1C35 | 0x18D547 | mov     [bp+var_1E], 5
+2432 | +0x1C3A | 0x18D54C | jmp     short loc_18D57A
+2433 | +0x1C3C | 0x18D54E | cmp     [bp+var_1E], 10h
+2434 | +0x1C40 | 0x18D552 | jl      short loc_18D55B
+2435 | +0x1C42 | 0x18D554 | mov     [bp+var_1E], 4
+2436 | +0x1C47 | 0x18D559 | jmp     short loc_18D57A
+2437 | +0x1C49 | 0x18D55B | cmp     [bp+var_1E], 9
+2438 | +0x1C4D | 0x18D55F | jl      short loc_18D568
+2439 | +0x1C4F | 0x18D561 | mov     [bp+var_1E], 3
+2440 | +0x1C54 | 0x18D566 | jmp     short loc_18D57A
+2441 | +0x1C56 | 0x18D568 | cmp     [bp+var_1E], 4
+2442 | +0x1C5A | 0x18D56C | jl      short loc_18D575
+2443 | +0x1C5C | 0x18D56E | mov     [bp+var_1E], 2
+2444 | +0x1C61 | 0x18D573 | jmp     short loc_18D57A
+2445 | +0x1C63 | 0x18D575 | mov     [bp+var_1E], 1
+2446 | +0x1C68 | 0x18D57A | mov     ax, [bp+var_32]
+2447 | +0x1C6B | 0x18D57D | add     ax, di
+2448 | +0x1C6D | 0x18D57F | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2449 | +0x1C70 | 0x18D582 | imul    dx
+2450 | +0x1C72 | 0x18D584 | les     bx, [bp+var_A]
+2451 | +0x1C75 | 0x18D587 | add     bx, ax
+2452 | +0x1C77 | 0x18D589 | mov     al, es:[bx+24h]
+2453 | +0x1C7B | 0x18D58D | mov     ah, 0
+2454 | +0x1C7D | 0x18D58F | imul    [bp+var_1E]
+2455 | +0x1C80 | 0x18D592 | mov     [bp+var_20], ax
+2456 | +0x1C83 | 0x18D595 | mov     bx, 0Ah
+2457 | +0x1C86 | 0x18D598 | cwd
+2458 | +0x1C87 | 0x18D599 | idiv    bx
+2459 | +0x1C89 | 0x18D59B | mov     [bp+var_20], ax
+2460 | +0x1C8C | 0x18D59E | cmp     [bp+var_20], 5
+2461 | +0x1C90 | 0x18D5A2 | jge     short loc_18D5A9
+2462 | +0x1C92 | 0x18D5A4 | mov     [bp+var_20], 5
+2463 | +0x1C97 | 0x18D5A9 | les     bx, [bp+var_6]
+2464 | +0x1C9A | 0x18D5AC | mov     al, byte ptr [bp+var_20]
+2465 | +0x1C9D | 0x18D5AF | mov     es:[bx], al
+2466 | +0x1CA0 | 0x18D5B2 | inc     word ptr [bp+var_6]
+2467 | +0x1CA3 | 0x18D5B5 | mov     ax, [bp+var_32]
+2468 | +0x1CA6 | 0x18D5B8 | add     ax, di
+2469 | +0x1CA8 | 0x18D5BA | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2470 | +0x1CAB | 0x18D5BD | imul    dx
+2471 | +0x1CAD | 0x18D5BF | les     bx, [bp+var_A]
+2472 | +0x1CB0 | 0x18D5C2 | add     bx, ax
+2473 | +0x1CB2 | 0x18D5C4 | mov     al, es:[bx+22h]
+2474 | +0x1CB6 | 0x18D5C8 | mov     ah, 0
+2475 | +0x1CB8 | 0x18D5CA | imul    [bp+var_1E]
+2476 | +0x1CBB | 0x18D5CD | mov     [bp+var_20], ax
+2477 | +0x1CBE | 0x18D5D0 | mov     bx, 0Ah
+2478 | +0x1CC1 | 0x18D5D3 | cwd
+2479 | +0x1CC2 | 0x18D5D4 | idiv    bx
+2480 | +0x1CC4 | 0x18D5D6 | mov     [bp+var_20], ax
+2481 | +0x1CC7 | 0x18D5D9 | cmp     [bp+var_20], 5
+2482 | +0x1CCB | 0x18D5DD | jge     short loc_18D5E4
+2483 | +0x1CCD | 0x18D5DF | mov     [bp+var_20], 5
+2484 | +0x1CD2 | 0x18D5E4 | les     bx, [bp+var_6]
+2485 | +0x1CD5 | 0x18D5E7 | mov     al, byte ptr [bp+var_20]
+2486 | +0x1CD8 | 0x18D5EA | mov     es:[bx], al
+2487 | +0x1CDB | 0x18D5ED | inc     word ptr [bp+var_6]
+2488 | +0x1CDE | 0x18D5F0 | mov     ax, [bp+var_32]
+2489 | +0x1CE1 | 0x18D5F3 | add     ax, di
+2490 | +0x1CE3 | 0x18D5F5 | mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)  ; PilotRecord size (66 bytes)
+2491 | +0x1CE6 | 0x18D5F8 | imul    dx
+2492 | +0x1CE8 | 0x18D5FA | les     bx, [bp+var_A]
+2493 | +0x1CEB | 0x18D5FD | add     bx, ax
+2494 | +0x1CED | 0x18D5FF | mov     al, es:[bx+23h]
+2495 | +0x1CF1 | 0x18D603 | mov     ah, 0
+2496 | +0x1CF3 | 0x18D605 | imul    [bp+var_1E]
+2497 | +0x1CF6 | 0x18D608 | mov     [bp+var_20], ax
+2498 | +0x1CF9 | 0x18D60B | mov     bx, 0Ah
+2499 | +0x1CFC | 0x18D60E | cwd
+2500 | +0x1CFD | 0x18D60F | idiv    bx
+2501 | +0x1CFF | 0x18D611 | mov     [bp+var_20], ax
+2502 | +0x1D02 | 0x18D614 | cmp     [bp+var_20], 5
+2503 | +0x1D06 | 0x18D618 | jge     short loc_18D61F
+2504 | +0x1D08 | 0x18D61A | mov     [bp+var_20], 5
+2505 | +0x1D0D | 0x18D61F | les     bx, [bp+var_6]
+2506 | +0x1D10 | 0x18D622 | mov     al, byte ptr [bp+var_20]
+2507 | +0x1D13 | 0x18D625 | mov     es:[bx], al
+2508 | +0x1D16 | 0x18D628 | inc     word ptr [bp+var_6]
+2509 | +0x1D19 | 0x18D62B | les     bx, [bp+var_6]
+2510 | +0x1D1C | 0x18D62E | mov     byte ptr es:[bx], 0FFh
+2511 | +0x1D20 | 0x18D632 | inc     word ptr [bp+var_6]
+2512 | +0x1D23 | 0x18D635 | les     bx, [bp+var_6]
+2513 | +0x1D26 | 0x18D638 | mov     al, byte ptr [bp+var_22]
+2514 | +0x1D29 | 0x18D63B | mov     es:[bx], al
+2515 | +0x1D2C | 0x18D63E | inc     word ptr [bp+var_6]
+2516 | +0x1D2F | 0x18D641 | mov     ax, word ptr [bp+var_6+2]
+2517 | +0x1D32 | 0x18D644 | mov     dx, word ptr [bp+var_6]
+2518 | +0x1D35 | 0x18D647 | mov     word ptr [bp+var_14+2], ax
+2519 | +0x1D38 | 0x18D64A | mov     word ptr [bp+var_14], dx
+2520 | +0x1D3B | 0x18D64D | mov     ax, 4FC2h
+2521 | +0x1D3E | 0x18D650 | mov     bx, [bp+var_26]
+2522 | +0x1D41 | 0x18D653 | mov     es, ax
+2523 | +0x1D43 | 0x18D655 | mov     al, es:[bx+168h]
+2524 | +0x1D48 | 0x18D65A | mov     ah, 0
+2525 | +0x1D4A | 0x18D65C | shl     ax, 6
+2526 | +0x1D4D | 0x18D65F | les     bx, [bp+var_14]
+2527 | +0x1D50 | 0x18D662 | mov     es:[bx], ax
+2528 | +0x1D53 | 0x18D665 | add     word ptr [bp+var_14], 2
+2529 | +0x1D57 | 0x18D669 | inc     [bp+var_26]
+2530 | +0x1D5A | 0x18D66C | mov     ax, 4FC2h
+2531 | +0x1D5D | 0x18D66F | mov     bx, [bp+var_26]
+2532 | +0x1D60 | 0x18D672 | mov     es, ax
+2533 | +0x1D62 | 0x18D674 | mov     al, es:[bx+168h]
+2534 | +0x1D67 | 0x18D679 | mov     ah, 0
+2535 | +0x1D69 | 0x18D67B | shl     ax, 6
+2536 | +0x1D6C | 0x18D67E | les     bx, [bp+var_14]
+2537 | +0x1D6F | 0x18D681 | mov     es:[bx], ax
+2538 | +0x1D72 | 0x18D684 | add     word ptr [bp+var_14], 2
+2539 | +0x1D76 | 0x18D688 | inc     [bp+var_26]
+2540 | +0x1D79 | 0x18D68B | mov     ax, 4FC2h
+2541 | +0x1D7C | 0x18D68E | mov     bx, [bp+var_26]
+2542 | +0x1D7F | 0x18D691 | mov     es, ax
+2543 | +0x1D81 | 0x18D693 | mov     al, es:[bx+168h]
+2544 | +0x1D86 | 0x18D698 | mov     ah, 0
+2545 | +0x1D88 | 0x18D69A | shl     ax, 6
+2546 | +0x1D8B | 0x18D69D | les     bx, [bp+var_14]
+2547 | +0x1D8E | 0x18D6A0 | mov     es:[bx], ax
+2548 | +0x1D91 | 0x18D6A3 | add     word ptr [bp+var_14], 2
+2549 | +0x1D95 | 0x18D6A7 | inc     [bp+var_26]
+2550 | +0x1D98 | 0x18D6AA | mov     ax, word ptr [bp+var_14+2]
+2551 | +0x1D9B | 0x18D6AD | mov     dx, word ptr [bp+var_14]
+2552 | +0x1D9E | 0x18D6B0 | mov     word ptr [bp+var_6+2], ax
+2553 | +0x1DA1 | 0x18D6B3 | mov     word ptr [bp+var_6], dx
+2554 | +0x1DA4 | 0x18D6B6 | inc     di
+2555 | +0x1DA5 | 0x18D6B7 | cmp     di, si
+2556 | +0x1DA7 | 0x18D6B9 | jge     short loc_18D6BE
+2557 | +0x1DA9 | 0x18D6BB | jmp     loc_18D4E8
+2558 | +0x1DAC | 0x18D6BE | add     [bp+var_24], si
+2559 | +0x1DAF | 0x18D6C1 | mov     ax, 7894h
+2560 | +0x1DB2 | 0x18D6C4 | mov     es, ax
+2561 | +0x1DB4 | 0x18D6C6 | inc     es:current_flight_index; Current flight index (word)
+2562 | +0x1DB9 | 0x18D6CB | mov     ax, 7894h
+2563 | +0x1DBC | 0x18D6CE | mov     es, ax
+2564 | +0x1DBE | 0x18D6D0 | mov     ax, es:current_flight_index; Current flight index (word)
+2565 | +0x1DC2 | 0x18D6D4 | mov     dx, 7894h
+2566 | +0x1DC5 | 0x18D6D7 | mov     es, dx
+2567 | +0x1DC7 | 0x18D6D9 | cmp     ax, es:word_79EEC
+2568 | +0x1DCC | 0x18D6DE | jge     short loc_18D6E3
+2569 | +0x1DCE | 0x18D6E0 | jmp     loc_18CF5C
+2570 | +0x1DD1 | 0x18D6E3 | jmp     short loc_18D71A
+2571 | +0x1DD3 | 0x18D6E5 | les     bx, [bp+var_6]
+2572 | +0x1DD6 | 0x18D6E8 | mov     byte ptr es:[bx], 1
+2573 | +0x1DDA | 0x18D6EC | inc     word ptr [bp+var_6]
+2574 | +0x1DDD | 0x18D6EF | les     bx, [bp+var_6]
+2575 | +0x1DE0 | 0x18D6F2 | mov     byte ptr es:[bx], 1
+2576 | +0x1DE4 | 0x18D6F6 | inc     word ptr [bp+var_6]
+2577 | +0x1DE7 | 0x18D6F9 | les     bx, [bp+var_6]
+2578 | +0x1DEA | 0x18D6FC | mov     byte ptr es:[bx], 1
+2579 | +0x1DEE | 0x18D700 | inc     word ptr [bp+var_6]
+2580 | +0x1DF1 | 0x18D703 | les     bx, [bp+var_6]
+2581 | +0x1DF4 | 0x18D706 | mov     byte ptr es:[bx], 0FFh
+2582 | +0x1DF8 | 0x18D70A | inc     word ptr [bp+var_6]
+2583 | +0x1DFB | 0x18D70D | les     bx, [bp+var_6]
+2584 | +0x1DFE | 0x18D710 | mov     byte ptr es:[bx], 0FFh
+2585 | +0x1E02 | 0x18D714 | inc     word ptr [bp+var_6]
+2586 | +0x1E05 | 0x18D717 | inc     [bp+var_58]
+2587 | +0x1E08 | 0x18D71A | cmp     [bp+var_58], 6
+2588 | +0x1E0C | 0x18D71E | jb      short loc_18D6E5
+2589 | +0x1E0E | 0x18D720 | xor     si, si
+2590 | +0x1E10 | 0x18D722 | xor     di, di
+2591 | +0x1E12 | 0x18D724 | mov     ax, word ptr [bp+var_6+2]
+2592 | +0x1E15 | 0x18D727 | mov     dx, word ptr [bp+var_6]
+2593 | +0x1E18 | 0x18D72A | mov     word ptr [bp+var_14+2], ax
+2594 | +0x1E1B | 0x18D72D | mov     word ptr [bp+var_14], dx
+2595 | +0x1E1E | 0x18D730 | mov     [bp+var_1C], si
+2596 | +0x1E21 | 0x18D733 | mov     ax, [bp+var_1C]
+2597 | +0x1E24 | 0x18D736 | cmp     ax, [bp+var_38]
+2598 | +0x1E27 | 0x18D739 | jl      short loc_18D73F
+2599 | +0x1E29 | 0x18D73B | sub     [bp+var_1C], 8
+2600 | +0x1E2D | 0x18D73F | mov     ax, 7894h
+2601 | +0x1E30 | 0x18D742 | mov     bx, [bp+var_1C]
+2602 | +0x1E33 | 0x18D745 | mov     es, ax
+2603 | +0x1E35 | 0x18D747 | mov     al, es:[bx+0EE8h]
+2604 | +0x1E3A | 0x18D74C | mov     ah, 0
+2605 | +0x1E3C | 0x18D74E | mov     dx, 7891h
+2606 | +0x1E3F | 0x18D751 | mov     es, dx
+2607 | +0x1E41 | 0x18D753 | cmp     ax, es:word_78910
+2608 | +0x1E46 | 0x18D758 | jnz     short loc_18D75C
+2609 | +0x1E48 | 0x18D75A | jmp     short loc_18D790
+2610 | +0x1E4A | 0x18D75C | mov     ax, 7894h
+2611 | +0x1E4D | 0x18D75F | mov     bx, [bp+var_1C]
+2612 | +0x1E50 | 0x18D762 | mov     es, ax
+2613 | +0x1E52 | 0x18D764 | cmp     byte ptr es:[bx+0EE8h], 20h ; ' '
+2614 | +0x1E58 | 0x18D76A | jnz     short loc_18D776
+2615 | +0x1E5A | 0x18D76C | les     bx, [bp+var_14]
+2616 | +0x1E5D | 0x18D76F | mov     word ptr es:[bx], 96h
+2617 | +0x1E62 | 0x18D774 | jmp     short loc_18D798
+2618 | +0x1E64 | 0x18D776 | mov     ax, 7894h
+2619 | +0x1E67 | 0x18D779 | mov     bx, [bp+var_1C]
+2620 | +0x1E6A | 0x18D77C | mov     es, ax
+2621 | +0x1E6C | 0x18D77E | cmp     byte ptr es:[bx+0EE8h], 4
+2622 | +0x1E72 | 0x18D784 | jnz     short loc_18D790
+2623 | +0x1E74 | 0x18D786 | les     bx, [bp+var_14]
+2624 | +0x1E77 | 0x18D789 | mov     word ptr es:[bx], 242h
+2625 | +0x1E7C | 0x18D78E | jmp     short loc_18D798
+2626 | +0x1E7E | 0x18D790 | les     bx, [bp+var_14]
+2627 | +0x1E81 | 0x18D793 | mov     word ptr es:[bx], 203h
+2628 | +0x1E86 | 0x18D798 | add     word ptr [bp+var_14], 2
+2629 | +0x1E8A | 0x18D79C | mov     ax, word ptr [bp+var_14+2]
+2630 | +0x1E8D | 0x18D79F | mov     dx, word ptr [bp+var_14]
+2631 | +0x1E90 | 0x18D7A2 | mov     word ptr [bp+var_6+2], ax
+2632 | +0x1E93 | 0x18D7A5 | mov     word ptr [bp+var_6], dx
+2633 | +0x1E96 | 0x18D7A8 | mov     ax, si
+2634 | +0x1E98 | 0x18D7AA | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2635 | +0x1E9B | 0x18D7AD | imul    dx
+2636 | +0x1E9D | 0x18D7AF | mov     dx, 7894h
+2637 | +0x1EA0 | 0x18D7B2 | mov     es, dx
+2638 | +0x1EA2 | 0x18D7B4 | les     bx, es:dword_79E6C
+2639 | +0x1EA7 | 0x18D7B9 | add     bx, ax
+2640 | +0x1EA9 | 0x18D7BB | mov     al, es:[bx+2]
+2641 | +0x1EAD | 0x18D7BF | les     bx, [bp+var_6]
+2642 | +0x1EB0 | 0x18D7C2 | mov     es:[bx], al
+2643 | +0x1EB3 | 0x18D7C5 | inc     word ptr [bp+var_6]
+2644 | +0x1EB6 | 0x18D7C8 | mov     ax, si
+2645 | +0x1EB8 | 0x18D7CA | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2646 | +0x1EBB | 0x18D7CD | imul    dx
+2647 | +0x1EBD | 0x18D7CF | mov     dx, 7894h
+2648 | +0x1EC0 | 0x18D7D2 | mov     es, dx
+2649 | +0x1EC2 | 0x18D7D4 | les     bx, es:dword_79E6C
+2650 | +0x1EC7 | 0x18D7D9 | add     bx, ax
+2651 | +0x1EC9 | 0x18D7DB | mov     al, es:[bx+3]
+2652 | +0x1ECD | 0x18D7DF | les     bx, [bp+var_6]
+2653 | +0x1ED0 | 0x18D7E2 | mov     es:[bx], al
+2654 | +0x1ED3 | 0x18D7E5 | inc     word ptr [bp+var_6]
+2655 | +0x1ED6 | 0x18D7E8 | mov     ax, si
+2656 | +0x1ED8 | 0x18D7EA | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2657 | +0x1EDB | 0x18D7ED | imul    dx
+2658 | +0x1EDD | 0x18D7EF | mov     dx, 7894h
+2659 | +0x1EE0 | 0x18D7F2 | mov     es, dx
+2660 | +0x1EE2 | 0x18D7F4 | les     bx, es:dword_79E6C
+2661 | +0x1EE7 | 0x18D7F9 | add     bx, ax
+2662 | +0x1EE9 | 0x18D7FB | mov     al, es:[bx+4]
+2663 | +0x1EED | 0x18D7FF | les     bx, [bp+var_6]
+2664 | +0x1EF0 | 0x18D802 | mov     es:[bx], al
+2665 | +0x1EF3 | 0x18D805 | inc     word ptr [bp+var_6]
+2666 | +0x1EF6 | 0x18D808 | mov     ax, si
+2667 | +0x1EF8 | 0x18D80A | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2668 | +0x1EFB | 0x18D80D | imul    dx
+2669 | +0x1EFD | 0x18D80F | mov     dx, 7894h
+2670 | +0x1F00 | 0x18D812 | mov     es, dx
+2671 | +0x1F02 | 0x18D814 | les     bx, es:dword_79E6C
+2672 | +0x1F07 | 0x18D819 | add     bx, ax
+2673 | +0x1F09 | 0x18D81B | mov     al, es:[bx+5]
+2674 | +0x1F0D | 0x18D81F | les     bx, [bp+var_6]
+2675 | +0x1F10 | 0x18D822 | mov     es:[bx], al
+2676 | +0x1F13 | 0x18D825 | inc     word ptr [bp+var_6]
+2677 | +0x1F16 | 0x18D828 | mov     ax, si
+2678 | +0x1F18 | 0x18D82A | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2679 | +0x1F1B | 0x18D82D | imul    dx
+2680 | +0x1F1D | 0x18D82F | mov     dx, 7894h
+2681 | +0x1F20 | 0x18D832 | mov     es, dx
+2682 | +0x1F22 | 0x18D834 | les     bx, es:dword_79E6C
+2683 | +0x1F27 | 0x18D839 | add     bx, ax
+2684 | +0x1F29 | 0x18D83B | mov     al, es:[bx+6]
+2685 | +0x1F2D | 0x18D83F | les     bx, [bp+var_6]
+2686 | +0x1F30 | 0x18D842 | mov     es:[bx], al
+2687 | +0x1F33 | 0x18D845 | inc     word ptr [bp+var_6]
+2688 | +0x1F36 | 0x18D848 | mov     ax, si
+2689 | +0x1F38 | 0x18D84A | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2690 | +0x1F3B | 0x18D84D | imul    dx
+2691 | +0x1F3D | 0x18D84F | mov     dx, 7894h
+2692 | +0x1F40 | 0x18D852 | mov     es, dx
+2693 | +0x1F42 | 0x18D854 | les     bx, es:dword_79E6C
+2694 | +0x1F47 | 0x18D859 | add     bx, ax
+2695 | +0x1F49 | 0x18D85B | mov     al, es:[bx+7]
+2696 | +0x1F4D | 0x18D85F | cbw
+2697 | +0x1F4E | 0x18D860 | mov     dx, 13h
+2698 | +0x1F51 | 0x18D863 | imul    dx
+2699 | +0x1F53 | 0x18D865 | les     bx, [bp+var_6]
+2700 | +0x1F56 | 0x18D868 | mov     es:[bx], al
+2701 | +0x1F59 | 0x18D86B | inc     word ptr [bp+var_6]
+2702 | +0x1F5C | 0x18D86E | mov     ax, si
+2703 | +0x1F5E | 0x18D870 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2704 | +0x1F61 | 0x18D873 | imul    dx
+2705 | +0x1F63 | 0x18D875 | mov     dx, 7894h
+2706 | +0x1F66 | 0x18D878 | mov     es, dx
+2707 | +0x1F68 | 0x18D87A | les     bx, es:dword_79E6C
+2708 | +0x1F6D | 0x18D87F | add     bx, ax
+2709 | +0x1F6F | 0x18D881 | mov     al, es:[bx+8]
+2710 | +0x1F73 | 0x18D885 | les     bx, [bp+var_6]
+2711 | +0x1F76 | 0x18D888 | mov     es:[bx], al
+2712 | +0x1F79 | 0x18D88B | inc     word ptr [bp+var_6]
+2713 | +0x1F7C | 0x18D88E | mov     ax, si
+2714 | +0x1F7E | 0x18D890 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2715 | +0x1F81 | 0x18D893 | imul    dx
+2716 | +0x1F83 | 0x18D895 | mov     dx, 7894h
+2717 | +0x1F86 | 0x18D898 | mov     es, dx
+2718 | +0x1F88 | 0x18D89A | les     bx, es:dword_79E6C
+2719 | +0x1F8D | 0x18D89F | add     bx, ax
+2720 | +0x1F8F | 0x18D8A1 | mov     al, es:[bx+9]
+2721 | +0x1F93 | 0x18D8A5 | les     bx, [bp+var_6]
+2722 | +0x1F96 | 0x18D8A8 | mov     es:[bx], al
+2723 | +0x1F99 | 0x18D8AB | inc     word ptr [bp+var_6]
+2724 | +0x1F9C | 0x18D8AE | mov     ax, si
+2725 | +0x1F9E | 0x18D8B0 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2726 | +0x1FA1 | 0x18D8B3 | imul    dx
+2727 | +0x1FA3 | 0x18D8B5 | mov     dx, 7894h
+2728 | +0x1FA6 | 0x18D8B8 | mov     es, dx
+2729 | +0x1FA8 | 0x18D8BA | les     bx, es:dword_79E6C
+2730 | +0x1FAD | 0x18D8BF | add     bx, ax
+2731 | +0x1FAF | 0x18D8C1 | mov     al, es:[bx+0Ah]
+2732 | +0x1FB3 | 0x18D8C5 | les     bx, [bp+var_6]
+2733 | +0x1FB6 | 0x18D8C8 | mov     es:[bx], al
+2734 | +0x1FB9 | 0x18D8CB | inc     word ptr [bp+var_6]
+2735 | +0x1FBC | 0x18D8CE | mov     ax, si
+2736 | +0x1FBE | 0x18D8D0 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2737 | +0x1FC1 | 0x18D8D3 | imul    dx
+2738 | +0x1FC3 | 0x18D8D5 | mov     dx, 7894h
+2739 | +0x1FC6 | 0x18D8D8 | mov     es, dx
+2740 | +0x1FC8 | 0x18D8DA | les     bx, es:dword_79E6C
+2741 | +0x1FCD | 0x18D8DF | add     bx, ax
+2742 | +0x1FCF | 0x18D8E1 | mov     al, es:[bx+0Bh]
+2743 | +0x1FD3 | 0x18D8E5 | les     bx, [bp+var_6]
+2744 | +0x1FD6 | 0x18D8E8 | mov     es:[bx], al
+2745 | +0x1FD9 | 0x18D8EB | inc     word ptr [bp+var_6]
+2746 | +0x1FDC | 0x18D8EE | mov     ax, si
+2747 | +0x1FDE | 0x18D8F0 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2748 | +0x1FE1 | 0x18D8F3 | imul    dx
+2749 | +0x1FE3 | 0x18D8F5 | mov     dx, 7894h
+2750 | +0x1FE6 | 0x18D8F8 | mov     es, dx
+2751 | +0x1FE8 | 0x18D8FA | les     bx, es:dword_79E6C
+2752 | +0x1FED | 0x18D8FF | add     bx, ax
+2753 | +0x1FEF | 0x18D901 | mov     al, es:[bx+0Ch]
+2754 | +0x1FF3 | 0x18D905 | les     bx, [bp+var_6]
+2755 | +0x1FF6 | 0x18D908 | mov     es:[bx], al
+2756 | +0x1FF9 | 0x18D90B | inc     word ptr [bp+var_6]
+2757 | +0x1FFC | 0x18D90E | mov     ax, si
+2758 | +0x1FFE | 0x18D910 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2759 | +0x2001 | 0x18D913 | imul    dx
+2760 | +0x2003 | 0x18D915 | mov     dx, 7894h
+2761 | +0x2006 | 0x18D918 | mov     es, dx
+2762 | +0x2008 | 0x18D91A | les     bx, es:dword_79E6C
+2763 | +0x200D | 0x18D91F | add     bx, ax
+2764 | +0x200F | 0x18D921 | mov     al, es:[bx+0Dh]
+2765 | +0x2013 | 0x18D925 | les     bx, [bp+var_6]
+2766 | +0x2016 | 0x18D928 | mov     es:[bx], al
+2767 | +0x2019 | 0x18D92B | inc     word ptr [bp+var_6]
+2768 | +0x201C | 0x18D92E | mov     ax, si
+2769 | +0x201E | 0x18D930 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2770 | +0x2021 | 0x18D933 | imul    dx
+2771 | +0x2023 | 0x18D935 | mov     dx, 7894h
+2772 | +0x2026 | 0x18D938 | mov     es, dx
+2773 | +0x2028 | 0x18D93A | les     bx, es:dword_79E6C
+2774 | +0x202D | 0x18D93F | add     bx, ax
+2775 | +0x202F | 0x18D941 | mov     al, es:[bx+0Eh]
+2776 | +0x2033 | 0x18D945 | les     bx, [bp+var_6]
+2777 | +0x2036 | 0x18D948 | mov     es:[bx], al
+2778 | +0x2039 | 0x18D94B | inc     word ptr [bp+var_6]
+2779 | +0x203C | 0x18D94E | les     bx, [bp+var_6]
+2780 | +0x203F | 0x18D951 | mov     byte ptr es:[bx], 0
+2781 | +0x2043 | 0x18D955 | inc     word ptr [bp+var_6]
+2782 | +0x2046 | 0x18D958 | mov     ax, si
+2783 | +0x2048 | 0x18D95A | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2784 | +0x204B | 0x18D95D | imul    dx
+2785 | +0x204D | 0x18D95F | mov     dx, 7894h
+2786 | +0x2050 | 0x18D962 | mov     es, dx
+2787 | +0x2052 | 0x18D964 | les     bx, es:dword_79E6C
+2788 | +0x2057 | 0x18D969 | add     bx, ax
+2789 | +0x2059 | 0x18D96B | mov     al, es:[bx+10h]
+2790 | +0x205D | 0x18D96F | les     bx, [bp+var_6]
+2791 | +0x2060 | 0x18D972 | mov     es:[bx], al
+2792 | +0x2063 | 0x18D975 | inc     word ptr [bp+var_6]
+2793 | +0x2066 | 0x18D978 | mov     ax, si
+2794 | +0x2068 | 0x18D97A | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2795 | +0x206B | 0x18D97D | imul    dx
+2796 | +0x206D | 0x18D97F | mov     dx, 7894h
+2797 | +0x2070 | 0x18D982 | mov     es, dx
+2798 | +0x2072 | 0x18D984 | les     bx, es:dword_79E6C
+2799 | +0x2077 | 0x18D989 | add     bx, ax
+2800 | +0x2079 | 0x18D98B | mov     al, es:[bx+11h]
+2801 | +0x207D | 0x18D98F | les     bx, [bp+var_6]
+2802 | +0x2080 | 0x18D992 | mov     es:[bx], al
+2803 | +0x2083 | 0x18D995 | inc     word ptr [bp+var_6]
+2804 | +0x2086 | 0x18D998 | les     bx, [bp+var_6]
+2805 | +0x2089 | 0x18D99B | mov     byte ptr es:[bx], 1Eh
+2806 | +0x208D | 0x18D99F | inc     word ptr [bp+var_6]
+2807 | +0x2090 | 0x18D9A2 | les     bx, [bp+var_6]
+2808 | +0x2093 | 0x18D9A5 | mov     byte ptr es:[bx], 1Eh
+2809 | +0x2097 | 0x18D9A9 | inc     word ptr [bp+var_6]
+2810 | +0x209A | 0x18D9AC | mov     ax, si
+2811 | +0x209C | 0x18D9AE | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2812 | +0x209F | 0x18D9B1 | imul    dx
+2813 | +0x20A1 | 0x18D9B3 | mov     dx, 7894h
+2814 | +0x20A4 | 0x18D9B6 | mov     es, dx
+2815 | +0x20A6 | 0x18D9B8 | les     bx, es:dword_79E6C
+2816 | +0x20AB | 0x18D9BD | add     bx, ax
+2817 | +0x20AD | 0x18D9BF | mov     al, es:[bx+14h]
+2818 | +0x20B1 | 0x18D9C3 | les     bx, [bp+var_6]
+2819 | +0x20B4 | 0x18D9C6 | mov     es:[bx], al
+2820 | +0x20B7 | 0x18D9C9 | inc     word ptr [bp+var_6]
+2821 | +0x20BA | 0x18D9CC | mov     ax, word ptr [bp+var_6+2]
+2822 | +0x20BD | 0x18D9CF | mov     dx, word ptr [bp+var_6]
+2823 | +0x20C0 | 0x18D9D2 | mov     word ptr [bp+var_14+2], ax
+2824 | +0x20C3 | 0x18D9D5 | mov     word ptr [bp+var_14], dx
+2825 | +0x20C6 | 0x18D9D8 | les     bx, [bp+var_14]
+2826 | +0x20C9 | 0x18D9DB | mov     word ptr es:[bx], 0
+2827 | +0x20CE | 0x18D9E0 | mov     ax, si
+2828 | +0x20D0 | 0x18D9E2 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2829 | +0x20D3 | 0x18D9E5 | imul    dx
+2830 | +0x20D5 | 0x18D9E7 | mov     dx, 7894h
+2831 | +0x20D8 | 0x18D9EA | mov     es, dx
+2832 | +0x20DA | 0x18D9EC | les     bx, es:dword_79E6C
+2833 | +0x20DF | 0x18D9F1 | add     bx, ax
+2834 | +0x20E1 | 0x18D9F3 | cmp     byte ptr es:[bx+15h], 1
+2835 | +0x20E6 | 0x18D9F8 | jnz     short loc_18DA02
+2836 | +0x20E8 | 0x18D9FA | les     bx, [bp+var_14]
+2837 | +0x20EB | 0x18D9FD | add     word ptr es:[bx], 1E78h
+2838 | +0x20F0 | 0x18DA02 | mov     ax, si
+2839 | +0x20F2 | 0x18DA04 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2840 | +0x20F5 | 0x18DA07 | imul    dx
+2841 | +0x20F7 | 0x18DA09 | mov     dx, 7894h
+2842 | +0x20FA | 0x18DA0C | mov     es, dx
+2843 | +0x20FC | 0x18DA0E | les     bx, es:dword_79E6C
+2844 | +0x2101 | 0x18DA13 | add     bx, ax
+2845 | +0x2103 | 0x18DA15 | cmp     byte ptr es:[bx+16h], 1
+2846 | +0x2108 | 0x18DA1A | jnz     short loc_18DA24
+2847 | +0x210A | 0x18DA1C | les     bx, [bp+var_14]
+2848 | +0x210D | 0x18DA1F | add     word ptr es:[bx], 2594h
+2849 | +0x2112 | 0x18DA24 | mov     ax, si
+2850 | +0x2114 | 0x18DA26 | mov     dx, 17h; LoadoutRecord size (23 bytes)  ; LoadoutRecord size (23 bytes)
+2851 | +0x2117 | 0x18DA29 | imul    dx
+2852 | +0x2119 | 0x18DA2B | mov     dx, 7894h
+2853 | +0x211C | 0x18DA2E | mov     es, dx
+2854 | +0x211E | 0x18DA30 | les     bx, es:dword_79E6C
+2855 | +0x2123 | 0x18DA35 | add     bx, ax
+2856 | +0x2125 | 0x18DA37 | cmp     byte ptr es:[bx+16h], 2
+2857 | +0x212A | 0x18DA3C | jnz     short loc_18DA46
+2858 | +0x212C | 0x18DA3E | les     bx, [bp+var_14]
+2859 | +0x212F | 0x18DA41 | add     word ptr es:[bx], 4B28h
+2860 | +0x2134 | 0x18DA46 | add     word ptr [bp+var_14], 2
+2861 | +0x2138 | 0x18DA4A | mov     ax, word ptr [bp+var_14+2]
+2862 | +0x213B | 0x18DA4D | mov     dx, word ptr [bp+var_14]
+2863 | +0x213E | 0x18DA50 | mov     word ptr [bp+var_6+2], ax
+2864 | +0x2141 | 0x18DA53 | mov     word ptr [bp+var_6], dx
+2865 | +0x2144 | 0x18DA56 | inc     si
+2866 | +0x2145 | 0x18DA57 | inc     di
+2867 | +0x2146 | 0x18DA58 | cmp     si, [bp+var_38]
+2868 | +0x2149 | 0x18DA5B | jnz     short loc_18DA60
+2869 | +0x214B | 0x18DA5D | mov     si, 8
+2870 | +0x214E | 0x18DA60 | mov     ax, [bp+var_3A]
+2871 | +0x2151 | 0x18DA63 | add     ax, 8
+2872 | +0x2154 | 0x18DA66 | cmp     ax, si
+2873 | +0x2156 | 0x18DA68 | jle     short loc_18DA6D
+2874 | +0x2158 | 0x18DA6A | jmp     loc_18D724
+2875 | +0x215B | 0x18DA6D | jmp     loc_18DB67
+2876 | +0x215E | 0x18DA70 | mov     ax, word ptr [bp+var_6+2]
+2877 | +0x2161 | 0x18DA73 | mov     dx, word ptr [bp+var_6]
+2878 | +0x2164 | 0x18DA76 | mov     word ptr [bp+var_14+2], ax
+2879 | +0x2167 | 0x18DA79 | mov     word ptr [bp+var_14], dx
+2880 | +0x216A | 0x18DA7C | les     bx, [bp+var_14]
+2881 | +0x216D | 0x18DA7F | mov     word ptr es:[bx], 0
+2882 | +0x2172 | 0x18DA84 | add     word ptr [bp+var_14], 2
+2883 | +0x2176 | 0x18DA88 | mov     ax, word ptr [bp+var_14+2]
+2884 | +0x2179 | 0x18DA8B | mov     dx, word ptr [bp+var_14]
+2885 | +0x217C | 0x18DA8E | mov     word ptr [bp+var_6+2], ax
+2886 | +0x217F | 0x18DA91 | mov     word ptr [bp+var_6], dx
+2887 | +0x2182 | 0x18DA94 | les     bx, [bp+var_6]
+2888 | +0x2185 | 0x18DA97 | mov     byte ptr es:[bx], 0
+2889 | +0x2189 | 0x18DA9B | inc     word ptr [bp+var_6]
+2890 | +0x218C | 0x18DA9E | les     bx, [bp+var_6]
+2891 | +0x218F | 0x18DAA1 | mov     byte ptr es:[bx], 0
+2892 | +0x2193 | 0x18DAA5 | inc     word ptr [bp+var_6]
+2893 | +0x2196 | 0x18DAA8 | les     bx, [bp+var_6]
+2894 | +0x2199 | 0x18DAAB | mov     byte ptr es:[bx], 0
+2895 | +0x219D | 0x18DAAF | inc     word ptr [bp+var_6]
+2896 | +0x21A0 | 0x18DAB2 | les     bx, [bp+var_6]
+2897 | +0x21A3 | 0x18DAB5 | mov     byte ptr es:[bx], 0
+2898 | +0x21A7 | 0x18DAB9 | inc     word ptr [bp+var_6]
+2899 | +0x21AA | 0x18DABC | les     bx, [bp+var_6]
+2900 | +0x21AD | 0x18DABF | mov     byte ptr es:[bx], 0
+2901 | +0x21B1 | 0x18DAC3 | inc     word ptr [bp+var_6]
+2902 | +0x21B4 | 0x18DAC6 | les     bx, [bp+var_6]
+2903 | +0x21B7 | 0x18DAC9 | mov     byte ptr es:[bx], 0
+2904 | +0x21BB | 0x18DACD | inc     word ptr [bp+var_6]
+2905 | +0x21BE | 0x18DAD0 | les     bx, [bp+var_6]
+2906 | +0x21C1 | 0x18DAD3 | mov     byte ptr es:[bx], 0
+2907 | +0x21C5 | 0x18DAD7 | inc     word ptr [bp+var_6]
+2908 | +0x21C8 | 0x18DADA | les     bx, [bp+var_6]
+2909 | +0x21CB | 0x18DADD | mov     byte ptr es:[bx], 0
+2910 | +0x21CF | 0x18DAE1 | inc     word ptr [bp+var_6]
+2911 | +0x21D2 | 0x18DAE4 | les     bx, [bp+var_6]
+2912 | +0x21D5 | 0x18DAE7 | mov     byte ptr es:[bx], 0
+2913 | +0x21D9 | 0x18DAEB | inc     word ptr [bp+var_6]
+2914 | +0x21DC | 0x18DAEE | les     bx, [bp+var_6]
+2915 | +0x21DF | 0x18DAF1 | mov     byte ptr es:[bx], 0
+2916 | +0x21E3 | 0x18DAF5 | inc     word ptr [bp+var_6]
+2917 | +0x21E6 | 0x18DAF8 | les     bx, [bp+var_6]
+2918 | +0x21E9 | 0x18DAFB | mov     byte ptr es:[bx], 0
+2919 | +0x21ED | 0x18DAFF | inc     word ptr [bp+var_6]
+2920 | +0x21F0 | 0x18DB02 | les     bx, [bp+var_6]
+2921 | +0x21F3 | 0x18DB05 | mov     byte ptr es:[bx], 0
+2922 | +0x21F7 | 0x18DB09 | inc     word ptr [bp+var_6]
+2923 | +0x21FA | 0x18DB0C | les     bx, [bp+var_6]
+2924 | +0x21FD | 0x18DB0F | mov     byte ptr es:[bx], 0
+2925 | +0x2201 | 0x18DB13 | inc     word ptr [bp+var_6]
+2926 | +0x2204 | 0x18DB16 | les     bx, [bp+var_6]
+2927 | +0x2207 | 0x18DB19 | mov     byte ptr es:[bx], 0
+2928 | +0x220B | 0x18DB1D | inc     word ptr [bp+var_6]
+2929 | +0x220E | 0x18DB20 | les     bx, [bp+var_6]
+2930 | +0x2211 | 0x18DB23 | mov     byte ptr es:[bx], 0
+2931 | +0x2215 | 0x18DB27 | inc     word ptr [bp+var_6]
+2932 | +0x2218 | 0x18DB2A | les     bx, [bp+var_6]
+2933 | +0x221B | 0x18DB2D | mov     byte ptr es:[bx], 0
+2934 | +0x221F | 0x18DB31 | inc     word ptr [bp+var_6]
+2935 | +0x2222 | 0x18DB34 | les     bx, [bp+var_6]
+2936 | +0x2225 | 0x18DB37 | mov     byte ptr es:[bx], 0
+2937 | +0x2229 | 0x18DB3B | inc     word ptr [bp+var_6]
+2938 | +0x222C | 0x18DB3E | les     bx, [bp+var_6]
+2939 | +0x222F | 0x18DB41 | mov     byte ptr es:[bx], 0
+2940 | +0x2233 | 0x18DB45 | inc     word ptr [bp+var_6]
+2941 | +0x2236 | 0x18DB48 | les     bx, [bp+var_6]
+2942 | +0x2239 | 0x18DB4B | mov     byte ptr es:[bx], 0
+2943 | +0x223D | 0x18DB4F | inc     word ptr [bp+var_6]
+2944 | +0x2240 | 0x18DB52 | les     bx, [bp+var_6]
+2945 | +0x2243 | 0x18DB55 | mov     byte ptr es:[bx], 0
+2946 | +0x2247 | 0x18DB59 | inc     word ptr [bp+var_6]
+2947 | +0x224A | 0x18DB5C | les     bx, [bp+var_6]
+2948 | +0x224D | 0x18DB5F | mov     byte ptr es:[bx], 0
+2949 | +0x2251 | 0x18DB63 | inc     word ptr [bp+var_6]
+2950 | +0x2254 | 0x18DB66 | inc     di
+2951 | +0x2255 | 0x18DB67 | mov     ax, 7894h
+2952 | +0x2258 | 0x18DB6A | mov     es, ax
+2953 | +0x225A | 0x18DB6C | cmp     es:word_79E9E, di
+2954 | +0x225F | 0x18DB71 | jle     short loc_18DB76
+2955 | +0x2261 | 0x18DB73 | jmp     loc_18DA70
+2956 | +0x2264 | 0x18DB76 | xor     si, si
+2957 | +0x2266 | 0x18DB78 | jmp     short loc_18DBCC
+2958 | +0x2268 | 0x18DB7A | mov     ax, si
+2959 | +0x226A | 0x18DB7C | mov     dx, 5
+2960 | +0x226D | 0x18DB7F | imul    dx
+2961 | +0x226F | 0x18DB81 | mov     dx, 7894h
+2962 | +0x2272 | 0x18DB84 | mov     bx, ax
+2963 | +0x2274 | 0x18DB86 | mov     es, dx
+2964 | +0x2276 | 0x18DB88 | mov     byte ptr es:[bx+0EF0h], 0FFh
+2965 | +0x227C | 0x18DB8E | mov     ax, si
+2966 | +0x227E | 0x18DB90 | mov     dx, 5
+2967 | +0x2281 | 0x18DB93 | imul    dx
+2968 | +0x2283 | 0x18DB95 | mov     dx, 7894h
+2969 | +0x2286 | 0x18DB98 | mov     bx, ax
+2970 | +0x2288 | 0x18DB9A | mov     es, dx
+2971 | +0x228A | 0x18DB9C | mov     byte ptr es:[bx+0EF1h], 0FFh
+2972 | +0x2290 | 0x18DBA2 | mov     ax, si
+2973 | +0x2292 | 0x18DBA4 | mov     dx, 5
+2974 | +0x2295 | 0x18DBA7 | imul    dx
+2975 | +0x2297 | 0x18DBA9 | mov     dx, 7894h
+2976 | +0x229A | 0x18DBAC | mov     bx, ax
+2977 | +0x229C | 0x18DBAE | mov     es, dx
+2978 | +0x229E | 0x18DBB0 | mov     byte ptr es:[bx+0EF2h], 0FFh
+2979 | +0x22A4 | 0x18DBB6 | mov     ax, si
+2980 | +0x22A6 | 0x18DBB8 | mov     dx, 5
+2981 | +0x22A9 | 0x18DBBB | imul    dx
+2982 | +0x22AB | 0x18DBBD | mov     dx, 7894h
+2983 | +0x22AE | 0x18DBC0 | mov     bx, ax
+2984 | +0x22B0 | 0x18DBC2 | mov     es, dx
+2985 | +0x22B2 | 0x18DBC4 | mov     word ptr es:[bx+0EF3h], 0FFFFh
+2986 | +0x22B9 | 0x18DBCB | inc     si
+2987 | +0x22BA | 0x18DBCC | cmp     si, 8
+2988 | +0x22BD | 0x18DBCF | jl      short loc_18DB7A
+2989 | +0x22BF | 0x18DBD1 | mov     [bp+var_26], 0
+2990 | +0x22C4 | 0x18DBD6 | xor     si, si
+2991 | +0x22C6 | 0x18DBD8 | jmp     loc_18DD81
+2992 | +0x22C9 | 0x18DBDB | mov     ax, si
+2993 | +0x22CB | 0x18DBDD | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+2994 | +0x22CE | 0x18DBE0 | imul    dx
+2995 | +0x22D0 | 0x18DBE2 | mov     dx, 7894h
+2996 | +0x22D3 | 0x18DBE5 | mov     es, dx
+2997 | +0x22D5 | 0x18DBE7 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+2998 | +0x22DA | 0x18DBEC | add     bx, ax
+2999 | +0x22DC | 0x18DBEE | cmp     byte ptr es:[bx+4], 0
+3000 | +0x22E1 | 0x18DBF3 | jg      short loc_18DBF8
+3001 | +0x22E3 | 0x18DBF5 | jmp     loc_18DD80
+3002 | +0x22E6 | 0x18DBF8 | mov     [bp+var_24], 0
+3003 | +0x22EB | 0x18DBFD | jmp     loc_18DD60
+3004 | +0x22EE | 0x18DC00 | xor     di, di
+3005 | +0x22F0 | 0x18DC02 | jmp     loc_18DD3E
+3006 | +0x22F3 | 0x18DC05 | mov     ax, si
+3007 | +0x22F5 | 0x18DC07 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+3008 | +0x22F8 | 0x18DC0A | imul    dx
+3009 | +0x22FA | 0x18DC0C | mov     dx, 7894h
+3010 | +0x22FD | 0x18DC0F | mov     es, dx
+3011 | +0x22FF | 0x18DC11 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+3012 | +0x2304 | 0x18DC16 | add     bx, ax
+3013 | +0x2306 | 0x18DC18 | mov     ax, di
+3014 | +0x2308 | 0x18DC1A | mov     dx, 0Ch
+3015 | +0x230B | 0x18DC1D | imul    dx
+3016 | +0x230D | 0x18DC1F | add     bx, ax
+3017 | +0x230F | 0x18DC21 | cmp     byte ptr es:[bx+1Fh], 4
+3018 | +0x2314 | 0x18DC26 | jz      short loc_18DC2B
+3019 | +0x2316 | 0x18DC28 | jmp     loc_18DD3D
+3020 | +0x2319 | 0x18DC2B | mov     ax, si
+3021 | +0x231B | 0x18DC2D | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+3022 | +0x231E | 0x18DC30 | imul    dx
+3023 | +0x2320 | 0x18DC32 | mov     dx, 7894h
+3024 | +0x2323 | 0x18DC35 | mov     es, dx
+3025 | +0x2325 | 0x18DC37 | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+3026 | +0x232A | 0x18DC3C | add     bx, ax
+3027 | +0x232C | 0x18DC3E | mov     ax, di
+3028 | +0x232E | 0x18DC40 | mov     dx, 0Ch
+3029 | +0x2331 | 0x18DC43 | imul    dx
+3030 | +0x2333 | 0x18DC45 | add     bx, ax
+3031 | +0x2335 | 0x18DC47 | mov     al, es:[bx+21h]
+3032 | +0x2339 | 0x18DC4B | cbw
+3033 | +0x233A | 0x18DC4C | and     ax, 7Fh
+3034 | +0x233D | 0x18DC4F | mov     [bp+var_1C], ax
+3035 | +0x2340 | 0x18DC52 | mov     ax, si
+3036 | +0x2342 | 0x18DC54 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+3037 | +0x2345 | 0x18DC57 | imul    dx
+3038 | +0x2347 | 0x18DC59 | mov     dx, 7894h
+3039 | +0x234A | 0x18DC5C | mov     es, dx
+3040 | +0x234C | 0x18DC5E | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+3041 | +0x2351 | 0x18DC63 | add     bx, ax
+3042 | +0x2353 | 0x18DC65 | mov     ax, di
+3043 | +0x2355 | 0x18DC67 | mov     dx, 0Ch
+3044 | +0x2358 | 0x18DC6A | imul    dx
+3045 | +0x235A | 0x18DC6C | add     bx, ax
+3046 | +0x235C | 0x18DC6E | mov     al, es:[bx+20h]
+3047 | +0x2360 | 0x18DC72 | cbw
+3048 | +0x2361 | 0x18DC73 | mov     [bp+var_1E], ax
+3049 | +0x2364 | 0x18DC76 | mov     ax, [bp+var_26]
+3050 | +0x2367 | 0x18DC79 | mov     dx, 5
+3051 | +0x236A | 0x18DC7C | imul    dx
+3052 | +0x236C | 0x18DC7E | mov     dx, 7894h
+3053 | +0x236F | 0x18DC81 | push    ax
+3054 | +0x2370 | 0x18DC82 | mov     ax, [bp+var_1C]
+3055 | +0x2373 | 0x18DC85 | mov     bx, 4Eh ; 'N'
+3056 | +0x2376 | 0x18DC88 | push    dx
+3057 | +0x2377 | 0x18DC89 | imul    bx
+3058 | +0x2379 | 0x18DC8B | mov     dx, 7894h
+3059 | +0x237C | 0x18DC8E | mov     es, dx
+3060 | +0x237E | 0x18DC90 | les     bx, es:dword_79B6E
+3061 | +0x2383 | 0x18DC95 | add     bx, ax
+3062 | +0x2385 | 0x18DC97 | add     bx, [bp+var_1E]
+3063 | +0x2388 | 0x18DC9A | mov     al, es:[bx+20h]
+3064 | +0x238C | 0x18DC9E | pop     es
+3065 | +0x238D | 0x18DC9F | pop     bx
+3066 | +0x238E | 0x18DCA0 | mov     es:[bx+0EF0h], al
+3067 | +0x2393 | 0x18DCA5 | mov     ax, [bp+var_26]
+3068 | +0x2396 | 0x18DCA8 | mov     dx, 5
+3069 | +0x2399 | 0x18DCAB | imul    dx
+3070 | +0x239B | 0x18DCAD | mov     dx, 7894h
+3071 | +0x239E | 0x18DCB0 | push    ax
+3072 | +0x239F | 0x18DCB1 | mov     ax, [bp+var_1C]
+3073 | +0x23A2 | 0x18DCB4 | mov     bx, 4Eh ; 'N'
+3074 | +0x23A5 | 0x18DCB7 | push    dx
+3075 | +0x23A6 | 0x18DCB8 | imul    bx
+3076 | +0x23A8 | 0x18DCBA | mov     dx, 7894h
+3077 | +0x23AB | 0x18DCBD | mov     es, dx
+3078 | +0x23AD | 0x18DCBF | les     bx, es:dword_79B6E
+3079 | +0x23B2 | 0x18DCC4 | add     bx, ax
+3080 | +0x23B4 | 0x18DCC6 | add     bx, [bp+var_1E]
+3081 | +0x23B7 | 0x18DCC9 | mov     al, es:[bx+10h]
+3082 | +0x23BB | 0x18DCCD | pop     es
+3083 | +0x23BC | 0x18DCCE | pop     bx
+3084 | +0x23BD | 0x18DCCF | mov     es:[bx+0EF1h], al
+3085 | +0x23C2 | 0x18DCD4 | mov     ax, [bp+var_26]
+3086 | +0x23C5 | 0x18DCD7 | mov     dx, 5
+3087 | +0x23C8 | 0x18DCDA | imul    dx
+3088 | +0x23CA | 0x18DCDC | mov     dx, 7894h
+3089 | +0x23CD | 0x18DCDF | push    ax
+3090 | +0x23CE | 0x18DCE0 | mov     ax, [bp+var_1C]
+3091 | +0x23D1 | 0x18DCE3 | mov     bx, 4Eh ; 'N'
+3092 | +0x23D4 | 0x18DCE6 | push    dx
+3093 | +0x23D5 | 0x18DCE7 | imul    bx
+3094 | +0x23D7 | 0x18DCE9 | mov     dx, 7894h
+3095 | +0x23DA | 0x18DCEC | mov     es, dx
+3096 | +0x23DC | 0x18DCEE | les     bx, es:dword_79B6E
+3097 | +0x23E1 | 0x18DCF3 | add     bx, ax
+3098 | +0x23E3 | 0x18DCF5 | add     bx, [bp+var_1E]
+3099 | +0x23E6 | 0x18DCF8 | mov     al, es:[bx+18h]
+3100 | +0x23EA | 0x18DCFC | pop     es
+3101 | +0x23EB | 0x18DCFD | pop     bx
+3102 | +0x23EC | 0x18DCFE | mov     es:[bx+0EF2h], al
+3103 | +0x23F1 | 0x18DD03 | mov     ax, [bp+var_1C]
+3104 | +0x23F4 | 0x18DD06 | mov     dx, 4Eh ; 'N'
+3105 | +0x23F7 | 0x18DD09 | imul    dx
+3106 | +0x23F9 | 0x18DD0B | mov     dx, 7894h
+3107 | +0x23FC | 0x18DD0E | mov     es, dx
+3108 | +0x23FE | 0x18DD10 | les     bx, es:dword_79B6E
+3109 | +0x2403 | 0x18DD15 | add     bx, ax
+3110 | +0x2405 | 0x18DD17 | mov     ax, [bp+var_1E]
+3111 | +0x2408 | 0x18DD1A | shl     ax, 1
+3112 | +0x240A | 0x18DD1C | add     bx, ax
+3113 | +0x240C | 0x18DD1E | mov     ax, es:[bx+30h]
+3114 | +0x2410 | 0x18DD22 | push    ax
+3115 | +0x2411 | 0x18DD23 | mov     ax, [bp+var_26]
+3116 | +0x2414 | 0x18DD26 | mov     dx, 5
+3117 | +0x2417 | 0x18DD29 | imul    dx
+3118 | +0x2419 | 0x18DD2B | mov     dx, 7894h
+3119 | +0x241C | 0x18DD2E | mov     bx, ax
+3120 | +0x241E | 0x18DD30 | mov     es, dx
+3121 | +0x2420 | 0x18DD32 | pop     ax
+3122 | +0x2421 | 0x18DD33 | mov     es:[bx+0EF3h], ax
+3123 | +0x2426 | 0x18DD38 | inc     [bp+var_26]
+3124 | +0x2429 | 0x18DD3B | jmp     short loc_18DD5D
+3125 | +0x242B | 0x18DD3D | inc     di
+3126 | +0x242C | 0x18DD3E | mov     ax, si
+3127 | +0x242E | 0x18DD40 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+3128 | +0x2431 | 0x18DD43 | imul    dx
+3129 | +0x2433 | 0x18DD45 | mov     dx, 7894h
+3130 | +0x2436 | 0x18DD48 | mov     es, dx
+3131 | +0x2438 | 0x18DD4A | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+3132 | +0x243D | 0x18DD4F | add     bx, ax
+3133 | +0x243F | 0x18DD51 | mov     al, es:[bx+15h]
+3134 | +0x2443 | 0x18DD55 | cbw
+3135 | +0x2444 | 0x18DD56 | cmp     ax, di
+3136 | +0x2446 | 0x18DD58 | jle     short loc_18DD5D
+3137 | +0x2448 | 0x18DD5A | jmp     loc_18DC05
+3138 | +0x244B | 0x18DD5D | inc     [bp+var_24]
+3139 | +0x244E | 0x18DD60 | mov     ax, si
+3140 | +0x2450 | 0x18DD62 | mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+3141 | +0x2453 | 0x18DD65 | imul    dx
+3142 | +0x2455 | 0x18DD67 | mov     dx, 7894h
+3143 | +0x2458 | 0x18DD6A | mov     es, dx
+3144 | +0x245A | 0x18DD6C | les     bx, es:flight_array_ptr; Pointer to flight array (N × 130 bytes)
+3145 | +0x245F | 0x18DD71 | add     bx, ax
+3146 | +0x2461 | 0x18DD73 | mov     al, es:[bx+4]
+3147 | +0x2465 | 0x18DD77 | cbw
+3148 | +0x2466 | 0x18DD78 | cmp     ax, [bp+var_24]
+3149 | +0x2469 | 0x18DD7B | jle     short loc_18DD80
+3150 | +0x246B | 0x18DD7D | jmp     loc_18DC00
+3151 | +0x246E | 0x18DD80 | inc     si
+3152 | +0x246F | 0x18DD81 | cmp     si, 4
+3153 | +0x2472 | 0x18DD84 | jge     short loc_18DD89
+3154 | +0x2474 | 0x18DD86 | jmp     loc_18DBDB
+3155 | +0x2477 | 0x18DD89 | mov     ax, 7894h
+3156 | +0x247A | 0x18DD8C | mov     es, ax
+3157 | +0x247C | 0x18DD8E | cmp     es:graphics_mode_flag, 3
+3158 | +0x2482 | 0x18DD94 | jnz     short loc_18DDE6
+3159 | +0x2484 | 0x18DD96 | call    far_cb_1
+3160 | +0x2489 | 0x18DD9B | push    0
+3161 | +0x248B | 0x18DD9D | call    dispatch_220f0_invoke_1arg
+3162 | +0x2490 | 0x18DDA2 | pop     cx
+3163 | +0x2491 | 0x18DDA3 | mov     ax, 7894h
+3164 | +0x2494 | 0x18DDA6 | mov     es, ax
+3165 | +0x2496 | 0x18DDA8 | push    es:word_79EDC
+3166 | +0x249B | 0x18DDAD | push    es:word_79EDA
+3167 | +0x24A0 | 0x18DDB2 | push    7D0h
+3168 | +0x24A3 | 0x18DDB5 | push    0FBh
+3169 | +0x24A6 | 0x18DDB8 | push    15h
+3170 | +0x24A8 | 0x18DDBA | call    ui_text_render_engine
+3171 | +0x24AD | 0x18DDBF | add     sp, 0Ah
+3172 | +0x24B0 | 0x18DDC2 | call    far_cb_1
+3173 | +0x24B5 | 0x18DDC7 | push    0
+3174 | +0x24B7 | 0x18DDC9 | call    dispatch_220f0_invoke_1arg
+3175 | +0x24BC | 0x18DDCE | pop     cx
+3176 | +0x24BD | 0x18DDCF | push    7894h
+3177 | +0x24C0 | 0x18DDD2 | push    0EE8h
+3178 | +0x24C3 | 0x18DDD5 | push    6
+3179 | +0x24C5 | 0x18DDD7 | push    0FBh
+3180 | +0x24C8 | 0x18DDDA | push    1Dh
+3181 | +0x24CA | 0x18DDDC | call    ui_text_render_engine
+3182 | +0x24CF | 0x18DDE1 | add     sp, 0Ah
+3183 | +0x24D2 | 0x18DDE4 | jmp     short loc_18DE2D
+3184 | +0x24D4 | 0x18DDE6 | call    far_cb_1
+3185 | +0x24D9 | 0x18DDEB | push    0
+3186 | +0x24DB | 0x18DDED | call    dispatch_220f0_invoke_1arg
+3187 | +0x24E0 | 0x18DDF2 | pop     cx
+3188 | +0x24E1 | 0x18DDF3 | mov     ax, 7894h
+3189 | +0x24E4 | 0x18DDF6 | mov     es, ax
+3190 | +0x24E6 | 0x18DDF8 | push    es:word_79EDC
+3191 | +0x24EB | 0x18DDFD | push    es:word_79EDA
+3192 | +0x24F0 | 0x18DE02 | push    0
+3193 | +0x24F2 | 0x18DE04 | push    15h
+3194 | +0x24F4 | 0x18DE06 | call    ui_text_render_simple
+3195 | +0x24F9 | 0x18DE0B | add     sp, 8
+3196 | +0x24FC | 0x18DE0E | call    far_cb_1
+3197 | +0x2501 | 0x18DE13 | push    0
+3198 | +0x2503 | 0x18DE15 | call    dispatch_220f0_invoke_1arg
+3199 | +0x2508 | 0x18DE1A | pop     cx
+3200 | +0x2509 | 0x18DE1B | push    7894h
+3201 | +0x250C | 0x18DE1E | push    0EE8h
+3202 | +0x250F | 0x18DE21 | push    0
+3203 | +0x2511 | 0x18DE23 | push    1Dh
+3204 | +0x2513 | 0x18DE25 | call    ui_text_render_simple
+3205 | +0x2518 | 0x18DE2A | add     sp, 8
+3206 | +0x251B | 0x18DE2D | push    7D0h
+3207 | +0x251E | 0x18DE30 | push    ds
+3208 | +0x251F | 0x18DE31 | push    (offset byte_847C1+0Ch - offset byte_7A320)
+3209 | +0x2522 | 0x18DE34 | mov     ax, 7894h
+3210 | +0x2525 | 0x18DE37 | mov     es, ax
+3211 | +0x2527 | 0x18DE39 | push    es:word_79EDC
+3212 | +0x252C | 0x18DE3E | push    es:word_79EDA
+3213 | +0x2531 | 0x18DE43 | push    cs
+3214 | +0x2532 | 0x18DE44 | call    near ptr r55_far_vector_stub
+3215 | +0x2535 | 0x18DE47 | add     sp, 0Ah
+3216 | +0x2538 | 0x18DE4A | push    ds
+3217 | +0x2539 | 0x18DE4B | push    (offset byte_847C1+15h - offset byte_7A320)
+3218 | +0x253C | 0x18DE4E | push    0
+3219 | +0x253E | 0x18DE50 | push    2
+3220 | +0x2540 | 0x18DE52 | push    6
+3221 | +0x2542 | 0x18DE54 | call    op_dispatch_far_entry
+3222 | +0x2547 | 0x18DE59 | add     sp, 0Ah
+3223 | +0x254A | 0x18DE5C | mov     [bp+var_30], ax
+3224 | +0x254D | 0x18DE5F | mov     ax, 7894h
+3225 | +0x2550 | 0x18DE62 | mov     es, ax
+3226 | +0x2552 | 0x18DE64 | mov     ax, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+3227 | +0x2556 | 0x18DE68 | add     ax, 7F9h
+3228 | +0x2559 | 0x18DE6B | push    word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+3229 | +0x255E | 0x18DE70 | push    ax
+3230 | +0x255F | 0x18DE71 | push    294h
+3231 | +0x2562 | 0x18DE74 | push    [bp+var_30]
+3232 | +0x2565 | 0x18DE77 | push    0Ah
+3233 | +0x2567 | 0x18DE79 | call    op_dispatch_far_entry
+3234 | +0x256C | 0x18DE7E | add     sp, 0Ah
+3235 | +0x256F | 0x18DE81 | mov     ax, 7894h
+3236 | +0x2572 | 0x18DE84 | mov     es, ax
+3237 | +0x2574 | 0x18DE86 | mov     ax, word ptr es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+3238 | +0x2578 | 0x18DE8A | add     ax, 565h
+3239 | +0x257B | 0x18DE8D | push    word ptr es:mission_context_ptr+2; Pointer to mission context (60B + 30 pilots)
+3240 | +0x2580 | 0x18DE92 | push    ax
+3241 | +0x2581 | 0x18DE93 | push    294h
+3242 | +0x2584 | 0x18DE96 | push    [bp+var_30]
+3243 | +0x2587 | 0x18DE99 | push    0Ah
+3244 | +0x2589 | 0x18DE9B | call    op_dispatch_far_entry
+3245 | +0x258E | 0x18DEA0 | add     sp, 0Ah
+3246 | +0x2591 | 0x18DEA3 | push    ss
+3247 | +0x2592 | 0x18DEA4 | lea     ax, [bp+var_30]
+3248 | +0x2595 | 0x18DEA7 | push    ax
+3249 | +0x2596 | 0x18DEA8 | push    0
+3250 | +0x2598 | 0x18DEAA | push    [bp+var_30]
+3251 | +0x259B | 0x18DEAD | push    8
+3252 | +0x259D | 0x18DEAF | call    op_dispatch_far_entry
+3253 | +0x25A2 | 0x18DEB4 | add     sp, 0Ah
+3254 | +0x25A5 | 0x18DEB7 | pop     di
+3255 | +0x25A6 | 0x18DEB8 | pop     si
+3256 | +0x25A7 | 0x18DEB9 | leave
+3257 | +0x25A8 | 0x18DEBA | retf

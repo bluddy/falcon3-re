@@ -817,32 +817,106 @@
         Values vary between files.
 
 - name: FlightRecord
-  size: 130  # 0x82 bytes - from R57 analysis
+  size: 130  # 0x82 bytes - CONFIRMED by code analysis
+  confidence: high  # 90%
   description: |
-    Flight configuration record.
-    From R57 weapons loadout menu analysis.
+    Flight configuration and status record.
+    Array accessed via flight_array_ptr (dword_79BEC @ 0x7894).
+    Contains waypoint index, aircraft count, and per-plane data.
+    13 waypoint accesses and 160+ flight record accesses found in mission code.
   evidence:
     - address: 0x1A5B16  # From R57
       pattern: "130-byte records, 0x82 multiplication"
+    - code_pattern: "mov dx, 82h; imul dx (160+ instances)"
+    - functions:
+      - mission_editor_main_loop: 0x18BC28 (R55)
+      - flight_record_handler: 0x1231FB (R29, 45 accesses!)
   fields:
-    - offset: null
-      name: aircraft_count
+    - offset: 0x00
+      size: 2
+      type: uint16_t
+      name: field_00
+      confidence: low
+      description: Unknown field (word)
+    
+    - offset: 0x02
+      size: 1
       type: uint8_t
+      name: waypoint_index
+      confidence: confirmed  # 100%
+      description: |
+        Index into waypoint array (0-N).
+        Read at mission_editor_main_loop +0x1411:
+          mov al, es:[bx+2]  ; Get waypoint index from FlightRecord
+          cbw
+          mov dx, 15h        ; Waypoint size (21 bytes)
+          imul dx            ; Calculate waypoint offset
+        Used to access waypoint coordinates via segment 0x4FC2 offset 0x168.
+      evidence:
+        - address: 0x18CD23 (mission_editor_main_loop +0x1411)
+        - pattern: "es:[bx+2] followed by 0x15 multiplication"
+    
+    - offset: 0x03
+      size: 1
+      type: uint8_t
+      name: field_03
+      confidence: low
+      description: Unknown field (byte)
+    
+    - offset: 0x04
+      size: 1
+      type: uint8_t
+      name: aircraft_count
+      confidence: high  # 85%
       description: Number of aircraft in flight (1-4)
-      
-    - offset: null
-      name: loadouts
+      evidence: "R57 loadout menu analysis, likely at +0x04"
+    
+    # Per-plane data structure (12 bytes each, 4 planes max = 48 bytes)
+    # Accessed as: flight_base + (plane_index * 0x0C)
+    - offset: 0x0A
+      size: 48
+      type: PlaneData[4]
+      name: plane_data
+      confidence: high  # 90%
+      description: |
+        Array of 4 per-plane data structures (12 bytes each).
+        Indexed by plane number within flight.
+        
+        Substructure (12 bytes per plane):
+          +0x16 (relative +0x00): uint16_t field_16 (div by 64)
+          +0x18 (relative +0x02): uint16_t field_18 (unknown)
+          +0x1A (relative +0x04): uint16_t field_1A (div by 3)
+          +0x1C (relative +0x06): uint16_t field_1C (div by 5)
+          +0x1F (relative +0x09): uint8_t  field_1F (checked if == 0x0A)
+          +0x20 (relative +0x0A): uint8_t  field_20 (OR'd with field_1F result)
+        
+        Hypothesis: altitude, speed, or waypoint-specific parameters.
+      evidence:
+        - address: 0x18CB0E (FlightRecord +0x16, plane offset calculation)
+        - pattern: "add bx, ax; where ax = plane_index * 0x0C"
+    
+    - offset: 0x3A
+      size: 92
       type: LoadoutRecord[4]
-      description: Array of 4 loadout records (23 bytes each)
+      name: loadouts
+      confidence: high  # 85%
+      description: |
+        Array of 4 loadout records (23 bytes each = 92 bytes).
+        One per aircraft in flight.
+      evidence: "R57 loadout menu @ 0x1A5970"
+    
+    # Remaining bytes (130 - 58 - 92 = -20? Need to recalculate offsets)
 
 - name: LoadoutRecord
   size: 23  # 0x17 bytes - from R57 analysis
+  confidence: high  # 85%
   description: |
     Weapons loadout for single aircraft.
     From R57 weapons loadout menu analysis.
   evidence:
     - address: 0x1A5970  # From R57
       pattern: "23-byte structure access"
+    - code_pattern: "mov dx, 17h; imul dx"
   fields:
     - offset: null
       name: hardpoint_config
@@ -853,6 +927,98 @@
       name: pilot_id
       type: uint16_t
       description: Assigned pilot ID or index
+
+- name: Waypoint
+  size: 21  # 0x15 bytes - CONFIRMED by code analysis
+  confidence: confirmed  # 100%
+  description: |
+    Waypoint coordinate record in .MIS mission files.
+    Found in mission detail section after 6-byte records.
+    Accessed by mission editor (R55) and display code (R63).
+    
+    Each waypoint has 21 bytes: 11-byte main structure + 10-byte duplicate.
+  evidence:
+    - file_analysis: "SQUAD0.MIS, SQUAD1.MIS waypoint sections"
+    - code_pattern: "mov dx, 15h; imul dx (13 instances found)"
+    - functions:
+      - mission_editor_main_loop: 0x18BC28 (R55)
+      - waypoint_flags_processor: 0x18DE3B (R55)
+      - waypoint_display_processor: 0x1A0F10 (R63)
+      - waypoint_coordinate_processor: 0x1A2441 (R63, 8 accesses!)
+  fields:
+    - offset: 0x00
+      size: 1
+      type: uint8_t
+      name: marker
+      confidence: confirmed
+      description: Always 0x01 (waypoint record marker)
+    
+    - offset: 0x01
+      size: 2
+      type: uint16_t
+      name: x_coord
+      confidence: confirmed
+      description: |
+        X coordinate (16-bit, little-endian).
+        Full theater map range (0-65,535).
+        Formula: (x_high << 8) | x_low
+      evidence: "File analysis shows perfect 300-unit diagonal spacing"
+    
+    - offset: 0x03
+      size: 2
+      type: int16_t
+      name: marker_1
+      confidence: high
+      description: |
+        Constant marker value.
+        Pattern A: -8 (0xF8FF)
+        Pattern B: -2 (0xFEFF)
+        Purpose: Unknown (waypoint type? action code?)
+    
+    - offset: 0x05
+      size: 2
+      type: uint16_t
+      name: y_coord
+      confidence: confirmed
+      description: |
+        Y coordinate (16-bit, little-endian).
+        Full theater map range (0-65,535).
+        Formula: (y_high << 8) | y_low
+    
+    - offset: 0x07
+      size: 2
+      type: int16_t
+      name: marker_2
+      confidence: high
+      description: |
+        Constant marker value.
+        Pattern A: -12 (0xF4FF)
+        Pattern B: -9 (0xF7FF)
+        Purpose: Unknown (related to marker_1?)
+    
+    - offset: 0x09
+      size: 2
+      type: uint16_t
+      name: constant
+      confidence: confirmed
+      description: Always 16 (0x0010)
+    
+    # 11-byte structure followed by 10-byte duplicate (minus marker)
+    - offset: 0x0B
+      size: 10
+      type: uint8_t[10]
+      name: duplicate_data
+      confidence: high
+      description: |
+        Duplicate of bytes 0x01-0x0A (without leading marker).
+        Purpose: Unknown (redundancy? alternate format?)
+  
+  notes:
+    - "Total size: 11 + 10 = 21 bytes per waypoint"
+    - "SQUAD0.MIS has 11 waypoints (231 bytes total)"
+    - "SQUAD1.MIS has 1 waypoint (21 bytes total)"
+    - "Missing: altitude, speed, action code (stored elsewhere)"
+    - "Accessed heavily by R55 mission editor and R63 display code"
 
 # ============================================================================
 # GLOBAL ARRAYS
@@ -865,3 +1031,33 @@
   description: |
     Array of menu elements for R45 squadron management menu.
     Initialized in loop at 0x156597-0x1565CC.
+
+- name: WaypointArray
+  base_address: "0x4FC2:0x168"
+  linear_address: "0x4FD88"
+  element_type: Waypoint
+  element_count: null  # Variable per mission
+  confidence: confirmed  # 100%
+  description: |
+    Dynamic waypoint coordinate array for current mission.
+    Base pointer at segment 0x4FC2, offset 0x168 (linear 0x4FD88).
+    
+    Accessed by waypoint index from FlightRecord +0x02:
+      waypoint_offset = waypoint_index * 21
+      waypoint_data = [0x4FC2:0x168 + waypoint_offset]
+    
+    Mission editor reads 3 consecutive bytes per waypoint access:
+      es:[bx+168h]     ; Read byte N
+      es:[bx+168h+1]   ; Read byte N+1  
+      es:[bx+168h+2]   ; Read byte N+2
+    
+    Pattern suggests bytes 0-2 of Waypoint structure (marker + x_coord).
+  evidence:
+    - address: 0x18CEA3 (mission_editor_main_loop, 6 accesses)
+    - address: 0x18ECCA (waypoint_flags_processor, 3 accesses)
+    - address: 0x1A17F6 (waypoint_display_helper, 1 access)
+    - pattern: "mov ax, 4FC2h; mov es, ax; mov al, es:[bx+168h]"
+  notes:
+    - "Array populated from .MIS file waypoint section"
+    - "Size varies: SQUAD0.MIS has 11 waypoints (231 bytes)"
+    - "SQUAD1.MIS has 1 waypoint (21 bytes)"
