@@ -1,4 +1,21 @@
 # Current State
+
+## Latest Achievement: Tactical Map 3D Projection System (70% Complete) 🎯
+
+**Major Discovery**: The tactical map display uses a full 3D projection engine, not simple 2D coordinate transformation!
+
+**Core Engine Found**: `fixed_vec3_accumulate_a` (0x022C91, 68 bytes)
+- THE mathematical heart of all 3D rendering in Falcon 3.0
+- 51,000+ calls per frame across entire game
+- Fixed-point vector dot product: `Result = (X*ScaleX/DivX) + (Y*ScaleY/DivY) + (Z*ScaleZ/DivZ)`
+- Powers HUD, cockpit, tactical map, external view
+
+**Documented**: 6,116 bytes of critical 3D code fully disassembled and analyzed
+
+See: `docs/TACTICAL_MAP_COMPLETE_SUMMARY.md` for full details
+
+---
+
 ## Current State at a Glance (exact numbers)
 
 | Metric | Value | Source |
