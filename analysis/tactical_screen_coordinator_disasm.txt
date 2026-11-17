@@ -1,0 +1,368 @@
+================================================================================
+Function: tactical_screen_coordinator
+Address: 0x12DB63 - 0x12DF6A
+Size: 1031 bytes (0x407)
+================================================================================
+
+0x0012DB63  55                              push    bp
+0x0012DB64  8B EC                           mov     bp, sp
+0x0012DB66  9A 2F 10 74 41                  call    menu_cursor_position_set
+                                        -> menu_cursor_position_set @ 0x130A2F
+0x0012DB6B  9A 39 11 74 41                  call    undoc_130B39
+                                        -> undoc_130B39 @ 0x130B39
+0x0012DB70  B8 94 78                        mov     ax, 7894h
+0x0012DB73  8E C0                           mov     es, ax
+0x0012DB75  26 80 3E CD 19 04               cmp     es:byte_7A30D, 4
+0x0012DB7B  76 0E                           jbe     short loc_12DB8B
+0x0012DB7D  B8 94 78                        mov     ax, 7894h
+0x0012DB80  8E C0                           mov     es, ax
+0x0012DB82  26 C6 06 CD 19 00               mov     es:byte_7A30D, 0
+0x0012DB88  E9 97 03                        jmp     loc_12DF22
+0x0012DB8B  E9 80 03                        jmp     loc_12DF0E
+0x0012DB8E  B8 9F 70                        mov     ax, 709Fh
+0x0012DB91  8E C0                           mov     es, ax
+0x0012DB93  26 A0 3A 00                     mov     al, byte ptr es:word_70A2A
+0x0012DB97  98                              cbw
+0x0012DB98  C1 E0 02                        shl     ax, 2
+0x0012DB9B  BA 2E 60                        mov     dx, 602Eh
+0x0012DB9E  8B D8                           mov     bx, ax
+0x0012DBA0  8E C2                           mov     es, dx
+0x0012DBA2  26 80 BF 02 00 00               cmp     byte ptr es:[bx+2], 0
+0x0012DBA8  75 10                           jnz     short loc_12DBBA
+0x0012DBAA  B8 94 78                        mov     ax, 7894h
+0x0012DBAD  8E C0                           mov     es, ax
+0x0012DBAF  26 83 3E 00 00 00               cmp     es:graphics_mode_flag, 0
+0x0012DBB5  74 03                           jz      short loc_12DBBA
+0x0012DBB7  E9 0E 02                        jmp     loc_12DDC8
+0x0012DBBA  9A C3 00 74 41                  call    input_poll_handler; Main keyboard input handler. Processes all keyboard input.
+                                        -> input_poll_handler @ 0x12FAC3
+0x0012DBBF  B8 94 78                        mov     ax, 7894h
+0x0012DBC2  8E C0                           mov     es, ax
+0x0012DBC4  26 83 3E 00 00 03               cmp     es:graphics_mode_flag, 3
+0x0012DBCA  75 05                           jnz     short loc_12DBD1
+0x0012DBCC  9A 74 1E FE 39                  call    ui_text_render_state_machine
+                                        -> ui_text_render_state_machine @ 0x12A114
+0x0012DBD1  B8 94 78                        mov     ax, 7894h
+0x0012DBD4  8E C0                           mov     es, ax
+0x0012DBD6  26 83 3E 28 12 00               cmp     es:input_flag_pending_1, 0
+0x0012DBDC  75 10                           jnz     short loc_12DBEE
+0x0012DBDE  B8 94 78                        mov     ax, 7894h
+0x0012DBE1  8E C0                           mov     es, ax
+0x0012DBE3  26 83 3E 26 12 00               cmp     es:input_scan_code_queue, 0
+0x0012DBE9  75 03                           jnz     short loc_12DBEE
+0x0012DBEB  E9 34 03                        jmp     loc_12DF22
+0x0012DBEE  B8 94 78                        mov     ax, 7894h
+0x0012DBF1  8E C0                           mov     es, ax
+0x0012DBF3  26 83 3E 00 00 00               cmp     es:graphics_mode_flag, 0
+0x0012DBF9  75 03                           jnz     short loc_12DBFE
+0x0012DBFB  E9 24 03                        jmp     loc_12DF22
+0x0012DBFE  B8 9F 70                        mov     ax, 709Fh
+0x0012DC01  8E C0                           mov     es, ax
+0x0012DC03  26 A0 3A 00                     mov     al, byte ptr es:word_70A2A
+0x0012DC07  98                              cbw
+0x0012DC08  C1 E0 02                        shl     ax, 2
+0x0012DC0B  BA 2E 60                        mov     dx, 602Eh
+0x0012DC0E  8B D8                           mov     bx, ax
+0x0012DC10  8E C2                           mov     es, dx
+0x0012DC12  26 80 BF 02 00 00               cmp     byte ptr es:[bx+2], 0
+0x0012DC18  75 03                           jnz     short loc_12DC1D
+0x0012DC1A  E9 05 03                        jmp     loc_12DF22
+0x0012DC1D  B8 C2 4F                        mov     ax, 4FC2h
+0x0012DC20  8E C0                           mov     es, ax
+0x0012DC22  26 A1 26 01                     mov     ax, es:word_13E006
+0x0012DC26  BA 2E 60                        mov     dx, 602Eh
+0x0012DC29  8E C2                           mov     es, dx
+0x0012DC2B  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DC30  26 89 07                        mov     es:[bx], ax
+0x0012DC33  B8 2E 60                        mov     ax, 602Eh
+0x0012DC36  8E C0                           mov     es, ax
+0x0012DC38  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DC3D  B8 C2 4F                        mov     ax, 4FC2h
+0x0012DC40  06                              push    es
+0x0012DC41  8E C0                           mov     es, ax
+0x0012DC43  26 A1 28 01                     mov     ax, es:word_13E008
+0x0012DC47  07                              pop     es
+0x0012DC48  26 89 47 02                     mov     es:[bx+2], ax
+0x0012DC4C  B8 2E 60                        mov     ax, 602Eh
+0x0012DC4F  8E C0                           mov     es, ax
+0x0012DC51  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DC56  B8 C2 4F                        mov     ax, 4FC2h
+0x0012DC59  06                              push    es
+0x0012DC5A  8E C0                           mov     es, ax
+0x0012DC5C  26 A1 22 01                     mov     ax, es:word_13E002
+0x0012DC60  07                              pop     es
+0x0012DC61  26 89 47 04                     mov     es:[bx+4], ax
+0x0012DC65  B8 2E 60                        mov     ax, 602Eh
+0x0012DC68  8E C0                           mov     es, ax
+0x0012DC6A  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DC6F  B8 C2 4F                        mov     ax, 4FC2h
+0x0012DC72  06                              push    es
+0x0012DC73  8E C0                           mov     es, ax
+0x0012DC75  26 A1 24 01                     mov     ax, es:word_13E004
+0x0012DC79  07                              pop     es
+0x0012DC7A  26 89 47 06                     mov     es:[bx+6], ax
+0x0012DC7E  B8 2E 60                        mov     ax, 602Eh
+0x0012DC81  8E C0                           mov     es, ax
+0x0012DC83  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DC88  B8 C2 4F                        mov     ax, 4FC2h
+0x0012DC8B  06                              push    es
+0x0012DC8C  8E C0                           mov     es, ax
+0x0012DC8E  26 A1 2E 01                     mov     ax, es:word_13E00E
+0x0012DC92  07                              pop     es
+0x0012DC93  26 89 47 08                     mov     es:[bx+8], ax
+0x0012DC97  B8 2E 60                        mov     ax, 602Eh
+0x0012DC9A  8E C0                           mov     es, ax
+0x0012DC9C  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DCA1  B8 C2 4F                        mov     ax, 4FC2h
+0x0012DCA4  06                              push    es
+0x0012DCA5  8E C0                           mov     es, ax
+0x0012DCA7  26 A1 30 01                     mov     ax, es:word_13E010
+0x0012DCAB  07                              pop     es
+0x0012DCAC  26 89 47 0A                     mov     es:[bx+0Ah], ax
+0x0012DCB0  B8 2E 60                        mov     ax, 602Eh
+0x0012DCB3  8E C0                           mov     es, ax
+0x0012DCB5  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DCBA  B8 94 78                        mov     ax, 7894h
+0x0012DCBD  06                              push    es
+0x0012DCBE  8E C0                           mov     es, ax
+0x0012DCC0  26 A1 00 15                     mov     ax, es:word_79E40
+0x0012DCC4  07                              pop     es
+0x0012DCC5  26 89 47 0C                     mov     es:[bx+0Ch], ax
+0x0012DCC9  B8 2E 60                        mov     ax, 602Eh
+0x0012DCCC  8E C0                           mov     es, ax
+0x0012DCCE  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DCD3  B8 94 78                        mov     ax, 7894h
+0x0012DCD6  06                              push    es
+0x0012DCD7  8E C0                           mov     es, ax
+0x0012DCD9  26 A1 FE 14                     mov     ax, es:word_79E3E
+0x0012DCDD  07                              pop     es
+0x0012DCDE  26 89 47 0E                     mov     es:[bx+0Eh], ax
+0x0012DCE2  B8 2E 60                        mov     ax, 602Eh
+0x0012DCE5  8E C0                           mov     es, ax
+0x0012DCE7  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DCEC  B8 94 78                        mov     ax, 7894h
+0x0012DCEF  06                              push    es
+0x0012DCF0  8E C0                           mov     es, ax
+0x0012DCF2  26 A1 28 12                     mov     ax, es:input_flag_pending_1
+0x0012DCF6  07                              pop     es
+0x0012DCF7  26 89 47 10                     mov     es:[bx+10h], ax
+0x0012DCFB  B8 2E 60                        mov     ax, 602Eh
+0x0012DCFE  8E C0                           mov     es, ax
+0x0012DD00  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DD05  B8 94 78                        mov     ax, 7894h
+0x0012DD08  06                              push    es
+0x0012DD09  8E C0                           mov     es, ax
+0x0012DD0B  26 A1 26 12                     mov     ax, es:input_scan_code_queue
+0x0012DD0F  07                              pop     es
+0x0012DD10  26 89 47 12                     mov     es:[bx+12h], ax
+0x0012DD14  B8 2E 60                        mov     ax, 602Eh
+0x0012DD17  8E C0                           mov     es, ax
+0x0012DD19  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DD1E  B8 94 78                        mov     ax, 7894h
+0x0012DD21  06                              push    es
+0x0012DD22  8E C0                           mov     es, ax
+0x0012DD24  26 A1 22 12                     mov     ax, es:current_flight_index; Current flight index (word)
+0x0012DD28  07                              pop     es
+0x0012DD29  26 89 47 1A                     mov     es:[bx+1Ah], ax
+0x0012DD2D  B8 2E 60                        mov     ax, 602Eh
+0x0012DD30  8E C0                           mov     es, ax
+0x0012DD32  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DD37  B8 94 78                        mov     ax, 7894h
+0x0012DD3A  06                              push    es
+0x0012DD3B  8E C0                           mov     es, ax
+0x0012DD3D  26 A1 2A 14                     mov     ax, es:word_79D6A
+0x0012DD41  07                              pop     es
+0x0012DD42  26 89 47 1C                     mov     es:[bx+1Ch], ax
+0x0012DD46  B8 94 78                        mov     ax, 7894h
+0x0012DD49  8E C0                           mov     es, ax
+0x0012DD4B  26 81 3E 26 12 FF 00            cmp     es:input_scan_code_queue, 0FFh
+0x0012DD52  75 2B                           jnz     short loc_12DD7F
+0x0012DD54  B8 94 78                        mov     ax, 7894h
+0x0012DD57  8E C0                           mov     es, ax
+0x0012DD59  26 83 3E 00 00 03               cmp     es:graphics_mode_flag, 3
+0x0012DD5F  75 1E                           jnz     short loc_12DD7F
+0x0012DD61  B8 2E 60                        mov     ax, 602Eh
+0x0012DD64  8E C0                           mov     es, ax
+0x0012DD66  26 FF 36 F6 13                  push    word ptr es:dword_14F994+2
+0x0012DD6B  26 FF 36 F4 13                  push    word ptr es:dword_14F994
+0x0012DD70  6A 1E                           push    1Eh
+0x0012DD72  6A 2F                           push    2Fh ; '/'
+0x0012DD74  9A 09 13 FE 39                  call    undoc_1295A9
+                                        -> undoc_1295A9 @ 0x1295A9
+0x0012DD79  83 C4 08                        add     sp, 8
+0x0012DD7C  E9 A3 01                        jmp     loc_12DF22
+0x0012DD7F  B8 94 78                        mov     ax, 7894h
+0x0012DD82  8E C0                           mov     es, ax
+0x0012DD84  26 81 3E 26 12 FF 00            cmp     es:input_scan_code_queue, 0FFh
+0x0012DD8B  75 03                           jnz     short loc_12DD90
+0x0012DD8D  E9 92 01                        jmp     loc_12DF22
+0x0012DD90  B8 2E 60                        mov     ax, 602Eh
+0x0012DD93  8E C0                           mov     es, ax
+0x0012DD95  26 FF 36 F6 13                  push    word ptr es:dword_14F994+2
+0x0012DD9A  26 FF 36 F4 13                  push    word ptr es:dword_14F994
+0x0012DD9F  6A 1E                           push    1Eh
+0x0012DDA1  B8 94 78                        mov     ax, 7894h
+0x0012DDA4  8E C0                           mov     es, ax
+0x0012DDA6  26 A0 CD 19                     mov     al, es:byte_7A30D
+0x0012DDAA  B4 00                           mov     ah, 0
+0x0012DDAC  50                              push    ax
+0x0012DDAD  9A C8 11 FE 39                  call    ui_text_render_multi_mode
+                                        -> ui_text_render_multi_mode @ 0x129468
+0x0012DDB2  83 C4 08                        add     sp, 8
+0x0012DDB5  B8 94 78                        mov     ax, 7894h
+0x0012DDB8  8E C0                           mov     es, ax
+0x0012DDBA  26 80 3E CD 19 04               cmp     es:byte_7A30D, 4
+0x0012DDC0  76 03                           jbe     short loc_12DDC5
+0x0012DDC2  E9 B8 FD                        jmp     loc_12DB7D
+0x0012DDC5  E9 46 01                        jmp     loc_12DF0E
+0x0012DDC8  B8 2E 60                        mov     ax, 602Eh
+0x0012DDCB  8E C0                           mov     es, ax
+0x0012DDCD  26 FF 36 F6 13                  push    word ptr es:dword_14F994+2
+0x0012DDD2  26 FF 36 F4 13                  push    word ptr es:dword_14F994
+0x0012DDD7  B8 94 78                        mov     ax, 7894h
+0x0012DDDA  8E C0                           mov     es, ax
+0x0012DDDC  26 A0 CD 19                     mov     al, es:byte_7A30D
+0x0012DDE0  B4 00                           mov     ah, 0
+0x0012DDE2  50                              push    ax
+0x0012DDE3  9A 50 11 FE 39                  call    ui_text_render_single_mode
+                                        -> ui_text_render_single_mode @ 0x1293F0
+0x0012DDE8  83 C4 06                        add     sp, 6
+0x0012DDEB  B8 2E 60                        mov     ax, 602Eh
+0x0012DDEE  8E C0                           mov     es, ax
+0x0012DDF0  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DDF5  26 8B 07                        mov     ax, es:[bx]
+0x0012DDF8  BA C2 4F                        mov     dx, 4FC2h
+0x0012DDFB  8E C2                           mov     es, dx
+0x0012DDFD  26 A3 26 01                     mov     es:word_13E006, ax
+0x0012DE01  B8 2E 60                        mov     ax, 602Eh
+0x0012DE04  8E C0                           mov     es, ax
+0x0012DE06  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE0B  26 8B 47 02                     mov     ax, es:[bx+2]
+0x0012DE0F  BA C2 4F                        mov     dx, 4FC2h
+0x0012DE12  8E C2                           mov     es, dx
+0x0012DE14  26 A3 28 01                     mov     es:word_13E008, ax
+0x0012DE18  B8 2E 60                        mov     ax, 602Eh
+0x0012DE1B  8E C0                           mov     es, ax
+0x0012DE1D  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE22  26 8B 47 04                     mov     ax, es:[bx+4]
+0x0012DE26  BA C2 4F                        mov     dx, 4FC2h
+0x0012DE29  8E C2                           mov     es, dx
+0x0012DE2B  26 A3 22 01                     mov     es:word_13E002, ax
+0x0012DE2F  B8 2E 60                        mov     ax, 602Eh
+0x0012DE32  8E C0                           mov     es, ax
+0x0012DE34  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE39  26 8B 47 06                     mov     ax, es:[bx+6]
+0x0012DE3D  BA C2 4F                        mov     dx, 4FC2h
+0x0012DE40  8E C2                           mov     es, dx
+0x0012DE42  26 A3 24 01                     mov     es:word_13E004, ax
+0x0012DE46  B8 2E 60                        mov     ax, 602Eh
+0x0012DE49  8E C0                           mov     es, ax
+0x0012DE4B  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE50  26 8B 47 08                     mov     ax, es:[bx+8]
+0x0012DE54  BA C2 4F                        mov     dx, 4FC2h
+0x0012DE57  8E C2                           mov     es, dx
+0x0012DE59  26 A3 2E 01                     mov     es:word_13E00E, ax
+0x0012DE5D  B8 2E 60                        mov     ax, 602Eh
+0x0012DE60  8E C0                           mov     es, ax
+0x0012DE62  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE67  26 8B 47 0A                     mov     ax, es:[bx+0Ah]
+0x0012DE6B  BA C2 4F                        mov     dx, 4FC2h
+0x0012DE6E  8E C2                           mov     es, dx
+0x0012DE70  26 A3 30 01                     mov     es:word_13E010, ax
+0x0012DE74  B8 2E 60                        mov     ax, 602Eh
+0x0012DE77  8E C0                           mov     es, ax
+0x0012DE79  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE7E  26 8B 47 0C                     mov     ax, es:[bx+0Ch]
+0x0012DE82  BA 94 78                        mov     dx, 7894h
+0x0012DE85  8E C2                           mov     es, dx
+0x0012DE87  26 A3 00 15                     mov     es:word_79E40, ax
+0x0012DE8B  B8 2E 60                        mov     ax, 602Eh
+0x0012DE8E  8E C0                           mov     es, ax
+0x0012DE90  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DE95  26 8B 47 0E                     mov     ax, es:[bx+0Eh]
+0x0012DE99  BA 94 78                        mov     dx, 7894h
+0x0012DE9C  8E C2                           mov     es, dx
+0x0012DE9E  26 A3 FE 14                     mov     es:word_79E3E, ax
+0x0012DEA2  B8 2E 60                        mov     ax, 602Eh
+0x0012DEA5  8E C0                           mov     es, ax
+0x0012DEA7  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DEAC  26 8B 47 10                     mov     ax, es:[bx+10h]
+0x0012DEB0  BA 94 78                        mov     dx, 7894h
+0x0012DEB3  8E C2                           mov     es, dx
+0x0012DEB5  26 A3 28 12                     mov     es:input_flag_pending_1, ax
+0x0012DEB9  B8 2E 60                        mov     ax, 602Eh
+0x0012DEBC  8E C0                           mov     es, ax
+0x0012DEBE  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DEC3  26 8B 47 12                     mov     ax, es:[bx+12h]
+0x0012DEC7  BA 94 78                        mov     dx, 7894h
+0x0012DECA  8E C2                           mov     es, dx
+0x0012DECC  26 A3 26 12                     mov     es:input_scan_code_queue, ax
+0x0012DED0  B8 2E 60                        mov     ax, 602Eh
+0x0012DED3  8E C0                           mov     es, ax
+0x0012DED5  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DEDA  26 8B 47 1A                     mov     ax, es:[bx+1Ah]
+0x0012DEDE  BA 94 78                        mov     dx, 7894h
+0x0012DEE1  8E C2                           mov     es, dx
+0x0012DEE3  26 A3 22 12                     mov     es:current_flight_index, ax; Current flight index (word)
+0x0012DEE7  B8 2E 60                        mov     ax, 602Eh
+0x0012DEEA  8E C0                           mov     es, ax
+0x0012DEEC  26 C4 1E F4 13                  les     bx, es:dword_14F994
+0x0012DEF1  26 8B 47 1C                     mov     ax, es:[bx+1Ch]
+0x0012DEF5  BA 94 78                        mov     dx, 7894h
+0x0012DEF8  8E C2                           mov     es, dx
+0x0012DEFA  26 A3 2A 14                     mov     es:word_79D6A, ax
+0x0012DEFE  B8 94 78                        mov     ax, 7894h
+0x0012DF01  8E C0                           mov     es, ax
+0x0012DF03  26 80 3E CD 19 04               cmp     es:byte_7A30D, 4
+0x0012DF09  76 03                           jbe     short loc_12DF0E
+0x0012DF0B  E9 6F FC                        jmp     loc_12DB7D
+0x0012DF0E  B8 94 78                        mov     ax, 7894h
+0x0012DF11  8E C0                           mov     es, ax
+0x0012DF13  26 A0 CD 19                     mov     al, es:byte_7A30D
+0x0012DF17  FE C0                           inc     al
+0x0012DF19  BA 94 78                        mov     dx, 7894h
+0x0012DF1C  8E C2                           mov     es, dx
+0x0012DF1E  26 A2 CD 19                     mov     es:byte_7A30D, al
+0x0012DF22  B8 94 78                        mov     ax, 7894h
+0x0012DF25  8E C0                           mov     es, ax
+0x0012DF27  26 83 3E 28 12 00               cmp     es:input_flag_pending_1, 0
+0x0012DF2D  75 10                           jnz     short loc_12DF3F
+0x0012DF2F  B8 94 78                        mov     ax, 7894h
+0x0012DF32  8E C0                           mov     es, ax
+0x0012DF34  26 83 3E 26 12 00               cmp     es:input_scan_code_queue, 0
+0x0012DF3A  75 03                           jnz     short loc_12DF3F
+0x0012DF3C  E9 4F FC                        jmp     loc_12DB8E
+0x0012DF3F  B8 94 78                        mov     ax, 7894h
+0x0012DF42  8E C0                           mov     es, ax
+0x0012DF44  26 A1 00 15                     mov     ax, es:word_79E40
+0x0012DF48  BA 94 78                        mov     dx, 7894h
+0x0012DF4B  8E C2                           mov     es, dx
+0x0012DF4D  26 A3 40 15                     mov     es:word_79E80, ax
+0x0012DF51  B8 94 78                        mov     ax, 7894h
+0x0012DF54  8E C0                           mov     es, ax
+0x0012DF56  26 A1 FE 14                     mov     ax, es:word_79E3E
+0x0012DF5A  BA 94 78                        mov     dx, 7894h
+0x0012DF5D  8E C2                           mov     es, dx
+0x0012DF5F  26 A3 3E 15                     mov     es:word_79E7E, ax
+0x0012DF63  9A 0A 04 8A 3F                  call    r29_tactical_screen_coordinator; R29 overlay tactical planning/mission editor screen coordinator.
+                                        -> r29_tactical_screen_coordinator @ 0x12DF6A
+0x0012DF68  5D                              pop     bp
+0x0012DF69  CB                              retf
+
+================================================================================
+DATA CROSS-REFERENCES (336 instructions analyzed)
+================================================================================
+
+
+================================================================================
+FUNCTION CALLS
+================================================================================
+
+  ui_text_render_single_mode @ 0x1293F0
+  ui_text_render_multi_mode @ 0x129468
+  undoc_1295A9 @ 0x1295A9
+  ui_text_render_state_machine @ 0x12A114
+  r29_tactical_screen_coordinator @ 0x12DF6A
+  input_poll_handler @ 0x12FAC3
+  menu_cursor_position_set @ 0x130A2F
+  undoc_130B39 @ 0x130B39

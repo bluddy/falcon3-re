@@ -1,0 +1,340 @@
+================================================================================
+Function: waypoint_coordinate_processor
+Address: 0x1A2441 - 0x1A27A8
+Size: 871 bytes (0x367)
+================================================================================
+
+0x001A2441  C8 04 00 00                     enter   4, 0
+0x001A2445  56                              push    si
+0x001A2446  57                              push    di
+0x001A2447  33 F6                           xor     si, si
+0x001A2449  68 94 78                        push    7894h
+0x001A244C  68 32 0F                        push    0F32h
+0x001A244F  B8 2E 60                        mov     ax, 602Eh
+0x001A2452  8E C0                           mov     es, ax
+0x001A2454  26 FF 36 7E 2D                  push    word ptr es:aBin+1; ".`.BIN"
+0x001A2459  26 FF 36 7C 2D                  push    word ptr es:byte_15131C
+0x001A245E  B8 2E 60                        mov     ax, 602Eh
+0x001A2461  8E C0                           mov     es, ax
+0x001A2463  26 FF 36 39 2D                  push    word ptr es:aStores+2; ".`STORES"
+0x001A2468  26 FF 36 37 2D                  push    word ptr es:aStores; ";-.`STORES"
+0x001A246D  9A 6C 0D F7 49                  call    string_concatenate
+                                        -> string_concatenate @ 0x138F9C
+0x001A2472  83 C4 0C                        add     sp, 0Ch
+0x001A2475  68 94 78                        push    7894h
+0x001A2478  68 32 0F                        push    0F32h
+0x001A247B  6A 00                           push    0
+0x001A247D  6A 00                           push    0
+0x001A247F  6A 06                           push    6
+0x001A2481  9A D8 2E 6C 1F                  call    op_dispatch_far_entry
+                                        -> op_dispatch_far_entry @ 0x22598
+0x001A2486  83 C4 0A                        add     sp, 0Ah
+0x001A2489  BA 94 78                        mov     dx, 7894h
+0x001A248C  8E C2                           mov     es, dx
+0x001A248E  26 A3 B2 19                     mov     es:word_7A2F2, ax
+0x001A2492  16                              push    ss
+0x001A2493  8D 46 FE                        lea     ax, [bp+var_2]
+0x001A2496  50                              push    ax
+0x001A2497  6A 02                           push    2
+0x001A2499  B8 94 78                        mov     ax, 7894h
+0x001A249C  8E C0                           mov     es, ax
+0x001A249E  26 FF 36 B2 19                  push    es:word_7A2F2
+0x001A24A3  6A 0A                           push    0Ah
+0x001A24A5  9A D8 2E 6C 1F                  call    op_dispatch_far_entry
+                                        -> op_dispatch_far_entry @ 0x22598
+0x001A24AA  83 C4 0A                        add     sp, 0Ah
+0x001A24AD  B8 94 78                        mov     ax, 7894h
+0x001A24B0  8E C0                           mov     es, ax
+0x001A24B2  26 FF 36 AA 19                  push    es:word_7A2EA
+0x001A24B7  26 FF 36 A8 19                  push    es:word_7A2E8
+0x001A24BC  FF 76 FE                        push    [bp+var_2]
+0x001A24BF  B8 94 78                        mov     ax, 7894h
+0x001A24C2  8E C0                           mov     es, ax
+0x001A24C4  26 FF 36 B2 19                  push    es:word_7A2F2
+0x001A24C9  6A 0A                           push    0Ah
+0x001A24CB  9A D8 2E 6C 1F                  call    op_dispatch_far_entry
+                                        -> op_dispatch_far_entry @ 0x22598
+0x001A24D0  83 C4 0A                        add     sp, 0Ah
+0x001A24D3  C7 46 FE 00 00                  mov     [bp+var_2], 0
+0x001A24D8  E9 F4 01                        jmp     loc_1A26CF
+0x001A24DB  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A24DE  BA 12 00                        mov     dx, 12h
+0x001A24E1  F7 EA                           imul    dx
+0x001A24E3  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A24E6  03 D8                           add     bx, ax
+0x001A24E8  26 80 3F 00                     cmp     byte ptr es:[bx], 0
+0x001A24EC  75 03                           jnz     short loc_1A24F1
+0x001A24EE  E9 DB 01                        jmp     loc_1A26CC
+0x001A24F1  33 FF                           xor     di, di
+0x001A24F3  E9 CE 01                        jmp     loc_1A26C4
+0x001A24F6  C7 46 FC 00 00                  mov     [bp+var_4], 0
+0x001A24FB  E9 AB 01                        jmp     loc_1A26A9
+0x001A24FE  8B C6                           mov     ax, si
+0x001A2500  BA 06 00                        mov     dx, 6
+0x001A2503  F7 EA                           imul    dx
+0x001A2505  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A2508  03 D8                           add     bx, ax
+0x001A250A  8B C6                           mov     ax, si
+0x001A250C  05 11 00                        add     ax, 11h
+0x001A250F  26 89 07                        mov     es:[bx], ax
+0x001A2512  8B C7                           mov     ax, di
+0x001A2514  BA 06 00                        mov     dx, 6
+0x001A2517  F7 EA                           imul    dx
+0x001A2519  50                              push    ax
+0x001A251A  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A251D  BA 12 00                        mov     dx, 12h
+0x001A2520  F7 EA                           imul    dx
+0x001A2522  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A2525  03 D8                           add     bx, ax
+0x001A2527  26 8A 47 01                     mov     al, es:[bx+1]
+0x001A252B  98                              cbw
+0x001A252C  BA 03 00                        mov     dx, 3
+0x001A252F  F7 EA                           imul    dx
+0x001A2531  5A                              pop     dx
+0x001A2532  03 D0                           add     dx, ax
+0x001A2534  B8 94 78                        mov     ax, 7894h
+0x001A2537  8E C0                           mov     es, ax
+0x001A2539  26 A1 AA 19                     mov     ax, es:word_7A2EA
+0x001A253D  26 03 16 A8 19                  add     dx, es:word_7A2E8
+0x001A2542  8B DA                           mov     bx, dx
+0x001A2544  8E C0                           mov     es, ax
+0x001A2546  26 8A 07                        mov     al, es:[bx]
+0x001A2549  98                              cbw
+0x001A254A  50                              push    ax
+0x001A254B  8B C6                           mov     ax, si
+0x001A254D  BA 06 00                        mov     dx, 6
+0x001A2550  F7 EA                           imul    dx
+0x001A2552  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A2555  03 D8                           add     bx, ax
+0x001A2557  58                              pop     ax
+0x001A2558  26 89 47 02                     mov     es:[bx+2], ax
+0x001A255C  8B C7                           mov     ax, di
+0x001A255E  BA 06 00                        mov     dx, 6
+0x001A2561  F7 EA                           imul    dx
+0x001A2563  50                              push    ax
+0x001A2564  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A2567  BA 12 00                        mov     dx, 12h
+0x001A256A  F7 EA                           imul    dx
+0x001A256C  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A256F  03 D8                           add     bx, ax
+0x001A2571  26 8A 47 01                     mov     al, es:[bx+1]
+0x001A2575  98                              cbw
+0x001A2576  BA 03 00                        mov     dx, 3
+0x001A2579  F7 EA                           imul    dx
+0x001A257B  5A                              pop     dx
+0x001A257C  03 D0                           add     dx, ax
+0x001A257E  B8 94 78                        mov     ax, 7894h
+0x001A2581  8E C0                           mov     es, ax
+0x001A2583  26 A1 AA 19                     mov     ax, es:word_7A2EA
+0x001A2587  26 03 16 A8 19                  add     dx, es:word_7A2E8
+0x001A258C  8B DA                           mov     bx, dx
+0x001A258E  8E C0                           mov     es, ax
+0x001A2590  26 8A 47 01                     mov     al, es:[bx+1]
+0x001A2594  50                              push    ax
+0x001A2595  8B C6                           mov     ax, si
+0x001A2597  BA 06 00                        mov     dx, 6
+0x001A259A  F7 EA                           imul    dx
+0x001A259C  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A259F  03 D8                           add     bx, ax
+0x001A25A1  58                              pop     ax
+0x001A25A2  26 88 47 04                     mov     es:[bx+4], al
+0x001A25A6  8B C7                           mov     ax, di
+0x001A25A8  BA 06 00                        mov     dx, 6
+0x001A25AB  F7 EA                           imul    dx
+0x001A25AD  50                              push    ax
+0x001A25AE  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A25B1  BA 12 00                        mov     dx, 12h
+0x001A25B4  F7 EA                           imul    dx
+0x001A25B6  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A25B9  03 D8                           add     bx, ax
+0x001A25BB  26 8A 47 01                     mov     al, es:[bx+1]
+0x001A25BF  98                              cbw
+0x001A25C0  BA 03 00                        mov     dx, 3
+0x001A25C3  F7 EA                           imul    dx
+0x001A25C5  5A                              pop     dx
+0x001A25C6  03 D0                           add     dx, ax
+0x001A25C8  B8 94 78                        mov     ax, 7894h
+0x001A25CB  8E C0                           mov     es, ax
+0x001A25CD  26 A1 AA 19                     mov     ax, es:word_7A2EA
+0x001A25D1  26 03 16 A8 19                  add     dx, es:word_7A2E8
+0x001A25D6  8B DA                           mov     bx, dx
+0x001A25D8  8E C0                           mov     es, ax
+0x001A25DA  26 8A 47 02                     mov     al, es:[bx+2]
+0x001A25DE  50                              push    ax
+0x001A25DF  8B C6                           mov     ax, si
+0x001A25E1  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A25E4  F7 EA                           imul    dx
+0x001A25E6  BA 94 78                        mov     dx, 7894h
+0x001A25E9  8E C2                           mov     es, dx
+0x001A25EB  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A25F0  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A25F5  8B D8                           mov     bx, ax
+0x001A25F7  8E C2                           mov     es, dx
+0x001A25F9  58                              pop     ax
+0x001A25FA  26 88 47 09                     mov     es:[bx+9], al
+0x001A25FE  8B C6                           mov     ax, si
+0x001A2600  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A2603  F7 EA                           imul    dx
+0x001A2605  BA 94 78                        mov     dx, 7894h
+0x001A2608  8E C2                           mov     es, dx
+0x001A260A  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A260F  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A2614  8B D8                           mov     bx, ax
+0x001A2616  8E C2                           mov     es, dx
+0x001A2618  26 C6 47 0A 00                  mov     byte ptr es:[bx+0Ah], 0
+0x001A261D  8B C7                           mov     ax, di
+0x001A261F  BA 06 00                        mov     dx, 6
+0x001A2622  F7 EA                           imul    dx
+0x001A2624  50                              push    ax
+0x001A2625  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A2628  BA 12 00                        mov     dx, 12h
+0x001A262B  F7 EA                           imul    dx
+0x001A262D  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A2630  03 D8                           add     bx, ax
+0x001A2632  26 8A 47 01                     mov     al, es:[bx+1]
+0x001A2636  98                              cbw
+0x001A2637  BA 03 00                        mov     dx, 3
+0x001A263A  F7 EA                           imul    dx
+0x001A263C  5A                              pop     dx
+0x001A263D  03 D0                           add     dx, ax
+0x001A263F  B8 94 78                        mov     ax, 7894h
+0x001A2642  8E C0                           mov     es, ax
+0x001A2644  26 A1 AA 19                     mov     ax, es:word_7A2EA
+0x001A2648  26 03 16 A8 19                  add     dx, es:word_7A2E8
+0x001A264D  8B DA                           mov     bx, dx
+0x001A264F  8E C0                           mov     es, ax
+0x001A2651  26 8A 47 02                     mov     al, es:[bx+2]
+0x001A2655  50                              push    ax
+0x001A2656  8B C6                           mov     ax, si
+0x001A2658  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A265B  F7 EA                           imul    dx
+0x001A265D  BA 94 78                        mov     dx, 7894h
+0x001A2660  8E C2                           mov     es, dx
+0x001A2662  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A2667  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A266C  8B D8                           mov     bx, ax
+0x001A266E  8E C2                           mov     es, dx
+0x001A2670  58                              pop     ax
+0x001A2671  26 88 47 13                     mov     es:[bx+13h], al
+0x001A2675  8B C6                           mov     ax, si
+0x001A2677  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A267A  F7 EA                           imul    dx
+0x001A267C  BA 94 78                        mov     dx, 7894h
+0x001A267F  8E C2                           mov     es, dx
+0x001A2681  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A2686  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A268B  8B D8                           mov     bx, ax
+0x001A268D  8E C2                           mov     es, dx
+0x001A268F  26 C6 47 14 00                  mov     byte ptr es:[bx+14h], 0
+0x001A2694  8B C6                           mov     ax, si
+0x001A2696  BA 06 00                        mov     dx, 6
+0x001A2699  F7 EA                           imul    dx
+0x001A269B  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A269E  03 D8                           add     bx, ax
+0x001A26A0  26 C6 47 05 81                  mov     byte ptr es:[bx+5], 81h
+0x001A26A5  46                              inc     si
+0x001A26A6  FF 46 FC                        inc     [bp+var_4]
+0x001A26A9  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A26AC  BA 12 00                        mov     dx, 12h
+0x001A26AF  F7 EA                           imul    dx
+0x001A26B1  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A26B4  03 D8                           add     bx, ax
+0x001A26B6  26 8A 41 02                     mov     al, es:[bx+di+2]
+0x001A26BA  98                              cbw
+0x001A26BB  3B 46 FC                        cmp     ax, [bp+var_4]
+0x001A26BE  7E 03                           jle     short loc_1A26C3
+0x001A26C0  E9 3B FE                        jmp     loc_1A24FE
+0x001A26C3  47                              inc     di
+0x001A26C4  83 FF 08                        cmp     di, 8
+0x001A26C7  7D 03                           jge     short loc_1A26CC
+0x001A26C9  E9 2A FE                        jmp     loc_1A24F6
+0x001A26CC  FF 46 FE                        inc     [bp+var_2]
+0x001A26CF  83 7E FE 04                     cmp     [bp+var_2], 4
+0x001A26D3  7D 03                           jge     short loc_1A26D8
+0x001A26D5  E9 03 FE                        jmp     loc_1A24DB
+0x001A26D8  0B F6                           or      si, si
+0x001A26DA  74 03                           jz      short loc_1A26DF
+0x001A26DC  E9 C5 00                        jmp     loc_1A27A4
+0x001A26DF  8B C6                           mov     ax, si
+0x001A26E1  BA 06 00                        mov     dx, 6
+0x001A26E4  F7 EA                           imul    dx
+0x001A26E6  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A26E9  03 D8                           add     bx, ax
+0x001A26EB  8B C6                           mov     ax, si
+0x001A26ED  05 11 00                        add     ax, 11h
+0x001A26F0  26 89 07                        mov     es:[bx], ax
+0x001A26F3  8B C6                           mov     ax, si
+0x001A26F5  BA 06 00                        mov     dx, 6
+0x001A26F8  F7 EA                           imul    dx
+0x001A26FA  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A26FD  03 D8                           add     bx, ax
+0x001A26FF  26 C7 47 02 03 00               mov     word ptr es:[bx+2], 3
+0x001A2705  8B C6                           mov     ax, si
+0x001A2707  BA 06 00                        mov     dx, 6
+0x001A270A  F7 EA                           imul    dx
+0x001A270C  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A270F  03 D8                           add     bx, ax
+0x001A2711  26 C6 47 04 00                  mov     byte ptr es:[bx+4], 0
+0x001A2716  8B C6                           mov     ax, si
+0x001A2718  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A271B  F7 EA                           imul    dx
+0x001A271D  BA 94 78                        mov     dx, 7894h
+0x001A2720  8E C2                           mov     es, dx
+0x001A2722  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A2727  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A272C  8B D8                           mov     bx, ax
+0x001A272E  8E C2                           mov     es, dx
+0x001A2730  26 C6 47 09 0A                  mov     byte ptr es:[bx+9], 0Ah
+0x001A2735  8B C6                           mov     ax, si
+0x001A2737  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A273A  F7 EA                           imul    dx
+0x001A273C  BA 94 78                        mov     dx, 7894h
+0x001A273F  8E C2                           mov     es, dx
+0x001A2741  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A2746  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A274B  8B D8                           mov     bx, ax
+0x001A274D  8E C2                           mov     es, dx
+0x001A274F  26 C6 47 0A 00                  mov     byte ptr es:[bx+0Ah], 0
+0x001A2754  8B C6                           mov     ax, si
+0x001A2756  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A2759  F7 EA                           imul    dx
+0x001A275B  BA 94 78                        mov     dx, 7894h
+0x001A275E  8E C2                           mov     es, dx
+0x001A2760  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A2765  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A276A  8B D8                           mov     bx, ax
+0x001A276C  8E C2                           mov     es, dx
+0x001A276E  26 C6 47 13 0A                  mov     byte ptr es:[bx+13h], 0Ah
+0x001A2773  8B C6                           mov     ax, si
+0x001A2775  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A2778  F7 EA                           imul    dx
+0x001A277A  BA 94 78                        mov     dx, 7894h
+0x001A277D  8E C2                           mov     es, dx
+0x001A277F  26 8B 16 B6 19                  mov     dx, es:word_7A2F6
+0x001A2784  26 03 06 B4 19                  add     ax, es:word_7A2F4
+0x001A2789  8B D8                           mov     bx, ax
+0x001A278B  8E C2                           mov     es, dx
+0x001A278D  26 C6 47 14 00                  mov     byte ptr es:[bx+14h], 0
+0x001A2792  8B C6                           mov     ax, si
+0x001A2794  BA 06 00                        mov     dx, 6
+0x001A2797  F7 EA                           imul    dx
+0x001A2799  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A279C  03 D8                           add     bx, ax
+0x001A279E  26 C6 47 05 81                  mov     byte ptr es:[bx+5], 81h
+0x001A27A3  46                              inc     si
+0x001A27A4  5F                              pop     di
+0x001A27A5  5E                              pop     si
+0x001A27A6  C9                              leave
+0x001A27A7  CB                              retf
+
+================================================================================
+DATA CROSS-REFERENCES (318 instructions analyzed)
+================================================================================
+
+
+================================================================================
+FUNCTION CALLS
+================================================================================
+
+  op_dispatch_far_entry @ 0x22598
+  string_concatenate @ 0x138F9C

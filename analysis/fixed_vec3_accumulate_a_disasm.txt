@@ -1,0 +1,80 @@
+================================================================================
+Function: fixed_vec3_accumulate_a
+Address: 0x22C91 - 0x22CD5
+Size: 68 bytes (0x44)
+================================================================================
+
+DISASSEMBLY
+================================================================================
+
+0x00022C91  50                              push    ax
+0x00022C92  52                              push    dx
+0x00022C93  2E A1 B1 35                     mov     ax, cs:word_22C71
+0x00022C97  2E F7 26 BD 35                  mul     cs:word_22C7D
+0x00022C9C  2E F7 36 C3 35                  div     cs:word_22C83
+0x00022CA1  2E 89 16 B1 35                  mov     cs:word_22C71, dx
+0x00022CA6  8B CA                           mov     cx, dx
+0x00022CA8  2E A1 B3 35                     mov     ax, cs:word_22C73
+0x00022CAC  2E F7 26 BF 35                  mul     cs:word_22C7F
+0x00022CB1  2E F7 36 C5 35                  div     cs:word_22C85
+0x00022CB6  2E 89 16 B3 35                  mov     cs:word_22C73, dx
+0x00022CBB  03 CA                           add     cx, dx
+0x00022CBD  2E A1 B5 35                     mov     ax, cs:word_22C75
+0x00022CC1  2E F7 26 C1 35                  mul     cs:word_22C81
+0x00022CC6  2E F7 36 C7 35                  div     cs:word_22C87
+0x00022CCB  2E 89 16 B5 35                  mov     cs:word_22C75, dx
+0x00022CD0  03 CA                           add     cx, dx
+0x00022CD2  5A                              pop     dx
+0x00022CD3  58                              pop     ax
+0x00022CD4  CB                              retf
+
+================================================================================
+DATA REFERENCES
+================================================================================
+
+
+================================================================================
+CALLERS (functions that call this one)
+================================================================================
+
+  undoc_3A003 @ 0x3A003
+  flight_entity_simulation_frame_step @ 0x3A3D6
+  undoc_3C48F @ 0x3C48F
+  ai_entity_update_step @ 0x3D37F
+  ai_vector_accumulate @ 0x40E38
+  ai_vector_accumulate_alt @ 0x40E46
+  hud_ai_target_tracking_draw @ 0x425A2
+  undoc_42F26 @ 0x42F26
+  undoc_43082 @ 0x43082
+  undoc_432AF @ 0x432AF
+  farobj_entity_attr_setup @ 0x44352
+  farobj_handler_2028 @ 0x4486B
+  hud_state_table_processor @ 0x45074
+  undoc_4540B @ 0x4540B
+  sub_456A3 @ 0x456A3
+  undoc_46B2B @ 0x46B2B
+  undoc_46B66 @ 0x46B66
+  undoc_46BD6 @ 0x46BD6
+  hud_rowlist_timer_step @ 0x47BDE
+  undoc_48612 @ 0x48612
+  entity_timer_row_scan @ 0x48916
+  far_obj_visibility_gate @ 0x489E2
+  undoc_48C20 @ 0x48C20
+  obj_range_slot_init @ 0x49428
+  flight_aircraft_slot_physics_step @ 0x496D3
+  undoc_498ED @ 0x498ED
+  ai_movement_vector_accumulate @ 0x49997
+  undoc_4A505 @ 0x4A505
+  sub_4AD88 @ 0x4AD88
+  undoc_4B2EE @ 0x4B2EE
+  sprite_step_clip_project_body @ 0x4B36A
+  undoc_4B505 @ 0x4B505
+  tile_object_init_opstream @ 0x4BDD0
+  farobj_utility_1819 @ 0x4C3C7
+  flight_entity_motion_accumulate @ 0x4CD1D
+  flight_motion_helper_5 @ 0x4D1C6
+  flight_motion_velocity_update @ 0x4D3EC
+  flight_motion_accumulate_coordinator @ 0x4D55F
+  sub_12D733 @ 0x12D733
+
+Total callers: 39

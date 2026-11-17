@@ -1,0 +1,572 @@
+================================================================================
+Function: waypoint_display_helper
+Address: 0x1A163A - 0x1A1BA1
+Size: 1383 bytes (0x567)
+================================================================================
+
+0x001A163A  C8 4C 00 00                     enter   4Ch, 0
+0x001A163E  56                              push    si
+0x001A163F  57                              push    di
+0x001A1640  C7 46 FA 00 00                  mov     [bp+var_6], 0
+0x001A1645  33 FF                           xor     di, di
+0x001A1647  C7 46 FE 00 00                  mov     [bp+var_2], 0
+0x001A164C  E9 3E 05                        jmp     loc_1A1B8D
+0x001A164F  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A1652  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1655  BA 0C 00                        mov     dx, 0Ch
+0x001A1658  F7 EA                           imul    dx
+0x001A165A  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A165D  03 D8                           add     bx, ax
+0x001A165F  26 83 7F 02 00                  cmp     word ptr es:[bx+2], 0
+0x001A1664  75 03                           jnz     short loc_1A1669
+0x001A1666  E9 57 02                        jmp     loc_1A18C0
+0x001A1669  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A166C  03 46 0E                        add     ax, [bp+arg_8]
+0x001A166F  BA 0C 00                        mov     dx, 0Ch
+0x001A1672  F7 EA                           imul    dx
+0x001A1674  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A1677  03 D8                           add     bx, ax
+0x001A1679  26 8B 47 02                     mov     ax, es:[bx+2]
+0x001A167D  40                              inc     ax
+0x001A167E  75 03                           jnz     short loc_1A1683
+0x001A1680  E9 1E 02                        jmp     loc_1A18A1
+0x001A1683  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A1686  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1689  BA 0C 00                        mov     dx, 0Ch
+0x001A168C  F7 EA                           imul    dx
+0x001A168E  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A1691  03 D8                           add     bx, ax
+0x001A1693  26 83 3F 00                     cmp     word ptr es:[bx], 0
+0x001A1697  75 03                           jnz     short loc_1A169C
+0x001A1699  E9 E3 01                        jmp     loc_1A187F
+0x001A169C  C6 46 B7 FF                     mov     [bp+var_49], 0FFh
+0x001A16A0  BE 01 00                        mov     si, 1
+0x001A16A3  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A16A6  03 46 0E                        add     ax, [bp+arg_8]
+0x001A16A9  89 46 FC                        mov     [bp+var_4], ax
+0x001A16AC  EB 4A                           jmp     short loc_1A16F8
+0x001A16AE  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A16B1  03 46 0E                        add     ax, [bp+arg_8]
+0x001A16B4  BA 0C 00                        mov     dx, 0Ch
+0x001A16B7  F7 EA                           imul    dx
+0x001A16B9  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A16BC  03 D8                           add     bx, ax
+0x001A16BE  26 8B 07                        mov     ax, es:[bx]
+0x001A16C1  50                              push    ax
+0x001A16C2  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A16C5  BA 0C 00                        mov     dx, 0Ch
+0x001A16C8  F7 EA                           imul    dx
+0x001A16CA  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A16CD  03 D8                           add     bx, ax
+0x001A16CF  58                              pop     ax
+0x001A16D0  26 3B 07                        cmp     ax, es:[bx]
+0x001A16D3  75 20                           jnz     short loc_1A16F5
+0x001A16D5  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A16D8  BA 0C 00                        mov     dx, 0Ch
+0x001A16DB  F7 EA                           imul    dx
+0x001A16DD  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A16E0  03 D8                           add     bx, ax
+0x001A16E2  26 83 7F 02 00                  cmp     word ptr es:[bx+2], 0
+0x001A16E7  75 0C                           jnz     short loc_1A16F5
+0x001A16E9  0B F6                           or      si, si
+0x001A16EB  74 08                           jz      short loc_1A16F5
+0x001A16ED  8A 46 FC                        mov     al, byte ptr [bp+var_4]
+0x001A16F0  88 46 B8                        mov     [bp+var_48], al
+0x001A16F3  33 F6                           xor     si, si
+0x001A16F5  FF 4E FC                        dec     [bp+var_4]
+0x001A16F8  83 7E FC 00                     cmp     [bp+var_4], 0
+0x001A16FC  7D B0                           jge     short loc_1A16AE
+0x001A16FE  8A 46 B8                        mov     al, [bp+var_48]
+0x001A1701  98                              cbw
+0x001A1702  BA 0C 00                        mov     dx, 0Ch
+0x001A1705  F7 EA                           imul    dx
+0x001A1707  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A170A  03 D8                           add     bx, ax
+0x001A170C  26 8B 07                        mov     ax, es:[bx]
+0x001A170F  48                              dec     ax
+0x001A1710  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1713  F7 EA                           imul    dx
+0x001A1715  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A1718  03 D8                           add     bx, ax
+0x001A171A  26 8A 47 02                     mov     al, es:[bx+2]
+0x001A171E  98                              cbw
+0x001A171F  8B F0                           mov     si, ax
+0x001A1721  BA 15 00                        mov     dx, 15h; Waypoint size (21 bytes)  ; Waypoint size (21 bytes)
+0x001A1724  F7 EA                           imul    dx
+0x001A1726  50                              push    ax
+0x001A1727  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A172A  03 46 0E                        add     ax, [bp+arg_8]
+0x001A172D  BA 0C 00                        mov     dx, 0Ch
+0x001A1730  F7 EA                           imul    dx
+0x001A1732  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A1735  03 D8                           add     bx, ax
+0x001A1737  26 8B 47 02                     mov     ax, es:[bx+2]
+0x001A173B  48                              dec     ax
+0x001A173C  BA 03 00                        mov     dx, 3
+0x001A173F  F7 EA                           imul    dx
+0x001A1741  5A                              pop     dx
+0x001A1742  03 D0                           add     dx, ax
+0x001A1744  8B F2                           mov     si, dx
+0x001A1746  8D 46 B4                        lea     ax, [bp+var_4C]
+0x001A1749  8C 56 F4                        mov     word ptr [bp+var_E+2], ss
+0x001A174C  89 46 F2                        mov     word ptr [bp+var_E], ax
+0x001A174F  9A C9 35 6C 1F                  call    farobj_vec3_accum_b_ret
+                                        -> farobj_vec3_accum_b_ret @ 0x22C89
+0x001A1754  BB AB 0A                        mov     bx, 0AABh
+0x001A1757  99                              cwd
+0x001A1758  F7 FB                           idiv    bx
+0x001A175A  50                              push    ax
+0x001A175B  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A175E  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1761  BA 0C 00                        mov     dx, 0Ch
+0x001A1764  F7 EA                           imul    dx
+0x001A1766  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A1769  03 D8                           add     bx, ax
+0x001A176B  26 8B 47 06                     mov     ax, es:[bx+6]
+0x001A176F  BA 19 00                        mov     dx, 19h
+0x001A1772  F7 EA                           imul    dx
+0x001A1774  5A                              pop     dx
+0x001A1775  02 C2                           add     al, dl
+0x001A1777  04 0C                           add     al, 0Ch
+0x001A1779  C4 5E F2                        les     bx, [bp+var_E]
+0x001A177C  26 88 07                        mov     es:[bx], al
+0x001A177F  FF 46 F2                        inc     word ptr [bp+var_E]
+0x001A1782  9A C9 35 6C 1F                  call    farobj_vec3_accum_b_ret
+                                        -> farobj_vec3_accum_b_ret @ 0x22C89
+0x001A1787  BB AB 0A                        mov     bx, 0AABh
+0x001A178A  99                              cwd
+0x001A178B  F7 FB                           idiv    bx
+0x001A178D  50                              push    ax
+0x001A178E  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A1791  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1794  BA 0C 00                        mov     dx, 0Ch
+0x001A1797  F7 EA                           imul    dx
+0x001A1799  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A179C  03 D8                           add     bx, ax
+0x001A179E  26 8B 47 08                     mov     ax, es:[bx+8]
+0x001A17A2  BA 19 00                        mov     dx, 19h
+0x001A17A5  F7 EA                           imul    dx
+0x001A17A7  5A                              pop     dx
+0x001A17A8  02 C2                           add     al, dl
+0x001A17AA  04 0C                           add     al, 0Ch
+0x001A17AC  C4 5E F2                        les     bx, [bp+var_E]
+0x001A17AF  26 88 07                        mov     es:[bx], al
+0x001A17B2  FF 46 F2                        inc     word ptr [bp+var_E]
+0x001A17B5  9A C9 35 6C 1F                  call    farobj_vec3_accum_b_ret
+                                        -> farobj_vec3_accum_b_ret @ 0x22C89
+0x001A17BA  BB AB 0A                        mov     bx, 0AABh
+0x001A17BD  99                              cwd
+0x001A17BE  F7 FB                           idiv    bx
+0x001A17C0  50                              push    ax
+0x001A17C1  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A17C4  03 46 0E                        add     ax, [bp+arg_8]
+0x001A17C7  BA 0C 00                        mov     dx, 0Ch
+0x001A17CA  F7 EA                           imul    dx
+0x001A17CC  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A17CF  03 D8                           add     bx, ax
+0x001A17D1  26 8B 47 0A                     mov     ax, es:[bx+0Ah]
+0x001A17D5  BA 19 00                        mov     dx, 19h
+0x001A17D8  F7 EA                           imul    dx
+0x001A17DA  5A                              pop     dx
+0x001A17DB  02 C2                           add     al, dl
+0x001A17DD  04 0C                           add     al, 0Ch
+0x001A17DF  C4 5E F2                        les     bx, [bp+var_E]
+0x001A17E2  26 88 07                        mov     es:[bx], al
+0x001A17E5  FF 46 F2                        inc     word ptr [bp+var_E]
+0x001A17E8  8D 46 B9                        lea     ax, [bp+var_47]
+0x001A17EB  8C 56 F8                        mov     word ptr [bp+var_A+2], ss
+0x001A17EE  89 46 F6                        mov     word ptr [bp+var_A], ax
+0x001A17F1  B8 C2 4F                        mov     ax, 4FC2h
+0x001A17F4  8E C0                           mov     es, ax
+0x001A17F6  26 8A 84 68 01                  mov     al, es:[si+168h]
+0x001A17FB  B4 00                           mov     ah, 0
+0x001A17FD  BA 2E 00                        mov     dx, 2Eh ; '.'
+0x001A1800  F7 EA                           imul    dx
+0x001A1802  C4 5E F6                        les     bx, [bp+var_A]
+0x001A1805  26 89 07                        mov     es:[bx], ax
+0x001A1808  83 46 F6 02                     add     word ptr [bp+var_A], 2
+0x001A180C  B8 C2 4F                        mov     ax, 4FC2h
+0x001A180F  8E C0                           mov     es, ax
+0x001A1811  26 8A 84 69 01                  mov     al, es:[si+169h]
+0x001A1816  B4 00                           mov     ah, 0
+0x001A1818  BA 2E 00                        mov     dx, 2Eh ; '.'
+0x001A181B  F7 EA                           imul    dx
+0x001A181D  C4 5E F6                        les     bx, [bp+var_A]
+0x001A1820  26 89 07                        mov     es:[bx], ax
+0x001A1823  83 46 F6 02                     add     word ptr [bp+var_A], 2
+0x001A1827  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A182A  03 46 0E                        add     ax, [bp+arg_8]
+0x001A182D  BA 0C 00                        mov     dx, 0Ch
+0x001A1830  F7 EA                           imul    dx
+0x001A1832  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A1835  03 D8                           add     bx, ax
+0x001A1837  26 80 7F 05 0D                  cmp     byte ptr es:[bx+5], 0Dh
+0x001A183C  74 17                           jz      short loc_1A1855
+0x001A183E  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A1841  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1844  BA 0C 00                        mov     dx, 0Ch
+0x001A1847  F7 EA                           imul    dx
+0x001A1849  8B 5E 0A                        mov     bx, word ptr [bp+arg_4]
+0x001A184C  03 D8                           add     bx, ax
+0x001A184E  26 80 7F 05 2D                  cmp     byte ptr es:[bx+5], 2Dh ; '-'
+0x001A1853  75 19                           jnz     short loc_1A186E
+0x001A1855  B8 C2 4F                        mov     ax, 4FC2h
+0x001A1858  8E C0                           mov     es, ax
+0x001A185A  26 8A 84 6A 01                  mov     al, es:[si+16Ah]
+0x001A185F  B4 00                           mov     ah, 0
+0x001A1861  BA 12 00                        mov     dx, 12h
+0x001A1864  F7 EA                           imul    dx
+0x001A1866  C4 5E F6                        les     bx, [bp+var_A]
+0x001A1869  26 89 07                        mov     es:[bx], ax
+0x001A186C  EB 15                           jmp     short loc_1A1883
+0x001A186E  B8 C2 4F                        mov     ax, 4FC2h
+0x001A1871  8E C0                           mov     es, ax
+0x001A1873  26 8A 84 6A 01                  mov     al, es:[si+16Ah]
+0x001A1878  B4 00                           mov     ah, 0
+0x001A187A  BA 06 00                        mov     dx, 6
+0x001A187D  EB E5                           jmp     short loc_1A1864
+0x001A187F  C6 46 B8 0E                     mov     [bp+var_48], 0Eh
+0x001A1883  8B 46 10                        mov     ax, word ptr [bp+arg_A]
+0x001A1886  03 C7                           add     ax, di
+0x001A1888  FF 76 12                        push    word ptr [bp+arg_A+2]
+0x001A188B  50                              push    ax
+0x001A188C  16                              push    ss
+0x001A188D  8D 46 B4                        lea     ax, [bp+var_4C]
+0x001A1890  50                              push    ax
+0x001A1891  6A 0B                           push    0Bh
+0x001A1893  9A 27 00 6F 68                  call    loc_68716+1
+                                        -> overlay_r57_simple_helper @ 0x1A2B37
+0x001A1898  83 C4 0A                        add     sp, 0Ah
+0x001A189B  83 C7 0B                        add     di, 0Bh
+0x001A189E  E9 E9 02                        jmp     loc_1A1B8A
+0x001A18A1  C4 5E 10                        les     bx, [bp+arg_A]
+0x001A18A4  26 C6 01 4B                     mov     byte ptr es:[bx+di], 4Bh ; 'K'
+0x001A18A8  47                              inc     di
+0x001A18A9  26 C6 01 4B                     mov     byte ptr es:[bx+di], 4Bh ; 'K'
+0x001A18AD  47                              inc     di
+0x001A18AE  26 C6 01 4B                     mov     byte ptr es:[bx+di], 4Bh ; 'K'
+0x001A18B2  47                              inc     di
+0x001A18B3  26 C6 01 FF                     mov     byte ptr es:[bx+di], 0FFh
+0x001A18B7  47                              inc     di
+0x001A18B8  26 C6 01 FF                     mov     byte ptr es:[bx+di], 0FFh
+0x001A18BC  47                              inc     di
+0x001A18BD  E9 CA 02                        jmp     loc_1A1B8A
+0x001A18C0  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A18C3  03 46 0E                        add     ax, [bp+arg_8]
+0x001A18C6  BA 0C 00                        mov     dx, 0Ch
+0x001A18C9  F7 EA                           imul    dx
+0x001A18CB  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A18CE  03 D8                           add     bx, ax
+0x001A18D0  26 8B 37                        mov     si, es:[bx]
+0x001A18D3  0B F6                           or      si, si
+0x001A18D5  75 03                           jnz     short loc_1A18DA
+0x001A18D7  E9 47 02                        jmp     loc_1A1B21
+0x001A18DA  9A C9 35 6C 1F                  call    farobj_vec3_accum_b_ret
+                                        -> farobj_vec3_accum_b_ret @ 0x22C89
+0x001A18DF  BB AB 0A                        mov     bx, 0AABh
+0x001A18E2  99                              cwd
+0x001A18E3  F7 FB                           idiv    bx
+0x001A18E5  50                              push    ax
+0x001A18E6  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A18E9  03 46 0E                        add     ax, [bp+arg_8]
+0x001A18EC  BA 0C 00                        mov     dx, 0Ch
+0x001A18EF  F7 EA                           imul    dx
+0x001A18F1  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A18F4  03 D8                           add     bx, ax
+0x001A18F6  26 8B 47 06                     mov     ax, es:[bx+6]
+0x001A18FA  BA 19 00                        mov     dx, 19h
+0x001A18FD  F7 EA                           imul    dx
+0x001A18FF  5A                              pop     dx
+0x001A1900  02 C2                           add     al, dl
+0x001A1902  04 0C                           add     al, 0Ch
+0x001A1904  88 46 C0                        mov     [bp+var_40], al
+0x001A1907  9A C9 35 6C 1F                  call    farobj_vec3_accum_b_ret
+                                        -> farobj_vec3_accum_b_ret @ 0x22C89
+0x001A190C  BB AB 0A                        mov     bx, 0AABh
+0x001A190F  99                              cwd
+0x001A1910  F7 FB                           idiv    bx
+0x001A1912  50                              push    ax
+0x001A1913  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A1916  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1919  BA 0C 00                        mov     dx, 0Ch
+0x001A191C  F7 EA                           imul    dx
+0x001A191E  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A1921  03 D8                           add     bx, ax
+0x001A1923  26 8B 47 08                     mov     ax, es:[bx+8]
+0x001A1927  BA 19 00                        mov     dx, 19h
+0x001A192A  F7 EA                           imul    dx
+0x001A192C  5A                              pop     dx
+0x001A192D  02 C2                           add     al, dl
+0x001A192F  04 0C                           add     al, 0Ch
+0x001A1931  88 46 C1                        mov     [bp+var_3F], al
+0x001A1934  9A C9 35 6C 1F                  call    farobj_vec3_accum_b_ret
+                                        -> farobj_vec3_accum_b_ret @ 0x22C89
+0x001A1939  BB AB 0A                        mov     bx, 0AABh
+0x001A193C  99                              cwd
+0x001A193D  F7 FB                           idiv    bx
+0x001A193F  50                              push    ax
+0x001A1940  8B 46 FE                        mov     ax, [bp+var_2]
+0x001A1943  03 46 0E                        add     ax, [bp+arg_8]
+0x001A1946  BA 0C 00                        mov     dx, 0Ch
+0x001A1949  F7 EA                           imul    dx
+0x001A194B  C4 5E 0A                        les     bx, [bp+arg_4]
+0x001A194E  03 D8                           add     bx, ax
+0x001A1950  26 8B 47 0A                     mov     ax, es:[bx+0Ah]
+0x001A1954  BA 19 00                        mov     dx, 19h
+0x001A1957  F7 EA                           imul    dx
+0x001A1959  5A                              pop     dx
+0x001A195A  02 C2                           add     al, dl
+0x001A195C  04 0C                           add     al, 0Ch
+0x001A195E  88 46 C2                        mov     [bp+var_3E], al
+0x001A1961  8B C6                           mov     ax, si
+0x001A1963  48                              dec     ax
+0x001A1964  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1967  F7 EA                           imul    dx
+0x001A1969  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A196C  03 D8                           add     bx, ax
+0x001A196E  26 8A 47 15                     mov     al, es:[bx+15h]
+0x001A1972  88 46 C3                        mov     [bp+var_3D], al
+0x001A1975  C7 46 FC 00 00                  mov     [bp+var_4], 0
+0x001A197A  E9 93 01                        jmp     loc_1A1B10
+0x001A197D  8B C6                           mov     ax, si
+0x001A197F  48                              dec     ax
+0x001A1980  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1983  F7 EA                           imul    dx
+0x001A1985  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A1988  03 D8                           add     bx, ax
+0x001A198A  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A198D  BA 0C 00                        mov     dx, 0Ch
+0x001A1990  F7 EA                           imul    dx
+0x001A1992  03 D8                           add     bx, ax
+0x001A1994  26 8B 47 18                     mov     ax, es:[bx+18h]
+0x001A1998  F7 D8                           neg     ax
+0x001A199A  BB 40 00                        mov     bx, 40h ; '@'
+0x001A199D  99                              cwd
+0x001A199E  F7 FB                           idiv    bx
+0x001A19A0  50                              push    ax
+0x001A19A1  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A19A4  BA 05 00                        mov     dx, 5
+0x001A19A7  F7 EA                           imul    dx
+0x001A19A9  8D 56 C4                        lea     dx, [bp+var_3C]
+0x001A19AC  03 C2                           add     ax, dx
+0x001A19AE  8B D8                           mov     bx, ax
+0x001A19B0  58                              pop     ax
+0x001A19B1  36 88 07                        mov     ss:[bx], al
+0x001A19B4  8B C6                           mov     ax, si
+0x001A19B6  48                              dec     ax
+0x001A19B7  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A19BA  F7 EA                           imul    dx
+0x001A19BC  8B 5E 06                        mov     bx, word ptr [bp+arg_0]
+0x001A19BF  03 D8                           add     bx, ax
+0x001A19C1  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A19C4  BA 0C 00                        mov     dx, 0Ch
+0x001A19C7  F7 EA                           imul    dx
+0x001A19C9  03 D8                           add     bx, ax
+0x001A19CB  26 8B 47 16                     mov     ax, es:[bx+16h]
+0x001A19CF  BB 40 00                        mov     bx, 40h ; '@'
+0x001A19D2  99                              cwd
+0x001A19D3  F7 FB                           idiv    bx
+0x001A19D5  50                              push    ax
+0x001A19D6  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A19D9  BA 05 00                        mov     dx, 5
+0x001A19DC  F7 EA                           imul    dx
+0x001A19DE  8D 56 C5                        lea     dx, [bp+var_3B]
+0x001A19E1  03 C2                           add     ax, dx
+0x001A19E3  8B D8                           mov     bx, ax
+0x001A19E5  58                              pop     ax
+0x001A19E6  36 88 07                        mov     ss:[bx], al
+0x001A19E9  8B C6                           mov     ax, si
+0x001A19EB  48                              dec     ax
+0x001A19EC  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A19EF  F7 EA                           imul    dx
+0x001A19F1  8B 5E 06                        mov     bx, word ptr [bp+arg_0]
+0x001A19F4  03 D8                           add     bx, ax
+0x001A19F6  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A19F9  BA 0C 00                        mov     dx, 0Ch
+0x001A19FC  F7 EA                           imul    dx
+0x001A19FE  03 D8                           add     bx, ax
+0x001A1A00  26 8B 47 1A                     mov     ax, es:[bx+1Ah]
+0x001A1A04  BB 03 00                        mov     bx, 3
+0x001A1A07  99                              cwd
+0x001A1A08  F7 FB                           idiv    bx
+0x001A1A0A  50                              push    ax
+0x001A1A0B  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1A0E  BA 05 00                        mov     dx, 5
+0x001A1A11  F7 EA                           imul    dx
+0x001A1A13  8D 56 C6                        lea     dx, [bp+var_3A]
+0x001A1A16  03 C2                           add     ax, dx
+0x001A1A18  8B D8                           mov     bx, ax
+0x001A1A1A  58                              pop     ax
+0x001A1A1B  36 88 07                        mov     ss:[bx], al
+0x001A1A1E  8B C6                           mov     ax, si
+0x001A1A20  48                              dec     ax
+0x001A1A21  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1A24  F7 EA                           imul    dx
+0x001A1A26  8B 5E 06                        mov     bx, word ptr [bp+arg_0]
+0x001A1A29  03 D8                           add     bx, ax
+0x001A1A2B  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1A2E  BA 0C 00                        mov     dx, 0Ch
+0x001A1A31  F7 EA                           imul    dx
+0x001A1A33  03 D8                           add     bx, ax
+0x001A1A35  26 8B 47 1C                     mov     ax, es:[bx+1Ch]
+0x001A1A39  BB 05 00                        mov     bx, 5
+0x001A1A3C  99                              cwd
+0x001A1A3D  F7 FB                           idiv    bx
+0x001A1A3F  50                              push    ax
+0x001A1A40  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1A43  BA 05 00                        mov     dx, 5
+0x001A1A46  F7 EA                           imul    dx
+0x001A1A48  8D 56 C7                        lea     dx, [bp+var_39]
+0x001A1A4B  03 C2                           add     ax, dx
+0x001A1A4D  8B D8                           mov     bx, ax
+0x001A1A4F  58                              pop     ax
+0x001A1A50  36 88 07                        mov     ss:[bx], al
+0x001A1A53  8B C6                           mov     ax, si
+0x001A1A55  48                              dec     ax
+0x001A1A56  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1A59  F7 EA                           imul    dx
+0x001A1A5B  8B 5E 06                        mov     bx, word ptr [bp+arg_0]
+0x001A1A5E  03 D8                           add     bx, ax
+0x001A1A60  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1A63  BA 0C 00                        mov     dx, 0Ch
+0x001A1A66  F7 EA                           imul    dx
+0x001A1A68  03 D8                           add     bx, ax
+0x001A1A6A  26 8A 47 1F                     mov     al, es:[bx+1Fh]
+0x001A1A6E  98                              cbw
+0x001A1A6F  50                              push    ax
+0x001A1A70  9A 0F 00 6F 68                  call    loc_686FC+3
+                                        -> sub_1A2B1F @ 0x1A2B1F
+0x001A1A75  59                              pop     cx
+0x001A1A76  50                              push    ax
+0x001A1A77  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1A7A  BA 05 00                        mov     dx, 5
+0x001A1A7D  F7 EA                           imul    dx
+0x001A1A7F  8D 56 C8                        lea     dx, [bp+var_38]
+0x001A1A82  03 C2                           add     ax, dx
+0x001A1A84  8B D8                           mov     bx, ax
+0x001A1A86  58                              pop     ax
+0x001A1A87  36 88 07                        mov     ss:[bx], al
+0x001A1A8A  8B C6                           mov     ax, si
+0x001A1A8C  48                              dec     ax
+0x001A1A8D  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1A90  F7 EA                           imul    dx
+0x001A1A92  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A1A95  03 D8                           add     bx, ax
+0x001A1A97  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1A9A  BA 0C 00                        mov     dx, 0Ch
+0x001A1A9D  F7 EA                           imul    dx
+0x001A1A9F  03 D8                           add     bx, ax
+0x001A1AA1  26 80 7F 1F 04                  cmp     byte ptr es:[bx+1Fh], 4
+0x001A1AA6  75 18                           jnz     short loc_1A1AC0
+0x001A1AA8  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1AAB  BA 05 00                        mov     dx, 5
+0x001A1AAE  F7 EA                           imul    dx
+0x001A1AB0  8D 56 C8                        lea     dx, [bp+var_38]
+0x001A1AB3  03 C2                           add     ax, dx
+0x001A1AB5  8B 56 FA                        mov     dx, [bp+var_6]
+0x001A1AB8  8B D8                           mov     bx, ax
+0x001A1ABA  36 08 17                        or      ss:[bx], dl
+0x001A1ABD  FF 46 FA                        inc     [bp+var_6]
+0x001A1AC0  8B C6                           mov     ax, si
+0x001A1AC2  48                              dec     ax
+0x001A1AC3  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1AC6  F7 EA                           imul    dx
+0x001A1AC8  C4 5E 06                        les     bx, [bp+arg_0]
+0x001A1ACB  03 D8                           add     bx, ax
+0x001A1ACD  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1AD0  BA 0C 00                        mov     dx, 0Ch
+0x001A1AD3  F7 EA                           imul    dx
+0x001A1AD5  03 D8                           add     bx, ax
+0x001A1AD7  26 80 7F 1F 0A                  cmp     byte ptr es:[bx+1Fh], 0Ah
+0x001A1ADC  75 2F                           jnz     short loc_1A1B0D
+0x001A1ADE  8B C6                           mov     ax, si
+0x001A1AE0  48                              dec     ax
+0x001A1AE1  BA 82 00                        mov     dx, 82h; FlightRecord size (130 bytes)  ; FlightRecord size (130 bytes)
+0x001A1AE4  F7 EA                           imul    dx
+0x001A1AE6  8B 5E 06                        mov     bx, word ptr [bp+arg_0]
+0x001A1AE9  03 D8                           add     bx, ax
+0x001A1AEB  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1AEE  BA 0C 00                        mov     dx, 0Ch
+0x001A1AF1  F7 EA                           imul    dx
+0x001A1AF3  03 D8                           add     bx, ax
+0x001A1AF5  26 8A 47 20                     mov     al, es:[bx+20h]
+0x001A1AF9  50                              push    ax
+0x001A1AFA  8B 46 FC                        mov     ax, [bp+var_4]
+0x001A1AFD  BA 05 00                        mov     dx, 5
+0x001A1B00  F7 EA                           imul    dx
+0x001A1B02  8D 56 C8                        lea     dx, [bp+var_38]
+0x001A1B05  03 C2                           add     ax, dx
+0x001A1B07  8B D8                           mov     bx, ax
+0x001A1B09  58                              pop     ax
+0x001A1B0A  36 08 07                        or      ss:[bx], al
+0x001A1B0D  FF 46 FC                        inc     [bp+var_4]
+0x001A1B10  8A 46 C3                        mov     al, [bp+var_3D]
+0x001A1B13  98                              cbw
+0x001A1B14  3B 46 FC                        cmp     ax, [bp+var_4]
+0x001A1B17  7E 03                           jle     short loc_1A1B1C
+0x001A1B19  E9 61 FE                        jmp     loc_1A197D
+0x001A1B1C  FE 4E C3                        dec     [bp+var_3D]
+0x001A1B1F  EB 38                           jmp     short loc_1A1B59
+0x001A1B21  80 7E C3 00                     cmp     [bp+var_3D], 0
+0x001A1B25  74 06                           jz      short loc_1A1B2D
+0x001A1B27  C6 46 C3 01                     mov     [bp+var_3D], 1
+0x001A1B2B  EB 2C                           jmp     short loc_1A1B59
+0x001A1B2D  C6 46 C3 01                     mov     [bp+var_3D], 1
+0x001A1B31  C6 46 C4 00                     mov     [bp+var_3C], 0
+0x001A1B35  C6 46 C5 00                     mov     [bp+var_3B], 0
+0x001A1B39  C6 46 C6 0C                     mov     [bp+var_3A], 0Ch
+0x001A1B3D  C6 46 C7 5A                     mov     [bp+var_39], 5Ah ; 'Z'
+0x001A1B41  C6 46 C8 00                     mov     [bp+var_38], 0
+0x001A1B45  C6 46 C9 00                     mov     [bp+var_37], 0
+0x001A1B49  C6 46 CA 00                     mov     [bp+var_36], 0
+0x001A1B4D  C6 46 CB 0A                     mov     [bp+var_35], 0Ah
+0x001A1B51  C6 46 CC 5A                     mov     [bp+var_34], 5Ah ; 'Z'
+0x001A1B55  C6 46 CD 00                     mov     [bp+var_33], 0
+0x001A1B59  8B 46 10                        mov     ax, word ptr [bp+arg_A]
+0x001A1B5C  03 C7                           add     ax, di
+0x001A1B5E  FF 76 12                        push    word ptr [bp+arg_A+2]
+0x001A1B61  50                              push    ax
+0x001A1B62  16                              push    ss
+0x001A1B63  8D 46 C0                        lea     ax, [bp+var_40]
+0x001A1B66  50                              push    ax
+0x001A1B67  8A 46 C3                        mov     al, [bp+var_3D]
+0x001A1B6A  98                              cbw
+0x001A1B6B  BA 05 00                        mov     dx, 5
+0x001A1B6E  F7 EA                           imul    dx
+0x001A1B70  05 09 00                        add     ax, 9
+0x001A1B73  50                              push    ax
+0x001A1B74  9A 27 00 6F 68                  call    loc_68716+1
+                                        -> overlay_r57_simple_helper @ 0x1A2B37
+0x001A1B79  83 C4 0A                        add     sp, 0Ah
+0x001A1B7C  8A 46 C3                        mov     al, [bp+var_3D]
+0x001A1B7F  98                              cbw
+0x001A1B80  BA 05 00                        mov     dx, 5
+0x001A1B83  F7 EA                           imul    dx
+0x001A1B85  05 09 00                        add     ax, 9
+0x001A1B88  03 F8                           add     di, ax
+0x001A1B8A  FF 46 FE                        inc     [bp+var_2]
+0x001A1B8D  B8 10 00                        mov     ax, 10h
+0x001A1B90  2B 46 0E                        sub     ax, [bp+arg_8]
+0x001A1B93  3B 46 FE                        cmp     ax, [bp+var_2]
+0x001A1B96  7E 03                           jle     short loc_1A1B9B
+0x001A1B98  E9 B4 FA                        jmp     loc_1A164F
+0x001A1B9B  8B C7                           mov     ax, di
+0x001A1B9D  5F                              pop     di
+0x001A1B9E  5E                              pop     si
+0x001A1B9F  C9                              leave
+0x001A1BA0  CB                              retf
+
+================================================================================
+DATA CROSS-REFERENCES (542 instructions analyzed)
+================================================================================
+
+
+================================================================================
+FUNCTION CALLS
+================================================================================
+
+  farobj_vec3_accum_b_ret @ 0x22C89
+  sub_686FF @ 0x686FF
+  sub_68717 @ 0x68717
+  sub_1A2B1F @ 0x1A2B1F
+  overlay_r57_simple_helper @ 0x1A2B37

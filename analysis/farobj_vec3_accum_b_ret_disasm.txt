@@ -1,0 +1,75 @@
+================================================================================
+Function: farobj_vec3_accum_b_ret
+Address: 0x22C89 - 0x22C91
+Size: 8 bytes (0x8)
+================================================================================
+
+DISASSEMBLY
+================================================================================
+
+0x00022C89  0E                              push    cs; Returns CX from fixed_vec3_accumulate_b. Used for vector math AND timing-based pseudo-RNG.  ; Returns CX from fixed_vec3_accumulate_b. Used for vector math AND timing-based pseudo-RNG.
+0x00022C8A  E8 48 00                        call    near ptr fixed_vec3_accumulate_b
+                                        -> fixed_vec3_accumulate_b @ 0x22CD5
+0x00022C8D  90                              nop
+0x00022C8E  8B C1                           mov     ax, cx
+0x00022C90  CB                              retf
+
+================================================================================
+DATA REFERENCES
+================================================================================
+
+
+================================================================================
+CALLERS (functions that call this one)
+================================================================================
+
+  ui_loadout_slot_record_fill @ 0x6798C
+  ui_loadout_menu_enter @ 0x683C1
+  r06_vec3_main_proc @ 0x6B87A
+  undoc_12841F @ 0x12841F
+  sub_131A33 @ 0x131A33
+  undoc_1324C8 @ 0x1324C8
+  ui_loadout_fuel_calculator @ 0x1325DB
+  undoc_1326CF @ 0x1326CF
+  undoc_13276D @ 0x13276D
+  ui_slot_record_handler @ 0x13667D
+  sub_1374EB @ 0x1374EB
+  sub_137FB9 @ 0x137FB9
+  sub_139F91 @ 0x139F91
+  undoc_13C71C @ 0x13C71C
+  theater_campaign_file_loader @ 0x15A8B0
+  sub_15D508 @ 0x15D508
+  r33_menu_args_farobj_entry @ 0x15DD9C
+  sub_15E0A4 @ 0x15E0A4
+  undoc_15E3F6 @ 0x15E3F6
+  r33_vec3_lowbyte_avg @ 0x15E52D
+  undoc_15E7DD @ 0x15E7DD
+  overlay_r46_logic_892 @ 0x15FD1A
+  state_processor_large @ 0x160096
+  sub_1601FB @ 0x1601FB
+  r33_record_pair_status_resolve @ 0x16028D
+  menu_cmd_store_and_record_scan @ 0x160780
+  undoc_162FEF @ 0x162FEF
+  ui_loadout_hardpoint_manager @ 0x163122
+  ui_loadout_weapon_selector @ 0x1632CD
+  undoc_1634D2 @ 0x1634D2
+  sub_163825 @ 0x163825
+  undoc_1638BB @ 0x1638BB
+  undoc_16442D @ 0x16442D
+  overlay_undecoded_body_16472b @ 0x16472B
+  undoc_164852 @ 0x164852
+  r36_loadout_record_copy @ 0x165152
+  r36_mod_slot_index_entry @ 0x166061
+  undoc_166DF2 @ 0x166DF2
+  sub_167B45 @ 0x167B45
+  sub_16C2A9 @ 0x16C2A9
+  overlay_r48_processor @ 0x16DAA0
+  game_mode_r48_main_coordinator @ 0x1744B0
+  undoc_177586 @ 0x177586
+  squadron_mission_file_loader @ 0x17B437
+  r53_map_window_quota_step @ 0x186550
+  r53_script_opcode_interpreter @ 0x186A7C
+  r53_record_walk_dispatch @ 0x188D92
+  waypoint_display_helper @ 0x1A163A
+
+Total callers: 48
