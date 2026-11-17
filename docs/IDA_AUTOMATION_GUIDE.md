@@ -44,14 +44,47 @@ idat.exe -A -S"script.py" "database.i64"
 - `-S"script.py"`: Run script and exit
 - No GUI, runs in terminal
 
-### 3. Always Exit Explicitly
+### 3. CRITICAL: No Functions, Module-Level Code Only
+
+**❌ WRONG - This will confuse you:**
 ```python
+def main():
+    # Your code here
+    pass
+
+if __name__ == "__main__":
+    idaapi.auto_wait()
+    main()
+    idc.qexit(0)
+```
+
+**✅ RIGHT - Write all code at module level:**
+```python
+# Imports
 import idc
-# ... your code ...
+import idaapi
+
+# Wait for analysis
+idaapi.auto_wait()
+
+# Your code directly here
+results = do_analysis()
+
+# Save results
+save_results(results)
+
+# Exit
+idc.qexit(0)
+```
+
+**Why:** IDA executes scripts top-to-bottom. No wrappers needed. See `analysis/s4/test_ida_minimal.py` for proven example.
+
+### 4. Always Exit Explicitly
+```python
 idc.qexit(0)  # CRITICAL - without this, script hangs!
 ```
 
-### 4. Keep Scripts Simple
+### 5. Keep Scripts Simple
 - One task per script
 - Under 100 lines if possible
 - Save results to JSON/text files
@@ -60,6 +93,8 @@ idc.qexit(0)  # CRITICAL - without this, script hangs!
 ---
 
 ## Working Script Template
+
+**COPY THIS PATTERN EXACTLY - No `def main():` or `if __name__` wrappers!**
 
 ```python
 """
@@ -72,30 +107,49 @@ import idautils
 import json
 from pathlib import Path
 
-def main():
-    # Wait for auto-analysis
-    print("Waiting for auto-analysis...")
-    idaapi.auto_wait()
-    print("Auto-analysis complete")
-    
-    # Your code here
-    result = {
-        "test": "success"
-    }
-    
-    # Save results
-    output_path = Path(__file__).parent / "output.json"
-    with open(output_path, 'w') as f:
-        json.dump(result, f, indent=2)
-    
-    print(f"Results saved to: {output_path}")
-    
-    # CRITICAL: Exit explicitly
-    idc.qexit(0)
+print("=" * 80)
+print("YOUR ANALYSIS NAME HERE")
+print("=" * 80)
 
-if __name__ == "__main__":
-    main()
+# Wait for auto-analysis - REQUIRED
+print("Waiting for auto-analysis...")
+idaapi.auto_wait()
+print("Auto-analysis complete\n")
+
+# Your analysis code here (module-level, not in a function)
+result = {
+    "test": "success"
+}
+
+# Example: Analyze a function
+func_ea = 0x12345
+func = idaapi.get_func(func_ea)
+if func:
+    print(f"Analyzing function at {func_ea:#x}")
+    ea = func.start_ea
+    while ea < func.end_ea:
+        disasm = idc.generate_disasm_line(ea, 0)
+        # Process disassembly here
+        ea = idc.next_head(ea, func.end_ea)
+
+# Save results
+output_path = Path(__file__).parent / "output.json"
+with open(output_path, 'w') as f:
+    json.dump(result, f, indent=2)
+
+print(f"\nResults saved to: {output_path}")
+print("Exiting IDA...")
+
+# CRITICAL: Exit explicitly or script hangs forever!
+idc.qexit(0)
 ```
+
+**Key points:**
+- ✅ All code at module level (no `def main():`)
+- ✅ No `if __name__ == "__main__":` needed
+- ✅ Call `idaapi.auto_wait()` early
+- ✅ Call `idc.qexit(0)` at end
+- ✅ Use `Path(__file__).parent` for output paths
 
 ---
 

@@ -10,7 +10,11 @@
 
 **ALWAYS read `docs/IDA_AUTOMATION_GUIDE.md` before running IDA scripts!**
 
-### Working Pattern
+### Working Pattern - COPY THIS EXACTLY
+
+**CRITICAL: Do NOT use `if __name__ == "__main__":` or `def main():` wrappers!**
+
+Write ALL code at module level like this:
 
 ```python
 """Script description."""
@@ -19,25 +23,49 @@ import idaapi
 import json
 from pathlib import Path
 
-print("Starting analysis...")
+print("=" * 80)
+print("ANALYSIS NAME")
+print("=" * 80)
 
-# Wait for auto-analysis
+# Wait for auto-analysis - REQUIRED
+print("Waiting for auto-analysis...")
 idaapi.auto_wait()
+print("Auto-analysis complete\n")
 
-# Your code here (NO main() function, just module-level code)
-
+# Your analysis code here - NO FUNCTIONS, just direct execution
 results = {"data": "value"}
+
+# Example: Get a function
+func_ea = 0x12345
+func = idaapi.get_func(func_ea)
+if func:
+    print(f"Found function at {func_ea:#x}")
+    # Analyze it
+    ea = func.start_ea
+    while ea < func.end_ea:
+        disasm = idc.generate_disasm_line(ea, 0)
+        print(f"  {ea:#08x}: {disasm}")
+        ea = idc.next_head(ea, func.end_ea)
+else:
+    print(f"ERROR: Function not found at {func_ea:#x}")
 
 # Save results
 output_file = Path(__file__).parent / "output.json"
 with open(output_file, 'w') as f:
     json.dump(results, f, indent=2)
 
-print(f"Saved to {output_file}")
+print(f"\nResults saved to {output_file}")
+print("Exiting IDA...")
 
-# CRITICAL: Exit explicitly
+# CRITICAL: Exit explicitly - script hangs forever without this!
 idc.qexit(0)
 ```
+
+**Why this works:**
+- IDA executes the script from top to bottom
+- No `if __name__` needed - it's always `__main__` in IDA
+- No `def main():` needed - just write the code directly
+- Module-level code runs immediately when loaded
 
 ### Run Command
 
