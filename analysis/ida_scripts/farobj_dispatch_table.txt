@@ -1,0 +1,50 @@
+================================================================================
+Far Object Dispatch Table
+================================================================================
+Address: 0x26426
+Entries: 28
+================================================================================
+
+Index | Offset | Address  | Target   | Function Name
+------|--------|----------|----------|--------------------------------
+    0 | 0x0000 | 0x26426 | 0x900e | sub_900E
+    1 | 0x0002 | 0x26428 | 0x1f6c | sub_1F6C
+    2 | 0x0004 | 0x2642a | 0x90b4 | sub_90B4
+    3 | 0x0006 | 0x2642c | 0x1f6c | sub_1F6C
+    4 | 0x0008 | 0x2642e | 0x8a87 | sub_8A87
+    5 | 0x000A | 0x26430 | 0x1f6c | sub_1F6C
+    6 | 0x000C | 0x26432 | 0x7ac0 | sub_7AC0
+    7 | 0x000E | 0x26434 | 0x1f6c | sub_1F6C
+    8 | 0x0010 | 0x26436 | 0x7a7d | sub_7A7D
+    9 | 0x0012 | 0x26438 | 0x1f6c | sub_1F6C
+   10 | 0x0014 | 0x2643a | 0x7618 | sub_7618
+   11 | 0x0016 | 0x2643c | 0x1f6c | sub_1F6C
+   12 | 0x0018 | 0x2643e | 0x758a | sub_758A
+   13 | 0x001A | 0x26440 | 0x1f6c | sub_1F6C
+   14 | 0x001C | 0x26442 | 0x746e | sub_746E
+   15 | 0x001E | 0x26444 | 0x1f6c | sub_1F6C
+   16 | 0x0020 | 0x26446 | 0x7389 | sub_7389
+   17 | 0x0022 | 0x26448 | 0x1f6c | sub_1F6C
+   18 | 0x0024 | 0x2644a | 0x721d | sub_721D
+   19 | 0x0026 | 0x2644c | 0x1f6c | sub_1F6C
+   20 | 0x0028 | 0x2644e | 0x70ad | sub_70AD
+   21 | 0x002A | 0x26450 | 0x1f6c | sub_1F6C
+   22 | 0x002C | 0x26452 | 0x6e05 | sub_6E05
+   23 | 0x002E | 0x26454 | 0x1f6c | sub_1F6C
+   24 | 0x0030 | 0x26456 | 0x8360 | sub_8360
+   25 | 0x0032 | 0x26458 | 0x1f6c | sub_1F6C
+   26 | 0x0034 | 0x2645a | 0x8357 | sub_8357
+   27 | 0x0036 | 0x2645c | 0x1f6c | sub_1F6C
+
+================================================================================
+Usage (from farobj_record_step):
+================================================================================
+  mov     bx, es:[bx+6]       ; Get dispatch index from entity+6
+  test    bx, 3                ; Check word alignment
+  jnz     short skip           ; Skip if not aligned
+  cmp     bx, 34h              ; Check max index (52)
+  ja      short skip           ; Skip if too large
+  call    cs:off_26426[bx]     ; Call handler from table
+
+Max table index: 0x34 (52) = entry 26 if word-aligned
+Table entries found: 28

@@ -1,0 +1,68 @@
+================================================================================
+viewobj_project_advance Disassembly
+================================================================================
+Address: 0x270e0
+Size: 93 bytes (0x5D)
+================================================================================
+
+Called by 8 functions (showing first 20):
+  0x12b70 - viewobj_project_select
+  0x2e84a - viewobj_project_if_moved
+  0x3a906 - sub_3A8B1
+  0x46910 - viewobj_table64_project
+  0x46940 - viewobj_table72_flag_project
+  0x46970 - viewobj_table32_flag_project
+  0x1043d3 - mission_session_init_coordinator
+  0x1043de - mission_session_init_coordinator
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x270e0 | push    bx
+   1 | +0x0001 | 0x270e1 | push    ds
+   2 | +0x0002 | 0x270e2 | mov     di, seg R05_400C
+   3 | +0x0005 | 0x270e5 | mov     ds, di
+   4 | +0x0007 | 0x270e7 | shl     ax, 1
+   5 | +0x0009 | 0x270e9 | shl     ax, 1
+   6 | +0x000B | 0x270eb | add     ax, 34h ; '4'
+   7 | +0x000E | 0x270ee | mov     di, ax
+   8 | +0x0010 | 0x270f0 | lds     di, [di]
+   9 | +0x0012 | 0x270f2 | cmp     di, 0FFFFh
+  10 | +0x0015 | 0x270f5 | jz      short loc_27139
+  11 | +0x0017 | 0x270f7 | mov     ah, [di+27h]
+  12 | +0x001A | 0x270fa | test    ah, 80h
+  13 | +0x001D | 0x270fd | jz      short loc_2712D
+  14 | +0x001F | 0x270ff | mov     al, [di+26h]
+  15 | +0x0022 | 0x27102 | rol     al, 1
+  16 | +0x0024 | 0x27104 | rol     al, 1
+  17 | +0x0026 | 0x27106 | and     al, 3
+  18 | +0x0028 | 0x27108 | jz      short loc_2712D
+  19 | +0x002A | 0x2710a | cmp     al, 3
+  20 | +0x002C | 0x2710c | jz      short loc_27139
+  21 | +0x002E | 0x2710e | test    al, 2
+  22 | +0x0030 | 0x27110 | jnz     short loc_2711C
+  23 | +0x0032 | 0x27112 | test    ah, 20h
+  24 | +0x0035 | 0x27115 | jz      short loc_2712D
+  25 | +0x0037 | 0x27117 | inc     word ptr [di+22h]
+  26 | +0x003A | 0x2711a | jmp     short loc_2712D
+  27 | +0x003C | 0x2711c | test    ah, 40h
+  28 | +0x003F | 0x2711f | jz      short loc_27139
+  29 | +0x0041 | 0x27121 | mov     dx, 1
+  30 | +0x0044 | 0x27124 | test    ah, 20h
+  31 | +0x0047 | 0x27127 | jz      short loc_2712A
+  32 | +0x0049 | 0x27129 | inc     dx
+  33 | +0x004A | 0x2712a | add     [di+22h], dx
+  34 | +0x004D | 0x2712d | push    di
+  35 | +0x004E | 0x2712e | push    cs
+  36 | +0x004F | 0x2712f | call    near ptr view_projection
+  37 | +0x0052 | 0x27132 | pop     ax
+  38 | +0x0053 | 0x27133 | mov     dx, ds
+  39 | +0x0055 | 0x27135 | pop     ds
+  40 | +0x0056 | 0x27136 | pop     bx
+  41 | +0x0057 | 0x27137 | clc
+  42 | +0x0058 | 0x27138 | retf
+  43 | +0x0059 | 0x27139 | pop     ds
+  44 | +0x005A | 0x2713a | pop     bx
+  45 | +0x005B | 0x2713b | stc
+  46 | +0x005C | 0x2713c | retf

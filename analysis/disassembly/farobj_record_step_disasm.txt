@@ -1,0 +1,166 @@
+================================================================================
+farobj_record_step Disassembly
+================================================================================
+Address: 0x2142e
+Size: 393 bytes (0x189)
+================================================================================
+
+Called by 2 functions (showing first 20):
+  0x20fba - view_projection
+  0x213d9 - farobj_sort_and_step
+
+Calls 7 functions:
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x2142e | push    ds
+   1 | +0x0001 | 0x2142f | push    es
+   2 | +0x0002 | 0x21430 | mov     ax, ds
+   3 | +0x0004 | 0x21432 | mov     es, ax
+   4 | +0x0006 | 0x21434 | call    record_xform_apply
+   5 | +0x0009 | 0x21437 | call    farobj_flag24_select
+   6 | +0x000C | 0x2143a | mov     cs:byte_1F742, 0
+   7 | +0x0012 | 0x21440 | mov     si, [di+22h]
+   8 | +0x0015 | 0x21443 | mov     ax, [di+24h]
+   9 | +0x0018 | 0x21446 | test    ax, 10h
+  10 | +0x001B | 0x21449 | jz      short loc_21467
+  11 | +0x001D | 0x2144b | mov     dx, 7B0Eh
+  12 | +0x0020 | 0x2144e | mov     es, dx
+  13 | +0x0022 | 0x21450 | shl     si, 1
+  14 | +0x0024 | 0x21452 | shl     si, 1
+  15 | +0x0026 | 0x21454 | add     si, 3052h
+  16 | +0x002A | 0x21458 | les     si, es:[si]
+  17 | +0x002D | 0x2145b | cmp     si, 0FFFFh
+  18 | +0x0030 | 0x2145e | jz      short loc_2142B
+  19 | +0x0032 | 0x21460 | sub     ah, ah
+  20 | +0x0034 | 0x21462 | mov     al, es:[si]
+  21 | +0x0037 | 0x21465 | add     si, ax
+  22 | +0x0039 | 0x21467 | mov     dx, 8
+  23 | +0x003C | 0x2146a | cmp     cs:word_25499, 1
+  24 | +0x0042 | 0x21470 | jle     short loc_21482
+  25 | +0x0044 | 0x21472 | test    word ptr es:[si+2], 1000h
+  26 | +0x004A | 0x21478 | jz      short loc_21482
+  27 | +0x004C | 0x2147a | add     si, dx
+  28 | +0x004E | 0x2147c | cmp     word ptr es:[si], 0FFFFh
+  29 | +0x0052 | 0x21480 | jnz     short loc_21472
+  30 | +0x0054 | 0x21482 | mov     ax, [di+1Ah]
+  31 | +0x0057 | 0x21485 | mov     cx, [di+24h]
+  32 | +0x005A | 0x21488 | test    cx, 4000h
+  33 | +0x005E | 0x2148c | jz      short loc_2149B
+  34 | +0x0060 | 0x2148e | mov     cl, cs:byte_1F743
+  35 | +0x0065 | 0x21493 | or      cl, cl
+  36 | +0x0067 | 0x21495 | jz      short loc_2149B
+  37 | +0x0069 | 0x21497 | inc     cl
+  38 | +0x006B | 0x21499 | shr     ax, cl
+  39 | +0x006D | 0x2149b | cmp     ax, es:[si]
+  40 | +0x0070 | 0x2149e | jbe     short loc_214A8
+  41 | +0x0072 | 0x214a0 | add     si, dx
+  42 | +0x0074 | 0x214a2 | cmp     word ptr es:[si], 0FFFFh
+  43 | +0x0078 | 0x214a6 | jnz     short loc_2149B
+  44 | +0x007A | 0x214a8 | mov     ax, [di+24h]
+  45 | +0x007D | 0x214ab | test    ax, 4000h
+  46 | +0x0080 | 0x214ae | jz      short loc_214B9
+  47 | +0x0082 | 0x214b0 | push    cs
+  48 | +0x0083 | 0x214b1 | call    near ptr flag_byte_get
+  49 | +0x0086 | 0x214b4 | nop
+  50 | +0x0087 | 0x214b5 | mov     cs:byte_1F742, al
+  51 | +0x008B | 0x214b9 | mov     dl, 0FFh
+  52 | +0x008D | 0x214bb | mov     ax, [di+24h]
+  53 | +0x0090 | 0x214be | test    ax, 2
+  54 | +0x0093 | 0x214c1 | jnz     short loc_214C5
+  55 | +0x0095 | 0x214c3 | sub     dl, dl
+  56 | +0x0097 | 0x214c5 | mov     cs:byte_1F73D, dl
+  57 | +0x009C | 0x214ca | mov     bx, si
+  58 | +0x009E | 0x214cc | mov     ax, es:[bx+2]
+  59 | +0x00A2 | 0x214d0 | mov     si, es:[bx+4]
+  60 | +0x00A6 | 0x214d4 | test    ax, 4000h
+  61 | +0x00A9 | 0x214d7 | jz      short loc_214DF
+  62 | +0x00AB | 0x214d9 | call    active_farptr_match_b2
+  63 | +0x00AE | 0x214dc | pop     es
+  64 | +0x00AF | 0x214dd | pop     ds
+  65 | +0x00B0 | 0x214de | retn
+  66 | +0x00B1 | 0x214df | test    ax, 8000h
+  67 | +0x00B4 | 0x214e2 | jz      short loc_214EC
+  68 | +0x00B6 | 0x214e4 | call    active_farptr_match_b2
+  69 | +0x00B9 | 0x214e7 | pop     es
+  70 | +0x00BA | 0x214e8 | pop     ds
+  71 | +0x00BB | 0x214e9 | jmp     loc_215C1
+  72 | +0x00BE | 0x214ec | mov     dx, ax
+  73 | +0x00C0 | 0x214ee | and     dx, 20h
+  74 | +0x00C3 | 0x214f1 | mov     cs:state_byte_1f741, dl
+  75 | +0x00C8 | 0x214f6 | mov     dl, cs:byte_1F731
+  76 | +0x00CD | 0x214fb | mov     dh, cs:byte_1F730
+  77 | +0x00D2 | 0x21500 | push    dx
+  78 | +0x00D3 | 0x21501 | or      dl, dl
+  79 | +0x00D5 | 0x21503 | jz      short loc_21513
+  80 | +0x00D7 | 0x21505 | sub     dh, dh
+  81 | +0x00D9 | 0x21507 | test    ax, 1
+  82 | +0x00DC | 0x2150a | jz      short loc_2150E
+  83 | +0x00DE | 0x2150c | mov     dh, 0FFh
+  84 | +0x00E0 | 0x2150e | mov     cs:byte_1F731, dh
+  85 | +0x00E5 | 0x21513 | or      dl, dl
+  86 | +0x00E7 | 0x21515 | jz      short loc_21533
+  87 | +0x00E9 | 0x21517 | sub     dh, dh
+  88 | +0x00EB | 0x21519 | test    ax, 2
+  89 | +0x00EE | 0x2151c | jz      short loc_2152E
+  90 | +0x00F0 | 0x2151e | mov     dh, 0FFh
+  91 | +0x00F2 | 0x21520 | test    ax, 4
+  92 | +0x00F5 | 0x21523 | jnz     short loc_21527
+  93 | +0x00F7 | 0x21525 | sub     dh, dh
+  94 | +0x00F9 | 0x21527 | mov     cs:byte_1F738, dh
+  95 | +0x00FE | 0x2152c | mov     dh, 0FFh
+  96 | +0x0100 | 0x2152e | mov     cs:byte_1F730, dh
+  97 | +0x0105 | 0x21533 | sub     dh, dh
+  98 | +0x0107 | 0x21535 | cmp     cs:byte_1F732, 0FFh
+  99 | +0x010D | 0x2153b | jnz     short loc_21548
+ 100 | +0x010F | 0x2153d | shr     ax, 1
+ 101 | +0x0111 | 0x2153f | shr     ax, 1
+ 102 | +0x0113 | 0x21541 | shr     ax, 1
+ 103 | +0x0115 | 0x21543 | and     ax, 3
+ 104 | +0x0118 | 0x21546 | mov     dh, al
+ 105 | +0x011A | 0x21548 | mov     cs:state_byte_1f739, dh
+ 106 | +0x011F | 0x2154d | mov     ax, [di+20h]
+ 107 | +0x0122 | 0x21550 | push    ax
+ 108 | +0x0123 | 0x21551 | push    di
+ 109 | +0x0124 | 0x21552 | mov     cl, cs:byte_1F75E
+ 110 | +0x0129 | 0x21557 | shl     ax, cl
+ 111 | +0x012B | 0x21559 | mov     cx, [di+24h]
+ 112 | +0x012E | 0x2155c | test    cx, 80h
+ 113 | +0x0132 | 0x21560 | mov     cl, cs:byte_1F742
+ 114 | +0x0137 | 0x21565 | jz      short loc_21577
+ 115 | +0x0139 | 0x21567 | sub     ch, ch
+ 116 | +0x013B | 0x21569 | sub     dx, dx
+ 117 | +0x013D | 0x2156b | jcxz    short loc_21575
+ 118 | +0x013F | 0x2156d | push    cx
+ 119 | +0x0140 | 0x2156e | shl     ax, 1
+ 120 | +0x0142 | 0x21570 | rcl     dx, 1
+ 121 | +0x0144 | 0x21572 | loop    loc_2156E
+ 122 | +0x0146 | 0x21574 | pop     cx
+ 123 | +0x0147 | 0x21575 | jmp     short loc_21585
+ 124 | +0x0149 | 0x21577 | or      ax, ax
+ 125 | +0x014B | 0x21579 | jns     short loc_21583
+ 126 | +0x014D | 0x2157b | neg     ax
+ 127 | +0x014F | 0x2157d | shr     ax, cl
+ 128 | +0x0151 | 0x2157f | neg     ax
+ 129 | +0x0153 | 0x21581 | jmp     short loc_21585
+ 130 | +0x0155 | 0x21583 | shr     ax, cl
+ 131 | +0x0157 | 0x21585 | mov     [di+20h], ax
+ 132 | +0x015A | 0x21588 | mov     bx, es:[bx+6]
+ 133 | +0x015E | 0x2158c | test    bx, 3
+ 134 | +0x0162 | 0x21590 | jnz     short loc_2159C
+ 135 | +0x0164 | 0x21592 | cmp     bx, 34h ; '4'
+ 136 | +0x0167 | 0x21595 | ja      short loc_2159C
+ 137 | +0x0169 | 0x21597 | call    cs:off_26426[bx]
+ 138 | +0x016E | 0x2159c | pop     di
+ 139 | +0x016F | 0x2159d | pop     ax
+ 140 | +0x0170 | 0x2159e | mov     [di+20h], ax
+ 141 | +0x0173 | 0x215a1 | pop     ax
+ 142 | +0x0174 | 0x215a2 | mov     cs:byte_1F731, al
+ 143 | +0x0178 | 0x215a6 | mov     cs:byte_1F730, ah
+ 144 | +0x017D | 0x215ab | mov     cs:state_byte_1f741, 0
+ 145 | +0x0183 | 0x215b1 | call    active_farptr_match_b2
+ 146 | +0x0186 | 0x215b4 | pop     es
+ 147 | +0x0187 | 0x215b5 | pop     ds
+ 148 | +0x0188 | 0x215b6 | retn

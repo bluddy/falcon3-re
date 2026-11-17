@@ -1,0 +1,102 @@
+================================================================================
+farobj_sort_and_step Disassembly
+================================================================================
+Address: 0x2131c
+Size: 202 bytes (0xCA)
+================================================================================
+
+Called by 9 functions (showing first 20):
+  0x13dff - farobj_batch_build_project
+  0x2fe37 - game_frame_pipeline_step
+  0x2fe66 - game_frame_pipeline_step
+  0x2fe9c - game_frame_pipeline_step
+  0x31244 - terrain_state_reinit
+  0x3a90b - sub_3A8B1
+  0x3a978 - sub_3A8B1
+  0x10440d - mission_session_init_coordinator
+  0x108c65 - r15_simulation_loop
+
+================================================================================
+Disassembly:
+================================================================================
+
+   0 | +0x0000 | 0x2131c | push    ds
+   1 | +0x0001 | 0x2131d | push    es
+   2 | +0x0002 | 0x2131e | mov     ax, 7B0Eh
+   3 | +0x0005 | 0x21321 | mov     es, ax
+   4 | +0x0007 | 0x21323 | mov     ds, ax
+   5 | +0x0009 | 0x21325 | mov     cx, ds:word_7D0C2
+   6 | +0x000D | 0x21329 | jcxz    short loc_21385
+   7 | +0x000F | 0x2132b | dec     cx
+   8 | +0x0010 | 0x2132c | jz      short loc_21361
+   9 | +0x0012 | 0x2132e | shl     cx, 1
+  10 | +0x0014 | 0x21330 | sub     dx, dx
+  11 | +0x0016 | 0x21332 | sub     bx, bx
+  12 | +0x0018 | 0x21334 | mov     si, [bx+2DF8h]
+  13 | +0x001C | 0x21338 | mov     di, [bx+2DFAh]
+  14 | +0x0020 | 0x2133c | mov     ax, [si+1FE8h]
+  15 | +0x0024 | 0x21340 | cmp     ax, [di+1FE8h]
+  16 | +0x0028 | 0x21344 | jnb     short loc_21351
+  17 | +0x002A | 0x21346 | mov     dx, 0FFFFh
+  18 | +0x002D | 0x21349 | mov     [bx+2DFAh], si
+  19 | +0x0031 | 0x2134d | mov     [bx+2DF8h], di
+  20 | +0x0035 | 0x21351 | add     bx, 2
+  21 | +0x0038 | 0x21354 | cmp     bx, cx
+  22 | +0x003A | 0x21356 | jl      short loc_21334
+  23 | +0x003C | 0x21358 | sub     cx, 2
+  24 | +0x003F | 0x2135b | jle     short loc_21361
+  25 | +0x0041 | 0x2135d | or      dx, dx
+  26 | +0x0043 | 0x2135f | jnz     short loc_21330
+  27 | +0x0045 | 0x21361 | mov     cx, ds:word_7D0C2
+  28 | +0x0049 | 0x21365 | mov     si, 2DF8h
+  29 | +0x004C | 0x21368 | push    cx
+  30 | +0x004D | 0x21369 | push    si
+  31 | +0x004E | 0x2136a | push    ds
+  32 | +0x004F | 0x2136b | mov     di, es:[si]
+  33 | +0x0052 | 0x2136e | add     di, 1FE8h
+  34 | +0x0056 | 0x21372 | mov     ds, word ptr es:[di+4]
+  35 | +0x005A | 0x21376 | mov     di, es:[di+2]
+  36 | +0x005E | 0x2137a | call    farobj_record_lookup_step
+  37 | +0x0061 | 0x2137d | pop     ds
+  38 | +0x0062 | 0x2137e | pop     si
+  39 | +0x0063 | 0x2137f | add     si, 2
+  40 | +0x0066 | 0x21382 | pop     cx
+  41 | +0x0067 | 0x21383 | loop    loc_21368
+  42 | +0x0069 | 0x21385 | mov     cx, ds:word_7C054
+  43 | +0x006D | 0x21389 | jcxz    short loc_213E3
+  44 | +0x006F | 0x2138b | dec     cx
+  45 | +0x0070 | 0x2138c | jz      short loc_213C1
+  46 | +0x0072 | 0x2138e | shl     cx, 1
+  47 | +0x0074 | 0x21390 | sub     dx, dx
+  48 | +0x0076 | 0x21392 | sub     bx, bx
+  49 | +0x0078 | 0x21394 | mov     si, [bx+1D8Ah]
+  50 | +0x007C | 0x21398 | mov     di, [bx+1D8Ch]
+  51 | +0x0080 | 0x2139c | mov     ax, [si+0F7Ah]
+  52 | +0x0084 | 0x213a0 | cmp     ax, [di+0F7Ah]
+  53 | +0x0088 | 0x213a4 | jnb     short loc_213B1
+  54 | +0x008A | 0x213a6 | mov     dx, 0FFFFh
+  55 | +0x008D | 0x213a9 | mov     [bx+1D8Ch], si
+  56 | +0x0091 | 0x213ad | mov     [bx+1D8Ah], di
+  57 | +0x0095 | 0x213b1 | add     bx, 2
+  58 | +0x0098 | 0x213b4 | cmp     bx, cx
+  59 | +0x009A | 0x213b6 | jl      short loc_21394
+  60 | +0x009C | 0x213b8 | sub     cx, 2
+  61 | +0x009F | 0x213bb | jle     short loc_213C1
+  62 | +0x00A1 | 0x213bd | or      dx, dx
+  63 | +0x00A3 | 0x213bf | jnz     short loc_21390
+  64 | +0x00A5 | 0x213c1 | mov     cx, ds:word_7C054
+  65 | +0x00A9 | 0x213c5 | mov     si, 1D8Ah
+  66 | +0x00AC | 0x213c8 | push    cx
+  67 | +0x00AD | 0x213c9 | push    si
+  68 | +0x00AE | 0x213ca | mov     di, es:[si]
+  69 | +0x00B1 | 0x213cd | add     di, 0F7Ah
+  70 | +0x00B5 | 0x213d1 | mov     ds, word ptr es:[di+4]
+  71 | +0x00B9 | 0x213d5 | mov     di, es:[di+2]
+  72 | +0x00BD | 0x213d9 | call    farobj_record_step
+  73 | +0x00C0 | 0x213dc | pop     si
+  74 | +0x00C1 | 0x213dd | add     si, 2
+  75 | +0x00C4 | 0x213e0 | pop     cx
+  76 | +0x00C5 | 0x213e1 | loop    loc_213C8
+  77 | +0x00C7 | 0x213e3 | pop     es
+  78 | +0x00C8 | 0x213e4 | pop     ds
+  79 | +0x00C9 | 0x213e5 | retf
