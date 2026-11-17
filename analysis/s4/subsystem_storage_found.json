@@ -1,0 +1,1642 @@
+{
+  "breakthrough": "Found damage fields at entity offsets 0xC9 and 0xCA",
+  "entity_damage_fields": {
+    "0xC9": [
+      {
+        "function": "farobj_record_ops_exec",
+        "address": "0x3bd28",
+        "instruction": "mov     byte ptr [di+0C9h], 0",
+        "context": [
+          "0003BD19: mov     byte ptr [si+29h], 0FFh",
+          "0003BD1C: mov     word ptr [si+48h], 9Fh",
+          "0003BD21: mov     di, [si+6]",
+          "0003BD24: mov     byte ptr [di+74h], 1",
+          "0003BD28: mov     byte ptr [di+0C9h], 0",
+          "0003BD2D: mov     word ptr [di+0CAh], 0",
+          "0003BD33: mov     word ptr [di+2Ch], 39h ; '9'"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x4118b",
+        "instruction": "cmp     [di+0C9h], al",
+        "context": [
+          "0004117C: push    bx",
+          "0004117D: call    hud_font_glyph_get",
+          "00041180: mov     si, di",
+          "00041182: mov     di, [si+6]",
+          "00041185: pop     bx",
+          "00041186: mov     al, [si+56h]",
+          "00041189: shl     al, 1",
+          "0004118B: cmp     [di+0C9h], al",
+          "0004118F: jb      short loc_41193",
+          "00041191: pop     ds",
+          "00041192: retf",
+          "00041193: cmp     cs:byte_4115D, 1",
+          "00041199: jnz     short loc_411A1"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x4119b",
+        "instruction": "mov     [di+0C9h], cl",
+        "context": [
+          "0004118C: cmp     [di+0C9h], al",
+          "0004118F: jb      short loc_41193",
+          "00041191: pop     ds",
+          "00041192: retf",
+          "00041193: cmp     cs:byte_4115D, 1",
+          "00041199: jnz     short loc_411A1",
+          "0004119B: mov     [di+0C9h], cl",
+          "0004119F: jmp     short loc_411FC",
+          "000411A1: mov     al, bl",
+          "000411A3: mul     bh",
+          "000411A5: add     ax, 32h ; '2'",
+          "000411A8: mov     cl, 64h ; 'd'"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x411b2",
+        "instruction": "add     [di+0C9h], al",
+        "context": [
+          "000411A3: mul     bh",
+          "000411A5: add     ax, 32h ; '2'",
+          "000411A8: mov     cl, 64h ; 'd'",
+          "000411AA: div     cl",
+          "000411AC: or      al, al",
+          "000411AE: jnz     short loc_411B2",
+          "000411B0: pop     ds",
+          "000411B1: retf",
+          "000411B2: add     [di+0C9h], al",
+          "000411B6: mov     cs:byte_41157, 10h",
+          "000411BC: sub     cs:byte_41157, al"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x411f3",
+        "instruction": "mov     cl, [di+0C9h]",
+        "context": [
+          "000411E4: or      dx, 200h",
+          "000411E7: test    word ptr ds:135Eh, 80h",
+          "000411ED: jz      short loc_411FC",
+          "000411EF: mov     ax, cs:word_41158",
+          "000411F3: mov     cl, [di+0C9h]",
+          "000411F7: call    sub_2C0C7",
+          "000411FC: mov     cx, [di+0CAh]",
+          "00041200: or      [di+0CAh], dx"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x41231",
+        "instruction": "cmp     [di+0C9h], bh",
+        "context": [
+          "00041222: cmp     byte ptr [di+0D1h], 0",
+          "00041225: jz      short loc_4122E",
+          "00041227: push    si",
+          "00041228: call    undoc_33D83",
+          "0004122D: pop     si",
+          "0004122E: mov     bh, [si+56h]",
+          "00041231: cmp     [di+0C9h], bh",
+          "00041235: jb      short loc_4123A",
+          "00041237: jmp     loc_412E3",
+          "0004123A: push    cx",
+          "0004123B: push    dx",
+          "0004123C: mov     bx, [di+0CAh]"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x412e5",
+        "instruction": "cmp     [di+0C9h], bh",
+        "context": [
+          "000412D6: pop     si",
+          "000412D7: mov     [si+5Ah], ax",
+          "000412DA: mov     cs:byte_4115C, 1",
+          "000412E0: jmp     loc_413FC",
+          "000412E3: shl     bh, 1",
+          "000412E5: cmp     [di+0C9h], bh",
+          "000412E9: jnb     short loc_41352",
+          "000412EB: cmp     word ptr [si+0Ch], 4",
+          "000412EF: jz      short loc_41350",
+          "000412F1: cmp     bl, 10h"
+        ]
+      }
+    ],
+    "0xCA": [
+      {
+        "function": "main_game_loop_update",
+        "address": "0x2fa78",
+        "instruction": "mov     ax, [si+0CAh]",
+        "context": [
+          "0002FA69: mov     ax, 0Ch",
+          "0002FA6C: call    key_code_pending_drain",
+          "0002FA6F: cmp     byte ptr ds:4FFh, 0",
+          "0002FA74: mov     si, ds:48BAh",
+          "0002FA78: mov     ax, [si+0CAh]",
+          "0002FA7C: jnz     short loc_2FA84",
+          "0002FA7E: xor     ax, ds:0Eh",
+          "0002FA82: jz      short loc_2FAB4",
+          "0002FA84: mov     bx, ax",
+          "0002FA86: mov     byte ptr ds:4FFh, 0"
+        ]
+      },
+      {
+        "function": "control_axis_store_step",
+        "address": "0x2fc9f",
+        "instruction": "test    word ptr [si+0CAh], 200h",
+        "context": [
+          "0002FC90: cmp     byte ptr ds:105Eh, 0",
+          "0002FC91: jz      short loc_2FC9F",
+          "0002FC93: cmp     word ptr [si+0C5h], 0",
+          "0002FC98: jnz     short loc_2FC9F",
+          "0002FC9A: call    entity_timer_dec_2e",
+          "0002FC9D: jmp     short loc_2FD17",
+          "0002FC9F: test    word ptr [si+0CAh], 200h",
+          "0002FCA5: jnz     short loc_2FD17",
+          "0002FCA7: mov     cs:byte_2F6AF, 1",
+          "0002FCAD: mov     cs:byte_2F6B0, bl"
+        ]
+      },
+      {
+        "function": "game_frame_update_chain",
+        "address": "0x2ff52",
+        "instruction": "test    word ptr [bx+0CAh], 800h",
+        "context": [
+          "0002FF43: call    entity_timer2e_dec_14",
+          "0002FF45: mov     bx, cs:word_2F669",
+          "0002FF4A: xor     cx, cx",
+          "0002FF4C: cmp     ds:105Eh, cl",
+          "0002FF50: jz      short loc_2FF71",
+          "0002FF52: test    word ptr [bx+0CAh], 800h",
+          "0002FF58: jz      short loc_2FF5B",
+          "0002FF5A: inc     cx",
+          "0002FF5B: call    sprite_project_gate_c5",
+          "0002FF60: call    entity_proj_depth_class"
+        ]
+      },
+      {
+        "function": "key_range_wheel_handler",
+        "address": "0x303e2",
+        "instruction": "test    word ptr [si+0CAh], 20h",
+        "context": [
+          "000303D3: jz      short loc_303D5",
+          "000303D4: retn",
+          "000303D5: cmp     byte ptr ds:82Ch, 0",
+          "000303DA: jnz     short loc_30401",
+          "000303DC: mov     si, ds:48BAh",
+          "000303E0: xor     ax, ax",
+          "000303E2: test    word ptr [si+0CAh], 20h",
+          "000303E8: jnz     short loc_30401",
+          "000303EA: mov     bx, ds:44AAh",
+          "000303EE: cmp     bx, 2"
+        ]
+      },
+      {
+        "function": "dgroup_state_cycle_step",
+        "address": "0x305f0",
+        "instruction": "test    [bx+0CAh], ax",
+        "context": [
+          "000305E4: push    ds",
+          "000305E5: push    bx",
+          "000305E6: mov     bx, 54AFh",
+          "000305E9: mov     ds, bx",
+          "000305EB: mov     bx, cs:word_2F669",
+          "000305F0: test    [bx+0CAh], ax",
+          "000305F4: pop     bx",
+          "000305F5: pop     ds",
+          "000305F6: retn"
+        ]
+      },
+      {
+        "function": "view_terrain_frame_step",
+        "address": "0x31e03",
+        "instruction": "test    word ptr [si+0CAh], 1000h",
+        "context": [
+          "00031DF4: mov     ax, 1",
+          "00031DF5: call    game_setup_frame_chain",
+          "00031DF8: cmp     byte ptr ds:45Ch, 0",
+          "00031DFD: jz      short loc_31E37",
+          "00031DFF: mov     si, ds:48BAh",
+          "00031E03: test    word ptr [si+0CAh], 1000h",
+          "00031E09: jnz     short loc_31E32",
+          "00031E0B: mov     byte ptr ds:4FBh, 0FFh",
+          "00031E10: cmp     byte ptr ds:44Fh, 1"
+        ]
+      },
+      {
+        "function": "coord_window_bounds_test",
+        "address": "0x31f9f",
+        "instruction": "mov     si, [si+0CAh]",
+        "context": [
+          "00031F90: test    byte ptr ds:478h, 2",
+          "00031F91: jz      short loc_31F9B",
+          "00031F93: mov     cs:word_2F68F, 64h ; 'd'",
+          "00031F9A: retn",
+          "00031F9B: mov     si, ds:48BAh",
+          "00031F9F: mov     si, [si+0CAh]",
+          "00031FA3: mov     ds:0Eh, si",
+          "00031FA7: push    ds",
+          "00031FA8: mov     ds, cs:word_2F66F",
+          "00031FAD: mov     bx, 0"
+        ]
+      },
+      {
+        "function": "key_mode_state_setup",
+        "address": "0x33250",
+        "instruction": "test    word ptr [si+0CAh], 200h",
+        "context": [
+          "00033241: call    xlat_mask_setbit_47e",
+          "00033244: call    matrix_constants_copy_gate",
+          "00033249: jnz     short locret_33258",
+          "0003324B: mov     si, cs:word_2F669",
+          "00033250: test    word ptr [si+0CAh], 200h",
+          "00033256: jz      short loc_33259",
+          "00033258: retf",
+          "00033259: mov     al, byte_54F23",
+          "0003325C: neg     al",
+          "0003325E: cbw"
+        ]
+      },
+      {
+        "function": "key_event_mode_gate",
+        "address": "0x33299",
+        "instruction": "test    word ptr [si+0CAh], 200h",
+        "context": [
+          "0003328A: mov     si, cs:word_2F669",
+          "0003328B: cmp     byte_55B4E, 0",
+          "00033290: jz      short loc_33299",
+          "00033292: cmp     word ptr [si+0C5h], 0",
+          "00033297: jz      short locret_332A1",
+          "00033299: test    word ptr [si+0CAh], 200h",
+          "0003329F: jz      short loc_332A2",
+          "000332A1: retf",
+          "000332A2: test    byte ptr [si+0D2h], 2",
+          "000332A7: jnz     short locret_332A1"
+        ]
+      },
+      {
+        "function": "undoc_334C2",
+        "address": "0x334cd",
+        "instruction": "test    word ptr [si+0CAh], 40h",
+        "context": [
+          "000334C2: mov     si, word_593AA",
+          "000334C6: test    byte ptr [si+0C2h], 1",
+          "000334CB: jz      short locret_334DF",
+          "000334CD: test    word ptr [si+0CAh], 40h",
+          "000334D3: jnz     short locret_334DF",
+          "000334D5: xor     byte ptr [si+0C2h], 2",
+          "000334DA: mov     byte_55B6F, 0"
+        ]
+      },
+      {
+        "function": "undoc_339B2",
+        "address": "0x33b8e",
+        "instruction": "test    word ptr [si+0CAh], 1000h",
+        "context": [
+          "00033B7F: mov     al, byte_54F6D",
+          "00033B82: test    al, 4",
+          "00033B84: jnz     short loc_33BAD",
+          "00033B86: test    al, 3",
+          "00033B88: jnz     short loc_33BC0",
+          "00033B8A: mov     si, word_593AA",
+          "00033B8E: test    word ptr [si+0CAh], 1000h",
+          "00033B94: jnz     short locret_33BA0",
+          "00033B96: xor     byte_54F4C, 0FFh",
+          "00033B9B: mov     byte_54F3F, 0"
+        ]
+      },
+      {
+        "function": "undoc_33C1B",
+        "address": "0x33d09",
+        "instruction": "test    word ptr [si+0CAh], 80h",
+        "context": [
+          "00033CFA: call    xlat_mask_setbit_47e",
+          "00033CFD: call    matrix_constants_copy_gate",
+          "00033D02: jnz     short locret_33D4A",
+          "00033D04: mov     si, cs:word_2F669",
+          "00033D09: test    word ptr [si+0CAh], 80h",
+          "00033D0F: jnz     short locret_33D4A",
+          "00033D11: cmp     byte ptr [si+0D1h], 0FFh",
+          "00033D16: jnz     short locret_33D4A"
+        ]
+      },
+      {
+        "function": "undoc_33C1B",
+        "address": "0x33d5c",
+        "instruction": "test    word ptr [si+0CAh], 80h",
+        "context": [
+          "00033D4D: call    xlat_mask_setbit_47e",
+          "00033D50: call    matrix_constants_copy_gate",
+          "00033D55: jnz     short locret_33DCC",
+          "00033D57: mov     si, cs:word_2F669",
+          "00033D5C: test    word ptr [si+0CAh], 80h",
+          "00033D62: jnz     short near ptr undoc_33D83",
+          "00033D64: cmp     byte ptr [si+0D1h], 0FFh",
+          "00033D69: jz      short near ptr undoc_33D83"
+        ]
+      },
+      {
+        "function": "undoc_33D83",
+        "address": "0x33d8d",
+        "instruction": "test    word ptr [si+0CAh], 80h",
+        "context": [
+          "00033D83: mov     byte_55B63, 0",
+          "00033D88: mov     si, cs:word_2F669",
+          "00033D8D: test    word ptr [si+0CAh], 80h",
+          "00033D93: jnz     short loc_33DBA",
+          "00033D95: xor     byte ptr [si+0D1h], 0FFh",
+          "00033D9A: jz      short loc_33DBA"
+        ]
+      },
+      {
+        "function": "view_cockpit_hud_initialize",
+        "address": "0x359b2",
+        "instruction": "test    word ptr [si+0CAh], 400h",
+        "context": [
+          "000359B2: test    word ptr [si+0CAh], 400h",
+          "000359B8: jz      short loc_359BB",
+          "000359BA: retn",
+          "000359BB: push    es",
+          "000359BC: mov     ds:6F8h, ax",
+          "000359BF: mov     ds:6FAh, bx"
+        ]
+      },
+      {
+        "function": "view_external_limits_install",
+        "address": "0x35b43",
+        "instruction": "test    word ptr [si+0CAh], 400h",
+        "context": [
+          "00035B43: test    word ptr [si+0CAh], 400h",
+          "00035B49: jz      short loc_35B4C",
+          "00035B4B: retn",
+          "00035B4C: push    es",
+          "00035B4D: mov     word ptr ds:6F8h, 0"
+        ]
+      },
+      {
+        "function": "hud_readout_render_coordinator",
+        "address": "0x3694b",
+        "instruction": "test    word ptr [si+0CAh], 1000h",
+        "context": [
+          "0003693C: xor     ax, ax",
+          "0003693D: call    graphics_sprite_offset_dispatch",
+          "00036940: cmp     byte ptr ds:69Ah, 0FFh",
+          "00036945: jz      short loc_36991",
+          "00036947: mov     si, ds:48BAh",
+          "0003694B: test    word ptr [si+0CAh], 1000h",
+          "00036951: jnz     short loc_36991",
+          "00036953: mov     ax, ds:69Ah",
+          "00036956: add     al, 30h ; '0'",
+          "00036958: mov     ds:1028h, al"
+        ]
+      },
+      {
+        "function": "hud_heading_tape_draw",
+        "address": "0x3709b",
+        "instruction": "test    word ptr [si+0CAh], 1000h",
+        "context": [
+          "0003708F: cmp     byte ptr ds:477h, 2",
+          "00037094: jnz     short loc_37097",
+          "00037096: retn",
+          "00037097: mov     si, ds:48BAh",
+          "0003709B: test    word ptr [si+0CAh], 1000h",
+          "000370A1: jz      short loc_370A4",
+          "000370A3: retn",
+          "000370A4: mov     di, 692h",
+          "000370A7: call    angle_xy_near"
+        ]
+      },
+      {
+        "function": "game_setup_half_accum",
+        "address": "0x37b28",
+        "instruction": "test    word ptr [si+0CAh], 10h",
+        "context": [
+          "00037B1E: call    game_setup_gate_82c",
+          "00037B21: jmp     short loc_37B24",
+          "00037B23: nop",
+          "00037B24: mov     si, ds:48BAh",
+          "00037B28: test    word ptr [si+0CAh], 10h",
+          "00037B2E: jz      short loc_37B31",
+          "00037B30: retn",
+          "00037B31: cmp     byte ptr [si+32h], 0FFh",
+          "00037B35: jz      short loc_37B38"
+        ]
+      },
+      {
+        "function": "entity_timer2e_dec_14",
+        "address": "0x37c00",
+        "instruction": "test    word ptr [si+0CAh], 200h",
+        "context": [
+          "00037BFA: xor     ax, ax",
+          "00037BFC: mov     si, ds:48BAh",
+          "00037C00: test    word ptr [si+0CAh], 200h",
+          "00037C06: jz      short loc_37C18",
+          "00037C08: cmp     [si+2Eh], ax",
+          "00037C0B: jz      short locret_37C17",
+          "00037C0D: mov     [si+0D1h], al"
+        ]
+      },
+      {
+        "function": "entity_event_0e_dispatch",
+        "address": "0x37fe1",
+        "instruction": "mov     si, [si+0CAh]",
+        "context": [
+          "00037FDD: mov     si, ds:48BAh",
+          "00037FE1: mov     si, [si+0CAh]",
+          "00037FE5: cmp     si, ds:0Eh",
+          "00037FE9: jnz     short loc_37FF1",
+          "00037FEB: mov     byte ptr ds:1077h, 0"
+        ]
+      },
+      {
+        "function": "menu_list_script_step",
+        "address": "0x38614",
+        "instruction": "mov     dx, [si+0CAh]",
+        "context": [
+          "00038605: mov     bx, 11Ch",
+          "00038606: mov     di, 82h",
+          "00038609: call    dispatch_220ec_stub",
+          "0003860E: pop     ds",
+          "0003860F: retn",
+          "00038610: mov     si, ds:48BAh",
+          "00038614: mov     dx, [si+0CAh]",
+          "00038618: cmp     byte ptr ds:451h, 0",
+          "0003861D: jz      short loc_38626",
+          "0003861F: mov     ds:1068h, dx"
+        ]
+      },
+      {
+        "function": "flight_aerodynamics_speed_authority",
+        "address": "0x3931e",
+        "instruction": "test    word ptr [si+0CAh], 200h",
+        "context": [
+          "0003930F: mov     bx, word_55E44",
+          "00039313: imul    bx",
+          "00039315: shl     ax, 1",
+          "00039317: rcl     dx, 1",
+          "00039319: add     [si+48h], dx",
+          "0003931C: xor     ax, ax",
+          "0003931E: test    word ptr [si+0CAh], 200h",
+          "00039324: jnz     short loc_3932D",
+          "00039326: cmp     word ptr [si+0C5h], 0",
+          "0003932B: jnz     short loc_39330"
+        ]
+      },
+      {
+        "function": "tile_sprite_strip_project",
+        "address": "0x397e4",
+        "instruction": "or      word ptr [si+0CAh], 210h",
+        "context": [
+          "000397D5: and     byte ptr [si+74h], 0FBh",
+          "000397D9: jmp     short loc_397E0",
+          "000397DB: call    store_impact_step",
+          "000397DE: jb      short locret_397FA",
+          "000397E0: or      byte ptr [si+74h], 10h",
+          "000397E4: or      word ptr [si+0CAh], 210h",
+          "000397EA: test    byte ptr [si+74h], 8",
+          "000397EE: jnz     short locret_397FA",
+          "000397F0: cmp     word ptr [si+14h], 0"
+        ]
+      },
+      {
+        "function": "flight_entity_simulation_frame_step",
+        "address": "0x3a3dd",
+        "instruction": "test    word ptr [si+0CAh], 100h",
+        "context": [
+          "0003A3D6: cmp     byte ptr ds:44Ch, 0",
+          "0003A3DB: jz      short loc_3A3E5",
+          "0003A3DD: test    word ptr [si+0CAh], 100h",
+          "0003A3E3: jz      short loc_3A3EB",
+          "0003A3E5: mov     byte ptr ds:4AC4h, 0",
+          "0003A3EA: retn",
+          "0003A3EB: push    es"
+        ]
+      },
+      {
+        "function": "farobj_record_ops_exec",
+        "address": "0x3bd2d",
+        "instruction": "mov     word ptr [di+0CAh], 0",
+        "context": [
+          "0003BD1E: mov     word ptr [si+48h], 9Fh",
+          "0003BD21: mov     di, [si+6]",
+          "0003BD24: mov     byte ptr [di+74h], 1",
+          "0003BD28: mov     byte ptr [di+0C9h], 0",
+          "0003BD2D: mov     word ptr [di+0CAh], 0",
+          "0003BD33: mov     word ptr [di+2Ch], 39h ; '9'",
+          "0003BD38: mov     word ptr [di+2Eh], 0F4h"
+        ]
+      },
+      {
+        "function": "sub_3C38D",
+        "address": "0x3c390",
+        "instruction": "test    word ptr [di+0CAh], 40h",
+        "context": [
+          "0003C38D: mov     di, [si+6]",
+          "0003C390: test    word ptr [di+0CAh], 40h",
+          "0003C396: jnz     short loc_3C3C9",
+          "0003C398: test    byte ptr [si+0Bh], 0Dh",
+          "0003C39C: jz      short loc_3C3A5",
+          "0003C39E: test    byte ptr [di+0C2h], 2"
+        ]
+      },
+      {
+        "function": "undoc_3C3E1",
+        "address": "0x3c3e1",
+        "instruction": "test    word ptr [di+0CAh], 40h",
+        "context": [
+          "0003C3E1: test    word ptr [di+0CAh], 40h",
+          "0003C3E7: jnz     short locret_3C434",
+          "0003C3E9: test    byte ptr [di+0C2h], 1",
+          "0003C3EE: jz      short locret_3C434"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c6ab",
+        "instruction": "test    word ptr [si+0CAh], 10h",
+        "context": [
+          "0003C69C: jz      short loc_3C6E6",
+          "0003C69E: cmp     word ptr [si+14h], 12Ch",
+          "0003C6A3: jle     short loc_3C6E6",
+          "0003C6A5: cmp     byte ptr [si+32h], 0",
+          "0003C6A9: jz      short loc_3C6C2",
+          "0003C6AB: test    word ptr [si+0CAh], 10h",
+          "0003C6B1: jnz     short loc_3C6C2",
+          "0003C6B3: mov     ax, 384h",
+          "0003C6B6: call    near ptr utility_910",
+          "0003C6B9: or      dx, dx"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c6bd",
+        "instruction": "or      word ptr [si+0CAh], 10h",
+        "context": [
+          "0003C6AE: test    word ptr [si+0CAh], 10h",
+          "0003C6B1: jnz     short loc_3C6C2",
+          "0003C6B3: mov     ax, 384h",
+          "0003C6B6: call    near ptr utility_910",
+          "0003C6B9: or      dx, dx",
+          "0003C6BB: jnz     short loc_3C6C2",
+          "0003C6BD: or      word ptr [si+0CAh], 10h",
+          "0003C6C2: cmp     word ptr [si+14h], 190h",
+          "0003C6C7: jle     short loc_3C6E6",
+          "0003C6C9: cmp     byte ptr [si+31h], 0"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c6cf",
+        "instruction": "test    word ptr [si+0CAh], 1",
+        "context": [
+          "0003C6C0: or      word ptr [si+0CAh], 10h",
+          "0003C6C2: cmp     word ptr [si+14h], 190h",
+          "0003C6C7: jle     short loc_3C6E6",
+          "0003C6C9: cmp     byte ptr [si+31h], 0",
+          "0003C6CD: jz      short loc_3C6E6",
+          "0003C6CF: test    word ptr [si+0CAh], 1",
+          "0003C6D5: jnz     short loc_3C6E6",
+          "0003C6D7: mov     ax, 4B0h",
+          "0003C6DA: call    near ptr utility_910",
+          "0003C6DD: or      dx, dx"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c6e1",
+        "instruction": "or      word ptr [si+0CAh], 1",
+        "context": [
+          "0003C6D2: test    word ptr [si+0CAh], 1",
+          "0003C6D5: jnz     short loc_3C6E6",
+          "0003C6D7: mov     ax, 4B0h",
+          "0003C6DA: call    near ptr utility_910",
+          "0003C6DD: or      dx, dx",
+          "0003C6DF: jnz     short loc_3C6E6",
+          "0003C6E1: or      word ptr [si+0CAh], 1",
+          "0003C6E6: call    loc_38793",
+          "0003C6EB: test    byte ptr cs:ai_heading_correction_calc, 1"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c73c",
+        "instruction": "test    word ptr [si+0CAh], 10h",
+        "context": [
+          "0003C72D: mov     si, [si+6]",
+          "0003C72F: test    byte ptr [si+74h], 20h",
+          "0003C733: jnz     short loc_3C7A7",
+          "0003C735: cmp     word ptr [si+14h], 0D9h",
+          "0003C73A: jle     short loc_3C7A7",
+          "0003C73C: test    word ptr [si+0CAh], 10h",
+          "0003C742: jnz     short loc_3C771",
+          "0003C744: cmp     byte ptr [si+32h], 0",
+          "0003C748: jz      short loc_3C771",
+          "0003C74A: cmp     word ptr [si+56h], 0"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c778",
+        "instruction": "test    word ptr [si+0CAh], 1",
+        "context": [
+          "0003C769: push    di",
+          "0003C76A: call    undoc_339B2",
+          "0003C76F: pop     di",
+          "0003C770: pop     si",
+          "0003C771: cmp     word ptr [si+14h], 0FAh",
+          "0003C776: jle     short loc_3C7A7",
+          "0003C778: test    word ptr [si+0CAh], 1",
+          "0003C77E: jnz     short loc_3C7A7",
+          "0003C780: cmp     byte ptr [si+31h], 0",
+          "0003C784: jz      short loc_3C7A7",
+          "0003C786: test    byte ptr cs:ai_heading_correction_calc, 1"
+        ]
+      },
+      {
+        "function": "undoc_3C62C",
+        "address": "0x3c8c4",
+        "instruction": "test    word ptr [si+0CAh], 800h",
+        "context": [
+          "0003C8B5: jz      short loc_3C8BF",
+          "0003C8B7: cmp     word ptr [si+0C5h], 1F40h",
+          "0003C8BD: jbe     short loc_3C8D3",
+          "0003C8BF: push    si",
+          "0003C8C0: mov     bx, si",
+          "0003C8C2: xor     cx, cx",
+          "0003C8C4: test    word ptr [si+0CAh], 800h",
+          "0003C8CA: jz      short loc_3C8CD",
+          "0003C8CC: inc     cx",
+          "0003C8CD: call    sprite_project_gate_c5",
+          "0003C8D2: pop     si"
+        ]
+      },
+      {
+        "function": "farobj_field2e_zero_dispatch",
+        "address": "0x3ccfb",
+        "instruction": "test    word ptr [di+0CAh], 4",
+        "context": [
+          "0003CCEC: cmp     bp, 0",
+          "0003CCED: jg      short loc_3CCF2",
+          "0003CCEF: jmp     loc_3CDA4",
+          "0003CCF2: cmp     ax, bx",
+          "0003CCF4: jge     short loc_3CCF8",
+          "0003CCF6: mov     bx, ax",
+          "0003CCF8: add     [di+2Eh], bx",
+          "0003CCFB: test    word ptr [di+0CAh], 4",
+          "0003CD01: jnz     short loc_3CD20",
+          "0003CD03: test    byte ptr cs:ai_heading_correction_calc, 1",
+          "0003CD09: nop"
+        ]
+      },
+      {
+        "function": "farobj_field2e_zero_dispatch",
+        "address": "0x3cd75",
+        "instruction": "test    word ptr [di+0CAh], 4",
+        "context": [
+          "0003CD66: mov     ax, [bx+2556h]",
+          "0003CD68: mov     [di+2Ch], ax",
+          "0003CD6B: jmp     loc_3CE53",
+          "0003CD6E: push    si",
+          "0003CD6F: cmp     word ptr [di+20h], 0",
+          "0003CD73: jz      short loc_3CD84",
+          "0003CD75: test    word ptr [di+0CAh], 4",
+          "0003CD7B: jnz     short loc_3CD84",
+          "0003CD7D: call    undoc_33C1B",
+          "0003CD82: jmp     short loc_3CDA0"
+        ]
+      },
+      {
+        "function": "farobj_field2e_zero_dispatch",
+        "address": "0x3cd84",
+        "instruction": "test    word ptr [di+0CAh], 80h",
+        "context": [
+          "0003CD75: test    word ptr [di+0CAh], 4",
+          "0003CD7B: jnz     short loc_3CD84",
+          "0003CD7D: call    undoc_33C1B",
+          "0003CD82: jmp     short loc_3CDA0",
+          "0003CD84: test    word ptr [di+0CAh], 80h",
+          "0003CD8A: jnz     short loc_3CDA0",
+          "0003CD8C: cmp     byte ptr [di+0D1h], 0",
+          "0003CD91: jnz     short loc_3CD9B"
+        ]
+      },
+      {
+        "function": "farobj_field2e_zero_dispatch",
+        "address": "0x3cdc5",
+        "instruction": "test    word ptr [di+0CAh], 80h",
+        "context": [
+          "0003CDB6: mov     bx, [di+1Eh]",
+          "0003CDB9: shl     bx, 1",
+          "0003CDBB: mov     ax, [bx+2556h]",
+          "0003CDBF: mov     [di+2Ch], ax",
+          "0003CDC2: jmp     loc_3CE53",
+          "0003CDC5: test    word ptr [di+0CAh], 80h",
+          "0003CDCB: jnz     short loc_3CE0A",
+          "0003CDCD: cmp     byte ptr [di+0D1h], 0",
+          "0003CDD2: jz      short loc_3CE0A"
+        ]
+      },
+      {
+        "function": "farobj_field2e_zero_dispatch",
+        "address": "0x3cdea",
+        "instruction": "test    word ptr [di+0CAh], 4",
+        "context": [
+          "0003CDDB: test    byte ptr cs:ai_heading_correction_calc, 1",
+          "0003CDE0: nop",
+          "0003CDE1: jz      short loc_3CDF8",
+          "0003CDE3: cmp     word ptr [si+23h], 24Eh",
+          "0003CDE8: jle     short loc_3CDF8",
+          "0003CDEA: test    word ptr [di+0CAh], 4",
+          "0003CDF0: jnz     short loc_3CDF8",
+          "0003CDF2: cmp     word ptr [di+20h], 32h ; '2'",
+          "0003CDF6: jnz     short loc_3CE4C",
+          "0003CDF8: push    si"
+        ]
+      },
+      {
+        "function": "farobj_field2e_zero_dispatch",
+        "address": "0x3ce2e",
+        "instruction": "test    word ptr [di+0CAh], 4",
+        "context": [
+          "0003CE1F: cmp     word ptr [di+2Eh], 131h",
+          "0003CE22: jle     short loc_3CE29",
+          "0003CE24: mov     word ptr [di+2Eh], 131h",
+          "0003CE29: jmp     short loc_3CE53",
+          "0003CE2B: mov     [di+2Eh], bx",
+          "0003CE2E: test    word ptr [di+0CAh], 4",
+          "0003CE34: jnz     short loc_3CE53",
+          "0003CE36: test    byte ptr cs:ai_heading_correction_calc, 1",
+          "0003CE3C: nop"
+        ]
+      },
+      {
+        "function": "ai_entity_update_step",
+        "address": "0x3d6ce",
+        "instruction": "test    word ptr [di+0CAh], 100h",
+        "context": [
+          "0003D6BF: mov     word ptr [si+18h], 0FFFFh",
+          "0003D6C4: jmp     short loc_3D728",
+          "0003D6C6: cmp     ax, [si+16h]",
+          "0003D6C9: jbe     short loc_3D709",
+          "0003D6CB: mov     di, [si+6]",
+          "0003D6CE: test    word ptr [di+0CAh], 100h",
+          "0003D6D4: jnz     short loc_3D71F",
+          "0003D6D6: mov     ax, cs:word_3B830",
+          "0003D6DA: mov     ah, [si+14h]"
+        ]
+      },
+      {
+        "function": "shared_tail_pop_es",
+        "address": "0x3d933",
+        "instruction": "test    word ptr [di+0CAh], 8",
+        "context": [
+          "0003D924: cmp     ax, 5",
+          "0003D926: jb      short loc_3D93E",
+          "0003D928: call    near ptr sub_3E170",
+          "0003D92B: retn",
+          "0003D92C: cmp     word ptr [di+0AEh], 0",
+          "0003D931: jz      short loc_3D93B",
+          "0003D933: test    word ptr [di+0CAh], 8",
+          "0003D939: jz      short loc_3D948",
+          "0003D93B: mov     [si+0Eh], ax",
+          "0003D93E: mov     ax, [di+16h]",
+          "0003D941: mov     [si+23h], ax"
+        ]
+      },
+      {
+        "function": "shared_tail_pop_es",
+        "address": "0x3d952",
+        "instruction": "test    word ptr [di+0CAh], 8",
+        "context": [
+          "0003D943: mov     [si+23h], ax",
+          "0003D944: call    ai_distance_threshold_check",
+          "0003D947: retn",
+          "0003D948: mov     [si+0Eh], ax",
+          "0003D94B: cmp     word ptr [di+0AEh], 0",
+          "0003D950: jz      short loc_3D95D",
+          "0003D952: test    word ptr [di+0CAh], 8",
+          "0003D958: jnz     short loc_3D95D",
+          "0003D95A: jmp     loc_3DB1F",
+          "0003D95D: cmp     cs:word_3D418, 1C00h"
+        ]
+      },
+      {
+        "function": "r05_farptr_dispatch_big",
+        "address": "0x3db3c",
+        "instruction": "test    word ptr [di+0CAh], 8",
+        "context": [
+          "0003DB2D: add     ax, 14Ah",
+          "0003DB2E: cmp     cs:word_3D416, ax",
+          "0003DB33: jg      short loc_3DB97",
+          "0003DB35: cmp     word ptr [di+0AEh], 0",
+          "0003DB3A: jz      short loc_3DB97",
+          "0003DB3C: test    word ptr [di+0CAh], 8",
+          "0003DB42: jnz     short loc_3DB97",
+          "0003DB44: push    di",
+          "0003DB45: mov     ax, [si+18h]",
+          "0003DB48: call    hud_font_glyph_get"
+        ]
+      },
+      {
+        "function": "ai_state_range_check",
+        "address": "0x3e1cb",
+        "instruction": "test    word ptr [di+0CAh], 22h",
+        "context": [
+          "0003E1C2: mov     di, [si+6]",
+          "0003E1C5: cmp     byte ptr [di+75h], 33h ; '3'",
+          "0003E1C9: jz      short loc_3E1F2",
+          "0003E1CB: test    word ptr [di+0CAh], 22h",
+          "0003E1D1: jnz     short loc_3E1E8",
+          "0003E1D3: cmp     byte ptr [di+0B0h], 0",
+          "0003E1D8: jg      short loc_3E1F2"
+        ]
+      },
+      {
+        "function": "undoc_3E8D2",
+        "address": "0x3e8d5",
+        "instruction": "test    word ptr [di+0CAh], 2",
+        "context": [
+          "0003E8D2: mov     di, [si+6]",
+          "0003E8D5: test    word ptr [di+0CAh], 2",
+          "0003E8DB: jnz     short loc_3E954",
+          "0003E8DD: test    word ptr [di+0CAh], 20h",
+          "0003E8E3: jnz     short loc_3E91B"
+        ]
+      },
+      {
+        "function": "undoc_3E8D2",
+        "address": "0x3e8dd",
+        "instruction": "test    word ptr [di+0CAh], 20h",
+        "context": [
+          "0003E8D2: mov     di, [si+6]",
+          "0003E8D5: test    word ptr [di+0CAh], 2",
+          "0003E8DB: jnz     short loc_3E954",
+          "0003E8DD: test    word ptr [di+0CAh], 20h",
+          "0003E8E3: jnz     short loc_3E91B",
+          "0003E8E5: cmp     byte ptr [di+0BEh], 0",
+          "0003E8EA: jg      short near ptr farobj_cfg_code_patch"
+        ]
+      },
+      {
+        "function": "undoc_3E8D2",
+        "address": "0x3e8f6",
+        "instruction": "test    word ptr [di+0CAh], 2",
+        "context": [
+          "0003E8E7: cmp     byte ptr [di+0BEh], 0",
+          "0003E8EA: jg      short near ptr farobj_cfg_code_patch",
+          "0003E8EC: cmp     byte ptr [di+0BFh], 0",
+          "0003E8F1: jg      short near ptr farobj_cfg_code_patch",
+          "0003E8F3: mov     di, [si+6]",
+          "0003E8F6: test    word ptr [di+0CAh], 2",
+          "0003E8FC: jnz     short loc_3E954",
+          "0003E8FE: test    word ptr [di+0CAh], 20h",
+          "0003E904: jnz     short loc_3E91B"
+        ]
+      },
+      {
+        "function": "undoc_3E8D2",
+        "address": "0x3e8fe",
+        "instruction": "test    word ptr [di+0CAh], 20h",
+        "context": [
+          "0003E8EF: cmp     byte ptr [di+0BFh], 0",
+          "0003E8F1: jg      short near ptr farobj_cfg_code_patch",
+          "0003E8F3: mov     di, [si+6]",
+          "0003E8F6: test    word ptr [di+0CAh], 2",
+          "0003E8FC: jnz     short loc_3E954",
+          "0003E8FE: test    word ptr [di+0CAh], 20h",
+          "0003E904: jnz     short loc_3E91B",
+          "0003E906: cmp     byte ptr [di+0B3h], 0",
+          "0003E90B: jg      short near ptr farobj_cfg_code_patch"
+        ]
+      },
+      {
+        "function": "farobj_bl_15_init",
+        "address": "0x3e945",
+        "instruction": "test    word ptr [di+0CAh], 20h",
+        "context": [
+          "0003E936: jg      short near ptr farobj_cfg_code_patch",
+          "0003E937: cmp     byte ptr [di+0B8h], 0",
+          "0003E93C: jg      short near ptr farobj_cfg_code_patch",
+          "0003E93E: cmp     byte ptr [di+0BAh], 0",
+          "0003E943: jg      short near ptr farobj_cfg_code_patch",
+          "0003E945: test    word ptr [di+0CAh], 20h",
+          "0003E94B: jnz     short loc_3E954",
+          "0003E94D: cmp     byte ptr [di+0BCh], 0",
+          "0003E952: jg      short near ptr farobj_cfg_code_patch"
+        ]
+      },
+      {
+        "function": "ai_target_priority_evaluator",
+        "address": "0x3e972",
+        "instruction": "test    word ptr [di+0CAh], 2",
+        "context": [
+          "0003E96F: mov     di, [si+6]",
+          "0003E972: test    word ptr [di+0CAh], 2",
+          "0003E978: jz      short loc_3E97D",
+          "0003E97A: jmp     loc_3EB32",
+          "0003E97D: test    word ptr [di+0CAh], 20h"
+        ]
+      },
+      {
+        "function": "ai_target_priority_evaluator",
+        "address": "0x3e97d",
+        "instruction": "test    word ptr [di+0CAh], 20h",
+        "context": [
+          "0003E96F: mov     di, [si+6]",
+          "0003E972: test    word ptr [di+0CAh], 2",
+          "0003E978: jz      short loc_3E97D",
+          "0003E97A: jmp     loc_3EB32",
+          "0003E97D: test    word ptr [di+0CAh], 20h",
+          "0003E983: jz      short loc_3E988",
+          "0003E985: jmp     loc_3EA61",
+          "0003E988: cmp     byte ptr [di+0BEh], 0"
+        ]
+      },
+      {
+        "function": "ai_target_priority_evaluator",
+        "address": "0x3e9e9",
+        "instruction": "test    word ptr [di+0CAh], 2",
+        "context": [
+          "0003E9DA: mov     cs:word_3E34A, 5Ch ; '\\'",
+          "0003E9DF: mov     byte ptr cs:loc_3E34C, 3Dh ; '='",
+          "0003E9E5: retn",
+          "0003E9E6: mov     di, [si+6]",
+          "0003E9E9: test    word ptr [di+0CAh], 2",
+          "0003E9EF: jz      short loc_3E9F4",
+          "0003E9F1: jmp     loc_3EB32",
+          "0003E9F4: test    word ptr [di+0CAh], 20h"
+        ]
+      },
+      {
+        "function": "ai_target_priority_evaluator",
+        "address": "0x3e9f4",
+        "instruction": "test    word ptr [di+0CAh], 20h",
+        "context": [
+          "0003E9E5: retn",
+          "0003E9E6: mov     di, [si+6]",
+          "0003E9E9: test    word ptr [di+0CAh], 2",
+          "0003E9EF: jz      short loc_3E9F4",
+          "0003E9F1: jmp     loc_3EB32",
+          "0003E9F4: test    word ptr [di+0CAh], 20h",
+          "0003E9FA: jnz     short loc_3EA61",
+          "0003E9FC: cmp     byte ptr [di+0B3h], 0",
+          "0003EA01: jle     short loc_3EA2B"
+        ]
+      },
+      {
+        "function": "ai_target_priority_evaluator",
+        "address": "0x3eafb",
+        "instruction": "test    word ptr [di+0CAh], 20h",
+        "context": [
+          "0003EAEC: jle     short loc_3EAFB",
+          "0003EAEE: mov     cs:byte_3D41A, 0Ah",
+          "0003EAF4: mov     cs:byte_3D41B, 1",
+          "0003EAFA: retn",
+          "0003EAFB: test    word ptr [di+0CAh], 20h",
+          "0003EB01: jnz     short loc_3EB32",
+          "0003EB03: cmp     byte ptr [di+0BCh], 0",
+          "0003EB08: jle     short loc_3EB32"
+        ]
+      },
+      {
+        "function": "ai_state_value_dispatcher",
+        "address": "0x3eb51",
+        "instruction": "test    word ptr [di+0CAh], 2",
+        "context": [
+          "0003EB4E: mov     di, [si+6]",
+          "0003EB51: test    word ptr [di+0CAh], 2",
+          "0003EB57: jnz     short loc_3EB9E",
+          "0003EB59: cmp     byte ptr ds:15B3h, 0",
+          "0003EB5E: jz      short loc_3EB6D"
+        ]
+      },
+      {
+        "function": "ai_behavior_decision_tree",
+        "address": "0x3ee2e",
+        "instruction": "test    word ptr [di+0CAh], 1",
+        "context": [
+          "0003EE1F: jbe     short loc_3EE24",
+          "0003EE21: jmp     loc_3EEB3",
+          "0003EE24: or      byte ptr [di+74h], 20h",
+          "0003EE28: cmp     byte ptr [di+31h], 0",
+          "0003EE2C: jnz     short loc_3EE57",
+          "0003EE2E: test    word ptr [di+0CAh], 1",
+          "0003EE34: jnz     short loc_3EE57",
+          "0003EE36: test    byte ptr cs:ai_heading_correction_calc, 1",
+          "0003EE3C: nop"
+        ]
+      },
+      {
+        "function": "ai_behavior_decision_tree",
+        "address": "0x3ee79",
+        "instruction": "test    word ptr [di+0CAh], 10h",
+        "context": [
+          "0003EE6A: cmp     cs:word_3EC9A, 2940h",
+          "0003EE6C: ja      short loc_3EEB3",
+          "0003EE6E: mov     word ptr [si+48h], 3Dh ; '='",
+          "0003EE73: cmp     byte ptr [di+32h], 0",
+          "0003EE77: jnz     short loc_3EEA2",
+          "0003EE79: test    word ptr [di+0CAh], 10h",
+          "0003EE7F: jnz     short loc_3EEA2",
+          "0003EE81: test    byte ptr cs:ai_heading_correction_calc, 1",
+          "0003EE87: nop"
+        ]
+      },
+      {
+        "function": "farobj_store_32075",
+        "address": "0x3f7ce",
+        "instruction": "test    word ptr [di+0CAh], 100h",
+        "context": [
+          "0003F7BF: mov     ah, 29h ; ')'",
+          "0003F7C1: mul     ah",
+          "0003F7C3: mov     cs:word_3F7A3, ax",
+          "0003F7C7: mov     bx, [si+16h]",
+          "0003F7CA: or      ax, ax",
+          "0003F7CC: jz      short loc_3F7FE",
+          "0003F7CE: test    word ptr [di+0CAh], 100h",
+          "0003F7D4: jnz     short loc_3F7FE",
+          "0003F7D6: test    byte ptr cs:ai_heading_correction_calc, 1",
+          "0003F7DC: nop"
+        ]
+      },
+      {
+        "function": "farobj_index_resolve_step",
+        "address": "0x3f913",
+        "instruction": "test    word ptr [di+0CAh], 100h",
+        "context": [
+          "0003F904: call    ai_angle_delta_normalize",
+          "0003F905: call    ai_angle_calculate",
+          "0003F908: cmp     cs:word_3F7A3, 0",
+          "0003F90E: jz      short loc_3F988",
+          "0003F910: mov     di, [si+6]",
+          "0003F913: test    word ptr [di+0CAh], 100h",
+          "0003F919: jnz     short loc_3F988",
+          "0003F91B: test    byte ptr [si+0Ah], 8",
+          "0003F91F: jz      short loc_3F988",
+          "0003F921: test    byte ptr [si+0Ah], 80h"
+        ]
+      },
+      {
+        "function": "undoc_404B4",
+        "address": "0x404d0",
+        "instruction": "or      word ptr [di+0CAh], 200h",
+        "context": [
+          "000404C1: mov     word ptr [di+54h], 0",
+          "000404C6: mov     ax, [si]",
+          "000404C8: mov     bx, [di+14h]",
+          "000404CB: mov     word ptr [di+14h], 0",
+          "000404D0: or      word ptr [di+0CAh], 200h",
+          "000404D6: mov     cl, 3",
+          "000404D8: shr     bx, cl",
+          "000404DA: mov     bh, 64h ; 'd'",
+          "000404DC: mov     bp, 0FFFFh"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x411fc",
+        "instruction": "mov     cx, [di+0CAh]",
+        "context": [
+          "000411ED: jz      short loc_411FC",
+          "000411EF: mov     ax, cs:word_41158",
+          "000411F3: mov     cl, [di+0C9h]",
+          "000411F7: call    sub_2C0C7",
+          "000411FC: mov     cx, [di+0CAh]",
+          "00041200: or      [di+0CAh], dx",
+          "00041204: cmp     byte ptr [di+0C2h], 0",
+          "00041209: jnz     short loc_41218"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x41200",
+        "instruction": "or      [di+0CAh], dx",
+        "context": [
+          "000411F1: mov     ax, cs:word_41158",
+          "000411F3: mov     cl, [di+0C9h]",
+          "000411F7: call    sub_2C0C7",
+          "000411FC: mov     cx, [di+0CAh]",
+          "00041200: or      [di+0CAh], dx",
+          "00041204: cmp     byte ptr [di+0C2h], 0",
+          "00041209: jnz     short loc_41218",
+          "0004120B: test    word ptr [di+0CAh], 40h"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x4120b",
+        "instruction": "test    word ptr [di+0CAh], 40h",
+        "context": [
+          "000411FC: mov     cx, [di+0CAh]",
+          "00041200: or      [di+0CAh], dx",
+          "00041204: cmp     byte ptr [di+0C2h], 0",
+          "00041209: jnz     short loc_41218",
+          "0004120B: test    word ptr [di+0CAh], 40h",
+          "00041211: jz      short loc_41218",
+          "00041213: xor     word ptr [di+0CAh], 40h",
+          "00041218: test    word ptr [di+0CAh], 80h"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x41213",
+        "instruction": "xor     word ptr [di+0CAh], 40h",
+        "context": [
+          "00041204: cmp     byte ptr [di+0C2h], 0",
+          "00041209: jnz     short loc_41218",
+          "0004120B: test    word ptr [di+0CAh], 40h",
+          "00041211: jz      short loc_41218",
+          "00041213: xor     word ptr [di+0CAh], 40h",
+          "00041218: test    word ptr [di+0CAh], 80h",
+          "0004121E: jz      short loc_4122E",
+          "00041220: cmp     byte ptr [di+0D1h], 0"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x41218",
+        "instruction": "test    word ptr [di+0CAh], 80h",
+        "context": [
+          "00041209: jnz     short loc_41218",
+          "0004120B: test    word ptr [di+0CAh], 40h",
+          "00041211: jz      short loc_41218",
+          "00041213: xor     word ptr [di+0CAh], 40h",
+          "00041218: test    word ptr [di+0CAh], 80h",
+          "0004121E: jz      short loc_4122E",
+          "00041220: cmp     byte ptr [di+0D1h], 0",
+          "00041225: jz      short loc_4122E"
+        ]
+      },
+      {
+        "function": "flight_physics_integration_engine",
+        "address": "0x4123c",
+        "instruction": "mov     bx, [di+0CAh]",
+        "context": [
+          "0004122D: pop     si",
+          "0004122E: mov     bh, [si+56h]",
+          "00041231: cmp     [di+0C9h], bh",
+          "00041235: jb      short loc_4123A",
+          "00041237: jmp     loc_412E3",
+          "0004123A: push    cx",
+          "0004123B: push    dx",
+          "0004123C: mov     bx, [di+0CAh]",
+          "00041240: and     bx, 0C000h",
+          "00041244: cmp     bx, 0C000h",
+          "00041248: jnz     short loc_41253",
+          "0004124A: push    si"
+        ]
+      },
+      {
+        "function": "sub_415FD",
+        "address": "0x4163d",
+        "instruction": "or      word ptr [di+0CAh], 3FFFh",
+        "context": [
+          "0004162E: test    ch, 1",
+          "00041630: jz      short loc_41636",
+          "00041632: mov     byte ptr [di+11h], 1",
+          "00041636: mov     di, [di+6]",
+          "00041639: or      byte ptr [di+74h], 8",
+          "0004163D: or      word ptr [di+0CAh], 3FFFh",
+          "00041643: pop     es",
+          "00041644: pop     ds",
+          "00041645: retf"
+        ]
+      },
+      {
+        "function": "undoc_416EC",
+        "address": "0x41750",
+        "instruction": "or      word ptr [di+0CAh], 0C000h",
+        "context": [
+          "00041741: jz      short loc_4175C",
+          "00041742: mov     ax, cs:word_3B834",
+          "00041746: add     ax, word_55E50",
+          "0004174A: call    hud_font_glyph_get",
+          "0004174D: mov     di, [di+6]",
+          "00041750: or      word ptr [di+0CAh], 0C000h",
+          "00041756: mov     si, 160Bh",
+          "00041759: mov     dx, 1642h",
+          "0004175C: mov     bx, 50h ; 'P'"
+        ]
+      },
+      {
+        "function": "sub_438A7",
+        "address": "0x43900",
+        "instruction": "mov     ax, [si+0CAh]",
+        "context": [
+          "000438F1: mov     cx, 6",
+          "000438F4: sar     dx, 1",
+          "000438F6: rcr     ax, 1",
+          "000438F8: loop    loc_438F4",
+          "000438FA: mov     es:[di], ax",
+          "000438FD: add     di, 2",
+          "00043900: mov     ax, [si+0CAh]",
+          "00043904: mov     es:[di], ax",
+          "00043907: add     di, 2",
+          "0004390A: mov     ax, [si+0C5h]",
+          "0004390E: shr     ax, 1"
+        ]
+      },
+      {
+        "function": "sub_4396E",
+        "address": "0x4396e",
+        "instruction": "test    word ptr [bx+0CAh], 0C200h",
+        "context": [
+          "0004396E: test    word ptr [bx+0CAh], 0C200h",
+          "00043974: jz      short near ptr sub_4397A",
+          "00043976: or      al, 80h",
+          "00043978: jmp     short loc_43983"
+        ]
+      },
+      {
+        "function": "sub_4397A",
+        "address": "0x4397a",
+        "instruction": "cmp     word ptr [bx+0CAh], 0",
+        "context": [
+          "0004397A: cmp     word ptr [bx+0CAh], 0",
+          "0004397F: jz      short loc_43983",
+          "00043981: or      al, 40h",
+          "00043983: mov     es:[di], al",
+          "00043986: inc     di",
+          "00043987: pop     cx",
+          "00043988: pop     ax"
+        ]
+      },
+      {
+        "function": "entity_state_capture_2e10e",
+        "address": "0x458c8",
+        "instruction": "test    word ptr [si+0CAh], 2",
+        "context": [
+          "000458B9: mov     si, word_593AA",
+          "000458BD: mov     ax, [si+7Ah]",
+          "000458C0: mov     cs:word_43AEE, ax",
+          "000458C4: mov     bx, word_58F9A",
+          "000458C8: test    word ptr [si+0CAh], 2",
+          "000458CE: jz      short loc_458DE",
+          "000458D0: cmp     bl, 3",
+          "000458D3: jz      short loc_458DE",
+          "000458D5: cmp     bl, 4"
+        ]
+      },
+      {
+        "function": "sub_45C4B",
+        "address": "0x45c54",
+        "instruction": "test    word ptr [si+0CAh], 20h",
+        "context": [
+          "00045C4B: xor     ax, ax",
+          "00045C4D: mov     byte_59369, al",
+          "00045C50: mov     si, word_593AA",
+          "00045C54: test    word ptr [si+0CAh], 20h",
+          "00045C5A: jnz     short loc_45CCA",
+          "00045C5C: cmp     byte_59380, al",
+          "00045C60: jz      short loc_45C74",
+          "00045C62: mov     bx, word_58F9A"
+        ]
+      },
+      {
+        "function": "undoc_4611C",
+        "address": "0x46125",
+        "instruction": "test    word ptr [si+0CAh], 20h",
+        "context": [
+          "0004611C: xor     ax, ax",
+          "0004611E: mov     ds:4879h, al",
+          "00046121: mov     si, ds:48BAh",
+          "00046125: test    word ptr [si+0CAh], 20h",
+          "0004612B: jnz     short loc_46191",
+          "0004612D: cmp     ds:4890h, al",
+          "00046131: jz      short loc_46145",
+          "00046133: mov     bx, ds:44AAh"
+        ]
+      },
+      {
+        "function": "hud_track_strip_pipeline",
+        "address": "0x46db8",
+        "instruction": "test    word ptr [si+0CAh], 8",
+        "context": [
+          "00046DA9: mov     di, 10Ch",
+          "00046DAA: mov     cx, 0EAh",
+          "00046DAD: std",
+          "00046DAE: rep movsb",
+          "00046DB0: cld",
+          "00046DB1: pop     ds",
+          "00046DB2: xor     al, al",
+          "00046DB4: mov     si, ds:48BAh",
+          "00046DB8: test    word ptr [si+0CAh], 8",
+          "00046DBE: jz      short loc_46DC3",
+          "00046DC0: mov     ds:4876h, al",
+          "00046DC3: mov     di, 0Ah",
+          "00046DC6: mov     ah, ds:4876h"
+        ]
+      },
+      {
+        "function": "undoc_48864",
+        "address": "0x488ad",
+        "instruction": "test    word ptr [si+0CAh], 20h",
+        "context": [
+          "0004889E: call    sub_3876A",
+          "0004889F: pop     ds",
+          "000488A0: retn",
+          "000488A1: push    es",
+          "000488A2: cmp     byte ptr ds:4876h, 0",
+          "000488A7: jz      short loc_488EB",
+          "000488A9: mov     si, ds:48BAh",
+          "000488AD: test    word ptr [si+0CAh], 20h",
+          "000488B3: jnz     short loc_488E9",
+          "000488B5: call    sub_2C117",
+          "000488BA: mov     dx, di"
+        ]
+      },
+      {
+        "function": "undoc_48864",
+        "address": "0x488ef",
+        "instruction": "test    word ptr [si+0CAh], 100h",
+        "context": [
+          "000488E0: xor     word ptr ds:430Ah, 3",
+          "000488E4: call    sub_41466",
+          "000488E9: pop     es",
+          "000488EA: retn",
+          "000488EB: mov     si, ds:48BAh",
+          "000488EF: test    word ptr [si+0CAh], 100h",
+          "000488F5: jz      short loc_488FE",
+          "000488F7: call    overlay_load_dispatch_r06",
+          "000488FC: pop     es",
+          "000488FD: retn"
+        ]
+      },
+      {
+        "function": "far_obj_visibility_gate",
+        "address": "0x489e4",
+        "instruction": "test    word ptr [si+0CAh], 20h",
+        "context": [
+          "000489E2: xor     ax, ax",
+          "000489E4: test    word ptr [si+0CAh], 20h",
+          "000489EA: jnz     short locret_48A19",
+          "000489EC: mov     cx, word_58F9A",
+          "000489F0: cmp     cx, 2"
+        ]
+      },
+      {
+        "function": "target_cycle_scan",
+        "address": "0x48b08",
+        "instruction": "test    word ptr [si+0CAh], 20h",
+        "context": [
+          "00048B05: push    es",
+          "00048B06: xor     ax, ax",
+          "00048B08: test    word ptr [si+0CAh], 20h",
+          "00048B0E: jnz     short loc_48B82",
+          "00048B10: cmp     byte_59380, al",
+          "00048B14: jz      short loc_48B26",
+          "00048B16: mov     bx, word_58F9A"
+        ]
+      },
+      {
+        "function": "undoc_48C20",
+        "address": "0x48d42",
+        "instruction": "test    word ptr [bx+0CAh], 2000h",
+        "context": [
+          "00048D33: retf",
+          "00048D34: push    ds",
+          "00048D35: push    bx",
+          "00048D36: mov     bx, 54AFh",
+          "00048D39: mov     ds, bx",
+          "00048D3B: mov     bx, word_593AA",
+          "00048D3F: mov     ax, [bx+24h]",
+          "00048D42: test    word ptr [bx+0CAh], 2000h",
+          "00048D48: jz      short loc_48D6E",
+          "00048D4A: cmp     word ptr [bx+0Ah], 0",
+          "00048D4E: jnz     short loc_48D61",
+          "00048D50: cmp     word ptr [bx+8], 4E20h"
+        ]
+      }
+    ]
+  },
+  "status_flags_bitmasks": [
+    {
+      "offset": "0xc4",
+      "instruction": "or      [di+0CAh], dx",
+      "bitmask": "dx",
+      "address": "0x41200"
+    },
+    {
+      "offset": "0xcf",
+      "instruction": "test    word ptr [di+0CAh], 40h",
+      "bitmask": "40h",
+      "address": "0x4120b"
+    },
+    {
+      "offset": "0xd7",
+      "instruction": "xor     word ptr [di+0CAh], 40h",
+      "bitmask": "40h",
+      "address": "0x41213"
+    },
+    {
+      "offset": "0xdc",
+      "instruction": "test    word ptr [di+0CAh], 80h",
+      "bitmask": "80h",
+      "address": "0x41218"
+    }
+  ],
+  "op_dispatch_table": {
+    "address": "0x22060",
+    "entries": [
+      {
+        "index": 0,
+        "offset": "0x2f34",
+        "segment": "0x2f66",
+        "linear": "0x32594",
+        "function": "hud_entity_search_select"
+      },
+      {
+        "index": 1,
+        "offset": "0x2fd9",
+        "segment": "0x2ff6",
+        "linear": "0x32f39",
+        "function": "mission_state_initializer"
+      },
+      {
+        "index": 2,
+        "offset": "0x301f",
+        "segment": "0x3028",
+        "linear": "0x3329f",
+        "function": "key_event_mode_gate"
+      },
+      {
+        "index": 3,
+        "offset": "0x3052",
+        "segment": "0x307c",
+        "linear": "0x33812",
+        "function": "aircraft_state_dispatcher"
+      },
+      {
+        "index": 4,
+        "offset": "0x30a0",
+        "segment": "0x30d7",
+        "linear": "0x33e10",
+        "function": "undoc_33D83"
+      },
+      {
+        "index": 5,
+        "offset": "0x30f4",
+        "segment": "0x30ff",
+        "linear": "0x340e4",
+        "function": "view_limits_apply_33f38"
+      },
+      {
+        "index": 6,
+        "offset": "0x3108",
+        "segment": "0x3158",
+        "linear": "0x34688",
+        "function": "key_state_machine_tick"
+      },
+      {
+        "index": 7,
+        "offset": "0x3113",
+        "segment": "0x312c",
+        "linear": "0x343d3",
+        "function": "handle_build_75_block"
+      }
+    ]
+  },
+  "damage_table_7b0e": {
+    "segment": "0x7B0E",
+    "base_offset": "0x3052",
+    "entry_size": 8,
+    "description": "Damage state table indexed by entity/subsystem ID",
+    "linear_address": "0x7e132",
+    "xref_count": 0,
+    "xrefs": []
+  },
+  "subsystem_name_strings": [
+    {
+      "string": "ECM POD",
+      "address": "0x55cb6",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "I'M ALREADY ENGAGED!",
+      "address": "0x579c5",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "COPY DISENGAGE...WIL",
+      "address": "0x579f1",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "I'M NOT ENGAGED.",
+      "address": "0x57a0f",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "BE ADVISED - FUEL IS",
+      "address": "0x57b55",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "FUEL CRITICAL! FUEL ",
+      "address": "0x57b6f",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "REQUEST PERMISSION T",
+      "address": "0x57bdb",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "ENGAGING!",
+      "address": "0x57c17",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "RADAR CONTACT+NNN DE",
+      "address": "0x57e33",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "FROM AWACS: BE ADVIS",
+      "address": "0x57ec1",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "FROM AWACS: YOU ARE ",
+      "address": "0x57f2e",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "NO FUEL--WAITING FOR",
+      "address": "0x84700",
+      "xref_count": 1,
+      "used_by": [
+        "game_mode_r48_main_coordinator"
+      ]
+    },
+    {
+      "string": "PLEASE SELECT ONE",
+      "address": "0x12b342",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "YOUR CHALLENGE",
+      "address": "0x12b63a",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "RADAR SITE",
+      "address": "0x14ff88",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "RADAR MISSILES",
+      "address": "0x15010e",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "RADAR",
+      "address": "0x15023a",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "RADAR",
+      "address": "0x1503ba",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "FUEL300",
+      "address": "0x15046d",
+      "xref_count": 0,
+      "used_by": []
+    },
+    {
+      "string": "FUEL370",
+      "address": "0x150475",
+      "xref_count": 0,
+      "used_by": []
+    }
+  ],
+  "summary": {
+    "damage_0xC9_refs": 7,
+    "status_0xCA_refs": 82,
+    "bitmasks_found": 4,
+    "dispatch_entries": 8,
+    "subsystem_strings": 20
+  }
+}
