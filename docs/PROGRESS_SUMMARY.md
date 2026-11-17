@@ -11,6 +11,7 @@
 |--------|------------|------------|-----------------|--------|
 | **Tactical Map Rendering** | 95% | HIGH | 6.5 hours | ✅ Done |
 | **HUD Targeting System** | 90% | HIGH | 1.5 hours | ✅ Done |
+| **Cockpit Instruments** | 75% | HIGH | 1.0 hours | ✅ Done |
 | **Mission Editor** | 90% | MEDIUM | ~4 hours | ✅ Done |
 | **Flight Model** | 60% | MEDIUM | ~3 hours | 🔄 In Progress |
 | **3D Rendering Core** | 85% | HIGH | ~2 hours | ✅ Done |
@@ -18,8 +19,8 @@
 | **AI System** | 40% | LOW | ~1 hour | 📋 Partial |
 | **Weapon Systems** | 30% | LOW | ~0.5 hours | 📋 Partial |
 
-**Total Analysis Time**: ~20 hours  
-**Total Documentation**: ~15,000 lines across 25+ files
+**Total Analysis Time**: ~21 hours  
+**Total Documentation**: ~18,000 lines across 30+ files
 
 ---
 
@@ -100,7 +101,42 @@
 
 ---
 
-### 3. 3D Rendering Core (85% Complete)
+### 3. Cockpit Instruments (75% Complete)
+
+**Breakthrough**: Discovered cockpit is the HUD system in view mode 3 (not a separate system).
+
+**Key Components Decoded**:
+- View mode dispatch (mode 3 = cockpit)
+- viewmode3_vector_project (cockpit reference vectors)
+- 11 gauge drawing functions (heading tape, pitch ladder, digital readouts)
+- Viewport clipping system (ds:0x6F8-0x706)
+- Integration with hud_draw_chain_step
+
+**Instrument Types Identified**:
+- Heading tape (scrolling compass)
+- Pitch ladder (attitude indicator, 988 bytes!)
+- Digital readouts (airspeed, altitude, VSI, etc.)
+- Gauge value displays (fields 0x0C, 0x14)
+
+**Architecture**:
+```
+state_word_44d3d_get() == 3 → viewmode3_vector_project → 
+view_cockpit_hud_initialize → hud_draw_chain_step → 
+[heading tape + pitch ladder + readouts] → VGA
+```
+
+**Files Created**:
+- COCKPIT_INSTRUMENTS_DECODED.md (comprehensive documentation, 75%)
+- SESSION_COCKPIT_ANALYSIS.md (session summary)
+- cockpit_system_analysis.json (39 functions surveyed)
+- cockpit_instruments_detailed.json (17 functions analyzed)
+- 2 IDA automation scripts
+
+**Remaining 25%**: Locate flight data structure (15%), analyze pitch ladder algorithm (5%), runtime verification (5%)
+
+---
+
+### 4. 3D Rendering Core (85% Complete)
 
 **Breakthrough**: Decoded custom 15-bit fixed-point format and projection math.
 

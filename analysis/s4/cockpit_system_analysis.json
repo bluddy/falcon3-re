@@ -1,0 +1,586 @@
+{
+  "analysis_goal": "Decode cockpit instrument rendering system",
+  "hypothesis": "Uses same 3D projection as HUD and tactical map",
+  "cockpit_functions": [
+    {
+      "name": "slot3_window_scroll_dispatch",
+      "address": "0x13406",
+      "size": 94,
+      "keyword": "roll"
+    },
+    {
+      "name": "slot3_window_scroll_left",
+      "address": "0x13464",
+      "size": 146,
+      "keyword": "roll"
+    },
+    {
+      "name": "slot3_window_scroll_right",
+      "address": "0x134f6",
+      "size": 130,
+      "keyword": "roll"
+    },
+    {
+      "name": "slot3_window_scroll_up",
+      "address": "0x13578",
+      "size": 200,
+      "keyword": "roll"
+    },
+    {
+      "name": "sbi_scroll_write_0",
+      "address": "0x1d7b8",
+      "size": 34,
+      "keyword": "roll"
+    },
+    {
+      "name": "index_scroll_step",
+      "address": "0x1e110",
+      "size": 190,
+      "keyword": "roll"
+    },
+    {
+      "name": "view_scroll_rotate_apply",
+      "address": "0x1f769",
+      "size": 111,
+      "keyword": "roll"
+    },
+    {
+      "name": "view_scroll_clamp_1f702",
+      "address": "0x202bf",
+      "size": 28,
+      "keyword": "roll"
+    },
+    {
+      "name": "trig_scroll_project_3452",
+      "address": "0x20666",
+      "size": 177,
+      "keyword": "roll"
+    },
+    {
+      "name": "view_scroll_quad_update",
+      "address": "0x20726",
+      "size": 183,
+      "keyword": "roll"
+    },
+    {
+      "name": "hud_cockpit_rect_arg_store",
+      "address": "0x25a56",
+      "size": 28,
+      "keyword": "cockpit"
+    },
+    {
+      "name": "menu_panel_ptr_get",
+      "address": "0x2c33d",
+      "size": 8,
+      "keyword": "panel"
+    },
+    {
+      "name": "tail_bridge_to_ui_menu_panel_init_c",
+      "address": "0x2c3dd",
+      "size": 8,
+      "keyword": "panel"
+    },
+    {
+      "name": "tail_bridge_to_ui_menu_panel_init_b",
+      "address": "0x2c635",
+      "size": 8,
+      "keyword": "panel"
+    },
+    {
+      "name": "tail_bridge_to_menu_panel_init",
+      "address": "0x2c667",
+      "size": 8,
+      "keyword": "panel"
+    },
+    {
+      "name": "tail_bridge_to_ui_menu_panel_init_d",
+      "address": "0x2c6e9",
+      "size": 8,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_data_panel_draw",
+      "address": "0x30f11",
+      "size": 273,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_panel_rect_compute",
+      "address": "0x329b1",
+      "size": 325,
+      "keyword": "panel"
+    },
+    {
+      "name": "scroll_decay_limit",
+      "address": "0x34b92",
+      "size": 139,
+      "keyword": "roll"
+    },
+    {
+      "name": "game_setup_scroll_half_accum",
+      "address": "0x35505",
+      "size": 225,
+      "keyword": "roll"
+    },
+    {
+      "name": "scroll_scale_lookup",
+      "address": "0x35671",
+      "size": 54,
+      "keyword": "roll"
+    },
+    {
+      "name": "view_cockpit_hud_initialize",
+      "address": "0x359b2",
+      "size": 381,
+      "keyword": "cockpit"
+    },
+    {
+      "name": "hud_heading_tape_draw",
+      "address": "0x3708f",
+      "size": 254,
+      "keyword": "heading"
+    },
+    {
+      "name": "hud_rowlist_panel_draw",
+      "address": "0x37d84",
+      "size": 419,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_dualvalue_panel_draw",
+      "address": "0x37f27",
+      "size": 182,
+      "keyword": "panel"
+    },
+    {
+      "name": "ai_altitude_control_update",
+      "address": "0x40843",
+      "size": 44,
+      "keyword": "altitude"
+    },
+    {
+      "name": "ai_heading_correction_calc",
+      "address": "0x40bc5",
+      "size": 41,
+      "keyword": "heading"
+    },
+    {
+      "name": "hud_data_panel_gate_draw",
+      "address": "0x40f5d",
+      "size": 26,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_data_panel_slot_mgr",
+      "address": "0x40f77",
+      "size": 254,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_data_panel_slot_formatter",
+      "address": "0x41075",
+      "size": 129,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_panel_visibility_check",
+      "address": "0x46fea",
+      "size": 117,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_panel_scale_calculator",
+      "address": "0x4760f",
+      "size": 119,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_panel_transform_step",
+      "address": "0x47f9e",
+      "size": 397,
+      "keyword": "panel"
+    },
+    {
+      "name": "hud_panel_coordinate_transform",
+      "address": "0x4812b",
+      "size": 224,
+      "keyword": "panel"
+    },
+    {
+      "name": "ui_menu_panel_initialize",
+      "address": "0x66e62",
+      "size": 1365,
+      "keyword": "panel"
+    },
+    {
+      "name": "menu_panel_background_draw",
+      "address": "0x127ed2",
+      "size": 45,
+      "keyword": "panel"
+    },
+    {
+      "name": "ui_menu_panel_renderer",
+      "address": "0x133adc",
+      "size": 249,
+      "keyword": "panel"
+    },
+    {
+      "name": "r64_window_scroll_step_entry",
+      "address": "0x1a53f1",
+      "size": 501,
+      "keyword": "roll"
+    }
+  ],
+  "viewmode3_analysis": {
+    "address": "0x2f535",
+    "size": 91,
+    "disassembly": [
+      "0002F535: call    state_word_44d3d_get",
+      "0002F53A: cmp     ax, 3",
+      "0002F53D: jz      short loc_2F540",
+      "0002F53F: retf",
+      "0002F540: push    ds",
+      "0002F541: push    es",
+      "0002F542: mov     ax, 62D4h",
+      "0002F545: mov     ds, ax",
+      "0002F547: mov     es, ax",
+      "0002F549: mov     cx, ds:word_62D6A",
+      "0002F54D: jcxz    short loc_2F57E",
+      "0002F54F: mov     si, 66h ; 'f'",
+      "0002F552: push    cx",
+      "0002F553: push    si",
+      "0002F554: mov     di, 2Eh ; '.'",
+      "0002F557: mov     ax, [si]",
+      "0002F559: mov     [di+2], ax",
+      "0002F55C: mov     ax, [si+2]",
+      "0002F55F: mov     [di+6], ax",
+      "0002F562: mov     ax, [si+4]",
+      "0002F565: mov     [di+0Ah], ax",
+      "0002F568: push    es",
+      "0002F569: mov     ax, 54AFh",
+      "0002F56C: mov     es, ax",
+      "0002F56E: mov     bx, 20h ; ' '",
+      "0002F571: call    view_projection",
+      "0002F576: pop     es",
+      "0002F577: pop     si",
+      "0002F578: pop     cx",
+      "0002F579: add     si, 6",
+      "0002F57C: loop    loc_2F552",
+      "0002F57E: pop     es",
+      "0002F57F: pop     ds",
+      "0002F580: retf",
+      "0002F581: align 10h"
+    ],
+    "calls": [],
+    "data_refs": [
+      {
+        "offset": "0x14",
+        "reference": "ds:word_62D6A",
+        "line": "mov     cx, ds:word_62D6A"
+      }
+    ],
+    "callers": [
+      "game_frame_pipeline_step"
+    ]
+  },
+  "view_projection_callers": [
+    {
+      "name": "farobj_tile_align_project",
+      "address": "0x124b4",
+      "size": 128,
+      "call_site": "0x1252c"
+    },
+    {
+      "name": "coord_point_group_project",
+      "address": "0x13a71",
+      "size": 288,
+      "call_site": "0x13b07"
+    },
+    {
+      "name": "coord_point_group_project",
+      "address": "0x13a71",
+      "size": 288,
+      "call_site": "0x13b82"
+    },
+    {
+      "name": "farobj_batch_build_project",
+      "address": "0x13cb0",
+      "size": 346,
+      "call_site": "0x13dea"
+    },
+    {
+      "name": "indexed_table_dispatch_7b0e_4287",
+      "address": "0x256a3",
+      "size": 15,
+      "call_site": "0x256ad"
+    },
+    {
+      "name": "viewobj_project_advance_mark",
+      "address": "0x27079",
+      "size": 103,
+      "call_site": "0x270cc"
+    },
+    {
+      "name": "viewobj_project_advance",
+      "address": "0x270e0",
+      "size": 93,
+      "call_site": "0x2712f"
+    },
+    {
+      "name": "sub_2F353",
+      "address": "0x2f353",
+      "size": 8,
+      "call_site": "0x2f353"
+    },
+    {
+      "name": "viewmode3_vector_project",
+      "address": "0x2f535",
+      "size": 91,
+      "call_site": "0x2f571"
+    },
+    {
+      "name": "viewlist_project_flagged",
+      "address": "0x2f590",
+      "size": 65,
+      "call_site": "0x2f5c2"
+    },
+    {
+      "name": "undoc_4DC97",
+      "address": "0x4dc97",
+      "size": 115,
+      "call_site": "0x4dd02"
+    },
+    {
+      "name": "sub_4DDB4",
+      "address": "0x4ddb4",
+      "size": 123,
+      "call_site": "0x4de27"
+    },
+    {
+      "name": "undoc_111AF6",
+      "address": "0x111af6",
+      "size": 648,
+      "call_site": "0x111d13"
+    },
+    {
+      "name": "undoc_111AF6",
+      "address": "0x111af6",
+      "size": 648,
+      "call_site": "0x111d2f"
+    }
+  ],
+  "mode_state_checks": [
+    {
+      "function": "viewmode3_vector_project",
+      "address": "0x2f535",
+      "check_at": "0x2f53a",
+      "comparison": "cmp     ax, 3"
+    },
+    {
+      "function": "undoc_3C03D",
+      "address": "0x3c03d",
+      "check_at": "0x3c04f",
+      "comparison": "cmp     ax, 3"
+    },
+    {
+      "function": "sub_40CC5",
+      "address": "0x40cc5",
+      "check_at": "0x40d01",
+      "comparison": "cmp     ax, 3"
+    },
+    {
+      "function": "terrain_vm_buffer_decay",
+      "address": "0x4f3ec",
+      "check_at": "0x4f477",
+      "comparison": "cmp     ax, 3"
+    }
+  ],
+  "instrument_data_sources": [
+    {
+      "name": "slot3_window_scroll_dispatch",
+      "address": "0x13406",
+      "segment": "seg005",
+      "type": "roll"
+    },
+    {
+      "name": "slot3_window_scroll_left",
+      "address": "0x13464",
+      "segment": "seg005",
+      "type": "roll"
+    },
+    {
+      "name": "slot3_window_scroll_right",
+      "address": "0x134f6",
+      "segment": "seg005",
+      "type": "roll"
+    },
+    {
+      "name": "slot3_window_scroll_up",
+      "address": "0x13578",
+      "segment": "seg005",
+      "type": "roll"
+    },
+    {
+      "name": "event_state_machine",
+      "address": "0x1ab34",
+      "segment": "seg011",
+      "type": "mach"
+    },
+    {
+      "name": "sbi_scroll_write_0",
+      "address": "0x1d7b8",
+      "segment": "seg017",
+      "type": "roll"
+    },
+    {
+      "name": "index_scroll_step",
+      "address": "0x1e110",
+      "segment": "seg017",
+      "type": "roll"
+    },
+    {
+      "name": "sbi_note_state_machine",
+      "address": "0x1ea58",
+      "segment": "seg018",
+      "type": "mach"
+    },
+    {
+      "name": "view_scroll_rotate_apply",
+      "address": "0x1f769",
+      "segment": "seg020",
+      "type": "roll"
+    },
+    {
+      "name": "view_scroll_clamp_1f702",
+      "address": "0x202bf",
+      "segment": "seg020",
+      "type": "roll"
+    },
+    {
+      "name": "trig_scroll_project_3452",
+      "address": "0x20666",
+      "segment": "seg020",
+      "type": "roll"
+    },
+    {
+      "name": "view_scroll_quad_update",
+      "address": "0x20726",
+      "segment": "seg020",
+      "type": "roll"
+    },
+    {
+      "name": "key_state_machine_tick",
+      "address": "0x3467d",
+      "segment": "R05_1F64",
+      "type": "mach"
+    },
+    {
+      "name": "scroll_decay_limit",
+      "address": "0x34b92",
+      "segment": "R05_1F64",
+      "type": "roll"
+    },
+    {
+      "name": "game_setup_scroll_half_accum",
+      "address": "0x35505",
+      "segment": "R05_1F64",
+      "type": "roll"
+    },
+    {
+      "name": "scroll_scale_lookup",
+      "address": "0x35671",
+      "segment": "R05_1F64",
+      "type": "roll"
+    },
+    {
+      "name": "hud_heading_tape_draw",
+      "address": "0x3708f",
+      "segment": "R05_1F64",
+      "type": "heading"
+    },
+    {
+      "name": "obj_fuel_exhaust_step",
+      "address": "0x396d7",
+      "segment": "R05_1F64",
+      "type": "fuel"
+    },
+    {
+      "name": "ai_behavior_state_machine",
+      "address": "0x3cfaa",
+      "segment": "R05_2B83",
+      "type": "mach"
+    },
+    {
+      "name": "ai_altitude_control_update",
+      "address": "0x40843",
+      "segment": "R05_2B83",
+      "type": "altitude"
+    },
+    {
+      "name": "ai_heading_correction_calc",
+      "address": "0x40bc5",
+      "segment": "R05_2B83",
+      "type": "heading"
+    },
+    {
+      "name": "farobj_fuel_burn_step",
+      "address": "0x4233f",
+      "segment": "R05_2B83",
+      "type": "fuel"
+    },
+    {
+      "name": "farobj_fuel_apply_step",
+      "address": "0x4245b",
+      "segment": "R05_2B83",
+      "type": "fuel"
+    },
+    {
+      "name": "aHeading",
+      "address": "0x54da6",
+      "segment": "R05_44AF",
+      "type": "heading"
+    },
+    {
+      "name": "aAltitudeFeet",
+      "address": "0x54dc8",
+      "segment": "R05_44AF",
+      "type": "altitude"
+    },
+    {
+      "name": "aHeading_0",
+      "address": "0x55b3c",
+      "segment": "R05_44AF",
+      "type": "heading"
+    },
+    {
+      "name": "aRollingOut",
+      "address": "0x57946",
+      "segment": "R05_44AF",
+      "type": "roll"
+    },
+    {
+      "name": "aBeAdvisedFuelI",
+      "address": "0x57b55",
+      "segment": "R05_44AF",
+      "type": "fuel"
+    },
+    {
+      "name": "aFuelCriticalFu",
+      "address": "0x57b6f",
+      "segment": "R05_44AF",
+      "type": "fuel"
+    },
+    {
+      "name": "aNoFuelWaitingF",
+      "address": "0x84700",
+      "segment": "R69_606E",
+      "type": "fuel"
+    }
+  ],
+  "summary": {
+    "cockpit_functions_found": 38,
+    "view_projection_callers": 14,
+    "mode_checks_found": 4,
+    "data_sources_found": 30
+  }
+}

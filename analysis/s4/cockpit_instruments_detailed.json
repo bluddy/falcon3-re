@@ -1,0 +1,2151 @@
+{
+  "goal": "Decode cockpit instrument rendering system",
+  "functions": {
+    "view_cockpit_hud_initialize": {
+      "name": "view_cockpit_hud_initialize",
+      "address": "0x359b2",
+      "size": 381,
+      "disassembly": [
+        "000359B2: test    word ptr [si+0CAh], 400h",
+        "000359B8: jz      short loc_359BB",
+        "000359BA: retn",
+        "000359BB: push    es",
+        "000359BC: mov     ds:6F8h, ax",
+        "000359BF: mov     ds:6FAh, bx",
+        "000359C3: mov     ds:706h, si",
+        "000359C7: mov     di, 6FCh",
+        "000359CA: call    cs_state_copy_es",
+        "000359CF: mov     di, 6F0h",
+        "000359D2: mov     si, 6E8h",
+        "000359D5: mov     ax, ds:6F8h",
+        "000359D8: mov     bx, ax",
+        "000359DA: add     ax, 55h ; 'U'",
+        "000359DD: add     bx, 6Eh ; 'n'",
+        "000359E0: cmp     ax, ds:6FCh",
+        "000359E4: jge     short loc_359EB",
+        "000359E6: mov     ax, ds:6FCh",
+        "000359E9: jmp     short loc_359F4",
+        "000359EB: cmp     ax, ds:700h",
+        "000359EF: jle     short loc_359F4",
+        "000359F1: mov     ax, ds:700h",
+        "000359F4: stosw",
+        "000359F5: cmp     bx, ds:6FCh",
+        "000359F9: jge     short loc_35A01",
+        "000359FB: mov     bx, ds:6FCh",
+        "000359FF: jmp     short loc_35A0B",
+        "00035A01: cmp     bx, ds:700h",
+        "00035A05: jle     short loc_35A0B",
+        "00035A07: mov     bx, ds:700h",
+        "00035A0B: mov     [si], bx",
+        "00035A0D: mov     ax, ds:6FAh",
+        "00035A10: mov     bx, ax",
+        "00035A12: add     ax, 1",
+        "00035A15: add     bx, 14h",
+        "00035A18: cmp     ax, ds:6FEh",
+        "00035A1C: jge     short loc_35A23",
+        "00035A1E: mov     ax, ds:6FEh",
+        "00035A21: jmp     short loc_35A2C",
+        "00035A23: cmp     ax, ds:702h",
+        "00035A27: jle     short loc_35A2C",
+        "00035A29: mov     ax, ds:702h",
+        "00035A2C: stosw",
+        "00035A2D: cmp     bx, ds:6FEh",
+        "00035A31: jge     short loc_35A39",
+        "00035A33: mov     bx, ds:6FEh",
+        "00035A37: jmp     short loc_35A43",
+        "00035A39: cmp     bx, ds:702h",
+        "00035A3D: jle     short loc_35A43",
+        "00035A3F: mov     bx, ds:702h",
+        "00035A43: mov     [si+2], bx",
+        "00035A46: mov     ax, ds:6F8h",
+        "00035A49: mov     bx, ax",
+        "00035A4B: add     ax, 0F2h",
+        "00035A4E: add     bx, 0D2h",
+        "00035A52: cmp     ax, ds:6FCh",
+        "00035A56: jge     short loc_35A5D",
+        "00035A58: mov     ax, ds:6FCh",
+        "00035A5B: jmp     short loc_35A66",
+        "00035A5D: cmp     ax, ds:700h",
+        "00035A61: jle     short loc_35A66",
+        "00035A63: mov     ax, ds:700h",
+        "00035A66: stosw",
+        "00035A67: cmp     bx, ds:6FCh",
+        "00035A6B: jge     short loc_35A73",
+        "00035A6D: mov     bx, ds:6FCh",
+        "00035A71: jmp     short loc_35A7D",
+        "00035A73: cmp     bx, ds:700h",
+        "00035A77: jle     short loc_35A7D",
+        "00035A79: mov     bx, ds:700h",
+        "00035A7D: mov     [si+4], bx",
+        "00035A80: mov     ax, ds:6FAh",
+        "00035A83: mov     bx, ax",
+        "00035A85: add     ax, 6Dh ; 'm'",
+        "00035A88: add     bx, 5Ah ; 'Z'",
+        "00035A8B: cmp     ax, ds:6FEh",
+        "00035A8F: jge     short loc_35A96",
+        "00035A91: mov     ax, ds:6FEh",
+        "00035A94: jmp     short loc_35A9F",
+        "00035A96: cmp     ax, ds:702h",
+        "00035A9A: jle     short loc_35A9F",
+        "00035A9C: mov     ax, ds:702h",
+        "00035A9F: stosw",
+        "00035AA0: cmp     bx, ds:6FEh",
+        "00035AA4: jge     short loc_35AAC",
+        "00035AA6: mov     bx, ds:6FEh",
+        "00035AAA: jmp     short loc_35AB6",
+        "00035AAC: cmp     bx, ds:702h",
+        "00035AB0: jle     short loc_35AB6",
+        "00035AB2: mov     bx, ds:702h",
+        "00035AB6: mov     [si+6], bx",
+        "00035AB9: call    clip_bounds_save_far_thunk",
+        "00035ABE: mov     si, 6F0h",
+        "00035AC1: call    lodsw_quad_to_state_25450",
+        "00035AC6: mov     si, 6E8h",
+        "00035AC9: call    view_limits_load",
+        "00035ACE: mov     al, 0FFh",
+        "00035AD0: call    view_block4287_entry",
+        "00035AD5: mov     cs:byte_35928, 1",
+        "00035ADB: mov     word ptr cs:dword_35920, 6396h",
+        "00035AE2: mov     word ptr cs:dword_35920+2, 1F6Ch",
+        "00035AE9: mov     word ptr cs:dword_35924, 6331h",
+        "00035AF0: mov     word ptr cs:dword_35924+2, 2F64h",
+        "00035AF7: mov     ax, ds:6F8h",
+        "00035AFA: add     ax, 0A0h",
+        "00035AFD: shl     ax, 1",
+        "00035AFF: shl     ax, 1",
+        "00035B01: shl     ax, 1",
+        "00035B03: shl     ax, 1",
+        "00035B05: mov     ds:6C4h, ax",
+        "00035B08: mov     ax, ds:6FAh",
+        "00035B0B: add     ax, 32h ; '2'",
+        "00035B0E: shl     ax, 1",
+        "00035B10: shl     ax, 1",
+        "00035B12: shl     ax, 1",
+        "00035B14: shl     ax, 1",
+        "00035B16: mov     ds:6C6h, ax",
+        "00035B19: call    near ptr hud_draw_chain_step",
+        "00035B1C: call    dispatch_220dc_stub",
+        "00035B21: call    clip_bounds_restore_far_thunk",
+        "00035B26: xor     al, al",
+        "00035B28: call    view_block4287_entry",
+        "00035B2D: pop     es",
+        "00035B2E: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x0",
+          "operand": "word ptr [si+0CAh]",
+          "instruction": "test    word ptr [si+0CAh], 400h"
+        },
+        {
+          "offset": "0xa",
+          "operand": "ds:6F8h",
+          "instruction": "mov     ds:6F8h, ax"
+        },
+        {
+          "offset": "0xd",
+          "operand": "ds:6FAh",
+          "instruction": "mov     ds:6FAh, bx"
+        },
+        {
+          "offset": "0x11",
+          "operand": "ds:706h",
+          "instruction": "mov     ds:706h, si"
+        },
+        {
+          "offset": "0x23",
+          "operand": "ds:6F8h",
+          "instruction": "mov     ax, ds:6F8h"
+        },
+        {
+          "offset": "0x2e",
+          "operand": "ds:6FCh",
+          "instruction": "cmp     ax, ds:6FCh"
+        },
+        {
+          "offset": "0x34",
+          "operand": "ds:6FCh",
+          "instruction": "mov     ax, ds:6FCh"
+        },
+        {
+          "offset": "0x39",
+          "operand": "ds:700h",
+          "instruction": "cmp     ax, ds:700h"
+        },
+        {
+          "offset": "0x3f",
+          "operand": "ds:700h",
+          "instruction": "mov     ax, ds:700h"
+        },
+        {
+          "offset": "0x43",
+          "operand": "ds:6FCh",
+          "instruction": "cmp     bx, ds:6FCh"
+        },
+        {
+          "offset": "0x49",
+          "operand": "ds:6FCh",
+          "instruction": "mov     bx, ds:6FCh"
+        },
+        {
+          "offset": "0x4f",
+          "operand": "ds:700h",
+          "instruction": "cmp     bx, ds:700h"
+        },
+        {
+          "offset": "0x55",
+          "operand": "ds:700h",
+          "instruction": "mov     bx, ds:700h"
+        },
+        {
+          "offset": "0x59",
+          "operand": "[si]",
+          "instruction": "mov     [si], bx"
+        },
+        {
+          "offset": "0x5b",
+          "operand": "ds:6FAh",
+          "instruction": "mov     ax, ds:6FAh"
+        },
+        {
+          "offset": "0x66",
+          "operand": "ds:6FEh",
+          "instruction": "cmp     ax, ds:6FEh"
+        },
+        {
+          "offset": "0x6c",
+          "operand": "ds:6FEh",
+          "instruction": "mov     ax, ds:6FEh"
+        },
+        {
+          "offset": "0x71",
+          "operand": "ds:702h",
+          "instruction": "cmp     ax, ds:702h"
+        },
+        {
+          "offset": "0x77",
+          "operand": "ds:702h",
+          "instruction": "mov     ax, ds:702h"
+        },
+        {
+          "offset": "0x7b",
+          "operand": "ds:6FEh",
+          "instruction": "cmp     bx, ds:6FEh"
+        },
+        {
+          "offset": "0x81",
+          "operand": "ds:6FEh",
+          "instruction": "mov     bx, ds:6FEh"
+        },
+        {
+          "offset": "0x87",
+          "operand": "ds:702h",
+          "instruction": "cmp     bx, ds:702h"
+        },
+        {
+          "offset": "0x8d",
+          "operand": "ds:702h",
+          "instruction": "mov     bx, ds:702h"
+        },
+        {
+          "offset": "0x91",
+          "operand": "[si+2]",
+          "instruction": "mov     [si+2], bx"
+        },
+        {
+          "offset": "0x94",
+          "operand": "ds:6F8h",
+          "instruction": "mov     ax, ds:6F8h"
+        },
+        {
+          "offset": "0xa0",
+          "operand": "ds:6FCh",
+          "instruction": "cmp     ax, ds:6FCh"
+        },
+        {
+          "offset": "0xa6",
+          "operand": "ds:6FCh",
+          "instruction": "mov     ax, ds:6FCh"
+        },
+        {
+          "offset": "0xab",
+          "operand": "ds:700h",
+          "instruction": "cmp     ax, ds:700h"
+        },
+        {
+          "offset": "0xb1",
+          "operand": "ds:700h",
+          "instruction": "mov     ax, ds:700h"
+        },
+        {
+          "offset": "0xb5",
+          "operand": "ds:6FCh",
+          "instruction": "cmp     bx, ds:6FCh"
+        },
+        {
+          "offset": "0xbb",
+          "operand": "ds:6FCh",
+          "instruction": "mov     bx, ds:6FCh"
+        },
+        {
+          "offset": "0xc1",
+          "operand": "ds:700h",
+          "instruction": "cmp     bx, ds:700h"
+        },
+        {
+          "offset": "0xc7",
+          "operand": "ds:700h",
+          "instruction": "mov     bx, ds:700h"
+        },
+        {
+          "offset": "0xcb",
+          "operand": "[si+4]",
+          "instruction": "mov     [si+4], bx"
+        },
+        {
+          "offset": "0xce",
+          "operand": "ds:6FAh",
+          "instruction": "mov     ax, ds:6FAh"
+        },
+        {
+          "offset": "0xd9",
+          "operand": "ds:6FEh",
+          "instruction": "cmp     ax, ds:6FEh"
+        },
+        {
+          "offset": "0xdf",
+          "operand": "ds:6FEh",
+          "instruction": "mov     ax, ds:6FEh"
+        },
+        {
+          "offset": "0xe4",
+          "operand": "ds:702h",
+          "instruction": "cmp     ax, ds:702h"
+        },
+        {
+          "offset": "0xea",
+          "operand": "ds:702h",
+          "instruction": "mov     ax, ds:702h"
+        },
+        {
+          "offset": "0xee",
+          "operand": "ds:6FEh",
+          "instruction": "cmp     bx, ds:6FEh"
+        },
+        {
+          "offset": "0xf4",
+          "operand": "ds:6FEh",
+          "instruction": "mov     bx, ds:6FEh"
+        },
+        {
+          "offset": "0xfa",
+          "operand": "ds:702h",
+          "instruction": "cmp     bx, ds:702h"
+        },
+        {
+          "offset": "0x100",
+          "operand": "ds:702h",
+          "instruction": "mov     bx, ds:702h"
+        },
+        {
+          "offset": "0x104",
+          "operand": "[si+6]",
+          "instruction": "mov     [si+6], bx"
+        },
+        {
+          "offset": "0x123",
+          "operand": "cs:byte_35928",
+          "instruction": "mov     cs:byte_35928, 1"
+        },
+        {
+          "offset": "0x129",
+          "operand": "word ptr cs:dword_35920",
+          "instruction": "mov     word ptr cs:dword_35920, 6396h"
+        },
+        {
+          "offset": "0x130",
+          "operand": "word ptr cs:dword_35920+2",
+          "instruction": "mov     word ptr cs:dword_35920+2, 1F6Ch"
+        },
+        {
+          "offset": "0x137",
+          "operand": "word ptr cs:dword_35924",
+          "instruction": "mov     word ptr cs:dword_35924, 6331h"
+        },
+        {
+          "offset": "0x13e",
+          "operand": "word ptr cs:dword_35924+2",
+          "instruction": "mov     word ptr cs:dword_35924+2, 2F64h"
+        },
+        {
+          "offset": "0x145",
+          "operand": "ds:6F8h",
+          "instruction": "mov     ax, ds:6F8h"
+        }
+      ],
+      "callers": [
+        {
+          "name": "view_axis_accum_step",
+          "call_site": "0x354fb"
+        }
+      ]
+    },
+    "viewmode3_vector_project": {
+      "name": "viewmode3_vector_project",
+      "address": "0x2f535",
+      "size": 91,
+      "disassembly": [
+        "0002F535: call    state_word_44d3d_get",
+        "0002F53A: cmp     ax, 3",
+        "0002F53D: jz      short loc_2F540",
+        "0002F53F: retf",
+        "0002F540: push    ds",
+        "0002F541: push    es",
+        "0002F542: mov     ax, 62D4h",
+        "0002F545: mov     ds, ax",
+        "0002F547: mov     es, ax",
+        "0002F549: mov     cx, ds:word_62D6A",
+        "0002F54D: jcxz    short loc_2F57E",
+        "0002F54F: mov     si, 66h ; 'f'",
+        "0002F552: push    cx",
+        "0002F553: push    si",
+        "0002F554: mov     di, 2Eh ; '.'",
+        "0002F557: mov     ax, [si]",
+        "0002F559: mov     [di+2], ax",
+        "0002F55C: mov     ax, [si+2]",
+        "0002F55F: mov     [di+6], ax",
+        "0002F562: mov     ax, [si+4]",
+        "0002F565: mov     [di+0Ah], ax",
+        "0002F568: push    es",
+        "0002F569: mov     ax, 54AFh",
+        "0002F56C: mov     es, ax",
+        "0002F56E: mov     bx, 20h ; ' '",
+        "0002F571: call    view_projection",
+        "0002F576: pop     es",
+        "0002F577: pop     si",
+        "0002F578: pop     cx",
+        "0002F579: add     si, 6",
+        "0002F57C: loop    loc_2F552",
+        "0002F57E: pop     es",
+        "0002F57F: pop     ds",
+        "0002F580: retf",
+        "0002F581: align 10h"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x14",
+          "operand": "ds:word_62D6A",
+          "instruction": "mov     cx, ds:word_62D6A"
+        },
+        {
+          "offset": "0x22",
+          "operand": "[si]",
+          "instruction": "mov     ax, [si]"
+        },
+        {
+          "offset": "0x24",
+          "operand": "[di+2]",
+          "instruction": "mov     [di+2], ax"
+        },
+        {
+          "offset": "0x27",
+          "operand": "[si+2]",
+          "instruction": "mov     ax, [si+2]"
+        },
+        {
+          "offset": "0x2a",
+          "operand": "[di+6]",
+          "instruction": "mov     [di+6], ax"
+        },
+        {
+          "offset": "0x2d",
+          "operand": "[si+4]",
+          "instruction": "mov     ax, [si+4]"
+        },
+        {
+          "offset": "0x30",
+          "operand": "[di+0Ah]",
+          "instruction": "mov     [di+0Ah], ax"
+        }
+      ],
+      "callers": [
+        {
+          "name": "game_frame_pipeline_step",
+          "call_site": "0x2fdae"
+        }
+      ]
+    },
+    "hud_heading_tape_draw": {
+      "name": "hud_heading_tape_draw",
+      "address": "0x3708f",
+      "size": 254,
+      "disassembly": [
+        "0003708F: cmp     byte ptr ds:477h, 2",
+        "00037094: jnz     short loc_37097",
+        "00037096: retn",
+        "00037097: mov     si, ds:48BAh",
+        "0003709B: test    word ptr [si+0CAh], 1000h",
+        "000370A1: jz      short loc_370A4",
+        "000370A3: retn",
+        "000370A4: mov     di, 692h",
+        "000370A7: call    angle_xy_near",
+        "000370AC: mov     si, ds:48BAh",
+        "000370B0: sub     ax, [si+0Ch]",
+        "000370B3: and     ax, 3FFFh",
+        "000370B6: cmp     ax, 2000h",
+        "000370B9: jle     short loc_370BE",
+        "000370BB: sub     ax, 4000h",
+        "000370BE: cwd",
+        "000370BF: xor     ax, dx",
+        "000370C1: sub     ax, dx",
+        "000370C3: cmp     byte ptr ds:4A84h, 0",
+        "000370C8: jnz     short loc_37149",
+        "000370CA: cmp     ax, 0E4h",
+        "000370CD: jge     short loc_37116",
+        "000370CF: mov     si, 0FD1h",
+        "000370D2: mov     bx, 0ACh",
+        "000370D5: sub     bx, 3",
+        "000370D8: mov     di, 2",
+        "000370DB: add     di, ds:704h",
+        "000370DF: mov     bp, 1",
+        "000370E2: mov     cx, 5",
+        "000370E5: add     bx, ds:6F8h",
+        "000370E9: add     di, ds:6FAh",
+        "000370ED: call    cs:dword_35920",
+        "000370F2: mov     si, 0FCCh",
+        "000370F5: mov     bx, 94h",
+        "000370F8: sub     bx, 3",
+        "000370FB: mov     di, 2",
+        "000370FE: add     di, ds:704h",
+        "00037102: mov     bp, 1",
+        "00037105: mov     cx, 5",
+        "00037108: add     bx, ds:6F8h",
+        "0003710C: add     di, ds:6FAh",
+        "00037110: call    cs:dword_35920",
+        "00037115: retn",
+        "00037116: mov     si, 0FCCh",
+        "00037119: mov     bx, 0Ch",
+        "0003711C: xor     bx, dx",
+        "0003711E: sub     bx, dx",
+        "00037120: add     bx, 0A0h",
+        "00037124: sub     bx, 3",
+        "00037127: mov     di, 2",
+        "0003712A: add     di, ds:704h",
+        "0003712E: mov     bp, 1",
+        "00037131: mov     cx, 5",
+        "00037134: or      dx, dx",
+        "00037136: jge     short loc_3713B",
+        "00037138: mov     si, 0FD1h",
+        "0003713B: add     bx, ds:6F8h",
+        "0003713F: add     di, ds:6FAh",
+        "00037143: call    cs:dword_35920",
+        "00037148: retn",
+        "00037149: mov     si, 0FD6h",
+        "0003714C: mov     cx, dx",
+        "0003714E: cmp     ax, 2AFh",
+        "00037151: ja      short loc_37161",
+        "00037153: mov     bx, 0Ch",
+        "00037156: mul     bx",
+        "00037158: mov     bx, 0E4h",
+        "0003715B: div     bx",
+        "0003715D: mov     bx, ax",
+        "0003715F: jmp     short loc_37164",
+        "00037161: mov     bx, 24h ; '$'",
+        "00037164: xor     bx, cx",
+        "00037166: sub     bx, cx",
+        "00037168: add     bx, 0A0h",
+        "0003716C: sub     bx, 3",
+        "0003716F: mov     di, 6",
+        "00037172: mov     bp, 1",
+        "00037175: mov     cx, 3",
+        "00037178: mov     si, 0FD6h",
+        "0003717B: add     bx, ds:6F8h",
+        "0003717F: add     di, ds:6FAh",
+        "00037183: add     di, ds:704h",
+        "00037187: call    cs:dword_35920",
+        "0003718C: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x0",
+          "operand": "byte ptr ds:477h",
+          "instruction": "cmp     byte ptr ds:477h, 2"
+        },
+        {
+          "offset": "0x8",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0xc",
+          "operand": "word ptr [si+0CAh]",
+          "instruction": "test    word ptr [si+0CAh], 1000h"
+        },
+        {
+          "offset": "0x1d",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0x21",
+          "operand": "[si+0Ch]",
+          "instruction": "sub     ax, [si+0Ch]"
+        },
+        {
+          "offset": "0x34",
+          "operand": "byte ptr ds:4A84h",
+          "instruction": "cmp     byte ptr ds:4A84h, 0"
+        },
+        {
+          "offset": "0x4c",
+          "operand": "ds:704h",
+          "instruction": "add     di, ds:704h"
+        },
+        {
+          "offset": "0x56",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0x5a",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0x6f",
+          "operand": "ds:704h",
+          "instruction": "add     di, ds:704h"
+        },
+        {
+          "offset": "0x79",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0x7d",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0x9b",
+          "operand": "ds:704h",
+          "instruction": "add     di, ds:704h"
+        },
+        {
+          "offset": "0xac",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0xb0",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0xec",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0xf0",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0xf4",
+          "operand": "ds:704h",
+          "instruction": "add     di, ds:704h"
+        }
+      ],
+      "callers": [
+        {
+          "name": "hud_draw_chain_step",
+          "call_site": "0x35bf3"
+        }
+      ]
+    },
+    "hud_terrain_strip_render": {
+      "name": "hud_terrain_strip_render",
+      "address": "0x3718d",
+      "size": 988,
+      "disassembly": [
+        "0003718D: mov     byte ptr ds:105Dh, 0",
+        "00037192: cmp     byte ptr ds:82Ch, 1",
+        "00037197: jz      short loc_371E1",
+        "00037199: push    es",
+        "0003719A: mov     di, ds",
+        "0003719C: mov     es, di",
+        "0003719E: mov     si, ds:48BAh",
+        "000371A2: push    si",
+        "000371A3: mov     di, 4816h",
+        "000371A6: mov     ax, [si+0Ch]",
+        "000371A9: mov     cx, [si+0Eh]",
+        "000371AC: movsw",
+        "000371AD: movsw",
+        "000371AE: movsw",
+        "000371AF: movsw",
+        "000371B0: movsw",
+        "000371B1: movsw",
+        "000371B2: mov     bp, 100h",
+        "000371B5: mov     dx, 100h",
+        "000371B8: xor     bx, bx",
+        "000371BA: mov     si, 4816h",
+        "000371BD: call    farobj_step_terrain_clamp",
+        "000371C2: pop     si",
+        "000371C3: pop     es",
+        "000371C4: jb      short loc_371E1",
+        "000371C6: sub     ax, 100h",
+        "000371C9: neg     ax",
+        "000371CB: cwd",
+        "000371CC: mov     dl, ah",
+        "000371CE: mov     ah, al",
+        "000371D0: xor     al, al",
+        "000371D2: mov     si, [si+4Ch]",
+        "000371D5: div     si",
+        "000371D7: cmp     ax, 10h",
+        "000371DA: jnb     short loc_371E1",
+        "000371DC: mov     ds:105Dh, al",
+        "000371DF: clc",
+        "000371E0: retn",
+        "000371E1: stc",
+        "000371E2: retn",
+        "000371E3: push    es",
+        "000371E4: mov     ax, ds",
+        "000371E6: mov     es, ax",
+        "000371E8: mov     si, ds:48BAh",
+        "000371EC: mov     ax, [si+0Ch]",
+        "000371EF: mov     ds:80Ch, ax",
+        "000371F2: mov     di, 83Ch",
+        "000371F5: call    angle_xy_near",
+        "000371FA: cmp     byte ptr ds:105Fh, 0",
+        "000371FF: jz      short loc_37207",
+        "00037201: sub     ax, ds:848h",
+        "00037205: jmp     short loc_3720B",
+        "00037207: sub     ax, ds:80Ch",
+        "0003720B: call    stub_to_24988",
+        "00037210: mov     word ptr ds:80Eh, 1",
+        "00037216: cwd",
+        "00037217: xor     ax, dx",
+        "00037219: sub     ax, dx",
+        "0003721B: cmp     ax, 800h",
+        "0003721E: jle     short loc_37224",
+        "00037220: dec     word ptr ds:80Eh",
+        "00037224: xor     ax, dx",
+        "00037226: sub     ax, dx",
+        "00037228: mov     ds:810h, ax",
+        "0003722B: mov     si, ds:48BAh",
+        "0003722F: mov     ax, [si+8]",
+        "00037232: mov     ds:81Ah, ax",
+        "00037235: mov     ax, [si+0Ah]",
+        "00037238: mov     ds:81Ch, ax",
+        "0003723B: mov     di, 83Ch",
+        "0003723E: call    angle_quad_norm_far",
+        "00037243: mov     ds:816h, ax",
+        "00037246: mov     ds:818h, dx",
+        "0003724A: xor     ax, ax",
+        "0003724C: mov     di, 81Eh",
+        "0003724F: stosw",
+        "00037250: stosw",
+        "00037251: stosw",
+        "00037252: stosw",
+        "00037253: mov     si, 81Eh",
+        "00037256: mov     di, 816h",
+        "00037259: call    angle_xy_near",
+        "0003725E: mov     word ptr ds:812h, 1",
+        "00037264: sub     ax, ds:84Ah",
+        "00037268: call    stub_to_24988",
+        "0003726D: cwd",
+        "0003726E: xor     ax, dx",
+        "00037270: sub     ax, dx",
+        "00037272: cmp     ax, 800h",
+        "00037275: jle     short loc_3727B",
+        "00037277: dec     word ptr ds:812h",
+        "0003727B: xor     ax, dx",
+        "0003727D: sub     ax, dx",
+        "0003727F: mov     ds:814h, ax",
+        "00037282: pop     es",
+        "00037283: mov     si, ds:48BAh",
+        "00037287: mov     ax, [si+10h]",
+        "0003728A: neg     ax",
+        "0003728C: mov     bx, 7FCh",
+        "0003728F: call    stub_to_249d8",
+        "00037294: mov     bx, 2D0h",
+        "00037297: mov     ax, ds:7FCh",
+        "0003729A: imul    bx",
+        "0003729C: mov     ds:7FCh, dx",
+        "000372A0: mov     bp, dx",
+        "000372A2: sar     dx, 1",
+        "000372A4: mov     ds:800h, dx",
+        "000372A8: sar     dx, 1",
+        "000372AA: sar     dx, 1",
+        "000372AC: mov     ds:804h, dx",
+        "000372B0: mov     ax, ds:7FEh",
+        "000372B3: imul    bx",
+        "000372B5: mov     ds:7FEh, dx",
+        "000372B9: mov     bx, dx",
+        "000372BB: sar     dx, 1",
+        "000372BD: mov     ds:802h, dx",
+        "000372C1: sar     dx, 1",
+        "000372C3: sar     dx, 1",
+        "000372C5: mov     ds:806h, dx",
+        "000372C9: cmp     word ptr ds:80Eh, 0",
+        "000372CE: jnz     short loc_372F0",
+        "000372D0: mov     ax, ds:810h",
+        "000372D3: cwd",
+        "000372D4: xor     bp, dx",
+        "000372D6: sub     bp, dx",
+        "000372D8: add     bp, ds:6C6h",
+        "000372DC: mov     ds:818h, bp",
+        "000372E0: xor     bx, dx",
+        "000372E2: sub     bx, dx",
+        "000372E4: add     bx, ds:6C4h",
+        "000372E8: mov     ds:816h, bx",
+        "000372EC: mov     ax, bp",
+        "000372EE: jmp     short loc_37312",
+        "000372F0: mov     si, 800h",
+        "000372F3: mov     ax, ds:810h",
+        "000372F6: mov     cx, ax",
+        "000372F8: imul    bx",
+        "000372FA: idiv    si",
+        "000372FC: add     ax, ds:6C4h",
+        "00037300: mov     ds:816h, ax",
+        "00037303: mov     bx, ax",
+        "00037305: mov     ax, cx",
+        "00037307: imul    bp",
+        "00037309: idiv    si",
+        "0003730B: add     ax, ds:6C6h",
+        "0003730F: mov     ds:818h, ax",
+        "00037312: mov     cx, 4",
+        "00037315: mov     dx, bx",
+        "00037317: add     dx, ds:7FCh",
+        "0003731B: mov     ds:826h, dx",
+        "0003731F: sar     dx, cl",
+        "00037321: adc     dx, 0",
+        "00037324: mov     ds:81Eh, dx",
+        "00037328: sub     bx, ds:7FCh",
+        "0003732C: sar     bx, cl",
+        "0003732E: adc     bx, 0",
+        "00037331: mov     ds:822h, bx",
+        "00037335: mov     dx, ax",
+        "00037337: sub     dx, ds:7FEh",
+        "0003733B: mov     ds:828h, dx",
+        "0003733F: sar     dx, cl",
+        "00037341: adc     dx, 0",
+        "00037344: mov     ds:820h, dx",
+        "00037348: add     ax, ds:7FEh",
+        "0003734C: sar     ax, cl",
+        "0003734E: adc     ax, 0",
+        "00037351: mov     ds:824h, ax",
+        "00037354: mov     si, 81Eh",
+        "00037357: call    segment_clip_test",
+        "0003735C: jb      short loc_373DD",
+        "0003735E: mov     ax, 0FFFFh",
+        "00037361: add     ax, ds:80Eh",
+        "00037365: mov     si, 81Eh",
+        "00037368: call    clip_or_draw_dispatch",
+        "0003736D: mov     cx, 5",
+        "00037370: mov     si, 826h",
+        "00037373: push    si",
+        "00037374: push    cx",
+        "00037375: mov     di, si",
+        "00037377: mov     cx, 4",
+        "0003737A: lodsw",
+        "0003737B: mov     bx, ax",
+        "0003737D: add     bx, ds:806h",
+        "00037381: sar     bx, cl",
+        "00037383: adc     bx, 0",
+        "00037386: mov     ds:81Eh, bx",
+        "0003738A: mov     bx, ax",
+        "0003738C: sub     bx, ds:806h",
+        "00037390: sar     bx, cl",
+        "00037392: adc     bx, 0",
+        "00037395: mov     ds:822h, bx",
+        "00037399: sub     ax, ds:800h",
+        "0003739D: mov     [di], ax",
+        "0003739F: lodsw",
+        "000373A0: mov     bx, ax",
+        "000373A2: add     bx, ds:804h",
+        "000373A6: sar     bx, cl",
+        "000373A8: adc     bx, 0",
+        "000373AB: mov     ds:820h, bx",
+        "000373AF: mov     bx, ax",
+        "000373B1: sub     bx, ds:804h",
+        "000373B5: sar     bx, cl",
+        "000373B7: adc     bx, 0",
+        "000373BA: mov     ds:824h, bx",
+        "000373BE: add     ax, ds:802h",
+        "000373C2: mov     [di+2], ax",
+        "000373C5: mov     si, 81Eh",
+        "000373C8: call    segment_clip_test",
+        "000373CD: jb      short loc_373D9",
+        "000373CF: xor     ax, ax",
+        "000373D1: mov     si, 81Eh",
+        "000373D4: call    clip_or_draw_dispatch",
+        "000373D9: pop     cx",
+        "000373DA: pop     si",
+        "000373DB: loop    loc_37373",
+        "000373DD: cmp     word ptr ds:812h, 0",
+        "000373E2: jnz     short loc_37410",
+        "000373E4: mov     ax, ds:814h",
+        "000373E7: cwd",
+        "000373E8: mov     bp, dx",
+        "000373EA: xor     dx, ds:7FCh",
+        "000373EE: sub     dx, bp",
+        "000373F0: neg     dx",
+        "000373F2: add     dx, ds:6C4h",
+        "000373F6: mov     ds:816h, dx",
+        "000373FA: mov     bx, dx",
+        "000373FC: mov     dx, bp",
+        "000373FE: xor     dx, ds:7FEh",
+        "00037402: sub     dx, bp",
+        "00037404: add     dx, ds:6C6h",
+        "00037408: mov     ds:818h, dx",
+        "0003740C: mov     ax, dx",
+        "0003740E: jmp     short loc_37438",
+        "00037410: mov     si, 0F800h",
+        "00037413: mov     ax, ds:814h",
+        "00037416: mov     cx, ax",
+        "00037418: imul    word ptr ds:7FCh",
+        "0003741C: idiv    si",
+        "0003741E: add     ax, ds:6C4h",
+        "00037422: mov     ds:816h, ax",
+        "00037425: mov     bx, ax",
+        "00037427: mov     ax, cx",
+        "00037429: neg     ax",
+        "0003742B: imul    word ptr ds:7FEh",
+        "0003742F: idiv    si",
+        "00037431: add     ax, ds:6C6h",
+        "00037435: mov     ds:818h, ax",
+        "00037438: mov     cx, 4",
+        "0003743B: mov     dx, bx",
+        "0003743D: add     dx, ds:7FEh",
+        "00037441: mov     ds:826h, dx",
+        "00037445: sar     dx, cl",
+        "00037447: adc     dx, 0",
+        "0003744A: mov     ds:81Eh, dx",
+        "0003744E: sub     bx, ds:7FEh",
+        "00037452: sar     bx, cl",
+        "00037454: adc     bx, 0",
+        "00037457: mov     ds:822h, bx",
+        "0003745B: mov     dx, ax",
+        "0003745D: add     dx, ds:7FCh",
+        "00037461: mov     ds:828h, dx",
+        "00037465: sar     dx, cl",
+        "00037467: adc     dx, 0",
+        "0003746A: mov     ds:820h, dx",
+        "0003746E: sub     ax, ds:7FCh",
+        "00037472: sar     ax, cl",
+        "00037474: adc     ax, 0",
+        "00037477: mov     ds:824h, ax",
+        "0003747A: mov     si, 81Eh",
+        "0003747D: call    segment_clip_test",
+        "00037482: jb      short loc_37503",
+        "00037484: mov     ax, 0FFFFh",
+        "00037487: add     ax, ds:812h",
+        "0003748B: mov     si, 81Eh",
+        "0003748E: call    clip_or_draw_dispatch",
+        "00037493: mov     cx, 5",
+        "00037496: mov     si, 826h",
+        "00037499: push    si",
+        "0003749A: push    cx",
+        "0003749B: mov     di, si",
+        "0003749D: mov     cx, 4",
+        "000374A0: lodsw",
+        "000374A1: mov     bx, ax",
+        "000374A3: add     bx, ds:804h",
+        "000374A7: sar     bx, cl",
+        "000374A9: adc     bx, 0",
+        "000374AC: mov     ds:81Eh, bx",
+        "000374B0: mov     bx, ax",
+        "000374B2: sub     bx, ds:804h",
+        "000374B6: sar     bx, cl",
+        "000374B8: adc     bx, 0",
+        "000374BB: mov     ds:822h, bx",
+        "000374BF: sub     ax, ds:802h",
+        "000374C3: mov     [di], ax",
+        "000374C5: lodsw",
+        "000374C6: mov     bx, ax",
+        "000374C8: sub     bx, ds:806h",
+        "000374CC: sar     bx, cl",
+        "000374CE: adc     bx, 0",
+        "000374D1: mov     ds:820h, bx",
+        "000374D5: mov     bx, ax",
+        "000374D7: add     bx, ds:806h",
+        "000374DB: sar     bx, cl",
+        "000374DD: adc     bx, 0",
+        "000374E0: mov     ds:824h, bx",
+        "000374E4: sub     ax, ds:800h",
+        "000374E8: mov     [di+2], ax",
+        "000374EB: mov     si, 81Eh",
+        "000374EE: call    segment_clip_test",
+        "000374F3: jb      short loc_374FF",
+        "000374F5: xor     ax, ax",
+        "000374F7: mov     si, 81Eh",
+        "000374FA: call    clip_or_draw_dispatch",
+        "000374FF: pop     cx",
+        "00037500: pop     si",
+        "00037501: loop    loc_37499",
+        "00037503: mov     ax, ds:848h",
+        "00037506: and     ax, 3FFFh",
+        "00037509: cwd",
+        "0003750A: mov     si, 1C7h",
+        "0003750D: div     si",
+        "0003750F: mov     byte ptr ds:101Fh, 30h ; '0'",
+        "00037514: mov     dl, 0Ah",
+        "00037516: div     dl",
+        "00037518: add     ah, 30h ; '0'",
+        "0003751B: mov     ds:101Eh, ah",
+        "0003751F: mov     byte ptr ds:101Dh, 20h ; ' '",
+        "00037524: or      al, al",
+        "00037526: jz      short loc_3752D",
+        "00037528: add     al, 30h ; '0'",
+        "0003752A: mov     ds:101Dh, al",
+        "0003752D: mov     si, 22h ; '\"'",
+        "00037530: mov     bx, 0CCh",
+        "00037533: mov     di, 51h ; 'Q'",
+        "00037536: sub     bl, ds:4A86h",
+        "0003753A: mov     al, ds:4A85h",
+        "0003753D: cbw",
+        "0003753E: call    graphics_sprite_offset_dispatch",
+        "00037541: retn",
+        "00037542: push    es",
+        "00037543: mov     al, ds:105Ah",
+        "00037546: call    farobj_dispatch_table",
+        "0003754B: mov     si, 851h",
+        "0003754E: add     si, 4",
+        "00037551: mov     bp, 5",
+        "00037554: mov     cx, 0Bh",
+        "00037557: mov     di, 32h ; '2'",
+        "0003755A: mov     bx, 91h",
+        "0003755D: call    hud_external_vector_dispatch",
+        "00037562: call    dispatch_220dc_stub",
+        "00037567: pop     es",
+        "00037568: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x0",
+          "operand": "byte ptr ds:105Dh",
+          "instruction": "mov     byte ptr ds:105Dh, 0"
+        },
+        {
+          "offset": "0x5",
+          "operand": "byte ptr ds:82Ch",
+          "instruction": "cmp     byte ptr ds:82Ch, 1"
+        },
+        {
+          "offset": "0x11",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0x19",
+          "operand": "[si+0Ch]",
+          "instruction": "mov     ax, [si+0Ch]"
+        },
+        {
+          "offset": "0x1c",
+          "operand": "[si+0Eh]",
+          "instruction": "mov     cx, [si+0Eh]"
+        },
+        {
+          "offset": "0x45",
+          "operand": "[si+4Ch]",
+          "instruction": "mov     si, [si+4Ch]"
+        },
+        {
+          "offset": "0x4f",
+          "operand": "ds:105Dh",
+          "instruction": "mov     ds:105Dh, al"
+        },
+        {
+          "offset": "0x5b",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0x5f",
+          "operand": "[si+0Ch]",
+          "instruction": "mov     ax, [si+0Ch]"
+        },
+        {
+          "offset": "0x62",
+          "operand": "ds:80Ch",
+          "instruction": "mov     ds:80Ch, ax"
+        },
+        {
+          "offset": "0x6d",
+          "operand": "byte ptr ds:105Fh",
+          "instruction": "cmp     byte ptr ds:105Fh, 0"
+        },
+        {
+          "offset": "0x74",
+          "operand": "ds:848h",
+          "instruction": "sub     ax, ds:848h"
+        },
+        {
+          "offset": "0x7a",
+          "operand": "ds:80Ch",
+          "instruction": "sub     ax, ds:80Ch"
+        },
+        {
+          "offset": "0x83",
+          "operand": "word ptr ds:80Eh",
+          "instruction": "mov     word ptr ds:80Eh, 1"
+        },
+        {
+          "offset": "0x9b",
+          "operand": "ds:810h",
+          "instruction": "mov     ds:810h, ax"
+        },
+        {
+          "offset": "0x9e",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0xa2",
+          "operand": "[si+8]",
+          "instruction": "mov     ax, [si+8]"
+        },
+        {
+          "offset": "0xa5",
+          "operand": "ds:81Ah",
+          "instruction": "mov     ds:81Ah, ax"
+        },
+        {
+          "offset": "0xa8",
+          "operand": "[si+0Ah]",
+          "instruction": "mov     ax, [si+0Ah]"
+        },
+        {
+          "offset": "0xab",
+          "operand": "ds:81Ch",
+          "instruction": "mov     ds:81Ch, ax"
+        },
+        {
+          "offset": "0xb6",
+          "operand": "ds:816h",
+          "instruction": "mov     ds:816h, ax"
+        },
+        {
+          "offset": "0xb9",
+          "operand": "ds:818h",
+          "instruction": "mov     ds:818h, dx"
+        },
+        {
+          "offset": "0xd1",
+          "operand": "word ptr ds:812h",
+          "instruction": "mov     word ptr ds:812h, 1"
+        },
+        {
+          "offset": "0xd7",
+          "operand": "ds:84Ah",
+          "instruction": "sub     ax, ds:84Ah"
+        },
+        {
+          "offset": "0xf2",
+          "operand": "ds:814h",
+          "instruction": "mov     ds:814h, ax"
+        },
+        {
+          "offset": "0xf6",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0xfa",
+          "operand": "[si+10h]",
+          "instruction": "mov     ax, [si+10h]"
+        },
+        {
+          "offset": "0x10a",
+          "operand": "ds:7FCh",
+          "instruction": "mov     ax, ds:7FCh"
+        },
+        {
+          "offset": "0x10f",
+          "operand": "ds:7FCh",
+          "instruction": "mov     ds:7FCh, dx"
+        },
+        {
+          "offset": "0x117",
+          "operand": "ds:800h",
+          "instruction": "mov     ds:800h, dx"
+        },
+        {
+          "offset": "0x11f",
+          "operand": "ds:804h",
+          "instruction": "mov     ds:804h, dx"
+        },
+        {
+          "offset": "0x123",
+          "operand": "ds:7FEh",
+          "instruction": "mov     ax, ds:7FEh"
+        },
+        {
+          "offset": "0x128",
+          "operand": "ds:7FEh",
+          "instruction": "mov     ds:7FEh, dx"
+        },
+        {
+          "offset": "0x130",
+          "operand": "ds:802h",
+          "instruction": "mov     ds:802h, dx"
+        },
+        {
+          "offset": "0x138",
+          "operand": "ds:806h",
+          "instruction": "mov     ds:806h, dx"
+        },
+        {
+          "offset": "0x13c",
+          "operand": "word ptr ds:80Eh",
+          "instruction": "cmp     word ptr ds:80Eh, 0"
+        },
+        {
+          "offset": "0x143",
+          "operand": "ds:810h",
+          "instruction": "mov     ax, ds:810h"
+        },
+        {
+          "offset": "0x14b",
+          "operand": "ds:6C6h",
+          "instruction": "add     bp, ds:6C6h"
+        },
+        {
+          "offset": "0x14f",
+          "operand": "ds:818h",
+          "instruction": "mov     ds:818h, bp"
+        },
+        {
+          "offset": "0x157",
+          "operand": "ds:6C4h",
+          "instruction": "add     bx, ds:6C4h"
+        },
+        {
+          "offset": "0x15b",
+          "operand": "ds:816h",
+          "instruction": "mov     ds:816h, bx"
+        },
+        {
+          "offset": "0x166",
+          "operand": "ds:810h",
+          "instruction": "mov     ax, ds:810h"
+        },
+        {
+          "offset": "0x16f",
+          "operand": "ds:6C4h",
+          "instruction": "add     ax, ds:6C4h"
+        },
+        {
+          "offset": "0x173",
+          "operand": "ds:816h",
+          "instruction": "mov     ds:816h, ax"
+        },
+        {
+          "offset": "0x17e",
+          "operand": "ds:6C6h",
+          "instruction": "add     ax, ds:6C6h"
+        },
+        {
+          "offset": "0x182",
+          "operand": "ds:818h",
+          "instruction": "mov     ds:818h, ax"
+        },
+        {
+          "offset": "0x18a",
+          "operand": "ds:7FCh",
+          "instruction": "add     dx, ds:7FCh"
+        },
+        {
+          "offset": "0x18e",
+          "operand": "ds:826h",
+          "instruction": "mov     ds:826h, dx"
+        },
+        {
+          "offset": "0x197",
+          "operand": "ds:81Eh",
+          "instruction": "mov     ds:81Eh, dx"
+        },
+        {
+          "offset": "0x19b",
+          "operand": "ds:7FCh",
+          "instruction": "sub     bx, ds:7FCh"
+        }
+      ],
+      "callers": [
+        {
+          "name": "main_game_loop_update",
+          "call_site": "0x2fab4"
+        }
+      ]
+    },
+    "hud_data_panel_draw": {
+      "name": "hud_data_panel_draw",
+      "address": "0x30f11",
+      "size": 273,
+      "disassembly": [
+        "00030F11: cmp     byte ptr ds:474h, 0",
+        "00030F16: jz      short loc_30F19",
+        "00030F18: retn",
+        "00030F19: mov     ax, 0Ch",
+        "00030F1C: call    cs_word_store",
+        "00030F21: call    hud_data_value_clamp",
+        "00030F26: push    di",
+        "00030F27: mov     ax, si",
+        "00030F29: mov     si, 41Dh",
+        "00030F2C: mov     cl, 0FCh",
+        "00030F2E: call    int32_to_ascii_short",
+        "00030F33: mov     bx, ds:24Fh",
+        "00030F37: mov     di, ds:251h",
+        "00030F3B: add     di, 0Ah",
+        "00030F3E: mov     si, 41Eh",
+        "00030F41: call    graphics_pixel_plot_gateway",
+        "00030F46: pop     ax",
+        "00030F47: mov     si, 41Dh",
+        "00030F4A: mov     cl, 0FCh",
+        "00030F4C: call    int32_to_ascii_short",
+        "00030F51: mov     bx, ds:24Fh",
+        "00030F55: mov     di, ds:251h",
+        "00030F59: add     di, 0Ah",
+        "00030F5C: add     bx, 1Eh",
+        "00030F5F: mov     si, 41Eh",
+        "00030F62: call    graphics_pixel_plot_gateway",
+        "00030F67: mov     ax, ds:20h",
+        "00030F6A: mov     dx, ds:22h",
+        "00030F6E: mov     si, 41Dh",
+        "00030F71: mov     cx, 8",
+        "00030F74: call    int32_to_ascii",
+        "00030F79: mov     bx, ds:24Fh",
+        "00030F7D: mov     di, ds:251h",
+        "00030F81: add     di, 14h",
+        "00030F84: mov     si, 41Eh",
+        "00030F87: call    graphics_pixel_plot_gateway",
+        "00030F8C: mov     ax, ds:24h",
+        "00030F8F: mov     dx, ds:26h",
+        "00030F93: mov     si, 41Dh",
+        "00030F96: mov     cx, 8",
+        "00030F99: call    int32_to_ascii",
+        "00030F9E: mov     bx, ds:24Fh",
+        "00030FA2: mov     di, ds:251h",
+        "00030FA6: add     di, 14h",
+        "00030FA9: add     bx, 32h ; '2'",
+        "00030FAC: mov     si, 41Eh",
+        "00030FAF: call    graphics_pixel_plot_gateway",
+        "00030FB4: mov     ax, ds:28h",
+        "00030FB7: mov     dx, ds:2Ah",
+        "00030FBB: mov     si, 41Dh",
+        "00030FBE: mov     cx, 8",
+        "00030FC1: call    int32_to_ascii",
+        "00030FC6: mov     bx, ds:24Fh",
+        "00030FCA: mov     di, ds:251h",
+        "00030FCE: add     di, 14h",
+        "00030FD1: add     bx, 64h ; 'd'",
+        "00030FD4: mov     si, 41Eh",
+        "00030FD7: call    graphics_pixel_plot_gateway",
+        "00030FDC: mov     ax, ds:23Dh",
+        "00030FDF: mov     si, 41Dh",
+        "00030FE2: mov     cl, 0FBh",
+        "00030FE4: call    int32_to_ascii_short",
+        "00030FE9: mov     bx, ds:24Fh",
+        "00030FED: mov     di, ds:251h",
+        "00030FF1: add     di, 14h",
+        "00030FF4: add     bx, 96h",
+        "00030FF8: mov     si, 41Eh",
+        "00030FFB: call    graphics_pixel_plot_gateway",
+        "00031000: mov     ax, cs:word_2F677",
+        "00031004: mov     si, 41Dh",
+        "00031007: mov     cl, 0FBh",
+        "00031009: call    int32_to_ascii_short",
+        "0003100E: mov     bx, ds:24Fh",
+        "00031012: mov     di, ds:251h",
+        "00031016: add     di, 1Eh",
+        "00031019: mov     si, 41Eh",
+        "0003101C: call    graphics_pixel_plot_gateway",
+        "00031021: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x0",
+          "operand": "byte ptr ds:474h",
+          "instruction": "cmp     byte ptr ds:474h, 0"
+        },
+        {
+          "offset": "0x22",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0x26",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        },
+        {
+          "offset": "0x40",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0x44",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        },
+        {
+          "offset": "0x56",
+          "operand": "ds:20h",
+          "instruction": "mov     ax, ds:20h"
+        },
+        {
+          "offset": "0x59",
+          "operand": "ds:22h",
+          "instruction": "mov     dx, ds:22h"
+        },
+        {
+          "offset": "0x68",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0x6c",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        },
+        {
+          "offset": "0x7b",
+          "operand": "ds:24h",
+          "instruction": "mov     ax, ds:24h"
+        },
+        {
+          "offset": "0x7e",
+          "operand": "ds:26h",
+          "instruction": "mov     dx, ds:26h"
+        },
+        {
+          "offset": "0x8d",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0x91",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        },
+        {
+          "offset": "0xa3",
+          "operand": "ds:28h",
+          "instruction": "mov     ax, ds:28h"
+        },
+        {
+          "offset": "0xa6",
+          "operand": "ds:2Ah",
+          "instruction": "mov     dx, ds:2Ah"
+        },
+        {
+          "offset": "0xb5",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0xb9",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        },
+        {
+          "offset": "0xcb",
+          "operand": "ds:23Dh",
+          "instruction": "mov     ax, ds:23Dh"
+        },
+        {
+          "offset": "0xd8",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0xdc",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        },
+        {
+          "offset": "0xef",
+          "operand": "cs:word_2F677",
+          "instruction": "mov     ax, cs:word_2F677"
+        },
+        {
+          "offset": "0xfd",
+          "operand": "ds:24Fh",
+          "instruction": "mov     bx, ds:24Fh"
+        },
+        {
+          "offset": "0x101",
+          "operand": "ds:251h",
+          "instruction": "mov     di, ds:251h"
+        }
+      ],
+      "callers": [
+        {
+          "name": "main_game_loop_update",
+          "call_site": "0x2faf3"
+        },
+        {
+          "name": "main_frame_update_loop",
+          "call_site": "0x313c9"
+        }
+      ]
+    },
+    "hud_readout_render": {
+      "name": "hud_readout_render",
+      "address": "0x36785",
+      "size": 908,
+      "disassembly": [
+        "00036785: mov     byte ptr ds:103Eh, 0",
+        "0003678A: mov     si, ds:706h",
+        "0003678E: mov     ax, [si+24h]",
+        "00036791: mov     bl, 20h ; ' '",
+        "00036793: or      ax, ax",
+        "00036795: jns     short loc_3679B",
+        "00036797: mov     bl, 2Dh ; '-'",
+        "00036799: neg     ax",
+        "0003679B: mov     ds:103Ah, bl",
+        "0003679F: mov     bx, 0Ah",
+        "000367A2: div     bl",
+        "000367A4: add     al, 30h ; '0'",
+        "000367A6: add     ah, 30h ; '0'",
+        "000367A9: mov     ds:103Bh, al",
+        "000367AC: mov     byte ptr ds:103Ch, 2Eh ; '.'",
+        "000367B1: mov     ds:103Dh, ah",
+        "000367B5: mov     bx, 66h ; 'f'",
+        "000367B8: mov     di, 0Ch",
+        "000367BB: mov     si, 103Ah",
+        "000367BE: add     bx, ds:6F8h",
+        "000367C2: add     di, ds:6FAh",
+        "000367C6: call    cs:dword_35924",
+        "000367CB: mov     si, ds:706h",
+        "000367CF: mov     ax, [si+12h]",
+        "000367D2: mov     bx, 0Ah",
+        "000367D5: div     bl",
+        "000367D7: add     ah, 30h ; '0'",
+        "000367DA: mov     ds:103Dh, ah",
+        "000367DE: sub     ah, ah",
+        "000367E0: div     bl",
+        "000367E2: add     ah, 30h ; '0'",
+        "000367E5: mov     ds:103Ch, ah",
+        "000367E9: mov     byte ptr ds:103Bh, 2Eh ; '.'",
+        "000367EE: mov     ah, 20h ; ' '",
+        "000367F0: or      al, al",
+        "000367F2: jz      short loc_367F8",
+        "000367F4: add     al, 30h ; '0'",
+        "000367F6: mov     ah, al",
+        "000367F8: mov     ds:103Ah, ah",
+        "000367FC: mov     bx, 62h ; 'b'",
+        "000367FF: mov     di, 52h ; 'R'",
+        "00036802: mov     si, 103Ah",
+        "00036805: add     bx, ds:6F8h",
+        "00036809: add     di, ds:6FAh",
+        "0003680D: call    cs:dword_35924",
+        "00036812: cmp     byte ptr ds:4A84h, 0",
+        "00036817: jz      short loc_36852",
+        "00036819: mov     si, ds:706h",
+        "0003681D: mov     ax, [si+0CEh]",
+        "00036821: mov     bx, 0Ah",
+        "00036824: div     bl",
+        "00036826: add     al, 30h ; '0'",
+        "00036828: add     ah, 30h ; '0'",
+        "0003682B: mov     ds:103Ah, al",
+        "0003682E: mov     byte ptr ds:103Bh, 2Eh ; '.'",
+        "00036833: mov     ds:103Ch, ah",
+        "00036837: mov     byte ptr ds:103Dh, 0",
+        "0003683C: mov     bx, 62h ; 'b'",
+        "0003683F: mov     di, 58h ; 'X'",
+        "00036842: mov     si, 103Ah",
+        "00036845: add     bx, ds:6F8h",
+        "00036849: add     di, ds:6FAh",
+        "0003684D: call    cs:dword_35924",
+        "00036852: mov     di, 32h ; '2'",
+        "00036855: mov     bx, 9Ch",
+        "00036858: mov     bp, 1",
+        "0003685B: mov     cx, 2",
+        "0003685E: mov     si, 0F4Ch",
+        "00036861: add     bx, ds:6F8h",
+        "00036865: add     di, ds:6FAh",
+        "00036869: call    cs:dword_35920",
+        "0003686E: mov     si, ds:706h",
+        "00036872: mov     di, [si+1Ah]",
+        "00036875: mov     ax, 0FCE0h",
+        "00036878: imul    di",
+        "0003687A: mov     di, dx",
+        "0003687C: add     di, 2Fh ; '/'",
+        "0003687F: mov     bx, [si+1Ch]",
+        "00036882: mov     ax, 640h",
+        "00036885: imul    bx",
+        "00036887: mov     bx, dx",
+        "00036889: add     bx, 9Eh",
+        "0003688D: mov     bp, 1",
+        "00036890: mov     cx, 6",
+        "00036893: mov     si, 0F4Eh",
+        "00036896: add     bx, ds:6F8h",
+        "0003689A: add     di, ds:6FAh",
+        "0003689E: call    cs:dword_35920",
+        "000368A3: cmp     byte ptr cs:loc_35929, 3",
+        "000368A9: jnz     short loc_368BC",
+        "000368AB: mov     si, 1Ah",
+        "000368AE: mov     bx, 62h ; 'b'",
+        "000368B1: mov     di, 4Ch ; 'L'",
+        "000368B4: xor     ax, ax",
+        "000368B6: call    graphics_sprite_offset_dispatch",
+        "000368B9: jmp     loc_36940",
+        "000368BC: cmp     word ptr ds:836h, 0",
+        "000368C1: jnz     short loc_368D1",
+        "000368C3: mov     si, 12h",
+        "000368C6: mov     bx, 67h ; 'g'",
+        "000368C9: mov     di, 4Ch ; 'L'",
+        "000368CC: xor     ax, ax",
+        "000368CE: call    graphics_sprite_offset_dispatch",
+        "000368D1: mov     ax, ds:44AAh",
+        "000368D4: xor     bx, bx",
+        "000368D6: mov     si, ax",
+        "000368D8: cmp     ax, 3",
+        "000368DB: jz      short loc_3692F",
+        "000368DD: cmp     ax, 4",
+        "000368E0: jz      short loc_3692F",
+        "000368E2: push    ax",
+        "000368E3: mov     bl, 63h ; 'c'",
+        "000368E5: cmp     ds:4890h, ah",
+        "000368E9: jz      short loc_368FB",
+        "000368EB: mov     bx, 487Eh",
+        "000368EE: xlat",
+        "000368EF: mov     si, ds:48BAh",
+        "000368F3: lea     si, [si+0AEh]",
+        "000368F7: add     si, ax",
+        "000368F9: mov     bl, [si]",
+        "000368FB: mov     al, bl",
+        "000368FD: mov     bl, 0Ah",
+        "000368FF: div     bl",
+        "00036901: add     ah, 30h ; '0'",
+        "00036904: or      al, al",
+        "00036906: jnz     short loc_3690A",
+        "00036908: mov     al, 0F0h",
+        "0003690A: add     al, 30h ; '0'",
+        "0003690C: mov     ds:103Ah, ax",
+        "0003690F: mov     word ptr ds:103Ch, 0",
+        "00036915: mov     bx, 62h ; 'b'",
+        "00036918: mov     di, 5Eh ; '^'",
+        "0003691B: mov     si, 103Ah",
+        "0003691E: add     bx, ds:6F8h",
+        "00036922: add     di, ds:6FAh",
+        "00036926: call    cs:dword_35924",
+        "0003692B: pop     si",
+        "0003692C: mov     bx, 0Ch",
+        "0003692F: shl     si, 1",
+        "00036931: mov     si, [si+7DAh]",
+        "00036935: add     bx, 62h ; 'b'",
+        "00036938: mov     di, 5Eh ; '^'",
+        "0003693B: xor     ax, ax",
+        "0003693D: call    graphics_sprite_offset_dispatch",
+        "00036940: cmp     byte ptr ds:69Ah, 0FFh",
+        "00036945: jz      short loc_36991",
+        "00036947: mov     si, ds:48BAh",
+        "0003694B: test    word ptr [si+0CAh], 1000h",
+        "00036951: jnz     short loc_36991",
+        "00036953: mov     ax, ds:69Ah",
+        "00036956: add     al, 30h ; '0'",
+        "00036958: mov     ds:1028h, al",
+        "0003695B: mov     di, 692h",
+        "0003695E: call    angle_quad_norm_far",
+        "00036963: shr     dx, 1",
+        "00036965: rcr     ax, 1",
+        "00036967: mov     bx, 14A0h",
+        "0003696A: div     bx",
+        "0003696C: mov     cx, 3",
+        "0003696F: mov     bx, 0Ah",
+        "00036972: mov     di, 1026h",
+        "00036975: mov     word ptr ds:1024h, 2020h",
+        "0003697B: mov     byte ptr ds:1026h, 30h ; '0'",
+        "00036980: or      ax, ax",
+        "00036982: jz      short loc_3699D",
+        "00036984: div     bl",
+        "00036986: add     ah, 30h ; '0'",
+        "00036989: mov     [di], ah",
+        "0003698B: cbw",
+        "0003698C: dec     di",
+        "0003698D: loop    loc_36980",
+        "0003698F: jmp     short loc_3699D",
+        "00036991: mov     ax, 5858h",
+        "00036994: mov     ds:1024h, ax",
+        "00036997: mov     ds:1026h, al",
+        "0003699A: mov     ds:1028h, al",
+        "0003699D: mov     si, 1Ch",
+        "000369A0: mov     bx, 0CCh",
+        "000369A3: mov     di, 58h ; 'X'",
+        "000369A6: sub     bl, ds:4A86h",
+        "000369AA: mov     al, ds:4A85h",
+        "000369AD: cbw",
+        "000369AE: call    graphics_sprite_offset_dispatch",
+        "000369B1: mov     si, cs:word_2F669",
+        "000369B6: mov     ax, [si+40h]",
+        "000369B9: xor     dx, dx",
+        "000369BB: shl     ax, 1",
+        "000369BD: rcl     dx, 1",
+        "000369BF: shl     ax, 1",
+        "000369C1: rcl     dx, 1",
+        "000369C3: mov     cl, 0FBh",
+        "000369C5: mov     si, 1038h",
+        "000369C8: call    int32_to_ascii",
+        "000369CD: mov     byte ptr ds:1038h, 41h ; 'A'",
+        "000369D2: mov     byte ptr ds:1039h, 20h ; ' '",
+        "000369D7: mov     si, 103Ah",
+        "000369DA: mov     bx, 0CCh",
+        "000369DD: mov     di, 5Eh ; '^'",
+        "000369E0: mov     al, ds:4A85h",
+        "000369E3: cbw",
+        "000369E4: sub     si, ax",
+        "000369E6: sub     bl, ds:4A86h",
+        "000369EA: add     bx, ds:6F8h",
+        "000369EE: add     di, ds:6FAh",
+        "000369F2: call    cs:dword_35924",
+        "000369F7: push    es",
+        "000369F8: mov     si, ds",
+        "000369FA: mov     es, si",
+        "000369FC: mov     si, ds:706h",
+        "00036A00: mov     ax, [si+3Ah]",
+        "00036A03: mov     ds:4816h, ax",
+        "00036A06: mov     ax, [si+3Ch]",
+        "00036A09: mov     ds:4818h, ax",
+        "00036A0C: mov     word ptr ds:481Ah, 0",
+        "00036A12: mov     si, 4816h",
+        "00036A15: mov     di, 4816h",
+        "00036A18: call    view_rotation_far_thunk",
+        "00036A1D: mov     si, 4816h",
+        "00036A20: mov     bx, 430Ch",
+        "00036A23: mov     di, 47D6h",
+        "00036A26: call    stub_to_248d1",
+        "00036A2B: add     di, 6",
+        "00036A2E: call    stub_to_248d1",
+        "00036A33: add     di, 6",
+        "00036A36: call    stub_to_248d1",
+        "00036A3B: xor     ax, ax",
+        "00036A3D: mov     ds:4816h, ax",
+        "00036A40: mov     ds:4818h, ax",
+        "00036A43: mov     word ptr ds:481Ah, 2000h",
+        "00036A49: mov     si, 4816h",
+        "00036A4C: mov     bx, 47D6h",
+        "00036A4F: mov     di, 47E8h",
+        "00036A52: call    stub_to_248d1",
+        "00036A57: mov     ax, ds:47ECh",
+        "00036A5A: cwd",
+        "00036A5B: mov     ds:47D6h, ax",
+        "00036A5E: mov     ds:47D8h, dx",
+        "00036A62: mov     ax, ds:47E8h",
+        "00036A65: cwd",
+        "00036A66: mov     ds:47DAh, ax",
+        "00036A69: mov     ds:47DCh, dx",
+        "00036A6D: mov     ax, ds:47EAh",
+        "00036A70: neg     ax",
+        "00036A72: cwd",
+        "00036A73: mov     ds:47DEh, ax",
+        "00036A76: mov     ds:47E0h, dx",
+        "00036A7A: xor     ax, ax",
+        "00036A7C: mov     di, 47E2h",
+        "00036A7F: stosw",
+        "00036A80: stosw",
+        "00036A81: stosw",
+        "00036A82: stosw",
+        "00036A83: stosw",
+        "00036A84: stosw",
+        "00036A85: mov     di, 47D6h",
+        "00036A88: mov     si, 47E2h",
+        "00036A8B: call    angle_xy_near",
+        "00036A90: mov     bx, ax",
+        "00036A92: sub     ax, 2000h",
+        "00036A95: neg     ax",
+        "00036A97: cwd",
+        "00036A98: mov     ax, bx",
+        "00036A9A: call    fixed_abs_div4",
+        "00036A9F: xor     ax, dx",
+        "00036AA1: sub     ax, dx",
+        "00036AA3: push    ax",
+        "00036AA4: mov     di, 47D6h",
+        "00036AA7: mov     si, 47E2h",
+        "00036AAA: call    angle_aux_near",
+        "00036AAF: add     ax, ds:674h",
+        "00036AB3: neg     ax",
+        "00036AB5: mov     bx, 1C2h",
+        "00036AB8: mov     cx, 4",
+        "00036ABB: imul    bx",
+        "00036ABD: mov     al, ah",
+        "00036ABF: mov     ah, dl",
+        "00036AC1: add     ax, ds:6C6h",
+        "00036AC5: mov     ds:79Eh, ax",
+        "00036AC8: sar     ax, cl",
+        "00036ACA: mov     ds:79Ah, ax",
+        "00036ACD: pop     ax",
+        "00036ACE: pop     es",
+        "00036ACF: imul    bx",
+        "00036AD1: mov     al, ah",
+        "00036AD3: mov     ah, dl",
+        "00036AD5: add     ax, ds:6C4h",
+        "00036AD9: mov     ds:79Ch, ax",
+        "00036ADC: sar     ax, cl",
+        "00036ADE: mov     ds:798h, ax",
+        "00036AE1: mov     si, 79Ch",
+        "00036AE4: call    near ptr sprite_in_view_test",
+        "00036AE7: jb      short loc_36B0B",
+        "00036AE9: mov     byte ptr ds:105Ch, 0FFh",
+        "00036AEE: mov     bx, ds:798h",
+        "00036AF2: sub     bx, 4",
+        "00036AF5: mov     di, ds:79Ah",
+        "00036AF9: sub     di, 4",
+        "00036AFC: mov     bp, 2",
+        "00036AFF: mov     cx, 7",
+        "00036B02: mov     si, 0E84h",
+        "00036B05: call    cs:dword_35920",
+        "00036B0A: retn",
+        "00036B0B: mov     byte ptr ds:105Ch, 0",
+        "00036B10: retn"
+      ],
+      "calls": [],
+      "data_refs": [
+        {
+          "offset": "0x0",
+          "operand": "byte ptr ds:103Eh",
+          "instruction": "mov     byte ptr ds:103Eh, 0"
+        },
+        {
+          "offset": "0x5",
+          "operand": "ds:706h",
+          "instruction": "mov     si, ds:706h"
+        },
+        {
+          "offset": "0x9",
+          "operand": "[si+24h]",
+          "instruction": "mov     ax, [si+24h]"
+        },
+        {
+          "offset": "0x16",
+          "operand": "ds:103Ah",
+          "instruction": "mov     ds:103Ah, bl"
+        },
+        {
+          "offset": "0x24",
+          "operand": "ds:103Bh",
+          "instruction": "mov     ds:103Bh, al"
+        },
+        {
+          "offset": "0x27",
+          "operand": "byte ptr ds:103Ch",
+          "instruction": "mov     byte ptr ds:103Ch, 2Eh ; '.'"
+        },
+        {
+          "offset": "0x2c",
+          "operand": "ds:103Dh",
+          "instruction": "mov     ds:103Dh, ah"
+        },
+        {
+          "offset": "0x39",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0x3d",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0x46",
+          "operand": "ds:706h",
+          "instruction": "mov     si, ds:706h"
+        },
+        {
+          "offset": "0x4a",
+          "operand": "[si+12h]",
+          "instruction": "mov     ax, [si+12h]"
+        },
+        {
+          "offset": "0x55",
+          "operand": "ds:103Dh",
+          "instruction": "mov     ds:103Dh, ah"
+        },
+        {
+          "offset": "0x60",
+          "operand": "ds:103Ch",
+          "instruction": "mov     ds:103Ch, ah"
+        },
+        {
+          "offset": "0x64",
+          "operand": "byte ptr ds:103Bh",
+          "instruction": "mov     byte ptr ds:103Bh, 2Eh ; '.'"
+        },
+        {
+          "offset": "0x73",
+          "operand": "ds:103Ah",
+          "instruction": "mov     ds:103Ah, ah"
+        },
+        {
+          "offset": "0x80",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0x84",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0x8d",
+          "operand": "byte ptr ds:4A84h",
+          "instruction": "cmp     byte ptr ds:4A84h, 0"
+        },
+        {
+          "offset": "0x94",
+          "operand": "ds:706h",
+          "instruction": "mov     si, ds:706h"
+        },
+        {
+          "offset": "0x98",
+          "operand": "[si+0CEh]",
+          "instruction": "mov     ax, [si+0CEh]"
+        },
+        {
+          "offset": "0xa6",
+          "operand": "ds:103Ah",
+          "instruction": "mov     ds:103Ah, al"
+        },
+        {
+          "offset": "0xa9",
+          "operand": "byte ptr ds:103Bh",
+          "instruction": "mov     byte ptr ds:103Bh, 2Eh ; '.'"
+        },
+        {
+          "offset": "0xae",
+          "operand": "ds:103Ch",
+          "instruction": "mov     ds:103Ch, ah"
+        },
+        {
+          "offset": "0xb2",
+          "operand": "byte ptr ds:103Dh",
+          "instruction": "mov     byte ptr ds:103Dh, 0"
+        },
+        {
+          "offset": "0xc0",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0xc4",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0xdc",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0xe0",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0xe9",
+          "operand": "ds:706h",
+          "instruction": "mov     si, ds:706h"
+        },
+        {
+          "offset": "0xed",
+          "operand": "[si+1Ah]",
+          "instruction": "mov     di, [si+1Ah]"
+        },
+        {
+          "offset": "0xfa",
+          "operand": "[si+1Ch]",
+          "instruction": "mov     bx, [si+1Ch]"
+        },
+        {
+          "offset": "0x111",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0x115",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0x11e",
+          "operand": "byte ptr cs:loc_35929",
+          "instruction": "cmp     byte ptr cs:loc_35929, 3"
+        },
+        {
+          "offset": "0x137",
+          "operand": "word ptr ds:836h",
+          "instruction": "cmp     word ptr ds:836h, 0"
+        },
+        {
+          "offset": "0x14c",
+          "operand": "ds:44AAh",
+          "instruction": "mov     ax, ds:44AAh"
+        },
+        {
+          "offset": "0x160",
+          "operand": "ds:4890h",
+          "instruction": "cmp     ds:4890h, ah"
+        },
+        {
+          "offset": "0x16a",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0x16e",
+          "operand": "[si+0AEh]",
+          "instruction": "lea     si, [si+0AEh]"
+        },
+        {
+          "offset": "0x174",
+          "operand": "[si]",
+          "instruction": "mov     bl, [si]"
+        },
+        {
+          "offset": "0x187",
+          "operand": "ds:103Ah",
+          "instruction": "mov     ds:103Ah, ax"
+        },
+        {
+          "offset": "0x18a",
+          "operand": "word ptr ds:103Ch",
+          "instruction": "mov     word ptr ds:103Ch, 0"
+        },
+        {
+          "offset": "0x199",
+          "operand": "ds:6F8h",
+          "instruction": "add     bx, ds:6F8h"
+        },
+        {
+          "offset": "0x19d",
+          "operand": "ds:6FAh",
+          "instruction": "add     di, ds:6FAh"
+        },
+        {
+          "offset": "0x1ac",
+          "operand": "[si+7DAh]",
+          "instruction": "mov     si, [si+7DAh]"
+        },
+        {
+          "offset": "0x1bb",
+          "operand": "byte ptr ds:69Ah",
+          "instruction": "cmp     byte ptr ds:69Ah, 0FFh"
+        },
+        {
+          "offset": "0x1c2",
+          "operand": "ds:48BAh",
+          "instruction": "mov     si, ds:48BAh"
+        },
+        {
+          "offset": "0x1c6",
+          "operand": "word ptr [si+0CAh]",
+          "instruction": "test    word ptr [si+0CAh], 1000h"
+        },
+        {
+          "offset": "0x1ce",
+          "operand": "ds:69Ah",
+          "instruction": "mov     ax, ds:69Ah"
+        },
+        {
+          "offset": "0x1d3",
+          "operand": "ds:1028h",
+          "instruction": "mov     ds:1028h, al"
+        }
+      ],
+      "callers": [
+        {
+          "name": "hud_draw_chain_step",
+          "call_site": "0x35bff"
+        }
+      ]
+    }
+  },
+  "gauge_drawing_functions": [
+    {
+      "name": "hud_brightness_scale",
+      "address": "0x2c1f3",
+      "size": 8,
+      "type": "scale"
+    },
+    {
+      "name": "hud_readout_render_coordinator",
+      "address": "0x36785",
+      "size": 908,
+      "type": "readout"
+    },
+    {
+      "name": "hud_heading_tape_draw",
+      "address": "0x3708f",
+      "size": 254,
+      "type": "tape"
+    },
+    {
+      "name": "hud_terrain_strip_render",
+      "address": "0x3718d",
+      "size": 988,
+      "type": "strip"
+    },
+    {
+      "name": "hud_track_label_strip",
+      "address": "0x3a29c",
+      "size": 194,
+      "type": "strip"
+    },
+    {
+      "name": "hud_digit_extract",
+      "address": "0x3f274",
+      "size": 19,
+      "type": "digit"
+    },
+    {
+      "name": "hud_readout_timer_render",
+      "address": "0x46999",
+      "size": 295,
+      "type": "readout"
+    },
+    {
+      "name": "hud_track_strip_pipeline",
+      "address": "0x46d42",
+      "size": 397,
+      "type": "strip"
+    },
+    {
+      "name": "hud_track_strip_builder",
+      "address": "0x47162",
+      "size": 215,
+      "type": "strip"
+    },
+    {
+      "name": "hud_panel_scale_calculator",
+      "address": "0x4760f",
+      "size": 119,
+      "type": "scale"
+    },
+    {
+      "name": "r37_hud_strip_render_entry",
+      "address": "0x166ade",
+      "size": 788,
+      "type": "strip"
+    }
+  ],
+  "flight_data_globals": [],
+  "instrument_pipeline": {
+    "game_frame_address": "0x2fd42",
+    "cockpit_related_calls": []
+  },
+  "summary": {
+    "key_functions_analyzed": 6,
+    "gauge_functions_found": 11,
+    "flight_data_variables": 0,
+    "cockpit_calls_in_game_loop": 0
+  }
+}
