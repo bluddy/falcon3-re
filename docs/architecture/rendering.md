@@ -68,12 +68,18 @@ retf                            ; Return CX = projected coordinate
 ```
 
 **Used By**:
-- HUD targeting system (~30,000 calls/frame)
+- **HUD targeting system** (~30,000 calls/frame theoretical, ~10 actual after culling)
+  - `hud_ai_target_tracking_draw` (0x425A2) - per-entity marker projection
+  - `hud_state_table_processor` (0x45074) - batch coordinator (17 entity limit)
+  - `hud_rowlist_timer_step` (0x47BDE) - timer-based processing
 - 3D object projection (~15,000 calls/frame)
 - Flight physics visualization (~5,000 calls/frame)
 - **Tactical map display** (~100 calls/frame via waypoint_display_helper)
 - Loadout menu F-16 model
 - External view rendering
+
+**Performance Note**: HUD targeting employs aggressive culling (frustum, distance, batch rejection) 
+that reduces actual vec3 calls by 80-90%. Theoretical 30K calls become ~5-10 actual projections/frame.
 
 **Wrapper**: `farobj_vec3_accum_b_ret` (0x022C89, 8B) - calls fixed_vec3_accumulate_a and returns result in AX
 
@@ -135,6 +141,86 @@ graphics_line_draw_bresenham (0x028B08, 409B)
 0x13E002-   Camera/map state        ; Position, zoom, view mode
 0x13E168    (area before waypoints)
 ```
+
+---
+
+## HUD Targeting System ⭐
+
+**See also**: `docs/HUD_TARGETING_SYSTEM_DECODED.md` for complete analysis.
+
+### Overview
+
+The HUD targeting system uses the same 3D projection infrastructure as the tactical map,
+projecting AI entities from world space to screen space for targeting brackets and markers.
+
+**Key Discovery**: Despite appearing as a 2D overlay, the HUD performs full 3D world-to-screen
+projection for every tracked entity using `fixed_vec3_accumulate_a`.
+
+### Core Functions (3 main functions)
+
+| Function | Address | Size | Purpose | Calls/Frame |
+|----------|---------|------|---------|-------------|
+| hud_ai_target_tracking_draw | 0x425A2 | 88 | Per-entity marker projection | ~10 (after culling) |
+| hud_state_table_processor | 0x45074 | 508 | Batch coordinator (17 entity limit) | 60 |
+| hud_rowlist_timer_step | 0x47BDE | 535 | Timer-based target list processing | 60 |
+
+### Culling System (Performance Optimization)
+
+**The Performance Mystery**: Theoretical 30,000 vec3 calls/frame would take 116-232ms on a
+66MHz 486 (impossible for 60 FPS). Actual performance is achieved through aggressive culling.
+
+**Culling Stages** (in `hud_ai_target_tracking_draw`):
+
+1. **Visibility Flags** (CH register bits):
+   - `ch & 0x01`: Entity visible flag
+   - `ch & 0x02`: **Clipped (skip projection entirely)** ← Primary cull
+   - `ch & 0x04`: Threat level (affects marker type)
+
+2. **Distance Culling** (field at [si+0x1F]):
+   - `< -2048`: Behind camera → CULL
+   - `< 2048`: Too close → CULL or simplified marker
+   - `> 10000`: Beyond max range → CULL
+   - `6250-10000`: Long range → LOD reduction
+
+3. **Batch Rejection** (in `hud_state_table_processor`):
+   - `test bl, 2`: Skip entire entity batch if flag set
+   - `cmp ax, 0x11`: Hard limit of 17 entities per frame
+
+**Result**: 80-90% reduction in actual vec3 calls (30,000 theoretical → ~10 actual).
+
+### Marker Drawing Functions
+
+| Function | Address | Size | Purpose |
+|----------|---------|------|---------|
+| hud_track_marker_draw | 0x42686 | 70 | Generic target marker |
+| hud_track_distance_draw | 0x426CC | 101 | Distance to target label |
+| hud_track_label_strip | 0x3A29C | 194 | Target ID/name strip |
+| hud_project_gate_draw | 0x425FA | 70 | Targeting gate/brackets |
+| hud_track_project_draw | 0x4227A | 197 | Project and draw combined |
+
+### Call Chain
+
+```
+AI State Machine (ai_state_processor_core)
+    ↓
+hud_ai_target_tracking_draw (per entity)
+    ├─ Visibility check (ch & 0x02) → 50% culled
+    ├─ Distance check ([si+0x1F]) → 80% of remaining culled
+    └─ fixed_vec3_accumulate_a (only ~10 entities/frame)
+        └─ Screen coordinates (X, Y)
+            └─ Marker drawing functions
+                └─ VGA 0xA000 (graphics primitives)
+```
+
+### Integration Points
+
+**From AI System**:
+- `ai_state_processor_core` → Main AI loop (3 call sites)
+- `ai_entity_update_step` → Per-entity update (1 call site)
+- `ai_combat_maneuver_selector` → Combat AI (2 call sites)
+
+**From Weapon System**:
+- `weapon_spawn_gate_validate` → Missile tracking (1 call site)
 
 ---
 

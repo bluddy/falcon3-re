@@ -1,0 +1,251 @@
+{
+  "goal": "Find performance optimizations that reduce HUD projection calls",
+  "analysis": {
+    "hud_ai_target_tracking_draw": {
+      "address": "0x425a2",
+      "early_exits": [],
+      "distance_checks": [
+        {
+          "offset": "0x9",
+          "address": "0x425ab",
+          "test": "test    ch, 1",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x1d",
+          "address": "0x425bf",
+          "test": "test    ch, 2",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x23",
+          "address": "0x425c5",
+          "test": "test    ch, 4",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x28",
+          "address": "0x425ca",
+          "comparison": "cmp     word ptr [si+1Fh], 0F800h",
+          "operands": "word ptr [si+1Fh] vs 0F800h"
+        },
+        {
+          "offset": "0x32",
+          "address": "0x425d4",
+          "comparison": "cmp     word ptr [di+56h], 2710h",
+          "operands": "word ptr [di+56h] vs 2710h"
+        },
+        {
+          "offset": "0x3f",
+          "address": "0x425e1",
+          "comparison": "cmp     word ptr [si+1Fh], 800h",
+          "operands": "word ptr [si+1Fh] vs 800h"
+        },
+        {
+          "offset": "0x49",
+          "address": "0x425eb",
+          "comparison": "cmp     word ptr [di+3Eh], 186Ah",
+          "operands": "word ptr [di+3Eh] vs 186Ah"
+        }
+      ],
+      "vec3_call_context": {
+        "error": "vec3 call not found in function"
+      }
+    },
+    "hud_state_table_processor": {
+      "address": "0x45074",
+      "early_exits": [],
+      "distance_checks": [
+        {
+          "offset": "0x72",
+          "address": "0x450e6",
+          "test": "test    bl, 2",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0xc8",
+          "address": "0x4513c",
+          "comparison": "cmp     ax, 11h",
+          "operands": "ax vs 11h"
+        },
+        {
+          "offset": "0xcd",
+          "address": "0x45141",
+          "test": "test    cs:word_43B22, 1",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0xec",
+          "address": "0x45160",
+          "comparison": "cmp     word ptr [bp+di], 0FFEBh",
+          "operands": "word ptr [bp+di] vs 0FFEBh"
+        },
+        {
+          "offset": "0x19c",
+          "address": "0x45210",
+          "test": "test    cl, 1",
+          "type": "flag_check"
+        }
+      ],
+      "vec3_call_context": {
+        "error": "vec3 call not found in function"
+      }
+    },
+    "hud_rowlist_timer_step": {
+      "address": "0x47bde",
+      "early_exits": [],
+      "distance_checks": [
+        {
+          "offset": "0xa0",
+          "address": "0x47c7e",
+          "test": "test    al, 28h",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0xa4",
+          "address": "0x47c82",
+          "test": "test    al, 40h",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0xc3",
+          "address": "0x47ca1",
+          "test": "test    al, 2",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0xe9",
+          "address": "0x47cc7",
+          "comparison": "cmp     word_58FBC, 18h",
+          "operands": "word_58FBC vs 18h"
+        },
+        {
+          "offset": "0xf0",
+          "address": "0x47cce",
+          "test": "test    byte_59386, 2",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x143",
+          "address": "0x47d21",
+          "test": "test    al, 4",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x147",
+          "address": "0x47d25",
+          "test": "test    al, 10h",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x14b",
+          "address": "0x47d29",
+          "test": "test    al, 20h",
+          "type": "flag_check"
+        },
+        {
+          "offset": "0x154",
+          "address": "0x47d32",
+          "comparison": "cmp     dx, es:[bx+0Ch]",
+          "operands": "dx vs es:[bx+0Ch]"
+        },
+        {
+          "offset": "0x167",
+          "address": "0x47d45",
+          "comparison": "cmp     ah, 20h ; ' '",
+          "operands": "ah vs 20h"
+        },
+        {
+          "offset": "0x174",
+          "address": "0x47d52",
+          "comparison": "cmp     al, 0Eh",
+          "operands": "al vs 0Eh"
+        },
+        {
+          "offset": "0x1a5",
+          "address": "0x47d83",
+          "comparison": "cmp     byte_5936C, ch",
+          "operands": "byte_5936C vs ch"
+        },
+        {
+          "offset": "0x1ab",
+          "address": "0x47d89",
+          "comparison": "cmp     byte_59383, ch",
+          "operands": "byte_59383 vs ch"
+        },
+        {
+          "offset": "0x1be",
+          "address": "0x47d9c",
+          "comparison": "cmp     byte_59384, ch",
+          "operands": "byte_59384 vs ch"
+        },
+        {
+          "offset": "0x1c4",
+          "address": "0x47da2",
+          "comparison": "cmp     byte_59383, ch",
+          "operands": "byte_59383 vs ch"
+        },
+        {
+          "offset": "0x1e8",
+          "address": "0x47dc6",
+          "comparison": "cmp     byte_59384, ch",
+          "operands": "byte_59384 vs ch"
+        },
+        {
+          "offset": "0x1fb",
+          "address": "0x47dd9",
+          "comparison": "cmp     byte_59383, ch",
+          "operands": "byte_59383 vs ch"
+        }
+      ],
+      "vec3_call_context": {
+        "error": "vec3 call not found in function"
+      }
+    }
+  },
+  "batch_culling": {
+    "early_exits": [],
+    "checks": [
+      {
+        "offset": "0x72",
+        "address": "0x450e6",
+        "test": "test    bl, 2",
+        "type": "flag_check"
+      },
+      {
+        "offset": "0xc8",
+        "address": "0x4513c",
+        "comparison": "cmp     ax, 11h",
+        "operands": "ax vs 11h"
+      },
+      {
+        "offset": "0xcd",
+        "address": "0x45141",
+        "test": "test    cs:word_43B22, 1",
+        "type": "flag_check"
+      },
+      {
+        "offset": "0xec",
+        "address": "0x45160",
+        "comparison": "cmp     word ptr [bp+di], 0FFEBh",
+        "operands": "word ptr [bp+di] vs 0FFEBh"
+      },
+      {
+        "offset": "0x19c",
+        "address": "0x45210",
+        "test": "test    cl, 1",
+        "type": "flag_check"
+      }
+    ]
+  },
+  "potential_culling_functions": [
+    {
+      "name": "hud_panel_visibility_check",
+      "address": "0x46fea"
+    },
+    {
+      "name": "hud_timer_threshold_check",
+      "address": "0x47df5"
+    }
+  ]
+}
