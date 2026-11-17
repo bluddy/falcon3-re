@@ -232,6 +232,30 @@ globals:
       is set during burst fire. Decremented per projectile in burst.
     source: WEAPON_TYPES_DECODED.md
   
+  # A-G Weapon Queue System (Code Segment)
+  # Separate queue for air-to-ground weapons with 41-byte stride
+  
+  - address: 0x4C0D6
+    segment: code
+    name: ag_weapon_queue_head
+    size: 2
+    type: word
+    doc: |
+      Pointer to current A-G weapon queue entry (41-byte stride, 0x29). Advanced after each processed
+      A-G weapon. Separate from main weapon queue (27-byte stride). Handles weapon types 0x14-0x32
+      including AGM-88 HARM (0x19), Maverick variants, and bombs/rockets.
+    source: AG_WEAPONS_ANALYSIS.md
+  
+  - address: 0x4C0D8
+    segment: code
+    name: ag_weapon_queue_count
+    size: 2
+    type: word
+    doc: |
+      Number of pending A-G weapon spawn requests in queue. Decremented as A-G weapons are processed
+      by farobj_utility_1819 dispatcher. Independent from weapon_queue_count.
+    source: AG_WEAPONS_ANALYSIS.md
+  
   # IR Lock System (AIM-9 Sidewinder)
   
   - address: 0x44AA
