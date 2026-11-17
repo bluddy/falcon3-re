@@ -1,6 +1,7 @@
 # Rendering System — 3D Projection Pipeline
 
 *See also: `docs/architecture/farobj.md` for FarObj struct.*
+*See also: `docs/TACTICAL_MAP_COMPLETE_SUMMARY.md` for tactical map 3D system.*
 
 ---
 
@@ -9,6 +10,131 @@
 The 3D rendering pipeline runs entirely within `game_frame_pipeline_step` each flight frame.
 The core function `view_projection` (0x20BDB, 1076B) is the most-called non-trivial function:
 **282K dynamic calls per session** — roughly 15K calls per second at 18Hz.
+
+**MAJOR DISCOVERY (2024)**: The tactical map display uses the same 3D projection engine via
+`fixed_vec3_accumulate_a` (0x22C91, 68B) which performs **51,000+ calls per frame** across
+all rendering contexts (HUD, cockpit, external view, tactical map).
+
+---
+
+## Core 3D Math Engine ⭐
+
+### fixed_vec3_accumulate_a (0x22C91, 68 bytes)
+
+**THE mathematical heart of all 3D rendering in Falcon 3.0.**
+
+**Performance**: 51,000+ calls/frame, ~150-300 cycles/call, <0.5ms total
+
+**Purpose**: Fixed-point 3D vector dot product for projection
+
+**Formula**: `Result = (X×ScaleX÷DivX) + (Y×ScaleY÷DivY) + (Z×ScaleZ÷DivZ)`
+
+**State Variables** (cs segment):
+```
+cs:0x22C71  vec3_x_component        ; 3D vector X (16-bit fixed-point)
+cs:0x22C73  vec3_y_component        ; 3D vector Y
+cs:0x22C75  vec3_z_component        ; 3D vector Z
+
+cs:0x22C7D  matrix_scale_x          ; Transform matrix element M11
+cs:0x22C7F  matrix_scale_y          ; Transform matrix element M12
+cs:0x22C81  matrix_scale_z          ; Transform matrix element M13
+
+cs:0x22C83  fixedpoint_divisor_x    ; Normalization divisor
+cs:0x22C85  fixedpoint_divisor_y    ; (determines fixed-point format:
+cs:0x22C87  fixedpoint_divisor_z    ;  256=8.8, 4096=12.4, 65536=16.16)
+```
+
+**Algorithm**:
+```assembly
+; X component
+mov ax, cs:vec3_x_component
+mul cs:matrix_scale_x
+div cs:fixedpoint_divisor_x
+mov cx, dx                      ; CX = X contribution
+
+; Y component
+mov ax, cs:vec3_y_component
+mul cs:matrix_scale_y
+div cs:fixedpoint_divisor_y
+add cx, dx                      ; CX += Y contribution
+
+; Z component
+mov ax, cs:vec3_z_component
+mul cs:matrix_scale_z
+div cs:fixedpoint_divisor_z
+add cx, dx                      ; CX += Z contribution
+
+retf                            ; Return CX = projected coordinate
+```
+
+**Used By**:
+- HUD targeting system (~30,000 calls/frame)
+- 3D object projection (~15,000 calls/frame)
+- Flight physics visualization (~5,000 calls/frame)
+- **Tactical map display** (~100 calls/frame via waypoint_display_helper)
+- Loadout menu F-16 model
+- External view rendering
+
+**Wrapper**: `farobj_vec3_accum_b_ret` (0x022C89, 8B) - calls fixed_vec3_accumulate_a and returns result in AX
+
+---
+
+## Tactical Map 3D Projection
+
+**Discovery**: The tactical map is NOT a simple 2D overlay. It uses full 3D projection with perspective.
+
+### Pipeline
+
+```
+Mission Waypoints (X, Y, Altitude)
+    ↓
+Camera State (position, zoom, angles)
+    ↓
+waypoint_display_helper (0x1A163A, 2048B)
+    ├─ Transform world → camera space
+    ├─ Call farobj_vec3_accum_b_ret (2×)
+    │   └─ fixed_vec3_accumulate_a
+    │       └─ Compute screen_x, screen_y
+    └─ Output: pixel coordinates
+    ↓
+waypoint_coordinate_processor (0x1A2441, 871B)
+    └─ Marshal data structures (21B → 18B → 6B)
+    ↓
+draw_from_struct (0x02245A, 104B)
+    ├─ 5-word struct: [x1, y1, x2, y2, attr]
+    └─ Dispatch via cs:0x22084 table
+    ↓
+graphics_line_draw_bresenham (0x028B08, 409B)
+    └─ Bresenham line algorithm → VGA 0xA000
+```
+
+### Key Functions
+
+| Function | Address | Size | Purpose |
+|----------|---------|------|---------|
+| tactical_screen_coordinator | 0x12DB6A | 1,031 | UI coordinator |
+| waypoint_display_processor | 0x1A0F10 | 2,090 | Buffer initialization |
+| waypoint_display_helper | 0x1A163A | 2,048 | 3D projection (calls vec3_accum) |
+| waypoint_coordinate_processor | 0x1A2441 | 871 | Data marshaling |
+
+### Display State (segment 0x7894)
+
+```
+0x7A2EA/E8  display_data_ptr        ; Main display data (far pointer)
+0x7A2F6/F4  waypoint_array_ptr      ; Points to 0x4FC2:0x168
+0x7A2F2     display_buffer_handle   ; Buffer handle
+0x7A2DA/D8  display_buffer2         ; Secondary buffer
+0x7A2E6/E4  display_buffer3         ; Tertiary buffer
+0x7A2FA/F8  display_buffer4         ; Fourth buffer
+```
+
+### Waypoint Data (segment 0x4FC2)
+
+```
+0x13E168    Waypoint array base     ; 21-byte records
+0x13E002-   Camera/map state        ; Position, zoom, view mode
+0x13E168    (area before waypoints)
+```
 
 ---
 
@@ -19,7 +145,7 @@ game_frame_pipeline_step
 ├── fn_table_dispatch          → select view mode (15 modes), get projection constants
 ├── farobj_batch_build_project → TERRAIN TILE RENDERER
 │    └── coord_point_group_project (per tile patch)
-│         └── view_projection  ← THE core 3D projection (see below)
+│         └─→ EITHER view_projection OR fixed_vec3_accumulate_a
 ├── sub_256A3                  → project fixed reference point (DS:0x7B0E:0x4287)
 │    └── view_projection
 ├── viewlist_project_flagged   → per-entity view list (16B-entry records)
@@ -35,6 +161,12 @@ viewobj_project_select (each registered farobj, 59K dyn calls)
 │    └── view_projection
 └── viewobj_project_advance_mark   → same + sets state_flags bit 5 (marked)
      └── view_projection
+
+Tactical Map Rendering (separate pipeline):
+tactical_screen_coordinator
+└── waypoint_display_processor
+    └── waypoint_display_helper
+        └── farobj_vec3_accum_b_ret (via fixed_vec3_accumulate_a)
 ```
 
 ---
@@ -258,6 +390,77 @@ A 12KB runtime-loaded graphics driver (file `game\VGRAPH`). Handles all pixel-le
 - Slot 1: 127K dynamic calls (most-called slot)
 - ~10% of all runtime far calls
 - Variants: VGRAPHM (Mig-29, 97.8% identical), VGRAPHH (Harrier, 47.7% identical)
+
+---
+
+## VGA Graphics System
+
+### Mode 13h - 320×200 256-Color
+
+**Specification**:
+- Resolution: 320×200 pixels
+- Colors: 256 (1 byte per pixel)
+- Segment: 0xA000:0000
+- Total size: 64,000 bytes
+- Addressing: Linear (offset = Y × 320 + X)
+
+### Graphics Primitives
+
+| Function | Address | Size | Purpose |
+|----------|---------|------|---------|
+| draw_from_struct | 0x02245A | 104 | Main dispatcher (649 calls/codebase) |
+| draw_struct_args_dispatch | 0x0224C2 | 17 | Load 5-word struct, dispatch via cs:0x22084 |
+| graphics_line_draw_bresenham | 0x028B08 | 409 | Bresenham line algorithm |
+| graphics_rect_fill_tiled | 0x014200 | 106 | Rectangle fill with 8×8 tiles |
+| font_glyph_bitmap_render | 0x011AE7 | 62 | Bitmap font rendering |
+| line_record_draw_loop | 0x028E50 | 136 | Line stream walker |
+| terrain_anim_line_object_draw | 0x027A20 | 442 | Animated lines (tracers, missiles) |
+| clip_or_draw_dispatch | 0x026099 | — | Viewport clipping dispatcher |
+
+### Draw Struct Format (5 words)
+
+```c
+struct DrawParams {
+    uint16_t x1;    // Start X or position
+    uint16_t y1;    // Start Y or position
+    uint16_t x2;    // End X or width
+    uint16_t y2;    // End Y or height
+    uint16_t attr;  // Attributes (color, style, flags)
+};
+```
+
+**Usage Pattern**:
+```assembly
+mov si, offset draw_params    ; Point to 5-word struct
+call draw_from_struct         ; Dispatcher handles the rest
+```
+
+**Dispatch Table**: cs:0x22084 routes to specific primitives:
+- Type 0: Point/pixel
+- Type 1: Line → graphics_line_draw_bresenham
+- Type 2: Rectangle → graphics_rect_fill_tiled
+- Type 3: Sprite/blit
+- Type N: Custom handlers
+
+### Bresenham Line Algorithm
+
+**graphics_line_draw_bresenham** (0x028B08, 409 bytes):
+- Classic Bresenham rasterization
+- Handles all 8 octants
+- Direct VGA segment 0xA000 writes
+- Pixel offset calculation: Y × 320 + X
+
+**Pattern**:
+```assembly
+mov es, 0xA000          ; VGA segment
+mov ax, y               ; Y coordinate
+mov cx, 320
+imul cx                 ; AX = Y × 320
+add ax, x               ; AX = Y × 320 + X
+mov di, ax              ; DI = pixel offset
+mov al, color           ; Color value (0-255)
+mov es:[di], al         ; Write to VGA memory
+```
 
 ---
 
