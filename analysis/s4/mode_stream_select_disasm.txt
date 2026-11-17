@@ -1,0 +1,103 @@
+; mode_stream_select_step
+; Address: 0x39e13
+; Size: 266 bytes
+
+00039E13 +0000: mov     al, byte_595B2
+00039E16 +0003: cmp     al, 4
+00039E18 +0005: jnz     short loc_39E1B
+00039E1A +0007: retn
+00039E1B +0008: cmp     al, 5
+00039E1D +000A: jnz     short loc_39E25
+00039E1F +000C: call    sub_2C12B
+00039E24 +0011: retn
+00039E25 +0012: cmp     byte_59573, 1
+00039E2A +0017: jg      short loc_39E2F
+00039E2C +0019: jmp     near ptr steerpoint_scan_update
+00039E2F +001C: cmp     al, 1
+00039E31 +001E: jz      short loc_39E3E
+00039E33 +0020: cmp     al, 0
+00039E35 +0022: jz      short loc_39E3E
+00039E37 +0024: retn
+00039E38 +0025: mov     byte_595B4, 0
+00039E3D +002A: retn
+00039E3E +002B: push    es
+00039E3F +002C: mov     ax, word_593A8
+00039E42 +002F: mov     byte_595B9, 0
+00039E47 +0034: shl     ax, 1
+00039E49 +0036: shl     ax, 1
+00039E4B +0038: mov     word ptr cs:loc_39E69+2, ax
+00039E4F +003C: mov     word ptr cs:loc_39E9C+2, ax
+00039E53 +0040: mov     cx, 10h
+00039E56 +0043: mov     bx, word_5959B
+00039E5A +0047: cmp     bx, 0FFFFh
+00039E5D +004A: jz      short loc_39E98
+00039E5F +004C: add     bx, 4
+00039E62 +004F: cmp     bx, 40h ; '@'
+00039E65 +0052: jl      short loc_39E69
+00039E67 +0054: sub     bx, bx
+00039E69 +0056: cmp     bx, 4444h
+00039E6D +005A: jz      short loc_39E93
+00039E6F +005C: les     di, [bx+1734h]
+00039E73 +0060: mov     al, es:[di+74h]
+00039E77 +0064: test    al, 1
+00039E79 +0066: jz      short loc_39E93
+00039E7B +0068: test    al, 40h
+00039E7D +006A: jz      short loc_39E93
+00039E7F +006C: test    byte ptr es:[di+79h], 1
+00039E84 +0071: jz      short loc_39E93
+00039E86 +0073: mov     ax, es:[di+96h]
+00039E8B +0078: dec     ax
+00039E8C +0079: mov     dx, es:[di+98h]
+00039E91 +007E: jmp     short loc_39EE8
+00039E93 +0080: loop    loc_39E5F
+00039E95 +0082: pop     es
+00039E96 +0083: jmp     short loc_39ECC
+00039E98 +0085: sub     bx, bx
+00039E9A +0087: xor     si, si
+00039E9C +0089: cmp     bx, 4444h
+00039EA0 +008D: jz      short loc_39EC6
+00039EA2 +008F: les     di, [bx+1734h]
+00039EA6 +0093: mov     al, es:[di+74h]
+00039EAA +0097: test    al, 1
+00039EAC +0099: jz      short loc_39EC6
+00039EAE +009B: test    al, 40h
+00039EB0 +009D: jz      short loc_39EC6
+00039EB2 +009F: test    byte ptr es:[di+79h], 1
+00039EB7 +00A4: jz      short loc_39EC6
+00039EB9 +00A6: mov     ax, es:[di+96h]
+00039EBE +00AB: dec     ax
+00039EBF +00AC: mov     dx, es:[di+98h]
+00039EC4 +00B1: jmp     short loc_39EE8
+00039EC6 +00B3: add     bx, 4
+00039EC9 +00B6: loop    loc_39E9C
+00039ECB +00B8: pop     es
+00039ECC +00B9: mov     ax, 9Fh
+00039ECF +00BC: mov     dx, 96h
+00039ED2 +00BF: mov     bx, 0FFFFh
+00039ED5 +00C2: mov     word_5959B, bx
+00039ED9 +00C6: mov     word_59597, ax
+00039EDC +00C9: mov     word_59595, ax
+00039EDF +00CC: mov     word_59599, dx
+00039EE3 +00D0: push    cs
+00039EE4 +00D1: call    near ptr undoc_39D02
+00039EE7 +00D4: retn
+00039EE8 +00D5: mov     word_59595, ax
+00039EEB +00D8: mov     bp, ax
+00039EED +00DA: mov     word_59599, dx
+00039EF1 +00DE: mov     ax, es:[di+9Ah]
+00039EF6 +00E3: pop     es
+00039EF7 +00E4: mov     si, word_593AA
+00039EFB +00E8: sub     ax, [si+0Ch]
+00039EFE +00EB: mov     dx, 630h
+00039F01 +00EE: imul    dx
+00039F03 +00F0: add     dx, bp
+00039F05 +00F2: mov     ax, dx
+00039F07 +00F4: cmp     ax, 60h ; '`'
+00039F0A +00F7: jl      short loc_39ECC
+00039F0C +00F9: cmp     ax, 0E2h
+00039F0F +00FC: jg      short loc_39ECC
+00039F11 +00FE: mov     word_59597, ax
+00039F14 +0101: mov     word_5959B, bx
+00039F18 +0105: push    cs
+00039F19 +0106: call    near ptr undoc_39D02
+00039F1C +0109: retn

@@ -8934,10 +8934,19 @@ functions:
 
   # STEERPOINT SYSTEM
   - address: 0x039e13
-    name: mode_stream_select_step
-    system: mode
-    doc: '266B, in=1 (far_mode_event_dispatch). ds:4AC2h mode switch: 4 -> retn, 5 then ds:4AABh walk (cx=10h, +4 step vs 40h bound); ds:4AC9h/4AC4h clears. conf:'
-    source: 'old_registry (was: mode_stream_select_step)'
+    name: radar_acm_target_step
+    system: radar
+    size: 266
+    doc: >
+      F6 ACM mode target stepping function. Checks radar_mode_state (byte_595B2): returns if mode=4 (disabled), 
+      calls sub_2C12B if mode=5 (STT locked). Checks radar_type_selector (byte_59573): if <=1 (SAD/SAM arcade modes), 
+      jumps to steerpoint_scan_update instead of target tracking. For mode 0/1 in HFR (type=2), scans through 16 
+      entities with stride=4, filters by status flags (entity+0x74 bits 0&6, entity+0x79 bit 0), extracts position 
+      (entity+0x96/98/9A for X/Y/Z), computes 3D perspective display position with altitude offset 
+      ((target_alt - ref_alt) * 1584 + target_x), validates bounds [96,226], stores result in radar_display_x_adjusted 
+      (word_59597), updates radar_selected_target_index (word_5959B), calls undoc_39D02 for display rendering. 
+      Uses self-modifying code to patch entity array boundary check based on word_593A8. Originally mode_stream_select_step.
+    source: RADAR_MODE_STATE_MACHINE.md, mode_stream_select_interpretation.md
 
   # HUD SYSTEM
   - address: 0x039f1d
@@ -9934,7 +9943,19 @@ functions:
 
   # ENTITY SYSTEM
   - address: 0x0484c1
-    name: record_script_coord_entry
+    name: config_loader_radar_and_audio
+    system: config
+    size: 126
+    doc: >
+      Configuration loader for radar type and audio settings. Reads from config data segment 706Eh. 
+      Loads radar_type_selector (byte_59573) from offset +0x14 with transformation: -(value - 2), 
+      yielding 0=SAD (arcade 360°), 1=SAM (intermediate 120°), 2=HFR (realistic manual). 
+      Also loads radar_config_byte_related (byte_59574) from +0x0C. Sets radar_config_flag_1 (byte_59575) and 
+      radar_config_flag_2 (byte_59576) based on byte_59574: if 0, sets to 2 and 4 respectively, else 0 and 0. 
+      Loads other config bytes to byte_55B4E (+0x0E), byte_55B5F (+0x18), byte_59380 (+0x10), byte_59381 (+0x12). 
+      Checks byte_54F67 and EMS state flags to conditionally zero audio settings. Called at startup to initialize 
+      avionics configuration from player preferences. Originally record_script_coord_entry.
+    source: RADAR_MODE_STATE_MACHINE.md, radar_key_handlers.txt
     system: record
     doc: '604B, in=3. Record-script coordinate dispatch entries: entity_step_flags, farobj_record_build_6b58_ch. conf: medium'
     source: 'old_registry (was: record_script_coord_entry)'
@@ -11052,10 +11073,19 @@ functions:
     doc: '103B C-class, 0 dyn, cd=0, 1 caller (sub_66E62). R06 overlay initializer: far-calls unk_43270 then seeds 6DE8:6E03E/6E040 state (twin of r30_offset_accum_6e03e setup). conf: med'
     source: 'old_registry (was: r06_init_call_43270)'
   - address: 0x06cda8
-    name: r06_mode_step_dispatch
-    system: r06
-    doc: '146B far, cd=8, in=2, callees r06_mode_tick_wrapper + r06_mode_step_entry R06 mode step dispatcher: the head is a bx-indexed call table into the tick/step transitions) and the position-change dete...'
-    source: 'old_registry (was: r06_mode_step_dispatch)'
+    name: radar_f5f6f7_mode_dispatcher
+    system: radar
+    size: 82
+    doc: >
+      F5/F6/F7 radar mode key dispatcher. Called via jump table at cs:off_6CDA0[bx] where bx indexes which key was pressed. 
+      Common initialization: clears radar_mode_flag (byte_595B4), sets radar_active_flag (byte_595AD=1), 
+      clears target (bx=0xFFFF), calls state_word_2e12b_set, sets radar_state_word (word_593AC). 
+      CRITICAL BRANCH on radar_type_selector (byte_59573): If !=2 (SAD/SAM arcade modes), sets radar_mode_state=1 
+      (NAM equivalent), radar_state_flag=3, radar_param_byte=2, calls r06_state_init_e56 and state_gate_4ac2_4a83. 
+      If ==2 (HFR realistic mode), sets radar_mode_state=3 (ACM), radar_state_flag=3, radar_submode_flag=0, 
+      jumps to r06_state_init_e55. This gates F5/F6/F7 submode functionality to HFR mode only. 
+      Originally r06_mode_step_dispatch.
+    source: RADAR_MODE_STATE_MACHINE.md, radar_key_handlers.txt
   - address: 0x06ce4b
     name: r06_farptr_dispatch_gate
     system: r06
@@ -12129,6 +12159,18 @@ functions:
     system: flight_physics
     size: 8
     doc: 'Loads overlay and dispatches to r06, 3 callers. conf: HIGH'
+
+  - address: 0x02C12B
+    name: radar_stt_locked_target_handler
+    system: radar
+    size: 8
+    doc: >
+      STT (Single Target Track) locked target handler stub. Called by radar_acm_target_step when 
+      radar_mode_state=5 (target locked). Calls tail_bridge_overlay_load (which despite name doesn't load overlays, 
+      Falcon 3 has no overlay files), then jumps to loc_6CF43 in r06_farptr_dispatch function. 
+      At 0x6CF43: performs division (div di) for range calculation, multiplies by 0x106 for scaling, 
+      stores result to ds:4A8Fh. Part of continuous target tracking with auto-ranging in STT mode. Originally sub_2C12B.
+    source: RADAR_MODE_STATE_MACHINE.md, radar_key_handlers.txt, loc_6cf43_context.txt
 
   - address: 0x02C1E9
     name: overlay_dispatch_stub_1
@@ -13904,9 +13946,21 @@ functions:
     size: 106
     doc: '106B, 8 comps. conf: LOW'
   - address: 0x39D02
-    name: undoc_39D02
+    name: radar_display_position_calculator
+    system: radar
     size: 106
-    doc: '106B, 11 comps. conf: LOW'
+    doc: >
+      Radar target display position calculator. Called by radar_acm_target_step (mode_stream_select_step) after target found. 
+      Inputs: radar_display_x_adjusted (word_59597) with perspective-adjusted X coordinate, 
+      radar_display_mode_flag (byte_595B6) for scaling mode. Computes screen coordinates with scaling: 
+      (x - 159) * 2731 / 67, then applies mode-specific bounds and scale factors. 
+      Mode 0: bounds [0x1C7, 0xFE39], clamped range [0xF71C, 0x8E4]. 
+      Mode 1: bounds [0x555, 0xFAAB], clamped to bounds. 
+      Mode 2+: bounds [0xAAB, 0xF555], no clamping. 
+      Outputs: radar_display_bounds_left (word_5958B), radar_display_bounds_right (word_5958D), 
+      radar_display_center_offset (word_59585). These define screen region for rendering mode text 
+      ("NAM", "ACM", "STT") and target reticle. Originally undoc_39D02.
+    source: RADAR_MODE_STATE_MACHINE.md, radar_key_handlers.txt
   - address: 0x3DE6F
     name: undoc_3DE6F
     size: 106

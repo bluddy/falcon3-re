@@ -1,0 +1,136 @@
+
+======================================================================
+Function: r06_mode_step_dispatch (expected: r06_mode_step_dispatch)
+Address: 0x6CDA8 - 0x6CDFA
+Size: 82 bytes
+======================================================================
+
+0x6CDA8:  call    cs:off_6CDA0[bx]
+0x6CDAD:  retf
+0x6CDAE:  mov     byte_595B4, 0
+0x6CDB3:  mov     byte_595AD, 1
+0x6CDB8:  mov     bx, 0FFFFh
+0x6CDBB:  call    state_word_2e12b_set
+0x6CDC0:  mov     word_593AC, bx
+0x6CDC4:  cmp     byte_59573, 2
+0x6CDC9:  jz      short loc_6CDE8
+0x6CDCB:  mov     byte_595B3, 3
+0x6CDD0:  mov     byte_595B2, 1
+0x6CDD5:  mov     byte_595AF, 2
+0x6CDDA:  push    cs
+0x6CDDB:  call    near ptr r06_state_init_e56
+0x6CDDE:  nop
+0x6CDDF:  mov     ax, 2
+0x6CDE2:  call    state_gate_4ac2_4a83
+0x6CDE7:  retf
+0x6CDE8:  mov     byte_595B3, 3
+0x6CDED:  mov     byte_595B2, 3
+0x6CDF2:  mov     byte_595B1, 0
+0x6CDF7:  jmp     near ptr r06_state_init_e55
+
+
+======================================================================
+Function: sub_2C12B (expected: sub_2C12B_mode5_handler)
+Address: 0x2C12B - 0x2C133
+Size: 8 bytes
+======================================================================
+
+0x2C12B:  call    near ptr tail_bridge_overlay_load
+0x2C12E:  jmp     loc_6CF43
+
+
+======================================================================
+Function: undoc_39D02 (expected: undoc_39D02_display_update)
+Address: 0x39D02 - 0x39D6C
+Size: 106 bytes
+======================================================================
+
+0x39D02:  mov     ax, word_59597
+0x39D05:  sub     ax, 9Fh
+0x39D08:  mov     dx, 0AABh
+0x39D0B:  imul    dx
+0x39D0D:  mov     bx, 43h ; 'C'
+0x39D10:  idiv    bx
+0x39D12:  mov     cl, byte_595B6
+0x39D16:  mov     bx, 0AABh
+0x39D19:  mov     dx, 0F555h
+0x39D1C:  sub     bp, bp
+0x39D1E:  cmp     cl, 1
+0x39D21:  jz      short loc_39D45
+0x39D23:  jg      short loc_39D5F
+0x39D25:  mov     bx, 1C7h
+0x39D28:  mov     dx, 0FE39h
+0x39D2B:  cmp     ax, 8E4h
+0x39D2E:  jle     short loc_39D35
+0x39D30:  mov     ax, 8E4h
+0x39D33:  jmp     short loc_39D3D
+0x39D35:  cmp     ax, 0F71Ch
+0x39D38:  jge     short loc_39D3D
+0x39D3A:  mov     ax, 0F71Ch
+0x39D3D:  mov     bp, ax
+0x39D3F:  add     bx, ax
+0x39D41:  add     dx, ax
+0x39D43:  jmp     short loc_39D5F
+0x39D45:  mov     bx, 555h
+0x39D48:  mov     dx, 0FAABh
+0x39D4B:  cmp     ax, bx
+0x39D4D:  jle     short loc_39D53
+0x39D4F:  mov     ax, bx
+0x39D51:  jmp     short loc_39D59
+0x39D53:  cmp     ax, dx
+0x39D55:  jge     short loc_39D59
+0x39D57:  mov     ax, dx
+0x39D59:  mov     bp, ax
+0x39D5B:  add     bx, ax
+0x39D5D:  add     dx, ax
+0x39D5F:  mov     word_5958B, bx
+0x39D63:  mov     word_5958D, dx
+0x39D67:  mov     word_59585, bp
+0x39D6B:  retf
+
+
+======================================================================
+Function: record_script_coord_entry (expected: record_script_coord_entry)
+Address: 0x484C1 - 0x4853F
+Size: 126 bytes
+======================================================================
+
+0x484C1:  push    es
+0x484C2:  mov     ax, 706Eh
+0x484C5:  mov     es, ax
+0x484C7:  mov     bx, 0
+0x484CA:  mov     al, es:[bx+8]
+0x484CE:  mov     ah, es:[bx+0Ah]
+0x484D2:  call    sub_43BAC
+0x484D5:  mov     al, es:[bx+0Eh]
+0x484D9:  mov     byte_55B4E, al
+0x484DC:  mov     al, es:[bx+18h]
+0x484E0:  mov     byte_55B5F, al
+0x484E3:  mov     al, es:[bx+10h]
+0x484E7:  mov     byte_59380, al
+0x484EA:  mov     al, es:[bx+12h]
+0x484EE:  mov     byte_59381, al
+0x484F1:  cmp     byte_54F67, 1
+0x484F6:  jle     short loc_48511
+0x484F8:  call    ems_state_flags_709f
+0x484FD:  test    ax, 1
+0x48500:  jnz     short loc_48511
+0x48502:  mov     byte_59380, 0
+0x48507:  mov     byte_59381, 0
+0x4850C:  mov     byte_55B4E, 0
+0x48511:  mov     al, es:[bx+0Ch]
+0x48515:  mov     byte_59574, al
+0x48518:  mov     ah, al
+0x4851A:  mov     al, es:[bx+14h]
+0x4851E:  sub     al, 2
+0x48520:  neg     al
+0x48522:  mov     byte_59573, al
+0x48525:  mov     byte_59575, 0
+0x4852A:  mov     byte_59576, 0
+0x4852F:  or      ah, ah
+0x48531:  jnz     short loc_4853D
+0x48533:  mov     byte_59575, 2
+0x48538:  mov     byte_59576, 4
+0x4853D:  pop     es
+0x4853E:  retf
+

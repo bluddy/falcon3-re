@@ -1,0 +1,66 @@
+
+  bytes   pages size description
+--------- ----- ---- --------------------------------------------
+  6144000   750 8192 allocating memory for b-tree...
+  4751360   580 8192 allocating memory for virtual array...
+   262144    32 8192 allocating memory for name pointers...
+-----------------------------------------------------------------
+ 11157504            total memory allocated
+
+Loading processor module C:\Program Files\IDA Professional 9.1\procs\pc.dll for metapc...Initializing processor module metapc...OK
+Loading type libraries...
+Autoanalysis subsystem has been initialized.
+Database for file 'FALCONCD.EXE' has been loaded.
+Hex-Rays Decompiler plugin has been loaded (v9.1.0.250226)
+  The hotkeys are F5: decompile, Ctrl-F5: decompile all.
+
+  Please check the Edit/Plugins menu for more information.
+Hex-rays version 9.1.0.250226 has been detected, gooMBA plugin ready to use
+Found function at 0x39E62: mode_stream_select_step
+
+=== Analyzing mode_stream_select_step at 0x39E62 ===
+
+Function size: 266 bytes
+Range: 0x39E13 - 0x39F1D
+
+Full disassembly saved to: C:\Users\ybarnoy\projects\falcon3\analysis\mode_stream_select_disasm.txt
+
+=== Data References ===
+  0x595B2: byte_595B2 (size=1, byte_val=0x00)
+  0x59573: byte_59573 (size=1, byte_val=0x02)
+  0x595B4: byte_595B4 (size=1, byte_val=0x00)
+  0x593A8: word_593A8 (size=2, byte_val=0x00)
+  0x595B9: byte_595B9 (size=1, byte_val=0x00)
+  0x39E6B: data_39E6B (size=2, byte_val=0x44)
+  0x39E9E: data_39E9E (size=2, byte_val=0x44)
+  0x5959B: word_5959B (size=2, byte_val=0xFF)
+  0x59597: word_59597 (size=2, byte_val=0x00)
+  0x59595: word_59595 (size=2, byte_val=0x00)
+  0x59599: word_59599 (size=2, byte_val=0x00)
+  0x593AA: word_593AA (size=2, byte_val=0x74)
+
+=== Mode Value Checks ===
+  0x39E16: cmp     al, 4
+           -> jnz     short loc_39E1B
+  0x39E1B: cmp     al, 5
+           -> jnz     short loc_39E25
+  0x39E25: cmp     byte_59573, 1
+           -> jg      short loc_39E2F
+  0x39E2F: cmp     al, 1
+           -> jz      short loc_39E3E
+  0x39E33: cmp     al, 0
+           -> jz      short loc_39E3E
+  0x39E5A: cmp     bx, 0FFFFh
+           -> jz      short loc_39E98
+  0x39E62: cmp     bx, 40h ; '@'
+           -> jl      short loc_39E69
+  0x39E69: cmp     bx, 4444h
+           -> jz      short loc_39E93
+  0x39E9C: cmp     bx, 4444h
+           -> jz      short loc_39EC6
+  0x39F07: cmp     ax, 60h ; '`'
+           -> jl      short loc_39ECC
+  0x39F0C: cmp     ax, 0E2h
+           -> jg      short loc_39ECC
+
+=== Entity Field Accesses ===

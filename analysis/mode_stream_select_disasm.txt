@@ -1,0 +1,102 @@
+=== mode_stream_select_step at 0x39E62 ===
+Size: 266 bytes
+
+0x39E13: mov     al, byte_595B2
+0x39E16: cmp     al, 4
+0x39E18: jnz     short loc_39E1B
+0x39E1A: retn
+0x39E1B: cmp     al, 5
+0x39E1D: jnz     short loc_39E25
+0x39E1F: call    sub_2C12B
+0x39E24: retn
+0x39E25: cmp     byte_59573, 1
+0x39E2A: jg      short loc_39E2F
+0x39E2C: jmp     near ptr steerpoint_scan_update
+0x39E2F: cmp     al, 1
+0x39E31: jz      short loc_39E3E
+0x39E33: cmp     al, 0
+0x39E35: jz      short loc_39E3E
+0x39E37: retn
+0x39E38: mov     byte_595B4, 0
+0x39E3D: retn
+0x39E3E: push    es
+0x39E3F: mov     ax, word_593A8
+0x39E42: mov     byte_595B9, 0
+0x39E47: shl     ax, 1
+0x39E49: shl     ax, 1
+0x39E4B: mov     word ptr cs:loc_39E69+2, ax
+0x39E4F: mov     word ptr cs:loc_39E9C+2, ax
+0x39E53: mov     cx, 10h
+0x39E56: mov     bx, word_5959B
+0x39E5A: cmp     bx, 0FFFFh
+0x39E5D: jz      short loc_39E98
+0x39E5F: add     bx, 4
+0x39E62: cmp     bx, 40h ; '@'
+0x39E65: jl      short loc_39E69
+0x39E67: sub     bx, bx
+0x39E69: cmp     bx, 4444h
+0x39E6D: jz      short loc_39E93
+0x39E6F: les     di, [bx+1734h]
+0x39E73: mov     al, es:[di+74h]
+0x39E77: test    al, 1
+0x39E79: jz      short loc_39E93
+0x39E7B: test    al, 40h
+0x39E7D: jz      short loc_39E93
+0x39E7F: test    byte ptr es:[di+79h], 1
+0x39E84: jz      short loc_39E93
+0x39E86: mov     ax, es:[di+96h]
+0x39E8B: dec     ax
+0x39E8C: mov     dx, es:[di+98h]
+0x39E91: jmp     short loc_39EE8
+0x39E93: loop    loc_39E5F
+0x39E95: pop     es
+0x39E96: jmp     short loc_39ECC
+0x39E98: sub     bx, bx
+0x39E9A: xor     si, si
+0x39E9C: cmp     bx, 4444h
+0x39EA0: jz      short loc_39EC6
+0x39EA2: les     di, [bx+1734h]
+0x39EA6: mov     al, es:[di+74h]
+0x39EAA: test    al, 1
+0x39EAC: jz      short loc_39EC6
+0x39EAE: test    al, 40h
+0x39EB0: jz      short loc_39EC6
+0x39EB2: test    byte ptr es:[di+79h], 1
+0x39EB7: jz      short loc_39EC6
+0x39EB9: mov     ax, es:[di+96h]
+0x39EBE: dec     ax
+0x39EBF: mov     dx, es:[di+98h]
+0x39EC4: jmp     short loc_39EE8
+0x39EC6: add     bx, 4
+0x39EC9: loop    loc_39E9C
+0x39ECB: pop     es
+0x39ECC: mov     ax, 9Fh
+0x39ECF: mov     dx, 96h
+0x39ED2: mov     bx, 0FFFFh
+0x39ED5: mov     word_5959B, bx
+0x39ED9: mov     word_59597, ax
+0x39EDC: mov     word_59595, ax
+0x39EDF: mov     word_59599, dx
+0x39EE3: push    cs
+0x39EE4: call    near ptr undoc_39D02
+0x39EE7: retn
+0x39EE8: mov     word_59595, ax
+0x39EEB: mov     bp, ax
+0x39EED: mov     word_59599, dx
+0x39EF1: mov     ax, es:[di+9Ah]
+0x39EF6: pop     es
+0x39EF7: mov     si, word_593AA
+0x39EFB: sub     ax, [si+0Ch]
+0x39EFE: mov     dx, 630h
+0x39F01: imul    dx
+0x39F03: add     dx, bp
+0x39F05: mov     ax, dx
+0x39F07: cmp     ax, 60h ; '`'
+0x39F0A: jl      short loc_39ECC
+0x39F0C: cmp     ax, 0E2h
+0x39F0F: jg      short loc_39ECC
+0x39F11: mov     word_59597, ax
+0x39F14: mov     word_5959B, bx
+0x39F18: push    cs
+0x39F19: call    near ptr undoc_39D02
+0x39F1C: retn

@@ -830,3 +830,186 @@ globals:
     type: byte
     doc: Validation threshold for menu_flight_record_sum comparison (State 2)
     source: r57_states_1_2_3_analysis
+
+  # ===========================================================================
+  # RADAR / AVIONICS SYSTEM
+  # ===========================================================================
+  
+  - address: 0x595B2
+    name: radar_mode_state
+    size: 1
+    type: byte
+    doc: >
+      Primary radar mode state variable. 0=search inactive, 1=NAM (Normal Air Mode), 
+      2=SAM (Situation Awareness Mode / intermediate tracking), 3=ACM (Air Combat Maneuvering), 
+      4=disabled/invalid, 5=STT (Single Target Track / locked). Set by r06_mode_step_dispatch 
+      based on F5/F6/F7 keys in HFR mode. Checked by mode_stream_select_step and 27 other functions.
+    source: RADAR_MODE_STATE_MACHINE.md
+  
+  - address: 0x59573
+    name: radar_type_selector
+    size: 1
+    type: byte
+    doc: >
+      Radar type configuration selector. Values: 0=SAD (Situation Awareness Display, 360° arcade), 
+      1=SAM (120° cone intermediate), 2=HFR (High Fidelity Radar, realistic manual control with submodes). 
+      Loaded from config segment 706Eh offset +0x14, transformed as -(config_value - 2). 
+      Gates F5/F6/F7 functionality: submodes only work when value=2 (HFR mode). 
+      When <=1, mode_stream_select_step jumps to steerpoint_scan_update instead of target tracking.
+    source: RADAR_MODE_STATE_MACHINE.md
+  
+  - address: 0x5959B
+    name: radar_selected_target_index
+    size: 2
+    type: word
+    doc: >
+      Index of currently selected radar target in entity array (stride=4). Value 0xFFFF means no target selected. 
+      Used by mode_stream_select_step to cycle through targets with F6 ACM stepping. 
+      Wraps at boundary 0x40 (16 entities). Set by target scanning loop, cleared by floor_bounds_set_9f.
+    source: RADAR_MODE_STATE_MACHINE.md
+  
+  - address: 0x59595
+    name: radar_target_x_coordinate
+    size: 2
+    type: word
+    doc: Selected target X position (world coordinates), copied from entity +0x96h field
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x59597
+    name: radar_display_x_adjusted
+    size: 2
+    type: word
+    doc: >
+      Display X coordinate adjusted for altitude perspective. Computed as 
+      ((target_alt - ref_alt) * 1584 + target_x). Must be in range [96, 226] for valid display. 
+      Used by undoc_39D02 to position radar target indicator.
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x59599
+    name: radar_target_y_coordinate
+    size: 2
+    type: word
+    doc: Selected target Y position (world coordinates), copied from entity +0x98h field
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x5958B
+    name: radar_display_bounds_left
+    size: 2
+    type: word
+    doc: Left bound of radar display indicator region (computed by undoc_39D02)
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x5958D
+    name: radar_display_bounds_right
+    size: 2
+    type: word
+    doc: Right bound of radar display indicator region (computed by undoc_39D02)
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x59585
+    name: radar_display_center_offset
+    size: 2
+    type: word
+    doc: Center offset for radar display positioning (computed by undoc_39D02)
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x595B4
+    name: radar_mode_flag
+    size: 1
+    type: byte
+    doc: Radar mode flag, cleared to 0 by r06_mode_step_dispatch on mode entry
+    source: mode_vars_xrefs.json
+  
+  - address: 0x595B3
+    name: radar_state_flag
+    size: 1
+    type: byte
+    doc: Radar state flag, set to 3 by r06_mode_step_dispatch in both HFR and non-HFR paths
+    source: radar_key_handlers.txt
+  
+  - address: 0x595AD
+    name: radar_active_flag
+    size: 1
+    type: byte
+    doc: Radar active flag, set to 1 by r06_mode_step_dispatch on radar initialization
+    source: radar_key_handlers.txt
+  
+  - address: 0x595AF
+    name: radar_param_byte
+    size: 1
+    type: byte
+    doc: Radar parameter byte, set to 2 by r06_mode_step_dispatch in non-HFR path
+    source: radar_key_handlers.txt
+  
+  - address: 0x595B1
+    name: radar_submode_flag
+    size: 1
+    type: byte
+    doc: Radar submode flag, cleared to 0 by r06_mode_step_dispatch in HFR path
+    source: radar_key_handlers.txt
+  
+  - address: 0x595B6
+    name: radar_display_mode_flag
+    size: 1
+    type: byte
+    doc: Display mode flag (0/1/2) that affects scaling in undoc_39D02 coordinate calculations
+    source: radar_key_handlers.txt
+  
+  - address: 0x595B9
+    name: radar_temp_flag
+    size: 1
+    type: byte
+    doc: Temporary flag cleared to 0 by mode_stream_select_step at start of target scan
+    source: mode_stream_select_disasm.txt
+  
+  - address: 0x593A8
+    name: radar_entity_array_scale
+    size: 2
+    type: word
+    doc: >
+      Entity array scaling factor. Multiplied by 4 and used for self-modifying code patches 
+      in mode_stream_select_step to set dynamic entity array boundary (default 0x4444).
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x593AA
+    name: radar_reference_altitude_ptr
+    size: 2
+    type: word
+    doc: >
+      Pointer to reference altitude structure. Offset +0x0C contains altitude value 
+      subtracted from target altitude for perspective calculation in mode_stream_select_step.
+    source: mode_stream_select_interpretation.md
+  
+  - address: 0x593AC
+    name: radar_state_word
+    size: 2
+    type: word
+    doc: Radar state word, set to 0xFFFF (cleared target) by r06_mode_step_dispatch
+    source: radar_key_handlers.txt
+  
+  - address: 0x59574
+    name: radar_config_byte_related
+    size: 1
+    type: byte
+    doc: >
+      Configuration byte loaded from segment 706Eh offset +0x0C by record_script_coord_entry. 
+      Related to radar_type_selector but separate config parameter.
+    source: radar_key_handlers.txt
+  
+  - address: 0x59575
+    name: radar_config_flag_1
+    size: 1
+    type: byte
+    doc: >
+      Configuration flag, set to 0 or 2 by record_script_coord_entry based on 
+      radar_config_byte_related value. Set to 2 when radar_config_byte_related is 0.
+    source: radar_key_handlers.txt
+  
+  - address: 0x59576
+    name: radar_config_flag_2
+    size: 1
+    type: byte
+    doc: >
+      Configuration flag, set to 0 or 4 by record_script_coord_entry based on 
+      radar_config_byte_related value. Set to 4 when radar_config_byte_related is 0.
+    source: radar_key_handlers.txt
