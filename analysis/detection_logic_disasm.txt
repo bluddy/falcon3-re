@@ -1,0 +1,286 @@
+
+======================================================================
+Function: ems_entity_slot_script
+Address: 0x4EAF8 - 0x4EB82
+Size: 138 bytes
+======================================================================
+
+0x4EAF8:  push    ds
+0x4EAF9:  push    es
+0x4EAFA:  mov     ax, 709Fh
+0x4EAFD:  mov     ds, ax
+0x4EAFF:  mov     es, ax
+0x4EB01:  sub     ds:word_70A03, 7D1h
+0x4EB07:  cmp     ds:word_709F0, 4
+0x4EB0C:  jl      short loc_4EB58
+0x4EB0E:  pusha
+0x4EB0F:  mov     cx, ds:word_70A2A+1
+0x4EB13:  or      cx, cx
+0x4EB15:  jg      short loc_4EB1A
+0x4EB17:  mov     cx, 1
+0x4EB1A:  mov     si, 0FECh
+0x4EB1D:  pusha
+0x4EB1E:  push    ds
+0x4EB1F:  push    es
+0x4EB20:  mov     bx, 6
+0x4EB23:  int     7Ah; Novell NetWare to v2.0a - LOW-LEVEL API
+0x4EB25:  pop     es
+0x4EB26:  pop     ds
+0x4EB27:  popa
+0x4EB28:  mov     bx, 4
+0x4EB2B:  push    cx
+0x4EB2C:  int     7Ah; Novell NetWare to v2.0a - LOW-LEVEL API
+0x4EB2E:  pop     cx
+0x4EB2F:  dec     cx
+0x4EB30:  jz      short loc_4EB57
+0x4EB32:  call    state_word_10219_get
+0x4EB37:  mov     es, ax
+0x4EB39:  mov     si, 0F2BCh
+0x4EB3C:  push    es
+0x4EB3D:  push    si
+0x4EB3E:  push    cx
+0x4EB3F:  pusha
+0x4EB40:  push    ds
+0x4EB41:  push    es
+0x4EB42:  mov     bx, 6
+0x4EB45:  int     7Ah; Novell NetWare to v2.0a - LOW-LEVEL API
+0x4EB47:  pop     es
+0x4EB48:  pop     ds
+0x4EB49:  popa
+0x4EB4A:  mov     bx, 4
+0x4EB4D:  int     7Ah; Novell NetWare to v2.0a - LOW-LEVEL API
+0x4EB4F:  pop     cx
+0x4EB50:  pop     si
+0x4EB51:  pop     es
+0x4EB52:  add     si, 30h ; '0'
+0x4EB55:  loop    loc_4EB3C
+0x4EB57:  popa
+0x4EB58:  pop     es
+0x4EB59:  pop     ds
+0x4EB5A:  retf
+0x4EB5B:  cmp     word ptr es:0, 5
+0x4EB61:  jnz     short loc_4EB73
+0x4EB63:  mov     al, es:3Ah
+0x4EB67:  xor     ax, [si+7]
+0x4EB6A:  and     ax, 0Fh
+0x4EB6D:  jnz     short loc_4EB73
+0x4EB6F:  add     si, 14h
+0x4EB72:  retn
+0x4EB73:  call    near ptr sub_4ECAC
+0x4EB76:  retn
+0x4EB77:  push    es
+0x4EB78:  call    near ptr undoc_4EB82
+0x4EB7B:  lodsb
+0x4EB7C:  mov     es:[si+74h], al <-- ENTITY FLAG
+0x4EB80:  pop     es
+0x4EB81:  retn
+
+
+======================================================================
+Function: sub_131A33
+Address: 0x131A33 - 0x131D5F
+Size: 812 bytes
+======================================================================
+
+0x131A33:  push    bp
+0x131A34:  mov     bp, sp
+0x131A36:  call    farobj_vec3_accum_b_ret; farobj_vec3_accum_b_ret - 3D Vector Projection Wrapper
+0x131A3B:  and     ax, 7FFFh
+0x131A3E:  mov     bx, 19h
+0x131A41:  cwd
+0x131A42:  idiv    bx
+0x131A44:  add     dl, 41h ; 'A'
+0x131A47:  mov     ax, [bp+arg_0]
+0x131A4A:  mov     bx, 42h ; 'B'
+0x131A4D:  push    dx
+0x131A4E:  imul    bx
+0x131A50:  mov     dx, 7894h
+0x131A53:  mov     es, dx
+0x131A55:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131A5A:  add     bx, ax
+0x131A5C:  pop     ax
+0x131A5D:  mov     es:[bx+5Fh], al
+0x131A61:  call    farobj_vec3_accum_b_ret; farobj_vec3_accum_b_ret - 3D Vector Projection Wrapper
+0x131A66:  and     ax, 7FFFh
+0x131A69:  mov     bx, 19h
+0x131A6C:  cwd
+0x131A6D:  idiv    bx
+0x131A6F:  add     dl, 41h ; 'A'
+0x131A72:  mov     ax, [bp+arg_0]
+0x131A75:  mov     bx, 42h ; 'B'
+0x131A78:  push    dx
+0x131A79:  imul    bx
+0x131A7B:  mov     dx, 7894h
+0x131A7E:  mov     es, dx
+0x131A80:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131A85:  add     bx, ax
+0x131A87:  pop     ax
+0x131A88:  mov     es:[bx+60h], al
+0x131A8C:  call    farobj_vec3_accum_b_ret; farobj_vec3_accum_b_ret - 3D Vector Projection Wrapper
+0x131A91:  and     ax, 7FFFh
+0x131A94:  mov     bx, 19h
+0x131A97:  cwd
+0x131A98:  idiv    bx
+0x131A9A:  add     dl, 41h ; 'A'
+0x131A9D:  mov     ax, [bp+arg_0]
+0x131AA0:  mov     bx, 42h ; 'B'
+0x131AA3:  push    dx
+0x131AA4:  imul    bx
+0x131AA6:  mov     dx, 7894h
+0x131AA9:  mov     es, dx
+0x131AAB:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131AB0:  add     bx, ax
+0x131AB2:  pop     ax
+0x131AB3:  mov     es:[bx+61h], al
+0x131AB7:  mov     ax, [bp+arg_0]
+0x131ABA:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131ABD:  imul    dx
+0x131ABF:  mov     dx, 7894h
+0x131AC2:  mov     es, dx
+0x131AC4:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131AC9:  add     bx, ax
+0x131ACB:  mov     byte ptr es:[bx+62h], 64h ; 'd'
+0x131AD0:  mov     ax, [bp+arg_0]
+0x131AD3:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131AD6:  imul    dx
+0x131AD8:  mov     dx, 7894h
+0x131ADB:  mov     es, dx
+0x131ADD:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131AE2:  add     bx, ax
+0x131AE4:  mov     byte ptr es:[bx+63h], 0
+0x131AE9:  mov     ax, [bp+arg_0]
+0x131AEC:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131AEF:  imul    dx
+0x131AF1:  mov     dx, 7894h
+0x131AF4:  mov     es, dx
+0x131AF6:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131AFB:  add     bx, ax
+0x131AFD:  mov     byte ptr es:[bx+64h], 0
+0x131B02:  mov     ax, [bp+arg_0]
+0x131B05:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B08:  imul    dx
+0x131B0A:  mov     dx, 7894h
+0x131B0D:  mov     es, dx
+0x131B0F:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131B14:  add     bx, ax
+0x131B16:  mov     byte ptr es:[bx+65h], 0
+0x131B1B:  mov     ax, [bp+arg_0]
+0x131B1E:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B21:  imul    dx
+0x131B23:  mov     dx, 7894h
+0x131B26:  mov     es, dx
+0x131B28:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131B2D:  add     bx, ax
+0x131B2F:  mov     byte ptr es:[bx+66h], 0
+0x131B34:  mov     ax, [bp+arg_0]
+0x131B37:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B3A:  imul    dx
+0x131B3C:  mov     dx, 7894h
+0x131B3F:  mov     es, dx
+0x131B41:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131B46:  add     bx, ax
+0x131B48:  mov     byte ptr es:[bx+67h], 0
+0x131B4D:  mov     ax, [bp+arg_0]
+0x131B50:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B53:  imul    dx
+0x131B55:  mov     dx, 7894h
+0x131B58:  mov     es, dx
+0x131B5A:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131B5F:  add     bx, ax
+0x131B61:  mov     byte ptr es:[bx+68h], 0
+0x131B66:  mov     ax, [bp+arg_0]
+0x131B69:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B6C:  imul    dx
+0x131B6E:  mov     dx, 7894h
+0x131B71:  mov     es, dx
+0x131B73:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131B78:  add     bx, ax
+0x131B7A:  mov     byte ptr es:[bx+69h], 0
+0x131B7F:  mov     ax, [bp+arg_0]
+0x131B82:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B85:  imul    dx
+0x131B87:  mov     dx, 7894h
+0x131B8A:  mov     es, dx
+0x131B8C:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131B91:  add     bx, ax
+0x131B93:  mov     byte ptr es:[bx+6Ah], 0
+0x131B98:  mov     ax, [bp+arg_0]
+0x131B9B:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131B9E:  imul    dx
+0x131BA0:  mov     dx, 7894h
+0x131BA3:  mov     es, dx
+0x131BA5:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131BAA:  add     bx, ax
+0x131BAC:  mov     word ptr es:[bx+6Bh], 0
+0x131BB2:  mov     ax, [bp+arg_0]
+0x131BB5:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131BB8:  imul    dx
+0x131BBA:  mov     dx, 7894h
+0x131BBD:  mov     es, dx
+0x131BBF:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131BC4:  add     bx, ax
+0x131BC6:  mov     byte ptr es:[bx+6Dh], 0
+0x131BCB:  mov     ax, [bp+arg_0]
+0x131BCE:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131BD1:  imul    dx
+0x131BD3:  mov     dx, 7894h
+0x131BD6:  mov     es, dx
+0x131BD8:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131BDD:  add     bx, ax
+0x131BDF:  mov     byte ptr es:[bx+6Eh], 0
+0x131BE4:  mov     ax, [bp+arg_0]
+0x131BE7:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131BEA:  imul    dx
+0x131BEC:  mov     dx, 7894h
+0x131BEF:  mov     es, dx
+0x131BF1:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131BF6:  add     bx, ax
+0x131BF8:  mov     byte ptr es:[bx+71h], 0
+0x131BFD:  mov     ax, [bp+arg_0]
+0x131C00:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131C03:  imul    dx
+0x131C05:  mov     dx, 7894h
+0x131C08:  mov     es, dx
+0x131C0A:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131C0F:  add     bx, ax
+0x131C11:  mov     byte ptr es:[bx+72h], 0
+0x131C16:  mov     ax, [bp+arg_0]
+0x131C19:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131C1C:  imul    dx
+0x131C1E:  mov     dx, 7894h
+0x131C21:  mov     es, dx
+0x131C23:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131C28:  add     bx, ax
+0x131C2A:  mov     byte ptr es:[bx+73h], 0
+0x131C2F:  mov     ax, [bp+arg_0]
+0x131C32:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131C35:  imul    dx
+0x131C37:  mov     dx, 7894h
+0x131C3A:  mov     es, dx
+0x131C3C:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131C41:  add     bx, ax
+0x131C43:  mov     byte ptr es:[bx+74h], 0 <-- ENTITY FLAG
+0x131C48:  mov     ax, [bp+arg_0]
+0x131C4B:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131C4E:  imul    dx
+0x131C50:  mov     dx, 7894h
+0x131C53:  mov     es, dx
+0x131C55:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131C5A:  add     bx, ax
+0x131C5C:  mov     byte ptr es:[bx+75h], 0
+0x131C61:  mov     ax, [bp+arg_0]
+0x131C64:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131C67:  imul    dx
+0x131C69:  mov     dx, 7894h
+0x131C6C:  mov     es, dx
+0x131C6E:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+0x131C73:  add     bx, ax
+0x131C75:  mov     byte ptr es:[bx+76h], 0
+0x131C7A:  mov     ax, [bp+arg_0]
+0x131C7D:  mov     dx, 42h ; 'B'; PilotRecord size (66 bytes)
+0x131C80:  imul    dx
+0x131C82:  mov     dx, 7894h
+0x131C85:  mov     es, dx
+0x131C87:  les     bx, es:mission_context_ptr; Pointer to mission context (60B + 30 pilots)
+... (truncated)
+
