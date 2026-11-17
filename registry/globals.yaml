@@ -182,6 +182,55 @@ globals:
     type: word
     doc: Friendly fire permission flags
     source: WEAPONS_FINAL_ASSESSMENT.md
+    
+  # Weapon Queue System (Code Segment)
+  # Note: These are CS: offsets, not DS: addresses
+  
+  - address: 0x2E10A
+    segment: code
+    name: weapon_queue_head
+    size: 2
+    type: word
+    doc: |
+      Pointer to current weapon queue entry (27-byte stride). Advanced by 0x1B after each processed weapon.
+      Queue holds weapon spawn requests waiting for type dispatch and entity allocation.
+    source: WEAPON_TYPES_DECODED.md
+    
+  - address: 0x2E10C
+    segment: code
+    name: weapon_queue_count
+    size: 2
+    type: word
+    doc: Number of pending weapon spawn requests in queue. Decremented as weapons are processed.
+    source: WEAPON_TYPES_DECODED.md
+    
+  - address: 0x2E10E
+    segment: code
+    name: weapon_processed_count
+    size: 2
+    type: word
+    doc: Counter of weapons processed since last reset. Incremented after each weapon initialization.
+    source: WEAPON_TYPES_DECODED.md
+    
+  - address: 0x2E110
+    segment: code
+    name: weapon_spawn_value
+    size: 2
+    type: word
+    doc: |
+      Value loaded during weapon spawn (stored at weapon+0x18). Purpose unclear - may be timestamp,
+      spawn sequence ID, or configuration index.
+    source: WEAPON_TYPES_DECODED.md
+    
+  - address: 0x2E112
+    segment: code
+    name: weapon_ammo_count
+    size: 2
+    type: word
+    doc: |
+      Current ammunition count for selected weapon. Max 0x80 (128 rounds). When at max, flag 0x1000
+      is set during burst fire. Decremented per projectile in burst.
+    source: WEAPON_TYPES_DECODED.md
   
   # ===========================================================================
   # COORDINATE / WORLD TRANSFORM
