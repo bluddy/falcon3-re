@@ -87,13 +87,14 @@ globals:
   
   - address: 0x3B832
     segment: CS
-    name: rfm_related_word_2
+    name: rfm_turn_rate_scalar
     size: 2
     type: word
     doc: |
-      Related to RFM data, copied alongside cs:word_3B830 in save/restore operations.
-      Purpose unclear, possibly secondary AI parameter pointer or state flag.
-    source: rfm_init_analysis.txt
+      RFM-sourced turn rate scaling factor. Used in ai_heading_adjustment_gate to scale
+      entity turn rate (+0x4C) when updating heading. Multiply-shift pattern: (turn_rate * scalar) >> 8.
+      Loaded from RFM file, likely difficulty-dependent. Higher values = more aggressive turning.
+    source: IDA analysis 2025-01-15, ai_heading_adjustment_gate @ 0x3CE92
   
   - address: 0x3B834
     segment: CS

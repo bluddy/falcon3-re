@@ -9199,11 +9199,39 @@ functions:
     doc: '481B span, in=7, undecodable mid-body. Far-object field-2Eh zero + dispatch. conf: low'
     source: 'old_registry (was: farobj_field2e_zero_dispatch)'
   - address: 0x03ce92
-    name: ai_entity_behavior_dispatcher
+    name: ai_heading_adjustment_gate
     system: ai
-    size: 2580
-    doc: '|'
-    source: AI_SYSTEM_STATUS.md, docs/architecture/ai.md
+    size: 75
+    doc: |
+      Heading/turn rate adjustment gate. Reads entity heading (+0x1D) vs farobj heading (+0x0C),
+      scales entity turn rate (+0x4C) by cs:word_3B832 (RFM global), clamps to limit,
+      and updates farobj heading. Part of per-frame AI orientation control.
+    source: IDA analysis 2025-01-15
+  - address: 0x03cedd
+    name: ai_entity_data_copy_18byte
+    system: ai
+    size: 23
+    doc: |
+      Simple 18-byte (9 word) memory copy from farobj to entity data structure.
+      Uses rep movsw. Called during entity state synchronization.
+    source: IDA analysis 2025-01-15
+  - address: 0x03cef4
+    name: ai_grid_position_update
+    system: ai
+    size: 169
+    doc: |
+      Grid position update with wraparound. Updates X/Y coordinates (+0x31/+0x33, +0x32/+0x35)
+      with velocity from farobj (+0x50, +0x52). Wraps at 0x3334 (13,108). Sets dirty flag (+0x8 bit 0).
+      Also sets farobj field based on altitude ranges: <0x139=0, 0x139-0x1FA=scaled, >0x1FA=7.
+    source: IDA analysis 2025-01-15
+  - address: 0x03cf9d
+    name: ai_state_processor_core
+    system: ai
+    size: 886
+    doc: |
+      Core AI state processor (886 bytes, 97 branches). Tests entity type (+0x75==0x33),
+      calls entity_physics_and_ai_update if match. Large state machine with many RFM parameter accesses.
+    source: AI_SYSTEM_ARCHITECTURE.md
   - address: 0x03cfaa
     name: ai_behavior_state_machine
     system: ai
