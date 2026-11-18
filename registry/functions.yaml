@@ -9171,10 +9171,10 @@ functions:
     doc: '68B, in=1 (farobj_record_ops_exec). viewmode3_vector_project + sprite_project_screen_y -> [si+1Dh]=[di+0Ch], [si+1Fh]=155h, 6-word swap copy, writes es:[di+0Ch]=value with 0Eh/10h zeroed, tail sub...'
     source: 'old_registry (was: viewmode3_project_copy)'
   - address: 0x03c1bd
-    name: farobj_slot_update_driver
+    name: entity_slot_update_loop
     system: farobj
-    doc: '821B, in=4 (main loop). Loads funcs_4E5C0+word_2E102 from 2F64h:37h/39h, 5Ch calling sub_30AA8/farobj_record_ops_exec/far_mode_event_dispatch. conf: high'
-    source: 'old_registry (was: farobj_slot_update_driver)'
+    doc: 'Main entity update loop (348B). Processes all 16 entity slots per frame at 0x54AF:0x386F (stride 0x5C=92B). Checks active flag at [si+0x0A] bit 0, calls per-entity update functions. Top-level coordinator for entity physics, AI, rendering, collision.'
+    source: 'entity_update_analysis (was: farobj_slot_update_driver)'
   - address: 0x03c4f2
     name: farobj_slot_project_step
     system: farobj
@@ -9230,10 +9230,11 @@ functions:
     source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
 
   - address: 0x03d37f
-    name: ai_entity_update_step
+    name: entity_physics_and_ai_update
     system: ai
     size: 1319
-    doc: 'Main AI entity update/step function. Largest AI function (1319B). Decrements timers, checks state fields, dispatches to 29 helpers. Heavy use of SI-based structure access.'
+    doc: 'Large per-entity physics and AI update (1319B). Handles gravity, drag, weapon guidance (Maverick/HARM/missiles), AI behavior (targeting/evasion/attack), combat logic, position integration. Called by entity_slot_update_loop for each active entity. Central to entity simulation.'
+    source: 'entity_update_analysis (was: ai_entity_update_step)'
     source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
 
   - address: 0x03dc55
@@ -9880,10 +9881,10 @@ functions:
 
   # MAP SYSTEM
   - address: 0x047787
-    name: farobj_step_terrain_clamp
+    name: entity_ground_collision_check
     system: farobj
-    doc: '234B, cd=0, in=1, callees farobj_tile_copy_resolve + stub_to_249d8. Fixed-point mover step: derives a 3D direction vector from the 47D6-47DC trig tables (yaw conf: med'
-    source: 'old_registry (was: farobj_step_terrain_clamp)'
+    doc: 'Ground collision detection and terrain clamping (234B). Checks entity altitude vs terrain height. Detects bomb/missile ground impact (altitude <= terrain_height). Prevents terrain clipping for aircraft/ground units. Triggers weapon impact events.'
+    source: 'entity_update_analysis (was: farobj_step_terrain_clamp)'
 
   # NAV SYSTEM
   - address: 0x047871
@@ -17604,10 +17605,10 @@ functions:
 
   # AI SYSTEM
   - address: 0x03d37f
-    name: ai_entity_update_step
+    name: entity_physics_and_ai_update
     system: ai
     size: 1319
-    doc: '1319B, 70 callers, 102 self-calls. AI entity update step - per-entity AI processing. State machine with 102 recursions handling AI behavior updates, likely called each frame for active entities.'
+    doc: '1319B, 70 callers, 102 self-calls. Large per-entity physics and AI update. Handles gravity, drag, weapon guidance, AI behavior, combat logic. State machine with 102 recursions for complex AI behavior. Called each frame for active entities.'
     source: 'top_100_analysis (Rank #29, already named)'
 
   - address: 0x1aa1f0
