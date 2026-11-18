@@ -1,0 +1,93 @@
+Analyzing entity function dispatch table...
+=== CRITICAL DISCOVERY ===
+entity_slot_update_loop @ 0x3C254:
+  mov di, [si+0Ch]      ; Load object_category
+  shl di, 1             ; Multiply by 2 (word table)
+  mov bx, funcs_3C261[di]  ; Load function pointer
+  call bx               ; Call entity-specific function
+
+This means: object_category is used as INDEX into function table!
+Each category has its own update function!
+
+=== Function Dispatch Table @ 0x3C261 ===
+
+Reading function pointers (word size, 2 bytes each):
+
+Category | Function Pointer | Function Name
+---------|------------------|------------------------------------------
+    0    |      0xD3FF      | sub_D3FF
+    1    |      0x27E8      | sub_27E8
+    2    |      0x8B01      | sub_8B01
+    3    |      0x067C      | sub_67C
+    4    |      0x7D80      | sub_7D80
+    5    |      0x1075      | sub_1075
+    6    |      0x0674      | sub_674
+    7    |      0xA7E8      | sub_A7E8
+    8    |      0xE800      | sub_E800
+    9    |      0x021A      | sub_21A
+   10    |      0x8359      | sub_8359
+   11    |      0x5CC6      | sub_5CC6
+   12    |      0xE290      | sub_E290
+   13    |      0x2EC4      | sub_2EC4
+   14    |      0x3680      | sub_3680
+   15    |      0x098B      | sub_98B
+   16    |      0x2E01      | sub_2E01
+   17    |      0x3E80      | sub_3E80
+   18    |      0x098B      | sub_98B
+   19    |      0x7500      | sub_7500
+
+
+This table maps object_category values to their update functions!
+
+=== ANALYZING CATEGORY FUNCTIONS ===
+
+
+Category 0: sub_D3FF @ 0xD3FF
+------------------------------------------------------------
+  Not a valid function
+
+Category 1: sub_27E8 @ 0x27E8
+------------------------------------------------------------
+  Not a valid function
+
+Category 2: sub_8B01 @ 0x8B01
+------------------------------------------------------------
+  Not a valid function
+
+Category 3: sub_67C @ 0x67C
+------------------------------------------------------------
+  Not a valid function
+
+Category 4: sub_7D80 @ 0x7D80
+------------------------------------------------------------
+  Not a valid function
+
+Category 5: sub_1075 @ 0x1075
+------------------------------------------------------------
+  Not a valid function
+
+Category 6: sub_674 @ 0x674
+------------------------------------------------------------
+  Not a valid function
+
+Category 7: sub_A7E8 @ 0xA7E8
+------------------------------------------------------------
+  Not a valid function
+
+Category 8: sub_E800 @ 0xE800
+------------------------------------------------------------
+  Not a valid function
+
+Category 9: sub_21A @ 0x21A
+------------------------------------------------------------
+  Not a valid function
+
+
+=== CORRELATING WITH ObjectCategory ENUM ===
+
+Category | ObjectCategory Name | Function
+---------|---------------------|------------------------------------------
+    0    | UNKNOWN_0           | sub_D3FF                       [hypothesis]
+    1    | AIRCRAFT            | sub_27E8                       [hypothesis]
+    2    | GROUND_VEHICLE      | sub_8B01                       [hypothesis]
+    3    | SHIP                | sub_67C                        [hypothesis]
