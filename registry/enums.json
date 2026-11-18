@@ -698,6 +698,80 @@
     ]
   },
   {
+    "name": "FileOperation",
+    "type": "uint8_t",
+    "description": "File I/O operation codes for op_dispatch_far_entry. Wraps DOS INT 21h file operations.",
+    "evidence": [
+      {
+        "function": "squad_campaign_file_loader",
+        "address": "0x6A6FA-0x6A732"
+      },
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x1361A3-0x136293"
+      }
+    ],
+    "values": [
+      {
+        "value": 4,
+        "name": "FILE_OP_OPEN_VARIANT",
+        "description": "Open file (variant/extended mode)",
+        "evidence": "push 4; call op_dispatch_far_entry at 0x6A744"
+      },
+      {
+        "value": 6,
+        "name": "FILE_OP_OPEN",
+        "description": "Open file (standard mode)",
+        "evidence": "push 6; call op_dispatch_far_entry at 0x6A6FA"
+      },
+      {
+        "value": 8,
+        "name": "FILE_OP_CLOSE",
+        "description": "Close file handle",
+        "evidence": "push 8; call op_dispatch_far_entry at 0x6A72D"
+      },
+      {
+        "value": 10,
+        "name": "FILE_OP_READ",
+        "description": "Read from file (standard)",
+        "evidence": "push 0Ah; call op_dispatch_far_entry at 0x6A717"
+      },
+      {
+        "value": 12,
+        "name": "FILE_OP_READ_EXTENDED",
+        "description": "Read from file (extended/buffered)",
+        "evidence": "push 0Ch; call op_dispatch_far_entry at 0x6A75B"
+      }
+    ],
+    "notes": "Operations 11, 13-15 likely WRITE variants (not yet observed)"
+  },
+  {
+    "name": "GraphicsMode",
+    "type": "uint8_t",
+    "description": "Display graphics mode setting. Determines UI rendering path.",
+    "evidence": [
+      {
+        "global": "graphics_mode_flag",
+        "address": "0x7A300"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "GRAPHICS_TEXT_ONLY",
+        "description": "Text-only UI (low-end systems)",
+        "evidence": "cmp es:graphics_mode_flag, 0 at 0x17B4E0"
+      },
+      {
+        "value": 3,
+        "name": "GRAPHICS_FULL",
+        "description": "Full graphics UI (VGA/SVGA)",
+        "evidence": "cmp es:graphics_mode_flag, 3 at 0x6AF21"
+      }
+    ],
+    "notes": "Modes 1-2 may exist but not observed in campaign functions"
+  },
+  {
     "name": "MenuElementType",
     "type": "uint8_t",
     "description": "Menu element rendering types for R45 dispatcher.\nDispatcher at 0x1573C3 switches on element index (0-10).\n",

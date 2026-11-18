@@ -1,0 +1,288 @@
+[
+  {
+    "name": "flag2224a",
+    "address": "0x2224A",
+    "segment": "DS",
+    "type": "bool",
+    "description": "Campaign active/loaded flag. Cleared before campaign load, set after .CAM file read. Other systems check this to determine if in campaign mode.",
+    "evidence": [
+      {
+        "function": "squad_campaign_file_loader",
+        "address": "0x6A65A",
+        "operation": "call flag2224a_clear"
+      },
+      {
+        "function": "squad_campaign_file_loader",
+        "address": "0x6A735",
+        "operation": "call flag2224a_set"
+      },
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B602",
+        "operation": "call flag2224a_clear"
+      },
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x13618D",
+        "operation": "call flag2224a_clear"
+      },
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x13629B",
+        "operation": "call flag2224a_set"
+      }
+    ],
+    "callers": [
+      "flag2224a_clear",
+      "flag2224a_set"
+    ]
+  },
+  {
+    "name": "dword_79E60",
+    "address": "0x79E60",
+    "segment": "7894h",
+    "type": "far void*",
+    "description": "Far pointer to campaign data buffer base. Campaign files loaded at offset +0x7530 (30,000 bytes). Total buffer ~30KB.",
+    "evidence": [
+      {
+        "function": "squad_campaign_file_loader",
+        "address": "0x6A674",
+        "operation": "mov ax, word ptr es:dword_79E60+2; mov dx, word ptr es:dword_79E60; add dx, 7530h"
+      },
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x1361BA",
+        "operation": "mov ax, word ptr es:dword_79E60; add ax, 0BB84h"
+      }
+    ],
+    "offset_campaign_buffer": "0x7530",
+    "offset_temp_data": "0xBB84"
+  },
+  {
+    "name": "dword_79E5C",
+    "address": "0x79E5C",
+    "segment": "7894h",
+    "type": "far void*",
+    "description": "Far pointer to extended campaign data buffer. Used for 20,000 byte writes in temp save.",
+    "evidence": [
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x1361DA",
+        "operation": "push word ptr es:dword_79E5C+2; push word ptr es:dword_79E5C; push 4E20h"
+      }
+    ],
+    "temp_save_size": "0x4E20"
+  },
+  {
+    "name": "current_menu_slot_ptr",
+    "address": "0x151C0E",
+    "segment": "602Eh",
+    "type": "far char*",
+    "description": "Far pointer to currently selected squadron slot number string. Used to build campaign filenames like [N]SQUAD.CAM.",
+    "evidence": [
+      {
+        "function": "squad_campaign_file_loader",
+        "address": "0x6A68C",
+        "operation": "push word ptr es:current_menu_slot_ptr+2; push word ptr es:current_menu_slot_ptr"
+      },
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B501",
+        "operation": "push word ptr es:current_menu_slot_ptr+2; push word ptr es:current_menu_slot_ptr"
+      }
+    ],
+    "usage": "squadron_selection"
+  },
+  {
+    "name": "graphics_mode_flag",
+    "address": "0x7A300",
+    "segment": "7894h",
+    "type": "uint8_t",
+    "description": "Display graphics mode. 0=text-only UI, 3=full graphics UI (VGA/SVGA). Different rendering paths for each.",
+    "evidence": [
+      {
+        "function": "ui_slot_list_mode_enter",
+        "address": "0x6AF21",
+        "operation": "cmp es:graphics_mode_flag, 3"
+      },
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B4E0",
+        "operation": "cmp es:graphics_mode_flag, 0"
+      },
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x179422",
+        "operation": "cmp es:graphics_mode_flag, 3"
+      }
+    ],
+    "enum": "GraphicsMode"
+  },
+  {
+    "name": "byte_7A30C",
+    "address": "0x7A30C",
+    "segment": "7894h",
+    "type": "uint8_t",
+    "description": "Slot list initialized flag. Set to 0 at start of ui_slot_list_mode_enter, indicating slot list UI setup.",
+    "evidence": [
+      {
+        "function": "ui_slot_list_mode_enter",
+        "address": "0x6AE62",
+        "operation": "mov es:byte_7A30C, 0"
+      }
+    ]
+  },
+  {
+    "name": "byte_7A302",
+    "address": "0x7A302",
+    "segment": "7894h",
+    "type": "uint8_t",
+    "description": "Available squadron slot count. Indicates how many squadrons have save data.",
+    "evidence": [
+      {
+        "function": "ui_slot_list_mode_enter",
+        "address": "0x6B002",
+        "operation": "cmp es:byte_7A302, 0"
+      },
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x17947A",
+        "operation": "cmp es:byte_7A302, 0"
+      }
+    ]
+  },
+  {
+    "name": "word_14F8BE",
+    "address": "0x14F8BE",
+    "segment": "602Eh",
+    "type": "uint16_t",
+    "description": "Campaign file caching flag. Bit 0: if clear, load files from disk; if set, use cached data in memory.",
+    "evidence": [
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B4F0",
+        "operation": "test es:word_14F8BE, 1"
+      },
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x179487",
+        "operation": "or es:word_14F8BE, 1"
+      },
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x179493",
+        "operation": "test es:word_14F8BE, 1"
+      }
+    ],
+    "bitfield": "bit 0 = files cached"
+  },
+  {
+    "name": "word_14F8BE",
+    "address": "0x14F8BE",
+    "segment": "602Eh",
+    "type": "uint16_t",
+    "description": "Campaign file caching flag. Bit 0: if clear, load files from disk; if set, use cached data in memory.",
+    "evidence": [
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B4F0",
+        "operation": "test es:word_14F8BE, 1"
+      },
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x179487",
+        "operation": "or es:word_14F8BE, 1"
+      },
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x179493",
+        "operation": "test es:word_14F8BE, 1"
+      }
+    ],
+    "bitfield": "bit 0 = files cached"
+  },
+  {
+    "name": "word_151C94",
+    "address": "0x151C94",
+    "segment": "602Eh",
+    "type": "uint16_t",
+    "description": "Size parameter for variable-length menu state block in temp save (block 9).",
+    "evidence": [
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x13626F",
+        "operation": "push es:word_151C94"
+      }
+    ]
+  },
+  {
+    "name": "byte_7A310",
+    "address": "0x7A310",
+    "segment": "7894h",
+    "type": "uint8_t",
+    "description": "Mission loader state flag, cleared at start of squadron_mission_file_loader.",
+    "evidence": [
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B4B9",
+        "operation": "mov es:byte_7A310, 0"
+      }
+    ]
+  },
+  {
+    "name": "word_70A2A",
+    "address": "0x70A2A",
+    "segment": "709Fh",
+    "type": "uint16_t",
+    "description": "Max slot count for UI rendering. Determines how many squadron slots to display.",
+    "evidence": [
+      {
+        "function": "ui_slot_list_mode_enter",
+        "address": "0x6AF77",
+        "operation": "cmp ax, es:word_70A2A+1"
+      }
+    ]
+  },
+  {
+    "name": "word_79B60",
+    "address": "0x79B60",
+    "segment": "7894h",
+    "type": "uint16_t",
+    "description": "Initialized to 0xE8 (232) at start of overlay_r4F_handler.",
+    "evidence": [
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x1793CB",
+        "operation": "mov es:word_79B60, 0E8h"
+      }
+    ]
+  },
+  {
+    "name": "word_79E86",
+    "address": "0x79E86",
+    "segment": "7894h",
+    "type": "uint16_t",
+    "description": "Initialized to 5 at start of overlay_r4F_handler.",
+    "evidence": [
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x1793D7",
+        "operation": "mov es:word_79E86, 5"
+      }
+    ]
+  },
+  {
+    "name": "word_79B5A",
+    "address": "0x79B5A",
+    "segment": "7894h",
+    "type": "uint16_t",
+    "description": "Initialized to 2 at start of overlay_r4F_handler.",
+    "evidence": [
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x1793E3",
+        "operation": "mov es:word_79B5A, 2"
+      }
+    ]
+  }
+]

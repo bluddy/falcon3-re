@@ -1,0 +1,535 @@
+[
+  {
+    "name": "MissionSlot",
+    "size": 20,
+    "description": "Mission slot entry in 64-element array. Stores mission display name.",
+    "evidence": [
+      {
+        "function": "squadron_mission_file_loader",
+        "address": "0x17B45E-0x17B491",
+        "operation": "Initialize loop: 64 slots × 20 bytes, set name[0]=' ', name[1]=0"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "name",
+        "type": "char[20]",
+        "description": "Mission name string (space-padded, null-terminated)"
+      }
+    ],
+    "global_array": "mission_slot_array_ptr",
+    "array_count": 64
+  },
+  {
+    "name": "Flight",
+    "size": 130,
+    "description": "Flight configuration data. Stores aircraft, pilots, loadout, AI settings.",
+    "evidence": [
+      {
+        "function": "overlay_r4F_handler",
+        "address": "0x1795E4",
+        "operation": "Read 0x410 (1,040) bytes = 8 × 130 bytes"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "data",
+        "type": "byte[130]",
+        "description": "Flight data (structure TBD via runtime analysis)"
+      }
+    ],
+    "global_ptr": "flight_array_ptr",
+    "notes": "Detailed field layout requires hex dump analysis of flight configuration files"
+  },
+  {
+    "name": "Pilot",
+    "size": "~100-150",
+    "description": "Pilot record in squadron roster. Stores identity, status, statistics, skills.",
+    "evidence": [
+      {
+        "source": "Menu string analysis and enum definitions"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "name",
+        "type": "char[32]",
+        "description": "Pilot name"
+      },
+      {
+        "offset": 32,
+        "name": "callsign",
+        "type": "char[16]",
+        "description": "Pilot callsign"
+      },
+      {
+        "offset": 48,
+        "name": "rank",
+        "type": "PilotRank",
+        "description": "Officer rank (LT, CAPT, MAJ, LT COL, COL)"
+      },
+      {
+        "offset": 49,
+        "name": "status",
+        "type": "PilotStatus",
+        "description": "Current status (ACTIVE, FATIGUED, INJURED, COURT_MARTIALED)"
+      },
+      {
+        "offset": 50,
+        "name": "missions_flown",
+        "type": "uint16_t",
+        "description": "Total missions flown"
+      },
+      {
+        "offset": 52,
+        "name": "awards",
+        "type": "uint16_t",
+        "description": "Number of awards received"
+      },
+      {
+        "offset": 54,
+        "name": "flight_hours",
+        "type": "uint16_t",
+        "description": "Total flight hours"
+      },
+      {
+        "offset": 56,
+        "name": "plane_kills",
+        "type": "uint16_t",
+        "description": "Enemy aircraft destroyed"
+      },
+      {
+        "offset": 58,
+        "name": "merits",
+        "type": "uint16_t",
+        "description": "Merit points"
+      },
+      {
+        "offset": 60,
+        "name": "dogfighting_skill",
+        "type": "uint8_t",
+        "description": "Dogfighting ability rating (0-100?)"
+      },
+      {
+        "offset": 61,
+        "name": "bombing_skill",
+        "type": "uint8_t",
+        "description": "Bombing ability rating"
+      },
+      {
+        "offset": 62,
+        "name": "navigation_skill",
+        "type": "uint8_t",
+        "description": "Navigation ability rating"
+      },
+      {
+        "offset": 63,
+        "name": "guns_skill",
+        "type": "uint8_t",
+        "description": "Gun combat skill"
+      },
+      {
+        "offset": 64,
+        "name": "rear_aspect_ir_skill",
+        "type": "uint8_t",
+        "description": "Rear aspect IR missile skill (AIM-9P)"
+      },
+      {
+        "offset": 65,
+        "name": "all_aspect_ir_skill",
+        "type": "uint8_t",
+        "description": "All aspect IR missile skill (AIM-9M)"
+      },
+      {
+        "offset": 66,
+        "name": "radar_missile_skill",
+        "type": "uint8_t",
+        "description": "Radar missile skill (AIM-120)"
+      },
+      {
+        "offset": 67,
+        "name": "cas_ordnance_skill",
+        "type": "uint8_t",
+        "description": "Close air support ordnance skill"
+      },
+      {
+        "offset": 68,
+        "name": "heavy_ordnance_skill",
+        "type": "uint8_t",
+        "description": "Heavy ordnance skill"
+      }
+    ],
+    "notes": "Field offsets are estimated. Actual structure requires .SQU file hex analysis."
+  },
+  {
+    "name": "SquadronFile",
+    "size": "~2000-5000",
+    "description": "Squadron data file structure (.SQU). Contains squadron identity, commander, pilot roster.",
+    "evidence": [
+      {
+        "file": "[N]SQUAD.SQU",
+        "loaded_by": "squad_campaign_file_loader @ 0x6A777"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "squadron_name",
+        "type": "char[32]",
+        "description": "Squadron name"
+      },
+      {
+        "offset": 32,
+        "name": "insignia_id",
+        "type": "uint8_t",
+        "description": "Selected insignia graphic ID"
+      },
+      {
+        "offset": 33,
+        "name": "wing_assignment",
+        "type": "WingID",
+        "description": "Wing assignment (1st-7th Wing)"
+      },
+      {
+        "offset": 34,
+        "name": "commander_name",
+        "type": "char[32]",
+        "description": "Squadron commander name"
+      },
+      {
+        "offset": 66,
+        "name": "commander_callsign",
+        "type": "char[16]",
+        "description": "Commander callsign"
+      },
+      {
+        "offset": 82,
+        "name": "commander_rank",
+        "type": "PilotRank",
+        "description": "Commander rank"
+      },
+      {
+        "offset": 84,
+        "name": "squadron_missions",
+        "type": "uint16_t",
+        "description": "Total squadron missions flown"
+      },
+      {
+        "offset": 86,
+        "name": "pilots_active",
+        "type": "uint16_t",
+        "description": "Number of active pilots"
+      },
+      {
+        "offset": 88,
+        "name": "pilots_killed",
+        "type": "uint16_t",
+        "description": "Pilots killed in action"
+      },
+      {
+        "offset": 90,
+        "name": "pilots_mia",
+        "type": "uint16_t",
+        "description": "Pilots missing in action"
+      },
+      {
+        "offset": 92,
+        "name": "pilot_count",
+        "type": "uint8_t",
+        "description": "Number of pilots in roster"
+      },
+      {
+        "offset": 93,
+        "name": "pilots",
+        "type": "Pilot[pilot_count]",
+        "description": "Variable-length pilot roster"
+      }
+    ],
+    "notes": "Structure is hypothesized from menu strings. Hex dump of .SQU files needed for verification."
+  },
+  {
+    "name": "CampaignFile",
+    "size": "~10000-15000",
+    "description": "Campaign state file structure (.CAM). Contains date, territory control, statistics.",
+    "evidence": [
+      {
+        "file": "[N]SQUAD.CAM",
+        "loaded_by": "squad_campaign_file_loader @ 0x6A651"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "version",
+        "type": "uint16_t",
+        "description": "File format version"
+      },
+      {
+        "offset": 2,
+        "name": "file_size",
+        "type": "uint16_t",
+        "description": "Total file size"
+      },
+      {
+        "offset": 4,
+        "name": "campaign_day",
+        "type": "uint16_t",
+        "description": "Campaign day counter (1-N)"
+      },
+      {
+        "offset": 6,
+        "name": "campaign_time",
+        "type": "uint16_t",
+        "description": "Time of day (0-2359, 24-hour format)"
+      },
+      {
+        "offset": 8,
+        "name": "allied_territory_pct",
+        "type": "uint8_t",
+        "description": "Allied controlled territory percentage"
+      },
+      {
+        "offset": 9,
+        "name": "enemy_territory_pct",
+        "type": "uint8_t",
+        "description": "Enemy controlled territory percentage"
+      },
+      {
+        "offset": 10,
+        "name": "missions_flown",
+        "type": "uint16_t",
+        "description": "Total missions flown"
+      },
+      {
+        "offset": 12,
+        "name": "missions_accomplished",
+        "type": "uint16_t",
+        "description": "Successful missions"
+      },
+      {
+        "offset": 14,
+        "name": "sorties_flown",
+        "type": "uint16_t",
+        "description": "Total sorties"
+      },
+      {
+        "offset": 16,
+        "name": "allied_aircraft_lost",
+        "type": "uint16_t",
+        "description": "Allied aircraft shot down"
+      },
+      {
+        "offset": 18,
+        "name": "enemy_aircraft_destroyed",
+        "type": "uint16_t",
+        "description": "Enemy aircraft destroyed"
+      },
+      {
+        "offset": 20,
+        "name": "enemy_class_a_fighters",
+        "type": "uint16_t",
+        "description": "Class A fighters (MiG-29, Su-27)"
+      },
+      {
+        "offset": 22,
+        "name": "enemy_class_b_fighters",
+        "type": "uint16_t",
+        "description": "Class B fighters (MiG-21, F-5)"
+      },
+      {
+        "offset": 24,
+        "name": "enemy_bombers",
+        "type": "uint16_t",
+        "description": "Bombers destroyed"
+      },
+      {
+        "offset": 26,
+        "name": "enemy_attack",
+        "type": "uint16_t",
+        "description": "Attack aircraft destroyed"
+      },
+      {
+        "offset": 28,
+        "name": "enemy_helicopters",
+        "type": "uint16_t",
+        "description": "Helicopters destroyed"
+      },
+      {
+        "offset": 30,
+        "name": "enemy_transports",
+        "type": "uint16_t",
+        "description": "Transports destroyed"
+      },
+      {
+        "offset": 32,
+        "name": "targets_destroyed",
+        "type": "uint16_t",
+        "description": "Ground targets destroyed"
+      },
+      {
+        "offset": 34,
+        "name": "class_a_targets",
+        "type": "uint16_t",
+        "description": "Class A targets (nuclear plants, command centers)"
+      },
+      {
+        "offset": 36,
+        "name": "class_b_targets",
+        "type": "uint16_t",
+        "description": "Class B targets (airbases, bridges)"
+      },
+      {
+        "offset": 38,
+        "name": "class_c_targets",
+        "type": "uint16_t",
+        "description": "Class C targets (army bases, bunkers)"
+      },
+      {
+        "offset": 40,
+        "name": "class_d_targets",
+        "type": "uint16_t",
+        "description": "Class D targets (buildings, tanks)"
+      },
+      {
+        "offset": 42,
+        "name": "ordnance_efficiency",
+        "type": "uint16_t",
+        "description": "Ordnance efficiency rating"
+      },
+      {
+        "offset": 44,
+        "name": "overall_rating",
+        "type": "uint16_t",
+        "description": "Overall campaign rating"
+      },
+      {
+        "offset": 46,
+        "name": "theater_id",
+        "type": "TheaterID",
+        "description": "Theater selection"
+      },
+      {
+        "offset": 47,
+        "name": "weather_state",
+        "type": "WeatherCondition",
+        "description": "Current weather"
+      },
+      {
+        "offset": 48,
+        "name": "ceiling_height",
+        "type": "CeilingHeight",
+        "description": "Cloud ceiling"
+      },
+      {
+        "offset": 49,
+        "name": "variable_data",
+        "type": "byte[]",
+        "description": "Variable-length data (missions, front lines, units)"
+      }
+    ],
+    "notes": "Structure is hypothesized. Hex dump needed for verification and variable data layout."
+  },
+  {
+    "name": "TargetState",
+    "size": "~8-10",
+    "description": "Single target state entry in .TRG file.",
+    "evidence": [
+      {
+        "file": "[N]SQUAD.TRG",
+        "loaded_by": "squad_campaign_file_loader"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "target_type",
+        "type": "uint8_t",
+        "description": "Building/target type"
+      },
+      {
+        "offset": 1,
+        "name": "position_x",
+        "type": "uint16_t",
+        "description": "Grid X coordinate"
+      },
+      {
+        "offset": 3,
+        "name": "position_y",
+        "type": "uint16_t",
+        "description": "Grid Y coordinate"
+      },
+      {
+        "offset": 5,
+        "name": "damage_percent",
+        "type": "uint8_t",
+        "description": "Damage state (0-100)"
+      },
+      {
+        "offset": 6,
+        "name": "priority",
+        "type": "uint8_t",
+        "description": "Strategic priority"
+      },
+      {
+        "offset": 7,
+        "name": "defending_force",
+        "type": "uint8_t",
+        "description": "SAM/AAA coverage level"
+      }
+    ]
+  },
+  {
+    "name": "Ship",
+    "size": "~30-40",
+    "description": "Naval ship/task force entry in .SHP file.",
+    "evidence": [
+      {
+        "file": "[N]SQUAD.SHP",
+        "loaded_by": "squad_campaign_file_loader",
+        "note": "File extension string '7..`.SHP' suggests 6-byte header"
+      }
+    ],
+    "fields": [
+      {
+        "offset": 0,
+        "name": "ship_type",
+        "type": "uint8_t",
+        "description": "Ship class (KUZNETSOV, KIROV, etc.)"
+      },
+      {
+        "offset": 1,
+        "name": "position_x",
+        "type": "uint16_t",
+        "description": "Grid X coordinate"
+      },
+      {
+        "offset": 3,
+        "name": "position_y",
+        "type": "uint16_t",
+        "description": "Grid Y coordinate"
+      },
+      {
+        "offset": 5,
+        "name": "damage_state",
+        "type": "uint8_t",
+        "description": "Damage percentage (0-100)"
+      },
+      {
+        "offset": 6,
+        "name": "allegiance",
+        "type": "uint8_t",
+        "description": "0=ALLIED, 1=ENEMY"
+      },
+      {
+        "offset": 7,
+        "name": "task_force_id",
+        "type": "uint8_t",
+        "description": "Task force group assignment"
+      }
+    ],
+    "notes": ".SHP file read shows 6 bytes: 1 byte @ 0x689, 5 bytes @ 0x68A"
+  }
+]
