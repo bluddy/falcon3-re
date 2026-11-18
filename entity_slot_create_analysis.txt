@@ -1,0 +1,162 @@
+Analyzing entity_slot_create @ 0x2EBCD...
+Function: 0x2EBCD - 0x2ED9C (463 bytes)
+
+This is the main entity slot creation function - should set object_category
+
+Complete disassembly:
+
+push    ds
+push    cs
+pop     ds
+mov     cs:word_2EA1C, ax
+shl     bx, 1
+mov     cs:word_2EA1E, bx
+mov     cs:[bx+8], ax
+mov     ax, 2
+mov     bx, 6
+mov     dx, 30h ; '0'
+call    op_dispatch
+mov     cs:word_2EA26, ax
+mov     ax, cs:word_2EA1C
+shl     ax, 1
+shl     ax, 1
+mov     dx, ax
+sub     cl, cl
+mov     ch, 0
+mov     bx, 0Eh
+mov     ax, cs:word_2EA26
+call    op_dispatch
+mov     ax, cs:word_2EA26
+mov     bx, 0Ah
+mov     cx, 4
+mov     dx, 18h
+call    op_dispatch
+mov     dx, cs:word_2EA28
+mov     cx, cs:word_2EA2A
+mov     ch, 0
+mov     bx, 0Eh
+mov     ax, cs:word_2EA26
+call    op_dispatch
+mov     ax, cs:word_2EA26
+mov     bx, 0Ah
+mov     cx, 2
+mov     dx, 12h
+call    op_dispatch
+mov     bx, cs:word_2EA1E
+mov     ax, cs:[bx+0]
+cmp     ax, 0FFFFh
+jz      short loc_2EC5F
+mov     bx, 2
+call    op_dispatch
+mov     ax, cs:word_2EA22
+mov     bx, 0
+call    op_dispatch
+mov     ds, ax
+mov     bx, cs:word_2EA1E
+mov     cs:[bx+0], ax
+mov     dx, ax
+sub     ax, ax
+mov     bx, cs:[bx+4]
+call    table_dword_set
+mov     ax, cs:word_2EA26
+mov     bx, 0Ah
+mov     cx, cs:word_2EA22
+sub     dx, dx
+call    op_dispatch
+mov     ax, cs:word_2EA26
+mov     bx, 8
+call    op_dispatch
+pop     ds
+retf
+push    ds
+push    es
+mov     ax, cs
+mov     es, ax
+lodsw
+mov     cx, ax
+mov     di, 2Ah ; '*'
+rep movsb
+lodsw
+push    es
+mov     dx, 500Ch
+mov     es, dx
+mov     es:word_500C6, ax
+pop     es
+lodsw
+mov     cx, ax
+jcxz    short loc_2ECF8
+push    es
+push    cx
+mov     ax, cs
+mov     es, ax
+mov     di, 3Dh ; '='
+mov     cx, 6
+rep movsb
+mov     ax, cs:word_2EA4D
+call    ai_farptr_table_get
+mov     ax, cs:word_2EA4F
+mov     es:[di+22h], ax
+mov     al, cs:byte_2EA51
+mov     es:[di+26h], al
+mov     al, cs:byte_2EA52
+mov     es:[di+27h], al
+pop     cx
+loop    loc_2ECC6
+pop     es
+lodsw
+mov     cx, ax
+call    state_word_26400_get_zero
+mov     es, dx
+mov     di, 5208h
+rep movsb
+push    cs
+pop     ds
+mov     ax, 2
+mov     bx, 6
+mov     dx, 30h ; '0'
+call    op_dispatch
+mov     cs:word_2EA26, ax
+mov     cs:word_2EA2C, 0
+mov     cs:word_2EA20, 34h ; '4'
+mov     cx, cs:word_2EA22
+mov     si, 2Ah ; '*'
+push    cx
+lodsb
+push    si
+sub     ah, ah
+shl     ax, 1
+shl     ax, 1
+mov     dx, ax
+sub     cl, cl
+mov     ch, 0
+mov     bx, 0Eh
+mov     ax, cs:word_2EA26
+call    op_dispatch
+mov     ax, cs:word_2EA26
+mov     bx, 0Ah
+mov     cx, 4
+mov     dx, 18h
+call    op_dispatch
+mov     dx, cs:word_2EA28
+mov     cx, cs:word_2EA2A
+mov     ch, 0
+mov     bx, 0Eh
+mov     ax, cs:word_2EA26
+call    op_dispatch
+mov     bx, cs:word_2EA20
+call    handle_seg_publish
+inc     cs:word_2EA20
+add     cs:word_2EA2C, 2
+pop     si
+pop     cx
+loop    loc_2ED31
+mov     ax, cs:word_2EA26
+mov     bx, 8
+call    op_dispatch
+pop     es
+pop     ds
+retf
+
+
+Called by:
+

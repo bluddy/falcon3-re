@@ -1,0 +1,114 @@
+Searching for object_category assignment code...
+=== STRATEGY ===
+Find where EntitySlotRecord +0x0C (object_category) is initialized
+Look for MOV instructions that write constant values to [reg+0Ch]
+
+=== Searching for Writes to [entity+0Ch] ===
+
+Found 0 potential writes to object_category:
+
+Immediate value writes:
+
+
+
+=== Looking for Entity Spawn Functions ===
+
+Functions with 'spawn', 'create', 'init', 'alloc' in name:
+
+Found 305 potential entity initialization functions:
+
+  0x18DEBB: r55_entity_flags_op_step (5949B)
+  0x4486B: farobj_handler_2028 (2028B)
+  0x4C3C7: ag_weapon_entity_initialize (1819B)
+  0x101A12: input_device_calibration_init (1719B)
+  0x66E62: ui_menu_panel_initialize (1365B)
+  0x3D37F: entity_physics_and_ai_update (1319B)
+  0x6C896: r06_init_call_43270_b (1171B)
+  0x6C3F7: r06_init_call_43270_c (1089B)
+  0x4CD1D: flight_entity_motion_accumulate (1062B)
+  0x103C99: mission_session_init_coordinator (945B)
+  0x3EEDB: farobj_view_project_step (921B)
+  0x3BB8F: farobj_record_ops_exec (860B)
+  0x32D22: mission_state_initializer (850B)
+  0x3E552: farobj_cfg_scan_step (806B)
+  0x1509E: entity_state_load (775B)
+  0x66ABD: mode_session_state_mirror_init (768B)
+  0x17681F: r48_time_threshold_table_init (751B)
+  0x45976: game_setup_staged_init (725B)
+  0x187EA8: r53_farobj_pipeline_body (603B)
+  0x44352: farobj_entity_attr_setup (596B)
+  0x3F861: farobj_index_resolve_step (582B)
+  0x26CD8: farobj_render_draw_1f712 (551B)
+  0x4C19E: weapon_type_initialize_dispatch (548B)
+  0x3B96D: farobj_process_386f (546B)
+  0x3A3D6: flight_entity_simulation_frame_step (508B)
+  0x3DC55: weapon_spawn_gate_validate (501B)
+  0x31138: terrain_state_reinit (481B)
+  0x3CCB1: farobj_field2e_zero_dispatch (481B)
+  0x14EAE: terrain_farobj_tile_copy_resolve (470B)
+  0x2EBCD: entity_slot_create (463B)
+
+
+=== Analyzing ag_weapon_entity_initialize @ 0x4C3C7 ===
+
+This function initializes A-G weapons - let's see if it sets object_category
+
+Found 22 references to offset +0Ch:
+  0x4C3F1: mov     [si+0Ch], cx
+  0x4C43D: mov     [si+0Ch], cx
+  0x4C489: mov     [si+0Ch], cx
+  0x4C4D5: mov     [si+0Ch], cx
+  0x4C526: mov     [si+0Ch], cx
+  0x4C572: mov     [si+0Ch], cx
+  0x4C5C2: mov     [si+0Ch], cx
+  0x4C617: mov     [si+0Ch], cx
+  0x4C663: mov     [si+0Ch], cx
+  0x4C6B3: mov     [si+0Ch], cx
+  0x4C703: mov     [si+0Ch], cx
+  0x4C74F: mov     [si+0Ch], cx
+  0x4C79F: mov     [si+0Ch], cx
+  0x4C7F9: mov     [si+0Ch], cx
+  0x4C849: mov     [si+0Ch], cx
+  0x4C89E: mov     [si+0Ch], cx
+  0x4C8EE: mov     [si+0Ch], cx
+  0x4C943: mov     [si+0Ch], cx
+  0x4C9BB: mov     [si+0Ch], cx
+  0x4CA26: mov     word ptr [si+0Ch], 0
+  0x4CA6F: mov     word ptr [si+0Ch], 0
+  0x4CAB8: mov     word ptr [si+0Ch], 0
+
+
+=== Looking for entity_slot_create or similar ===
+
+Found 11 entity slot functions:
+
+0x12BB3: slot2_handle_alloc
+
+Analyzing slot2_handle_alloc:
+  mov     ax, 7075h
+  mov     ds, ax
+  mov     dx, 41h ; 'A'
+  mov     ax, 2
+  mov     bx, 6
+  mov     cs:word_11C14, ax
+0x13EA4: slot3_handle_alloc_pair
+0x165AE: slot2_alloc
+0x165EE: slot3_alloc
+0x1A734: event_slot_alloc_6ac
+0x2E2F0: farobj_slot_create
+0x2EA78: entity_slot_pair_create
+0x2EBCD: entity_slot_create
+0x4E09C: farobj_slot_create_gate
+0x4E109: farobj_slot_create_ems
+0x4E309: farobj_slot_create_status
+
+
+=== Checking target_cycle_scan @ 0x48B05 ===
+
+Does it read object_category to filter targets?
+
+No direct category checks in target_cycle_scan
+Category filtering might happen in called functions
+
+
+Object category assignment search complete.
