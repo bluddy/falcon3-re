@@ -307,7 +307,10 @@ structs:
       - {offset: 0x06, size: 2, name: farobj_slot,     type: uint16,  comment: "FarObj main table slot index"}
       - {offset: 0x08, size: 2, name: distance_lo,     type: uint16,  comment: "Distance to player lo word (32-bit pair with +0x0A)"}
       - {offset: 0x0A, size: 2, name: distance_hi,     type: uint16,  comment: "Distance to player hi word"}
-      - {offset: 0x0C, size: 34, name: data_0C_2D,     type: bytes,   comment: "Entity data bytes 0x0C-0x2D"}
+      - {offset: 0x0C, size: 2, name: object_category,  type: uint16,  comment: "Object category/type (4=building/facility, checked by store_impact_step @ 0x39840)"}
+      - {offset: 0x0E, size: 2, name: data_0E_0F,      type: bytes,   comment: "Unknown bytes 0x0E-0x0F"}
+      - {offset: 0x10, size: 1, name: impact_state,    type: uint8,   comment: "Impact/damage state (0xFF=pristine, 0xA0=impacted, set by store_impact_step @ 0x39879)"}
+      - {offset: 0x11, size: 29, name: data_11_2D,     type: bytes,   comment: "Entity data bytes 0x11-0x2D"}
       - {offset: 0x2E, size: 2, name: velocity_component, type: int16,   comment: "Velocity component (receives gravity/drag subtract @ 0x3D3BD). Possibly vertical velocity or velocity magnitude."}
       - {offset: 0x30, size: 68, name: data_30_73,     type: bytes,   comment: "Entity data bytes 0x30-0x73"}
       - {offset: 0x74, size: 1, name: status_flags,    type: flags8,  comment: "EntityStatusFlags: bit 0=ACTIVE, bit 2=DESTROYED?, bit 6=AIRCRAFT_TYPE"}
@@ -319,7 +322,8 @@ structs:
       - {offset: 0x92, size: 2, name: range,           type: uint16,  comment: "Computed range/distance to player (game units), compared against F8 radar range setting"}
       - {offset: 0x94, size: 5, name: data_94_78,      type: bytes,   comment: "Unknown bytes 0x94-0x78"}
       - {offset: 0x79, size: 1, name: tracking_flags,  type: flags8,  comment: "EntityTrackingFlags: bit 0=RADAR_VISIBLE (set by detection functions)"}
-      - {offset: 0x7A, size: 28, name: data_7A_95,     type: bytes,   comment: "Unknown bytes 0x7A-0x95"}
+      - {offset: 0x7A, size: 2, name: target_slot_index, type: uint16, comment: "Target entity slot index. Used by store_impact_step @ 0x397FB to load target entity via r12_farptr_load_thunk. Indexes EntitySlotRecord array (stride 0x5C=92B)."}
+      - {offset: 0x7C, size: 26, name: data_7C_95,     type: bytes,   comment: "Unknown bytes 0x7C-0x95"}
       - {offset: 0x96, size: 2, name: position_x,      type: int16,   comment: "World X position (used by radar scanner)"}
       - {offset: 0x98, size: 2, name: position_y,      type: int16,   comment: "World Y position (used by radar scanner)"}
       - {offset: 0x9A, size: 2, name: position_z,      type: int16,   comment: "World Z position / altitude (used by radar scanner)"}
