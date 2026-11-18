@@ -379,6 +379,18 @@ globals:
       Subtracted from target_slot_index before calling entity_record_table_ops.
     source: 'IMPACT_DETECTION_BREAKTHROUGH.md'
   
+  - address: 0x2544
+    name: entity_dispatch_table
+    size: 40
+    type: array[20]
+    doc: |
+      Entity function dispatch table indexed by object_category field (+0x0C).
+      20 word entries, each is offset from code segment base 0x3B830.
+      Dispatched by entity_slot_update_loop @ 0x3C25D-0x3C261.
+      Category mappings: 1=PLAYER_AIRCRAFT, 2=AI_FIGHTER, 3=AI_BOMBER, 4=BUILDING,
+      7=GROUND_VEHICLE, 9-14,19=PROJECTILES. Each category has specialized update function.
+    source: 'entity_dispatch_system_analysis'
+  
   # IR Lock System (AIM-9 Sidewinder)
   
   - address: 0x44AA

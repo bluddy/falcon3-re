@@ -580,14 +580,30 @@ enums:
 
   - name: ObjectCategory
     type: uint16
-    source: "IMPACT_DETECTION_BREAKTHROUGH.md; store_impact_step @ 0x397FB"
-    description: "Entity object category at EntitySlotRecord +0x0C. Identifies what type of object the entity represents."
+    source: "IMPACT_DETECTION_BREAKTHROUGH.md; entity_dispatch_system_analysis"
+    description: |
+      Entity object category at EntitySlotRecord +0x0C. Identifies entity type and drives
+      polymorphic dispatch to category-specific update functions via dispatch table at DS:0x2544.
+      Each category maps to specialized function: physics/AI for aircraft, view projection for
+      buildings, projectile update for weapons. Dispatched by entity_slot_update_loop @ 0x3C25D.
     values:
-      - {value: 0, name: UNKNOWN_0,        comment: "Unknown/uninitialized"}
-      - {value: 1, name: AIRCRAFT,         comment: "Aircraft (hypothesis)"}
-      - {value: 2, name: GROUND_VEHICLE,   comment: "Tanks, trucks (hypothesis)"}
-      - {value: 3, name: SHIP,             comment: "Naval vessels (hypothesis)"}
-      - {value: 4, name: BUILDING,         comment: "Buildings/facilities - CONFIRMED!"}
-      - {value: 5, name: RADAR_SITE,       comment: "Radar (hypothesis)"}
-      - {value: 6, name: SAM_SITE,         comment: "SAM launchers (hypothesis)"}
-      - {value: 7, name: AAA_SITE,         comment: "AAA (hypothesis)"}
+      - {value: 0,  name: UNKNOWN_0,          comment: "ai_state_processor_core"}
+      - {value: 1,  name: PLAYER_AIRCRAFT,    comment: "entity_physics_and_ai_update - CONFIRMED!"}
+      - {value: 2,  name: AI_FIGHTER,         comment: "ai_combat_maneuver_selector - CONFIRMED!"}
+      - {value: 3,  name: AI_BOMBER,          comment: "ai_behavior_decision_tree - CONFIRMED!"}
+      - {value: 4,  name: BUILDING,           comment: "farobj_view_project_step - CONFIRMED!"}
+      - {value: 5,  name: GROUND_STRUCTURE,   comment: "farobj_view_project_step (static objects)"}
+      - {value: 6,  name: UNKNOWN_6,          comment: "entity_slot_update_loop (recursive?)"}
+      - {value: 7,  name: GROUND_VEHICLE,     comment: "ai_target_priority_evaluator"}
+      - {value: 8,  name: UNKNOWN_8,          comment: "hud_panel_transform_step"}
+      - {value: 9,  name: PROJECTILE_A,       comment: "hw_config_flags_build"}
+      - {value: 10, name: PROJECTILE_B,       comment: "hw_config_flags_build"}
+      - {value: 11, name: PROJECTILE_C,       comment: "hw_config_flags_build"}
+      - {value: 12, name: PROJECTILE_D,       comment: "hw_config_flags_build"}
+      - {value: 13, name: PROJECTILE_E,       comment: "hw_config_flags_build"}
+      - {value: 14, name: PROJECTILE_F,       comment: "hw_config_flags_build"}
+      - {value: 15, name: UNKNOWN_15,         comment: "sub_3E170"}
+      - {value: 16, name: UNKNOWN_16,         comment: "sub_40AA9"}
+      - {value: 17, name: UNKNOWN_17,         comment: "sub_433DC"}
+      - {value: 18, name: INACTIVE,           comment: "NULL function - inactive entities"}
+      - {value: 19, name: PROJECTILE_G,       comment: "hw_config_flags_build"}
