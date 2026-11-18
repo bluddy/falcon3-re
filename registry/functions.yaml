@@ -13099,9 +13099,11 @@ functions:
     size: 338
     doc: '338B, 15 comps. conf: LOW'
   - address: 0x48C20
-    name: undoc_48C20
+    name: target_processing_helper
+    system: target
     size: 337
-    doc: '337B, 21 comps. conf: LOW'
+    doc: 'Helper function called by target_cycle_scan for target processing. Was undoc_48C20. 337B, 21 comps. conf: LOW'
+    source: 'TARGET_SYSTEM_FINDINGS.md'
   - address: 0x139351
     name: undoc_139351
     size: 337
@@ -18748,3 +18750,32 @@ functions:
     calls: 11
     description: Handles numeric text input with digit validation and backspace
     source: 'top_500_analysis rank 498'
+
+  # TARGET / MISSION SYSTEM
+  - address: 0x32D22
+    name: mission_state_initializer
+    system: target
+    size: 850
+    doc: 'Initializes mission state and objectives. Very large function (850B) likely loads mission data from external files. No string references - works with binary data structures.'
+    source: 'TARGET_SYSTEM_FINDINGS.md'
+
+  - address: 0x3E96F
+    name: ai_target_priority_evaluator
+    system: ai
+    size: 479
+    doc: 'Evaluates target priority for AI decision-making. Checks 11 target count fields at [di+0xB3h] through [di+0xBFh], likely CLASS A/B/C/D target counters for different categories.'
+    source: 'TARGET_SYSTEM_FINDINGS.md'
+
+  - address: 0x4478D
+    name: farobj_slot_target_search
+    system: target
+    size: 222
+    doc: 'Searches entity slots for valid targets. Part of target designation and HUD display system.'
+    source: 'TARGET_SYSTEM_FINDINGS.md'
+
+  - address: 0x48B05
+    name: target_cycle_scan
+    system: target
+    size: 283
+    doc: 'Scans entities for HUD target cycling. Checks status_flags (+0x74), damage_status_flags (+0xCAh), tracking_flags (+0x79), and unknown_flags_76 (+0x76 bit 7). Uses entity table at offset 0x1734h. Controls target selection with target_current_selected @ DS:0x593A6.'
+    source: 'TARGET_SYSTEM_FINDINGS.md'
