@@ -1,0 +1,58 @@
+Starting building type investigation...
+=== STRATEGY ===
+1. Search for comparisons with field +0x75 that check values BELOW 0x12 (non-weapons)
+2. Check store_impact_step @ 0x397FB for entity type detection
+3. Look at [di+0Ch] field which was == 4 for buildings
+4. Search for RUNWAY/HANGAR string xrefs to find type assignment code
+
+
+=== Searching for entity type +0x75 comparisons with values < 0x12 ===
+
+Found 0 comparisons with entity type +0x75 in range 0x00-0x11:
+
+
+
+=== Deep Analysis: store_impact_step @ 0x397FB ===
+
+This function checks [di+0Ch] == 4 for buildings
+Let's see what entity type values are checked around that code:
+
+Looking for [di+0Ch] and nearby type checks:
+
+  0x39840: cmp     word ptr [di+0Ch], 4
+
+
+=== Searching for code that WRITES to entity field +0x75 ===
+
+(This would show entity type assignment during spawn)
+
+Found 0 writes to entity field +0x75:
+
+
+
+=== Checking Building Name String References ===
+
+
+HANGAR @ 0x15020D:
+  NO CODE REFERENCES (string may be display-only)
+
+RUNWAY @ 0x150214:
+  NO CODE REFERENCES (string may be display-only)
+
+BRIDGE @ 0x15022D:
+  NO CODE REFERENCES (string may be display-only)
+
+FACTORY @ 0x150284:
+  NO CODE REFERENCES (string may be display-only)
+
+WAREHOUSE @ 0x150293:
+  NO CODE REFERENCES (string may be display-only)
+
+
+=== Searching for entity field +0x0C (checked == 4 in store_impact_step) ===
+
+Found 0 comparisons with entity field +0x0C:
+
+
+
+Building type investigation complete.

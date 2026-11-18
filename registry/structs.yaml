@@ -289,9 +289,9 @@ structs:
       - {offset: 0x09, size: 15, name: data,           type: bytes,   comment: "Type-specific data (15 bytes)"}
 
   - name: EntitySlotRecord
-    size: 203        # 0xCB bytes minimum; 16 slots at 0x54AF:0x386F
+    size: 204        # 0xCC bytes minimum; 16 slots at 0x54AF:0x386F
     status: confirmed
-    source: "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_DETECTION_COMPLETE.md; IR_LOCK_ANALYSIS.md; TARGET_SYSTEM_FINDINGS.md"
+    source: "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_DETECTION_COMPLETE.md; IR_LOCK_ANALYSIS.md; TARGET_SYSTEM_FINDINGS.md; BUILDING_TYPE_INVESTIGATION.md"
     notes: >
       Active entity slot record. 16 slots at segment 0x54AF, offset 0x386F.
       Updated 3-pass every frame by farobj_slot_update_driver. Contains per-frame
@@ -299,7 +299,9 @@ structs:
       Radar system uses fields +0x08/0x0A (distance), +0x74/+0x79 (flags),
       +0x8E (azimuth), +0x92 (range), +0x96/98/9A (position) for detection and tracking.
       IR lock system uses field +0xAE (heat_signature) for AIM-9 seeker targeting.
-      Target system uses fields +0x76 (unknown_flags_76), +0xAE (unknown_field_ae), +0xCA (damage_status_flags).
+      Target system uses fields +0x76 (unknown_flags_76), +0xAE (heat_signature), 
+      +0xB3-0xBF (target tracking fields, 13 bytes), +0xCA (damage_status_flags).
+      AI system uses fields +0xB3-0xBF for target priority evaluation (ai_target_priority_evaluator).
     fields:
       - {offset: 0x00, size: 6, name: header,          type: bytes,   comment: "Unknown header fields"}
       - {offset: 0x06, size: 2, name: farobj_slot,     type: uint16,  comment: "FarObj main table slot index"}
@@ -323,7 +325,21 @@ structs:
       - {offset: 0x9A, size: 2, name: position_z,      type: int16,   comment: "World Z position / altitude (used by radar scanner)"}
       - {offset: 0x9C, size: 18, name: data_9C_AD,     type: bytes,   comment: "Unknown bytes 0x9C-0xAD"}
       - {offset: 0xAE, size: 1, name: heat_signature,  type: uint8,   comment: "IR visibility (0=cold/no lock, non-zero=hot/IR lockable). Checked by weapon_aim9_seeker_lock_check for AIM-9 IR missiles. Also checked as unknown_field_ae by target_cycle_scan @ 0x48B05."}
-      - {offset: 0xAF, size: 27, name: data_AF_C9,     type: bytes,   comment: "Unknown bytes 0xAF-0xC9"}
+      - {offset: 0xAF, size: 4, name: data_AF_B2,      type: bytes,   comment: "Unknown bytes 0xAF-0xB2"}
+      - {offset: 0xB3, size: 1, name: target_field_1,  type: uint8,   comment: "Target tracking field 1 (checked by ai_target_priority_evaluator @ 0x3E96F)"}
+      - {offset: 0xB4, size: 1, name: target_field_2,  type: uint8,   comment: "Target tracking field 2"}
+      - {offset: 0xB5, size: 1, name: target_field_3,  type: uint8,   comment: "Target tracking field 3"}
+      - {offset: 0xB6, size: 1, name: target_field_4,  type: uint8,   comment: "Target tracking field 4"}
+      - {offset: 0xB7, size: 1, name: target_field_5,  type: uint8,   comment: "Target tracking field 5"}
+      - {offset: 0xB8, size: 1, name: target_field_6,  type: uint8,   comment: "Target tracking field 6"}
+      - {offset: 0xB9, size: 1, name: target_field_7,  type: uint8,   comment: "Target tracking field 7"}
+      - {offset: 0xBA, size: 1, name: target_field_8,  type: uint8,   comment: "Target tracking field 8"}
+      - {offset: 0xBB, size: 1, name: target_field_9,  type: uint8,   comment: "Target tracking field 9"}
+      - {offset: 0xBC, size: 1, name: target_field_10, type: uint8,   comment: "Target tracking field 10"}
+      - {offset: 0xBD, size: 1, name: target_field_11, type: uint8,   comment: "Target tracking field 11"}
+      - {offset: 0xBE, size: 1, name: target_field_12, type: uint8,   comment: "Target tracking field 12"}
+      - {offset: 0xBF, size: 1, name: target_field_13, type: uint8,   comment: "Target tracking field 13"}
+      - {offset: 0xC0, size: 10, name: data_C0_C9,     type: bytes,   comment: "Unknown bytes 0xC0-0xC9"}
       - {offset: 0xCA, size: 2, name: damage_status_flags, type: flags16, comment: "Damage state flags (DAMAGE_NAV flag at 0x48B05). Checked by target_cycle_scan for filtering damaged entities."}
       - {offset: 0xCC, size: 0, name: end_marker,      type: bytes,   comment: "End of confirmed fields at +0xCC (actual size may be larger)"}
 
