@@ -1,0 +1,95 @@
+Starting FarObj entity type investigation...
+=== NEW THEORY ===
+We've been looking at EntitySlotRecord (16 slots @ 0x54AF:0x386F)
+But there's also FarObj structure (main game object at R05_400C:0x34)
+
+From registry/structs.yaml FarObj structure:
+  +0x12: render_flags
+  +0x13: type_flags
+  +0x14: entity_class (0x12=aircraft, 0x14=?, 0x33=?, 0x38=?)
+  +0x22: object_kind (index to type descriptor)
+
+Ground objects (tanks, ships, SAMs) likely use FarObj.entity_class field!
+
+=== Searching for FarObj entity_class (+0x14) Comparisons ===
+
+Found 0 comparisons with field +0x14:
+
+
+
+=== Searching for FarObj object_kind (+0x22) Usage ===
+
+Found 0 references to field +0x22 (object_kind):
+
+Used in 0 different functions:
+
+
+
+=== Checking farobj_entity_attr_setup (known entity initializer) ===
+
+Found farobj_entity_attr_setup @ 0x44352
+
+Looking for entity_class assignments:
+
+  0x443C7: mov     [si+14h], bx
+
+
+=== Searching for Writes to entity_class Field (+0x14) ===
+
+Found 0 writes to entity_class field:
+
+
+
+=== Analyzing Type Descriptor Table @ 0x7B0E:0x3052 ===
+
+FarObj.object_kind indexes this table (4-byte far pointers)
+
+Type descriptor table at linear address: 0x7E132
+
+Reading first 32 type descriptor pointers (4 bytes each):
+
+  Type  0: seg:off = 0xFFFF:0xFFFF
+  Type  1: seg:off = 0xFFFF:0xFFFF
+  Type  2: seg:off = 0xFFFF:0xFFFF
+  Type  3: seg:off = 0xFFFF:0xFFFF
+  Type  4: seg:off = 0xFFFF:0xFFFF
+  Type  5: seg:off = 0xFFFF:0xFFFF
+  Type  6: seg:off = 0xFFFF:0xFFFF
+  Type  7: seg:off = 0xFFFF:0xFFFF
+  Type  8: seg:off = 0xFFFF:0xFFFF
+  Type  9: seg:off = 0xFFFF:0xFFFF
+  Type 10: seg:off = 0xFFFF:0xFFFF
+  Type 11: seg:off = 0xFFFF:0xFFFF
+  Type 12: seg:off = 0xFFFF:0xFFFF
+  Type 13: seg:off = 0xFFFF:0xFFFF
+  Type 14: seg:off = 0xFFFF:0xFFFF
+  Type 15: seg:off = 0xFFFF:0xFFFF
+  Type 16: seg:off = 0xFFFF:0xFFFF
+  Type 17: seg:off = 0xFFFF:0xFFFF
+  Type 18: seg:off = 0xFFFF:0xFFFF
+  Type 19: seg:off = 0xFFFF:0xFFFF
+  Type 20: seg:off = 0xFFFF:0xFFFF
+  Type 21: seg:off = 0xFFFF:0xFFFF
+  Type 22: seg:off = 0xFFFF:0xFFFF
+  Type 23: seg:off = 0xFFFF:0xFFFF
+  Type 24: seg:off = 0xFFFF:0xFFFF
+  Type 25: seg:off = 0xFFFF:0xFFFF
+  Type 26: seg:off = 0xFFFF:0xFFFF
+  Type 27: seg:off = 0xFFFF:0xFFFF
+  Type 28: seg:off = 0xFFFF:0xFFFF
+  Type 29: seg:off = 0xFFFF:0xFFFF
+  Type 30: seg:off = 0xFFFF:0xFFFF
+  Type 31: seg:off = 0xFFFF:0xFFFF
+
+
+=== Searching for Ground Unit Spawn Pattern ===
+
+Looking for functions that reference both:
+- Ground object strings (TANK/SAM/AAA)
+- Entity initialization (field +0x14 or +0x22 writes)
+
+
+0 unique functions reference ground object strings
+
+
+FarObj entity type investigation complete.
