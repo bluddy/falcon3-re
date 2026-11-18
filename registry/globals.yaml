@@ -267,6 +267,90 @@ globals:
       by ag_weapon_entity_initialize dispatcher. Independent from weapon_queue_count.
     source: AG_WEAPONS_ANALYSIS.md
   
+  # Target / Mission Objective System
+  
+  - address: 0x59380
+    name: target_scan_mode_flag
+    size: 1
+    type: byte
+    doc: |
+      Target scanning mode flag. Checked by target_cycle_scan @ 0x48B05 to determine if target
+      cycling is active. 0 = inactive, non-zero = active scanning enabled.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x593A0
+    name: target_cycle_timer
+    size: 2
+    type: word
+    doc: |
+      Target cycle timer/counter. Decremented each frame in target_cycle_scan @ 0x48B05.
+      When reaches 0, resets to 0 and reverses cycle direction (byte_5948E negated).
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x5948E
+    name: target_cycle_direction
+    size: 1
+    type: byte
+    doc: |
+      Target cycle direction flag (-1, 0, +1). Controls forward/backward scanning through
+      entity table. Negated when target_cycle_timer reaches 0 to reverse scan direction.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x593A4
+    name: target_previous_or_alternate
+    size: 2
+    type: word
+    doc: |
+      Previous or alternate target entity index. Used for target memory/cycling between
+      multiple valid targets. Value 0xFFFF = no previous target.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x593A6
+    name: target_current_selected
+    size: 2
+    type: word
+    doc: |
+      Current selected target entity index. Points to entity in table at offset 0x1734h.
+      Value 0xFFFF = no target currently selected. Primary target tracking variable.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x593A8
+    name: target_maximum_count
+    size: 2
+    type: word
+    doc: |
+      Maximum target count or entity array boundary. Used by target_cycle_scan @ 0x48B05
+      to limit scanning range. Compared with BX register during entity iteration.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x593B0
+    name: target_data_pointer
+    size: 2
+    type: word
+    doc: |
+      Pointer to target data structure. Passed to undoc_48C20 for target processing.
+      Used for HUD display and weapon designation.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x59306
+    name: target_related_flag
+    size: 2
+    type: word
+    doc: |
+      Target-related flag or counter. Initialized to 0 (BX register) at start of
+      target_cycle_scan. Purpose unclear - may track scan state or target validity.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
+  - address: 0x58F9A
+    name: target_type_selector
+    size: 2
+    type: word
+    doc: |
+      Current target type selector or index. Used to index into entity field table
+      at offset +0x487Eh, then added to SI to access entity field at +0xAEh.
+      Compared with value 2 for special case handling.
+    source: TARGET_SYSTEM_FINDINGS.md
+  
   # IR Lock System (AIM-9 Sidewinder)
   
   - address: 0x44AA

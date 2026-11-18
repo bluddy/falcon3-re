@@ -1,0 +1,172 @@
+Starting mission objectives analysis...
+=== Searching for Target and Mission Strings ===
+
+Found 32 target/mission strings:
+
+0x55121 [RUNWAY]: 'RUNWAY'
+
+0x57BB3 [PRIMARY TARGET]: 'PRIMARY TARGET.'
+
+0x57C45 [PRIMARY TARGET]: 'PRIMARY TARGET.'
+
+0x14FF93 [BRIDGE]: 'BRIDGE'
+
+0x15020D [HANGAR]: 'HANGAR'
+
+0x150214 [RUNWAY]: 'RUNWAY'
+
+0x15022D [BRIDGE]: 'BRIDGE'
+
+0x150284 [FACTORY]: 'FACTORY'
+
+0x150293 [WAREHOUSE]: 'WAREHOUSE'
+
+0x1509DC [GROUND TARGETS DESTROYED]: 'GROUND TARGETS DESTROYED: 0'
+
+0x1509F9 [CLASS A TARGET]: 'CLASS A TARGET: '
+
+0x150A0B [CLASS B TARGET]: 'CLASS B TARGET: '
+
+0x150A1D [CLASS C TARGET]: 'CLASS C TARGET: '
+
+0x150A2F [CLASS D TARGET]: 'CLASS D TARGET: '
+
+0x150BE0 [GROUND TARGETS DESTROYED]: 'GROUND TARGETS DESTROYED:'
+
+0x150BFB [CLASS A TARGET]: 'CLASS A TARGETS:'
+
+0x150C0D [CLASS B TARGET]: 'CLASS B TARGETS:'
+
+0x150C1F [CLASS C TARGET]: 'CLASS C TARGETS:'
+
+0x150C31 [CLASS D TARGET]: 'CLASS D TARGETS:'
+
+0x150D6F [GROUND TARGETS DESTROYED]: 'GROUND TARGETS DESTROYED: 0'
+
+0x150D8C [CLASS A TARGET]: 'CLASS A TARGETS: '
+
+0x150D9F [CLASS B TARGET]: 'CLASS B TARGETS: '
+
+0x150DB2 [CLASS C TARGET]: 'CLASS C TARGETS: '
+
+0x150DC5 [CLASS D TARGET]: 'CLASS D TARGETS: '
+
+0x151221 [HANGAR]: 'HANGAR'
+
+0x189994 [PRIMARY TARGET]: 'PRIMARY TARGET'
+
+0x189AD9 [DAMAGED A PRIMARY]: 'DAMAGED A PRIMARY TARGET.'
+
+0x189AF4 [DESTROYED A PRIMARY]: 'DESTROYED A PRIMARY TARGET.'
+
+0x189CE3 [MISSION SUCCESSFUL]: 'MISSION SUCCESSFUL.'
+
+0x189CF7 [MISSION FAILURE]: 'MISSION FAILURE.'
+
+0x189ED8 [MISSION SUCCESSFUL]: 'MISSION SUCCESSFUL.'
+
+0x189EEC [MISSION FAILURE]: 'MISSION FAILURE.'
+
+
+=== Analysis of ai_target_priority_evaluator @ 0x3E96F ===
+
+Function size: 479 bytes (0x3E96F - 0x3EB4E)
+
+Entity type/field checks:
+
+  0x3E988: cmp byte ptr [di+0BEh], 0 (value=0x0)
+  0x3E9B7: cmp byte ptr [di+0BFh], 0 (value=0x0)
+  0x3E9FC: cmp byte ptr [di+0B3h], 0 (value=0x0)
+  0x3EA32: cmp byte ptr [di+0B4h], 0 (value=0x0)
+  0x3EA61: cmp byte ptr [di+0B5h], 0 (value=0x0)
+  0x3EA97: cmp byte ptr [di+0BBh], 0 (value=0x0)
+  0x3EAAB: cmp byte ptr [di+0B6h], 0 (value=0x0)
+  0x3EABF: cmp byte ptr [di+0B7h], 0 (value=0x0)
+  0x3EAD3: cmp byte ptr [di+0B8h], 0 (value=0x0)
+  0x3EAE7: cmp byte ptr [di+0BAh], 0 (value=0x0)
+  0x3EB03: cmp byte ptr [di+0BCh], 0 (value=0x0)
+
+
+=== Analysis of mission_state_initializer @ 0x32D22 ===
+
+Function size: 850 bytes (0x32D22 - 0x33074)
+
+String references:
+
+
+
+=== Analysis of target_cycle_scan @ 0x48B05 ===
+
+Function size: 283 bytes (0x48B05 - 0x48C20)
+
+First 60 instructions:
+
+  push    es
+  xor     ax, ax
+  test    word ptr [si+0CAh], DAMAGE_NAV; Entity damage status bitfield (DAMAGE_STATUS_FLAGS)
+  jnz     short loc_48B82
+  cmp     byte_59380, al
+  jz      short loc_48B26
+  mov     bx, word_58F9A
+  mov     bl, [bx+487Eh]
+  add     bx, si
+  cmp     [bx+0AEh], al
+  jz      short loc_48B82
+  cmp     word_58F9A, 2
+  jz      short loc_48B82
+  cmp     byte_5948E, al
+  jz      short loc_48B87
+  jl      short loc_48B45
+  dec     word_593A0
+  jge     short loc_48B45
+  mov     word_593A0, 0
+  neg     byte_5948E
+  mov     bx, word_593A6
+  cmp     bx, 0FFFFh
+  jz      short loc_48B82
+  les     bx, [bx+1734h]
+  mov     cl, es:[bx+74h]
+  test    cl, 1
+  jz      short loc_48B82
+  test    cl, 40h
+  jz      short loc_48B82
+  test    byte ptr es:[bx+76h], 80h
+  jz      short loc_48B7B
+  push    bx
+  push    si
+  mov     ax, es:[bx+7Ah]
+  call    far_obj_field_call
+  pop     si
+  pop     bx
+  cmp     al, 2
+  mov     ax, 0
+  jz      short loc_48B82
+  mov     di, word_593B0
+  call    near ptr undoc_48C20
+  mov     byte_5948E, al
+  pop     es
+  retf
+  xor     bx, bx
+  mov     cx, 10h
+  mov     word_593A6, 0FFFFh
+  mov     word_593A4, 0FFFFh
+  mov     word_59306, bx
+  cmp     bx, word_593A8
+  jz      short loc_48C12
+  push    bx
+  shl     bx, 1
+  shl     bx, 1
+  les     bx, [bx+1734h]
+  mov     al, es:[bx+74h]
+  test    al, 1
+  jz      short loc_48C11
+  test    al, 40h
+
+
+=== Searching for target/objective data structures ===
+
+Looking for large initialized data arrays that might be target lists...
+
+
+
+Mission objectives analysis complete.
