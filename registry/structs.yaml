@@ -530,3 +530,24 @@ enums:
       - {value: 4, name: MODE_4,       comment: "Detection mode 4"}
       - {value: 5, name: ACTIVE_LOCK,  comment: "Active lock mode (triggers IR tone @ value 5, radar STT integration)"}
 
+  - name: EntityFieldOffset
+    type: uint8
+    source: "entity_physics_and_ai_update analysis; EntitySlotRecord structure"
+    description: "Known field offsets in EntitySlotRecord structure (92+ bytes). Used throughout entity update and weapon systems."
+    values:
+      - {value: 0x00, name: HEADER,            comment: "Header fields start"}
+      - {value: 0x06, name: FAROBJ_SLOT,       comment: "FarObj main table slot index"}
+      - {value: 0x08, name: DISTANCE_LO,       comment: "Distance to player (lo word)"}
+      - {value: 0x0A, name: DISTANCE_HI,       comment: "Distance to player (hi word)"}
+      - {value: 0x2E, name: VELOCITY_COMPONENT, comment: "Velocity component - gravity/drag applied here (sub [si+2Eh], ax @ 0x3D3BD)"}
+      - {value: 0x74, name: STATUS_FLAGS,      comment: "Entity status flags (bit 0=ACTIVE, bit 6=AIRCRAFT_TYPE)"}
+      - {value: 0x75, name: WEAPON_TYPE,       comment: "Weapon type (WeaponType enum, 0=not a weapon)"}
+      - {value: 0x79, name: TRACKING_FLAGS,    comment: "Tracking flags (bit 0=RADAR_VISIBLE)"}
+      - {value: 0x8E, name: ANGLE_AZIMUTH,     comment: "Azimuth angle from player (14-bit)"}
+      - {value: 0x92, name: RANGE,             comment: "Computed range to player"}
+      - {value: 0x96, name: POSITION_X,        comment: "World X position"}
+      - {value: 0x98, name: POSITION_Y,        comment: "World Y position"}
+      - {value: 0x9A, name: POSITION_Z,        comment: "World Z position / altitude"}
+      - {value: 0xAE, name: HEAT_SIGNATURE,    comment: "IR visibility for AIM-9 seeker"}
+
+
