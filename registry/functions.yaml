@@ -7978,8 +7978,13 @@ functions:
   - address: 0x0321c1
     name: mode_state_dispatch
     system: mode
-    doc: '28B, in=2: tiny mode-state jump-table dispatcher (table at ds:392h, index ds:40Ah). conf: med-high'
-    source: 'old_registry (was: mode_state_dispatch)'
+    size: 28
+    doc: |
+      Mode-state dispatcher (28B). Jump table at ds:0x392h indexed by ds:0x40Ah.
+      Returns pointer to game state data in AX. Called by main_game_loop_update.
+      For RFM missions, returns pointer to loaded AI behavior data which is stored in word_2F677.
+    source: 'RFM_LOADER_COMPLETE_TRACE.md (enhanced)'
+    verified: true
   - address: 0x0321dd
     name: mode_phase_apply_core
     system: mode
@@ -9173,8 +9178,14 @@ functions:
   - address: 0x03c1bd
     name: entity_slot_update_loop
     system: farobj
-    doc: 'Main entity update loop (348B). Processes all 16 entity slots per frame at 0x54AF:0x386F (stride 0x5C=92B). Checks active flag at [si+0x0A] bit 0, calls per-entity update functions. Top-level coordinator for entity physics, AI, rendering, collision.'
-    source: 'entity_update_analysis (was: farobj_slot_update_driver)'
+    size: 348
+    doc: |
+      Main entity update loop (348B). Processes all 16 entity slots per frame at 0x54AF:0x386F (stride 0x5C=92B).
+      At entry, initializes cs:word_3B830 from word_2F677 (RFM AI behavior pointer).
+      Checks active flag at [si+0x0A] bit 0, calls per-entity update functions.
+      Top-level coordinator for entity physics, AI, rendering, collision.
+    source: 'RFM_LOADER_COMPLETE_TRACE.md (enhanced)'
+    verified: true
   - address: 0x03c4f2
     name: farobj_slot_project_step
     system: farobj
@@ -9620,15 +9631,27 @@ functions:
   - address: 0x0418ac
     name: farobj_slot_table_load
     system: farobj
-    doc: '336B, in=1 (control_axes_record_store). Mirror of farobj_slot_table_copy (sub_419FC): 16-slot 54AF:386Fh/5Ch walk READING 2Fh+23h bytes from [si+8] and 0C9h from [si+6]+14h out to es:[di]; loads 5...'
-    source: 'old_registry (was: farobj_slot_table_load)'
+    size: 336
+    doc: |
+      Savegame save function (336B). Mirror of farobj_slot_table_copy.
+      Saves 16 entity slots to save buffer: 0x2F + 0x23 bytes from [si+8], 0xC9 bytes from [si+6]+0x14.
+      Also saves cs:word_3B830 (RFM AI behavior pointer) and related RFM globals to save data.
+      Called when saving game state.
+    source: 'RFM_LOADER_COMPLETE_TRACE.md (enhanced)'
+    verified: true
 
   # R12 SYSTEM
   - address: 0x0419fc
     name: farobj_slot_table_copy
     system: farobj
-    doc: '310B, in=1 (event_table_name_fill). 16-slot 54AF:386Fh/5Ch bulk byte copy: 2Fh + 23h bytes at es:[di+8], then 0C9h bytes into es:[di+6]+14h; trailing stores to 55E4Eh/560A2h and 37D9h/0Ah. conf: m...'
-    source: 'old_registry (was: farobj_slot_table_copy)'
+    size: 310
+    doc: |
+      Savegame restore function (310B). Restores 16 entity slots from save buffer.
+      Copies 0x2F + 0x23 bytes at es:[di+8], then 0xC9 bytes at es:[di+6]+0x14.
+      Also restores cs:word_3B830 (RFM AI behavior pointer) and related RFM globals from save data.
+      Called when loading saved game state.
+    source: 'RFM_LOADER_COMPLETE_TRACE.md (enhanced)'
+    verified: true
 
   # FAROBJ SYSTEM
   - address: 0x041b32
@@ -15903,7 +15926,15 @@ functions:
     name: ai_combat_maneuver_selector
     system: ai
     size: 505
-    doc: '505B maneuver selector, 1 caller (ai_state_range_check), 43 comparisons. Selects combat maneuvers based on tactical situation. conf: high'
+    doc: |
+      AI combat maneuver selector (505B). Called by ai_state_range_check.
+      Reads behavior flags from [SI+0Bh] and cs:word_3B830 (RFM AI behavior data pointer).
+      References cs:word_3B830 4 times to index into maneuver parameter tables.
+      Tests behavior flag bits: 0x03 (Ground/Landing), 0x18 (Combat/Special), 0x10 (Special), 0x04 (Cruise).
+      Calculates distance via ai_record_offset_get, indexes RFM data by behavior flags,
+      returns maneuver parameters at [SI+23h] (turn angles, speeds, G-limits).
+    source: 'RFM_LOADER_COMPLETE_TRACE.md (enhanced)'
+    verified: true
     source: 'ai_expansion_2026-11-15 (callee analysis from 40 ai seeds)'
   - address: 0x03e96f
     name: ai_target_priority_evaluator
