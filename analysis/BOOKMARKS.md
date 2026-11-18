@@ -33,6 +33,30 @@
 
 ---
 
+## Runtime Analysis Tasks
+
+### RFM Difficulty Scalar Verification
+**Hypothesis**: cs:word_3B830 is a difficulty scalar, not a pointer  
+**Evidence**: Used as multiplier in AI formulas, 6 DEFBFM files exist  
+**Contradiction**: Manual (Ch. 10) shows 4 enemy pilot skill levels, not 6  
+**Also Check**: SAM and AA difficulty levels (separate from pilot skill?)
+
+**DOSBox Debug Tasks**:
+1. Set breakpoint at 0x3C1C7 (cs:word_3B830 initialization)
+2. Record values for different missions/difficulty settings
+3. Verify if value changes between DEFBFM1-6 files
+4. Test: Manually set cs:word_3B830 to different values, observe AI behavior
+5. Look for separate SAM/AA difficulty scalars
+
+**Files to Reference**:
+- `docs/AI_RFM_DATA_STRUCTURE_DECODED.md` - Indexing pattern analysis
+- `docs/RFM_LOADER_COMPLETE_TRACE.md` - Data flow trace
+- `temp/ai_rfm_usage_analysis.txt` - 21 reference points
+
+**Related Analysis**: Check manual Ch. 10 for exact difficulty level definitions
+
+---
+
 ## Medium Priority
 
 ### 2. squadron_mission_file_loader (0x17B437) - Rank #10
