@@ -9282,12 +9282,15 @@ functions:
     doc: '|'
     source: 'old_registry (was: farobj_altitude_scale_step)'
 
-  - address: 0x03eb4e
+  - address: 0x040784
     name: ai_state_value_dispatcher
     system: ai
-    size: 87
-    doc: 'AI state value dispatcher/checker. Leaf function with 11 comparisons forming state machine or dispatch table. No callees (pure computation). Called by 5 functions.'
-    source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
+    size: 43
+    doc: |
+      State value calculation and conditional dispatch. Averages farobj fields +0x57 and +0x58,
+      passes result to undoc_40DDC for comparison, dispatches to sub_406FD if non-zero.
+      Called by 1 location. Makes 2 calls.
+    source: IDA analysis 2025-01-15 (was 0x3EB4E)
 
   - address: 0x03f3a8
     name: ai_state_calculate_helper
@@ -9339,12 +9342,15 @@ functions:
     doc: 'Accumulates AI entity movement vectors. Calls fixed_vec3_accumulate_a for position delta accumulation. Called by ai_context_batch_processor.'
     source: analysis/sessions/2026-11-15/ai_function_naming_analysis.md
 
-  - address: 0x03e1c2
-    name: ai_state_range_check
+  - address: 0x040708
+    name: ai_entity_distance_with_physics
     system: ai
-    size: 52
-    doc: 'AI state value range checker/validator. Leaf function with 6 comparisons. Array iteration (SI/DI). Called by 7 functions including ai_state_processor_core.'
-    source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
+    size: 124
+    doc: |
+      Distance calculation between two entities with physics integration. Calls flight_physics_integration_engine
+      for both entities, computes delta vector, transforms and scales result (clamped to 100).
+      Called by 2 locations. Makes 5 calls.
+    source: IDA analysis 2025-01-15 (was ai_state_range_check at 0x3E1C2)
 
   - address: 0x03e8c5
     name: ai_farobj_flag_check
@@ -9403,11 +9409,15 @@ functions:
     source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
 
   # AI Final 9 functions (completing AI system, 2026-11-15)
-  - address: 0x0428c1
-    name: ai_field_check_flag
+  - address: 0x0428a1
+    name: ai_state_value_get
     system: ai
-    size: 19
-    doc: 'Checks AI field flag/condition. Tiny leaf function (19B) with 1 comparison. Called by 17 functions. Flag testing helper.'
+    size: 32
+    doc: |
+      Target validation gate (CRITICAL PATH - 34 callers!). LEAF function returns 1 if entity is valid AI target.
+      Checks: entity in valid slot range, not excluded by rfm_related_word_3, behavior flag bit 1 clear.
+      Fast validator with no calls.
+    source: IDA analysis 2025-01-15 (was ai_field_check_flag at 0x428C1)
     source: analysis/sessions/2026-11-15/ai_helpers_naming_recommendations.md
 
   - address: 0x03ded9
@@ -9417,19 +9427,25 @@ functions:
     doc: 'Validates weapon firing conditions. Checks weapon_game_mode (DS:15B3h), entity type 0x16 (friendly aircraft), and friendly fire flags (DS:15B4h). 5 comparisons. Called by ai_state_processor_core and ai_entity_update_step.'
     source: analysis/sessions/2026-11-15/ai_final_9_naming.md
 
-  - address: 0x03f5b4
-    name: ai_field_pair_compare
+  - address: 0x0428d4
+    name: ai_field_pair_compare_debug
     system: ai
-    size: 19
-    doc: 'Compares AI field pair values. Calls ai_field_offset_calc, then compares [si+31h] and [si+32h] with [di]. Returns match status. Called by ai_state_processor_core.'
-    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+    size: 101
+    doc: |
+      Debug function for field comparison with UI output. When global flag DS:byte_7B328+356h bit 6 set,
+      formats AI state string and displays via key_event_gate. Production code likely has flag disabled.
+      Called by 5 locations. Makes 3 calls.
+    source: IDA analysis 2025-01-15 (was ai_field_pair_compare at 0x3F5B4)
 
-  - address: 0x03f700
-    name: ai_rect_ratio_check
+  - address: 0x040c73
+    name: ai_heading_delta_monitor
     system: ai
-    size: 24
-    doc: 'Conditionally updates rectangle ratio. Compares [di+56h] with [si+4Ah], calls ai_rect_ratio_update if condition met. Wrapper function.'
-    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+    size: 54
+    doc: |
+      Monitors heading delta with timer-based event triggering. Computes abs(entity_heading - farobj_heading),
+      if delta > 0x1CC (~25°) and timer expired, triggers sub_41D23 event and resets timer to 0x1E0 (480 frames).
+      Called by 1 location. Makes 1 call.
+    source: IDA analysis 2025-01-15 (was ai_rect_ratio_check at 0x3F700)
 
   - address: 0x03f788
     name: ai_rect_ratio_update
@@ -9438,12 +9454,25 @@ functions:
     doc: 'Updates rectangle ratio for AI entity. Gets heading from [bx+0Ch], calls farobj_rect_ratio_build with SI=241h, stores result to [si+1Fh]. For rendering/HUD calculations.'
     source: analysis/sessions/2026-11-15/ai_final_9_naming.md
 
-  - address: 0x0408e7
-    name: ai_distance_range_check
+  - address: 0x040bf8
+    name: ai_formation_position_gate
     system: ai
-    size: 24
-    doc: 'Checks distance range threshold. Calls sub_40DC5, compares DX:AX against 0x7D0 (2000 decimal). Called by ai_state_processor_core and weapon_spawn_gate_validate.'
-    source: analysis/sessions/2026-11-15/ai_final_9_naming.md
+    size: 21
+    doc: |
+      Formation position check gate. Calls entity_record_table_ops and ai_formation_position_calc,
+      sets ai_heading_correction_calc bit 3 if both return zero. Simple gate function.
+      Called by 1 location. Makes 2 calls.
+    source: IDA analysis 2025-01-15 (was ai_distance_range_check at 0x408E7)
+
+  - address: 0x040cc5
+    name: ai_range_threshold_evaluator
+    system: ai
+    size: 80
+    doc: |
+      Range-based state evaluation with dynamic thresholds. Clears state_flags lower byte, calls undoc_40DDC,
+      checks range against 0x3A98 (15K max), adjusts thresholds based on state (0x19C8/0x120C default, 0x120C/0x990 for state 3).
+      Called by 1 location. Makes 2 calls.
+    source: IDA analysis 2025-01-15 (was ai_rect_ratio_update at 0x3F788)
 
   - address: 0x040c6a
     name: ai_angle_from_offset
@@ -15948,8 +15977,12 @@ functions:
     name: ai_behavior_decision_tree
     system: ai
     size: 814
-    doc: '814B massive decision tree, 2 callers (ai_state_value_dispatcher), 87 comparisons. Core AI behavior decision engine. conf: high'
-    source: 'ai_expansion_2026-11-15 (callee analysis from 40 ai seeds)'
+    doc: |
+      Complex behavior state decision tree (814B, 2 callers, 87 comparisons, 15 calls).
+      Checks farobj combat status fields (+0xB4-0xBC) and sets behavior state code (cs:byte_3D41A = 4-12).
+      States: 4=bomber, 6=cruise, 7-8=combat, 9=defensive, 10-11=target/weapons, 12=special.
+      Also sets range thresholds (cs:word_3E346) and behavior parameters.
+    source: IDA analysis 2025-01-15 (enhanced)
   - address: 0x03e2d3
     name: ai_combat_maneuver_selector
     system: ai

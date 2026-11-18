@@ -114,6 +114,81 @@ globals:
       Related to RFM system, accessed alongside word_2F677. Possibly RFM file size or status flag.
     source: rfm_init_analysis.txt
   
+  - address: 0x15B3
+    segment: DS
+    name: global_ground_attack_mode
+    size: 1
+    type: byte
+    doc: |
+      Global flag enabling bomber/ground attack AI behavior. Checked by ai_behavior_decision_tree
+      alongside entity behavior flags to trigger special bomber mode (behavior state 4).
+    source: IDA analysis 2025-01-15, ai_behavior_decision_tree @ 0x3EBA5
+  
+  - address: 0x3D41A
+    segment: CS
+    name: behavior_state_code
+    size: 1
+    type: byte
+    doc: |
+      Current AI behavior state code set by ai_behavior_decision_tree. Values: 4=bomber, 6=cruise,
+      7=combat initiated, 8=combat engaged, 9=defensive, 10=target acquired, 11=weapons free, 12=special.
+    source: IDA analysis 2025-01-15
+  
+  - address: 0x3D41B
+    segment: CS
+    name: behavior_sub_param
+    size: 1
+    type: byte
+    doc: |
+      Sub-behavior parameter set alongside behavior_state_code. Varies by state (0x00-0xA7).
+    source: IDA analysis 2025-01-15
+  
+  - address: 0x3E346
+    segment: CS
+    name: range_threshold_1
+    size: 2
+    type: word
+    doc: |
+      Primary engagement range threshold. Set to 0x19C8 (6,600) for cruise/defensive, 0x4D58 (19,800) for combat.
+    source: IDA analysis 2025-01-15
+  
+  - address: 0x3E348
+    segment: CS
+    name: range_threshold_2
+    size: 2
+    type: word
+    doc: |
+      Secondary engagement range threshold. Set by ai_behavior_decision_tree for specific maneuvers.
+    source: IDA analysis 2025-01-15
+  
+  - address: 0x3E34A
+    segment: CS
+    name: behavior_angle_param
+    size: 2
+    type: word
+    doc: |
+      Angle parameter for behavior maneuvers. Set by ai_behavior_decision_tree (values like 0x2E, 0x8A).
+    source: IDA analysis 2025-01-15
+  
+  - address: 0x3E34C
+    segment: CS
+    name: behavior_timer
+    size: 1
+    type: byte
+    doc: |
+      Countdown timer for behavior state transitions. Set by ai_behavior_decision_tree.
+    source: IDA analysis 2025-01-15
+  
+  - address: 0x40C68
+    segment: CS
+    name: heading_delta_timer
+    size: 2
+    type: word
+    doc: |
+      Timer for heading delta monitoring (ai_heading_delta_monitor). Reset to 0x1E0 (480 frames) when
+      heading delta exceeds 25°. Used to throttle event triggering.
+    source: IDA analysis 2025-01-15
+  
   # ===========================================================================
   # HUD / VIEW SYSTEM
   # ===========================================================================
