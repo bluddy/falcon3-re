@@ -351,6 +351,34 @@ globals:
       Compared with value 2 for special case handling.
     source: TARGET_SYSTEM_FINDINGS.md
   
+  - address: 0x55E50
+    name: entity_slot_index_base
+    size: 2
+    type: word
+    doc: |
+      Base index for entity slot array calculations. Used by r12_farptr_load_thunk @ 0x41B32.
+      Subtracted from slot index before multiplication by stride (0x5C=92 bytes).
+      Formula: byte_offset = (index - entity_slot_index_base) * 0x5C
+    source: 'IMPACT_DETECTION_BREAKTHROUGH.md'
+  
+  - address: 0x1356
+    name: weapon_damage_scale
+    size: 2
+    type: word
+    doc: |
+      Damage scale multiplier used in impact calculation by store_impact_step @ 0x39889.
+      Multiplied with weapon field [si+14h], then shifted and stored back.
+    source: 'IMPACT_DETECTION_BREAKTHROUGH.md'
+  
+  - address: 0x1360
+    name: entity_table_base_offset
+    size: 2
+    type: word
+    doc: |
+      Entity table base offset for index validation in store_impact_step @ 0x3980A.
+      Subtracted from target_slot_index before calling entity_record_table_ops.
+    source: 'IMPACT_DETECTION_BREAKTHROUGH.md'
+  
   # IR Lock System (AIM-9 Sidewinder)
   
   - address: 0x44AA
