@@ -122,12 +122,12 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                     v_off = vo + vi * 6
                     if v_off + 6 <= len(obj_bytes):
                         x, y, z = struct.unpack_from('<hhh', obj_bytes, v_off)
-                        # Fix F-16 nozzle vertices (historical 1991 truncation in OBJECTS Chunk 3: 0x008c -> 0xff8c)
+                        # Fix F-16 nozzle & collar vertices (historical 1991 truncation & alignment in OBJECTS Chunk 3)
                         if 'F16' in name and lod_idx == 0:
-                            if vi == 48:
-                                x = -116 # Fix 0x008c (+140) -> 0xff8c (-116), matching FSX
-                            elif vi in (69, 72):
-                                x = -115 # Align lower nozzle rim to exhaust plane
+                            if vi in (48, 49, 50, 51, 52, 69, 72):
+                                x = -115 # Exhaust nozzle rim plane (v48 was 0x008c -> 0xff8c -116 in FSX)
+                            elif vi in (4, 5, 30, 31, 32, 68, 71):
+                                x = -80  # Afterburner collar base plane (v71 was 0x00b4 -> 0xffb4 -76, v4 was 0 -> -80)
                         # Aviation NED to OpenGL 3D:
                         verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
 
