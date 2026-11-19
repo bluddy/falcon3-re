@@ -1,0 +1,568 @@
+{
+  "version": 1,
+  "date": "2026-10-14",
+  "snapshot": "analysis/ida_falconcd/FALCONCD.EXE.i64",
+  "toolchain": "Borland C++ 2.0 for C modules (byte-proven, finding 22) + hand-written ASM, far/large model, RTLink/Plus linker; compression UNKNOWN (PKWARE DCL linked \u2014 hypothesis only, finding 31)",
+  "certainty": "STRONG",
+  "memory_model": {
+    "type": "far/large",
+    "description": "CS/DS/ES/SS can differ; overlays load at runtime paragraphs relative to load base; DS remapped freely; EMS/XMS used"
+  },
+  "load_base": {
+    "paragraph": 4096,
+    "linear": 65536,
+    "description": "IDA places MZ image at 0x10000 (para 0x1000); DOS loads at variable PSP-relative paragraph"
+  },
+  "resident_image": {
+    "range": "0x10000 - 0x2CF51",
+    "size_bytes": 118609,
+    "segments": 23,
+    "functions": 815,
+    "key_addresses": {
+      "entry": "0x2B19C (0x1AA3:0x076C)",
+      "thunk_table": "0x2BAFF (0x1AA3:0x157F)",
+      "overlay_dir": "0x2E24F (0x1AA3:0x0C1F) - 70 entries x 18 bytes",
+      "overlay_loader": "0x2DBC0 (0x1AA3:0x0590)"
+    }
+  },
+  "overlay_segments": [
+    {
+      "para": 11510,
+      "name": "OVL_1CF6",
+      "linear": "0x2CF60-0x2EF16",
+      "size": 202,
+      "records": 4,
+      "notes": "Core overlay stubs"
+    },
+    {
+      "para": 11792,
+      "name": "OVL_1E10",
+      "linear": "0x303A5-0x3A00B",
+      "size": 40038,
+      "records": 4,
+      "notes": "Large, likely graphics/sim"
+    },
+    {
+      "para": 22175,
+      "name": "OVL_569F",
+      "linear": "0x66A5D-0x686F0",
+      "size": 7315,
+      "records": 39,
+      "notes": "64 KB span, 39 records sparse"
+    },
+    {
+      "para": 23769,
+      "name": "OVL_5CD9",
+      "linear": "0x73271-0x734DA",
+      "size": 617,
+      "records": 3,
+      "notes": "Small"
+    },
+    {
+      "para": 24063,
+      "name": "OVL_5DFF_a",
+      "linear": "0x74742-0x74C2C",
+      "size": 1258,
+      "records": 6,
+      "notes": "Group C=5"
+    },
+    {
+      "para": 24075,
+      "name": "OVL_5E0B",
+      "linear": "0x74C2C-0x7505F",
+      "size": 1075,
+      "records": 2,
+      "notes": "Group C=0xD"
+    },
+    {
+      "para": 24063,
+      "name": "OVL_5DFF_b",
+      "linear": "0x7505F-0x75074",
+      "size": 21,
+      "records": 1,
+      "notes": "Group C=0xFFFF duplicate para"
+    },
+    {
+      "para": 24207,
+      "name": "OVL_5E8F",
+      "linear": "0x75998-0x75C58",
+      "size": 704,
+      "records": 2,
+      "notes": "Group C=0x10"
+    },
+    {
+      "para": 24428,
+      "name": "OVL_5F6C",
+      "linear": "0x76A70-0x76C55",
+      "size": 485,
+      "records": 8,
+      "notes": "Group C=0x12"
+    },
+    {
+      "para": 24686,
+      "name": "OVL_606E",
+      "linear": "0x741A0-0x74742",
+      "size": 1442,
+      "records": 1,
+      "notes": "Group C=0xFFFF"
+    }
+  ],
+  "thunk_table": {
+    "base": "0x1AA3:0x157F",
+    "entry_size": 10,
+    "format": "E8 disp16 (call loader) + EA off seg (ljmp) + word record_id",
+    "loader_addr": "0x1DBBD (0x1AA3:0x058D)",
+    "total_entries": 86,
+    "summary": {
+      "id=1": "1 thunk, NO DIR, ljmp 1d31:000a (startup)",
+      "id=2": "2 thunks, dir seg=1cf6 A=0 C=ffff, ljmp 1cf6:04bf, 1cf6:0d01",
+      "id=4": "2 thunks, dir seg=1cf6 A=282, ljmp 1cf6:000a, 1cf6:002b",
+      "id=5": "6 thunks, dir seg=1cf6 A=277, ljmp 1efe:0205/020c/0000 + 2ab9/2acf/2b83",
+      "id=6": "4 thunks, dir seg=1cf6 A=59, ljmp 5cd9:001e/00aa/0a1f/0339",
+      "id=7": "12 thunks, dir seg=1e10 A=16073, ljmp 5cd9:xxxx (12 targets)",
+      "id=8": "8 thunks, dir seg=5cd9 A=294, ljmp 5cd9:xxxx (8 targets)",
+      "id=9": "1 thunk, dir seg=5cd9 A=174, ljmp 5dff:003a",
+      "id=10": "1 thunk, dir seg=5cd9 A=117, ljmp 5dff:00d6",
+      "id=12": "30 thunks, dir seg=5dff A=53, ljmp 5dff:xxxx (30 targets, dispatch table)",
+      "id=14": "2 thunks, dir seg=5dff A=382, ljmp 5e0b:xxxx",
+      "id=15": "4 thunks, dir seg=5dff A=12, ljmp 5e0b:xxxx",
+      "id=17": "1 thunk, dir seg=5e0b A=611 C=0xD, ljmp 5e8f:0000",
+      "id=18": "1 thunk, dir seg=5dff A=144, ljmp 5e8f:0000",
+      "id=19": "1 thunk, dir seg=5e8f A=368, ljmp 5f6c:0000",
+      "id=20": "1 thunk, dir seg=5e8f A=221, ljmp 5f6c:0000",
+      "id=21-27": "7 thunks, dir seg=5f6c A=39-62 C=0x12, ljmp 5f6c:0000",
+      "id=28": "2 thunks, dir seg=5f6c A=39, ljmp 1e10:0280, 1f86:9577",
+      "id=29": "1 thunk, dir seg=1e10 A=1204, ljmp 3f70:0092",
+      "id=30": "2 thunks, dir seg=1e10 A=2792, ljmp 569f:49da, 569f:4a92",
+      "id=31": "1 thunk, dir seg=1e10 A=14479, ljmp 569f:0737",
+      "id=32": "2 thunks, dir seg=569f A=1932, ljmp 569f:0795, 569f:211e",
+      "id=43": "1 thunk, dir seg=569f A=449, ljmp 569f:0015",
+      "id=44": "1 thunk, dir seg=569f A=0, ljmp 569f:0000",
+      "id=45": "1 thunk, dir seg=569f A=61, ljmp 569f:0000",
+      "id=53": "2 thunks, dir seg=569f A=750, ljmp 5cb6:xxxx",
+      "id=56": "1 thunk, dir seg=569f A=410, ljmp 569f:0000",
+      "id=58": "2 thunks, dir seg=569f A=834, ljmp 569f:3be2, 569f:3b29"
+    }
+  },
+  "rtlink_directory_18byte": {
+    "file_offset": 123471,
+    "entry_count": 70,
+    "struct": {
+      "seg": "uint16",
+      "const_12ED": "uint16",
+      "tail_off": "uint32",
+      "const_400": "uint16",
+      "A": "uint16",
+      "B": "uint16",
+      "C": "uint16",
+      "id": "uint16",
+      "A2": "uint16"
+    }
+  },
+  "tail_4byte_dir": {
+    "file_offset": 129889,
+    "entry_count": 51,
+    "format": "uint16 off, uint16 seg",
+    "segs": [
+      7414,
+      7437,
+      7473
+    ],
+    "notes": "Initial overlay load list for core segments"
+  },
+  "compression": {
+    "certainty": "UNKNOWN",
+    "library_linked": "PKWARE Data Compression Library 1.11 (Patent 5,051,745) \u2014 strings present in EXE (PROVEN the library is linked)",
+    "format_of_tail": "UNKNOWN \u2014 0 x PK\u0003\u0004 signatures in FALCONCD.EXE (finding 31); previous 'signatures_in_tail' offsets contained ordinary code bytes and have been removed; no decompression routine confirmed or exercised; nothing ever decompressed by this project",
+    "hypothesis": "tail/assets may use PKWARE DCL implode (based solely on the linked library + advice.md prior)",
+    "suggested_tests": [
+      "carve tail blobs and run through blast (zlib/contrib/blast)",
+      "dump decompressed buffers from RAM (see advice.md \u00a72/\u00a74, docs/memdump.md)"
+    ],
+    "assets_likely": [
+      "ARMSDATA\\ARMSTABL.DAT",
+      "ARMSDATA\\ARMSmmaa.DAT"
+    ]
+  },
+  "strings_notable": {
+    "overlay_errors": [
+      "Cannot find overlay file \"",
+      "Open error on overlay file \"",
+      "Read error on overlay file \"",
+      "Commit error - section ",
+      "H intersects committed section ",
+      "Vector at xxxx:xxxx is corrupted.",
+      "Overlay Manager Internal Reload Stack Overflow",
+      "Overlay Manager Internal Reload Stack Underflow"
+    ],
+    "fatal": "Internal error in .RTLink(R)/Plus run-time code.",
+    "joystick_calib": [
+      "MOVE THROTTLE ALL THE WAY FORWARD AND BACK",
+      "MOVE RUDDER ALL THE WAY RIGHT AND THEN LEFT",
+      "SEPARATE THROTTLE CONTROL ... ACTIVATE IT , Y/N?",
+      "SEPARATE RUDDER CONTROL ... ACTIVATE IT , Y/N?"
+    ]
+  },
+  "crt_evidence": {
+    "msc6_signature_B430CD21": false,
+    "msc_error_strings": false,
+    "borland_strings": false,
+    "custom_startup": true,
+    "notes": "No standard CRT linked; likely custom asm startup + C modules"
+  },
+  "compiler_hypothesis": {
+    "likely": [
+      "Microsoft C 5.1",
+      "Borland C++ 2.0/3.0",
+      "Watcom C 9.0/10.0"
+    ],
+    "ruled_out": [
+      "Microsoft C 6.0",
+      "Borland C++ 4.x"
+    ],
+    "evidence": "Far model, 55 8B EC prologues, retf, caller cleanup ADD SP, large hand-ASM portions"
+  },
+  "variants": {
+    "HORNETCD.EXE": {
+      "cs_ip": "0x1A99:0x076C",
+      "size": 1412635,
+      "notes": "Same structure, different assets"
+    },
+    "MIGCD.EXE": {
+      "cs_ip": "0x1A4E:0x076C",
+      "size": 1369383,
+      "notes": "Same structure, different assets"
+    },
+    "RESETALL.EXE": {
+      "compiler": "Borland C++ 1991",
+      "size": 7433,
+      "notes": "Separate utility"
+    }
+  },
+  "ems_xms": {
+    "ems_int": 103,
+    "xms_multiplex": 47,
+    "notes": "Used for extended memory; overlay manager may swap via EMS"
+  },
+  "known_data_structs": [
+    {
+      "name": "OverlayDirEntry",
+      "source": "18-byte dir at 0x1AA3:0x0C1F"
+    },
+    {
+      "name": "ThunkEntry",
+      "source": "Thunk table at 0x1AA3:0x157F"
+    },
+    {
+      "name": "RTLinkRecord",
+      "source": "Tail records at tail_off + header + data + fixups"
+    },
+    {
+      "name": "SimState",
+      "source": "Memory dumps (MEMDUMP_sim.BIN)"
+    },
+    {
+      "name": "MissionState",
+      "source": "Memory dumps (MEMDUMP_mission.BIN)"
+    },
+    {
+      "name": "MenuState",
+      "source": "Memory dumps (MEMDUMP_menu.BIN)"
+    },
+    {
+      "name": "CockpitState",
+      "source": "cockpit_*.BIN dumps"
+    }
+  ],
+  "game_modes": [
+    {
+      "name": "Instant Action",
+      "description": "Novice mode, unlimited fuel/weapons/time, endless waves of enemies",
+      "scoring": "Based on air/ground kills, weapon accuracy, multiplied by realism setting",
+      "data_files": [
+        "TOPTEN (high scores)"
+      ]
+    },
+    {
+      "name": "Red Flag / Mission Editor",
+      "description": "Training ground + scenario editor at Nellis AFB, Nevada",
+      "features": [
+        "Mission files (save/load/delete, max 8-char names)",
+        "Nellis Command: aircraft/ground placement, waypoints, formations",
+        "Aircraft types: max 6 types per mission (excl. F-16), 4 flights/side",
+        "Waypoints: up to 8 per flight, with altitude (0-70000 ft AGL), speed (160-1350 kts), action",
+        "Actions: ESCORT, INTERCEPT, BOMB, LAND, etc.",
+        "Formations: V STACK, H STACK, C STACK, LADDER, WEDGE, VIC, ECHELON",
+        "Map views: Tactical (Tact 1-3) and Strategic (Strat 1-3)",
+        "Zoom: 1x to 999x with 3D perspective"
+      ],
+      "data_files": [
+        "*.mis mission files"
+      ]
+    },
+    {
+      "name": "Campaign",
+      "description": "Core mode - squadron commander in 3 theaters (Israel, Kuwait, Panama)",
+      "theaters": [
+        "Kuwait",
+        "Israel",
+        "Panama"
+      ],
+      "structure": [
+        "30 pilots per squadron, 18 F-16s initially",
+        "4 missions/day, pilot fatigue management",
+        "Supply convoys (C-130) can be intercepted",
+        "Air Tasking Orders (ATO) from Central Command",
+        "Victory conditions set by White House per theater"
+      ],
+      "phases": [
+        "Campaign Information (date, time, weather)",
+        "Mission Planning (route, pilots, weapons)",
+        "Flying Mission (lead F-16 #1 of Flight #1)",
+        "Debriefing (stats, medals, records)"
+      ],
+      "pilot_abilities": [
+        "Dogfighting",
+        "Bombing Accuracy",
+        "Flying Ability",
+        "Fatigue"
+      ],
+      "pilot_status": [
+        "Active",
+        "MIA",
+        "KIA",
+        "Back in X days"
+      ],
+      "enemy_categories": {
+        "air": [
+          "Class A Fighters (Su-27, MiG-29, Mirage F1)",
+          "Class B Fighters (MiG-21, MiG-23, Mirage III)",
+          "Striker/Bombers (Tu-22, Su-24)",
+          "Close Air/Attack (Su-25, Tornado)",
+          "Helicopters (Mi-24, SA 342)",
+          "Transports/AWACS (IL-76, AN-12)"
+        ],
+        "ground": [
+          "Class A (bunkers, SAM sites)",
+          "Class B (runways, bridges)",
+          "Class C (buildings, tanks)",
+          "Class D (infantry, jeeps, trucks)"
+        ]
+      },
+      "data_files": [
+        "Campaign state, squadron records, pilot logs"
+      ]
+    },
+    {
+      "name": "Air Combat School",
+      "description": "10 lessons + 2 reviews in Red Flag, teaches F-16 systems",
+      "lessons": [
+        "1: Takeoff and Flight",
+        "2: HUD and G Forces",
+        "3: View Manipulation",
+        "4: Landing (ILS, AOA)",
+        "Review 1: Takeoff-Landing",
+        "5: Weapons Selection + SAM Radar",
+        "6: Air-to-Air Weapons Delivery",
+        "7: Air-to-Ground Weapons Delivery",
+        "8: Padlock View",
+        "Review 2: Full A-A/A-G mission"
+      ],
+      "requirement": "Intermediate skill level"
+    },
+    {
+      "name": "ACMI",
+      "description": "Air Combat Maneuvering Instrumentation - replay/analysis",
+      "requirement": "EMS memory (1 MB EMS = ~20 min replay)",
+      "modes": [
+        "Replay (VCR-like)",
+        "ACMI (3D wireframe tactical)"
+      ],
+      "avtr": "Airborne Video Tape Recorder - Ctrl+R to record, Ctrl+S to save",
+      "features": [
+        "Index markers (Ctrl+R off creates index)",
+        "Load/Save tapes (L/S/W/Z/u/y/q/t keys)",
+        "Counter, Timer, Index No, Total, Tape Scale, Replay %",
+        "Views: 9 standard + Independent (WASD + U/Y)",
+        "ACMI options: Trails, altitude/speed/heading lines"
+      ],
+      "data_files": [
+        "Replay tapes (*.tap?)"
+      ]
+    },
+    {
+      "name": "Communications (Head-to-Head)",
+      "description": "Modem, network (IPX/NetWare), or null-modem serial",
+      "modes": [
+        "Duel (free-for-all)",
+        "Head-to-Head Campaign"
+      ],
+      "setup": "Caller invites players in order, configures connection",
+      "requirements": "Network drivers loaded high for NetWare"
+    }
+  ],
+  "weapons_systems": {
+    "air_to_air": [
+      "AIM-9P/M Sidewinder (SRM HUD mode)",
+      "AIM-120 AMRAAM (MRM HUD mode)",
+      "M61A1 20mm Gun (DGFT HUD mode, funnel sight)"
+    ],
+    "air_to_ground": [
+      "AGM-65B/D Maverick (cross hairs lock-on)",
+      "GBU-15 (cross hairs lock-on)",
+      "LAU rockets (bombsight)",
+      "Mk-82/84 iron bombs (CCIP - designate + auto release)",
+      "CBU cluster bombs (bombsight)"
+    ],
+    "hud_modes": [
+      "SRM: Short Range Missile (AIM-9)",
+      "MRM: Medium Range Missile (AIM-120)",
+      "DGFT: Dogfight (Gun)",
+      "CCIP: Continuously Computed Impact Point",
+      "ILS: Instrument Landing System",
+      "STRF: Strafe",
+      "SAM: Situation Awareness Mode (radar)"
+    ]
+  },
+  "avionics": {
+    "hud": {
+      "elements": [
+        "Center Point / Aiming Reticle / Pitch Ladder",
+        "Heading + Waypoint Caret (>xxx<)",
+        "Range / Closure Rate / Waypoint Dist / AGL Alt",
+        "MSL Alt (right) / G-force (top-left) / Airspeed (left)",
+        "Mach / Armament count + HUD mode code (e.g., SRM, MRM)"
+      ]
+    },
+    "reo": {
+      "modes": [
+        "Air-to-Air: SAD (Situation Awareness Display), waterline, target altitude/heading/airspeed/aspect/closure",
+        "Air-to-Ground: Maverick/GBU sensor video with cross hairs"
+      ]
+    },
+    "threat_warning": [
+      "RWR: diamonds=aircraft, large squares=SAM, small squares=AAM",
+      "LCK light (radar lock), LNH light (missile launch)"
+    ],
+    "ded": [
+      "Data Entry Display for navigation/weapon programming"
+    ]
+  },
+  "aircraft_flyable": [
+    "F-16A Fighting Falcon (primary)"
+  ],
+  "enemy_aircraft": [
+    "MiG-29 Fulcrum (Class A)",
+    "Su-27 Flanker (Class A)",
+    "Mirage F1 (Class A)",
+    "MiG-21 Fishbed (Class B)",
+    "MiG-23 Flogger (Class B)",
+    "Mirage III (Class B)",
+    "Su-24 Fencer (Striker/Bomber)",
+    "Tu-22 Blinder (Striker/Bomber)",
+    "Su-25 Frogfoot (Close Air/Attack)",
+    "Tornado (Close Air/Attack)",
+    "Mi-24 Hind (Helo)",
+    "SA 342 Gazelle (Helo)",
+    "IL-76 Candid (Transport)",
+    "AN-12 Cub (Transport)"
+  ],
+  "file_formats_mentioned": [
+    {
+      "name": "TOPTEN",
+      "description": "Instant Action high scores"
+    },
+    {
+      "name": "*.mis",
+      "description": "Red Flag mission files (max 8 chars)"
+    },
+    {
+      "name": "Replay tapes",
+      "description": "ACMI recordings, saved from EMS to disk"
+    },
+    {
+      "name": "Campaign state",
+      "description": "Squadron records, pilot logs, theater progress"
+    },
+    {
+      "name": "DISPLAY.DAT",
+      "description": "Graphics assets (mentioned in manual; file NOT present in game/ install; compression UNKNOWN)",
+      "certainty": "HYPOTHESIS"
+    },
+    {
+      "name": "ARMSDATA\\ARMSTABL.DAT",
+      "description": "Weapons data table"
+    },
+    {
+      "name": "ARMSDATA\\ARMSmmaa.DAT",
+      "description": "Weapon variant data"
+    }
+  ],
+  "configuration_options": [
+    "Skill Level: Novice/Intermediate/Veteran/Ace",
+    "Enemy Logic Level",
+    "Realism settings (affects scoring)",
+    "Redout/Blackout (G-force effects)",
+    "Altitude Data in EMS",
+    "Object Data in EMS",
+    "Sound card: Ad Lib, Sound Blaster, Roland MT-32, LAPC-1",
+    "Joystick: CH FlightStick Pro, ThrustMaster FCS/WCS, rudder pedals"
+  ],
+  "keyboard_controls": {
+    "flight": {
+      "stick": "Arrow keys or numpad (8/2/4/6)",
+      "throttle": "+ / -",
+      "afterburner": "/ to engage, < > to scale stages",
+      "weapons_select": "e (A-A), B (A-G)",
+      "fire": "z",
+      "chaff": "Ins (numpad 0)",
+      "flares": "Del (numpad .)"
+    },
+    "views": {
+      "front": "1 / j / numpad 1",
+      "left": "4 / h / numpad 7",
+      "right": "6 / u / numpad 9",
+      "rear": "5 / y / numpad 3",
+      "satellite": "1 / numpad 1",
+      "ground": "2 / numpad 2",
+      "wingman": "7",
+      "track": "9",
+      "chase": "0",
+      "padlock": "1 (numpad /)"
+    },
+    "views_zoom_rotate": "1/2 zoom, 3/4 rotate (in external views)",
+    "acmi": {
+      "load": "L",
+      "save": "S",
+      "play": "V",
+      "stop": "B",
+      "frame": "N",
+      "ff": "M",
+      "prev_index": "<",
+      "next_index": ">",
+      "counter_reset": "C",
+      "mode_toggle": "t",
+      "view_cycle": "up/down arrows",
+      "independent_move": "WASD + U/Y"
+    },
+    "radar_target": "T",
+    "pause": "P",
+    "menu": "q"
+  },
+  "campaign_structure": {
+    "days": "Continuous, 4 missions/day",
+    "supply": "Periodic C-130 convoys (escort mission)",
+    "replacement_pilots": "Arrive periodically",
+    "victory": "Theater-specific objectives from War Update",
+    "loss": "Squadron destroyed or objectives failed",
+    "carryover": "Squadron persists across theaters"
+  },
+  "squadron_management": {
+    "max_pilots": 30,
+    "initial_f16s": 18,
+    "pilot_transfer": "Between squadrons via Pilot Transfer screen",
+    "comms_pilot": "Select pilot for head-to-head play",
+    "sierra_hotel": "Top pilots list by recognition",
+    "records": "Squadron totals (missions, sorties, kills, targets, active/kia/mia)"
+  }
+}

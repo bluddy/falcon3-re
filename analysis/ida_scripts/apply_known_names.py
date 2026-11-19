@@ -59,29 +59,27 @@ def parse_simple_yaml(yaml_path):
     
     return {'functions': functions}
 
-def load_functions_from_yaml():
-    """Load functions from YAML registry."""
-    yaml_path = Path(__file__).parent.parent.parent / "registry" / "functions.yaml"
+def load_functions_from_registry():
+    """Load functions from JSON registry (fallback to YAML)."""
+    base_dir = Path(__file__).resolve().parent.parent.parent / "registry"
+    json_path = base_dir / "functions.json"
+    yaml_path = base_dir / "functions.yaml"
     
-    if not yaml_path.exists():
-        print(f"ERROR: {yaml_path} not found!")
-        return {}
+    if json_path.exists():
+        with open(json_path, 'r', encoding='utf-8') as f:
+            raw_funcs = json.load(f)
+        functions = {func['address']: func['name'] for func in raw_funcs if 'address' in func and 'name' in func}
+        print(f"Loaded {len(functions)} functions from {json_path}")
+        return functions, {'functions': raw_funcs}
     
-    data = parse_simple_yaml(yaml_path)
-    
-    if not data or 'functions' not in data:
-        print(f"ERROR: No functions found in {yaml_path}")
-        return {}
-    
-    # Convert to simple dict: address -> name
-    functions = {}
-    for func in data['functions']:
-        addr = func['address']
-        name = func['name']
-        functions[addr] = name
-    
-    print(f"Loaded {len(functions)} functions from {yaml_path}")
-    return functions, data
+    if yaml_path.exists():
+        data = parse_simple_yaml(yaml_path)
+        functions = {func['address']: func['name'] for func in data.get('functions', []) if 'address' in func and 'name' in func}
+        print(f"Loaded {len(functions)} functions from {yaml_path}")
+        return functions, data
+        
+    print(f"ERROR: Neither {json_path} nor {yaml_path} found!")
+    return {}, {}
 
 # Known data structures and globals
 KNOWN_DATA = {
@@ -189,22 +187,26 @@ def apply_function_names(functions):
     
     return renamed_count, skipped_count, failed_count
 
-def load_globals_from_yaml():
-    """Load global variables from YAML registry."""
-    yaml_path = Path(__file__).parent.parent.parent / "registry" / "globals.yaml"
+def load_globals_from_registry():
+    """Load global variables from JSON registry (fallback to YAML)."""
+    base_dir = Path(__file__).resolve().parent.parent.parent / "registry"
+    json_path = base_dir / "globals.json"
+    yaml_path = base_dir / "globals.yaml"
     
-    if not yaml_path.exists():
-        print(f"WARNING: {yaml_path} not found, skipping globals")
-        return {}
-    
-    data = parse_simple_yaml(yaml_path)
-    
-    if not data or 'globals' not in data:
-        print(f"WARNING: No globals found in {yaml_path}")
-        return {}
-    
-    print(f"Loaded {len(data['globals'])} globals from {yaml_path}")
-    return data['globals']
+    if json_path.exists():
+        with open(json_path, 'r', encoding='utf-8') as f:
+            globs = json.load(f)
+        print(f"Loaded {len(globs)} globals from {json_path}")
+        return globs
+        
+    if yaml_path.exists():
+        data = parse_simple_yaml(yaml_path)
+        globs = data.get('globals', [])
+        print(f"Loaded {len(globs)} globals from {yaml_path}")
+        return globs
+        
+    print(f"WARNING: Neither {json_path} nor {yaml_path} found, skipping globals")
+    return []
 
 def apply_data_names(globals_list):
     """Name global variable locations in IDA."""
@@ -235,14 +237,19 @@ def apply_data_names(globals_list):
         elif segment == 'DS':
             # Data segment - most common
             ea = address
-        elif segment:
+        elif segment and str(segment).lower() not in ['code', 'data', 'cs', 'ds']:
             # Specific segment given (e.g., 0x7894)
             # Calculate linear address: segment * 16 + offset
-            if isinstance(segment, str) and segment.startswith('0x'):
-                seg_val = int(segment, 16)
-            else:
-                seg_val = int(segment) if isinstance(segment, int) else int(segment, 16)
-            ea = (seg_val << 4) + address
+            try:
+                if isinstance(segment, str) and segment.startswith('0x'):
+                    seg_val = int(segment, 16)
+                elif isinstance(segment, int):
+                    seg_val = segment
+                else:
+                    seg_val = int(str(segment), 16)
+                ea = (seg_val << 4) + address
+            except ValueError:
+                ea = address
         else:
             # No segment specified, assume DS-relative
             ea = address
@@ -388,21 +395,21 @@ def main():
     idaapi.auto_wait()
     print("Auto-analysis complete")
     
-    # Load functions from YAML
-    functions, yaml_data = load_functions_from_yaml()
+    # Load functions from registry
+    functions, registry_data = load_functions_from_registry()
     if not functions:
-        print("ERROR: No functions loaded from YAML. Exiting.")
+        print("ERROR: No functions loaded from registry. Exiting.")
         idc.qexit(1)
         return
     
-    # Load globals from YAML
-    globals_list = load_globals_from_yaml()
+    # Load globals from registry
+    globals_list = load_globals_from_registry()
     
     # Apply function names
     renamed, skipped, failed = apply_function_names(functions)
     
-    # Add comments from YAML
-    comments_added = add_comments(functions, yaml_data)
+    # Add comments from registry
+    comments_added = add_comments(functions, registry_data)
     
     # Apply global variable names
     data_renamed, data_skipped, data_failed = apply_data_names(globals_list)
@@ -428,5 +435,12 @@ def main():
     # Exit cleanly
     idc.qexit(0)
 
-if __name__ == "__main__":
+try:
     main()
+except Exception as e:
+    import traceback
+    err_path = Path(__file__).resolve().parent / "apply_known_names_error.log"
+    with open(err_path, "w", encoding="utf-8") as f:
+        f.write(traceback.format_exc())
+    print(f"ERROR: {e}")
+    idc.qexit(1)

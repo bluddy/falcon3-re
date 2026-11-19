@@ -1,5 +1,1563 @@
 [
   {
+    "name": "MZHeader",
+    "size": 28,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7MZ Header",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "magic",
+        "type": "uint16",
+        "comment": "'MZ'"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "last_page",
+        "type": "uint16"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "pages",
+        "type": "uint16"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "nreloc",
+        "type": "uint16",
+        "comment": 2717
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "hdr_paras",
+        "type": "uint16",
+        "comment": 704
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "min_alloc",
+        "type": "uint16"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "max_alloc",
+        "type": "uint16"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "init_ss",
+        "type": "uint16"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "init_sp",
+        "type": "uint16"
+      },
+      {
+        "offset": 18,
+        "size": 2,
+        "name": "checksum",
+        "type": "uint16"
+      },
+      {
+        "offset": 20,
+        "size": 2,
+        "name": "init_ip",
+        "type": "uint16"
+      },
+      {
+        "offset": 22,
+        "size": 2,
+        "name": "init_cs",
+        "type": "uint16",
+        "comment": 6819
+      },
+      {
+        "offset": 24,
+        "size": 2,
+        "name": "reloc_off",
+        "type": "uint16",
+        "comment": 30
+      },
+      {
+        "offset": 26,
+        "size": 2,
+        "name": "overlay_no",
+        "type": "uint16"
+      }
+    ]
+  },
+  {
+    "name": "RTLinkDirEntry",
+    "size": 18,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a718-Byte Overlay Directory + findings 17",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "seg",
+        "type": "uint16",
+        "comment": "load base (LINK para); runtime = seg+0x1000"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "const_12ED",
+        "type": "uint16",
+        "comment": "always 0x12ED"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "w2",
+        "type": "uint16",
+        "comment": "file para of fixup table (x16); cluster-B rows use 0xFFFA0-base (finding 20)"
+      },
+      {
+        "offset": 6,
+        "size": 1,
+        "name": "const_04",
+        "type": "uint8",
+        "comment": "0x04"
+      },
+      {
+        "offset": 7,
+        "size": 1,
+        "name": "flags",
+        "type": "flags8",
+        "comment": "0x04 transient, 0x01 startup"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "span",
+        "type": "uint16",
+        "comment": "allocated span in PARAS"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "fixup_count",
+        "type": "uint16",
+        "comment": "fixups in DWORDS"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "const_FFFF",
+        "type": "uint16",
+        "comment": "usually 0xFFFF"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "id",
+        "type": "uint16",
+        "comment": "record id (idx+2); loader indexes by 0-based idx"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "data_size",
+        "type": "uint16",
+        "comment": "data size (== span for most)"
+      }
+    ]
+  },
+  {
+    "name": "RTLinkThunkEntry",
+    "size": 10,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7Thunk Table + findings 17/18",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 1,
+        "name": "call_op",
+        "type": "uint8",
+        "comment": "0xE8 near call"
+      },
+      {
+        "offset": 1,
+        "size": 2,
+        "name": "call_disp",
+        "type": "int16",
+        "comment": "rel16 -> loader (sub_2AFBD)"
+      },
+      {
+        "offset": 3,
+        "size": 1,
+        "name": "jmp_op",
+        "type": "uint8",
+        "comment": "0xEA ljmp"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "jmp_off",
+        "type": "uint16"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "jmp_seg",
+        "type": "seg16",
+        "comment": "link para; runtime = +0x1000 (NOT MZ-relocated, loader patches)"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "row_index",
+        "type": "uint16",
+        "comment": "0-based dir row (finding 18)"
+      }
+    ]
+  },
+  {
+    "name": "RTLinkFixupEntry",
+    "size": 4,
+    "status": "confirmed",
+    "source": "findings 17/21",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": false,
+        "type": "uint16",
+        "comment": "record-relative offset"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "seg",
+        "type": "seg16",
+        "comment": "para within [w0, w0+span); word[off] += 0x1000 at load (finding 21)"
+      }
+    ]
+  },
+  {
+    "name": "KbRecord",
+    "size": 14,
+    "status": "hypothesis",
+    "source": "findings 26 (code evidence: stride 14, base link 0x22; exact field map TBD)",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 14,
+        "name": "raw",
+        "type": "bytes",
+        "comment": "field layout unknown - see kb_field_get/set_* hypotheses in registry/naming.yaml"
+      }
+    ]
+  },
+  {
+    "name": "IsldatHeader",
+    "size": 9,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7ISLDAT + finding 105 (validated 8/8 by tools/parse_isldat.py)",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "body_len",
+        "type": "uint16",
+        "comment": "file_size - 9"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "grid_base",
+        "type": "uint16",
+        "comment": "0 in all 8 files; word_11C16 = grid walk base (finding 106)"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "t1_base",
+        "type": "uint16",
+        "comment": "always 0x500; fine-pool table (gridB)"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "t2_base",
+        "type": "uint16",
+        "comment": "0x504..0x7CA; coarse-pool table (gridA)"
+      },
+      {
+        "offset": 8,
+        "size": 1,
+        "name": "swap_flag",
+        "type": "uint8",
+        "comment": "1=HOK/KOR/PAN; byteswaps only state_table_apply 3-byte records"
+      }
+    ]
+  },
+  {
+    "name": "IsldatRecord",
+    "size": 54,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7ISLDAT + finding 105",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 4,
+        "name": "x",
+        "type": "int32",
+        "comment": "16.16 nm fixed (world wrap 512)"
+      },
+      {
+        "offset": 4,
+        "size": 4,
+        "name": "y",
+        "type": "int32",
+        "comment": "16.16 nm fixed"
+      },
+      {
+        "offset": 8,
+        "size": 4,
+        "name": "z",
+        "type": "int32",
+        "comment": "~-50 LSB (0xFFFFFFCE) sea marker"
+      },
+      {
+        "offset": 12,
+        "size": 4,
+        "name": "const_0",
+        "type": "int32"
+      },
+      {
+        "offset": 16,
+        "size": 12,
+        "name": "zero_pad",
+        "type": "bytes"
+      },
+      {
+        "offset": 30,
+        "size": 2,
+        "name": "const_FFFF_a",
+        "type": "uint16"
+      },
+      {
+        "offset": 32,
+        "size": 2,
+        "name": "attr",
+        "type": "uint16",
+        "comment": "coordinate scale factor: 0x14=base coastline, 0x32=river, 0x64=lake, 0xC8=border; read by pos_diff_norm (shifted by attr_scale_shift, used as divisor for X/Y/Z deltas)"
+      },
+      {
+        "offset": 34,
+        "size": 2,
+        "name": "ptr_to_26",
+        "type": "uint16",
+        "comment": "= self+0x26 (engine self-relative)"
+      },
+      {
+        "offset": 36,
+        "size": 2,
+        "name": "const_000B",
+        "type": "uint16"
+      },
+      {
+        "offset": 38,
+        "size": 2,
+        "name": "const_FFFF_b",
+        "type": "uint16"
+      },
+      {
+        "offset": 40,
+        "size": 2,
+        "name": "const_0_b",
+        "type": "uint16"
+      },
+      {
+        "offset": 42,
+        "size": 2,
+        "name": "ptr_to_2E",
+        "type": "uint16",
+        "comment": "= self+0x2E (engine self-relative)"
+      },
+      {
+        "offset": 44,
+        "size": 2,
+        "name": "const_4",
+        "type": "uint16"
+      },
+      {
+        "offset": 46,
+        "size": 2,
+        "name": "point_count",
+        "type": "uint16"
+      },
+      {
+        "offset": 48,
+        "size": 2,
+        "name": "points_ptr",
+        "type": "uint16",
+        "comment": "= self+0x38 (body-absolute)"
+      },
+      {
+        "offset": 50,
+        "size": 2,
+        "name": "opstream_ptr",
+        "type": "uint16",
+        "comment": "= points + 6*point_count"
+      },
+      {
+        "offset": 52,
+        "size": 2,
+        "name": "const_0_c",
+        "type": "uint16"
+      }
+    ]
+  },
+  {
+    "name": "IsldatPoint",
+    "size": 6,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7ISLDAT + finding 105",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "p0",
+        "type": "int16",
+        "comment": "coordinate component"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "mid",
+        "type": "int16",
+        "comment": "always 0 in all 8 files"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "p2",
+        "type": "int16",
+        "comment": "coordinate component"
+      }
+    ]
+  },
+  {
+    "name": "IsldatSubRecord",
+    "size": 4,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7ISLDAT + finding 105 (196/196 subs validated)",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "flags",
+        "type": "uint16",
+        "comment": "0x1000/0x1002 = node chain until FFFF; 0x0000/0x0002 = exactly one node, no terminator"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "opcode",
+        "type": "uint16",
+        "comment": "0/1/2 observed (1 dominant); semantics unknown"
+      }
+    ]
+  },
+  {
+    "name": "IsldatNode",
+    "size": 2,
+    "status": "confirmed",
+    "source": "docs/structures.md \u00a7ISLDAT + finding 105",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "count",
+        "type": "uint16",
+        "comment": "payload follows: (count+1) x uint16 offsets into line table (stride 0x10), last==first (closed)"
+      }
+    ]
+  },
+  {
+    "name": "FarObj",
+    "size": 210,
+    "status": "hypothesis",
+    "source": "analysis/s4/farobj_callers.log \u2014 Level-0 farobj callers probe, S4 2026-11-12",
+    "notes": "Central game object instance record. Stored in a global slot table at R05_400C:0x34 (4 bytes/entry = far pointer per slot). Also referenced from scan list at 0x54AF:0x1734 (16 entries for active-object fast scan). farptr_table_get(slot_index) loads ES:DI = pointer to this struct. Struct is at least 210B; actual size unknown. Many fields confirmed by farobj_entity_attr_setup (initialiser) + farptr_table_accum_fields (3D pos add).\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "world_x_lo",
+        "type": "int16",
+        "comment": "X position lo word (int32 split)"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "world_x_hi",
+        "type": "int16",
+        "comment": "X position hi word"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "world_y_lo",
+        "type": "int16",
+        "comment": "Y position lo word"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "world_y_hi",
+        "type": "int16",
+        "comment": "Y position hi word"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "world_z_lo",
+        "type": "int16",
+        "comment": "Z position lo word"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "world_z_hi",
+        "type": "int16",
+        "comment": "Z position hi word"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "angle_heading",
+        "type": "uint16",
+        "comment": "heading angle (14-bit, 0x3FFF mask); 0xFFFF = uninit"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "angle_pitch",
+        "type": "int16",
+        "comment": "pitch angle (14-bit signed, fold via stub_to_24988)"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "angle_roll",
+        "type": "uint16",
+        "comment": "roll/yaw angle (14-bit)"
+      },
+      {
+        "offset": 18,
+        "size": 1,
+        "name": "render_flags",
+        "type": "uint8",
+        "comment": "render flags (HUD-related)"
+      },
+      {
+        "offset": 19,
+        "size": 1,
+        "name": "type_flags",
+        "type": "flags8",
+        "comment": "type flags (AND 0x20 OR 5 pattern; bit 6 = range visibility)"
+      },
+      {
+        "offset": 20,
+        "size": 1,
+        "name": "entity_class",
+        "type": "uint8",
+        "comment": "entity class code: 0x12=aircraft, 0x14=?, 0x33=?, 0x38=?"
+      },
+      {
+        "offset": 21,
+        "size": 1,
+        "name": "entity_class_hi",
+        "type": "uint8",
+        "comment": "high byte of entity class word (usually 0 or sub-class)"
+      },
+      {
+        "offset": 22,
+        "size": 2,
+        "name": "attr_a",
+        "type": "int16",
+        "comment": "type-specific attribute A (from type descriptor +0xE)"
+      },
+      {
+        "offset": 24,
+        "size": 2,
+        "name": "attr_b",
+        "type": "int16",
+        "comment": "scaled attribute B (from type descriptor +0xC, shifted by DS:19B7)"
+      },
+      {
+        "offset": 26,
+        "size": 2,
+        "name": "attr_c",
+        "type": "int16",
+        "comment": "scaled attribute C (from type descriptor +0x10)"
+      },
+      {
+        "offset": 28,
+        "size": 2,
+        "name": "field_1C",
+        "type": "uint16",
+        "comment": "unknown"
+      },
+      {
+        "offset": 30,
+        "size": 2,
+        "name": "frame_timer",
+        "type": "uint16",
+        "comment": "frame counter (mod 8 by scan_74_timer_c for animation step)"
+      },
+      {
+        "offset": 32,
+        "size": 2,
+        "name": "cmd_field",
+        "type": "uint16",
+        "comment": "command/state field (farptr_table_field_store/_get at DI+0x20)"
+      },
+      {
+        "offset": 34,
+        "size": 2,
+        "name": "object_kind",
+        "type": "uint16",
+        "comment": "object kind index \u2192 type descriptor (farobj_type_field_get -> 1/2/3)"
+      },
+      {
+        "offset": 36,
+        "size": 2,
+        "name": "state_flags",
+        "type": "flags16",
+        "comment": "state flags: bit 0x0040=has_ext_slot; bit 0x8000=scan_gate_set; bits 0xF1FF=timer state"
+      },
+      {
+        "offset": 38,
+        "size": 1,
+        "name": "slot_flags",
+        "type": "flags8",
+        "comment": "slot flags: bits 0\u20135 used; bits 6+7 cleared by sub_49A5B"
+      },
+      {
+        "offset": 39,
+        "size": 1,
+        "name": "slot_id",
+        "type": "uint8",
+        "comment": "0xFF = unassigned/uninit; entity slot id (entity_slot_create)"
+      },
+      {
+        "offset": 40,
+        "size": 2,
+        "name": "type_ext_0",
+        "type": "uint16",
+        "comment": "type-dependent (farobj_copy_invoke copies starting here)"
+      },
+      {
+        "offset": 42,
+        "size": 2,
+        "name": "type_base",
+        "type": "uint16",
+        "comment": "base type data (farobj_field_set writes here for type 1 & 3)"
+      },
+      {
+        "offset": 44,
+        "size": 2,
+        "name": "type_ext_A",
+        "type": "uint16",
+        "comment": "ext data A (farobj_field_set +2 for type 2)"
+      },
+      {
+        "offset": 116,
+        "size": 1,
+        "name": "active",
+        "type": "flags8",
+        "comment": "slot active/occupied flag: bit 0 = active (checked by scan_74 functions)"
+      },
+      {
+        "offset": 122,
+        "size": 2,
+        "name": "self_slot_idx",
+        "type": "uint16",
+        "comment": "this object's index in the main farobj table (R05_400C:0x34 slot N)"
+      },
+      {
+        "offset": 209,
+        "size": 1,
+        "name": "timer_active",
+        "type": "flags8",
+        "comment": "timer active flag: bit 0 = do timer update (farobj_scan_74_timer_c)"
+      }
+    ]
+  },
+  {
+    "name": "FarObjTypeDesc",
+    "size": 18,
+    "status": "hypothesis",
+    "source": "farobj_type_field_get (0x2647E) + farobj_entity_attr_setup (0x44352)",
+    "notes": "Per-entity-class type descriptor. The global table at 0x7B0E:0x3052 holds far pointers (4B each) to these records, indexed by FarObj.object_kind*4. farobj_type_field_get reads bytes [0] and [1] to return a 1/2/3 subtype code. farobj_entity_attr_setup reads offsets 0x0C/0x0E/0x10 as scaled entity attributes.\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 1,
+        "name": "type_category",
+        "type": "uint8",
+        "comment": "0 or 1 = simple; >1 = complex (has subtype in byte 1)"
+      },
+      {
+        "offset": 1,
+        "size": 1,
+        "name": "subtype",
+        "type": "uint8",
+        "comment": "subtype code (1/2/3) returned by farobj_type_field_get for complex types"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "scale_attr_b",
+        "type": "int16",
+        "comment": "scaled attribute B source (attr_b = this << DS:0x19B7)"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "raw_attr_a",
+        "type": "int16",
+        "comment": "raw attribute A copied to FarObj.attr_a"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "scale_attr_c",
+        "type": "int16",
+        "comment": "scaled attribute C source (attr_c = this << DS:0x19B7)"
+      }
+    ]
+  },
+  {
+    "name": "EntityAccumEntry",
+    "size": 14,
+    "status": "hypothesis",
+    "source": "farobj_entity_accum_sweep (0x2E48C)",
+    "notes": "Per-motion-command entry for the entity sweep table. farobj_entity_accum_sweep scans up to 39+1 entries (index 0..0x27), advancing by 14B per entry. Entry [+6] is a countdown timer (decremented each sweep; when 0, entry is idle). The BX/CX/DX words drive farptr_table_accum_fields (position delta) and farptr_table_offset_apply (angle delta).\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "count",
+        "type": "uint16",
+        "comment": "0 = empty entry; nonzero = active"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "delta_x",
+        "type": "int16",
+        "comment": "X position delta for farptr_table_accum_fields"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "delta_y",
+        "type": "int16",
+        "comment": "Y position delta"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "countdown",
+        "type": "uint16",
+        "comment": "timer countdown; decremented by 1 each sweep (at +1 to get 0-based next)"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "delta_hdg",
+        "type": "int16",
+        "comment": "heading delta for farptr_table_offset_apply"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "delta_pit",
+        "type": "int16",
+        "comment": "pitch delta"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "delta_rol",
+        "type": "int16",
+        "comment": "roll delta"
+      }
+    ]
+  },
+  {
+    "name": "AIContext",
+    "size": 24,
+    "status": "confirmed",
+    "source": "docs/architecture/ai.md; ai_context_batch_processor (0x495DF)",
+    "notes": "AI entity context for behavior processing. Array of 40 at segment 0x65A7, offset 0x000C (linear 0x065A7C). Processed every frame by ai_context_batch_processor. Contains entity state, behavior flags, target tracking, and movement parameters.\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "entity_slot_idx",
+        "type": "uint16",
+        "comment": "Index to main entity slot table"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "farobj_slot_idx",
+        "type": "uint16",
+        "comment": "Index to farobj main table"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "behavior_flags",
+        "type": "flags16",
+        "comment": "Behavior state flags (loaded from external tables)"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "target_slot_idx",
+        "type": "uint16",
+        "comment": "Target entity index for tracking/mirroring"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "state_word",
+        "type": "uint16",
+        "comment": "AI state machine state"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "timer",
+        "type": "uint16",
+        "comment": "Behavior timer/countdown"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "angle_to_target",
+        "type": "int16",
+        "comment": "Angle to target (for weapon firing)"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "distance",
+        "type": "uint16",
+        "comment": "Distance to target or waypoint"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "velocity_x",
+        "type": "int16",
+        "comment": "Movement parameter X"
+      },
+      {
+        "offset": 18,
+        "size": 2,
+        "name": "velocity_y",
+        "type": "int16",
+        "comment": "Movement parameter Y"
+      },
+      {
+        "offset": 20,
+        "size": 4,
+        "name": "reserved",
+        "type": "bytes",
+        "comment": "Last 4 bytes (purpose unknown)"
+      }
+    ]
+  },
+  {
+    "name": "FlightKinematics",
+    "size": 26,
+    "status": "confirmed",
+    "source": "docs/architecture/flight_physics.md; flight_kinematics_position_step (0x3B338)",
+    "notes": "26-byte flight state block at DS:[0x32]. Contains position, velocity, tile coordinates, and angles. Mirrored to DS:[0x66] (previous frame) and ES:0x7B0E:0x43BA (trig segment). Updated every frame by position integration.\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "world_x_lo",
+        "type": "int16",
+        "comment": "World X position lo word"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "world_x_hi",
+        "type": "int16",
+        "comment": "World X position hi word (int32 split)"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "world_y_lo",
+        "type": "int16",
+        "comment": "World Y position lo word"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "world_y_hi",
+        "type": "int16",
+        "comment": "World Y position hi word"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "world_z_lo",
+        "type": "int16",
+        "comment": "World Z position lo word (altitude)"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "world_z_hi",
+        "type": "int16",
+        "comment": "World Z position hi word"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "tile_x",
+        "type": "int16",
+        "comment": "Tile coordinate X"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "tile_y",
+        "type": "int16",
+        "comment": "Tile coordinate Y"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "velocity_x",
+        "type": "int16",
+        "comment": "Velocity X component"
+      },
+      {
+        "offset": 18,
+        "size": 2,
+        "name": "velocity_y",
+        "type": "int16",
+        "comment": "Velocity Y component"
+      },
+      {
+        "offset": 20,
+        "size": 2,
+        "name": "velocity_z",
+        "type": "int16",
+        "comment": "Velocity Z component"
+      },
+      {
+        "offset": 22,
+        "size": 2,
+        "name": "angle_pitch",
+        "type": "int16",
+        "comment": "Pitch angle (14-bit)"
+      },
+      {
+        "offset": 24,
+        "size": 2,
+        "name": "field_18",
+        "type": "uint16",
+        "comment": "Unknown field"
+      }
+    ]
+  },
+  {
+    "name": "AircraftSlot",
+    "size": 24,
+    "status": "confirmed",
+    "source": "docs/architecture/flight_physics.md; flight_aircraft_slot_cycle_update (0x49546)",
+    "notes": "Aircraft/entity slot record processed by flight system. Array of 40 slots processed in cycle by flight_aircraft_slot_cycle_update. Links to farobj and entity systems.\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 1,
+        "name": "flags",
+        "type": "flags8",
+        "comment": "0=inactive; bit 2=collision; bit 4=respawn"
+      },
+      {
+        "offset": 1,
+        "size": 2,
+        "name": "farobj_slot",
+        "type": "uint16",
+        "comment": "FarObj main table index"
+      },
+      {
+        "offset": 3,
+        "size": 2,
+        "name": "entity_type",
+        "type": "uint16",
+        "comment": "Entity type/class code"
+      },
+      {
+        "offset": 5,
+        "size": 2,
+        "name": "state_flags",
+        "type": "flags16",
+        "comment": "State/behavior flags"
+      },
+      {
+        "offset": 7,
+        "size": 2,
+        "name": "timer",
+        "type": "uint16",
+        "comment": "Countdown timer"
+      },
+      {
+        "offset": 9,
+        "size": 15,
+        "name": "data",
+        "type": "bytes",
+        "comment": "Type-specific data (15 bytes)"
+      }
+    ]
+  },
+  {
+    "name": "EntitySlotRecord",
+    "size": 204,
+    "status": "confirmed",
+    "source": "docs/architecture/entity.md; farobj_slot_update_driver; RADAR_DETECTION_COMPLETE.md; IR_LOCK_ANALYSIS.md; TARGET_SYSTEM_FINDINGS.md; BUILDING_TYPE_INVESTIGATION.md",
+    "notes": "Active entity slot record. 16 slots at segment 0x54AF, offset 0x386F. Updated 3-pass every frame by farobj_slot_update_driver. Contains per-frame processing state, update flags, and links to farobj instances. Radar system uses fields +0x08/0x0A (distance), +0x74/+0x79 (flags), +0x8E (azimuth), +0x92 (range), +0x96/98/9A (position) for detection and tracking. IR lock system uses field +0xAE (heat_signature) for AIM-9 seeker targeting. Target system uses fields +0x76 (unknown_flags_76), +0xAE (heat_signature),  +0xB3-0xBF (target tracking fields, 13 bytes), +0xCA (damage_status_flags). AI system uses fields +0xB3-0xBF for target priority evaluation (ai_target_priority_evaluator).\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 6,
+        "name": "header",
+        "type": "bytes",
+        "comment": "Unknown header fields"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "farobj_slot",
+        "type": "uint16",
+        "comment": "FarObj main table slot index"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "distance_lo",
+        "type": "uint16",
+        "comment": "Distance to player lo word (32-bit pair with +0x0A)"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "distance_hi",
+        "type": "uint16",
+        "comment": "Distance to player hi word"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "object_category",
+        "type": "uint16",
+        "comment": "Object category/type (4=building/facility, checked by store_impact_step @ 0x39840)"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "data_0E_0F",
+        "type": "bytes",
+        "comment": "Unknown bytes 0x0E-0x0F"
+      },
+      {
+        "offset": 16,
+        "size": 1,
+        "name": "impact_state",
+        "type": "uint8",
+        "comment": "Impact/damage state (0xFF=pristine, 0xA0=impacted, set by store_impact_step @ 0x39879)"
+      },
+      {
+        "offset": 17,
+        "size": 29,
+        "name": "data_11_2D",
+        "type": "bytes",
+        "comment": "Entity data bytes 0x11-0x2D"
+      },
+      {
+        "offset": 46,
+        "size": 2,
+        "name": "velocity_component",
+        "type": "int16",
+        "comment": "Velocity component (receives gravity/drag subtract @ 0x3D3BD). Possibly vertical velocity or velocity magnitude."
+      },
+      {
+        "offset": 48,
+        "size": 68,
+        "name": "data_30_73",
+        "type": "bytes",
+        "comment": "Entity data bytes 0x30-0x73"
+      },
+      {
+        "offset": 116,
+        "size": 1,
+        "name": "status_flags",
+        "type": "flags8",
+        "comment": "EntityStatusFlags: bit 0=ACTIVE, bit 2=DESTROYED?, bit 6=AIRCRAFT_TYPE"
+      },
+      {
+        "offset": 117,
+        "size": 1,
+        "name": "weapon_type",
+        "type": "uint8",
+        "comment": "Weapon type (WeaponType enum: 0x12-0x37). Checked by entity_physics_and_ai_update for weapon-specific behavior. 0=not a weapon."
+      },
+      {
+        "offset": 118,
+        "size": 1,
+        "name": "unknown_flags_76",
+        "type": "flags8",
+        "comment": "Unknown flags (bit 7 checked by target_cycle_scan @ 0x48B05)"
+      },
+      {
+        "offset": 119,
+        "size": 23,
+        "name": "data_77_8D",
+        "type": "bytes",
+        "comment": "Unknown bytes 0x77-0x8D"
+      },
+      {
+        "offset": 142,
+        "size": 2,
+        "name": "angle_azimuth",
+        "type": "uint16",
+        "comment": "Azimuth angle from player (14-bit, 0x0000-0x3FFF), used for radar cone detection"
+      },
+      {
+        "offset": 144,
+        "size": 2,
+        "name": "data_90_91",
+        "type": "bytes",
+        "comment": "Unknown bytes (possibly elevation angle)"
+      },
+      {
+        "offset": 146,
+        "size": 2,
+        "name": "range",
+        "type": "uint16",
+        "comment": "Computed range/distance to player (game units), compared against F8 radar range setting"
+      },
+      {
+        "offset": 148,
+        "size": 5,
+        "name": "data_94_78",
+        "type": "bytes",
+        "comment": "Unknown bytes 0x94-0x78"
+      },
+      {
+        "offset": 121,
+        "size": 1,
+        "name": "tracking_flags",
+        "type": "flags8",
+        "comment": "EntityTrackingFlags: bit 0=RADAR_VISIBLE (set by detection functions)"
+      },
+      {
+        "offset": 122,
+        "size": 2,
+        "name": "target_slot_index",
+        "type": "uint16",
+        "comment": "Target entity slot index. Used by store_impact_step @ 0x397FB to load target entity via r12_farptr_load_thunk. Indexes EntitySlotRecord array (stride 0x5C=92B)."
+      },
+      {
+        "offset": 124,
+        "size": 26,
+        "name": "data_7C_95",
+        "type": "bytes",
+        "comment": "Unknown bytes 0x7C-0x95"
+      },
+      {
+        "offset": 150,
+        "size": 2,
+        "name": "position_x",
+        "type": "int16",
+        "comment": "World X position (used by radar scanner)"
+      },
+      {
+        "offset": 152,
+        "size": 2,
+        "name": "position_y",
+        "type": "int16",
+        "comment": "World Y position (used by radar scanner)"
+      },
+      {
+        "offset": 154,
+        "size": 2,
+        "name": "position_z",
+        "type": "int16",
+        "comment": "World Z position / altitude (used by radar scanner)"
+      },
+      {
+        "offset": 156,
+        "size": 18,
+        "name": "data_9C_AD",
+        "type": "bytes",
+        "comment": "Unknown bytes 0x9C-0xAD"
+      },
+      {
+        "offset": 174,
+        "size": 1,
+        "name": "heat_signature",
+        "type": "uint8",
+        "comment": "IR visibility (0=cold/no lock, non-zero=hot/IR lockable). Checked by weapon_aim9_seeker_lock_check for AIM-9 IR missiles. Also checked as unknown_field_ae by target_cycle_scan @ 0x48B05."
+      },
+      {
+        "offset": 175,
+        "size": 4,
+        "name": "data_AF_B2",
+        "type": "bytes",
+        "comment": "Unknown bytes 0xAF-0xB2"
+      },
+      {
+        "offset": 179,
+        "size": 1,
+        "name": "target_field_1",
+        "type": "uint8",
+        "comment": "Target tracking field 1 (checked by ai_target_priority_evaluator @ 0x3E96F)"
+      },
+      {
+        "offset": 180,
+        "size": 1,
+        "name": "target_field_2",
+        "type": "uint8",
+        "comment": "Target tracking field 2"
+      },
+      {
+        "offset": 181,
+        "size": 1,
+        "name": "target_field_3",
+        "type": "uint8",
+        "comment": "Target tracking field 3"
+      },
+      {
+        "offset": 182,
+        "size": 1,
+        "name": "target_field_4",
+        "type": "uint8",
+        "comment": "Target tracking field 4"
+      },
+      {
+        "offset": 183,
+        "size": 1,
+        "name": "target_field_5",
+        "type": "uint8",
+        "comment": "Target tracking field 5"
+      },
+      {
+        "offset": 184,
+        "size": 1,
+        "name": "target_field_6",
+        "type": "uint8",
+        "comment": "Target tracking field 6"
+      },
+      {
+        "offset": 185,
+        "size": 1,
+        "name": "target_field_7",
+        "type": "uint8",
+        "comment": "Target tracking field 7"
+      },
+      {
+        "offset": 186,
+        "size": 1,
+        "name": "target_field_8",
+        "type": "uint8",
+        "comment": "Target tracking field 8"
+      },
+      {
+        "offset": 187,
+        "size": 1,
+        "name": "target_field_9",
+        "type": "uint8",
+        "comment": "Target tracking field 9"
+      },
+      {
+        "offset": 188,
+        "size": 1,
+        "name": "target_field_10",
+        "type": "uint8",
+        "comment": "Target tracking field 10"
+      },
+      {
+        "offset": 189,
+        "size": 1,
+        "name": "target_field_11",
+        "type": "uint8",
+        "comment": "Target tracking field 11"
+      },
+      {
+        "offset": 190,
+        "size": 1,
+        "name": "target_field_12",
+        "type": "uint8",
+        "comment": "Target tracking field 12"
+      },
+      {
+        "offset": 191,
+        "size": 1,
+        "name": "target_field_13",
+        "type": "uint8",
+        "comment": "Target tracking field 13"
+      },
+      {
+        "offset": 192,
+        "size": 10,
+        "name": "data_C0_C9",
+        "type": "bytes",
+        "comment": "Unknown bytes 0xC0-0xC9"
+      },
+      {
+        "offset": 202,
+        "size": 2,
+        "name": "damage_status_flags",
+        "type": "flags16",
+        "comment": "Damage state flags (DAMAGE_NAV flag at 0x48B05). Checked by target_cycle_scan for filtering damaged entities."
+      },
+      {
+        "offset": 204,
+        "size": 0,
+        "name": "end_marker",
+        "type": "bytes",
+        "comment": "End of confirmed fields at +0xCC (actual size may be larger)"
+      }
+    ]
+  },
+  {
+    "name": "AGWeaponEntity",
+    "size": 41,
+    "status": "partial",
+    "source": "AG_WEAPONS_ANALYSIS.md; ag_weapon_entity_initialize @ 0x4C3C7",
+    "notes": "A-G weapon entity initialization structure. Used for bombs, missiles, and guided weapons (types 0x14-0x32). 41-byte queue stride vs 27 bytes for A-A missiles/guns - 14 extra bytes for ballistics and guidance.\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "entity_ptr",
+        "type": "uint16",
+        "comment": "Pointer to launching entity (bp register value)"
+      },
+      {
+        "offset": 2,
+        "size": 1,
+        "name": "type_flags",
+        "type": "flags8",
+        "comment": "Weapon type flags (varies: 0x02-0x0B for different weapons)"
+      },
+      {
+        "offset": 3,
+        "size": 1,
+        "name": "type_id",
+        "type": "uint8",
+        "comment": "Type ID (always 0xFF in initialization?)"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "zero_field",
+        "type": "uint16",
+        "comment": "Always set to bp (0) during initialization"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "param_06",
+        "type": "uint16",
+        "comment": "Parameter (varies: 0x0A-0x31C)"
+      },
+      {
+        "offset": 8,
+        "size": 2,
+        "name": "initial_velocity",
+        "type": "uint16",
+        "comment": "Initial velocity in game units/sec (2710-4734 for bombs, 3280-4860 for missiles)"
+      },
+      {
+        "offset": 10,
+        "size": 2,
+        "name": "param_0A",
+        "type": "uint16",
+        "comment": "Parameter (varies: 8-24)"
+      },
+      {
+        "offset": 12,
+        "size": 2,
+        "name": "launch_angle",
+        "type": "uint16",
+        "comment": "Launch angle computed from aircraft vector (14-bit angle)"
+      },
+      {
+        "offset": 14,
+        "size": 2,
+        "name": "velocity_copy_1",
+        "type": "uint16",
+        "comment": "Velocity copy (usually same as +0x08)"
+      },
+      {
+        "offset": 16,
+        "size": 2,
+        "name": "velocity_copy_2",
+        "type": "uint16",
+        "comment": "Velocity copy (usually same as +0x08)"
+      },
+      {
+        "offset": 18,
+        "size": 2,
+        "name": "param_12",
+        "type": "uint16",
+        "comment": "Parameter (varies widely: 0xAB-0x400)"
+      },
+      {
+        "offset": 20,
+        "size": 11,
+        "name": "data_14_1E",
+        "type": "bytes",
+        "comment": "Unknown data bytes 0x14-0x1E"
+      },
+      {
+        "offset": 31,
+        "size": 2,
+        "name": "velocity_copy_3",
+        "type": "uint16",
+        "comment": "Velocity copy (usually same as +0x08)"
+      },
+      {
+        "offset": 33,
+        "size": 2,
+        "name": "param_21",
+        "type": "uint16",
+        "comment": "Parameter (varies: 3-0x5DC)"
+      },
+      {
+        "offset": 35,
+        "size": 1,
+        "name": "damage_or_life",
+        "type": "uint8",
+        "comment": "Damage value or lifetime (0-200: 2=low, 20=medium, 200=high)"
+      },
+      {
+        "offset": 36,
+        "size": 5,
+        "name": "data_24_28",
+        "type": "bytes",
+        "comment": "Unknown data bytes 0x24-0x28 (end of structure)"
+      }
+    ]
+  },
+  {
+    "name": "ObjectModelHeader",
+    "size": 12,
+    "status": "confirmed",
+    "source": "docs/architecture/3d_objects.md",
+    "notes": "Header for .3D object model files (aircraft, ground units, etc.). Followed by vertex array, edge array, and rendering data.\n",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "file_size_minus_10",
+        "type": "uint16",
+        "comment": "Total file size - 10"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "vertex_count",
+        "type": "uint16",
+        "comment": "Number of vertices in vertex array"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "edge_count",
+        "type": "uint16",
+        "comment": "Number of edges in edge array"
+      },
+      {
+        "offset": 6,
+        "size": 6,
+        "name": "header_data",
+        "type": "bytes",
+        "comment": "Additional header data"
+      }
+    ]
+  },
+  {
+    "name": "ObjectModelVertex",
+    "size": 6,
+    "status": "confirmed",
+    "source": "docs/architecture/3d_objects.md",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "x",
+        "type": "int16",
+        "comment": "Signed X coordinate"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "y",
+        "type": "int16",
+        "comment": "Signed Y coordinate"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "z",
+        "type": "int16",
+        "comment": "Signed Z coordinate"
+      }
+    ]
+  },
+  {
+    "name": "ObjectModelEdge",
+    "size": 4,
+    "status": "confirmed",
+    "source": "docs/architecture/3d_objects.md",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "v1",
+        "type": "int16",
+        "comment": "Vertex index 1 (signed)"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "v2",
+        "type": "int16",
+        "comment": "Vertex index 2 (signed)"
+      }
+    ]
+  },
+  {
     "name": "MissionSlot",
     "size": 20,
     "description": "Mission slot entry in 64-element array. Stores mission display name.",
@@ -7,15 +1565,51 @@
       {
         "function": "squadron_mission_file_loader",
         "address": "0x17B45E-0x17B491",
-        "operation": "Initialize loop: 64 slots × 20 bytes, set name[0]=' ', name[1]=0"
+        "operation": "Initialize loop: 64 slots \u00d7 20 bytes, set name[0]=' ', name[1]=0"
       }
     ],
     "fields": [
       {
         "offset": 0,
-        "name": "name",
-        "type": "char[20]",
-        "description": "Mission name string (space-padded, null-terminated)"
+        "name": "label",
+        "type": "char[2]",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 2,
+        "name": "field_02",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 4,
+        "name": "mission_type",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 5,
+        "name": "flags",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 6,
+        "name": "parameter",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 7,
+        "name": "extended_data",
+        "type": "uint8_t[13]",
+        "size": 13,
+        "comment": "|"
       }
     ],
     "global_array": "mission_slot_array_ptr",
@@ -29,7 +1623,7 @@
       {
         "function": "overlay_r4F_handler",
         "address": "0x1795E4",
-        "operation": "Read 0x410 (1,040) bytes = 8 × 130 bytes"
+        "operation": "Read 0x410 (1,040) bytes = 8 \u00d7 130 bytes"
       }
     ],
     "fields": [
@@ -531,5 +2125,745 @@
       }
     ],
     "notes": ".SHP file read shows 6 bytes: 1 byte @ 0x689, 5 bytes @ 0x68A"
+  },
+  {
+    "name": "MenuElement",
+    "size": 28,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 1540,
+        "name": "data_ptr_low",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Low word of far pointer to element data"
+      },
+      {
+        "offset": 1542,
+        "name": "data_ptr_high",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "High word of far pointer to element data (segment)"
+      },
+      {
+        "offset": 1544,
+        "name": "state_or_type",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Element state or type (values 0, 3, 10 observed)"
+      }
+    ]
+  },
+  {
+    "name": "UICoordinate",
+    "size": 8,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "x_or_low",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "X coordinate or low word"
+      },
+      {
+        "offset": 2,
+        "name": "y_or_high",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Y coordinate or high word"
+      },
+      {
+        "offset": 4,
+        "name": "width_or_offset",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Width or offset value"
+      },
+      {
+        "offset": 6,
+        "name": "height_or_offset2",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Height or second offset value"
+      }
+    ]
+  },
+  {
+    "name": "DataPointer",
+    "size": 8,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "data_byte",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Data or index byte"
+      },
+      {
+        "offset": 1,
+        "name": "validity_flag",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Validity flag (0xFFFF = invalid/end marker)"
+      }
+    ]
+  },
+  {
+    "name": "PilotRecord",
+    "size": 66,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "status_flags",
+        "type": "uint8_t[2]",
+        "size": 2,
+        "comment": "Status flags (flying, dead, MIA, POW, etc.)"
+      },
+      {
+        "offset": 2,
+        "name": "rank",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Officer rank (0=LT, 1=CAPT, 2=MAJOR, 3=LT COL, 4=COL)"
+      },
+      {
+        "offset": 3,
+        "name": "callsign",
+        "type": "char[15]",
+        "size": 15,
+        "comment": "Pilot callsign string (null-terminated)"
+      },
+      {
+        "offset": 18,
+        "name": "pad1",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Padding byte"
+      },
+      {
+        "offset": 19,
+        "name": "nickname",
+        "type": "char[15]",
+        "size": 15,
+        "comment": "Pilot nickname/name string (null-terminated)"
+      },
+      {
+        "offset": 34,
+        "name": "id_code",
+        "type": "char[4]",
+        "size": 4,
+        "comment": "4-character pilot ID code"
+      },
+      {
+        "offset": 38,
+        "name": "dogfighting_skill",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Dogfighting ability rating (0-255)"
+      },
+      {
+        "offset": 39,
+        "name": "bombing_skill",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Bombing/strike ability rating (0-255)"
+      },
+      {
+        "offset": 40,
+        "name": "flying_skill",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "General flying ability rating (0-255)"
+      },
+      {
+        "offset": 41,
+        "name": "fatigue_level",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Current fatigue level (affects performance)"
+      },
+      {
+        "offset": 42,
+        "name": "mission_data",
+        "type": "uint8_t[28]",
+        "size": 28,
+        "comment": "|"
+      }
+    ]
+  },
+  {
+    "name": "ExtendedPilotRecord",
+    "size": 66,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "status_flags",
+        "type": "uint8_t[2]",
+        "size": 2,
+        "comment": ""
+      },
+      {
+        "offset": 2,
+        "name": "rank",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": ""
+      },
+      {
+        "offset": 3,
+        "name": "callsign",
+        "type": "char[15]",
+        "size": 15,
+        "comment": ""
+      },
+      {
+        "offset": 18,
+        "name": "pad1",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": ""
+      },
+      {
+        "offset": 19,
+        "name": "nickname",
+        "type": "char[15]",
+        "size": 15,
+        "comment": ""
+      },
+      {
+        "offset": 34,
+        "name": "id_code",
+        "type": "char[4]",
+        "size": 4,
+        "comment": ""
+      },
+      {
+        "offset": 38,
+        "name": "dogfighting_skill",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": ""
+      },
+      {
+        "offset": 39,
+        "name": "bombing_skill",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": ""
+      },
+      {
+        "offset": 40,
+        "name": "flying_skill",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": ""
+      },
+      {
+        "offset": 41,
+        "name": "fatigue_level",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": ""
+      },
+      {
+        "offset": 42,
+        "name": "mission_data",
+        "type": "uint8_t[28]",
+        "size": 28,
+        "comment": ""
+      }
+    ]
+  },
+  {
+    "name": "SquadronHeader",
+    "size": 60,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": null,
+        "name": "squadron_name",
+        "type": "char[]",
+        "size": 2,
+        "comment": "Squadron name string"
+      },
+      {
+        "offset": null,
+        "name": "wing_assignment",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Which wing (0=1ST through 6=7TH)"
+      },
+      {
+        "offset": null,
+        "name": "insignia_id",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Selected squadron insignia graphic ID"
+      },
+      {
+        "offset": null,
+        "name": "commander_id",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Pilot index of squadron commander (0-29)"
+      },
+      {
+        "offset": null,
+        "name": "missions_flown",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Total squadron missions"
+      },
+      {
+        "offset": null,
+        "name": "pilots_active",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Number of active pilots"
+      },
+      {
+        "offset": null,
+        "name": "pilots_killed",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Number of pilots KIA"
+      },
+      {
+        "offset": null,
+        "name": "pilots_mia",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Number of pilots MIA"
+      }
+    ]
+  },
+  {
+    "name": "CampaignStatus",
+    "size": 0,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": null,
+        "name": "current_day",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Current campaign day number"
+      },
+      {
+        "offset": null,
+        "name": "current_time",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Current time (0600, 1200, 1800, 2300)"
+      },
+      {
+        "offset": null,
+        "name": "territory_enemy_percent",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Percentage of territory held by enemy"
+      },
+      {
+        "offset": null,
+        "name": "territory_allied_percent",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Percentage of territory held by allies"
+      },
+      {
+        "offset": null,
+        "name": "missions_flown",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Total missions flown"
+      },
+      {
+        "offset": null,
+        "name": "missions_accomplished",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Missions successfully completed"
+      },
+      {
+        "offset": null,
+        "name": "sorties_flown",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Total sorties flown"
+      },
+      {
+        "offset": null,
+        "name": "allied_aircraft_lost",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Allied aircraft shot down"
+      },
+      {
+        "offset": null,
+        "name": "enemy_aircraft_destroyed",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Enemy aircraft shot down"
+      },
+      {
+        "offset": null,
+        "name": "enemy_class_a_fighter",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Class A fighters destroyed"
+      },
+      {
+        "offset": null,
+        "name": "enemy_class_b_fighter",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Class B fighters destroyed"
+      },
+      {
+        "offset": null,
+        "name": "enemy_bomber_strike",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Bombers/strike aircraft destroyed"
+      },
+      {
+        "offset": null,
+        "name": "enemy_attack_aircraft",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Attack/CAS aircraft destroyed"
+      },
+      {
+        "offset": null,
+        "name": "enemy_helicopter",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Helicopters destroyed"
+      },
+      {
+        "offset": null,
+        "name": "enemy_transport_awacs",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Transports/AWACS destroyed"
+      },
+      {
+        "offset": null,
+        "name": "ground_targets_destroyed",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Total ground targets destroyed"
+      },
+      {
+        "offset": null,
+        "name": "ground_class_a",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Class A (strategic) targets destroyed"
+      },
+      {
+        "offset": null,
+        "name": "ground_class_b",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Class B (infrastructure) targets destroyed"
+      },
+      {
+        "offset": null,
+        "name": "ground_class_c",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Class C (military) targets destroyed"
+      },
+      {
+        "offset": null,
+        "name": "ground_class_d",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Class D (tactical) targets destroyed"
+      },
+      {
+        "offset": null,
+        "name": "ordnance_efficiency",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Ordnance efficiency rating (percentage?)"
+      },
+      {
+        "offset": null,
+        "name": "overall_rating",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Overall campaign performance rating"
+      }
+    ]
+  },
+  {
+    "name": "MissionSlotFileRecord",
+    "size": 6,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "slot_index",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Mission slot number (0-63, but 3-27 typical)"
+      },
+      {
+        "offset": 1,
+        "name": "zero_01",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Always 0x00 (padding/alignment)"
+      },
+      {
+        "offset": 2,
+        "name": "mission_type",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "MissionType enum value (goes to MissionSlot +0x04)"
+      },
+      {
+        "offset": 3,
+        "name": "zero_03",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Always 0x00 (padding/alignment)"
+      },
+      {
+        "offset": 4,
+        "name": "parameter",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Mission parameter (goes to MissionSlot +0x06)"
+      },
+      {
+        "offset": 5,
+        "name": "flags",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Mission flags 0x80/0x81 (goes to MissionSlot +0x05)"
+      }
+    ]
+  },
+  {
+    "name": "MISFileHeader",
+    "size": 12,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "mission_count",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 2,
+        "name": "theater_id",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 3,
+        "name": "slot_size",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 4,
+        "name": "pilots_per_squad",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 5,
+        "name": "menu_elements",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 6,
+        "name": "unknown_06",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Always 0x00 in samples"
+      },
+      {
+        "offset": 7,
+        "name": "record_count",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 8,
+        "name": "unknown_08_0B",
+        "type": "uint8_t[4]",
+        "size": 4,
+        "comment": "|"
+      }
+    ]
+  },
+  {
+    "name": "FlightRecord",
+    "size": 130,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "field_00",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Unknown field (word)"
+      },
+      {
+        "offset": 2,
+        "name": "waypoint_index",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "|"
+      },
+      {
+        "offset": 3,
+        "name": "field_03",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Unknown field (byte)"
+      },
+      {
+        "offset": 4,
+        "name": "aircraft_count",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Number of aircraft in flight (1-4)"
+      },
+      {
+        "offset": 10,
+        "name": "plane_data",
+        "type": "PlaneData[4]",
+        "size": 4,
+        "comment": "|"
+      },
+      {
+        "offset": 58,
+        "name": "loadouts",
+        "type": "LoadoutRecord[4]",
+        "size": 4,
+        "comment": "|"
+      }
+    ]
+  },
+  {
+    "name": "LoadoutRecord",
+    "size": 23,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": null,
+        "name": "hardpoint_config",
+        "type": "uint8_t[11]",
+        "size": 11,
+        "comment": "Weapon configuration for 11 hardpoints"
+      },
+      {
+        "offset": null,
+        "name": "pilot_id",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Assigned pilot ID or index"
+      }
+    ]
+  },
+  {
+    "name": "Waypoint",
+    "size": 21,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "marker",
+        "type": "uint8_t",
+        "size": 1,
+        "comment": "Always 0x01 (waypoint record marker)"
+      },
+      {
+        "offset": 1,
+        "name": "x_coord",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 3,
+        "name": "marker_1",
+        "type": "int16_t",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 5,
+        "name": "y_coord",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 7,
+        "name": "marker_2",
+        "type": "int16_t",
+        "size": 2,
+        "comment": "|"
+      },
+      {
+        "offset": 9,
+        "name": "constant",
+        "type": "uint16_t",
+        "size": 2,
+        "comment": "Always 16 (0x0010)"
+      },
+      {
+        "offset": 11,
+        "name": "duplicate_data",
+        "type": "uint8_t[10]",
+        "size": 10,
+        "comment": "|"
+      }
+    ]
+  },
+  {
+    "name": "MenuElementArray",
+    "size": 0,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": []
+  },
+  {
+    "name": "WaypointArray",
+    "size": 0,
+    "status": "confirmed",
+    "source": "structures.yaml",
+    "fields": []
   }
 ]

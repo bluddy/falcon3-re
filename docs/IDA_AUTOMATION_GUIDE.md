@@ -314,6 +314,42 @@ if __name__ == "__main__":
     main()
 ```
 
+### Task 4: Applying Structure Offsets (The 'T' Key Programmatically)
+
+To label struct displacement operands (e.g. converting `[di+0x0A]` to `[di+AIContext.target_slot]`):
+
+```python
+import idc
+import idaapi
+
+idaapi.auto_wait()
+
+# 1. Get the structure ID
+sid = idc.get_struc_id("AIContext")
+func_ea = 0x495DF
+func = idaapi.get_func(func_ea)
+
+ea = func.start_ea
+while ea < func.end_ea:
+    insn = idaapi.insn_t()
+    if idaapi.decode_insn(insn, ea) > 0:
+        for op_idx in range(len(insn.ops)):
+            op = insn.ops[op_idx]
+            if op.type == idc.o_displ:
+                # Check register and apply struct offset
+                op_text = idc.print_operand(ea, op_idx).lower()
+                if "di" in op_text:
+                    # idc.op_stroff(ea, op_idx, sid, delta=0)
+                    idc.op_stroff(ea, op_idx, sid, 0)
+    ea = idc.next_head(ea, func.end_ea)
+
+idc.qexit(0)
+```
+
+**Automation Tools Available:**
+- `analysis/ida_scripts/sync_structs_to_ida.py` - Syncs all structs and enums from `registry/structs.json` and `registry/enums.json`.
+- `analysis/ida_scripts/apply_struct_offsets.py` - Batch applies structure offsets specified in `analysis/ida_scripts/struct_offset_targets.json`.
+
 ---
 
 ## Address Translation

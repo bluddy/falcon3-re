@@ -39,39 +39,52 @@ When analyzing code:
 [detailed description]
 ```
 
-### 3. Rename (Synchronize with IDA)
+### 3. Rename & Tag Structures (Synchronize with IDA)
 
-**Location**: `registry/functions.yaml` (SINGLE SOURCE OF TRUTH)
+**Location**: `registry/functions.json`, `registry/globals.json`, `registry/structs.json` (SINGLE SOURCE OF TRUTH)
 
-**Immediately add discovered functions** to YAML registry:
+**Immediately add discovered functions** to the JSON registry:
 
-```yaml
-functions:
-  - address: 0x011450
-    name: flight_control_axes_read_normalize
-    system: flight_physics
-    size: 114
-    doc: Reads 4 flight control axes and normalizes to ±2048 range
-    source: docs/architecture/flight_physics.md
+```json
+{
+  "address": 70736,
+  "name": "flight_control_axes_read_normalize",
+  "system": "flight_physics",
+  "size": 114,
+  "doc": "Reads 4 flight control axes and normalizes to ±2048 range",
+  "source": "docs/architecture/flight_physics.md"
+}
 ```
 
 **Naming convention**: `<system>_<component>_<action>_<detail>`
 
-**Examples**:
-- `dos_file_open` - DOS system file opening
-- `ai_entity_behavior_dispatcher` - AI entity behavior routing
-- `terrain_tile_heightmap_sample` - Terrain heightmap sampling
-- `hud_readout_render_coordinator` - HUD rendering coordinator
-
-**Run synchronization**:
+**Run name synchronization**:
 ```powershell
-cd c:\Users\ybarnoy\projects\falcon3
 & "C:\Program Files\IDA Professional 9.1\idat.exe" -A -S"analysis\ida_scripts\apply_known_names.py" "analysis\ida_falconcd\FALCONCD.EXE.i64"
 ```
 
-**Note**: The `apply_known_names.py` script reads from `registry/functions.yaml` automatically. No need to edit Python code!
+#### 3b. Structure Offset Labeling (CRITICAL RULE FOR ALL FUTURE FUNCTIONS)
 
-**Verify**: Check `analysis/ida_naming_report.json` for results
+Whenever analyzing a function that interacts with a structure via a register pointer (e.g. `[di+0x0A]`, `[bx+0x14]`, `[si+4]`):
+
+1. **Check/Update Struct Definition**:
+   Ensure the structure exists in `registry/structs.json` (e.g. `FarObj`, `AIContext`, `EntitySlotRecord`, `FlightKinematics`). If new fields/offsets are identified, add them to `fields` in `registry/structs.json`.
+
+2. **Sync Structs to IDA**:
+   ```powershell
+   & "C:\Program Files\IDA Professional 9.1\idat.exe" -A -S"analysis\ida_scripts\sync_structs_to_ida.py" "analysis\ida_falconcd\FALCONCD.EXE.i64"
+   ```
+
+3. **Label Offsets in Disassembly**:
+   - **In IDA GUI**: Highlight the displacement operand (e.g., `[di+0xA]`), press **`T`** ("Structure offset..."), and select the struct name.
+   - **Via Automation Script**: Add the target function, struct, and register to `analysis/ida_scripts/struct_offset_targets.json` and run:
+     ```powershell
+     & "C:\Program Files\IDA Professional 9.1\idat.exe" -A -S"analysis\ida_scripts\apply_struct_offsets.py" "analysis\ida_falconcd\FALCONCD.EXE.i64"
+     ```
+     This automatically transforms:
+     `mov cx, es:[di+2]`  -->  `mov cx, es:[di+AIContext.farobj_slot_idx]`
+
+**Verify**: Check `analysis/ida_naming_report.json` and `analysis/ida_scripts/struct_offset_report.json` for results.
 
 ### 4. Commit (Version Control)
 
@@ -100,12 +113,13 @@ Results: X renamed, Y already correct
 
 ```
 registry/
-├── functions.yaml      # ALL function names (1,892 functions)
-├── globals.yaml        # Global variable names (32 globals)
-└── structs.yaml        # Data structure definitions (TODO)
+├── functions.json      # ALL function names (3,192 functions)
+├── globals.json        # Global variable names (172 globals)
+├── structs.json        # Data structure definitions (28 structs)
+└── enums.json          # Enum and bitflag definitions (28 enums)
 ```
 
-**Critical**: `registry/*.yaml` files are the ONLY place to add new function/global names!
+**Critical**: `registry/*.json` files are the ONLY place to add new function/global/structure definitions! Avoid YAML parsing issues.
 
 ### Documentation (Permanent Knowledge)
 
@@ -163,11 +177,12 @@ game/
 
 ## When to Use Each Location
 
-### Use `registry/*.yaml`
-- ✅ **ALL function names** (edit `registry/functions.yaml`)
-- ✅ **ALL global variables** (edit `registry/globals.yaml`)
-- ✅ **ALL data structures** (edit `registry/structs.yaml`)
-- ⚠️ This is the ONLY place to add names - they sync to IDA automatically
+### Use `registry/*.json`
+- ✅ **ALL function names** (edit `registry/functions.json`)
+- ✅ **ALL global variables** (edit `registry/globals.json`)
+- ✅ **ALL data structures** (edit `registry/structs.json`)
+- ✅ **ALL enums and bitflags** (edit `registry/enums.json`)
+- ⚠️ This is the ONLY place to add definitions - they sync to IDA automatically without fragile YAML parsing!
 
 ### Use `docs/<system>/`
 - ✅ System architecture (complete understanding)

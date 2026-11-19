@@ -698,80 +698,6 @@
     ]
   },
   {
-    "name": "FileOperation",
-    "type": "uint8_t",
-    "description": "File I/O operation codes for op_dispatch_far_entry. Wraps DOS INT 21h file operations.",
-    "evidence": [
-      {
-        "function": "squad_campaign_file_loader",
-        "address": "0x6A6FA-0x6A732"
-      },
-      {
-        "function": "campaign_save_temp_file_write",
-        "address": "0x1361A3-0x136293"
-      }
-    ],
-    "values": [
-      {
-        "value": 4,
-        "name": "FILE_OP_OPEN_VARIANT",
-        "description": "Open file (variant/extended mode)",
-        "evidence": "push 4; call op_dispatch_far_entry at 0x6A744"
-      },
-      {
-        "value": 6,
-        "name": "FILE_OP_OPEN",
-        "description": "Open file (standard mode)",
-        "evidence": "push 6; call op_dispatch_far_entry at 0x6A6FA"
-      },
-      {
-        "value": 8,
-        "name": "FILE_OP_CLOSE",
-        "description": "Close file handle",
-        "evidence": "push 8; call op_dispatch_far_entry at 0x6A72D"
-      },
-      {
-        "value": 10,
-        "name": "FILE_OP_READ",
-        "description": "Read from file (standard)",
-        "evidence": "push 0Ah; call op_dispatch_far_entry at 0x6A717"
-      },
-      {
-        "value": 12,
-        "name": "FILE_OP_READ_EXTENDED",
-        "description": "Read from file (extended/buffered)",
-        "evidence": "push 0Ch; call op_dispatch_far_entry at 0x6A75B"
-      }
-    ],
-    "notes": "Operations 11, 13-15 likely WRITE variants (not yet observed)"
-  },
-  {
-    "name": "GraphicsMode",
-    "type": "uint8_t",
-    "description": "Display graphics mode setting. Determines UI rendering path.",
-    "evidence": [
-      {
-        "global": "graphics_mode_flag",
-        "address": "0x7A300"
-      }
-    ],
-    "values": [
-      {
-        "value": 0,
-        "name": "GRAPHICS_TEXT_ONLY",
-        "description": "Text-only UI (low-end systems)",
-        "evidence": "cmp es:graphics_mode_flag, 0 at 0x17B4E0"
-      },
-      {
-        "value": 3,
-        "name": "GRAPHICS_FULL",
-        "description": "Full graphics UI (VGA/SVGA)",
-        "evidence": "cmp es:graphics_mode_flag, 3 at 0x6AF21"
-      }
-    ],
-    "notes": "Modes 1-2 may exist but not observed in campaign functions"
-  },
-  {
     "name": "MenuElementType",
     "type": "uint8_t",
     "description": "Menu element rendering types for R45 dispatcher.\nDispatcher at 0x1573C3 switches on element index (0-10).\n",
@@ -849,5 +775,763 @@
         "evidence": "call ui_element_render_single at 0x157461"
       }
     ]
+  },
+  {
+    "name": "RadarModeState",
+    "type": "uint8",
+    "source": "RADAR_MODE_STATE_MACHINE.md; byte_595B2 (DS:0x595B2)",
+    "description": "Primary radar mode state variable",
+    "values": [
+      {
+        "value": 0,
+        "name": "SEARCH",
+        "comment": "Radar searching, no mode selected"
+      },
+      {
+        "value": 1,
+        "name": "NAM",
+        "comment": "Normal Air Mode (or arcade equivalent)"
+      },
+      {
+        "value": 2,
+        "name": "SAM",
+        "comment": "Situation Awareness Mode (intermediate tracking)"
+      },
+      {
+        "value": 3,
+        "name": "ACM",
+        "comment": "Air Combat Maneuvering (close range)"
+      },
+      {
+        "value": 4,
+        "name": "DISABLED",
+        "comment": "Mode disabled/invalid"
+      },
+      {
+        "value": 5,
+        "name": "STT",
+        "comment": "Single Target Track (locked)"
+      }
+    ]
+  },
+  {
+    "name": "RadarType",
+    "type": "uint8",
+    "source": "RADAR_MODE_STATE_MACHINE.md; byte_59573 (DS:0x59573)",
+    "description": "Radar type configuration selector",
+    "values": [
+      {
+        "value": 0,
+        "name": "SAD",
+        "comment": "Situation Awareness Display (360\u00b0 arcade)"
+      },
+      {
+        "value": 1,
+        "name": "SAM",
+        "comment": "Situation Awareness Mode (120\u00b0 cone intermediate)"
+      },
+      {
+        "value": 2,
+        "name": "HFR",
+        "comment": "High Fidelity Radar (realistic manual control)"
+      }
+    ]
+  },
+  {
+    "name": "EntityStatusFlags",
+    "type": "uint8",
+    "source": "RADAR_MODE_STATE_MACHINE.md; EntitySlotRecord+0x74",
+    "description": "Entity status flags at entity+0x74, used by radar scanner",
+    "bitflags": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "name": "ACTIVE",
+        "comment": "Entity slot is active/alive"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "name": "BIT1_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "name": "BIT2_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 3,
+        "mask": 8,
+        "name": "BIT3_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "name": "BIT4_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "name": "BIT5_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "name": "AIRCRAFT_TYPE",
+        "comment": "Entity is aircraft (required for radar visibility)"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "name": "BIT7_UNKNOWN",
+        "comment": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "EntityTrackingFlags",
+    "type": "uint8",
+    "source": "RADAR_MODE_STATE_MACHINE.md; EntitySlotRecord+0x79",
+    "description": "Entity tracking/visibility flags at entity+0x79, used by radar scanner",
+    "bitflags": [
+      {
+        "bit": 0,
+        "mask": 1,
+        "name": "RADAR_VISIBLE",
+        "comment": "Entity is visible/trackable on radar (detection flag)"
+      },
+      {
+        "bit": 1,
+        "mask": 2,
+        "name": "BIT1_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 2,
+        "mask": 4,
+        "name": "BIT2_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 3,
+        "mask": 8,
+        "name": "BIT3_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 4,
+        "mask": 16,
+        "name": "BIT4_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 5,
+        "mask": 32,
+        "name": "BIT5_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 6,
+        "mask": 64,
+        "name": "BIT6_UNKNOWN",
+        "comment": "Unknown"
+      },
+      {
+        "bit": 7,
+        "mask": 128,
+        "name": "BIT7_UNKNOWN",
+        "comment": "Unknown"
+      }
+    ]
+  },
+  {
+    "name": "RadarDisplayMode",
+    "type": "uint8",
+    "source": "radar_display_position_calculator (0x39D02); byte_595B6",
+    "description": "Radar display mode flag affecting coordinate scaling",
+    "values": [
+      {
+        "value": 0,
+        "name": "MODE_0",
+        "comment": "Large bounds, clamped [0xF71C, 0x8E4]"
+      },
+      {
+        "value": 1,
+        "name": "MODE_1",
+        "comment": "Medium bounds, clamped to [0x555, 0xFAAB]"
+      },
+      {
+        "value": 2,
+        "name": "MODE_2",
+        "comment": "Standard bounds, no clamping"
+      }
+    ]
+  },
+  {
+    "name": "WeaponType",
+    "type": "uint8",
+    "source": "WEAPON_TYPES_DECODED.md, IR_LOCK_ANALYSIS.md, AG_WEAPONS_ANALYSIS.md, weapon_names.json",
+    "description": "Weapon type identifier used throughout weapon spawn and fire systems. Weapon names found at 0x55c55.",
+    "values": [
+      {
+        "value": 18,
+        "name": "AIM9_SIDEWINDER",
+        "comment": "AIM-9P/M/R Sidewinder IR heat-seeking missile"
+      },
+      {
+        "value": 19,
+        "name": "AIM120_AMRAAM",
+        "comment": "AIM-120/E AMRAAM radar-guided missile"
+      },
+      {
+        "value": 20,
+        "name": "AG_WEAPON_TYPE_14",
+        "comment": "A-G weapon type 0x14 (unknown)"
+      },
+      {
+        "value": 21,
+        "name": "AGM65_MAVERICK_TV",
+        "comment": "AGM-65B Maverick TV-guided (vel 4860, dmg 200)"
+      },
+      {
+        "value": 22,
+        "name": "AGM65_MAVERICK_IR",
+        "comment": "AGM-65D Maverick IR-guided (likely)"
+      },
+      {
+        "value": 23,
+        "name": "AG_WEAPON_TYPE_17",
+        "comment": "A-G weapon type 0x17 (unknown, Maverick variant?)"
+      },
+      {
+        "value": 24,
+        "name": "AG_WEAPON_TYPE_18",
+        "comment": "A-G weapon type 0x18 (unknown)"
+      },
+      {
+        "value": 25,
+        "name": "AGM88_HARM",
+        "comment": "AGM-88A HARM anti-radiation missile"
+      },
+      {
+        "value": 26,
+        "name": "AGM45_SHRIKE",
+        "comment": "AGM-45A Shrike anti-radiation missile (older than HARM)"
+      },
+      {
+        "value": 27,
+        "name": "AG_WEAPON_TYPE_1B",
+        "comment": "A-G weapon type 0x1B (unknown)"
+      },
+      {
+        "value": 28,
+        "name": "AG_WEAPON_TYPE_1C",
+        "comment": "A-G weapon type 0x1C (unknown)"
+      },
+      {
+        "value": 29,
+        "name": "AG_WEAPON_TYPE_1D",
+        "comment": "A-G weapon type 0x1D (unknown)"
+      },
+      {
+        "value": 30,
+        "name": "AG_WEAPON_TYPE_1E",
+        "comment": "A-G weapon type 0x1E (unknown)"
+      },
+      {
+        "value": 31,
+        "name": "AG_WEAPON_TYPE_1F",
+        "comment": "A-G weapon type 0x1F (unknown)"
+      },
+      {
+        "value": 32,
+        "name": "AG_WEAPON_TYPE_20",
+        "comment": "A-G weapon type 0x20 (unknown)"
+      },
+      {
+        "value": 33,
+        "name": "AG_WEAPON_TYPE_21",
+        "comment": "A-G weapon type 0x21 (unknown)"
+      },
+      {
+        "value": 34,
+        "name": "AG_WEAPON_TYPE_22",
+        "comment": "A-G weapon type 0x22 (unknown)"
+      },
+      {
+        "value": 35,
+        "name": "AG_WEAPON_TYPE_23",
+        "comment": "A-G weapon type 0x23 (unknown)"
+      },
+      {
+        "value": 36,
+        "name": "AG_WEAPON_TYPE_24",
+        "comment": "A-G weapon type 0x24 (unknown)"
+      },
+      {
+        "value": 37,
+        "name": "AG_WEAPON_TYPE_25",
+        "comment": "A-G weapon type 0x25 (unknown, LGB?)"
+      },
+      {
+        "value": 38,
+        "name": "AG_WEAPON_TYPE_26",
+        "comment": "A-G weapon type 0x26 (unknown, LGB?)"
+      },
+      {
+        "value": 39,
+        "name": "AG_WEAPON_TYPE_27",
+        "comment": "A-G weapon type 0x27 (unknown, LGB?)"
+      },
+      {
+        "value": 40,
+        "name": "MK82_BOMB",
+        "comment": "Mk-82 500lb bomb or rocket (vel 3280, dmg 2)"
+      },
+      {
+        "value": 41,
+        "name": "AG_WEAPON_TYPE_29",
+        "comment": "A-G weapon type 0x29 (unknown)"
+      },
+      {
+        "value": 42,
+        "name": "AG_WEAPON_TYPE_2A",
+        "comment": "A-G weapon type 0x2A (unknown)"
+      },
+      {
+        "value": 43,
+        "name": "AG_WEAPON_TYPE_2B",
+        "comment": "A-G weapon type 0x2B (vel 3690, dmg 20)"
+      },
+      {
+        "value": 44,
+        "name": "AG_WEAPON_TYPE_2C",
+        "comment": "A-G weapon type 0x2C (unknown)"
+      },
+      {
+        "value": 45,
+        "name": "CBU84_CLUSTER",
+        "comment": "CBU-84 cluster bomb unit (likely)"
+      },
+      {
+        "value": 46,
+        "name": "GBU15_GUIDED",
+        "comment": "GBU-15 electro-optical guided bomb (likely)"
+      },
+      {
+        "value": 47,
+        "name": "AG_WEAPON_TYPE_2F",
+        "comment": "A-G weapon type 0x2F (unknown)"
+      },
+      {
+        "value": 48,
+        "name": "AGM84_HARPOON",
+        "comment": "AGM-84 Harpoon anti-ship missile (vel 3526, dmg 200)"
+      },
+      {
+        "value": 49,
+        "name": "AG_WEAPON_TYPE_31",
+        "comment": "A-G weapon type 0x31 (unknown)"
+      },
+      {
+        "value": 50,
+        "name": "AG_WEAPON_TYPE_32",
+        "comment": "A-G weapon type 0x32 (unknown)"
+      },
+      {
+        "value": 51,
+        "name": "M61A1_VULCAN",
+        "comment": "M61A1 Vulcan 20mm cannon (6-barrel Gatling)"
+      },
+      {
+        "value": 52,
+        "name": "GUN_VARIANT_34",
+        "comment": "Gun variant 0x34 (reduced ROF or damage?)"
+      },
+      {
+        "value": 53,
+        "name": "GUN_VARIANT_35",
+        "comment": "Gun variant 0x35"
+      },
+      {
+        "value": 54,
+        "name": "GUN_VARIANT_36",
+        "comment": "Gun variant 0x36"
+      },
+      {
+        "value": 55,
+        "name": "GUN_VARIANT_37",
+        "comment": "Gun variant 0x37"
+      }
+    ]
+  },
+  {
+    "name": "IRLockSearchMode",
+    "type": "uint8",
+    "source": "IR_LOCK_ANALYSIS.md; cs:ir_lock_search_mode, weapon_aim9_seeker_lock_check @ 0x32B7F",
+    "description": "IR missile seeker search pattern mode for AIM-9 Sidewinder",
+    "values": [
+      {
+        "value": 0,
+        "name": "SIMPLE",
+        "comment": "Simple 4-target cycle (indices 0-3)"
+      },
+      {
+        "value": 1,
+        "name": "EXTENDED",
+        "comment": "Extended 13-target cycle (indices 4-16)"
+      }
+    ]
+  },
+  {
+    "name": "WeaponKeyCode",
+    "type": "uint8",
+    "source": "WEAPON_SELECTION_NOTES.md; manual/extracted/f3keys.txt",
+    "description": "Keyboard scan codes for weapon control keys (from manual)",
+    "values": [
+      {
+        "value": 14,
+        "name": "BACKSPACE_AG_SELECT",
+        "comment": "Backspace: Select A-G weapon (bombs, AGMs)"
+      },
+      {
+        "value": 28,
+        "name": "ENTER_AA_SELECT",
+        "comment": "Enter: Select A-A weapon (missiles, gun)"
+      },
+      {
+        "value": 39,
+        "name": "SEMICOLON_RIPPLE_MINUS",
+        "comment": "Semicolon (;): Decrease bomb ripple count"
+      },
+      {
+        "value": 40,
+        "name": "APOSTROPHE_RIPPLE_PLUS",
+        "comment": "Apostrophe ('): Increase bomb ripple count"
+      },
+      {
+        "value": 44,
+        "name": "Z_RADAR_LOCK",
+        "comment": "Z: Radar lock on/off toggle"
+      },
+      {
+        "value": 57,
+        "name": "SPACE_FIRE",
+        "comment": "Space: Fire weapon"
+      }
+    ]
+  },
+  {
+    "name": "DetectionModeState",
+    "type": "uint8",
+    "source": "IR_LOCK_ANALYSIS.md; ds:0x4AC2 (detection_mode_state global)",
+    "description": "Detection/lock mode state shared by radar and IR lock systems",
+    "values": [
+      {
+        "value": 0,
+        "name": "INACTIVE",
+        "comment": "Detection inactive"
+      },
+      {
+        "value": 1,
+        "name": "MODE_1",
+        "comment": "Detection mode 1"
+      },
+      {
+        "value": 2,
+        "name": "MODE_2",
+        "comment": "Detection mode 2"
+      },
+      {
+        "value": 3,
+        "name": "MODE_3",
+        "comment": "Detection mode 3"
+      },
+      {
+        "value": 4,
+        "name": "MODE_4",
+        "comment": "Detection mode 4"
+      },
+      {
+        "value": 5,
+        "name": "ACTIVE_LOCK",
+        "comment": "Active lock mode (triggers IR tone @ value 5, radar STT integration)"
+      }
+    ]
+  },
+  {
+    "name": "EntityFieldOffset",
+    "type": "uint8",
+    "source": "entity_physics_and_ai_update analysis; EntitySlotRecord structure; TARGET_SYSTEM_FINDINGS.md",
+    "description": "Known field offsets in EntitySlotRecord structure (200+ bytes). Used throughout entity update, weapon, and target systems.",
+    "values": [
+      {
+        "value": 0,
+        "name": "HEADER",
+        "comment": "Header fields start"
+      },
+      {
+        "value": 6,
+        "name": "FAROBJ_SLOT",
+        "comment": "FarObj main table slot index"
+      },
+      {
+        "value": 8,
+        "name": "DISTANCE_LO",
+        "comment": "Distance to player (lo word)"
+      },
+      {
+        "value": 10,
+        "name": "DISTANCE_HI",
+        "comment": "Distance to player (hi word)"
+      },
+      {
+        "value": 46,
+        "name": "VELOCITY_COMPONENT",
+        "comment": "Velocity component - gravity/drag applied here (sub [si+2Eh], ax @ 0x3D3BD)"
+      },
+      {
+        "value": 116,
+        "name": "STATUS_FLAGS",
+        "comment": "Entity status flags (bit 0=ACTIVE, bit 2=DESTROYED?, bit 6=AIRCRAFT_TYPE)"
+      },
+      {
+        "value": 117,
+        "name": "WEAPON_TYPE",
+        "comment": "Weapon type (WeaponType enum, 0=not a weapon)"
+      },
+      {
+        "value": 118,
+        "name": "UNKNOWN_FLAGS_76",
+        "comment": "Unknown flags (bit 7 checked by target scanning)"
+      },
+      {
+        "value": 121,
+        "name": "TRACKING_FLAGS",
+        "comment": "Tracking flags (bit 0=RADAR_VISIBLE)"
+      },
+      {
+        "value": 142,
+        "name": "ANGLE_AZIMUTH",
+        "comment": "Azimuth angle from player (14-bit)"
+      },
+      {
+        "value": 146,
+        "name": "RANGE",
+        "comment": "Computed range to player"
+      },
+      {
+        "value": 150,
+        "name": "POSITION_X",
+        "comment": "World X position"
+      },
+      {
+        "value": 152,
+        "name": "POSITION_Y",
+        "comment": "World Y position"
+      },
+      {
+        "value": 154,
+        "name": "POSITION_Z",
+        "comment": "World Z position / altitude"
+      },
+      {
+        "value": 174,
+        "name": "HEAT_SIGNATURE",
+        "comment": "IR visibility for AIM-9 seeker / checked by target_cycle_scan"
+      },
+      {
+        "value": 202,
+        "name": "DAMAGE_STATUS_FLAGS",
+        "comment": "Damage state flags (DAMAGE_NAV, checked by target scanning)"
+      }
+    ]
+  },
+  {
+    "name": "ObjectCategory",
+    "type": "uint16",
+    "source": "IMPACT_DETECTION_BREAKTHROUGH.md; entity_dispatch_system_analysis",
+    "description": "Entity object category at EntitySlotRecord +0x0C. Identifies entity type and drives\npolymorphic dispatch to category-specific update functions via dispatch table at DS:0x2544.\nEach category maps to specialized function: physics/AI for aircraft, view projection for\nbuildings, projectile update for weapons. Dispatched by entity_slot_update_loop @ 0x3C25D.\n",
+    "values": [
+      {
+        "value": 0,
+        "name": "UNKNOWN_0",
+        "comment": "ai_state_processor_core"
+      },
+      {
+        "value": 1,
+        "name": "PLAYER_AIRCRAFT",
+        "comment": "entity_physics_and_ai_update - CONFIRMED!"
+      },
+      {
+        "value": 2,
+        "name": "AI_FIGHTER",
+        "comment": "ai_combat_maneuver_selector - CONFIRMED!"
+      },
+      {
+        "value": 3,
+        "name": "AI_BOMBER",
+        "comment": "ai_behavior_decision_tree - CONFIRMED!"
+      },
+      {
+        "value": 4,
+        "name": "BUILDING",
+        "comment": "farobj_view_project_step - CONFIRMED!"
+      },
+      {
+        "value": 5,
+        "name": "GROUND_STRUCTURE",
+        "comment": "farobj_view_project_step (static objects)"
+      },
+      {
+        "value": 6,
+        "name": "UNKNOWN_6",
+        "comment": "entity_slot_update_loop (recursive?)"
+      },
+      {
+        "value": 7,
+        "name": "GROUND_VEHICLE",
+        "comment": "ai_target_priority_evaluator"
+      },
+      {
+        "value": 8,
+        "name": "UNKNOWN_8",
+        "comment": "hud_panel_transform_step"
+      },
+      {
+        "value": 9,
+        "name": "PROJECTILE_A",
+        "comment": "hw_config_flags_build"
+      },
+      {
+        "value": 10,
+        "name": "PROJECTILE_B",
+        "comment": "hw_config_flags_build"
+      },
+      {
+        "value": 11,
+        "name": "PROJECTILE_C",
+        "comment": "hw_config_flags_build"
+      },
+      {
+        "value": 12,
+        "name": "PROJECTILE_D",
+        "comment": "hw_config_flags_build"
+      },
+      {
+        "value": 13,
+        "name": "PROJECTILE_E",
+        "comment": "hw_config_flags_build"
+      },
+      {
+        "value": 14,
+        "name": "PROJECTILE_F",
+        "comment": "hw_config_flags_build"
+      },
+      {
+        "value": 15,
+        "name": "UNKNOWN_15",
+        "comment": "sub_3E170"
+      },
+      {
+        "value": 16,
+        "name": "UNKNOWN_16",
+        "comment": "sub_40AA9"
+      },
+      {
+        "value": 17,
+        "name": "UNKNOWN_17",
+        "comment": "sub_433DC"
+      },
+      {
+        "value": 18,
+        "name": "INACTIVE",
+        "comment": "NULL function - inactive entities"
+      },
+      {
+        "value": 19,
+        "name": "PROJECTILE_G",
+        "comment": "hw_config_flags_build"
+      }
+    ]
+  },
+  {
+    "name": "FileOperation",
+    "type": "uint8_t",
+    "description": "File I/O operation codes for op_dispatch_far_entry. Wraps DOS INT 21h file operations.",
+    "evidence": [
+      {
+        "function": "squad_campaign_file_loader",
+        "address": "0x6A6FA-0x6A732"
+      },
+      {
+        "function": "campaign_save_temp_file_write",
+        "address": "0x1361A3-0x136293"
+      }
+    ],
+    "values": [
+      {
+        "value": 4,
+        "name": "FILE_OP_OPEN_VARIANT",
+        "description": "Open file (variant/extended mode)",
+        "evidence": "push 4; call op_dispatch_far_entry at 0x6A744"
+      },
+      {
+        "value": 6,
+        "name": "FILE_OP_OPEN",
+        "description": "Open file (standard mode)",
+        "evidence": "push 6; call op_dispatch_far_entry at 0x6A6FA"
+      },
+      {
+        "value": 8,
+        "name": "FILE_OP_CLOSE",
+        "description": "Close file handle",
+        "evidence": "push 8; call op_dispatch_far_entry at 0x6A72D"
+      },
+      {
+        "value": 10,
+        "name": "FILE_OP_READ",
+        "description": "Read from file (standard)",
+        "evidence": "push 0Ah; call op_dispatch_far_entry at 0x6A717"
+      },
+      {
+        "value": 12,
+        "name": "FILE_OP_READ_EXTENDED",
+        "description": "Read from file (extended/buffered)",
+        "evidence": "push 0Ch; call op_dispatch_far_entry at 0x6A75B"
+      }
+    ],
+    "notes": "Operations 11, 13-15 likely WRITE variants (not yet observed)"
+  },
+  {
+    "name": "GraphicsMode",
+    "type": "uint8_t",
+    "description": "Display graphics mode setting. Determines UI rendering path.",
+    "evidence": [
+      {
+        "global": "graphics_mode_flag",
+        "address": "0x7A300"
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "GRAPHICS_TEXT_ONLY",
+        "description": "Text-only UI (low-end systems)",
+        "evidence": "cmp es:graphics_mode_flag, 0 at 0x17B4E0"
+      },
+      {
+        "value": 3,
+        "name": "GRAPHICS_FULL",
+        "description": "Full graphics UI (VGA/SVGA)",
+        "evidence": "cmp es:graphics_mode_flag, 3 at 0x6AF21"
+      }
+    ],
+    "notes": "Modes 1-2 may exist but not observed in campaign functions"
   }
 ]
