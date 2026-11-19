@@ -430,25 +430,26 @@
       {
         "offset": 0,
         "size": 2,
-        "name": "p0",
+        "name": "local_y",
         "type": "int16",
-        "comment": "coordinate component"
+        "comment": "Local Y offset in 3D vertex mesh (added to centroid Y at [di+4]). Scale: 1715.00458 local units = 1.0 nm"
       },
       {
         "offset": 2,
         "size": 2,
-        "name": "mid",
+        "name": "local_z",
         "type": "int16",
-        "comment": "always 0 in all 8 files"
+        "comment": "Local Z altitude offset (added to centroid Z at [di+8]). Zero for sea/lake surface."
       },
       {
         "offset": 4,
         "size": 2,
-        "name": "p2",
+        "name": "local_x",
         "type": "int16",
-        "comment": "coordinate component"
+        "comment": "Local X offset in 3D vertex mesh (added to centroid X at [di+0]). Scale: 1715.00458 local units = 1.0 nm"
       }
-    ]
+    ],
+    "comment": "ISLDAT 3D convex polygon vertex (6 bytes). Confirmed in FALCONCD.EXE self-modifying code at 0x289E9..0x28A1A and Bresenham line draw at 0x28B1D..0x28B8F."
   },
   {
     "name": "IsldatSubRecord",

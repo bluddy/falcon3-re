@@ -1437,5 +1437,40 @@
     "type": "word",
     "doc": "Detection threshold value. Set to 0xA00 (2560) by detection logic at 0x3AABD.  Used in conjunction with detection_timer for time-based state management.\n",
     "source": "radar_detection_functions.txt"
+  },
+  {
+    "name": "map_pos_x",
+    "address": 72740,
+    "type": "uint16",
+    "status": "confirmed",
+    "comment": "Current player/camera map position X (0..31 in 32x32 active elevation grid, bias 0x3400, divisor 0xCCD0)."
+  },
+  {
+    "name": "map_pos_y",
+    "address": 72742,
+    "type": "uint16",
+    "status": "confirmed",
+    "comment": "Current player/camera map position Y (0..31 in 32x32 active elevation grid, bias 0x3400, divisor 0xCCD0)."
+  },
+  {
+    "name": "tactical_map_buffer_ptr",
+    "address": 499090,
+    "type": "far_ptr",
+    "status": "confirmed",
+    "comment": "Far pointer to 2D tactical map background raster buffer (4-byte header: width=240, height=200, followed by 48,000 bytes palette indices). Loaded by undoc_133535 from .MAP file; displayed up to 20x zoom in 2D tactical planning screen; never accessed by 3D flight engine."
+  },
+  {
+    "name": "isldat_gridb_quad_off",
+    "address": 84786,
+    "type": "uint16",
+    "status": "confirmed",
+    "comment": "Offset to current quadrant coarse Grid B in ISLDAT (4 quadrants of 16x16 cells = 1024 bytes, 0x000..0x400)."
+  },
+  {
+    "name": "isldat_grida_quad_off",
+    "address": 84797,
+    "type": "uint16",
+    "status": "confirmed",
+    "comment": "Offset to current quadrant fine Grid A in ISLDAT (4 quadrants of 8x8 cells = 256 bytes, 0x400..0x500)."
   }
 ]
