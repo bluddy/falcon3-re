@@ -2903,5 +2903,81 @@
         "description": "Tile coordinates and active streaming state flags"
       }
     ]
+  },
+  {
+    "name": "IslandFeatureRecord",
+    "size": 34,
+    "status": "confirmed",
+    "source": "ISLDAT / terrain_vector_feature_render_3d",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 4,
+        "name": "centroid_x",
+        "type": "int32",
+        "comment": "16.16 fixed-point nm"
+      },
+      {
+        "offset": 4,
+        "size": 4,
+        "name": "centroid_y",
+        "type": "int32",
+        "comment": "16.16 fixed-point nm"
+      },
+      {
+        "offset": 8,
+        "size": 4,
+        "name": "centroid_z",
+        "type": "int32",
+        "comment": "16.16 fixed-point nm"
+      },
+      {
+        "offset": 12,
+        "size": 20,
+        "name": "flags_and_extents",
+        "type": "uint16[10]"
+      },
+      {
+        "offset": 32,
+        "size": 2,
+        "name": "attr",
+        "type": "uint16",
+        "comment": "TerrainFeatureAttr (0x14 Coast, 0x32 River/Plate, 0x64 Lake, 0xC8 Border)"
+      }
+    ]
+  },
+  {
+    "name": "IslandFeatureSubrecord",
+    "size": 8,
+    "status": "confirmed",
+    "source": "ISLDAT / terrain_vector_feature_render_3d",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "next_offset",
+        "type": "uint16"
+      },
+      {
+        "offset": 2,
+        "size": 2,
+        "name": "subrec_type",
+        "type": "uint16",
+        "comment": "0x0004 polyline centerline, 0x000B facet polygon list"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "count",
+        "type": "uint16",
+        "comment": "vertex count or polygon count"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "data_offset",
+        "type": "uint16"
+      }
+    ]
   }
 ]

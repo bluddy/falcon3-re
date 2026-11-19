@@ -705,6 +705,80 @@ All previously open unknowns are now fully resolved:
 
 ---
 
+## Rivers, Roads, and Transportation Networks: Complete Architecture
+
+Falcon 3.0 divides rivers, roads, and lines of communication into two distinct architectural layers:
+1. **Visual 3D & Radar Vector Geometry** (Rivers, Canals, Waterways, and Ground Plates in `ISLDAT.<theater>`).
+2. **Strategic Campaign Node-Link Graph Network** (Roads, Convoys, Bridges, and Supply Lines in Overlay `R29` and `MAPOBJ.<theater>`).
+
+---
+
+### 1. Visual Hydrographic Features: Rivers & Canals (`ISLDAT`)
+
+Hydrographic rivers and canals are stored in `ISLDAT.<theater>` in **Grid A** (Type 2, 64 × 64 macro-cell indexing) under attribute `TerrainFeatureAttr::Developed_Plate` (`0x32` / 50) and `TerrainFeatureAttr::Lake` (`0x64` / 100).
+
+#### Dual-Representation Geometry Pipeline
+Unlike simple polylines or flat tiles, every watercourse record in `ISLDAT` is stored in a **dual-representation format**:
+- **Centroid**: 32-bit fixed-point coordinates $(X, Y, Z)$ in $16.16$ nautical miles at offsets `+0`, `+4`, `+8`.
+- **Subrecord Type 4 (`0x0004`)**: Centerline Polyline. Contains an ordered vertex list $(dX, dY)$ defining the center thread of the river or canal.
+- **Subrecord Type 11 (`0x000B`)**: 3D Polygonal Surface Facets. Contains closed vertex rings forming the waterbed surface and shoreline contours.
+
+#### 3D Flight Rendering Pipeline
+The primary in-flight rendering entry point is **`terrain_vector_feature_render_3d`** (`0x28874`, 563 bytes):
+1. **Camera Relative Translation**: Fetches the feature centroid `[di]` and computes the 3D delta relative to the aircraft/camera reference point (`es:[bx]`).
+2. **Scale & Normalization**: Normalizes coordinates through `div si` using the view scale factor (`cs:word_1F6E6`).
+3. **Centerline Drawing**: Unpacks subrecord Type 4 at `[di+22h]` and calls **`graphics_line_draw_bresenham`** (`0x28B08`, 409 bytes) to render the crisp vector polyline across the terrain.
+4. **Surface Facet Rendering**: Follows pointer chain at `[si+4]` to unpack subrecord Type 11, looping through polygon rings and calling **`render_3d_polygon_visibility_test`** (`0x2978E`) to shade the water surface polygons.
+
+#### Theater River Catalog
+- **Iraq (`IRQ`)**: 7 comprehensive records detailing the Tigris and Euphrates rivers flowing northwest to southeast through Baghdad and the Mesopotamian basin.
+- **Panama (`PAN`)**: 9 records mapping the entire Panama Canal, Gatun Lake passages, and the Chagres River connecting the Pacific and Caribbean oceans.
+- **Hokkaido (`HOK`)**: 2 records tracing the Ishikari and Tokachi rivers.
+- **Israel (`ISR`)**: 11 records tracing the Jordan River rift valley, Dead Sea feeder streams, Sea of Galilee, and developed agricultural coastal plates.
+
+---
+
+### 2. Strategic Transportation & Road Network (Overlay `R29`)
+
+Roads and ground transportation routes are not stored as massive arbitrary bitmap textures. Instead, Falcon 3.0 models the ground transportation system as a **directed node-link flow graph** that drives ground combat convoys, logistical supply lines, and bridge interdiction missions.
+
+#### Graph Data Dictionary (Overlay `R29` @ `0x13DF22`)
+Embedded in the campaign editor and mission planner (`R29_3FC2s`), the engine implements a graph definition dictionary:
+```
+ADD NODE        - Insert a transportation waypoint / intersection
+DELETE NODE     - Remove an intersection
+CAPACITY        - Maximum convoy / vehicle throughput per hour
+MAPOBJ ID       - Pointer to physical 3D ground object (bridge, airfield, depot)
+NEIGHBOR        - Adjacency list of linked road segments
+PATTERN         - Convoy formation pattern along segment
+PERCENTAGE      - Road throughput capacity currently utilized
+UNITS           - Ground combat and logistical units on the road
+ALLY-C          - Allied Combat convoy (tanks, IFVs)
+ENEMY-C         - Enemy Combat convoy
+ALLY-NC         - Allied Non-Combat convoy (supply trucks, fuelers)
+ENEMY-NC        - Enemy Non-Combat convoy
+```
+
+#### Node Linkage to Physical 3D World (`MAPOBJ`)
+- Every strategic node in the graph is linked via **`MAPOBJ ID`** to a record in `MAPOBJ.<theater>`.
+- **Bridges as Tactical Choke Points**: Bridge structures across rivers (e.g. Euphrates bridges in Iraq, Allenby Bridge in Israel) are critical `MAPOBJ` nodes with high `CAPACITY`.
+- When an air strike destroys a bridge (`MAPOBJ` damage threshold exceeded), the campaign engine severs the `NEIGHBOR` link in the graph, dropping road capacity to zero and forcing enemy ground battalions (`ENEMY-C`) to reroute or halt, creating high-value interdiction choke points.
+
+#### 2D Tactical Screen Coordination
+- Managed by **`tactical_screen_coordinator`** (`0x12DB63`, 1031 bytes in R29).
+- Directly addresses graph data at `4FC2:0168h` (`0x13E048`), reading node positions (`word_13E006`, `word_13E008`) and writing active mission waypoints to `dword_14F994`.
+
+---
+
+### 3. APG-68 Ground Map (GM) Radar Mode Integration
+
+In the F-16 cockpit, rivers and road networks interact directly with the avionics:
+- **Radar Mode F7 (GM)**: The APG-68 Ground Map mode (`radar_mode_state == 3` in `radar_f5f6f7_mode_dispatcher` at `0x6CDA8`) scans surface entities and ground features.
+- **Cockpit 'Y' Key Toggle**: Pressing the 'Y' key toggles the ground feature filter on the radar MFD.
+- **Radar Ground Return**: Water bodies and rivers act as specular reflectors (yielding dark/no-return regions on real radar screens), while developed road beds, bridges, and metal structures create strong radar backscatter. The radar projector (**`radar_display_position_calculator`** at `0x39D02`) transforms active ground targets and network nodes into MFD B-scope display coordinates.
+
+---
+
 ## Summary
 
 The terrain system is **100% understood** at the architectural level:

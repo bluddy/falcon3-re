@@ -7138,9 +7138,9 @@
   },
   {
     "address": 166004,
-    "name": "pos_diff_norm",
-    "system": "pos",
-    "doc": "563B, 18K calls; signed 32b divide with power-of-2 scale. Finding 105: [di] = ISLDAT record XYZ (i32 16.16nm at +0/+4/+8), es:[bx] = reference point at body+0xC57. **Finding 107: attr (record +0x2...",
+    "name": "terrain_vector_feature_render_3d",
+    "system": "terrain",
+    "doc": "563B, 18K calls. 3D terrain/island vector feature renderer. Unpacks ISLDAT record centroid and vertex offsets at [di], translates relative to camera position, calls graphics_line_draw_bresenham (0x28B08) to render river/road centerline polyline, and calls render_3d_polygon_visibility_test (0x2978E) to render 3D polygon surface facets.",
     "source": "old_registry (was: pos_diff_norm)"
   },
   {
@@ -20238,10 +20238,11 @@
   },
   {
     "address": 1235811,
-    "name": "sub_12DB63",
+    "name": "tactical_screen_coordinator",
     "size": 1031,
-    "doc": "1031B, bit_ops=2, buf_wr=12, calls=8, depth=1, score=7, Found via systematic expansion from font loaders",
-    "source": "expansion_analysis_2026-11-15"
+    "doc": "1031B in Overlay R29. Tactical/mission planning screen coordinator. Manages tactical screen input polling, cursor updates, waypoints, and transfers campaign node network coordinates from R29 segment 4FC2h (0x13E006, 0x13E008) to active mission structures.",
+    "source": "expansion_analysis_2026-11-15",
+    "system": "ui_tactical"
   },
   {
     "address": 1243657,
