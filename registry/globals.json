@@ -1472,5 +1472,45 @@
     "type": "uint16",
     "status": "confirmed",
     "comment": "Offset to current quadrant fine Grid A in ISLDAT (4 quadrants of 8x8 cells = 256 bytes, 0x400..0x500)."
+  },
+  {
+    "address": 128814,
+    "name": "terrain_tessellation_mode",
+    "size": 1,
+    "type": "uint8_t",
+    "doc": "Terrain mesh tessellation mode (opcode bits 9..11). 0=none, 4=midpoint, 6=triangle split, 8=hierarchical.",
+    "source": "FALCONCD.EXE analysis at 0x267FC, 0x28805, 0x29979"
+  },
+  {
+    "address": 128827,
+    "name": "raster_shading_mode_flag",
+    "size": 1,
+    "type": "uint8_t",
+    "doc": "Rasterizer shading mode flag (opcode bit 15). 0x00=flat solid span fill (loc_88247), 0x80=pseudo-Gouraud 8x8 ordered dither scanline shading (loc_882D3).",
+    "source": "FALCONCD.EXE analysis at 0x20623, 0x28A44, 0x88229"
+  },
+  {
+    "address": 72666,
+    "name": "slot3_alt_file_handle",
+    "size": 2,
+    "type": "uint16_t",
+    "doc": "File or EMS handle for theater altitude block stream in slot3.",
+    "source": "FALCONCD.EXE analysis at 0x1395B, 0x1396D"
+  },
+  {
+    "address": 72644,
+    "name": "streaming_tile_center_y",
+    "size": 2,
+    "type": "uint16_t",
+    "doc": "Current center tile Y coordinate for 3x3 active tile streaming ring.",
+    "source": "FALCONCD.EXE analysis at 0x13777"
+  },
+  {
+    "address": 72642,
+    "name": "streaming_tile_center_x",
+    "size": 2,
+    "type": "uint16_t",
+    "doc": "Current center tile X coordinate for 3x3 active tile streaming ring.",
+    "source": "FALCONCD.EXE analysis at 0x13780"
   }
 ]

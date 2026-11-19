@@ -1112,7 +1112,7 @@
     "address": 79701,
     "name": "slot3_tile3x3_load",
     "system": "slot3",
-    "doc": "139B, cd=981, in=5, callees slot3_tile_record_load x9 + slot3_handle_alloc_pair/release_pair + slot3_mask_rebuild + far sub_2BEBF. Slot3 3x3 tile loader: drops the 9 old backing of the slot3_windo...",
+    "doc": "Maintains 3x3 active tile streaming ring (9 slots) centered on player coordinates (streaming_tile_center_x, streaming_tile_center_y).",
     "source": "old_registry (was: slot3_tile3x3_load)"
   },
   {
@@ -4011,23 +4011,23 @@
   },
   {
     "address": 137044,
-    "name": "param6_append_avg_b",
-    "system": "param6",
-    "doc": "Quad midpoint subdivision (opcode state_byte_1f72e == 4). Calculates opposite edge midpoints for adaptive terrain LOD.",
+    "name": "terrain_quad_subdivide_midpoint",
+    "system": "terrain",
+    "doc": "Quad midpoint subdivision (state_byte_1f72e == 4). Calculates opposite edge midpoints for adaptive terrain LOD.",
     "source": "old_registry (was: param6_append_avg_b)"
   },
   {
     "address": 137185,
-    "name": "param6_append_3w_c",
-    "system": "param6",
-    "doc": "Quad-to-triangle mesh splitter (opcode state_byte_1f72e == 6). Splits quad into diagonal triangles (V0,V1,V2) and (V2,V3,V0) for terrain elevation tessellation.",
+    "name": "terrain_quad_split_triangles",
+    "system": "terrain",
+    "doc": "Quad-to-triangle mesh splitter (state_byte_1f72e == 6). Splits quad into diagonal triangles (V0,V1,V2) and (V2,V3,V0) for terrain elevation tessellation.",
     "source": "old_registry (was: param6_append_3w_c)"
   },
   {
     "address": 137310,
-    "name": "param6_append_scale_d",
-    "system": "param6",
-    "doc": "213B retn, callee param6_append_0f66. Parameter append form D: AX*4-scaled header + 3 words. conf: med",
+    "name": "terrain_quad_subdivide_hierarchical",
+    "system": "terrain",
+    "doc": "Hierarchical fine quad subdivision (state_byte_1f72e == 8) for detailed near-camera terrain tessellation.",
     "source": "old_registry (was: param6_append_scale_d)"
   },
   {

@@ -1533,5 +1533,120 @@
       }
     ],
     "notes": "Modes 1-2 may exist but not observed in campaign functions"
+  },
+  {
+    "name": "TerrainTessellationMode",
+    "type": "uint8_t",
+    "description": "Polygon and tile mesh tessellation/subdivision modes extracted from opcode bits 9..11",
+    "evidence": [
+      {
+        "functions": [
+          "object_record_stream_step (0x267D0)",
+          "line_record_flag_dispatch (0x287D0)",
+          "record_span_build_and_dispatch (0x29917)"
+        ]
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "TESSELLATION_NONE",
+        "description": "Render original un-tessellated polygon",
+        "evidence": "cs:state_byte_1f72e == 0"
+      },
+      {
+        "value": 2,
+        "name": "TESSELLATION_CURSOR",
+        "description": "Cursor-aligned parameter append",
+        "evidence": "param6_append_cursor_a (0x216F3)"
+      },
+      {
+        "value": 4,
+        "name": "TESSELLATION_MIDPOINT_QUAD",
+        "description": "Quad midpoint edge subdivision",
+        "evidence": "param6_append_avg_b / terrain_quad_subdivide_midpoint (0x21754)"
+      },
+      {
+        "value": 6,
+        "name": "TESSELLATION_TRIANGLE_SPLIT",
+        "description": "Quad split diagonally into two triangles (V0,V1,V2) and (V2,V3,V0)",
+        "evidence": "param6_append_3w_c / terrain_quad_split_triangles (0x217E1)"
+      },
+      {
+        "value": 8,
+        "name": "TESSELLATION_HIERARCHICAL_QUAD",
+        "description": "Hierarchical fine quad subdivision",
+        "evidence": "param6_append_scale_d / terrain_quad_subdivide_hierarchical (0x2185E)"
+      }
+    ]
+  },
+  {
+    "name": "RasterShadingMode",
+    "type": "uint8_t",
+    "description": "Rasterizer span fill mode controlled by descriptor bit 15 (CL passed to vgraph_span_raster_dispatch)",
+    "evidence": [
+      {
+        "functions": [
+          "record_op_dispatch_220b0 (0x2061B)",
+          "vgraph_slot_13 / vgraph_span_raster_dispatch (0x88229)"
+        ]
+      }
+    ],
+    "values": [
+      {
+        "value": 0,
+        "name": "SHADING_FLAT",
+        "description": "Solid flat-color span fill via rep stosw",
+        "evidence": "vgraph_span_raster_flat (loc_88247)"
+      },
+      {
+        "value": 128,
+        "name": "SHADING_PSEUDO_GOURAUD",
+        "description": "8x8 screen-space ordered dither scanline shading",
+        "evidence": "vgraph_span_raster_pseudo_gouraud (loc_882D3)"
+      }
+    ]
+  },
+  {
+    "name": "TerrainFeatureAttr",
+    "type": "uint16_t",
+    "description": "ISLDAT feature category and scale attribute word at record offset +0x20",
+    "evidence": [
+      {
+        "files": [
+          "ISLDAT.*"
+        ],
+        "disassembly": [
+          "0x28A68..0x28A80",
+          "pos_neighbor_norm_scan (0x14B17)"
+        ]
+      }
+    ],
+    "values": [
+      {
+        "value": 20,
+        "name": "FEATURE_COASTLINE",
+        "description": "Coastline and open sea water mesh in Grid B (T1)",
+        "evidence": "attr == 0x14"
+      },
+      {
+        "value": 50,
+        "name": "FEATURE_DEVELOPED_GROUND_PLATE",
+        "description": "Developed ground surface plates / bases in Grid A (T2), rendered white in 3D",
+        "evidence": "attr == 0x32"
+      },
+      {
+        "value": 100,
+        "name": "FEATURE_LAKE",
+        "description": "Inland enclosed lake water bodies in Grid B (T1)",
+        "evidence": "attr == 0x64"
+      },
+      {
+        "value": 200,
+        "name": "FEATURE_WIDE_WATER_BODY",
+        "description": "Wide water bodies / gulfs in Grid B (T1)",
+        "evidence": "attr == 0xC8"
+      }
+    ]
   }
 ]

@@ -2866,5 +2866,42 @@
     "status": "confirmed",
     "source": "structures.yaml",
     "fields": []
+  },
+  {
+    "name": "AltitudeBlock",
+    "size": 256,
+    "description": "Sparse 16x16 elevation height sample block from ALT.<theater> files",
+    "evidence": "Every ALT.<theater> file size is a multiple of 256 bytes; sampled by slot3_tile_record_load (0x13870)",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 256,
+        "name": "height_samples",
+        "type": "uint8_t[16][16]",
+        "description": "Grid of 16x16 elevation samples for one regional sector"
+      }
+    ]
+  },
+  {
+    "name": "StreamingTileRing",
+    "size": 72,
+    "description": "Active 3x3 tile streaming ring descriptors (9 tile slots around aircraft)",
+    "evidence": "slot3_tile3x3_load (0x13755) loads slots 0..8 at offsets 150h, 162h",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 18,
+        "name": "slot_handles",
+        "type": "uint16_t[9]",
+        "description": "Memory/EMS handles or pointers for slots 0..8"
+      },
+      {
+        "offset": 18,
+        "size": 54,
+        "name": "slot_metadata",
+        "type": "uint8_t[9][6]",
+        "description": "Tile coordinates and active streaming state flags"
+      }
+    ]
   }
 ]
