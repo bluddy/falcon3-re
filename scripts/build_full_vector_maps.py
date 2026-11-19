@@ -20,7 +20,8 @@ THEATER_NAMES = {
     'PAN': 'Panama Canal'
 }
 
-def parse_isldat_mesh(path):
+def parse_isldat_mesh(path, include_ground_plates=False):
+    code = Path(path).suffix[1:]
     with open(path, 'rb') as f:
         raw = f.read()
 
@@ -45,17 +46,21 @@ def parse_isldat_mesh(path):
 
     polys = []
     for idx, r in enumerate(records):
-        c0 = i32(r) / 65536.0    # Centroid X (Longitude, East-West)
-        c4 = i32(r+4) / 65536.0  # Centroid Y (Latitude, North-South)
+        c0 = i32(r) / 65536.0    # Centroid X
+        c4 = i32(r+4) / 65536.0  # Centroid Y
         attr = u16(r+0x20)
         nv = u16(r+0x2E)
         sub = u16(r+0x32)
+
+        # In Israel, attr 0x32 are artificial 17.5nm coarse ground/urban plates (not hydrography).
+        # In Iraq/Panama, attr 0x32 are actual river/canal channels.
+        if code == 'ISR' and attr == 0x32 and not include_ground_plates:
+            continue
+
         pts = [struct.unpack_from('<hhh', body, r + 0x38 + 6 * i) for i in range(nv)]
 
-        # The proven seamless mesh pairing (0.0000000000 error across tiles):
-        # Local offsets:
-        # p[2] = Local X offset (added to Centroid X, c0)
-        # p[0] = Local Y offset (added to Centroid Y, c4)
+        # Seamless invariant base mesh:
+        # local offsets: p[2] pairs with c0, p[0] pairs with c4
         mesh_u = [c0 + p[2] / SCALE for p in pts]
         mesh_v = [c4 + p[0] / SCALE for p in pts]
 
@@ -88,19 +93,17 @@ def render_vector_map(code, n_records, polys, out_dir):
     out_dir.mkdir(parents=True, exist_ok=True)
     W, H = 1600, 1600
 
-    # Whole-map orientation transformation:
-    # Any transformation applied to (U, V) as a whole preserves 100% seamless tile joins!
-    # - In Nellis (NEL), Lake Mead's horizontal span is stored in p[0] and vertical in p[2],
-    #   so swapping (V, U) yields the correct horizontal Lake Mead (aspect 2.5).
-    # - In all multi-tile theaters (ISR, BOS, HOK, IRQ, KOR, PAK, PAN), (U, V) is the canonical
-    #   upright geographic orientation where North is UP, West is LEFT, and East is RIGHT.
+    # Unified Whole-Map Orientation:
+    # All theaters use the confirmed View B orientation: (X, Y) = (V, U)
+    # where V = c4 + w0/SCALE and U = c0 + w2/SCALE.
+    # This aligns:
+    # - Nellis Lake Mead horizontally (aspect 2.5)
+    # - Israel coastline extending continuously with Egypt (SW) and Turkey/Syria (N)
+    # - Korea peninsula and Yellow Sea / Sea of Japan matching raster
+    # - Bosnia Adriatic coast matching raster
     if polys:
-        if code == 'NEL':
-            for item in polys:
-                item['poly'] = [(v, u) for u, v in zip(item['u'], item['v'])]
-        else:
-            for item in polys:
-                item['poly'] = [(u, v) for u, v in zip(item['u'], item['v'])]
+        for item in polys:
+            item['poly'] = [(v, u) for u, v in zip(item['u'], item['v'])]
             
         all_xs = [pt[0] for item in polys for pt in item['poly']]
         all_ys = [pt[1] for item in polys for pt in item['poly']]
@@ -161,8 +164,10 @@ def render_vector_map(code, n_records, polys, out_dir):
             fill = (14, 116, 144, 190) # deep ocean cyan
         elif attr == 0x64:
             fill = (2, 132, 199, 190)  # lake sky blue
+        elif attr == 0x32:
+            fill = (16, 185, 129, 190) # river emerald (Iraq/Panama)
         else:
-            fill = (16, 185, 129, 190) # river emerald
+            fill = (226, 232, 240, 150)
         poly_draw.polygon(pts_px, fill=fill)
 
     img.paste(poly_img, (0, 0), poly_img)
@@ -175,19 +180,33 @@ def render_vector_map(code, n_records, polys, out_dir):
             outline = (56, 189, 248)
         elif attr == 0x64:
             outline = (125, 211, 252)
-        else:
+        elif attr == 0x32:
             outline = (52, 211, 153)
+        else:
+            outline = (248, 250, 252)
         draw.polygon(pts_px, outline=outline)
+
+    # Legend
+    legend_y = H - 90
+    draw.rectangle([80, legend_y, 450, legend_y + 40], fill=(20, 30, 48), outline=(51, 65, 85))
+    draw.rectangle([95, legend_y + 12, 115, legend_y + 24], fill=(14, 116, 144), outline=(56, 189, 248))
+    draw.text((125, legend_y + 11), "Coastline / Sea (0x14)", fill=(226, 232, 240))
+    if any(item['attr'] == 0x64 for item in polys):
+        draw.rectangle([280, legend_y + 12, 300, legend_y + 24], fill=(2, 132, 199), outline=(125, 211, 252))
+        draw.text((310, legend_y + 11), "Lakes (0x64)", fill=(226, 232, 240))
+    elif any(item['attr'] == 0x32 for item in polys):
+        draw.rectangle([280, legend_y + 12, 300, legend_y + 24], fill=(16, 185, 129), outline=(52, 211, 153))
+        draw.text((310, legend_y + 11), "Rivers (0x32)", fill=(226, 232, 240))
 
     title = f"{code}: {THEATER_NAMES.get(code, 'Unknown')}"
     draw.text((80, 30), title, fill=(248, 250, 252))
-    sub = f"ISLDAT Seamless Vector Mesh: {n_records} records, {len(polys)} convex water polygons | Range: {span:.1f}x{span:.1f} nm"
+    sub = f"ISLDAT Seamless Hydrography Mesh: {n_records} records, {len(polys)} water polygons | Range: {span:.1f}x{span:.1f} nm"
     draw.text((80, 52), sub, fill=(148, 163, 184))
 
     png_path = out_dir / f"{code}_vector_map.png"
     img.save(png_path)
 
-    # Clean SVG export
+    # SVG export
     svg_lines = [
         f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}">',
         f'<rect width="{W}" height="{H}" fill="#0f172a"/>',
@@ -251,7 +270,7 @@ def main():
     # Copy to artifact directory
     artifact_dir = Path(r'C:\Users\yotam\.gemini\antigravity-cli\brain\55de3f9f-195f-4620-9a3d-ce8463e4c888')
     if artifact_dir.exists():
-        for f in ['ISR_vector_map.png', 'NEL_vector_map.png', 'all_theaters_vector_overview.png', 'KOR_vector_map.png', 'PAN_vector_map.png']:
+        for f in ['ISR_vector_map.png', 'NEL_vector_map.png', 'all_theaters_vector_overview.png', 'KOR_vector_map.png', 'PAN_vector_map.png', 'BOS_vector_map.png']:
             src = out_dir / f
             if src.exists():
                 shutil.copy(src, artifact_dir / f)

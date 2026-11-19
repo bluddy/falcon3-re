@@ -55,7 +55,7 @@ Each record defines a convex water tile:
 - `+0x00`: Centroid X (int32, 16.16 fixed-point nm)
 - `+0x04`: Centroid Y (int32, 16.16 fixed-point nm)
 - `+0x08`: Centroid Z (int32, altitude, $\approx -50$ sea marker)
-- `+0x20`: Attribute / Scale factor (`0x14` = coast, `0x32` = river/inland water, `0x64` = lake, `0xC8` = wide body)
+- `+0x20`: Attribute / Scale factor (`0x14` = coast/sea, `0x32` = urban / developed ground / air base plates [white surface in-flight], `0x64` = lake, `0xC8` = wide body)
 - `+0x2E`: `point_count` (uint16, number of local vertices $N$)
 - `+0x32`: `opstream_ptr` / Sub-record pointer (points to polygon ring definitions)
 - `+0x38`: Local vertex array ($N \times 6$ bytes)
@@ -75,7 +75,19 @@ $$Y_{\text{world}} = \frac{\text{Centroid\_Y}}{65536.0} + \frac{\text{Local\_Y}_
 
 Adjacent tiles align with **$0.0000000000$ error** across tile boundaries. Crucially, any coordinate orientation adjustments must be applied to the resulting $(X, Y)$ whole-map mesh globally—never to local $(w0, w2)$ offsets in isolation from centroids $(c0, c4)$, which would rotate individual tile polygons and break inter-tile seam continuity.
 
-In Nellis (`ISLDAT.NEL`), which consists only of standalone Lake Mead (no adjacent tile seams), Lake Mead's horizontal span is stored in `w0` and vertical in `w2`. Swapping $(X, Y) \to (Y, X)$ aligns Lake Mead horizontally (aspect ratio 2.5), matching real geography and `NELLIS.MAP`. For all multi-tile theaters (Israel, Bosnia, Hokkaido, Iraq, Korea, Panama), the canonical upright $(X, Y)$ orientation preserves 100% continuous coastlines and water bodies with North facing UP.
+### 4. Unified Whole-Map Orientation Across All Theaters
+Across all Falcon 3.0 theaters, the vector simulation coordinates map to the 2D display plane via the unified orientation:
+$$X_{\text{screen}} = \frac{\text{Centroid\_Y}}{65536.0} + \frac{\text{Local\_Y}_i\text{ (w0)}}{\text{SCALE}}$$
+$$Y_{\text{screen}} = \frac{\text{Centroid\_X}}{65536.0} + \frac{\text{Local\_X}_i\text{ (w2)}}{\text{SCALE}}$$
+
+This single uniform mapping $(X, Y) = (V, U)$ applies to **all 8 theaters**:
+- **Nellis (`NEL`)**: Lake Mead is oriented horizontally (aspect ratio 2.5), matching [NELLIS.MAP](file:///C:/Users/yotam/projects/falcon3/game/NELLIS.MAP) and real geography.
+- **Israel (`ISR`)**: Coastline extends seamlessly beyond the raster map (Egypt in the SW to Turkey/Syria in the N). The Mediterranean is watertight, and the Dead Sea and Sea of Galilee connect with zero seam error.
+- **Korea (`KOR`) & Bosnia (`BOS`)**: The coastlines and peninsulas match the game's tactical raster orientation.
+
+### 5. Water Hydrography vs. Ground Surface Plates (`attr == 0x32`)
+- **Water Mesh (`attr in (0x14, 0x64, 0xC8)`)**: Indexed by Coarse Grid B (`T1`), these define the true watertight convex hydrography (coastlines, seas, lakes).
+- **Ground / Base Surface Plates (`attr == 0x32`)**: Indexed by Fine Grid A (`T2`), these are coarse sector plates (spaced in 17.5 nm grid increments in Israel, or river channels in Iraq/Panama) that render as pale white ground surfaces (`RGB(164, 164, 216)` via DAC indices `0x00..0x08`) in the 3D flight engine. In vector hydrography maps, Israel's water layer isolates the true watertight hydrography, with the 11 sector plates available as an optional overlay.
 
 ### 4. Polygon Ring Topology
 Following `sub_ptr` (`[r+0x32]`):
