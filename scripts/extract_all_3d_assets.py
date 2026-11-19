@@ -131,25 +131,43 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                         # Aviation NED to OpenGL 3D:
                         verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
 
-                # Extract closed polygon faces strictly within this LOD boundary
+                # Authentic pointer table traversal reversed from FALCONCD.EXE (object_3d_project_and_draw)
+                ptr = to
+                poly_offsets = set()
+                while ptr + 2 <= len(obj_bytes):
+                    node_off = struct.unpack_from('<H', obj_bytes, ptr)[0]
+                    ptr += 2
+                    if node_off == 0xFFFF:
+                        break
+                    if node_off >= len(obj_bytes):
+                        continue
+                    w0 = struct.unpack_from('<H', obj_bytes, node_off)[0]
+                    if w0 == 0xFFFF:
+                        # ObjectVisibilityNode (BSP / view-angle group node)
+                        sub_ptr = node_off + 2
+                        while sub_ptr + 2 <= len(obj_bytes):
+                            target = struct.unpack_from('<H', obj_bytes, sub_ptr)[0]
+                            sub_ptr += 2
+                            if target == 0xFFFF or target == 0:
+                                break
+                            if target < len(obj_bytes):
+                                poly_offsets.add(target)
+                    else:
+                        poly_offsets.add(node_off)
+
                 faces = []
-                p = to
-                while p + 8 <= lod_end:
-                    w0, w1 = struct.unpack_from('<2H', obj_bytes, p)
-                    if 3 <= w1 <= 8 and 1 <= w0 <= 255:
-                        cnt = w1
-                        if p + 4 + (cnt+1)*2 + 2 <= lod_end:
-                            v_words = struct.unpack_from(f'<{cnt+1}H', obj_bytes, p + 4)
-                            if all(w % 16 == 0 and (w // 16) < len(verts) for w in v_words) and v_words[0] == v_words[-1]:
+                for p in sorted(list(poly_offsets)):
+                    if p + 8 <= len(obj_bytes):
+                        norm, mode, col, cnt = struct.unpack_from('<4H', obj_bytes, p)
+                        if 3 <= cnt <= 20 and p + 8 + (cnt+1)*2 <= len(obj_bytes):
+                            v_words = struct.unpack_from(f'<{cnt+1}H', obj_bytes, p + 8)
+                            if all(w % 16 == 0 and (w // 16) < len(verts) for w in v_words):
                                 ring = [w // 16 for w in v_words[:-1]]
                                 if len(set(ring)) >= 3:
                                     # Normalize triangle strip quads like [23, 24, 22, 21] to perimeter [23, 24, 21, 22]
                                     if len(ring) == 4 and ring == [23, 24, 22, 21]:
                                         ring = [23, 24, 21, 22]
-                                    faces.append({'color': w0, 'indices': ring})
-                                    p += (cnt + 4) * 2
-                                    continue
-                    p += 2
+                                    faces.append({'color': col, 'indices': ring})
 
                 # Derive clean perimeter edges from polygon faces
                 edges = set()
