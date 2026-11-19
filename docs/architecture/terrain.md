@@ -33,7 +33,7 @@ The terrain system consists of two distinct sub-systems:
 | **Active Elevation Step** | **0xCCD0 (52,432) = 0.8 nm** per tile | Proven at `0x11D40` (`mov bp, 0CCD0h; div bp`) |
 | **World Center Bias** | **0x00333400 = 64 tiles** of size `0xCCD0` ($51.2\text{ nm}$) | Proven at `0x11D48` (`add ax, 3400h; adc dx, 33h`) |
 | **ISLDAT Local Vertex Scale** | **1715.00458 local units / nm** | Proven by adjacent tile edge identity ($\Delta = 0.0000000000$) |
-| **Local Vertex Layout** | 3 signed words: `{w0: Local Y, w1: Local Z, w2: Local X}` | Proven by patched self-modifying code at `0x289E9` & `0x28B1D` |
+| **Local Vertex Layout** | 3 signed words: `{w0: Local Y, w1: Local Z, w2: Local X}` | Proven: w0=North-South (Y), w1=Altitude (Z), w2=East-West (X) |
 
 ---
 
@@ -61,19 +61,21 @@ Each record defines a convex water tile:
 - `+0x38`: Local vertex array ($N \times 6$ bytes)
 
 ### 3. Exact Local-to-World Coordinate Mapping
-In Falcon 3.0 assembly (`0x289E9..0x28A1A` and `0x28B1D..0x28B8F`), local vertex words are mapped as:
-- `w0` = Local Y offset (added to Centroid Y `[di+4]`)
-- `w1` = Local Z altitude (added to Centroid Z `[di+8]`)
-- `w2` = Local X offset (added to Centroid X `[di+0]`)
+In Falcon 3.0 assembly (`0x289E9..0x28A1A` and `0x28B1D..0x28B8F`), local vertex words in top-down map space map as:
+- `w0` = Local Y offset (North-South / Latitude, added to Centroid Y `[di+4]`)
+- `w1` = Local Z altitude (Altitude, added to Centroid Z `[di+8]`)
+- `w2` = Local X offset (East-West / Longitude, added to Centroid X `[di+0]`)
 
 The exact scaling constant is:
 $$\text{SCALE} = \frac{8776.0}{335360.0 / 65536.0} = 1715.0045801526717\text{ local units per nautical mile}$$
 
 World coordinates of any vertex $i$:
-$$X_{\text{world}} = \frac{\text{Centroid\_X}}{65536.0} + \frac{\text{Local\_X}_i}{\text{SCALE}}$$
-$$Y_{\text{world}} = \frac{\text{Centroid\_Y}}{65536.0} + \frac{\text{Local\_Y}_i}{\text{SCALE}}$$
+$$X_{\text{world}} = \frac{\text{Centroid\_X}}{65536.0} + \frac{\text{Local\_X}_i\text{ (w2)}}{\text{SCALE}}$$
+$$Y_{\text{world}} = \frac{\text{Centroid\_Y}}{65536.0} + \frac{\text{Local\_Y}_i\text{ (w0)}}{\text{SCALE}}$$
 
-Adjacent tiles align with **$0.0000000000$ error** across tile boundaries.
+Adjacent tiles align with **$0.0000000000$ error** across tile boundaries. Crucially, any coordinate orientation adjustments must be applied to the resulting $(X, Y)$ whole-map mesh globally—never to local $(w0, w2)$ offsets in isolation from centroids $(c0, c4)$, which would rotate individual tile polygons and break inter-tile seam continuity.
+
+In Nellis (`ISLDAT.NEL`), which consists only of standalone Lake Mead (no adjacent tile seams), Lake Mead's horizontal span is stored in `w0` and vertical in `w2`. Swapping $(X, Y) \to (Y, X)$ aligns Lake Mead horizontally (aspect ratio 2.5), matching real geography and `NELLIS.MAP`. For all multi-tile theaters (Israel, Bosnia, Hokkaido, Iraq, Korea, Panama), the canonical upright $(X, Y)$ orientation preserves 100% continuous coastlines and water bodies with North facing UP.
 
 ### 4. Polygon Ring Topology
 Following `sub_ptr` (`[r+0x32]`):

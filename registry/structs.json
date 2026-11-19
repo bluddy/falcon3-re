@@ -432,24 +432,24 @@
         "size": 2,
         "name": "local_y",
         "type": "int16",
-        "comment": "Local Y offset in 3D vertex mesh (added to centroid Y at [di+4]). Scale: 1715.00458 local units = 1.0 nm"
+        "comment": "Local Y offset (North-South / Latitude, added to Centroid Y at [di+4]). Scale: 1715.00458 local units = 1.0 nm"
       },
       {
         "offset": 2,
         "size": 2,
         "name": "local_z",
         "type": "int16",
-        "comment": "Local Z altitude offset (added to centroid Z at [di+8]). Zero for sea/lake surface."
+        "comment": "Local Z altitude offset (added to Centroid Z at [di+8]). Zero for sea/lake surface."
       },
       {
         "offset": 4,
         "size": 2,
         "name": "local_x",
         "type": "int16",
-        "comment": "Local X offset in 3D vertex mesh (added to centroid X at [di+0]). Scale: 1715.00458 local units = 1.0 nm"
+        "comment": "Local X offset (East-West / Longitude, added to Centroid X at [di+0]). Scale: 1715.00458 local units = 1.0 nm"
       }
     ],
-    "comment": "ISLDAT 3D convex polygon vertex (6 bytes). Confirmed in FALCONCD.EXE self-modifying code at 0x289E9..0x28A1A and Bresenham line draw at 0x28B1D..0x28B8F."
+    "comment": "ISLDAT 3D convex polygon vertex (6 bytes). Confirmed: w0=local Y (North-South), w1=local Z (altitude), w2=local X (East-West). Seamless invariant pairing: u = Centroid_X + local_x/SCALE, v = Centroid_Y + local_y/SCALE (zero seam error across adjacent tiles)."
   },
   {
     "name": "IsldatSubRecord",
