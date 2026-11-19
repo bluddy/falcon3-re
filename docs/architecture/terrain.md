@@ -112,35 +112,70 @@ Following `sub_ptr` (`[r+0x32]`):
 
 ---
 
-## Heightmap System
+## Heightmap & In-Flight Elevation System
 
-**Grid**: 31×31 height samples at `ds:0x3840` (1,922 bytes)  
-**Sampling**: Bilinear interpolation via `tile_quad_sample`  
-**LOD**: 8-level table at `ds:0x7A0`  
-**Renderer**: `hud_terrain_strip_render` → `tile_strip_project_draw` → `tile_strip_sample_draw`
+### 1. Partial Elevation Mapping (`ALT.<theater>`)
+Terrain elevation in Falcon 3.0 is **partial**—it covers tactical mountainous and hill zones rather than populating a dense grid over the entire theater:
+- **Block Organization**: Elevation is stored in discrete 256-byte blocks ($16 \times 16$ byte height samples).
+- **Sparse Two-Level Indexing**:
+  - The theater index table maps regional grid coordinates to block offsets.
+  - Unpopulated sectors (flat sea, plains, or unmodeled map zones) contain `0xFFFF` in the index table.
+  - When loading a tile at runtime, `slot3_tile_record_load` (`0x13870`) tests for `0xFFFF`. If null, it zeroes out the active tile buffer (`rep stosw`), producing flat ground/sea level at zero memory overhead.
+- **Theater Elevation Census**:
+  - `ALT.ISR`: 34,560 bytes = 135 populated blocks ($16 \times 16$).
+  - `ALT.PAN`: 24,064 bytes = 94 populated blocks.
+  - `ALT.HOK`: 45,056 bytes = 176 populated blocks.
+  - `ALT.BOS`: 56,064 bytes = 219 populated blocks.
+  - `ALT.KOR`: 76,800 bytes = 300 populated blocks.
+  - `ALT.IRQ`: 93,952 bytes = 367 populated blocks.
+  - `ALT.NEL`: 103,168 bytes = 403 populated blocks.
+  - `ALT.PAK`: 129,792 bytes = 507 populated blocks.
+  All files are exact integer multiples of 256 bytes ($16 \times 16$).
 
-### Heightmap Rendering Chain
+### 2. Runtime Streaming: 3×3 Active Tile Window
+During flight, `slot3_tile3x3_load` (`0x13755`) maintains a $3 \times 3$ active tile streaming ring (9 tiles, slots 0 through 8) centered on the player's aircraft position `(map_pos_x, map_pos_y)`:
+- Slot 0: $(X-1, Y-1)$
+- Slot 1: $(X, Y-1)$
+- Slot 2: $(X+1, Y-1)$
+- Slot 3: $(X-1, Y)$
+- **Slot 4**: $(X, Y)$ (Center tile)
+- Slot 5: $(X+1, Y)$
+- Slot 6: $(X-1, Y+1)$
+- Slot 7: $(X, Y+1)$
+- Slot 8: $(X+1, Y+1)$
+As the player moves across tile boundaries, unneeded tiles are evicted and new sparse blocks are loaded from disk/EMS.
 
-```
-hud_terrain_strip_render (main entry)
-  ↓
-tile_strip_project_draw (64-pixel span projection)
-  ↓
-tile_strip_sample_draw (samples HEIGHT from 31×31 grid)
-  ↓  Uses self-modifying code for sky detection
-  ↓
-tile_quad_sample (bilinear filtering)
-  ↓
-terrain_height_lookup_11cc8 (raw height fetch)
-  ↓
-[ds:0x3840 + offset] (1,922-byte heightmap)
-```
+### 3. Dynamic Tile Tessellation & Triangle Splitting
+When displaying undulating terrain, the simulation splits quad tiles into triangles to accurately reflect elevation differences between vertices:
+- **Descriptor Opcode Control**:
+  In `object_record_stream_step` (`0x267D0`) and `line_record_flag_dispatch` (`0x287D0`), the high descriptor word `AX` contains subdivision bits `bits 9..11 (0x0E00)` stored into `cs:state_byte_1f72e`:
+  - `0x00`: No subdivision (render original polygon).
+  - `0x02`: `param6_append_cursor_a` (`0x216F3`).
+  - `0x04`: `param6_append_avg_b` (`0x21754`) - Edge midpoint subdivision.
+  - `0x06`: `param6_append_3w_c` (`0x217E1`) - **Quad-to-Triangle Splitter**: Splits a quad into two diagonal triangles:
+    - Triangle A: vertices $(V_0, V_1, V_2)$.
+    - Triangle B: vertices $(V_2, V_3, V_0)$.
+  - `0x08`: `param6_append_scale_d` (`0x2185E`) - Hierarchical fine tessellation.
 
-**Performance**: 17,770 cycles/frame (30% of budget)
-
-### Self-Modifying Code
-
-`tile_strip_sample_draw` runtime-patches comparison immediates for sky detection threshold. Achieves maximum speed by avoiding memory reads in inner loop.
+### 4. Altitude-Dependent Rendering & Pseudo-Gouraud Shading
+The flight engine adapts terrain shading according to observer altitude and LOD:
+- **Shading Dispatch**:
+  Descriptor bit 15 (`0x8000`) controls the shading mode via `cs:opcode_index`:
+  ```assembly
+  0x20623: mov cl, cs:opcode_index   ; bit 15 (0x80 = shaded, 0x00 = flat)
+  0x20628: mov ah, cs:state_byte_1f72a ; base palette index
+  0x2063B: call cs:opcode_handler_table ; dispatches to vgraph_slot_13
+  ```
+- **High Altitude (Flat Shading)**:
+  - When high above the terrain, `cl == 0`.
+  - `vgraph_slot_13` (`0x88229`) calls `loc_88247` (**Flat Span Rasterizer**).
+  - Spans are filled with solid colors using `rep stosw` on EGA/VGA planes.
+  - Only individual tiles and diagonal triangle facets are visible, and coastlines/water polygons remain completely flat.
+- **Low Altitude (Pseudo-Gouraud Shading)**:
+  - At lower altitudes, `cl == 0x80`.
+  - `vgraph_slot_13` branches to `loc_882D3` (**Pseudo-Gouraud Shaded Span Rasterizer**).
+  - **Algorithm**: Uses an $8 \times 8$ ordered dither matrix (stipple pattern) rotated across the scanline (`rol ah, 1; jnb ...; out dx, al`).
+  - By dynamically dithering between adjacent palette luminance tiers across scanline spans, the engine achieves continuous-gradient Gouraud-style illumination across polygon faces without floating-point arithmetic or costly per-pixel division, maintaining 60 fps on 386/486 hardware.
 
 ---
 

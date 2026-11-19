@@ -1126,7 +1126,7 @@
     "address": 79984,
     "name": "slot3_tile_record_load",
     "system": "slot3",
-    "doc": "483B, cd=0, in=4, callees ems_page_move_67 + state_word_10219_get + op_dispatch. Slot3 tile-record loader: maps (ax,bx) 32x32 tile coords to page+cell, reads the path, stores it at 162+8*si and pu...",
+    "doc": "Loads sparse 16x16 elevation block from ALT file or EMS for a 32x32 terrain tile. If index is 0xFFFF (unpopulated sector), zeroes buffer for flat terrain/sea level.",
     "source": "old_registry (was: slot3_tile_record_load)"
   },
   {
@@ -4013,14 +4013,14 @@
     "address": 137044,
     "name": "param6_append_avg_b",
     "system": "param6",
-    "doc": "141B retn, callee param6_append_0f66. Parameter append form B: stores half-scale averaged fields. conf: med",
+    "doc": "Quad midpoint subdivision (opcode state_byte_1f72e == 4). Calculates opposite edge midpoints for adaptive terrain LOD.",
     "source": "old_registry (was: param6_append_avg_b)"
   },
   {
     "address": 137185,
     "name": "param6_append_3w_c",
     "system": "param6",
-    "doc": "125B retn, callee param6_append_0f66. Parameter append form C: 3-word record, +6 cursor. conf: med",
+    "doc": "Quad-to-triangle mesh splitter (opcode state_byte_1f72e == 6). Splits quad into diagonal triangles (V0,V1,V2) and (V2,V3,V0) for terrain elevation tessellation.",
     "source": "old_registry (was: param6_append_3w_c)"
   },
   {
