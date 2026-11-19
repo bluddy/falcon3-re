@@ -1,7 +1,13 @@
 """
 Falcon 3.0 — Native Qt6 3D Asset & Object Inspector
-Visualizes all 204 flight engine assets (Aircraft, Vehicles, Ground Structures, Ribbons)
-Supports OpenGL rendering and software 3D projection fallback.
+Visualizes all flight engine assets (Aircraft, Vehicles, Ground Structures, Ribbons)
+Features:
+- Polygon Inspector: Select & inspect individual faces by index
+- 3D Polygon Number Labels: Overlay face numbers at centroids
+- 3D Vertex Number Labels: Overlay vertex numbers at vertices
+- Backface Culling toggle (authentic Falcon 3.0 behavior)
+- LOD Selector (LOD 0, 1, 2, 3)
+- Shading modes: Solid Shaded, Wireframe, Both
 """
 
 import sys
@@ -15,10 +21,9 @@ from PyQt6.QtCore import Qt, QTimer, QPoint
 from PyQt6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QHBoxLayout, QVBoxLayout,
     QListWidget, QListWidgetItem, QLineEdit, QComboBox, QPushButton,
-    QLabel, QGroupBox, QSplitter, QStatusBar, QFrame
+    QLabel, QGroupBox, QSplitter, QStatusBar, QFrame, QCheckBox
 )
 
-# Try importing OpenGL
 HAS_OPENGL = False
 try:
     from PyQt6.QtOpenGLWidgets import QOpenGLWidget
@@ -27,6 +32,7 @@ try:
     HAS_OPENGL = True
 except ImportError:
     pass
+
 
 class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
     def __init__(self, parent=None):
@@ -37,6 +43,10 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         self.render_mode = 'both' # 'shaded', 'wire', 'both'
         self.show_grid = True
         self.auto_rotate = False
+        self.cull_backfaces = False
+        self.show_poly_numbers = False
+        self.show_vert_numbers = False
+        self.selected_face_idx = None # Highlight specific face
         
         # Camera / Orbit state
         self.rot_x = 25.0
@@ -49,9 +59,9 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         # Auto-rotate timer
         self.timer = QTimer(self)
         self.timer.timeout.connect(self._on_timer)
-        self.timer.start(16) # ~60 fps
+        self.timer.start(16)
 
-        # Bounding box & centered vertices
+        # Geometry data
         self.centered_verts = []
         self.faces = []
         self.edges = []
@@ -68,7 +78,12 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
     def set_model(self, model, lod_idx=0):
         self.model = model
         self.lod_idx = lod_idx
+        self.selected_face_idx = None
         self.prepare_geometry()
+        self.update()
+
+    def set_selected_face(self, f_idx):
+        self.selected_face_idx = f_idx
         self.update()
 
     def set_render_mode(self, mode):
@@ -77,6 +92,18 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
 
     def set_show_grid(self, val):
         self.show_grid = val
+        self.update()
+
+    def set_cull_backfaces(self, val):
+        self.cull_backfaces = val
+        self.update()
+
+    def set_show_poly_numbers(self, val):
+        self.show_poly_numbers = val
+        self.update()
+
+    def set_show_vert_numbers(self, val):
+        self.show_vert_numbers = val
         self.update()
 
     def set_auto_rotate(self, val):
@@ -102,6 +129,9 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         elif preset == 'top':
             self.rot_x = 90.0
             self.rot_y = 0.0
+        elif preset == 'back':
+            self.rot_x = 0.0
+            self.rot_y = 180.0
         elif preset == 'iso':
             self.rot_x = 30.0
             self.rot_y = -45.0
@@ -118,7 +148,6 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         faces = self.model.get('faces', [])
         edges = self.model.get('edges', [])
 
-        # Check LOD
         lods = self.model.get('lods', [])
         if lods and self.lod_idx < len(lods):
             lod = lods[self.lod_idx]
@@ -132,7 +161,6 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
             self.edges = []
             return
 
-        # Calculate bounding box
         min_x = min(v[0] for v in verts)
         max_x = max(v[0] for v in verts)
         min_y = min(v[1] for v in verts)
@@ -151,7 +179,6 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         self.faces = faces
         self.edges = edges
 
-    # Mouse navigation
     def mousePressEvent(self, event):
         self.last_mouse_pos = event.pos()
 
@@ -177,20 +204,16 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         self.zoom = max(1.0, min(2000.0, self.zoom * zoom_factor))
         self.update()
 
-    # OpenGL pipeline
     if HAS_OPENGL:
         def initializeGL(self):
-            gl.glClearColor(0.04, 0.06, 0.09, 1.0) # #0A0E17 dark slate
+            gl.glClearColor(0.04, 0.06, 0.09, 1.0)
             gl.glEnable(gl.GL_DEPTH_TEST)
             gl.glEnable(gl.GL_COLOR_MATERIAL)
             gl.glEnable(gl.GL_LIGHTING)
             gl.glEnable(gl.GL_LIGHT0)
             gl.glEnable(gl.GL_NORMALIZE)
-            gl.glLightModeli(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_TRUE)
-            gl.glDisable(gl.GL_CULL_FACE)
             gl.glShadeModel(gl.GL_SMOOTH)
 
-            # Lights (angled sun light from upper-front-right)
             gl.glLightfv(gl.GL_LIGHT0, gl.GL_POSITION, [1.5, 2.0, 1.5, 0.0])
             gl.glLightfv(gl.GL_LIGHT0, gl.GL_DIFFUSE, [0.95, 0.95, 0.95, 1.0])
             gl.glLightfv(gl.GL_LIGHT0, gl.GL_AMBIENT, [0.4, 0.4, 0.45, 1.0])
@@ -207,7 +230,6 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
             gl.glClear(gl.GL_COLOR_BUFFER_BIT | gl.GL_DEPTH_BUFFER_BIT)
             gl.glLoadIdentity()
 
-            # Camera view
             rad_x = math.radians(self.rot_x)
             rad_y = math.radians(self.rot_y)
 
@@ -221,7 +243,16 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
                 0.0, 1.0, 0.0
             )
 
-            # Draw Ground Grid
+            # Backface culling state
+            if self.cull_backfaces:
+                gl.glEnable(gl.GL_CULL_FACE)
+                gl.glCullFace(gl.GL_BACK)
+                gl.glLightModeli(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_FALSE)
+            else:
+                gl.glDisable(gl.GL_CULL_FACE)
+                gl.glLightModeli(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_TRUE)
+
+            # Ground Grid
             if self.show_grid:
                 gl.glDisable(gl.GL_LIGHTING)
                 gl.glColor4f(0.12, 0.16, 0.24, 0.5)
@@ -240,22 +271,30 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
             if not self.centered_verts:
                 return
 
-            # Render Solid Shaded Faces
+            # Render Solid Faces
             if self.faces and self.render_mode in ('shaded', 'both'):
                 gl.glEnable(gl.GL_LIGHTING)
                 gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
                 gl.glPolygonOffset(1.0, 1.0)
                 gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
-                for f in self.faces:
+
+                for f_idx, f in enumerate(self.faces):
                     ring = f.get('indices', [])
                     if len(ring) < 3: continue
+
+                    is_highlighted = (self.selected_face_idx == f_idx)
                     col_idx = f.get('color', 142)
                     rgb = [160, 160, 160]
                     if self.palette and col_idx < len(self.palette):
                         rgb = self.palette[col_idx]
-                    gl.glColor3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0)
 
-                    # Compute face normal for authentic Gouraud/Phong shading
+                    if is_highlighted:
+                        # Bright yellow highlight
+                        gl.glColor3f(1.0, 0.9, 0.0)
+                    else:
+                        gl.glColor3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0)
+
+                    # Compute normal
                     if all(vi < len(self.centered_verts) for vi in ring[:3]):
                         p0 = self.centered_verts[ring[0]]
                         p1 = self.centered_verts[ring[1]]
@@ -267,12 +306,14 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
                         if nl > 1e-6:
                             gl.glNormal3f(nx/nl, ny/nl, nz/nl)
 
-                    gl.glBegin(gl.GL_POLYGON)
+                    # Render via triangle fan for robust non-convex handling
+                    gl.glBegin(gl.GL_TRIANGLE_FAN)
                     for vi in ring:
                         if vi < len(self.centered_verts):
                             vx, vy, vz = self.centered_verts[vi]
                             gl.glVertex3f(vx, vy, vz)
                     gl.glEnd()
+
                 gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
 
             # Render Wireframe Lines
@@ -280,9 +321,9 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
                 gl.glDisable(gl.GL_LIGHTING)
                 gl.glLineWidth(1.5)
                 if self.render_mode == 'wire':
-                    gl.glColor3f(0.0, 1.0, 0.4) # Retro Vector Green
+                    gl.glColor3f(0.0, 1.0, 0.4)
                 else:
-                    gl.glColor3f(0.1, 0.8, 1.0) # Cyan accent outline
+                    gl.glColor3f(0.1, 0.8, 1.0)
 
                 gl.glBegin(gl.GL_LINES)
                 if self.edges:
@@ -305,114 +346,125 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
                                 gl.glVertex3f(p2[0], p2[1], p2[2])
                 gl.glEnd()
 
-    else:
-        # Software 3D projection fallback with QPainter
-        def paintEvent(self, event):
+            # Render Highlighted Face Outline in Magenta
+            if self.selected_face_idx is not None and self.selected_face_idx < len(self.faces):
+                gl.glDisable(gl.GL_LIGHTING)
+                gl.glLineWidth(3.0)
+                gl.glColor3f(1.0, 0.2, 0.8)
+                ring = self.faces[self.selected_face_idx].get('indices', [])
+                gl.glBegin(gl.GL_LINE_LOOP)
+                for vi in ring:
+                    if vi < len(self.centered_verts):
+                        vx, vy, vz = self.centered_verts[vi]
+                        gl.glVertex3f(vx, vy, vz)
+                gl.glEnd()
+
+            # 2D Screen Overlays for Face & Vertex Numbers
+            if self.show_poly_numbers or self.show_vert_numbers:
+                self.render_labels_overlay()
+
+        def render_labels_overlay(self):
+            # Project 3D points to 2D window coordinates using QPainter
+            modelview = gl.glGetDoublev(gl.GL_MODELVIEW_MATRIX)
+            projection = gl.glGetDoublev(gl.GL_PROJECTION_MATRIX)
+            viewport = gl.glGetIntegerv(gl.GL_VIEWPORT)
+
             painter = QtGui.QPainter(self)
             painter.setRenderHint(QtGui.QPainter.RenderHint.Antialiasing)
-            painter.fillRect(self.rect(), QtGui.QColor(10, 14, 23))
 
-            w = self.width()
-            h = self.height()
-            cx, cy = w / 2.0, h / 2.0
+            font = QtGui.QFont("Arial", 8, QtGui.QFont.Weight.Bold)
+            painter.setFont(font)
 
-            if not self.centered_verts:
-                painter.setPen(QtGui.QColor(100, 116, 139))
-                painter.drawText(self.rect(), Qt.AlignmentFlag.AlignCenter, "No Model Selected")
-                return
-
-            rad_x = math.radians(self.rot_x)
-            rad_y = math.radians(self.rot_y)
-            cos_x, sin_x = math.cos(rad_x), math.sin(rad_x)
-            cos_y, sin_y = math.cos(rad_y), math.sin(rad_y)
-
-            # Project 3D -> 2D
-            proj_pts = []
-            focal = (w + h) / 2.0 * (50.0 / self.zoom)
-
-            for vx, vy, vz in self.centered_verts:
-                # Rotate Y
-                rx1 = vx * cos_y + vz * sin_y
-                ry1 = vy
-                rz1 = -vx * sin_y + vz * cos_y
-
-                # Rotate X
-                rx2 = rx1
-                ry2 = ry1 * cos_x - rz1 * sin_x
-                rz2 = ry1 * sin_x + rz1 * cos_x + self.zoom
-
-                if rz2 <= 1.0: rz2 = 1.0
-                px = cx + (rx2 + self.pan_x) * focal / rz2
-                py = cy - (ry2 + self.pan_y) * focal / rz2
-                proj_pts.append((px, py, rz2))
-
-            # Draw Edges
-            painter.setPen(QtGui.QPen(QtGui.QColor(0, 255, 100), 1.5))
-            if self.edges:
-                for v1, v2 in self.edges:
-                    if v1 < len(proj_pts) and v2 < len(proj_pts):
-                        p1, p2 = proj_pts[v1], proj_pts[v2]
-                        painter.drawLine(int(p1[0]), int(p1[1]), int(p2[0]), int(p2[1]))
-            elif self.faces:
-                for f in self.faces:
+            # Draw polygon number labels at face centroids
+            if self.show_poly_numbers and self.faces:
+                for f_idx, f in enumerate(self.faces):
                     ring = f.get('indices', [])
-                    for i in range(len(ring)):
-                        v1 = ring[i]
-                        v2 = ring[(i + 1) % len(ring)]
-                        if v1 < len(proj_pts) and v2 < len(proj_pts):
-                            p1, p2 = proj_pts[v1], proj_pts[v2]
-                            painter.drawLine(int(p1[0]), int(p1[1]), int(p2[0]), int(p2[1]))
+                    if len(ring) < 3: continue
+                    pts = [self.centered_verts[vi] for vi in ring if vi < len(self.centered_verts)]
+                    if not pts: continue
+                    cx = sum(p[0] for p in pts) / len(pts)
+                    cy = sum(p[1] for p in pts) / len(pts)
+                    cz = sum(p[2] for p in pts) / len(pts)
+
+                    win_pos = glu.gluProject(cx, cy, cz, modelview, projection, viewport)
+                    if win_pos and win_pos[2] < 1.0: # In front of camera
+                        sx = win_pos[0]
+                        sy = viewport[3] - win_pos[1] # Flip Y for Qt
+                        is_sel = (self.selected_face_idx == f_idx)
+                        bg_col = QtGui.QColor(255, 220, 0, 220) if is_sel else QtGui.QColor(15, 23, 42, 190)
+                        txt_col = QtGui.QColor(0, 0, 0) if is_sel else QtGui.QColor(56, 189, 248)
+                        txt = f"#{f_idx}"
+
+                        rect = painter.fontMetrics().boundingRect(txt)
+                        rect.adjust(-3, -2, 3, 2)
+                        rect.moveCenter(QPoint(int(sx), int(sy)))
+                        painter.fillRect(rect, bg_col)
+                        painter.setPen(QtGui.QPen(txt_col))
+                        painter.drawText(rect, Qt.AlignmentFlag.AlignCenter, txt)
+
+            # Draw vertex number labels
+            if self.show_vert_numbers and self.centered_verts:
+                painter.setPen(QtGui.QPen(QtGui.QColor(255, 255, 255)))
+                for vi, p in enumerate(self.centered_verts):
+                    win_pos = glu.gluProject(p[0], p[1], p[2], modelview, projection, viewport)
+                    if win_pos and win_pos[2] < 1.0:
+                        sx = win_pos[0]
+                        sy = viewport[3] - win_pos[1]
+                        txt = f"{vi}"
+                        painter.drawText(int(sx) + 4, int(sy) - 4, txt)
+
+            painter.end()
 
 
 class Falcon3DViewerWindow(QMainWindow):
     def __init__(self, db_path='analysis/viewer/assets_database.json'):
         super().__init__()
         self.setWindowTitle("Falcon 3.0 — 3D Asset & Object Inspector (Qt6)")
-        self.resize(1280, 800)
+        self.resize(1380, 850)
         self.setStyleSheet("""
             QMainWindow { background-color: #0A0E17; }
             QWidget { color: #F1F5F9; font-family: monospace, sans-serif; font-size: 12px; }
             QListWidget { background-color: #0F172A; border: 1px solid #1E293B; border-radius: 4px; padding: 4px; }
-            QListWidget::item { padding: 6px 8px; border-radius: 4px; margin-bottom: 2px; }
+            QListWidget::item { padding: 4px 6px; border-radius: 4px; margin-bottom: 2px; }
             QListWidget::item:hover { background-color: #1E293B; }
             QListWidget::item:selected { background-color: #06B6D4; color: #020617; font-weight: bold; }
-            QLineEdit, QComboBox { background-color: #020617; border: 1px solid #334155; border-radius: 4px; padding: 6px; color: #F8FAFC; }
-            QPushButton { background-color: #1E293B; border: 1px solid #334155; border-radius: 4px; padding: 6px 10px; color: #E2E8F0; }
+            QLineEdit, QComboBox { background-color: #020617; border: 1px solid #334155; border-radius: 4px; padding: 5px; color: #F8FAFC; }
+            QPushButton { background-color: #1E293B; border: 1px solid #334155; border-radius: 4px; padding: 5px 8px; color: #E2E8F0; }
             QPushButton:hover { background-color: #334155; color: #38BDF8; border-color: #38BDF8; }
             QPushButton:checked { background-color: #06B6D4; color: #020617; font-weight: bold; }
+            QCheckBox { color: #E2E8F0; font-weight: bold; spacing: 5px; }
+            QCheckBox::indicator { width: 14px; height: 14px; }
             QGroupBox { border: 1px solid #1E293B; border-radius: 6px; margin-top: 10px; padding-top: 10px; font-weight: bold; color: #06B6D4; }
             QStatusBar { background-color: #0F172A; border-top: 1px solid #1E293B; color: #94A3B8; font-size: 11px; }
         """)
 
         self.db = {}
         self.all_models = []
+        self.current_model = None
         self.load_database(db_path)
 
-        # Central Layout
         central_widget = QWidget(self)
         self.setCentralWidget(central_widget)
         main_layout = QHBoxLayout(central_widget)
-        main_layout.setContentsMargins(8, 8, 8, 8)
+        main_layout.setContentsMargins(6, 6, 6, 6)
 
         splitter = QSplitter(Qt.Orientation.Horizontal)
         main_layout.addWidget(splitter)
 
-        # Left Sidebar (Model Browser)
+        # ---------------- Left Sidebar (Model Browser) ----------------
         sidebar = QWidget()
         sidebar_layout = QVBoxLayout(sidebar)
         sidebar_layout.setContentsMargins(4, 4, 4, 4)
 
         header_lbl = QLabel("▶ FALCON 3.0 ASSETS")
-        header_lbl.setStyleSheet("font-size: 14px; font-weight: bold; color: #10B981; letter-spacing: 1px;")
+        header_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #10B981; letter-spacing: 1px;")
         sidebar_layout.addWidget(header_lbl)
 
-        # Search bar
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Search models...")
         self.search_input.textChanged.connect(self.filter_models)
         sidebar_layout.addWidget(self.search_input)
 
-        # Category Filter Combo
         self.cat_combo = QComboBox()
         self.cat_combo.addItems([
             "All Categories",
@@ -426,15 +478,14 @@ class Falcon3DViewerWindow(QMainWindow):
         self.cat_combo.currentTextChanged.connect(self.filter_models)
         sidebar_layout.addWidget(self.cat_combo)
 
-        # Model List
         self.model_list = QListWidget()
         self.model_list.currentItemChanged.connect(self.on_model_selected)
         sidebar_layout.addWidget(self.model_list)
 
-        sidebar.setMaximumWidth(320)
+        sidebar.setMaximumWidth(280)
         splitter.addWidget(sidebar)
 
-        # Right Viewport Area
+        # ---------------- Center Viewport Area ----------------
         viewport_container = QWidget()
         viewport_layout = QVBoxLayout(viewport_container)
         viewport_layout.setContentsMargins(4, 4, 4, 4)
@@ -444,9 +495,8 @@ class Falcon3DViewerWindow(QMainWindow):
         tb_layout = QHBoxLayout(toolbar)
         tb_layout.setContentsMargins(0, 0, 0, 4)
 
-        # Shading mode buttons
-        self.btn_solid = QPushButton("Solid Shaded")
-        self.btn_wire = QPushButton("Wireframe")
+        self.btn_solid = QPushButton("Solid")
+        self.btn_wire = QPushButton("Wire")
         self.btn_both = QPushButton("Both")
         self.btn_both.setStyleSheet("background-color: #06B6D4; color: #020617; font-weight: bold;")
         self.btn_solid.clicked.connect(lambda: self.set_render_mode('shaded'))
@@ -456,46 +506,49 @@ class Falcon3DViewerWindow(QMainWindow):
         tb_layout.addWidget(self.btn_wire)
         tb_layout.addWidget(self.btn_both)
 
-        tb_layout.addSpacing(12)
+        tb_layout.addSpacing(8)
+
+        # LOD Selector
+        tb_layout.addWidget(QLabel("LOD:"))
+        self.lod_combo = QComboBox()
+        self.lod_combo.addItems(["LOD 0", "LOD 1", "LOD 2", "LOD 3"])
+        self.lod_combo.currentIndexChanged.connect(self.on_lod_changed)
+        tb_layout.addWidget(self.lod_combo)
+
+        tb_layout.addSpacing(8)
 
         # View Presets
-        btn_iso = QPushButton("Iso")
-        btn_front = QPushButton("Front")
-        btn_side = QPushButton("Side")
-        btn_top = QPushButton("Top")
-        btn_iso.clicked.connect(lambda: self.gl_widget.set_view_preset('iso'))
-        btn_front.clicked.connect(lambda: self.gl_widget.set_view_preset('front'))
-        btn_side.clicked.connect(lambda: self.gl_widget.set_view_preset('side'))
-        btn_top.clicked.connect(lambda: self.gl_widget.set_view_preset('top'))
-        tb_layout.addWidget(btn_iso)
-        tb_layout.addWidget(btn_front)
-        tb_layout.addWidget(btn_side)
-        tb_layout.addWidget(btn_top)
+        for p in ["Iso", "Front", "Side", "Top", "Back"]:
+            b = QPushButton(p)
+            b.clicked.connect(lambda ch, pres=p.lower(): self.gl_widget.set_view_preset(pres))
+            tb_layout.addWidget(b)
 
-        tb_layout.addSpacing(12)
+        tb_layout.addSpacing(8)
 
-        # Auto-rotate toggle
-        self.btn_rot = QPushButton("Auto-Rotate")
-        self.btn_rot.setCheckable(True)
-        self.btn_rot.clicked.connect(lambda: self.gl_widget.set_auto_rotate(self.btn_rot.isChecked()))
-        tb_layout.addWidget(self.btn_rot)
+        # Toggles
+        self.chk_cull = QCheckBox("Cull Back")
+        self.chk_cull.setChecked(False)
+        self.chk_cull.toggled.connect(lambda val: self.gl_widget.set_cull_backfaces(val))
+        tb_layout.addWidget(self.chk_cull)
 
-        # Grid toggle
-        self.btn_grid = QPushButton("Grid")
-        self.btn_grid.setCheckable(True)
-        self.btn_grid.setChecked(True)
-        self.btn_grid.clicked.connect(lambda: self.gl_widget.set_show_grid(self.btn_grid.isChecked()))
-        tb_layout.addWidget(self.btn_grid)
+        self.chk_poly_nums = QCheckBox("Poly IDs")
+        self.chk_poly_nums.setChecked(False)
+        self.chk_poly_nums.toggled.connect(lambda val: self.gl_widget.set_show_poly_numbers(val))
+        tb_layout.addWidget(self.chk_poly_nums)
 
-        # Reset button
-        btn_reset = QPushButton("Reset View")
+        self.chk_vert_nums = QCheckBox("Vert IDs")
+        self.chk_vert_nums.setChecked(False)
+        self.chk_vert_nums.toggled.connect(lambda val: self.gl_widget.set_show_vert_numbers(val))
+        tb_layout.addWidget(self.chk_vert_nums)
+
+        btn_reset = QPushButton("Reset")
         btn_reset.clicked.connect(lambda: self.gl_widget.reset_view())
         tb_layout.addWidget(btn_reset)
 
         tb_layout.addStretch()
         viewport_layout.addWidget(toolbar)
 
-        # 3D OpenGL / Canvas Widget
+        # 3D OpenGL Widget
         self.gl_widget = Model3DWidget()
         if self.db.get('metadata', {}).get('palette'):
             self.gl_widget.set_palette(self.db['metadata']['palette'])
@@ -504,12 +557,37 @@ class Falcon3DViewerWindow(QMainWindow):
         splitter.addWidget(viewport_container)
         splitter.setStretchFactor(1, 4)
 
+        # ---------------- Right Sidebar (Polygon Inspector) ----------------
+        poly_panel = QWidget()
+        poly_layout = QVBoxLayout(poly_panel)
+        poly_layout.setContentsMargins(4, 4, 4, 4)
+
+        poly_lbl = QLabel("▶ POLYGON INSPECTOR")
+        poly_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #38BDF8; letter-spacing: 1px;")
+        poly_layout.addWidget(poly_lbl)
+
+        self.poly_summary_lbl = QLabel("Select face to inspect")
+        self.poly_summary_lbl.setStyleSheet("color: #94A3B8; font-size: 11px;")
+        poly_layout.addWidget(self.poly_summary_lbl)
+
+        self.face_list = QListWidget()
+        self.face_list.currentItemChanged.connect(self.on_face_selected)
+        poly_layout.addWidget(self.face_list)
+
+        self.face_detail_lbl = QLabel("")
+        self.face_detail_lbl.setWordWrap(True)
+        self.face_detail_lbl.setStyleSheet("background-color: #0F172A; border: 1px solid #1E293B; border-radius: 4px; padding: 6px; font-size: 11px;")
+        poly_layout.addWidget(self.face_detail_lbl)
+
+        poly_panel.setMaximumWidth(320)
+        splitter.addWidget(poly_panel)
+        splitter.setStretchFactor(2, 1)
+
         # Status Bar
         self.status = QStatusBar()
         self.setStatusBar(self.status)
         self.status.showMessage("Ready. Select an asset to inspect 3D geometry.")
 
-        # Populate list
         self.filter_models()
         if self.model_list.count() > 0:
             self.model_list.setCurrentRow(0)
@@ -523,7 +601,6 @@ class Falcon3DViewerWindow(QMainWindow):
     def load_database(self, db_path):
         p = Path(db_path)
         if not p.exists():
-            print(f"Database {db_path} missing. Running extract_all_3d_assets.py...")
             import subprocess
             subprocess.run([sys.executable, 'scripts/extract_all_3d_assets.py'], check=True)
 
@@ -533,7 +610,7 @@ class Falcon3DViewerWindow(QMainWindow):
         self.all_models = []
         for m in self.db.get('flyable_aircraft', []):
             m['category'] = 'Flyable Aircraft'
-            self.all_models.push(m) if hasattr(self.all_models, 'push') else self.all_models.append(m)
+            self.all_models.append(m)
         for m in self.db.get('vehicles_and_units', []):
             self.all_models.append(m)
         for m in self.db.get('terrain_structures', []):
@@ -555,7 +632,7 @@ class Falcon3DViewerWindow(QMainWindow):
             vc = m.get('vertex_count', 0)
             fc = m.get('face_count', 0)
             ec = m.get('edge_count', 0)
-            label = f"{name:20s} ({vc}v, {fc or ec}p)"
+            label = f"{name:16s} ({vc}v, {fc or ec}p)"
             item = QListWidgetItem(label)
             item.setData(Qt.ItemDataRole.UserRole, m)
             self.model_list.addItem(item)
@@ -565,7 +642,11 @@ class Falcon3DViewerWindow(QMainWindow):
         model = current.data(Qt.ItemDataRole.UserRole)
         if not model: return
 
-        self.gl_widget.set_model(model)
+        self.current_model = model
+        lod = self.lod_combo.currentIndex()
+        self.gl_widget.set_model(model, lod)
+        self.populate_face_list()
+
         name = model.get('name', 'Unknown')
         cat = model.get('category', 'Generic')
         vc = model.get('vertex_count', 0)
@@ -574,11 +655,53 @@ class Falcon3DViewerWindow(QMainWindow):
         src = model.get('source', '')
         self.status.showMessage(f"Asset: {name} | Category: {cat} | Vertices: {vc} | Faces: {fc} | Edges: {ec} | Source: {src}")
 
+    def on_lod_changed(self, idx):
+        if self.current_model:
+            self.gl_widget.set_model(self.current_model, idx)
+            self.populate_face_list()
+
+    def populate_face_list(self):
+        self.face_list.clear()
+        faces = self.gl_widget.faces
+        self.poly_summary_lbl.setText(f"Total Faces in View: {len(faces)}")
+
+        for f_idx, f in enumerate(faces):
+            ring = f.get('indices', [])
+            col = f.get('color', 0)
+            cnt = len(ring)
+            txt = f"Face #{f_idx:02d}: col={col:3d} ({cnt} verts) -> {ring}"
+            item = QListWidgetItem(txt)
+            item.setData(Qt.ItemDataRole.UserRole, f_idx)
+            self.face_list.addItem(item)
+
+    def on_face_selected(self, current, previous):
+        if not current:
+            self.gl_widget.set_selected_face(None)
+            self.face_detail_lbl.setText("")
+            return
+        f_idx = current.data(Qt.ItemDataRole.UserRole)
+        self.gl_widget.set_selected_face(f_idx)
+
+        faces = self.gl_widget.faces
+        verts = self.gl_widget.centered_verts
+        if f_idx < len(faces):
+            f = faces[f_idx]
+            ring = f.get('indices', [])
+            col = f.get('color', 0)
+            coords_str = "\n".join(f"  v{vi:02d}: {verts[vi]}" for vi in ring if vi < len(verts))
+            self.face_detail_lbl.setText(
+                f"Selected Face #{f_idx}\n"
+                f"Color Index: {col}\n"
+                f"Vertices ({len(ring)}):\n{coords_str}"
+            )
+
+
 def main():
     app = QApplication(sys.argv)
     win = Falcon3DViewerWindow()
     win.show()
     sys.exit(app.exec())
+
 
 if __name__ == '__main__':
     main()

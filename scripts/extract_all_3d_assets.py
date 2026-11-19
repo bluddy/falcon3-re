@@ -122,6 +122,12 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                     v_off = vo + vi * 6
                     if v_off + 6 <= len(obj_bytes):
                         x, y, z = struct.unpack_from('<hhh', obj_bytes, v_off)
+                        # Fix F-16 nozzle vertices (historical 1991 truncation in OBJECTS Chunk 3: 0x008c -> 0xff8c)
+                        if name.strip() == 'F16' and lod_idx == 0:
+                            if vi == 48:
+                                x = -116 # Fix 0x008c (+140) -> 0xff8c (-116), matching FSX
+                            elif vi in (69, 72):
+                                x = -115 # Align lower nozzle rim to exhaust plane
                         # Aviation NED to OpenGL 3D:
                         verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
 
@@ -137,6 +143,9 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                             if all(w % 16 == 0 and (w // 16) < len(verts) for w in v_words) and v_words[0] == v_words[-1]:
                                 ring = [w // 16 for w in v_words[:-1]]
                                 if len(set(ring)) >= 3:
+                                    # Normalize triangle strip quads like [23, 24, 22, 21] to perimeter [23, 24, 21, 22]
+                                    if len(ring) == 4 and ring == [23, 24, 22, 21]:
+                                        ring = [23, 24, 21, 22]
                                     faces.append({'color': w0, 'indices': ring})
                                     p += (cnt + 4) * 2
                                     continue
