@@ -1,0 +1,774 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Falcon 3.0 — 3D Asset & Object Inspector</title>
+  <style>
+    :root {
+      --bg-dark: #0a0e17;
+      --panel-bg: rgba(15, 23, 42, 0.92);
+      --border-color: #1e293b;
+      --accent-green: #10b981;
+      --accent-cyan: #06b6d4;
+      --accent-amber: #f59e0b;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", monospace, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text-main);
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+    }
+    #sidebar {
+      width: 340px;
+      height: 100vh;
+      background: var(--panel-bg);
+      border-right: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      z-index: 10;
+      backdrop-filter: blur(8px);
+    }
+    .header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(10, 14, 23, 0.8);
+    }
+    .header h1 {
+      font-size: 16px;
+      letter-spacing: 1px;
+      color: var(--accent-cyan);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .header p {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .search-box {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .search-box input {
+      width: 100%;
+      background: #020617;
+      border: 1px solid #334155;
+      padding: 8px 12px;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 13px;
+      outline: none;
+    }
+    .search-box input:focus {
+      border-color: var(--accent-cyan);
+    }
+    .category-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border-color);
+      background: rgba(2, 6, 23, 0.4);
+    }
+    .cat-btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 4px 8px;
+      border-radius: 4px;
+      font-size: 11px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .cat-btn:hover, .cat-btn.active {
+      background: var(--accent-cyan);
+      color: #020617;
+      border-color: var(--accent-cyan);
+      font-weight: 600;
+    }
+    #model-list {
+      flex: 1;
+      overflow-y: auto;
+      padding: 8px 12px;
+    }
+    .model-item {
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 4px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border: 1px solid transparent;
+      transition: all 0.15s;
+    }
+    .model-item:hover {
+      background: #1e293b;
+      border-color: #334155;
+    }
+    .model-item.active {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: var(--accent-cyan);
+    }
+    .model-item .name {
+      font-size: 13px;
+      font-weight: 500;
+      color: #f8fafc;
+    }
+    .model-item .meta {
+      font-size: 11px;
+      color: #64748b;
+    }
+    .badge {
+      background: #0f172a;
+      border: 1px solid #334155;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      color: #94a3b8;
+    }
+    #viewport-container {
+      flex: 1;
+      position: relative;
+      height: 100vh;
+      background: radial-gradient(circle at center, #111827 0%, #030712 100%);
+    }
+    #toolbar {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      display: flex;
+      gap: 8px;
+      z-index: 20;
+      background: var(--panel-bg);
+      padding: 8px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    .tool-group {
+      display: flex;
+      gap: 4px;
+      align-items: center;
+      border-right: 1px solid #334155;
+      padding-right: 8px;
+      margin-right: 4px;
+    }
+    .tool-group:last-child {
+      border-right: none;
+      padding-right: 0;
+      margin-right: 0;
+    }
+    .btn {
+      background: #1e293b;
+      border: 1px solid #334155;
+      color: #cbd5e1;
+      padding: 6px 10px;
+      border-radius: 4px;
+      font-size: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.15s;
+    }
+    .btn:hover, .btn.active {
+      background: #334155;
+      color: #38bdf8;
+      border-color: #38bdf8;
+    }
+    #hud-panel {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      width: 320px;
+      background: var(--panel-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 16px;
+      z-index: 20;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      backdrop-filter: blur(8px);
+    }
+    #hud-panel h2 {
+      font-size: 15px;
+      color: var(--accent-cyan);
+      margin-bottom: 4px;
+    }
+    #hud-panel .category {
+      font-size: 11px;
+      color: var(--accent-amber);
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .hud-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      font-size: 12px;
+      margin-bottom: 12px;
+    }
+    .hud-stat {
+      background: #020617;
+      padding: 6px 8px;
+      border-radius: 4px;
+      border: 1px solid #1e293b;
+    }
+    .hud-stat .label {
+      font-size: 10px;
+      color: #64748b;
+      text-transform: uppercase;
+    }
+    .hud-stat .val {
+      font-weight: 600;
+      color: #f1f5f9;
+      font-family: monospace;
+    }
+    #view-controls {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      gap: 6px;
+      z-index: 20;
+      background: var(--panel-bg);
+      padding: 6px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+    #loading-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(3, 7, 18, 0.9);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 50;
+      gap: 12px;
+    }
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #1e293b;
+      border-top-color: var(--accent-cyan);
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+  <!-- Three.js + OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+  <div id="loading-overlay">
+    <div class="spinner"></div>
+    <div style="font-size: 14px; color: #94a3b8; font-family: monospace;">LOADING FALCON 3.0 3D ASSETS...</div>
+  </div>
+
+  <div id="sidebar">
+    <div class="header">
+      <h1><span style="color:var(--accent-green)">▶</span> Falcon 3.0 Asset Viewer</h1>
+      <p>Flight Engine 3D Model & Ground Structure Inspector</p>
+    </div>
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="Search 200+ models (e.g. F-16, Tank, Bridge, SAM)...">
+    </div>
+    <div class="category-tabs" id="cat-tabs">
+      <button class="cat-btn active" data-cat="ALL">All (<span id="count-all">0</span>)</button>
+      <button class="cat-btn" data-cat="Flyable Aircraft">Flyable</button>
+      <button class="cat-btn" data-cat="Aircraft">Air Units</button>
+      <button class="cat-btn" data-cat="Ground Vehicle">Ground</button>
+      <button class="cat-btn" data-cat="Naval Unit">Naval</button>
+      <button class="cat-btn" data-cat="Terrain Structure">Structures</button>
+      <button class="cat-btn" data-cat="Road & River Ribbon">Ribbons</button>
+    </div>
+    <div id="model-list"></div>
+  </div>
+
+  <div id="viewport-container">
+    <div id="toolbar">
+      <div class="tool-group">
+        <button class="btn active" id="btn-mode-shaded" title="Shaded Solid 3D">Shaded Solid</button>
+        <button class="btn" id="btn-mode-wire" title="Retro Vector Wireframe">Wireframe</button>
+        <button class="btn" id="btn-mode-both" title="Solid with Wireframe Outline">Both</button>
+      </div>
+      <div class="tool-group">
+        <button class="btn" id="btn-autorotate" title="Toggle Auto-Rotation">Auto-Rotate</button>
+        <button class="btn active" id="btn-grid" title="Toggle Ground Grid">Grid</button>
+        <button class="btn" id="btn-reset" title="Reset Camera">Reset</button>
+      </div>
+      <div class="tool-group" id="lod-group" style="display:none;">
+        <span style="font-size:11px; color:#64748b; margin-right:4px;">LOD:</span>
+        <button class="btn active" data-lod="0">0</button>
+        <button class="btn" data-lod="1">1</button>
+        <button class="btn" data-lod="2">2</button>
+        <button class="btn" data-lod="3">3</button>
+      </div>
+    </div>
+
+    <div id="view-controls">
+      <button class="btn" onclick="setView('iso')">Iso</button>
+      <button class="btn" onclick="setView('front')">Front</button>
+      <button class="btn" onclick="setView('side')">Side</button>
+      <button class="btn" onclick="setView('top')">Top</button>
+    </div>
+
+    <div id="hud-panel">
+      <h2 id="hud-name">Select a Model</h2>
+      <div class="category" id="hud-cat">—</div>
+      <div class="hud-grid">
+        <div class="hud-stat"><div class="label">Vertices</div><div class="val" id="stat-verts">0</div></div>
+        <div class="hud-stat"><div class="label">Faces / Polys</div><div class="val" id="stat-faces">0</div></div>
+        <div class="hud-stat"><div class="label">Edges / Lines</div><div class="val" id="stat-edges">0</div></div>
+        <div class="hud-stat"><div class="label">Source</div><div class="val" id="stat-source">—</div></div>
+      </div>
+      <div class="hud-stat" style="margin-bottom:8px;"><div class="label">Dimensions (W × H × L)</div><div class="val" id="stat-dims">—</div></div>
+      <div style="font-size:10px; color:#64748b; font-family: monospace;">
+        Controls: Left Click + Drag to Rotate · Right Click to Pan · Scroll to Zoom
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let db = null;
+    let allModels = [];
+    let currentModel = null;
+    let currentLOD = 0;
+    let renderMode = 'shaded'; // 'shaded', 'wire', 'both'
+    let autoRotate = false;
+    let showGrid = true;
+
+    // Three.js Scene Setup
+    const container = document.getElementById('viewport-container');
+    const scene = new THREE.Scene();
+    scene.fog = new THREE.FogExp2(0x030712, 0.003);
+
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 2000);
+    camera.position.set(35, 25, 45);
+
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.shadowMap.enabled = true;
+    container.appendChild(renderer.domElement);
+
+    const controls = new THREE.OrbitControls(camera, renderer.domElement);
+    controls.enableDamping = true;
+    controls.dampingFactor = 0.05;
+
+    // Lighting
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.55);
+    scene.add(ambientLight);
+
+    const dirLight = new THREE.DirectionalLight(0xffffff, 0.85);
+    dirLight.position.set(50, 80, 50);
+    scene.add(dirLight);
+
+    const fillLight = new THREE.DirectionalLight(0x38bdf8, 0.35);
+    fillLight.position.set(-50, -20, -50);
+    scene.add(fillLight);
+
+    // Ground Grid
+    const gridHelper = new THREE.GridHelper(100, 50, 0x06b6d4, 0x1e293b);
+    gridHelper.position.y = -0.01;
+    scene.add(gridHelper);
+
+    // Model Container
+    const modelGroup = new THREE.Group();
+    scene.add(modelGroup);
+
+    // Resize Handler
+    window.addEventListener('resize', () => {
+      camera.aspect = container.clientWidth / container.clientHeight;
+      camera.updateProjectionMatrix();
+      renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    // Animation Loop
+    function animate() {
+      requestAnimationFrame(animate);
+      if (autoRotate && modelGroup) {
+        modelGroup.rotation.y += 0.008;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+    animate();
+
+    // Fetch Database
+    fetch('assets_database.json')
+      .then(res => res.json())
+      .then(data => {
+        db = data;
+        initData();
+        document.getElementById('loading-overlay').style.display = 'none';
+      })
+      .catch(err => {
+        console.error('Failed to load database:', err);
+        document.getElementById('loading-overlay').innerHTML = `
+          <div style="color:#ef4444; font-size:16px;">Failed to load assets_database.json</div>
+          <div style="color:#94a3b8; font-size:12px; margin-top:8px;">Make sure the local server is running (python scripts/serve_3d_viewer.py)</div>
+        `;
+      });
+
+    function initData() {
+      allModels = [];
+      
+      // Flyable aircraft
+      (db.flyable_aircraft || []).forEach(m => {
+        m.category = 'Flyable Aircraft';
+        allModels.push(m);
+      });
+      
+      // Objects (Vehicles/Units)
+      (db.vehicles_and_units || []).forEach(m => {
+        allModels.push(m);
+      });
+
+      // Map Objects (Structures/Ribbons)
+      (db.terrain_structures || []).forEach(m => {
+        allModels.push(m);
+      });
+
+      document.getElementById('count-all').innerText = allModels.length;
+      renderModelList(allModels);
+
+      // Select F-16 or first model
+      const f16 = allModels.find(m => m.name.includes('FALCOBJ') || m.name.includes('F16')) || allModels[0];
+      if (f16) selectModel(f16);
+    }
+
+    function renderModelList(models) {
+      const listEl = document.getElementById('model-list');
+      listEl.innerHTML = '';
+      models.forEach(m => {
+        const item = document.createElement('div');
+        item.className = 'model-item' + (currentModel === m ? ' active' : '');
+        item.innerHTML = `
+          <div>
+            <div class="name">${m.name}</div>
+            <div class="meta">${m.category} · ${m.vertex_count}v / ${m.face_count || m.edge_count} primitives</div>
+          </div>
+          <div class="badge">${m.source.replace('GAME_', '')}</div>
+        `;
+        item.onclick = () => selectModel(m);
+        listEl.appendChild(item);
+      });
+    }
+
+    function selectModel(model) {
+      currentModel = model;
+      currentLOD = 0;
+      
+      document.querySelectorAll('.model-item').forEach(el => el.classList.remove('active'));
+      const activeItem = [...document.querySelectorAll('.model-item')].find(el => el.innerText.includes(model.name));
+      if (activeItem) activeItem.classList.add('active');
+
+      // Update LOD buttons visibility
+      const lodGroup = document.getElementById('lod-group');
+      if (model.lods && model.lods.length > 1) {
+        lodGroup.style.display = 'flex';
+        document.querySelectorAll('#lod-group button').forEach((b, idx) => {
+          b.classList.toggle('active', idx === 0);
+          b.style.display = idx < model.lods.length ? 'block' : 'none';
+        });
+      } else {
+        lodGroup.style.display = 'none';
+      }
+
+      build3DGeometry(model, 0);
+      updateHUD(model, 0);
+    }
+
+    function build3DGeometry(model, lodIdx) {
+      // Clear previous
+      while (modelGroup.children.length > 0) {
+        const obj = modelGroup.children[0];
+        if (obj.geometry) obj.geometry.dispose();
+        if (obj.material) {
+          if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+          else obj.material.dispose();
+        }
+        modelGroup.remove(obj);
+      }
+      modelGroup.rotation.set(0, 0, 0);
+
+      let verts = model.vertices;
+      let faces = model.faces || [];
+      let edges = model.edges || [];
+
+      // Check if specific LOD selected
+      if (model.lods && model.lods[lodIdx]) {
+        const lod = model.lods[lodIdx];
+        verts = lod.vertices || verts;
+        faces = lod.faces || faces;
+        edges = lod.edges || edges;
+      }
+
+      if (!verts || verts.length === 0) return;
+
+      // Calculate Bounding Box and Center Model
+      let minX = Infinity, maxX = -Infinity;
+      let minY = Infinity, maxY = -Infinity;
+      let minZ = Infinity, maxZ = -Infinity;
+
+      verts.forEach(v => {
+        if (v[0] < minX) minX = v[0]; if (v[0] > maxX) maxX = v[0];
+        if (v[1] < minY) minY = v[1]; if (v[1] > maxY) maxY = v[1];
+        if (v[2] < minZ) minZ = v[2]; if (v[2] > maxZ) maxZ = v[2];
+      });
+
+      const centerX = (minX + maxX) / 2;
+      const centerY = (minY + maxY) / 2;
+      const centerZ = (minZ + maxZ) / 2;
+      const sizeX = maxX - minX;
+      const sizeY = maxY - minY;
+      const sizeZ = maxZ - minZ;
+      const maxDim = Math.max(sizeX, sizeY, sizeZ, 1.0);
+
+      // Centered vertex array
+      const centeredVerts = verts.map(v => [
+        v[0] - centerX,
+        v[1] - centerY,
+        v[2] - centerZ
+      ]);
+
+      // 1. Solid Mesh (if faces available)
+      if (faces && faces.length > 0 && renderMode !== 'wire') {
+        const geom = new THREE.BufferGeometry();
+        const positions = [];
+        const colors = [];
+
+        faces.forEach(f => {
+          const ring = f.indices;
+          if (ring.length < 3) return;
+
+          // Lookup VGA color
+          let rgb = [160, 160, 160];
+          if (db.metadata && db.metadata.palette && f.color < db.metadata.palette.length) {
+            rgb = db.metadata.palette[f.color];
+          }
+          const col = new THREE.Color(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0);
+
+          // Fan triangulation for convex polygons
+          for (let i = 1; i < ring.length - 1; i++) {
+            const v0 = centeredVerts[ring[0]];
+            const v1 = centeredVerts[ring[i]];
+            const v2 = centeredVerts[ring[i+1]];
+            if (v0 && v1 && v2) {
+              positions.push(v0[0], v0[1], v0[2]);
+              positions.push(v1[0], v1[1], v1[2]);
+              positions.push(v2[0], v2[1], v2[2]);
+              for (let c = 0; c < 3; c++) colors.push(col.r, col.g, col.b);
+            }
+          }
+        });
+
+        geom.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+        geom.setAttribute('color', new THREE.Float32BufferAttribute(colors, 3));
+        geom.computeVertexNormals();
+
+        const mat = new THREE.MeshStandardMaterial({
+          vertexColors: true,
+          side: THREE.DoubleSide,
+          roughness: 0.45,
+          metalness: 0.15
+        });
+
+        const mesh = new THREE.Mesh(geom, mat);
+        modelGroup.add(mesh);
+      }
+
+      // 2. Wireframe Lines (if renderMode is 'wire' or 'both', or if no faces)
+      if (renderMode === 'wire' || renderMode === 'both' || !faces || faces.length === 0) {
+        const linePositions = [];
+
+        if (edges && edges.length > 0) {
+          edges.forEach(e => {
+            const v1 = centeredVerts[e[0]];
+            const v2 = centeredVerts[e[1]];
+            if (v1 && v2) {
+              linePositions.push(v1[0], v1[1], v1[2]);
+              linePositions.push(v2[0], v2[1], v2[2]);
+            }
+          });
+        } else if (faces && faces.length > 0) {
+          faces.forEach(f => {
+            const ring = f.indices;
+            for (let i = 0; i < ring.length; i++) {
+              const v1 = centeredVerts[ring[i]];
+              const v2 = centeredVerts[ring[(i + 1) % ring.length]];
+              if (v1 && v2) {
+                linePositions.push(v1[0], v1[1], v1[2]);
+                linePositions.push(v2[0], v2[1], v2[2]);
+              }
+            }
+          });
+        }
+
+        if (linePositions.length > 0) {
+          const lineGeom = new THREE.BufferGeometry();
+          lineGeom.setAttribute('position', new THREE.Float32BufferAttribute(linePositions, 3));
+          const lineColor = renderMode === 'wire' ? 0x00ff66 : 0x06b6d4;
+          const lineMat = new THREE.LineBasicMaterial({
+            color: lineColor,
+            linewidth: 1.5,
+            transparent: true,
+            opacity: renderMode === 'both' ? 0.6 : 0.95
+          });
+          const lineSegments = new THREE.LineSegments(lineGeom, lineMat);
+          modelGroup.add(lineSegments);
+        }
+      }
+
+      // Adjust camera distance to fit object neatly
+      const dist = maxDim * 1.8;
+      camera.position.set(dist * 0.7, dist * 0.5, dist * 0.9);
+      controls.target.set(0, 0, 0);
+      camera.updateProjectionMatrix();
+    }
+
+    function updateHUD(model, lodIdx) {
+      document.getElementById('hud-name').innerText = model.name;
+      document.getElementById('hud-cat').innerText = `${model.category} · ${model.source}`;
+      
+      let verts = model.vertices;
+      let faces = model.faces || [];
+      let edges = model.edges || [];
+
+      if (model.lods && model.lods[lodIdx]) {
+        const lod = model.lods[lodIdx];
+        verts = lod.vertices || verts;
+        faces = lod.faces || faces;
+        edges = lod.edges || edges;
+      }
+
+      document.getElementById('stat-verts').innerText = verts.length;
+      document.getElementById('stat-faces').innerText = faces.length;
+      document.getElementById('stat-edges').innerText = edges.length;
+      document.getElementById('stat-source').innerText = model.source.replace('GAME_', '');
+
+      // Dimensions
+      if (verts.length > 0) {
+        let minX = Infinity, maxX = -Infinity;
+        let minY = Infinity, maxY = -Infinity;
+        let minZ = Infinity, maxZ = -Infinity;
+        verts.forEach(v => {
+          if (v[0] < minX) minX = v[0]; if (v[0] > maxX) maxX = v[0];
+          if (v[1] < minY) minY = v[1]; if (v[1] > maxY) maxY = v[1];
+          if (v[2] < minZ) minZ = v[2]; if (v[2] > maxZ) maxZ = v[2];
+        });
+        const w = (maxX - minX).toFixed(1);
+        const h = (maxY - minY).toFixed(1);
+        const l = (maxZ - minZ).toFixed(1);
+        document.getElementById('stat-dims').innerText = `${w} × ${h} × ${l} units`;
+      } else {
+        document.getElementById('stat-dims').innerText = '—';
+      }
+    }
+
+    // Category Tabs Filtering
+    document.querySelectorAll('.cat-btn').forEach(btn => {
+      btn.onclick = () => {
+        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.dataset.cat;
+        if (cat === 'ALL') {
+          renderModelList(allModels);
+        } else {
+          renderModelList(allModels.filter(m => m.category === cat));
+        }
+      };
+    });
+
+    // Search Box
+    document.getElementById('search-input').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase().trim();
+      if (!q) {
+        const activeCat = document.querySelector('.cat-btn.active').dataset.cat;
+        if (activeCat === 'ALL') renderModelList(allModels);
+        else renderModelList(allModels.filter(m => m.category === activeCat));
+        return;
+      }
+      const filtered = allModels.filter(m => 
+        m.name.toLowerCase().includes(q) || 
+        m.category.toLowerCase().includes(q)
+      );
+      renderModelList(filtered);
+    });
+
+    // Render Mode Buttons
+    const btnShaded = document.getElementById('btn-mode-shaded');
+    const btnWire = document.getElementById('btn-mode-wire');
+    const btnBoth = document.getElementById('btn-mode-both');
+
+    btnShaded.onclick = () => setRenderMode('shaded');
+    btnWire.onclick = () => setRenderMode('wire');
+    btnBoth.onclick = () => setRenderMode('both');
+
+    function setRenderMode(mode) {
+      renderMode = mode;
+      btnShaded.classList.toggle('active', mode === 'shaded');
+      btnWire.classList.toggle('active', mode === 'wire');
+      btnBoth.classList.toggle('active', mode === 'both');
+      if (currentModel) build3DGeometry(currentModel, currentLOD);
+    }
+
+    // Auto-Rotate
+    const btnRotate = document.getElementById('btn-autorotate');
+    btnRotate.onclick = () => {
+      autoRotate = !autoRotate;
+      btnRotate.classList.toggle('active', autoRotate);
+    };
+
+    // Grid Toggle
+    const btnGrid = document.getElementById('btn-grid');
+    btnGrid.onclick = () => {
+      showGrid = !showGrid;
+      gridHelper.visible = showGrid;
+      btnGrid.classList.toggle('active', showGrid);
+    };
+
+    // Reset Camera
+    document.getElementById('btn-reset').onclick = () => {
+      if (currentModel) build3DGeometry(currentModel, currentLOD);
+    };
+
+    // LOD Selection
+    document.querySelectorAll('#lod-group button').forEach(b => {
+      b.onclick = () => {
+        const lod = parseInt(b.dataset.lod);
+        currentLOD = lod;
+        document.querySelectorAll('#lod-group button').forEach(el => el.classList.remove('active'));
+        b.classList.add('active');
+        if (currentModel) {
+          build3DGeometry(currentModel, lod);
+          updateHUD(currentModel, lod);
+        }
+      };
+    });
+
+    // View Presets
+    function setView(view) {
+      if (!currentModel) return;
+      const dist = camera.position.length();
+      if (view === 'iso') camera.position.set(dist*0.6, dist*0.5, dist*0.6);
+      else if (view === 'front') camera.position.set(0, 0, dist);
+      else if (view === 'side') camera.position.set(dist, 0, 0);
+      else if (view === 'top') camera.position.set(0, dist, 0.001);
+      controls.target.set(0, 0, 0);
+      camera.updateProjectionMatrix();
+    }
+  </script>
+</body>
+</html>
