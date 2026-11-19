@@ -551,37 +551,78 @@ This suggests grid is **coarser** than tile resolution, probably 32×40 or 40×3
 
 ---
 
-## Theater Files
+## Theater Files & Multi-Theater Census
 
-| Theater | Code | ISLDAT Size | MAPOBJ Size | Coastline Segments |
-|---------|------|-------------|-------------|-------------------|
-| Israel | ISR | 6,787 bytes | 108,401 bytes | 32 |
-| Iraq | IRQ | ~7KB | ~243KB | ~50 (estimated) |
-| Korea | KOR | ~6KB | ~150KB | ~40 (estimated) |
-| Hokkaido | HOK | ~6KB | ~120KB | ~35 (estimated) |
-| Panama | PAN | ~6KB | ~90KB | ~25 (estimated) |
-| Bosnia | BOS | ~6KB | ~100KB | ~30 (estimated) |
+Every theater in Falcon 3.0 consists of a unified multi-file asset suite:
+1. `*.MAP`: 240 × 200 raster grid (48,004 bytes = 4-byte header `[0xF0, 0x00, 0xC8, 0x00]` + 48,000 bytes). Stores 8-bit terrain/elevation and water depth indices.
+2. `ALTPAL.*`: 840 bytes = 280 color palette in 6-bit VGA DAC format (0..63; scaled to 0..255 via `v * 4 + v // 16`).
+3. `ISLDAT.*`: Vector spatial index with convex polygon rings, feature centroids `(tx, ty)` in 16.16 signed nautical miles, and sub-record polyline outlines.
+4. `MAPOBJ.*`: 3D coordinate vertices (12-byte signed 32-bit points).
 
-Larger theaters (Iraq, Korea) have more complex coastlines and rivers, requiring larger MAPOBJ files.
+### Comprehensive Theater Census
+
+| Theater | Code | MAP File | Tile Range | ISLDAT File | Records | Features / Polylines | Points | Coord Box (X, Y nm) | MAPOBJ Size |
+|---------|------|----------|------------|-------------|---------|---------------------|--------|----------------------|-------------|
+| **Bosnia** | `BOS` | `BOSNIA.MAP` | `[40..77]` (land only) | `ISLDAT.BOS` | 21 | 24 (Coasts, Lakes, Borders) | 403 | `[-60.4..15.4, -44.6.. 9.4]` | 188,998 B |
+| **Hokkaido** | `HOK` | `JAPAN.MAP` | `[33..65]` | `ISLDAT.HOK` | 29 | 51 (Coasts, Rivers, Lakes, Borders) | 401 | `[-57.6..39.4, -29.9..39.3]` | 104,226 B |
+| **Kuwait / Iraq** | `IRQ` | `KUWAIT.MAP` | `[34..85]` | `ISLDAT.IRQ` | 28 | 43 (Coasts, Rivers) | 281 | `[-48.0..31.0, -19.2..77.2]` | 252,053 B |
+| **Israel** | `ISR` | `ISRAEL.MAP` | `[32..85]` | `ISLDAT.ISR` | 32 | 37 (Coasts, Rivers) | 206 | `[-47.5..29.1, -56.5..13.8]` | 108,401 B |
+| **Korea** | `KOR` | `KOREA.MAP` | `[32..83]` | `ISLDAT.KOR` | 29 | 29 (Coasts, Lakes) | 346 | `[-22.0..71.8, -46.1..28.6]` | 134,245 B |
+| **Nellis** | `NEL` | `NELLIS.MAP` | `[32..85]` | `ISLDAT.NEL` | 2 | 4 (Lakes / Salt Flats) | 56 | `[ -1.5..-0.2,  -7.4.. 0.2]` | 63,505 B |
+| **Pakistan / India**| `PAK` | `INDIA.MAP` | `[32..87]` | `ISLDAT.PAK` | 0 | 0 (Pure Raster Theater) | 0 | `None` | 187,670 B |
+| **Panama** | `PAN` | `PANAMA.MAP` | `[32..85]` | `ISLDAT.PAN` | 31 | 61 (Coasts, Canal/Rivers) | 381 | `[-40.3..38.9, -40.9..42.9]` | 56,299 B |
 
 ---
 
-## Unknowns (Non-Critical)
+## Strategic Raster Elevation Maps (*.MAP)
 
-1. **Exact grid dimensions**: 1,280 bytes = 32×40? 40×32? 64×20?  
-   *Impact*: None - algorithm works regardless
+The strategic/tactical maps used in mission planning, waypoint placement, and theater overview screens are stored in `game/<THEATER>.MAP`:
+- **Dimensions**: Exactly 240 columns × 200 rows ($48,000$ bytes).
+- **Header**: 4 bytes little-endian `uint16_t width` ($240 = 0x00F0$) and `uint16_t height` ($200 = 0x00C8$).
+- **Tile Encoding**:
+  - `32..39`: Hydrography / Sea water depth levels (8 bathymetric depth tiers).
+  - `40..85+`: Land hypsometric elevation tints and terrain types (46+ altitude steps).
+- **Palette**: Applied using `game/ALTPAL.<EXT>`. 280 color triplets in VGA DAC 6-bit depth ($0..63$).
 
-2. **River vs road distinction**: Both in same grid, or separate feature flags?  
-   *Impact*: None - both render identically
+---
 
-3. **Polygon fill**: No interior fill found, coastlines may be lines only  
-   *Impact*: None - water rendering may use palette/tilemap tricks
+## Vector Feature Decoding (ISLDAT) & Coordinate Solution
 
-4. **Coordinate units**: 32-bit values, likely fixed-point (16.16 format?)  
-   *Impact*: None - relative deltas work regardless of absolute scale
+### Feature Attributes
+The word at record offset `+0x20` specifies the feature category and scale divisor:
+- `0x14` (20): **Coastlines** (deep blue `#1E88E5`)
+- `0x32` (50): **Rivers & Canals** (emerald `#00BFA5`)
+- `0x64` (100): **Lakes** (indigo `#3949AB`)
+- `0xC8` (200): **National Borders / Frontiers** (crimson `#E53935`)
 
-5. **MAPOBJ loader function**: Which function loads MAPOBJ.XXX?  
-   *Impact*: None - loading mechanism understood via op_dispatch
+### Resolved Local-to-World Transform (Solved Finding 118)
+Each feature record header specifies its tile centroid `(x_nm, y_nm)` in signed 16.16 fixed-point nautical miles:
+$$\text{tx} = \frac{\text{raw\_x}}{65536.0}, \quad \text{ty} = \frac{\text{raw\_y}}{65536.0}$$
+Within each record, vertices are stored as 16-bit signed offsets $\{px, 0, pz\}$. The local bounding box is approximately $\pm 5109$ units (each tile spanning ~5.12 nm).
+The scale factor from local integer units to world nautical miles is exactly $\frac{1}{2000.0}$:
+$$\text{world\_x} = \text{tx} + \frac{px}{2000.0}$$
+$$\text{world\_y} = \text{ty} + \frac{pz}{2000.0}$$
+
+Adjacent tile boundary vertices across neighboring records stitch together with $< 0.01\text{ nm}$ delta, proving exact continuity.
+
+### Convex Decomposition & Seam Clipping
+Sub-records form a convex decomposition of the geographic region:
+1. Every sub-record is a convex polygon ring.
+2. Interior edges shared between adjacent rings cancel out (use count $> 1$).
+3. Boundary edges lying on the tile bounding box represent clipping artifacts against adjacent tiles and are discarded (except for lakes `0x64`, which are self-contained).
+4. Remaining unshared edges are chained into continuous polylines.
+
+---
+
+## Solved Status & Limits of Terrain Knowledge
+
+All previously open unknowns are now fully resolved:
+1. ✅ **Grid dimensions & Raster Map**: Proven 240 × 200 tile matrix across all 8 theaters.
+2. ✅ **Vector vs Raster role**: Raster `.MAP` provides 2D tactical background; `ISLDAT` provides vector coastlines/rivers/borders and spatial indexing; `MAPOBJ` provides 3D vertices for in-flight view culling.
+3. ✅ **Local-to-world transform**: Solved with `tx + px / 2000.0` (nautical miles).
+4. ✅ **Feature classification**: Completely mapped (`0x14` coast, `0x32` river, `0x64` lake, `0xC8` border).
+5. ✅ **Palette decoding**: ALTPAL 6-bit DAC correctly mapped to 24-bit RGB.
+6. ✅ **Multi-theater verification**: All 8 theaters rendered to standalone rasters and vector vector sheets in `analysis/theater_maps/`.
 
 ---
 
