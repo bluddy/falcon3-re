@@ -26,7 +26,7 @@ def parse_isldat_mesh(path, include_ground_plates=False):
         raw = f.read()
 
     if len(raw) < 18:
-        return 0, []
+        return 0, [], []
 
     body = raw[9:]
     def u16(o): 
@@ -45,6 +45,7 @@ def parse_isldat_mesh(path, include_ground_plates=False):
             records.append(offset)
 
     polys = []
+    rivers = []
     for idx, r in enumerate(records):
         c0 = i32(r) / 65536.0    # Centroid X
         c4 = i32(r+4) / 65536.0  # Centroid Y
@@ -52,9 +53,17 @@ def parse_isldat_mesh(path, include_ground_plates=False):
         nv = u16(r+0x2E)
         sub = u16(r+0x32)
 
-        # In Israel, attr 0x32 are artificial 17.5nm coarse ground/urban plates (not hydrography).
-        # In Iraq/Panama, attr 0x32 are actual river/canal channels.
-        if code == 'ISR' and attr == 0x32 and not include_ground_plates:
+        # Distinguish rivers/canals from coarse ground plates
+        is_river = False
+        if code in ['IRQ', 'PAN', 'HOK'] and attr == 0x32:
+            is_river = True
+        elif code == 'ISR' and attr == 0x32 and r in [0x0cd4, 0x0db2]:
+            is_river = True
+        elif code in ['BOS', 'KOR'] and attr == 0x64:
+            is_river = True
+
+        # In Israel, non-river attr 0x32 are artificial 17.5nm coarse ground/urban plates
+        if code == 'ISR' and attr == 0x32 and not is_river and not include_ground_plates:
             continue
 
         pts = [struct.unpack_from('<hhh', body, r + 0x38 + 6 * i) for i in range(nv)]
@@ -63,6 +72,16 @@ def parse_isldat_mesh(path, include_ground_plates=False):
         # local offsets: p[2] pairs with c0, p[0] pairs with c4
         mesh_u = [c0 + p[2] / SCALE for p in pts]
         mesh_v = [c4 + p[0] / SCALE for p in pts]
+
+        # Extract centerline polyline for rivers (Type 4 subrecord)
+        if is_river:
+            rivers.append({
+                'rec_id': idx,
+                'offset': r,
+                'attr': attr,
+                'nv': nv,
+                'pts': [(v, u) for u, v in zip(mesh_u, mesh_v)] # (X, Y) = (V, U)
+            })
 
         p_sub = sub
         while p_sub + 2 <= len(body) and u16(p_sub) != 0xFFFF:
@@ -80,15 +99,16 @@ def parse_isldat_mesh(path, include_ground_plates=False):
                     polys.append({
                         'rec_id': idx,
                         'attr': attr,
+                        'is_river': is_river,
                         'u': pu,
                         'v': pv
                     })
                 q += 2 + 2 * (cnt + 1)
                 if not chain: break
                 
-    return len(records), polys
+    return len(records), polys, rivers
 
-def render_vector_map(code, n_records, polys, out_dir):
+def render_vector_map(code, n_records, polys, rivers, out_dir):
     out_dir = Path(out_dir)
     out_dir.mkdir(parents=True, exist_ok=True)
     W, H = 1600, 1600
@@ -96,17 +116,18 @@ def render_vector_map(code, n_records, polys, out_dir):
     # Unified Whole-Map Orientation:
     # All theaters use the confirmed View B orientation: (X, Y) = (V, U)
     # where V = c4 + w0/SCALE and U = c0 + w2/SCALE.
-    # This aligns:
-    # - Nellis Lake Mead horizontally (aspect 2.5)
-    # - Israel coastline extending continuously with Egypt (SW) and Turkey/Syria (N)
-    # - Korea peninsula and Yellow Sea / Sea of Japan matching raster
-    # - Bosnia Adriatic coast matching raster
     if polys:
         for item in polys:
             item['poly'] = [(v, u) for u, v in zip(item['u'], item['v'])]
-            
-        all_xs = [pt[0] for item in polys for pt in item['poly']]
-        all_ys = [pt[1] for item in polys for pt in item['poly']]
+
+    all_xs = [pt[0] for item in polys for pt in item['poly']] if polys else []
+    all_ys = [pt[1] for item in polys for pt in item['poly']] if polys else []
+    for r in rivers:
+        for pt in r['pts']:
+            all_xs.append(pt[0])
+            all_ys.append(pt[1])
+
+    if all_xs and all_ys:
         min_x, max_x = min(all_xs) - 4, max(all_xs) + 4
         min_y, max_y = min(all_ys) - 4, max(all_ys) + 4
     else:
@@ -165,7 +186,7 @@ def render_vector_map(code, n_records, polys, out_dir):
         elif attr == 0x64:
             fill = (2, 132, 199, 190)  # lake sky blue
         elif attr == 0x32:
-            fill = (16, 185, 129, 190) # river emerald (Iraq/Panama)
+            fill = (16, 185, 129, 140) # river emerald translucent
         else:
             fill = (226, 232, 240, 150)
         poly_draw.polygon(pts_px, fill=fill)
@@ -186,21 +207,36 @@ def render_vector_map(code, n_records, polys, out_dir):
             outline = (248, 250, 252)
         draw.polygon(pts_px, outline=outline)
 
+    # Render Type 4 River Centerlines (curvy polylines)
+    for r in rivers:
+        pts_px = [to_px(pt[0], pt[1]) for pt in r['pts']]
+        if len(pts_px) >= 2:
+            # Draw river glow
+            draw.line(pts_px, fill=(5, 150, 105), width=5)
+            # Draw crisp river thread
+            draw.line(pts_px, fill=(16, 185, 129), width=3)
+            # Draw micro-scale vertex points
+            for p in pts_px:
+                draw.ellipse([p[0]-2, p[1]-2, p[0]+2, p[1]+2], fill=(110, 231, 183))
+
     # Legend
     legend_y = H - 90
-    draw.rectangle([80, legend_y, 450, legend_y + 40], fill=(20, 30, 48), outline=(51, 65, 85))
+    draw.rectangle([80, legend_y, 650, legend_y + 40], fill=(20, 30, 48), outline=(51, 65, 85))
     draw.rectangle([95, legend_y + 12, 115, legend_y + 24], fill=(14, 116, 144), outline=(56, 189, 248))
     draw.text((125, legend_y + 11), "Coastline / Sea (0x14)", fill=(226, 232, 240))
+    
     if any(item['attr'] == 0x64 for item in polys):
         draw.rectangle([280, legend_y + 12, 300, legend_y + 24], fill=(2, 132, 199), outline=(125, 211, 252))
         draw.text((310, legend_y + 11), "Lakes (0x64)", fill=(226, 232, 240))
-    elif any(item['attr'] == 0x32 for item in polys):
-        draw.rectangle([280, legend_y + 12, 300, legend_y + 24], fill=(16, 185, 129), outline=(52, 211, 153))
-        draw.text((310, legend_y + 11), "Rivers (0x32)", fill=(226, 232, 240))
+    
+    if rivers or any(item['attr'] == 0x32 for item in polys):
+        draw.line([(420, legend_y + 18), (445, legend_y + 18)], fill=(16, 185, 129), width=3)
+        draw.ellipse([430, legend_y + 16, 435, legend_y + 21], fill=(110, 231, 183))
+        draw.text((455, legend_y + 11), "Rivers / Canals (Type 4 Centerline)", fill=(226, 232, 240))
 
     title = f"{code}: {THEATER_NAMES.get(code, 'Unknown')}"
     draw.text((80, 30), title, fill=(248, 250, 252))
-    sub = f"ISLDAT Seamless Hydrography Mesh: {n_records} records, {len(polys)} water polygons | Range: {span:.1f}x{span:.1f} nm"
+    sub = f"ISLDAT Hydrography Mesh: {n_records} records, {len(polys)} water polygons, {len(rivers)} river polylines | Range: {span:.1f}x{span:.1f} nm"
     draw.text((80, 52), sub, fill=(148, 163, 184))
 
     png_path = out_dir / f"{code}_vector_map.png"
@@ -230,9 +266,21 @@ def render_vector_map(code, n_records, polys, out_dir):
         if len(pts_px) < 3: continue
         pts_str = " ".join(f"{pt[0]:.1f},{pt[1]:.1f}" for pt in pts_px)
         attr = item['attr']
-        fill = "rgba(14, 116, 144, 0.7)" if attr in (0x14, 0xC8) else "rgba(2, 132, 199, 0.7)" if attr == 0x64 else "rgba(16, 185, 129, 0.7)"
+        fill = "rgba(14, 116, 144, 0.7)" if attr in (0x14, 0xC8) else "rgba(2, 132, 199, 0.7)" if attr == 0x64 else "rgba(16, 185, 129, 0.5)"
         stroke = "#38bdf8" if attr in (0x14, 0xC8) else "#7dd3fc" if attr == 0x64 else "#34d399"
         svg_lines.append(f'<polygon points="{pts_str}" fill="{fill}" stroke="{stroke}" stroke-width="1.5"/>')
+
+    # Rivers in SVG
+    for r in rivers:
+        pts_px = [to_px(pt[0], pt[1]) for pt in r['pts']]
+        if len(pts_px) >= 2:
+            pts_str = " ".join(f"{pt[0]:.1f},{pt[1]:.1f}" for pt in pts_px)
+            svg_lines.append(
+                f'<polyline points="{pts_str}" fill="none" stroke="#10b981" stroke-width="2.5" '
+                f'stroke-linecap="round" stroke-linejoin="round"/>'
+            )
+            for pt in pts_px:
+                svg_lines.append(f'<circle cx="{pt[0]:.1f}" cy="{pt[1]:.1f}" r="2" fill="#6ee7b7"/>')
 
     svg_lines.append('</svg>')
     svg_path = out_dir / f"{code}_vector_map.svg"
@@ -248,8 +296,8 @@ def main():
 
     for isldat_file in sorted(Path('game').glob('ISLDAT.*')):
         code = isldat_file.suffix[1:]
-        n_rec, polys = parse_isldat_mesh(isldat_file)
-        im = render_vector_map(code, n_rec, polys, out_dir)
+        n_rec, polys, rivers = parse_isldat_mesh(isldat_file)
+        im = render_vector_map(code, n_rec, polys, rivers, out_dir)
         theater_imgs[code] = im
 
     # Overview sheet: 4 cols x 2 rows
@@ -270,7 +318,7 @@ def main():
     # Copy to artifact directory
     artifact_dir = Path(r'C:\Users\yotam\.gemini\antigravity-cli\brain\55de3f9f-195f-4620-9a3d-ce8463e4c888')
     if artifact_dir.exists():
-        for f in ['ISR_vector_map.png', 'NEL_vector_map.png', 'all_theaters_vector_overview.png', 'KOR_vector_map.png', 'PAN_vector_map.png', 'BOS_vector_map.png']:
+        for f in ['ISR_vector_map.png', 'IRQ_vector_map.png', 'PAN_vector_map.png', 'HOK_vector_map.png', 'NEL_vector_map.png', 'all_theaters_vector_overview.png', 'KOR_vector_map.png', 'BOS_vector_map.png']:
             src = out_dir / f
             if src.exists():
                 shutil.copy(src, artifact_dir / f)

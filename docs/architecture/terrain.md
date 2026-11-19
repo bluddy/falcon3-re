@@ -764,9 +764,53 @@ ENEMY-NC        - Enemy Non-Combat convoy
 - **Bridges as Tactical Choke Points**: Bridge structures across rivers (e.g. Euphrates bridges in Iraq, Allenby Bridge in Israel) are critical `MAPOBJ` nodes with high `CAPACITY`.
 - When an air strike destroys a bridge (`MAPOBJ` damage threshold exceeded), the campaign engine severs the `NEIGHBOR` link in the graph, dropping road capacity to zero and forcing enemy ground battalions (`ENEMY-C`) to reroute or halt, creating high-value interdiction choke points.
 
-#### 2D Tactical Screen Coordination
+#### 2D Tactical Screen Coordination & Screen Projection
 - Managed by **`tactical_screen_coordinator`** (`0x12DB63`, 1031 bytes in R29).
 - Directly addresses graph data at `4FC2:0168h` (`0x13E048`), reading node positions (`word_13E006`, `word_13E008`) and writing active mission waypoints to `dword_14F994`.
+- **Screen Viewport Projection (`tactical_screen_node_project` @ `0x11F382`)**:
+  Projects node coordinates into tactical map pixels across the 240-pixel screen viewport:
+  $$\text{screen\_X} = \frac{(node\_X - \text{view\_X}) \times 239}{\text{view\_width}}$$
+  $$\text{screen\_Y} = \frac{(node\_Y - \text{view\_Y}) \times 239}{\text{view\_height}}$$
+  At maximum zoom-out (zoom level 0, viewport size 16,191 units), the viewport covers $\text{view\_X} = -6826$ to $+9365$ and $\text{view\_Y} = -7372$ to $+8819$, encompassing the entire theater coordinate space ($[-8192, 8191]$).
+
+#### Graph Routing Algorithm (`campaign_graph_find_route` @ `0x13C57C`)
+- **Address & Size**: 457 bytes in Overlay R29.
+- **Algorithm**: Traverses the `neighbors` adjacency list at offset `+44h` (`[bx+di+44h]`) of each 78-byte `CampaignNodeRecord`.
+- Evaluates faction allegiance at offset `+2` (`ALLY-C` vs `ENEMY-C`) via `idiv 2` to ensure convoys path only through friendly/contested nodes.
+- Computes absolute Manhattan distance (`signed_diff_abs` @ `0x13C644`) to find the shortest tactical supply route or ground assault march order.
+
+#### 78-Byte Campaign Node Record Specification (`CampaignNodeRecord`)
+Every strategic installation, bridge, depot, and intersection in `<THEATER>.THE` conforms to a 78-byte fixed record:
+
+| Offset | Size | Type | Name | Description |
+|---|---|---|---|---|
+| `+0x00` | 2 | `uint16` | `target_type` | Target classification (0 Airbase, 1 Airfield, 2 City, 3 Town, 7 Bridge, 8 Oil Field, 9 Industrial, 14 Rail Yard) |
+| `+0x02` | 1 | `uint8` | `allegiance` | Faction allegiance (0 Allied, 1 Enemy) |
+| `+0x03` | 1 | `uint8` | `pattern` | Convoy formation pattern along road |
+| `+0x04` | 2 | `uint16` | `capacity` | Maximum convoy throughput / vehicles per hour |
+| `+0x06` | 2 | `uint16` | `mapobj_id` | Pointer to 3D ground structure in `MAPOBJ.<theater>` |
+| `+0x08` | 56 | `uint8[56]` | `campaign_state` | Ground unit rosters, supply stocks, damage state |
+| `+0x40` | 2 | `int16` | `pos_x` | Tactical map West-East coordinate ($-8192 \dots +8191$) |
+| `+0x42` | 2 | `int16` | `pos_y` | Tactical map North-South coordinate ($-8192 \dots +8191$) |
+| `+0x44` | 10 | `uint8[10]` | `neighbors` | Adjacency list of up to 10 linked node IDs terminated by `0xFF` |
+
+---
+
+### 3. Generated Tactical Maps & Verification Artifacts
+
+The entire hydrographic and transportation network has been rendered to standalone vector SVG and PNG assets across all 8 theaters in `analysis/theater_maps/`:
+- **Vector Maps with Curvy River Centerlines**:
+  - `ISR_vector_map.svg` / `.png`: Seamless Mediterranean coastline, Dead Sea, and Jordan River + Wadi El-Arish centerlines.
+  - `IRQ_vector_map.svg` / `.png`: Persian Gulf, Bubiyan Island, and micro-scale curvy Tigris & Euphrates river centerlines.
+  - `PAN_vector_map.svg` / `.png`: Pacific & Caribbean oceans, Gatun Lake, and the complete Panama Canal & Chagres River course.
+  - `HOK_vector_map.svg` / `.png`: Northern Japan coastline, Lake Kussharo, and Ishikari & Tokachi rivers.
+  - `BOS_vector_map.svg` / `.png`, `KOR_vector_map.svg` / `.png`: Adriatic coast, Korean peninsula, and river systems.
+  - `all_theaters_vector_overview.png`: Master 8-theater vector map comparison sheet.
+- **Strategic Transportation & Road Network Maps**:
+  - `ISR_roads_map.svg` / `.png`: Complete 76-node Israel/Levant road network with 124 supply routes, showing bridges (Damour, Almagor, Gadot, Shuna, Zefat, Ariha, Zohar) across rivers as red choke points.
+  - `IRQ_roads_map.svg` / `.png`: 80-node Kuwait/Iraq transportation network with 168 road segments connecting Baghdad, Basra, and Persian Gulf bases across Tigris/Euphrates bridges.
+  - `PAN_roads_map.svg` / `.png`: 73-node Panama transportation network with 156 road links.
+  - `all_theaters_roads_overview.png`: Master 8-theater road network comparison sheet.
 
 ---
 

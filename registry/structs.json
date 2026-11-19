@@ -2979,5 +2979,76 @@
         "type": "uint16"
       }
     ]
+  },
+  {
+    "name": "CampaignNodeRecord",
+    "size": 78,
+    "status": "confirmed",
+    "source": "<THEATER>.THE / campaign_graph_find_route (0x13C57C)",
+    "fields": [
+      {
+        "offset": 0,
+        "size": 2,
+        "name": "target_type",
+        "type": "uint16",
+        "comment": "0 Airbase, 1 Airfield, 2 City, 3 Town, 7 Bridge, 8 Oil Field, 9 Industrial, 14 Rail Yard"
+      },
+      {
+        "offset": 2,
+        "size": 1,
+        "name": "allegiance",
+        "type": "uint8",
+        "comment": "Team allegiance (0 Allied, 1 Enemy)"
+      },
+      {
+        "offset": 3,
+        "size": 1,
+        "name": "pattern",
+        "type": "uint8",
+        "comment": "Convoy formation pattern"
+      },
+      {
+        "offset": 4,
+        "size": 2,
+        "name": "capacity",
+        "type": "uint16",
+        "comment": "Maximum convoy / vehicle throughput per hour"
+      },
+      {
+        "offset": 6,
+        "size": 2,
+        "name": "mapobj_id",
+        "type": "uint16",
+        "comment": "Pointer to physical 3D ground object in MAPOBJ"
+      },
+      {
+        "offset": 8,
+        "size": 56,
+        "name": "campaign_state",
+        "type": "uint8[56]",
+        "comment": "Active combat units and logistical status"
+      },
+      {
+        "offset": 64,
+        "size": 2,
+        "name": "pos_x",
+        "type": "int16",
+        "comment": "World / Tactical map X coordinate (-8192..8191)"
+      },
+      {
+        "offset": 66,
+        "size": 2,
+        "name": "pos_y",
+        "type": "int16",
+        "comment": "World / Tactical map Y coordinate (-8192..8191)"
+      },
+      {
+        "offset": 68,
+        "size": 10,
+        "name": "neighbors",
+        "type": "uint8[10]",
+        "comment": "Adjacency list of linked road neighbor node IDs terminated by 0xFF"
+      }
+    ]
   }
 ]
