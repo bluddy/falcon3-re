@@ -6626,10 +6626,11 @@
   },
   {
     "address": 158510,
-    "name": "object_proj_draw_dispatch",
-    "system": "object",
-    "doc": "244B far, cd=0, in=6, callees view_proj_setup_1f73d + view_rotation_build Project-and-dispatch renderer: projects the object points through the view matrix, table (parent of line_record_draw_loop;...",
-    "source": "old_registry (was: object_proj_draw_dispatch)"
+    "name": "object_3d_project_and_draw",
+    "system": "graphics_3d",
+    "doc": "Main 3D object transformation and rendering dispatcher from game/OBJECTS archive",
+    "source": "docs/architecture/graphics_3d.md",
+    "size": 148
   },
   {
     "address": 158754,
@@ -7174,10 +7175,11 @@
   },
   {
     "address": 167504,
-    "name": "line_record_draw_loop",
-    "system": "line",
-    "doc": "136B, cd=0, in=2, 5 callees: rect_edge_dispatch_b + dispatch_220a4_near THE line-record draw loop: walks the line stream, prepares each record, runs the and draws via the byte_1F72A op dispatch + ...",
-    "source": "old_registry (was: line_record_draw_loop)"
+    "name": "object_3d_poly_rasterize_dispatch",
+    "system": "graphics_3d",
+    "doc": "Prepares and dispatches polygon line / edge rasterizer queue",
+    "source": "docs/architecture/graphics_3d.md",
+    "size": 117
   },
   {
     "address": 167640,
@@ -7251,10 +7253,11 @@
   },
   {
     "address": 170453,
-    "name": "record_span_mask_rebuild",
-    "system": "record",
-    "doc": "429B, ASM, in=0, 1 callee (fixed_scale_clamp_or40). Initializes word_27968=0xFFFF, word_2796A=0; es:43BEh=cs:2796E (record queue cursor). If !(word_27966&1): loops CX iters copying 8 words from 0x...",
-    "source": "old_registry (was: record_span_mask_rebuild)"
+    "name": "object_3d_record_span_mask_rebuild",
+    "system": "graphics_3d",
+    "doc": "Loads polygon transformed vertices (stride 16), builds edge masks and screen clipping flags",
+    "source": "docs/architecture/graphics_3d.md",
+    "size": 88
   },
   {
     "address": 170882,
@@ -21912,12 +21915,13 @@
   },
   {
     "address": 169870,
-    "name": "render_3d_polygon_visibility_test",
-    "system": "graphics",
-    "size": 393,
+    "name": "object_3d_poly_visibility_and_draw",
+    "system": "graphics_3d",
+    "size": 128,
     "calls": 9,
     "description": "Tests polygon visibility using cross products and builds span records for rendering",
-    "source": "top_500_analysis rank 465"
+    "source": "docs/architecture/graphics_3d.md",
+    "doc": "Calculates face normal cross product, dot product with view vector, backface culls and dispatches"
   },
   {
     "address": 1218731,

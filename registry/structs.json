@@ -3050,5 +3050,103 @@
         "comment": "Adjacency list of linked road neighbor node IDs terminated by 0xFF"
       }
     ]
+  },
+  {
+    "name": "Object3DLODHeader",
+    "size": 10,
+    "description": "LOD header for 3D objects in game/OBJECTS archive",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "vertex_count",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Number of vertices in this LOD"
+      },
+      {
+        "offset": 2,
+        "name": "vertex_table_offset",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Byte offset to vertex array relative to chunk"
+      },
+      {
+        "offset": 4,
+        "name": "poly_table_offset",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Byte offset to polygon pointer table (to)"
+      },
+      {
+        "offset": 6,
+        "name": "flags_word3",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Unknown flags / bounding radius"
+      },
+      {
+        "offset": 8,
+        "name": "flags_word4",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Unknown flags"
+      }
+    ]
+  },
+  {
+    "name": "ObjectPolygon",
+    "size": 8,
+    "description": "Polygon record in Falcon 3.0 3D models (game/OBJECTS)",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "normal_or_flags",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Normal vector or visibility flags"
+      },
+      {
+        "offset": 2,
+        "name": "render_mode",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Shading / rasterization mode"
+      },
+      {
+        "offset": 4,
+        "name": "color_index",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Color index into VGA palette"
+      },
+      {
+        "offset": 6,
+        "name": "vertex_count",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Vertex count N (followed by N+1 words, index*16)"
+      }
+    ]
+  },
+  {
+    "name": "ObjectVisibilityNode",
+    "size": 4,
+    "description": "Visibility group / BSP node in game/OBJECTS (lists polygon offsets)",
+    "fields": [
+      {
+        "offset": 0,
+        "name": "marker",
+        "type": "uint16_t",
+        "size": 2,
+        "description": "Node marker (0xFFFF for group)"
+      },
+      {
+        "offset": 2,
+        "name": "poly_offset_list",
+        "type": "uint16_t[]",
+        "size": 2,
+        "description": "Array of 16-bit polygon offsets, terminated by 0xFFFF"
+      }
+    ]
   }
 ]
