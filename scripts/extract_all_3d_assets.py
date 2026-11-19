@@ -92,7 +92,7 @@ def decode_objects_archive(filepath='game/OBJECTS'):
         if len(obj_bytes) > 12:
             nchunk = obj_bytes[4:12]
             if all(32 <= b <= 126 or b == 0 for b in nchunk):
-                name = nchunk.decode('ascii', errors='ignore').strip()
+                name = nchunk.decode('ascii', errors='ignore').replace('\x00', '').strip()
         if not name:
             name = f"OBJ_{i:02d}"
 
@@ -123,7 +123,7 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                     if v_off + 6 <= len(obj_bytes):
                         x, y, z = struct.unpack_from('<hhh', obj_bytes, v_off)
                         # Fix F-16 nozzle vertices (historical 1991 truncation in OBJECTS Chunk 3: 0x008c -> 0xff8c)
-                        if name.strip() == 'F16' and lod_idx == 0:
+                        if 'F16' in name and lod_idx == 0:
                             if vi == 48:
                                 x = -116 # Fix 0x008c (+140) -> 0xff8c (-116), matching FSX
                             elif vi in (69, 72):
