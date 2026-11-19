@@ -186,12 +186,14 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
             gl.glEnable(gl.GL_LIGHTING)
             gl.glEnable(gl.GL_LIGHT0)
             gl.glEnable(gl.GL_NORMALIZE)
+            gl.glLightModeli(gl.GL_LIGHT_MODEL_TWO_SIDE, gl.GL_TRUE)
+            gl.glDisable(gl.GL_CULL_FACE)
             gl.glShadeModel(gl.GL_SMOOTH)
 
-            # Lights
-            gl.glLightfv(gl.GL_LIGHT0, gl.GL_POSITION, [1.0, 1.5, 1.0, 0.0])
-            gl.glLightfv(gl.GL_LIGHT0, gl.GL_DIFFUSE, [0.9, 0.9, 0.9, 1.0])
-            gl.glLightfv(gl.GL_LIGHT0, gl.GL_AMBIENT, [0.35, 0.35, 0.4, 1.0])
+            # Lights (angled sun light from upper-front-right)
+            gl.glLightfv(gl.GL_LIGHT0, gl.GL_POSITION, [1.5, 2.0, 1.5, 0.0])
+            gl.glLightfv(gl.GL_LIGHT0, gl.GL_DIFFUSE, [0.95, 0.95, 0.95, 1.0])
+            gl.glLightfv(gl.GL_LIGHT0, gl.GL_AMBIENT, [0.4, 0.4, 0.45, 1.0])
 
         def resizeGL(self, w, h):
             if h == 0: h = 1
@@ -241,6 +243,8 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
             # Render Solid Shaded Faces
             if self.faces and self.render_mode in ('shaded', 'both'):
                 gl.glEnable(gl.GL_LIGHTING)
+                gl.glEnable(gl.GL_POLYGON_OFFSET_FILL)
+                gl.glPolygonOffset(1.0, 1.0)
                 gl.glPolygonMode(gl.GL_FRONT_AND_BACK, gl.GL_FILL)
                 for f in self.faces:
                     ring = f.get('indices', [])
@@ -251,12 +255,25 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
                         rgb = self.palette[col_idx]
                     gl.glColor3f(rgb[0]/255.0, rgb[1]/255.0, rgb[2]/255.0)
 
+                    # Compute face normal for authentic Gouraud/Phong shading
+                    if all(vi < len(self.centered_verts) for vi in ring[:3]):
+                        p0 = self.centered_verts[ring[0]]
+                        p1 = self.centered_verts[ring[1]]
+                        p2 = self.centered_verts[ring[2]]
+                        nx = (p1[1]-p0[1])*(p2[2]-p0[2]) - (p1[2]-p0[2])*(p2[1]-p0[1])
+                        ny = (p1[2]-p0[2])*(p2[0]-p0[0]) - (p1[0]-p0[0])*(p2[2]-p0[2])
+                        nz = (p1[0]-p0[0])*(p2[1]-p0[1]) - (p1[1]-p0[1])*(p2[0]-p0[0])
+                        nl = math.sqrt(nx*nx + ny*ny + nz*nz)
+                        if nl > 1e-6:
+                            gl.glNormal3f(nx/nl, ny/nl, nz/nl)
+
                     gl.glBegin(gl.GL_POLYGON)
                     for vi in ring:
                         if vi < len(self.centered_verts):
                             vx, vy, vz = self.centered_verts[vi]
                             gl.glVertex3f(vx, vy, vz)
                     gl.glEnd()
+                gl.glDisable(gl.GL_POLYGON_OFFSET_FILL)
 
             # Render Wireframe Lines
             if self.render_mode in ('wire', 'both') or not self.faces:

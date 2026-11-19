@@ -39,20 +39,23 @@ def decode_aircraft_bin(filepath):
     with open(path, 'rb') as f:
         d = f.read()
     v_count, l_count = struct.unpack_from('<HH', d, 2)
-    v_start = 0x80
+    v_start = 0xA0  # Authentic 0xA0 vertex offset
     verts = []
     for vi in range(v_count):
-        x, y, z = struct.unpack_from('<hhh', d, v_start + vi*6)
-        verts.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+        if v_start + vi * 6 + 6 <= len(d):
+            x, y, z = struct.unpack_from('<hhh', d, v_start + vi*6)
+            # Aviation NED (X_fwd, Y_right, Z_down) to standard OpenGL 3D (X_right, Y_up, Z_fwd):
+            verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
     
     l_start = v_start + v_count * 6
     edges = []
     for li in range(l_count):
-        v1_raw, v2_raw = struct.unpack_from('<hh', d, l_start + li*4)
-        v1 = v_count + v1_raw if v1_raw < 0 else v1_raw
-        v2 = v_count + v2_raw if v2_raw < 0 else v2_raw
-        if 0 <= v1 < v_count and 0 <= v2 < v_count:
-            edges.append([v1, v2])
+        if l_start + li * 4 + 4 <= len(d):
+            v1_raw, v2_raw = struct.unpack_from('<hh', d, l_start + li*4)
+            v1 = v_count + v1_raw if v1_raw < 0 else v1_raw
+            v2 = v_count + v2_raw if v2_raw < 0 else v2_raw
+            if 0 <= v1 < len(verts) and 0 <= v2 < len(verts):
+                edges.append([v1, v2])
 
     return {
         'name': path.stem,
@@ -102,65 +105,65 @@ def decode_objects_archive(filepath='game/OBJECTS'):
 
         if sig_pos != -1:
             lod_table_pos = sig_pos + 4
+            lod_headers = []
             for lod_idx in range(4):
                 if lod_table_pos + (lod_idx+1)*10 <= len(obj_bytes):
-                    vc, vo, lo, po, fl = struct.unpack_from('<5H', obj_bytes, lod_table_pos + lod_idx*10)
-                    if 0 < vc < 1000 and 0 < vo < len(obj_bytes):
-                        verts = []
-                        for vi in range(vc):
-                            v_off = vo + vi * 6
-                            if v_off + 6 <= len(obj_bytes):
-                                x, y, z = struct.unpack_from('<hhh', obj_bytes, v_off)
-                                verts.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+                    vc, vo, to, w3, w4 = struct.unpack_from('<5H', obj_bytes, lod_table_pos + lod_idx*10)
+                    if 0 < vc < 3000 and 0 < vo < len(obj_bytes):
+                        lod_headers.append((lod_idx, vc, vo, to))
 
-                        # Extract polygon faces in this object section
-                        faces = []
-                        visited = set()
-                        p = vo + vc * 6
-                        while p + 8 <= len(obj_bytes):
-                            col, cnt = struct.unpack_from('<HH', obj_bytes, p)
-                            if 1 <= col <= 255 and 3 <= cnt <= 8:
-                                ring_off = p + 4
-                                if ring_off + cnt * 2 <= len(obj_bytes):
-                                    v_idx = []
-                                    valid_ring = True
-                                    for ki in range(cnt):
-                                        raw_v = struct.unpack_from('<H', obj_bytes, ring_off + ki*2)[0]
-                                        if raw_v % 16 != 0:
-                                            valid_ring = False
-                                            break
-                                        vi = raw_v // 16
-                                        if vi >= len(verts):
-                                            valid_ring = False
-                                            break
-                                        v_idx.append(vi)
-                                    if valid_ring and len(set(v_idx)) >= 3 and p not in visited:
-                                        visited.add(p)
-                                        faces.append({'color': col, 'indices': v_idx})
-                            p += 2
+            for h_idx, (lod_idx, vc, vo, to) in enumerate(lod_headers):
+                lod_end = lod_headers[h_idx + 1][3] if h_idx + 1 < len(lod_headers) else len(obj_bytes)
+                if lod_end > len(obj_bytes):
+                    lod_end = len(obj_bytes)
 
-                        # Derive edges from polygon faces
-                        edges = set()
-                        for f_item in faces:
-                            ring = f_item['indices']
-                            for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
-                                edges.add(tuple(sorted([v1, v2])))
-                        edge_list = [list(e) for e in sorted(list(edges))]
+                verts = []
+                for vi in range(vc):
+                    v_off = vo + vi * 6
+                    if v_off + 6 <= len(obj_bytes):
+                        x, y, z = struct.unpack_from('<hhh', obj_bytes, v_off)
+                        # Aviation NED to OpenGL 3D:
+                        verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
 
-                        if lod_idx == 0 or not primary_verts:
-                            primary_verts = verts
-                            primary_faces = faces
-                            primary_edges = edge_list
+                # Extract closed polygon faces strictly within this LOD boundary
+                faces = []
+                p = to
+                while p + 8 <= lod_end:
+                    w0, w1 = struct.unpack_from('<2H', obj_bytes, p)
+                    if 3 <= w1 <= 8 and 1 <= w0 <= 255:
+                        cnt = w1
+                        if p + 4 + (cnt+1)*2 + 2 <= lod_end:
+                            v_words = struct.unpack_from(f'<{cnt+1}H', obj_bytes, p + 4)
+                            if all(w % 16 == 0 and (w // 16) < len(verts) for w in v_words) and v_words[0] == v_words[-1]:
+                                ring = [w // 16 for w in v_words[:-1]]
+                                if len(set(ring)) >= 3:
+                                    faces.append({'color': w0, 'indices': ring})
+                                    p += (cnt + 4) * 2
+                                    continue
+                    p += 2
 
-                        lods.append({
-                            'lod': lod_idx,
-                            'vertex_count': len(verts),
-                            'face_count': len(faces),
-                            'edge_count': len(edge_list),
-                            'vertices': verts,
-                            'faces': faces,
-                            'edges': edge_list
-                        })
+                # Derive clean perimeter edges from polygon faces
+                edges = set()
+                for f_item in faces:
+                    ring = f_item['indices']
+                    for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
+                        edges.add(tuple(sorted([v1, v2])))
+                edge_list = [list(e) for e in sorted(list(edges))]
+
+                if lod_idx == 0 or not primary_verts:
+                    primary_verts = verts
+                    primary_faces = faces
+                    primary_edges = edge_list
+
+                lods.append({
+                    'lod': lod_idx,
+                    'vertex_count': len(verts),
+                    'face_count': len(faces),
+                    'edge_count': len(edge_list),
+                    'vertices': verts,
+                    'faces': faces,
+                    'edges': edge_list
+                })
 
         # Categorize
         cat = 'Vehicle / Aircraft'
