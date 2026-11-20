@@ -4,21 +4,23 @@ with open('game/OBJECTS', 'rb') as f:
     data = f.read()
 
 first_off = struct.unpack_from('<I', data, 0)[0]
-num_objs = first_off // 4
-offsets = struct.unpack(f'<{num_objs}I', data[:first_off])
-off = offsets[3] # F16
-size = offsets[4] - off
-obj = data[off:off+size]
+offsets = struct.unpack(f'<{first_off//4}I', data[:first_off])
+obj = data[offsets[3]:offsets[4]] # F-16 in OBJECTS
 
-vc, vo, to = struct.unpack_from('<3H', obj, 0x40)
-print(f"OBJECTS F16: vc={vc}, vo={vo} (0x{vo:04x}), to={to} (0x{to:04x})")
+sig = obj.find(b'\xff\xff\x00\x40')
+vc, vo, to = struct.unpack_from('<3H', obj, sig + 4)
+print(f"F-16: vc={vc}, vo=0x{vo:04x}, to=0x{to:04x}")
 
-# Let's inspect the exact pointers starting at to (0x0222)
 p = to
+to_entries = []
 while p + 2 <= len(obj):
     w = struct.unpack_from('<H', obj, p)[0]
     p += 2
     if w == 0xFFFF:
-        print(f"Reached 0xFFFF at offset 0x{p-2:04x}")
+        print(f"Encountered 0xFFFF at offset 0x{p-2:04x}!")
         break
-    print(f"Pointer at 0x{p-2:04x}: 0x{w:04x} ({w})")
+    to_entries.append((p-2, w))
+
+print(f"Total entries in to stream before 0xFFFF: {len(to_entries)}")
+for off, w in to_entries:
+    print(f"  Entry at 0x{off:04x}: ptr=0x{w:04x}")
