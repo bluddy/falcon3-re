@@ -1,0 +1,152 @@
+Function at 0x2ebcd..0x2ed9c
+  0x0002ebcd: push    ds
+  0x0002ebce: push    cs
+  0x0002ebcf: pop     ds
+  0x0002ebd0: mov     cs:word_2EA1C, ax
+  0x0002ebd4: shl     bx, 1
+  0x0002ebd6: mov     cs:word_2EA1E, bx
+  0x0002ebdb: mov     cs:[bx+8], ax
+  0x0002ebe0: mov     ax, 2
+  0x0002ebe3: mov     bx, 6
+  0x0002ebe6: mov     dx, 30h ; '0'
+  0x0002ebe9: call    op_dispatch
+  0x0002ebee: mov     cs:word_2EA26, ax
+  0x0002ebf2: mov     ax, cs:word_2EA1C
+  0x0002ebf6: shl     ax, 1
+  0x0002ebf8: shl     ax, 1
+  0x0002ebfa: mov     dx, ax
+  0x0002ebfc: sub     cl, cl
+  0x0002ebfe: mov     ch, 0
+  0x0002ec00: mov     bx, 0Eh
+  0x0002ec03: mov     ax, cs:word_2EA26
+  0x0002ec07: call    op_dispatch
+  0x0002ec0c: mov     ax, cs:word_2EA26
+  0x0002ec10: mov     bx, 0Ah
+  0x0002ec13: mov     cx, 4
+  0x0002ec16: mov     dx, 18h
+  0x0002ec19: call    op_dispatch
+  0x0002ec1e: mov     dx, cs:word_2EA28
+  0x0002ec23: mov     cx, cs:word_2EA2A
+  0x0002ec28: mov     ch, 0
+  0x0002ec2a: mov     bx, 0Eh
+  0x0002ec2d: mov     ax, cs:word_2EA26
+  0x0002ec31: call    op_dispatch
+  0x0002ec36: mov     ax, cs:word_2EA26
+  0x0002ec3a: mov     bx, 0Ah
+  0x0002ec3d: mov     cx, 2
+  0x0002ec40: mov     dx, 12h
+  0x0002ec43: call    op_dispatch
+  0x0002ec48: mov     bx, cs:word_2EA1E
+  0x0002ec4d: mov     ax, cs:[bx+0]
+  0x0002ec52: cmp     ax, 0FFFFh
+  0x0002ec55: jz      short loc_2EC5F
+  0x0002ec57: mov     bx, 2
+  0x0002ec5a: call    op_dispatch
+  0x0002ec5f: mov     ax, cs:word_2EA22
+  0x0002ec63: mov     bx, 0
+  0x0002ec66: call    op_dispatch
+  0x0002ec6b: mov     ds, ax
+  0x0002ec6d: mov     bx, cs:word_2EA1E
+  0x0002ec72: mov     cs:[bx+0], ax
+  0x0002ec77: mov     dx, ax
+  0x0002ec79: sub     ax, ax
+  0x0002ec7b: mov     bx, cs:[bx+4]
+  0x0002ec80: call    table_dword_set
+  0x0002ec85: mov     ax, cs:word_2EA26
+  0x0002ec89: mov     bx, 0Ah
+  0x0002ec8c: mov     cx, cs:word_2EA22
+  0x0002ec91: sub     dx, dx
+  0x0002ec93: call    op_dispatch
+  0x0002ec98: mov     ax, cs:word_2EA26
+  0x0002ec9c: mov     bx, 8
+  0x0002ec9f: call    op_dispatch
+  0x0002eca4: pop     ds
+  0x0002eca5: retf
+  0x0002eca6: push    ds
+  0x0002eca7: push    es
+  0x0002eca8: mov     ax, cs
+  0x0002ecaa: mov     es, ax
+  0x0002ecac: lodsw
+  0x0002ecad: mov     cx, ax
+  0x0002ecaf: mov     di, 2Ah ; '*'
+  0x0002ecb2: rep movsb
+  0x0002ecb4: lodsw
+  0x0002ecb5: push    es
+  0x0002ecb6: mov     dx, 500Ch
+  0x0002ecb9: mov     es, dx
+  0x0002ecbb: mov     es:word_500C6, ax
+  0x0002ecbf: pop     es
+  0x0002ecc0: lodsw
+  0x0002ecc1: mov     cx, ax
+  0x0002ecc3: jcxz    short loc_2ECF8
+  0x0002ecc5: push    es
+  0x0002ecc6: push    cx
+  0x0002ecc7: mov     ax, cs
+  0x0002ecc9: mov     es, ax
+  0x0002eccb: mov     di, 3Dh ; '='
+  0x0002ecce: mov     cx, 6
+  0x0002ecd1: rep movsb
+  0x0002ecd3: mov     ax, cs:word_2EA4D
+  0x0002ecd7: call    ai_farptr_table_get
+  0x0002ecdc: mov     ax, cs:word_2EA4F
+  0x0002ece0: mov     es:[di+22h], ax
+  0x0002ece4: mov     al, cs:byte_2EA51
+  0x0002ece8: mov     es:[di+26h], al
+  0x0002ecec: mov     al, cs:byte_2EA52
+  0x0002ecf0: mov     es:[di+27h], al
+  0x0002ecf4: pop     cx
+  0x0002ecf5: loop    loc_2ECC6
+  0x0002ecf7: pop     es
+  0x0002ecf8: lodsw
+  0x0002ecf9: mov     cx, ax
+  0x0002ecfb: call    state_word_26400_get_zero
+  0x0002ed00: mov     es, dx
+  0x0002ed02: mov     di, 5208h
+  0x0002ed05: rep movsb
+  0x0002ed07: push    cs
+  0x0002ed08: pop     ds
+  0x0002ed09: mov     ax, 2
+  0x0002ed0c: mov     bx, 6
+  0x0002ed0f: mov     dx, 30h ; '0'
+  0x0002ed12: call    op_dispatch
+  0x0002ed17: mov     cs:word_2EA26, ax
+  0x0002ed1b: mov     cs:word_2EA2C, 0
+  0x0002ed22: mov     cs:word_2EA20, 34h ; '4'
+  0x0002ed29: mov     cx, cs:word_2EA22
+  0x0002ed2e: mov     si, 2Ah ; '*'
+  0x0002ed31: push    cx
+  0x0002ed32: lodsb
+  0x0002ed33: push    si
+  0x0002ed34: sub     ah, ah
+  0x0002ed36: shl     ax, 1
+  0x0002ed38: shl     ax, 1
+  0x0002ed3a: mov     dx, ax
+  0x0002ed3c: sub     cl, cl
+  0x0002ed3e: mov     ch, 0
+  0x0002ed40: mov     bx, 0Eh
+  0x0002ed43: mov     ax, cs:word_2EA26
+  0x0002ed47: call    op_dispatch
+  0x0002ed4c: mov     ax, cs:word_2EA26
+  0x0002ed50: mov     bx, 0Ah
+  0x0002ed53: mov     cx, 4
+  0x0002ed56: mov     dx, 18h
+  0x0002ed59: call    op_dispatch
+  0x0002ed5e: mov     dx, cs:word_2EA28
+  0x0002ed63: mov     cx, cs:word_2EA2A
+  0x0002ed68: mov     ch, 0
+  0x0002ed6a: mov     bx, 0Eh
+  0x0002ed6d: mov     ax, cs:word_2EA26
+  0x0002ed71: call    op_dispatch
+  0x0002ed76: mov     bx, cs:word_2EA20
+  0x0002ed7b: call    handle_seg_publish
+  0x0002ed7e: inc     cs:word_2EA20
+  0x0002ed83: add     cs:word_2EA2C, 2
+  0x0002ed89: pop     si
+  0x0002ed8a: pop     cx
+  0x0002ed8b: loop    loc_2ED31
+  0x0002ed8d: mov     ax, cs:word_2EA26
+  0x0002ed91: mov     bx, 8
+  0x0002ed94: call    op_dispatch
+  0x0002ed99: pop     es
+  0x0002ed9a: pop     ds
+  0x0002ed9b: retf

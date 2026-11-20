@@ -1,0 +1,61 @@
+undoc_28CA4 continued at 0x28d53
+  0x00028d53: mov     di, dx
+  0x00028d55: mov     ax, 0ABCDh
+  0x00028d58: imul    bp
+  0x00028d5a: add     si, ax
+  0x00028d5c: adc     di, dx
+  0x00028d5e: mov     ax, 0ABCDh
+  0x00028d61: imul    cx
+  0x00028d63: add     ax, si
+  0x00028d65: adc     dx, di
+  0x00028d67: shl     ax, 1
+  0x00028d69: rcl     dx, 1
+  0x00028d6b: jno     short loc_28D77
+  0x00028d6d: js      short loc_28D74
+  0x00028d6f: mov     dx, 8001h
+  0x00028d72: jmp     short loc_28D77
+  0x00028d74: mov     dx, 7FFFh
+  0x00028d77: push    dx
+  0x00028d78: mov     ax, 0ABCDh
+  0x00028d7b: imul    bx
+  0x00028d7d: mov     si, ax
+  0x00028d7f: mov     di, dx
+  0x00028d81: mov     ax, 0ABCDh
+  0x00028d84: imul    bp
+  0x00028d86: add     si, ax
+  0x00028d88: adc     di, dx
+  0x00028d8a: mov     ax, 0ABCDh
+  0x00028d8d: imul    cx
+  0x00028d8f: add     ax, si
+  0x00028d91: adc     dx, di
+  0x00028d93: shl     ax, 1
+  0x00028d95: rcl     dx, 1
+  0x00028d97: jno     short loc_28DA3
+  0x00028d99: js      short loc_28DA0
+  0x00028d9b: mov     dx, 8001h
+  0x00028d9e: jmp     short loc_28DA3
+  0x00028da0: mov     dx, 7FFFh
+  0x00028da3: pop     si
+  0x00028da4: pop     ax
+  0x00028da5: pop     di
+  0x00028da6: add     ax, 0ABCDh
+  0x00028da9: mov     es:[di], ax
+  0x00028dac: mov     cx, ax
+  0x00028dae: mov     ax, si
+  0x00028db0: add     ax, 0ABCDh
+  0x00028db3: mov     es:[di+2], ax
+  0x00028db7: mov     si, ax
+  0x00028db9: mov     ax, dx
+  0x00028dbb: add     ax, 0ABCDh
+  0x00028dbe: mov     es:[di+4], ax
+  0x00028dc2: mov     bx, ax
+  0x00028dc4: mov     bp, ax
+  0x00028dc6: mov     ax, 1
+  0x00028dc9: cmp     bx, 2
+  0x00028dcc: jl      short loc_28DFD
+  0x00028dce: sub     ax, ax
+  0x00028dd0: shr     bx, 1
+  0x00028dd2: mov     dx, bx
+  0x00028dd4: neg     dx
+  0x00028dd6: cmp     bx, cx
+  0x00028dd8: jge     short loc_28DDF

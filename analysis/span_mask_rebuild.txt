@@ -1,0 +1,41 @@
+object_3d_record_span_mask_rebuild at 0xa315:
+0x00a315: 
+0x010000: db 0
+0x010001: db 0
+0x010002: push    bp
+0x010003: mov     bp, sp
+0x010005: mov     ax, [bp+arg_0]
+0x010008: mov     bx, [bp+arg_2]
+0x01000b: push    cs
+0x01000c: call    near ptr mouse_delta_scale_stub
+0x01000f: nop
+0x010010: pop     bp
+0x010011: retf
+0x010012: mov     cx, ax
+0x010014: mov     dx, bx
+0x010016: shr     ax, 1
+0x010018: call    stub_to_25777
+0x01001d: cmp     cs:mouse_buttons_gate_flag, 0
+0x010023: jnz     short loc_10026
+0x010025: retf
+0x010026: mov     ax, 4
+0x010029: int     33h; - MS MOUSE - POSITION MOUSE CURSOR
+0x01002b: retf
+0x01002c: pushf
+0x01002d: cmp     cs:mouse_buttons_gate_flag, 0
+0x010033: jz      short loc_10058
+0x010035: push    ax
+0x010036: push    bx
+0x010037: push    cx
+0x010038: push    dx
+0x010039: push    si
+0x01003a: push    di
+0x01003b: push    bp
+0x01003c: mov     ax, 3
+0x01003f: int     33h; - MS MOUSE - RETURN POSITION AND BUTTON STATUS
+0x010041: shr     cx, 1
+0x010043: mov     ax, cx
+0x010045: mov     bx, dx
+0x010047: call    stub_to_25777
+0x01004c: call    clip_pending_apply_gate
+0x010051: pop     bp

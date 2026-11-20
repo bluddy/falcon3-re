@@ -1,0 +1,93 @@
+0x028840: pop     es
+0x028841: cmp     cs:byte_1F73E, 0
+0x028847: jz      short loc_2886A
+0x028849: mov     di, [si]
+0x02884b: cmp     di, 0FFFFh
+0x02884e: jz      short loc_2886F
+0x028850: add     di, 2
+0x028853: shl     di, 1
+0x028855: add     di, si
+0x028857: mov     cs:word_1F714, di
+0x02885c: push    bx
+0x02885d: call    cs:off_27974[bx]
+0x028862: pop     bx
+0x028863: mov     si, cs:word_1F714
+0x028868: jmp     short loc_28849
+0x02886a: call    cs:off_27974[bx]
+0x02886f: pop     si
+0x028870: jmp     loc_287B5
+0x028873: retn
+0x028874: push    ds
+0x028875: push    es
+0x028876: mov     cx, cs:word_1F6E6
+0x02887b: mov     si, [di+20h]
+0x02887e: shl     si, cl
+0x028880: mov     ax, [di]
+0x028882: mov     dx, [di+2]
+0x028885: sub     ax, es:[bx]
+0x028888: sbb     dx, es:[bx+2]
+0x02888c: jns     short loc_288B9
+0x02888e: neg     dx
+0x028890: neg     ax
+0x028892: sbb     dx, 0
+0x028895: mov     cx, si
+0x028897: dec     cx
+0x028898: add     ax, cx
+0x02889a: adc     dx, 0
+0x02889d: mov     cx, ax
+0x02889f: sub     ax, ax
+0x0288a1: xchg    ax, dx
+0x0288a2: div     si
+0x0288a4: xchg    ax, cx
+0x0288a5: div     si
+0x0288a7: mov     dx, cx
+0x0288a9: mov     bp, ax
+0x0288ab: mov     cs:word_1F745, dx
+0x0288b0: neg     dx
+0x0288b2: neg     ax
+0x0288b4: sbb     dx, 0
+0x0288b7: jmp     short loc_288D4
+0x0288b9: mov     cx, si
+0x0288bb: dec     cx
+0x0288bc: add     ax, cx
+0x0288be: adc     dx, 0
+0x0288c1: mov     cx, ax
+0x0288c3: sub     ax, ax
+0x0288c5: xchg    ax, dx
+0x0288c6: div     si
+0x0288c8: xchg    ax, cx
+0x0288c9: div     si
+0x0288cb: mov     dx, cx
+0x0288cd: mov     bp, ax
+0x0288cf: mov     cs:word_1F745, dx
+0x0288d4: mov     cs:word_1F6EC, ax
+0x0288d8: mov     cs:word_1F6F2, dx
+0x0288dd: mov     ax, [di+4]
+0x0288e0: mov     dx, [di+6]
+0x0288e3: sub     ax, es:[bx+4]
+0x0288e7: sbb     dx, es:[bx+6]
+0x0288eb: jns     short loc_28918
+0x0288ed: neg     dx
+0x0288ef: neg     ax
+0x0288f1: sbb     dx, 0
+0x0288f4: mov     cx, si
+0x0288f6: dec     cx
+0x0288f7: add     ax, cx
+0x0288f9: adc     dx, 0
+0x0288fc: mov     cx, ax
+0x0288fe: sub     ax, ax
+0x028900: xchg    ax, dx
+0x028901: div     si
+0x028903: xchg    ax, cx
+0x028904: div     si
+0x028906: mov     dx, cx
+0x028908: or      bp, ax
+0x02890a: mov     cs:word_1F747, dx
+0x02890f: neg     dx
+0x028911: neg     ax
+0x028913: sbb     dx, 0
+0x028916: jmp     short loc_28933
+0x028918: mov     cx, si
+0x02891a: dec     cx
+0x02891b: add     ax, cx
+0x02891d: adc     dx, 0

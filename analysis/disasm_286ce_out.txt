@@ -1,0 +1,49 @@
+0x0286ce: push    ds; traced calls: 2106
+0x0286cf: push    es
+0x0286d0: mov     cs:word_1F712, es
+0x0286d5: mov     cs:word_1F716, si
+0x0286da: mov     ax, 7B0Eh
+0x0286dd: mov     es, ax
+0x0286df: call    view_proj_setup_1f73d
+0x0286e2: mov     ds, cs:word_1F712
+0x0286e7: mov     si, cs:word_1F716
+0x0286ec: mov     cx, [si]
+0x0286ee: sub     cx, 4
+0x0286f1: push    cx
+0x0286f2: mov     si, [si+2]
+0x0286f5: mov     bx, 3850h
+0x0286f8: mov     di, 441Eh
+0x0286fb: call    fixed_vec3_transform_es
+0x0286fe: mov     ax, es:[di]
+0x028701: mov     word ptr cs:loc_2869C+1, ax
+0x028705: mov     ax, es:[di+2]
+0x028709: mov     word ptr cs:loc_286AD+1, ax
+0x02870d: mov     ax, es:[di+4]
+0x028711: mov     word ptr cs:loc_286BE+1, ax
+0x028715: add     di, 10h
+0x028718: call    fixed_vec3_transform_es
+0x02871b: add     di, 10h
+0x02871e: call    fixed_vec3_transform_es
+0x028721: add     di, 10h
+0x028724: call    fixed_vec3_transform_es
+0x028727: add     di, 10h
+0x02872a: push    si
+0x02872b: sub     cx, cx
+0x02872d: mov     si, 441Eh
+0x028730: add     si, 30h ; '0'
+0x028733: call    undoc_28695
+0x028736: shl     cx, 1
+0x028738: sub     si, 10h
+0x02873b: call    undoc_28695
+0x02873e: shl     cx, 1
+0x028740: sub     si, 10h
+0x028743: call    undoc_28695
+0x028746: mov     word ptr cs:loc_28758+1, cx
+0x02874b: pop     si
+0x02874c: pop     cx
+0x02874d: call    undoc_28CA4
+0x028750: cmp     cs:slope_temp_cx, 0
+0x028756: jnz     short loc_28771
+0x028758: mov     ax, 0ABCDh
+0x02875b: shl     ax, 1
+0x02875d: mov     si, cs:word_1F716

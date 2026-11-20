@@ -1,0 +1,30 @@
+0x0298c4: mov     ax, 5D1Eh
+0x0298c7: mov     cs:record_queue_cur, ax
+0x0298cb: mov     ax, 603Eh
+0x0298ce: mov     cs:line_table_limit, ax
+0x0298d2: mov     cs:line_table_count, 0
+0x0298d9: call    object_3d_record_span_mask_rebuild
+0x0298dc: push    ds
+0x0298dd: push    es
+0x0298de: pop     ds
+0x0298df: cmp     cx, 3
+0x0298e2: jl      short loc_29915
+0x0298e4: cmp     cs:line_table_and_mask, 0
+0x0298ea: jnz     short loc_29915
+0x0298ec: mov     ax, cs:line_table_or_mask
+0x0298f0: or      ax, ax
+0x0298f2: jz      short loc_29912
+0x0298f4: test    ax, 1Eh
+0x0298f7: jz      short loc_2990A
+0x0298f9: call    line_table_build_dispatch
+0x0298fc: cmp     cx, 3
+0x0298ff: jl      short loc_29915
+0x029901: mov     ax, cs:line_table_or_mask
+0x029905: test    ax, 60h
+0x029908: jz      short loc_29912
+0x02990a: call    uibounds_left_right_dispatch
+0x02990d: cmp     cx, 3
+0x029910: jl      short loc_29915
+0x029912: call    record_span_build_and_dispatch
+0x029915: pop     ds
+0x029916: retn

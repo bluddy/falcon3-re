@@ -1,0 +1,86 @@
+0x028750: cmp     cs:slope_temp_cx, 0
+0x028756: jnz     short loc_28771
+0x028758: mov     ax, 0ABCDh
+0x02875b: shl     ax, 1
+0x02875d: mov     si, cs:word_1F716
+0x028762: mov     si, [si+4]
+0x028765: add     si, ax
+0x028767: lodsw
+0x028768: mov     cs:word_1F718, ax
+0x02876c: mov     si, ax
+0x02876e: call    loc_287B5
+0x028771: pop     es
+0x028772: pop     ds
+0x028773: retf
+0x028774: push    ds; traced calls: 100236
+0x028775: push    es
+0x028776: mov     cs:word_1F712, es
+0x02877b: mov     cs:word_1F716, si
+0x028780: mov     ax, 7B0Eh
+0x028783: mov     es, ax
+0x028785: call    view_proj_setup_1f73d
+0x028788: mov     ds, cs:word_1F712
+0x02878d: mov     si, cs:word_1F716
+0x028792: mov     cx, [si]
+0x028794: mov     si, [si+2]
+0x028797: call    terrain_anim_line_flag_get
+0x02879a: cmp     cs:slope_temp_cx, 0
+0x0287a0: jnz     short loc_287A5
+0x0287a2: call    line_record_flag_dispatch
+0x0287a5: pop     es
+0x0287a6: pop     ds
+0x0287a7: retf
+0x0287a8: mov     si, cs:word_1F716
+0x0287ad: mov     si, [si+4]
+0x0287b0: mov     cs:word_1F718, si
+0x0287b5: lodsw
+0x0287b6: cmp     ax, 0FFFFh
+0x0287b9: jnz     short loc_287BE
+0x0287bb: jmp     locret_28873
+0x0287be: push    si
+0x0287bf: mov     si, ax
+0x0287c1: lodsw
+0x0287c2: mov     bx, ax
+0x0287c4: and     bx, 4000h
+0x0287c8: jz      short loc_287CD
+0x0287ca: jmp     loc_2886F
+0x0287cd: call    state_flag_unpack_1f735
+0x0287d0: mov     bx, ax
+0x0287d2: and     bx, 1
+0x0287d5: mov     cs:state_byte_1f73a, bl
+0x0287da: mov     bx, ax
+0x0287dc: and     bx, 8000h
+0x0287e0: mov     cs:raster_shading_mode_flag, bh
+0x0287e5: mov     bx, ax
+0x0287e7: and     bx, 2000h
+0x0287eb: and     bh, cs:farobj_render_color_mode_1
+0x0287f0: mov     cs:state_byte_1f72d, bh
+0x0287f5: mov     bx, ax
+0x0287f7: and     bx, 1000h
+0x0287fb: mov     cs:byte_1F73E, bh
+0x028800: mov     bx, ax
+0x028802: and     bh, 0Eh
+0x028805: mov     cs:terrain_tessellation_mode, bh
+0x02880a: and     ah, 1
+0x02880d: and     ah, cs:farobj_render_color_mode_2
+0x028812: mov     cs:state_byte_1f72f, ah
+0x028817: and     ax, 2
+0x02881a: mov     bx, ax
+0x02881c: push    es
+0x02881d: mov     es, cs:word_22212
+0x028822: lodsb
+0x028823: mov     di, cs:word_22210
+0x028828: add     di, ax
+0x02882a: mov     al, es:[di]
+0x02882d: mov     cs:state_byte_1f72a, al
+0x028831: lodsb
+0x028832: mov     di, cs:word_22210
+0x028837: add     di, ax
+0x028839: mov     al, es:[di]
+0x02883c: mov     cs:state_byte_1f72c, al
+0x028840: pop     es
+0x028841: cmp     cs:byte_1F73E, 0
+0x028847: jz      short loc_2886A
+0x028849: mov     di, [si]
+0x02884b: cmp     di, 0FFFFh
+0x02884e: jz      short loc_2886F
