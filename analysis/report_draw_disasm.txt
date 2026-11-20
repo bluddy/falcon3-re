@@ -1,0 +1,183 @@
+
+================================================================================
+FUNCTION: undoc_1121E9 at 0x1121e9 (size 291)
+================================================================================
+  0x1121e9: cmp     cs:byte_111AE8, 0
+  0x1121ef: jz      short loc_112227
+  0x1121f1: mov     bx, 2
+  0x1121f4: call    far_cb_8
+  0x1121f9: mov     al, cs:byte_111AEA
+  0x1121fd: xor     cs:byte_111AE9, 0FFh
+  0x112203: jnz     short loc_112209
+  0x112205: mov     al, cs:byte_111AEB
+  0x112209: mov     di, cs:word_111AE3
+  0x11220e: mov     bx, cs:word_111AE5
+  0x112213: mov     si, 0A2h
+  0x112216: call    far_cb_6
+  0x11221b: call    sub_111DA4
+  0x11221e: mov     bx, 0
+  0x112221: call    far_cb_8
+  0x112226: retn
+  0x112227: cmp     cs:byte_111AE7, 0
+  0x11222d: jz      short loc_112287
+  0x11222f: mov     bx, 2
+  0x112232: call    far_cb_8
+  0x112237: push    ax
+  0x112238: mov     al, cs:byte_111AEB
+  0x11223c: mov     di, cs:word_111AE3
+  0x112241: mov     bx, cs:word_111AE5
+  0x112246: mov     si, 0A2h
+  0x112249: call    far_cb_6
+  0x11224e: pop     ax
+  0x11224f: mov     bx, 0
+  0x112252: call    far_cb_8
+  0x112257: mov     cs:word_111AE5, 0A0h
+  0x11225e: add     cs:word_111AE3, 6
+  0x112264: cmp     cs:byte_111AEF, 0
+  0x11226a: jnz     short loc_112280
+  0x11226c: mov     ax, cs:word_111AE3
+  0x112270: sub     ax, cs:word_111ADF
+  0x112275: cmp     ax, 41h ; 'A'
+  0x112278: jle     short loc_112280
+  0x11227a: add     cs:word_111ADF, 6
+  0x112280: mov     cs:byte_111AE7, 0
+  0x112286: retn
+  0x112287: push    ds
+  0x112288: mov     ds, cs:word_111AD9
+  0x11228d: mov     si, cs:word_111AE1
+  0x112292: lodsb
+  0x112293: pop     ds
+  0x112294: mov     cs:word_111AE1, si
+  0x112299: cmp     al, 0FFh
+  0x11229b: jnz     short loc_1122A5
+  0x11229d: mov     cs:byte_111AE8, 1
+  0x1122a3: jmp     short locret_11230B
+  0x1122a5: or      al, al
+  0x1122a7: jnz     short loc_1122B1
+  0x1122a9: mov     cs:byte_111AE7, 1
+  0x1122af: jmp     short locret_11230B
+  0x1122b1: mov     bx, 2
+  0x1122b4: call    far_cb_8
+  0x1122b9: push    ax
+  0x1122ba: mov     al, cs:byte_111AEB
+  0x1122be: mov     di, cs:word_111AE3
+  0x1122c3: mov     bx, cs:word_111AE5
+  0x1122c8: mov     si, 0A2h
+  0x1122cb: call    far_cb_6
+  0x1122d0: pop     ax
+  0x1122d1: mov     di, cs:word_111AE3
+  0x1122d6: mov     bx, cs:word_111AE5
+  0x1122db: mov     ah, cs:byte_111AEA
+  0x1122e0: call    dispatch_22144_via_834a
+  0x1122e5: add     cs:word_111AE5, ax
+  0x1122ea: mov     al, cs:byte_111AEA
+  0x1122ee: mov     di, cs:word_111AE3
+  0x1122f3: mov     bx, cs:word_111AE5
+  0x1122f8: mov     si, 0A2h
+  0x1122fb: call    far_cb_6
+  0x112300: call    sub_111DA4
+  0x112303: mov     bx, 0
+  0x112306: call    far_cb_8
+  0x11230b: retn
+
+================================================================================
+FUNCTION: sub_112090 at 0x112090 (size 65)
+================================================================================
+  0x112090: call    pending_task_run
+  0x112095: mov     si, 7Ch ; '|'
+  0x112098: mov     di, 53h ; 'S'
+  0x11209b: mov     cx, 0
+  0x11209e: mov     dx, 60h ; '`'
+  0x1120a1: mov     bx, 14h
+  0x1120a4: mov     bp, 20h ; ' '
+  0x1120a7: mov     al, 1
+  0x1120a9: mov     ah, 0FFh
+  0x1120ab: call    farwrap_25a1c
+  0x1120b0: mov     si, 64h ; 'd'
+  0x1120b3: mov     di, 58h ; 'X'
+  0x1120b6: mov     cx, 28h ; '('
+  0x1120b9: mov     dx, 80h
+  0x1120bc: mov     bx, 0Eh
+  0x1120bf: mov     bp, 20h ; ' '
+  0x1120c2: mov     al, 1
+  0x1120c4: mov     ah, 0FFh
+  0x1120c6: call    farwrap_25a1c
+  0x1120cb: call    clip_pending_atomic_apply
+  0x1120d0: retn
+
+================================================================================
+FUNCTION: undoc_11230C at 0x11230c (size 103)
+================================================================================
+  0x11230c: push    ds
+  0x11230d: mov     ds, cs:word_111AD9
+  0x112312: mov     bx, 2
+  0x112315: mov     si, [bx]
+  0x112317: lodsw
+  0x112318: call    state_word_2747a_set_ax
+  0x11231d: add     si, 0F0h
+  0x112321: mov     ax, si
+  0x112323: mov     dx, ds
+  0x112325: call    sub_2765D
+  0x11232a: call    pending_task_run
+  0x11232f: call    far_cb_1
+  0x112334: mov     di, 12h
+  0x112337: mov     bx, 0ACh
+  0x11233a: mov     bp, 88h
+  0x11233d: call    dispatch_22178_then_27474_0
+  0x112342: mov     bx, 1
+  0x112345: call    farptr_table_invoke
+  0x11234a: call    dispatch_22174_stub
+  0x11234f: call    far_cb_0
+  0x112354: mov     bx, 2
+  0x112357: mov     si, [bx]
+  0x112359: add     si, 2
+  0x11235c: mov     di, 4B7h
+  0x11235f: mov     cx, 78h ; 'x'
+  0x112362: rep movsw
+  0x112364: pop     ds
+  0x112365: mov     bx, 4B7h
+  0x112368: mov     ah, 0
+  0x11236a: call    sub_11240B
+  0x11236d: call    clip_pending_atomic_apply
+  0x112372: retn
+
+================================================================================
+FUNCTION: undoc_1123AD at 0x1123ad (size 94)
+================================================================================
+  0x1123ad: mov     word ptr cs:dword_111AF0+2, ax
+  0x1123b1: call    bda_kb_flag_10000_get
+  0x1123b6: or      ax, ax
+  0x1123b8: jnz     short loc_1123BB
+  0x1123ba: retn
+  0x1123bb: mov     ax, 3
+  0x1123be: push    si
+  0x1123bf: int     33h; - MS MOUSE - RETURN POSITION AND BUTTON STATUS
+  0x1123c1: pop     si
+  0x1123c2: and     bx, 7
+  0x1123c5: jz      short locret_1123BA
+  0x1123c7: shr     cx, 1
+  0x1123c9: mov     di, cx
+  0x1123cb: lodsw
+  0x1123cc: mov     cx, ax
+  0x1123ce: cmp     [si+2], di
+  0x1123d1: jg      short loc_1123E2
+  0x1123d3: cmp     [si+6], di
+  0x1123d6: jl      short loc_1123E2
+  0x1123d8: cmp     [si+4], dx
+  0x1123db: jg      short loc_1123E2
+  0x1123dd: cmp     [si+8], dx
+  0x1123e0: jge     short loc_1123E8
+  0x1123e2: add     si, 0Ah
+  0x1123e5: loop    loc_1123CE
+  0x1123e7: retn
+  0x1123e8: mov     cs:byte_111AED, 1
+  0x1123ee: lodsw
+  0x1123ef: mov     word ptr cs:dword_111AF0, ax
+  0x1123f3: call    cs:dword_111AF0
+  0x1123f8: cmp     cs:byte_111AED, 0
+  0x1123fe: jz      short locret_11240A
+  0x112400: mov     ax, 3
+  0x112403: int     33h; - MS MOUSE - RETURN POSITION AND BUTTON STATUS
+  0x112405: and     bx, 7
+  0x112408: jnz     short loc_112400
+  0x11240a: retn

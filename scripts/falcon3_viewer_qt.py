@@ -151,9 +151,10 @@ class Model3DWidget(QOpenGLWidget if HAS_OPENGL else QWidget):
         lods = self.model.get('lods', [])
         if lods and self.lod_idx < len(lods):
             lod = lods[self.lod_idx]
-            verts = lod.get('vertices', verts)
-            faces = lod.get('faces', faces)
-            edges = lod.get('edges', edges)
+            if lod and lod.get('vertices'):
+                verts = lod.get('vertices', verts)
+                faces = lod.get('faces', faces)
+                edges = lod.get('edges', edges)
 
         if not verts:
             self.centered_verts = []
@@ -472,8 +473,10 @@ class Falcon3DViewerWindow(QMainWindow):
             "Aircraft",
             "Ground Vehicle",
             "Naval Unit",
+            "Air Defense",
             "Terrain Structure",
-            "Road & River Ribbon"
+            "Road & River Ribbon",
+            "Tactical Reference"
         ])
         self.cat_combo.currentTextChanged.connect(self.filter_models)
         sidebar_layout.addWidget(self.cat_combo)
@@ -566,6 +569,16 @@ class Falcon3DViewerWindow(QMainWindow):
         poly_lbl.setStyleSheet("font-size: 13px; font-weight: bold; color: #38BDF8; letter-spacing: 1px;")
         poly_layout.addWidget(poly_lbl)
 
+        # Tactical Reference Specs Box
+        self.specs_box = QGroupBox("DOSSIER SPECIFICATIONS")
+        self.specs_box_layout = QVBoxLayout(self.specs_box)
+        self.specs_lbl = QLabel("Select Tactical Reference asset to view specifications.")
+        self.specs_lbl.setWordWrap(True)
+        self.specs_lbl.setStyleSheet("color: #E2E8F0; font-size: 11px;")
+        self.specs_box_layout.addWidget(self.specs_lbl)
+        self.specs_box.setVisible(False)
+        poly_layout.addWidget(self.specs_box)
+
         self.poly_summary_lbl = QLabel("Select face to inspect")
         self.poly_summary_lbl.setStyleSheet("color: #94A3B8; font-size: 11px;")
         poly_layout.addWidget(self.poly_summary_lbl)
@@ -615,6 +628,8 @@ class Falcon3DViewerWindow(QMainWindow):
             self.all_models.append(m)
         for m in self.db.get('terrain_structures', []):
             self.all_models.append(m)
+        for m in self.db.get('tactical_reference', []):
+            self.all_models.append(m)
 
     def filter_models(self):
         query = self.search_input.text().lower().strip()
@@ -643,9 +658,33 @@ class Falcon3DViewerWindow(QMainWindow):
         if not model: return
 
         self.current_model = model
-        lod = self.lod_combo.currentIndex()
+        
+        # If model has LODs and LOD 2 is high-detail, default to LOD 2
+        lods = model.get('lods', [])
+        if len(lods) > 2 and lods[2] and lods[2].get('vertices'):
+            self.lod_combo.blockSignals(True)
+            self.lod_combo.setCurrentIndex(2)
+            self.lod_combo.blockSignals(False)
+            lod = 2
+        else:
+            self.lod_combo.blockSignals(True)
+            self.lod_combo.setCurrentIndex(0)
+            self.lod_combo.blockSignals(False)
+            lod = 0
+
         self.gl_widget.set_model(model, lod)
         self.populate_face_list()
+
+        # Update Dossier Specifications if available
+        specs = model.get('specs', [])
+        if specs:
+            specs_text = "\n".join(specs[:8])
+            sub_cat = model.get('sub_category', '')
+            self.specs_box.setTitle(f"DOSSIER: {sub_cat.upper()}" if sub_cat else "DOSSIER SPECIFICATIONS")
+            self.specs_lbl.setText(specs_text)
+            self.specs_box.setVisible(True)
+        else:
+            self.specs_box.setVisible(False)
 
         name = model.get('name', 'Unknown')
         cat = model.get('category', 'Generic')

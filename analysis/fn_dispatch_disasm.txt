@@ -1,0 +1,36 @@
+FUNCTION fn_table_dispatch at 0x231f0:
+  0x0231f0: push    ds
+  0x0231f1: push    es
+  0x0231f2: mov     ax, 7B0Eh
+  0x0231f5: mov     es, ax
+  0x0231f7: mov     cs:word_22DBC, ds
+  0x0231fc: mov     cs:word_22DBA, di
+  0x023201: mov     bx, cs:word_22D28
+  0x023206: call    cs:fn_table_dispatch_table[bx]
+  0x02320b: mov     ax, es
+  0x02320d: mov     ds, ax
+  0x02320f: mov     si, 3884h
+  0x023212: call    angle_matrix_build_neg
+  0x023215: call    matrix_constants_copy_3820
+  0x023218: mov     bx, es:word_7E968
+  0x02321d: mov     cx, es:word_7E966
+  0x023222: mov     dx, word ptr es:byte_7E94C+18h
+  0x023227: pop     es
+  0x023228: pop     ds
+  0x023229: retf
+FUNCTION far_cb_4 at 0x25e08:
+  0x025e08: call    cs:dword_22100
+  0x025e0d: retf
+FUNCTION sub_112373 at 0x112373:
+  0x112373: mov     cs:byte_111AEE, 0
+  0x112379: call    bda_kb_flag_10000_get
+  0x11237e: or      ax, ax
+  0x112380: jnz     short loc_112383
+  0x112382: retn
+  0x112383: mov     ax, 3
+  0x112386: int     33h; - MS MOUSE - RETURN POSITION AND BUTTON STATUS
+  0x112388: cmp     dx, 64h ; 'd'
+  0x11238b: jb      short locret_112398
+  0x11238d: call    pending_task_run
+  0x112392: mov     cs:byte_111AEE, 1
+  0x112398: retn

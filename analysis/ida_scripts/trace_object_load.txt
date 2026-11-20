@@ -1,0 +1,27 @@
+0x00026C40: jnz     short loc_26C45                       ; 
+0x00026C42: add     di, 2                                 ; 
+0x00026C45: mov     es:[di], bx                           ; 
+0x00026C48: pop     es                                    ; 
+0x00026C49: retf                                          ; 
+0x00026C4A: mov     ax, [di+22h]; traced calls: 405       ; traced calls: 405
+0x00026C4D: call    farobj_type_field_get                 ; 
+0x00026C50: or      ah, ah                                ; 
+0x00026C52: jz      short loc_26C6A                       ; 
+0x00026C54: mov     bx, di                                ; 
+0x00026C56: add     bx, 2Ah ; '*'                         ; 
+0x00026C59: cmp     al, 2                                 ; 
+0x00026C5B: jz      short loc_26C61                       ; 
+0x00026C5D: cmp     al, 3                                 ; 
+0x00026C5F: jnz     short loc_26C64                       ; 
+0x00026C61: add     bx, 2                                 ; 
+0x00026C64: mov     ax, [bx]                              ; 
+0x00026C66: or      ax, ax                                ; 
+0x00026C68: jnz     short loc_26C77                       ; 
+0x00026C6A: mov     bx, es:[si+2]                         ; 
+0x00026C6E: mov     si, es:[si]                           ; 
+0x00026C71: call    cs:farobj_entity_type_handlers[bx]    ; 
+0x00026C76: retf                                          ; 
+0x00026C77: mov     cx, es:[si+6]                         ; 
+0x00026C7B: mov     dx, cx                                ; 
+0x00026C7D: shl     cx, 1                                 ; 
+0x00026C7F: add     cx, dx                                ; 

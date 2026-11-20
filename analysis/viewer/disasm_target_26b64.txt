@@ -1,0 +1,30 @@
+0x000248D1: lodsw
+0x000248D2: imul    word ptr es:[bx]
+0x000248D5: mov     bp, ax
+0x000248D7: mov     cx, dx
+0x000248D9: lodsw
+0x000248DA: imul    word ptr es:[bx+6]
+0x000248DE: add     bp, ax
+0x000248E0: adc     cx, dx
+0x000248E2: lodsw
+0x000248E3: imul    word ptr es:[bx+0Ch]
+0x000248E7: add     ax, bp
+0x000248E9: adc     dx, cx
+0x000248EB: shl     ax, 1
+0x000248ED: rcl     dx, 1
+0x000248EF: jno     short loc_248FB
+0x000248F1: js      short loc_248F8
+0x000248F3: mov     dx, 8001h
+0x000248F6: jmp     short loc_248FB
+0x000248F8: mov     dx, 7FFFh
+0x000248FB: mov     es:[di], dx
+0x000248FE: sub     si, 6
+0x00024901: lodsw
+0x00024902: imul    word ptr es:[bx+2]
+0x00024906: mov     bp, ax
+0x00024908: mov     cx, dx
+0x0002490A: lodsw
+0x0002490B: imul    word ptr es:[bx+8]
+0x0002490F: add     bp, ax
+0x00024911: adc     cx, dx
+0x00024913: lodsw

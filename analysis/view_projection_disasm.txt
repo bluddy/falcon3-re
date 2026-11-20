@@ -1,0 +1,461 @@
+FUNCTION view_projection at 0x20bdb..0x2100f:
+  0x020bdb: mov     cs:word_1F71C, es
+  0x020be0: mov     cs:word_1F71E, bx
+  0x020be5: push    es
+  0x020be6: mov     cx, cs:word_1F6E6
+  0x020beb: mov     si, [di+20h]
+  0x020bee: test    word ptr [di+24h], 80h
+  0x020bf3: jz      short loc_20BF8
+  0x020bf5: jmp     loc_20D64
+  0x020bf8: or      si, si
+  0x020bfa: js      short loc_20BFF
+  0x020bfc: jmp     loc_20D64
+  0x020bff: neg     si
+  0x020c01: mov     ax, [di]
+  0x020c03: mov     dx, [di+2]
+  0x020c06: sub     ax, es:[bx]
+  0x020c09: sbb     dx, es:[bx+2]
+  0x020c0d: shl     ax, 1
+  0x020c0f: rcl     dx, 1
+  0x020c11: shl     ax, 1
+  0x020c13: rcl     dx, 1
+  0x020c15: shl     ax, 1
+  0x020c17: rcl     dx, 1
+  0x020c19: shl     ax, 1
+  0x020c1b: rcl     dx, 1
+  0x020c1d: or      dx, dx
+  0x020c1f: jns     short loc_20C3D
+  0x020c21: neg     dx
+  0x020c23: neg     ax
+  0x020c25: sbb     dx, 0
+  0x020c28: mov     bp, ax
+  0x020c2a: sub     ax, ax
+  0x020c2c: xchg    ax, dx
+  0x020c2d: div     si
+  0x020c2f: xchg    ax, bp
+  0x020c30: div     si
+  0x020c32: mov     dx, bp
+  0x020c34: neg     dx
+  0x020c36: neg     ax
+  0x020c38: sbb     dx, 0
+  0x020c3b: jmp     short loc_20C49
+  0x020c3d: mov     bp, ax
+  0x020c3f: sub     ax, ax
+  0x020c41: xchg    ax, dx
+  0x020c42: div     si
+  0x020c44: xchg    ax, bp
+  0x020c45: div     si
+  0x020c47: mov     dx, bp
+  0x020c49: jcxz    short loc_20C6D
+  0x020c4b: push    cx
+  0x020c4c: or      dx, dx
+  0x020c4e: jns     short loc_20C66
+  0x020c50: neg     dx
+  0x020c52: neg     ax
+  0x020c54: sbb     dx, 0
+  0x020c57: shr     dx, 1
+  0x020c59: rcr     ax, 1
+  0x020c5b: loop    loc_20C57
+  0x020c5d: neg     dx
+  0x020c5f: neg     ax
+  0x020c61: sbb     dx, 0
+  0x020c64: jmp     short loc_20C6C
+  0x020c66: shr     dx, 1
+  0x020c68: rcr     ax, 1
+  0x020c6a: loop    loc_20C66
+  0x020c6c: pop     cx
+  0x020c6d: mov     [di+16h], ax
+  0x020c70: mov     cs:word_1F6F2, dx
+  0x020c75: mov     ax, [di+4]
+  0x020c78: mov     dx, [di+6]
+  0x020c7b: sub     ax, es:[bx+4]
+  0x020c7f: sbb     dx, es:[bx+6]
+  0x020c83: shl     ax, 1
+  0x020c85: rcl     dx, 1
+  0x020c87: shl     ax, 1
+  0x020c89: rcl     dx, 1
+  0x020c8b: shl     ax, 1
+  0x020c8d: rcl     dx, 1
+  0x020c8f: shl     ax, 1
+  0x020c91: rcl     dx, 1
+  0x020c93: or      dx, dx
+  0x020c95: jns     short loc_20CB3
+  0x020c97: neg     dx
+  0x020c99: neg     ax
+  0x020c9b: sbb     dx, 0
+  0x020c9e: mov     bp, ax
+  0x020ca0: sub     ax, ax
+  0x020ca2: xchg    ax, dx
+  0x020ca3: div     si
+  0x020ca5: xchg    ax, bp
+  0x020ca6: div     si
+  0x020ca8: mov     dx, bp
+  0x020caa: neg     dx
+  0x020cac: neg     ax
+  0x020cae: sbb     dx, 0
+  0x020cb1: jmp     short loc_20CBF
+  0x020cb3: mov     bp, ax
+  0x020cb5: sub     ax, ax
+  0x020cb7: xchg    ax, dx
+  0x020cb8: div     si
+  0x020cba: xchg    ax, bp
+  0x020cbb: div     si
+  0x020cbd: mov     dx, bp
+  0x020cbf: jcxz    short loc_20CE3
+  0x020cc1: push    cx
+  0x020cc2: or      dx, dx
+  0x020cc4: jns     short loc_20CDC
+  0x020cc6: neg     dx
+  0x020cc8: neg     ax
+  0x020cca: sbb     dx, 0
+  0x020ccd: shr     dx, 1
+  0x020ccf: rcr     ax, 1
+  0x020cd1: loop    loc_20CCD
+  0x020cd3: neg     dx
+  0x020cd5: neg     ax
+  0x020cd7: sbb     dx, 0
+  0x020cda: jmp     short loc_20CE2
+  0x020cdc: shr     dx, 1
+  0x020cde: rcr     ax, 1
+  0x020ce0: loop    loc_20CDC
+  0x020ce2: pop     cx
+  0x020ce3: mov     [di+12h], ax
+  0x020ce6: mov     cs:word_1F6EE, dx
+  0x020ceb: mov     ax, es:[bx+8]
+  0x020cef: mov     dx, es:[bx+0Ah]
+  0x020cf3: sub     ax, [di+8]
+  0x020cf6: sbb     dx, [di+0Ah]
+  0x020cf9: shl     ax, 1
+  0x020cfb: rcl     dx, 1
+  0x020cfd: shl     ax, 1
+  0x020cff: rcl     dx, 1
+  0x020d01: shl     ax, 1
+  0x020d03: rcl     dx, 1
+  0x020d05: shl     ax, 1
+  0x020d07: rcl     dx, 1
+  0x020d09: or      dx, dx
+  0x020d0b: jns     short loc_20D29
+  0x020d0d: neg     dx
+  0x020d0f: neg     ax
+  0x020d11: sbb     dx, 0
+  0x020d14: mov     bp, ax
+  0x020d16: sub     ax, ax
+  0x020d18: xchg    ax, dx
+  0x020d19: div     si
+  0x020d1b: xchg    ax, bp
+  0x020d1c: div     si
+  0x020d1e: mov     dx, bp
+  0x020d20: neg     dx
+  0x020d22: neg     ax
+  0x020d24: sbb     dx, 0
+  0x020d27: jmp     short loc_20D35
+  0x020d29: mov     bp, ax
+  0x020d2b: sub     ax, ax
+  0x020d2d: xchg    ax, dx
+  0x020d2e: div     si
+  0x020d30: xchg    ax, bp
+  0x020d31: div     si
+  0x020d33: mov     dx, bp
+  0x020d35: jcxz    short loc_20D59
+  0x020d37: push    cx
+  0x020d38: or      dx, dx
+  0x020d3a: jns     short loc_20D52
+  0x020d3c: neg     dx
+  0x020d3e: neg     ax
+  0x020d40: sbb     dx, 0
+  0x020d43: shr     dx, 1
+  0x020d45: rcr     ax, 1
+  0x020d47: loop    loc_20D43
+  0x020d49: neg     dx
+  0x020d4b: neg     ax
+  0x020d4d: sbb     dx, 0
+  0x020d50: jmp     short loc_20D58
+  0x020d52: shr     dx, 1
+  0x020d54: rcr     ax, 1
+  0x020d56: loop    loc_20D52
+  0x020d58: pop     cx
+  0x020d59: mov     [di+14h], ax
+  0x020d5c: mov     cs:word_1F6F0, dx
+  0x020d61: jmp     loc_20E10
+  0x020d64: mov     ax, [di]
+  0x020d66: mov     dx, [di+2]
+  0x020d69: sub     ax, es:[bx]
+  0x020d6c: sbb     dx, es:[bx+2]
+  0x020d70: jcxz    short loc_20D94
+  0x020d72: push    cx
+  0x020d73: or      dx, dx
+  0x020d75: jns     short loc_20D8D
+  0x020d77: neg     dx
+  0x020d79: neg     ax
+  0x020d7b: sbb     dx, 0
+  0x020d7e: shr     dx, 1
+  0x020d80: rcr     ax, 1
+  0x020d82: loop    loc_20D7E
+  0x020d84: neg     dx
+  0x020d86: neg     ax
+  0x020d88: sbb     dx, 0
+  0x020d8b: jmp     short loc_20D93
+  0x020d8d: shr     dx, 1
+  0x020d8f: rcr     ax, 1
+  0x020d91: loop    loc_20D8D
+  0x020d93: pop     cx
+  0x020d94: mov     [di+16h], ax
+  0x020d97: mov     cs:word_1F6F2, dx
+  0x020d9c: mov     ax, [di+4]
+  0x020d9f: mov     dx, [di+6]
+  0x020da2: sub     ax, es:[bx+4]
+  0x020da6: sbb     dx, es:[bx+6]
+  0x020daa: jcxz    short loc_20DCE
+  0x020dac: push    cx
+  0x020dad: or      dx, dx
+  0x020daf: jns     short loc_20DC7
+  0x020db1: neg     dx
+  0x020db3: neg     ax
+  0x020db5: sbb     dx, 0
+  0x020db8: shr     dx, 1
+  0x020dba: rcr     ax, 1
+  0x020dbc: loop    loc_20DB8
+  0x020dbe: neg     dx
+  0x020dc0: neg     ax
+  0x020dc2: sbb     dx, 0
+  0x020dc5: jmp     short loc_20DCD
+  0x020dc7: shr     dx, 1
+  0x020dc9: rcr     ax, 1
+  0x020dcb: loop    loc_20DC7
+  0x020dcd: pop     cx
+  0x020dce: mov     [di+12h], ax
+  0x020dd1: mov     cs:word_1F6EE, dx
+  0x020dd6: mov     ax, es:[bx+8]
+  0x020dda: mov     dx, es:[bx+0Ah]
+  0x020dde: sub     ax, [di+8]
+  0x020de1: sbb     dx, [di+0Ah]
+  0x020de4: jcxz    short loc_20E08
+  0x020de6: push    cx
+  0x020de7: or      dx, dx
+  0x020de9: jns     short loc_20E01
+  0x020deb: neg     dx
+  0x020ded: neg     ax
+  0x020def: sbb     dx, 0
+  0x020df2: shr     dx, 1
+  0x020df4: rcr     ax, 1
+  0x020df6: loop    loc_20DF2
+  0x020df8: neg     dx
+  0x020dfa: neg     ax
+  0x020dfc: sbb     dx, 0
+  0x020dff: jmp     short loc_20E07
+  0x020e01: shr     dx, 1
+  0x020e03: rcr     ax, 1
+  0x020e05: loop    loc_20E01
+  0x020e07: pop     cx
+  0x020e08: mov     [di+14h], ax
+  0x020e0b: mov     cs:word_1F6F0, dx
+  0x020e10: mov     ax, [di+12h]
+  0x020e13: mov     dx, cs:word_1F6EE
+  0x020e18: or      dx, dx
+  0x020e1a: jns     short loc_20E23
+  0x020e1c: neg     dx
+  0x020e1e: neg     ax
+  0x020e20: sbb     dx, 0
+  0x020e23: mov     bp, ax
+  0x020e25: mov     cx, dx
+  0x020e27: mov     ax, [di+14h]
+  0x020e2a: mov     dx, cs:word_1F6F0
+  0x020e2f: or      dx, dx
+  0x020e31: jns     short loc_20E3A
+  0x020e33: neg     dx
+  0x020e35: neg     ax
+  0x020e37: sbb     dx, 0
+  0x020e3a: or      bp, ax
+  0x020e3c: cmp     cx, dx
+  0x020e3e: jnb     short loc_20E42
+  0x020e40: xchg    cx, dx
+  0x020e42: mov     ax, [di+16h]
+  0x020e45: mov     dx, cs:word_1F6F2
+  0x020e4a: or      dx, dx
+  0x020e4c: jns     short loc_20E55
+  0x020e4e: neg     dx
+  0x020e50: neg     ax
+  0x020e52: sbb     dx, 0
+  0x020e55: or      bp, ax
+  0x020e57: cmp     cx, dx
+  0x020e59: jnb     short loc_20E5D
+  0x020e5b: xchg    cx, dx
+  0x020e5d: or      cx, cx
+  0x020e5f: jnz     short loc_20E72
+  0x020e61: mov     cx, 2
+  0x020e64: shl     bp, 1
+  0x020e66: jb      short loc_20E82
+  0x020e68: dec     cx
+  0x020e69: shl     bp, 1
+  0x020e6b: jb      short loc_20E82
+  0x020e6d: sub     cx, cx
+  0x020e6f: jmp     loc_20F0F
+  0x020e72: mov     ax, cx
+  0x020e74: mov     cx, 10h
+  0x020e77: shr     ax, 1
+  0x020e79: jz      short loc_20E7D
+  0x020e7b: loop    loc_20E77
+  0x020e7d: sub     cx, 13h
+  0x020e80: neg     cx
+  0x020e82: mov     ax, [di+12h]
+  0x020e85: mov     dx, cs:word_1F6EE
+  0x020e8a: jcxz    short loc_20EAE
+  0x020e8c: push    cx
+  0x020e8d: or      dx, dx
+  0x020e8f: jns     short loc_20EA7
+  0x020e91: neg     dx
+  0x020e93: neg     ax
+  0x020e95: sbb     dx, 0
+  0x020e98: shr     dx, 1
+  0x020e9a: rcr     ax, 1
+  0x020e9c: loop    loc_20E98
+  0x020e9e: neg     dx
+  0x020ea0: neg     ax
+  0x020ea2: sbb     dx, 0
+  0x020ea5: jmp     short loc_20EAD
+  0x020ea7: shr     dx, 1
+  0x020ea9: rcr     ax, 1
+  0x020eab: loop    loc_20EA7
+  0x020ead: pop     cx
+  0x020eae: mov     [di+12h], ax
+  0x020eb1: mov     ax, [di+14h]
+  0x020eb4: mov     dx, cs:word_1F6F0
+  0x020eb9: jcxz    short loc_20EDD
+  0x020ebb: push    cx
+  0x020ebc: or      dx, dx
+  0x020ebe: jns     short loc_20ED6
+  0x020ec0: neg     dx
+  0x020ec2: neg     ax
+  0x020ec4: sbb     dx, 0
+  0x020ec7: shr     dx, 1
+  0x020ec9: rcr     ax, 1
+  0x020ecb: loop    loc_20EC7
+  0x020ecd: neg     dx
+  0x020ecf: neg     ax
+  0x020ed1: sbb     dx, 0
+  0x020ed4: jmp     short loc_20EDC
+  0x020ed6: shr     dx, 1
+  0x020ed8: rcr     ax, 1
+  0x020eda: loop    loc_20ED6
+  0x020edc: pop     cx
+  0x020edd: mov     [di+14h], ax
+  0x020ee0: mov     ax, [di+16h]
+  0x020ee3: mov     dx, cs:word_1F6F2
+  0x020ee8: jcxz    short loc_20F0C
+  0x020eea: push    cx
+  0x020eeb: or      dx, dx
+  0x020eed: jns     short loc_20F05
+  0x020eef: neg     dx
+  0x020ef1: neg     ax
+  0x020ef3: sbb     dx, 0
+  0x020ef6: shr     dx, 1
+  0x020ef8: rcr     ax, 1
+  0x020efa: loop    loc_20EF6
+  0x020efc: neg     dx
+  0x020efe: neg     ax
+  0x020f00: sbb     dx, 0
+  0x020f03: jmp     short loc_20F0B
+  0x020f05: shr     dx, 1
+  0x020f07: rcr     ax, 1
+  0x020f09: loop    loc_20F05
+  0x020f0b: pop     cx
+  0x020f0c: mov     [di+16h], ax
+  0x020f0f: mov     [di+18h], cx
+  0x020f12: mov     word ptr [di+1Ch], 0FFFFh
+  0x020f17: mov     word ptr [di+1Ah], 0FFFFh
+  0x020f1c: mov     ax, 7B0Eh
+  0x020f1f: mov     es, ax
+  0x020f21: lea     si, [di+12h]
+  0x020f24: push    di
+  0x020f25: mov     bx, 3820h
+  0x020f28: mov     di, 0F44h
+  0x020f2b: call    fixed_vec3_transform_es
+  0x020f2e: pop     di
+  0x020f2f: mov     ax, es:word_7C024
+  0x020f33: mov     [di+12h], ax
+  0x020f36: mov     ax, es:word_7C026
+  0x020f3a: mov     [di+14h], ax
+  0x020f3d: mov     ax, es:word_7C028
+  0x020f41: mov     [di+16h], ax
+  0x020f44: mov     cx, [di+1Eh]
+  0x020f47: cmp     cx, 0FFFFh
+  0x020f4a: jz      short loc_20F74
+  0x020f4c: add     cx, es:word_7C028
+  0x020f51: jns     short loc_20F5A
+  0x020f53: or      word ptr [di+24h], 100h
+  0x020f58: pop     es
+  0x020f59: retf
+  0x020f5a: mov     ax, es:0F44h
+  0x020f5e: cwd
+  0x020f5f: xor     ax, dx
+  0x020f61: sub     ax, dx
+  0x020f63: sub     ax, cx
+  0x020f65: jg      short loc_20F53
+  0x020f67: mov     ax, es:0F46h
+  0x020f6b: cwd
+  0x020f6c: xor     ax, dx
+  0x020f6e: sub     ax, dx
+  0x020f70: sub     ax, cx
+  0x020f72: jg      short loc_20F53
+  0x020f74: mov     si, 0F44h
+  0x020f77: call    vec2_normalize_seq
+  0x020f7a: sub     dx, dx
+  0x020f7c: mov     cx, [di+18h]
+  0x020f7f: jcxz    short loc_20F89
+  0x020f81: push    cx
+  0x020f82: shl     ax, 1
+  0x020f84: rcl     dx, 1
+  0x020f86: loop    loc_20F82
+  0x020f88: pop     cx
+  0x020f89: mov     [di+1Ch], dx
+  0x020f8c: mov     [di+1Ah], ax
+  0x020f8f: or      dx, dx
+  0x020f91: jnz     short loc_20FE9
+  0x020f93: cmp     cs:farobj_lod_quality_level, 1
+  0x020f99: jle     short loc_20FA4
+  0x020f9b: cmp     ax, cs:word_2549B
+  0x020fa0: jbe     short loc_20FA4
+  0x020fa2: jmp     short loc_20F53
+  0x020fa4: mov     ax, [di+24h]
+  0x020fa7: test    ax, 8
+  0x020faa: jnz     short loc_20FF8
+  0x020fac: cmp     cs:byte_1F75D, 0
+  0x020fb2: jnz     short loc_20FB9
+  0x020fb4: test    ax, 1
+  0x020fb7: jz      short loc_20FBE
+  0x020fb9: pop     es
+  0x020fba: call    farobj_record_step
+  0x020fbd: retf
+  0x020fbe: mov     ax, [di+24h]
+  0x020fc1: test    ax, 20h
+  0x020fc4: jz      short loc_20FE4
+  0x020fc6: push    di
+  0x020fc7: mov     si, cs:word_1F71E
+  0x020fcc: mov     es, cs:word_1F71C
+  0x020fd1: xchg    si, di
+  0x020fd3: call    overlay_tail_bridge
+  0x020fd8: pop     di
+  0x020fd9: or      ax, ax
+  0x020fdb: jnz     short loc_20FE4
+  0x020fdd: or      word ptr [di+24h], 100h
+  0x020fe2: pop     es
+  0x020fe3: retf
+  0x020fe4: pop     es
+  0x020fe5: call    farobj_record_push_7c054
+  0x020fe8: retf
+  0x020fe9: mov     ax, [di+24h]
+  0x020fec: test    ax, 4
+  0x020fef: jz      short loc_20FF8
+  0x020ff1: or      word ptr [di+24h], 100h
+  0x020ff6: pop     es
+  0x020ff7: retf
+  0x020ff8: cmp     cs:byte_1F75D, 0
+  0x020ffe: jnz     short loc_21005
+  0x021000: test    ax, 1
+  0x021003: jz      short loc_2100A
+  0x021005: pop     es
+  0x021006: call    farobj_record_lookup_step
+  0x021009: retf
+  0x02100a: pop     es
+  0x02100b: call    farobj_record_push_7d0c6
+  0x02100e: retf

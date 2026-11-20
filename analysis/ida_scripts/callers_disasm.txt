@@ -1,0 +1,79 @@
+
+=== Caller around 0x26442 ===
+0x00026412: dw 6Eh                                        ; 
+0x00026414: dw 58h                                        ; 
+0x00026416: dw 100h                                       ; 
+0x00026418: dw 0                                          ; 
+0x0002641A: dw 0                                          ; 
+0x0002641C: dw 0                                          ; 
+0x0002641E: db 8 dup(0)                                   ; 
+0x00026426: dd object_quad_proj_draw; Dispatch table of 28 entity type drawing handlers ; Dispatch table of 28 entity type drawing handlers
+0x0002642A: dd object_init_flag_draw                      ; 
+0x0002642E: dd object_rot_proj_draw                       ; 
+0x00026432: dd object_view_matrix_build                   ; 
+0x00026436: dd object_frame_advance_step                  ; 
+0x0002643A: dd farobj_render_draw_1f712                   ; 
+0x0002643E: dd object_type_field_step                     ; 
+0x00026442: dd object_3d_project_and_draw                 ; 
+0x00026446: dd farobj_render_prep_1f712                   ; 
+0x0002644A: dd object_scale_gather_draw                   ; 
+0x0002644E: dd object_record_stream_step                  ; 
+
+=== Caller around 0x26C71 ===
+0x00026C41: jnz     short loc_26C45                       ; 
+0x00026C42: add     di, 2                                 ; 
+0x00026C45: mov     es:[di], bx                           ; 
+0x00026C48: pop     es                                    ; 
+0x00026C49: retf                                          ; 
+0x00026C4A: mov     ax, [di+22h]; traced calls: 405       ; traced calls: 405
+0x00026C4D: call    farobj_type_field_get                 ; 
+0x00026C50: or      ah, ah                                ; 
+0x00026C52: jz      short loc_26C6A                       ; 
+0x00026C54: mov     bx, di                                ; 
+0x00026C56: add     bx, 2Ah ; '*'                         ; 
+0x00026C59: cmp     al, 2                                 ; 
+0x00026C5B: jz      short loc_26C61                       ; 
+0x00026C5D: cmp     al, 3                                 ; 
+0x00026C5F: jnz     short loc_26C64                       ; 
+0x00026C61: add     bx, 2                                 ; 
+0x00026C64: mov     ax, [bx]                              ; 
+0x00026C66: or      ax, ax                                ; 
+0x00026C68: jnz     short loc_26C77                       ; 
+0x00026C6A: mov     bx, es:[si+2]                         ; 
+0x00026C6E: mov     si, es:[si]                           ; 
+0x00026C71: call    cs:farobj_entity_type_handlers[bx]    ; 
+0x00026C76: retf                                          ; 
+0x00026C77: mov     cx, es:[si+6]                         ; 
+0x00026C7B: mov     dx, cx                                ; 
+0x00026C7D: shl     cx, 1                                 ; 
+0x00026C7F: add     cx, dx                                ; 
+
+=== Caller around 0x2717A ===
+0x0002714A: cmp     ax, es:[si+6]                         ; 
+0x0002714E: jb      short loc_27152                       ; 
+0x00027150: sub     ax, ax                                ; 
+0x00027152: mov     [bx], ax                              ; 
+0x00027154: shl     ax, 1                                 ; 
+0x00027156: mov     bx, si                                ; 
+0x00027158: add     si, ax                                ; 
+0x0002715A: push    di                                    ; 
+0x0002715B: push    ds                                    ; 
+0x0002715C: mov     ax, es                                ; 
+0x0002715E: mov     ds, ax                                ; 
+0x00027160: mov     si, [si+0Ah]                          ; 
+0x00027163: mov     di, [bx+8]                            ; 
+0x00027166: mov     ax, [bx+4]                            ; 
+0x00027169: mov     cx, ax                                ; 
+0x0002716B: shl     ax, 1                                 ; 
+0x0002716D: add     cx, ax                                ; 
+0x0002716F: rep movsw                                     ; 
+0x00027171: pop     ds                                    ; 
+0x00027172: pop     di                                    ; 
+0x00027173: mov     si, es:[bx]                           ; 
+0x00027176: mov     bx, es:[bx+2]                         ; 
+0x0002717A: call    cs:farobj_entity_type_handlers[bx]    ; 
+0x0002717F: retf                                          ; 
+0x00027180: push    ds                                    ; 
+0x00027181: push    es                                    ; 
+0x00027182: mov     cs:word_26418, ds                     ; 
+0x00027187: mov     cs:word_2641A, es                     ; 

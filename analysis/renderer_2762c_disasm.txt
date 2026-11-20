@@ -1,0 +1,43 @@
+FUNCTION: buffer_budget_entry_block at 0x275d8..0x27649 (size 113)
+  0x0275d8: push    bp
+  0x0275d9: mov     bp, sp
+  0x0275db: push    ds
+  0x0275dc: lds     bx, [bp+arg_0]
+  0x0275df: mov     cx, [bx]
+  0x0275e1: cmp     cx, cs:word_2747A
+  0x0275e6: jbe     short loc_275ED
+  0x0275e8: mov     cx, cs:word_2747A
+  0x0275ed: sub     cs:word_2747A, cx
+  0x0275f2: mov     ax, cx
+  0x0275f4: jcxz    short loc_27605
+  0x0275f6: lds     dx, [bp+arg_4]
+  0x0275f9: mov     ax, cs:word_27476
+  0x0275fd: mov     bx, 0Ah
+  0x027600: call    op_dispatch
+  0x027605: pop     ds
+  0x027606: pop     bp
+  0x027607: retf    8
+  0x02760a: push    bp
+  0x02760b: mov     bp, sp
+  0x02760d: push    ds
+  0x02760e: push    es
+  0x02760f: lds     bx, [bp+arg_0]
+  0x027612: mov     cx, [bx]
+  0x027614: cmp     cx, cs:word_2747A
+  0x027619: jbe     short loc_27620
+  0x02761b: mov     cx, cs:word_2747A
+  0x027620: sub     cs:word_2747A, cx
+  0x027625: mov     ax, cx
+  0x027627: jcxz    short loc_27643
+  0x027629: les     di, [bp+arg_4]
+  0x02762c: mov     ds, cs:word_27482
+  0x027631: mov     si, cs:word_27480
+  0x027636: shr     cx, 1
+  0x027638: rep movsw
+  0x02763a: adc     cx, cx
+  0x02763c: rep movsb
+  0x02763e: mov     cs:word_27480, si
+  0x027643: pop     es
+  0x027644: pop     ds
+  0x027645: pop     bp
+  0x027646: retf    8

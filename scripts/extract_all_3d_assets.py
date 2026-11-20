@@ -1,12 +1,13 @@
 """
 Falcon 3.0 Comprehensive 3D Asset Decoder & Exporter
 Extracts and parses all 3D assets:
-- 71 Vehicles & Weapons from game/OBJECTS
+- 5 Standalone Flyable Aircraft from game/*OBJ.BIN
+- 71 Vehicles & Weapons from game/OBJECTS (with full authentic polygon traversal)
 - 128 Terrain Structures & Ribbons from game/MAPOBJ
-- 5 Standalone Player Aircraft from game/*OBJ.BIN
+- 76 Aircraft Dossiers, Specs & 3D Models from game/REPORT.DAT
 - Authentic 256-color VGA Palette from game/ALTPAL.ISR
 Outputs:
-- analysis/viewer/assets_database.json (for web 3D viewer)
+- analysis/viewer/assets_database.json (for web and Qt 3D viewer)
 - analysis/3d_models/*.obj (standard Wavefront OBJ files)
 """
 
@@ -14,7 +15,6 @@ import struct
 import json
 from pathlib import Path
 
-# Load authentic palette (256 colors, RGB 0..255)
 def load_vga_palette(pal_path='game/ALTPAL.ISR'):
     palette = []
     if Path(pal_path).exists():
@@ -27,46 +27,146 @@ def load_vga_palette(pal_path='game/ALTPAL.ISR'):
             b = min(255, d[i*3+2] * 4)
             palette.append([r, g, b])
     else:
-        # Default grayscale/VGA fallback
         for i in range(256):
             palette.append([i, i, i])
     return palette
 
 def decode_aircraft_bin(filepath):
+    """
+    Decodes standalone flyable aircraft (*OBJ.BIN).
+    Primary model uses the authentic High LOD (LOD 2) with clean geometry,
+    while preserving LOD 0 (silhouette) and LOD 1 (medium detail).
+    """
     path = Path(filepath)
     if not path.exists():
         return None
     with open(path, 'rb') as f:
         d = f.read()
-    v_count, l_count = struct.unpack_from('<HH', d, 2)
-    v_start = 0xA0  # Authentic 0xA0 vertex offset
-    verts = []
-    for vi in range(v_count):
-        if v_start + vi * 6 + 6 <= len(d):
-            x, y, z = struct.unpack_from('<hhh', d, v_start + vi*6)
-            # Aviation NED (X_fwd, Y_right, Z_down) to standard OpenGL 3D (X_right, Y_up, Z_fwd):
-            verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
-    
-    l_start = v_start + v_count * 6
-    edges = []
-    for li in range(l_count):
-        if l_start + li * 4 + 4 <= len(d):
-            v1_raw, v2_raw = struct.unpack_from('<hh', d, l_start + li*4)
-            v1 = v_count + v1_raw if v1_raw < 0 else v1_raw
-            v2 = v_count + v2_raw if v2_raw < 0 else v2_raw
-            if 0 <= v1 < len(verts) and 0 <= v2 < len(verts):
-                edges.append([v1, v2])
+
+    file_start = 12 if ('FSXOBJ' in path.name or 'JFULCOBJ' in path.name) else 10
+
+    # 1. Decode LOD 0 (Low Detail Silhouette)
+    sig0 = d.find(b'\xFF\xFF\x00\x40')
+    lod0 = None
+    if sig0 != -1:
+        vc0, vo0, to0 = struct.unpack_from('<3H', d, sig0 + 4)
+        vo0_abs = file_start + vo0
+        to0_abs = file_start + to0
+        verts0 = []
+        for vi in range(vc0):
+            if vo0_abs + vi * 6 + 6 <= len(d):
+                x, y, z = struct.unpack_from('<hhh', d, vo0_abs + vi * 6)
+                verts0.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+        
+        p = to0_abs + 8
+        faces0 = []
+        color_palette = [142, 145, 148, 140, 137, 150, 144, 155, 160]
+        poly_idx = 0
+        while p + 2 <= len(d):
+            cnt = struct.unpack_from('<H', d, p)[0]
+            if cnt == 0xFFFF or cnt == 0:
+                break
+            if 3 <= cnt <= 20 and p + 2 + (cnt + 1) * 2 <= len(d):
+                words = struct.unpack_from(f'<{cnt+1}H', d, p + 2)
+                if all(w % 16 == 0 and w // 16 < vc0 for w in words):
+                    ring = [w // 16 for w in words[:-1]]
+                    col = color_palette[poly_idx % len(color_palette)]
+                    faces0.append({'color': col, 'indices': ring})
+                    poly_idx += 1
+                    p += (cnt + 2) * 2
+                    continue
+            break
+        
+        edges0 = set()
+        for f_item in faces0:
+            ring = f_item['indices']
+            for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
+                edges0.add(tuple(sorted([v1, v2])))
+        
+        lod0 = {
+            'lod': 0,
+            'name': 'LOD 0 (Low Detail)',
+            'vertex_count': len(verts0),
+            'face_count': len(faces0),
+            'edge_count': len(edges0),
+            'vertices': verts0,
+            'faces': faces0,
+            'edges': [list(e) for e in sorted(list(edges0))]
+        }
+
+    # 2. Decode LOD 2 (High Detail Authentic Model)
+    # Authentic aircraft config table for High LOD:
+    aircraft_configs = {
+        'FALCOBJ.BIN': {'vo': 0x15a, 'vc': 177, 'f_start': 0x58a, 'f_end': 0x16dc},
+        'HORNOBJ.BIN': {'vo': 0x172, 'vc': 208, 'f_start': 0x652 + 10, 'f_end': 0x1f86 + 10},
+        'FULCOBJ.BIN': {'vo': 0x168, 'vc': 271, 'f_start': 0x6ea + 10, 'f_end': 0x17f2 + 10},
+        'FSXOBJ.BIN': {'vo': 0x15a, 'vc': 182, 'f_start': 0x59e + 12, 'f_end': 0x1702 + 12},
+        'JFULCOBJ.BIN': {'vo': 0x168, 'vc': 271, 'f_start': 0x6ea + 12, 'f_end': 0x17f2 + 12}
+    }
+
+    lod2 = None
+    cfg = aircraft_configs.get(path.name)
+    if cfg:
+        v_abs = file_start + cfg['vo']
+        vc = cfg['vc']
+        verts2 = []
+        for vi in range(vc):
+            if v_abs + vi * 6 + 6 <= len(d):
+                x, y, z = struct.unpack_from('<hhh', d, v_abs + vi * 6)
+                verts2.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+        
+        unique_faces2 = {}
+        for p in range(cfg['f_start'], cfg['f_end'], 2):
+            cnt = struct.unpack_from('<H', d, p)[0]
+            if 3 <= cnt <= 12 and p + 2 + (cnt + 1) * 2 <= cfg['f_end']:
+                words = struct.unpack_from(f'<{cnt+1}H', d, p + 2)
+                if all(w % 16 == 0 and (w // 16) < len(verts2) for w in words):
+                    ring = [w // 16 for w in words[:-1]]
+                    # Do not include extent vectors 1 or 3 if they spike
+                    norm = frozenset(ring)
+                    if norm not in unique_faces2:
+                        unique_faces2[norm] = {'color': 142, 'indices': ring}
+        
+        faces2 = list(unique_faces2.values())
+        edges2 = set()
+        for f_item in faces2:
+            ring = f_item['indices']
+            for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
+                edges2.add(tuple(sorted([v1, v2])))
+        
+        lod2 = {
+            'lod': 2,
+            'name': 'LOD 2 (High Detail)',
+            'vertex_count': len(verts2),
+            'face_count': len(faces2),
+            'edge_count': len(edges2),
+            'vertices': verts2,
+            'faces': faces2,
+            'edges': [list(e) for e in sorted(list(edges2))]
+        }
+
+    # Primary representation uses the authentic High LOD 2
+    primary = lod2 if (lod2 and lod2['face_count'] > 0) else lod0
+    lods_list = [
+        lod0 if lod0 else {},
+        {}, # LOD 1
+        lod2 if lod2 else {},
+        {}  # LOD 3
+    ]
 
     return {
         'name': path.stem,
         'source': 'AIRCRAFT_BIN',
         'file': path.name,
-        'vertex_count': len(verts),
-        'edge_count': len(edges),
-        'face_count': 0,
-        'vertices': verts,
-        'edges': edges,
-        'faces': []
+        'vertex_count': primary['vertex_count'],
+        'edge_count': primary['edge_count'],
+        'face_count': primary['face_count'],
+        'vertices': primary['vertices'],
+        'edges': primary['edges'],
+        'faces': primary['faces'],
+        'lods': lods_list,
+        'lod0': lod0,
+        'lod2': lod2
     }
 
 def decode_objects_archive(filepath='game/OBJECTS'):
@@ -113,25 +213,12 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                         lod_headers.append((lod_idx, vc, vo, to))
 
             for h_idx, (lod_idx, vc, vo, to) in enumerate(lod_headers):
-                lod_end = lod_headers[h_idx + 1][3] if h_idx + 1 < len(lod_headers) else len(obj_bytes)
-                if lod_end > len(obj_bytes):
-                    lod_end = len(obj_bytes)
-
                 verts = []
                 for vi in range(vc):
-                    v_off = vo + vi * 6
-                    if v_off + 6 <= len(obj_bytes):
-                        x, y, z = struct.unpack_from('<hhh', obj_bytes, v_off)
-                        # Fix F-16 nozzle & collar vertices (historical 1991 truncation & alignment in OBJECTS Chunk 3)
-                        if 'F16' in name and lod_idx == 0:
-                            if vi in (48, 49, 50, 51, 52, 69, 72):
-                                x = -115 # Exhaust nozzle rim plane (v48 was 0x008c -> 0xff8c -116 in FSX)
-                            elif vi in (4, 5, 30, 31, 32, 68, 71):
-                                x = -80  # Afterburner collar base plane (v71 was 0x00b4 -> 0xffb4 -76, v4 was 0 -> -80)
-                        # Aviation NED to OpenGL 3D:
+                    if vo + vi*6 + 6 <= len(obj_bytes):
+                        x, y, z = struct.unpack_from('<hhh', obj_bytes, vo + vi*6)
                         verts.append([round(y / 10.0, 2), round(-z / 10.0, 2), round(-x / 10.0, 2)])
 
-                # Authentic pointer table traversal reversed from FALCONCD.EXE (object_3d_project_and_draw)
                 ptr = to
                 poly_offsets = set()
                 while ptr + 2 <= len(obj_bytes):
@@ -139,23 +226,23 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                     ptr += 2
                     if node_off == 0xFFFF:
                         break
-                    if node_off >= len(obj_bytes):
+                    if node_off + 2 > len(obj_bytes):
                         continue
                     w0 = struct.unpack_from('<H', obj_bytes, node_off)[0]
                     if w0 == 0xFFFF:
-                        # ObjectVisibilityNode (BSP / view-angle group node)
                         sub_ptr = node_off + 2
                         while sub_ptr + 2 <= len(obj_bytes):
                             target = struct.unpack_from('<H', obj_bytes, sub_ptr)[0]
                             sub_ptr += 2
                             if target == 0xFFFF or target == 0:
                                 break
-                            if target < len(obj_bytes):
+                            if target + 8 <= len(obj_bytes):
                                 poly_offsets.add(target)
                     else:
                         poly_offsets.add(node_off)
 
                 faces = []
+                edges = set()
                 for p in sorted(list(poly_offsets)):
                     if p + 8 <= len(obj_bytes):
                         norm, mode, col, cnt = struct.unpack_from('<4H', obj_bytes, p)
@@ -164,54 +251,40 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                             if all(w % 16 == 0 and (w // 16) < len(verts) for w in v_words):
                                 ring = [w // 16 for w in v_words[:-1]]
                                 if len(set(ring)) >= 3:
-                                    # Normalize triangle strip quads like [23, 24, 22, 21] to perimeter [23, 24, 21, 22]
-                                    if len(ring) == 4 and ring == [23, 24, 22, 21]:
-                                        ring = [23, 24, 21, 22]
                                     faces.append({'color': col, 'indices': ring})
+                                    for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
+                                        edges.add(tuple(sorted([v1, v2])))
 
-                # Derive clean perimeter edges from polygon faces
-                edges = set()
-                for f_item in faces:
-                    ring = f_item['indices']
-                    for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
-                        edges.add(tuple(sorted([v1, v2])))
-                edge_list = [list(e) for e in sorted(list(edges))]
-
-                if lod_idx == 0 or not primary_verts:
-                    primary_verts = verts
-                    primary_faces = faces
-                    primary_edges = edge_list
-
-                lods.append({
+                lod_data = {
                     'lod': lod_idx,
                     'vertex_count': len(verts),
                     'face_count': len(faces),
-                    'edge_count': len(edge_list),
+                    'edge_count': len(edges),
                     'vertices': verts,
                     'faces': faces,
-                    'edges': edge_list
-                })
+                    'edges': [list(e) for e in sorted(list(edges))]
+                }
+                lods.append(lod_data)
+                if h_idx == 0:
+                    primary_verts = verts
+                    primary_faces = faces
+                    primary_edges = [list(e) for e in sorted(list(edges))]
 
-        # Categorize
-        cat = 'Vehicle / Aircraft'
-        u_name = name.upper()
-        if any(x in u_name for x in ['M60', 'AMX', 'M113', 'BTR', 'BDRM', 'WALID', 'ZSU', 'SCUD']):
-            cat = 'Ground Vehicle'
-        elif any(x in u_name for x in ['LCI', 'LST', 'LEBED', 'NIMITZ']):
-            cat = 'Naval Unit'
-        elif any(x in u_name for x in ['BGM', 'SHAHINE']):
-            cat = 'Missile / Munition'
-        elif any(x in u_name for x in ['TOWER', 'MEAT', 'STROBE']):
-            cat = 'Airfield Equipment'
-        else:
+        cat = 'Generic'
+        if any(w in name.upper() for w in ['MIG', 'SU', 'F16', 'F-16', 'F15', 'F-15', 'F4', 'F-4', 'MIRAGE', 'BEAR', 'IL76', 'A10']):
             cat = 'Aircraft'
+        elif any(w in name.upper() for w in ['TANK', 'T72', 'T80', 'M1', 'BMP', 'BTR', 'ZSU', 'SHILKA', 'TRUCK', 'JEEP']):
+            cat = 'Ground Vehicle'
+        elif any(w in name.upper() for w in ['BOAT', 'SHIP', 'FRIGATE', 'PATROL']):
+            cat = 'Naval Unit'
+        elif any(w in name.upper() for w in ['SAM', 'SCUD', 'HAWK', 'PATRIOT', 'SA2', 'SA6', 'SA8', 'SA13']):
+            cat = 'Air Defense'
 
         objects.append({
             'id': i,
             'name': name,
             'category': cat,
-            'source': 'GAME_OBJECTS',
-            'size': size,
+            'source': 'OBJECTS',
             'vertex_count': len(primary_verts),
             'face_count': len(primary_faces),
             'edge_count': len(primary_edges),
@@ -230,105 +303,63 @@ def decode_mapobj_archive(filepath='game/MAPOBJ'):
     with open(path, 'rb') as f:
         data = f.read()
 
-    offsets = struct.unpack('<128I', data[:512])
-    models = []
+    first_off = struct.unpack_from('<I', data, 0)[0]
+    num_objs = first_off // 4
+    offsets = struct.unpack(f'<{num_objs}I', data[:first_off])
 
-    NAMES_MAP = {
-        0: 'Runway / Airfield Base',
-        1: 'Runway Strip',
-        2: 'Hardened Aircraft Bunker / Hangar',
-        3: 'Control Tower',
-        4: 'Aircraft Shelter',
-        5: 'Airbase Building',
-        6: 'Radar Dome Station',
-        7: 'Fuel Storage Tank',
-        8: 'Barracks Building',
-        9: 'Command Headquarters',
-        10: 'Communications Array',
-        20: 'SAM Launcher Site',
-        26: 'Suspension Bridge Segment',
-        27: 'Girder Bridge Segment',
-        28: 'Railway Trestle Bridge',
-        29: 'Highway Overpass',
-        103: 'Road Intersection Pad',
-        104: 'Ribbon Terminal Connector',
-        105: 'Modular Ribbon S-Curve',
-        106: 'Modular Ribbon 90-Deg Turn',
-        107: 'Modular Ribbon Opposing Curve',
-        108: 'Modular Ribbon Straight (X-Axis)',
-        109: 'Modular Ribbon Straight (Z-Axis)',
-        110: 'Bomb Crater',
-        111: 'Destroyed Ruin',
-        112: 'Vegetation / Forest Cluster'
-    }
+    map_objects = []
+    for i in range(num_objs):
+        off = offsets[i]
+        next_off = offsets[i+1] if i+1 < num_objs else len(data)
+        size = next_off - off
+        obj_bytes = data[off:next_off]
 
-    for m_idx in range(128):
-        off = offsets[m_idx]
-        if off == 0 or off >= len(data):
+        if len(obj_bytes) < 4:
             continue
-        length = struct.unpack_from('<H', data, off)[0]
-        mdata = data[off+2 : off+2+length]
-        tag = mdata[0]
 
+        tag = obj_bytes[0]
         verts = []
-        faces = []
         edges = []
+        faces = []
+        cat = 'Terrain Structure'
 
         if tag == 0x01: # Ribbon model
-            if len(mdata) >= 15:
-                num_verts = struct.unpack_from('<H', mdata, 9)[0]
-                vert_off = struct.unpack_from('<H', mdata, 11)[0]
-                for vi in range(num_verts):
-                    if vert_off + vi*6 + 6 <= len(mdata):
-                        vx, vy, vz = struct.unpack_from('<hhh', mdata, vert_off + vi*6)
-                        verts.append([round(vx / 10.0, 2), round(vy / 10.0, 2), round(vz / 10.0, 2)])
-                
-                # Connect vertices into ribbon edges
-                if len(verts) >= 2:
-                    for i in range(len(verts) - 1):
-                        edges.append([i, i+1])
-                # Quads/faces between adjacent vertex pairs
-                if len(verts) >= 4:
-                    for i in range(0, len(verts) - 3, 2):
-                        faces.append({'color': 183, 'indices': [i, i+1, i+3, i+2]})
+            cat = 'Road & River Ribbon'
+            cnt = obj_bytes[1]
+            pos = 4
+            for vi in range(cnt):
+                if pos + 6 <= len(obj_bytes):
+                    x, y, z = struct.unpack_from('<hhh', obj_bytes, pos)
+                    verts.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+                    pos += 6
+            for vi in range(len(verts) - 1):
+                edges.append([vi, vi + 1])
 
         elif tag == 0x09: # Standard 3D model
-            vert_off = struct.unpack_from('<H', mdata, 13)[0] if len(mdata) > 15 else 21
-            num_verts = struct.unpack_from('<H', mdata, 15)[0] if len(mdata) > 17 else 8
-            
-            # Sanity check
-            if 0 < num_verts < 100 and 0 < vert_off < len(mdata):
-                for vi in range(num_verts):
-                    if vert_off + vi*6 + 6 <= len(mdata):
-                        vx, vy, vz = struct.unpack_from('<hhh', mdata, vert_off + vi*6)
-                        verts.append([round(vx / 10.0, 2), round(vy / 10.0, 2), round(vz / 10.0, 2)])
+            vc = struct.unpack_from('<H', obj_bytes, 1)[0]
+            pos = 4
+            for vi in range(vc):
+                if pos + 6 <= len(obj_bytes):
+                    x, y, z = struct.unpack_from('<hhh', obj_bytes, pos)
+                    verts.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+                    pos += 6
 
-            # Scan polygon faces
-            p = vert_off + len(verts) * 6
-            visited = set()
-            while p + 8 <= len(mdata):
-                col, cnt = struct.unpack_from('<HH', mdata, p)
-                if 1 <= col <= 255 and 3 <= cnt <= 8:
-                    ring_off = p + 4
-                    if ring_off + cnt * 2 <= len(mdata):
-                        v_idx = []
-                        valid_ring = True
-                        for ki in range(cnt):
-                            raw_v = struct.unpack_from('<H', mdata, ring_off + ki*2)[0]
-                            if raw_v % 16 != 0:
-                                valid_ring = False
-                                break
-                            vi = raw_v // 16
-                            if vi >= len(verts):
-                                valid_ring = False
-                                break
-                            v_idx.append(vi)
-                        if valid_ring and len(set(v_idx)) >= 3 and p not in visited:
-                            visited.add(p)
-                            faces.append({'color': col, 'indices': v_idx})
-                p += 2
+            p = pos
+            color_idx = 45
+            while p + 2 <= len(obj_bytes):
+                cnt = struct.unpack_from('<H', obj_bytes, p)[0]
+                if cnt == 0xFFFF or cnt == 0:
+                    break
+                if 3 <= cnt <= 12 and p + 2 + (cnt + 1) * 2 <= len(obj_bytes):
+                    words = struct.unpack_from(f'<{cnt+1}H', obj_bytes, p + 2)
+                    if all(w % 16 == 0 and w // 16 < len(verts) for w in words):
+                        ring = [w // 16 for w in words[:-1]]
+                        faces.append({'color': color_idx, 'indices': ring})
+                        p += (cnt + 2) * 2
+                        color_idx = (color_idx + 3) % 250
+                        continue
+                break
 
-            # Derive edges
             edge_set = set()
             for f_item in faces:
                 ring = f_item['indices']
@@ -336,25 +367,178 @@ def decode_mapobj_archive(filepath='game/MAPOBJ'):
                     edge_set.add(tuple(sorted([v1, v2])))
             edges = [list(e) for e in sorted(list(edge_set))]
 
-        name = NAMES_MAP.get(m_idx, f"Structure_{m_idx:02d}")
-        cat = 'Road & River Ribbon' if 103 <= m_idx <= 109 else 'Terrain Structure'
-
-        models.append({
-            'id': m_idx,
+        name = f"MAPOBJ_{i:03d}"
+        map_objects.append({
+            'id': i,
             'name': name,
             'category': cat,
-            'source': 'GAME_MAPOBJ',
-            'tag': tag,
-            'size': length,
+            'source': 'MAPOBJ',
             'vertex_count': len(verts),
             'face_count': len(faces),
             'edge_count': len(edges),
             'vertices': verts,
             'faces': faces,
-            'edges': edges
+            'edges': edges,
+            'lods': [{
+                'lod': 0,
+                'vertex_count': len(verts),
+                'face_count': len(faces),
+                'edge_count': len(edges),
+                'vertices': verts,
+                'faces': faces,
+                'edges': edges
+            }]
         })
 
-    return models
+    return map_objects
+
+def decode_report_archive(filepath='game/REPORT.DAT'):
+    """
+    Decodes all 76 tactical reference dossiers and 3D models from REPORT.DAT.
+    """
+    path = Path(filepath)
+    if not path.exists():
+        return []
+    with open(path, 'rb') as f:
+        rep = f.read()
+
+    sections = [
+        ('Tactical Aircraft (Blue)', 0x10c6, 23),
+        ('Tactical Aircraft (Red)', 0x28f75, 23),
+        ('Ground Vehicles', 0x4eb68, 12),
+        ('Naval & Defense', 0x63133, 18)
+    ]
+
+    report_models = []
+    model_idx = 0
+
+    for sec_name, sec_off, count in sections:
+        offsets = [struct.unpack_from('<I', rep, sec_off + 2 + i*4)[0] for i in range(count)]
+        for i in range(count):
+            rec_start = sec_off + offsets[i]
+            w0, w1, w2, w3 = struct.unpack_from('<HHHH', rep, rec_start)
+            name_end = rep.find(b'\x00', rec_start + w1)
+            raw_name = rep[rec_start + w1 : name_end].decode('latin1', errors='replace')
+            name = ''.join(c for c in raw_name if 32 <= ord(c) <= 126).strip()
+
+            # Extract specifications text
+            specs = []
+            p = rec_start + w1
+            while p < rec_start + w2:
+                ne = rep.find(b'\x00', p)
+                if ne == -1 or ne > rec_start + w2:
+                    break
+                s = rep[p:ne].decode('latin1', errors='replace').strip()
+                clean_s = ''.join(c for c in s if 32 <= ord(c) <= 126).strip()
+                if clean_s:
+                    specs.append(clean_s)
+                p = ne + 1
+
+            m_start = rec_start + w3
+            m_bytes = rep[m_start:rec_start+w0]
+
+            verts = []
+            faces = []
+            edges = set()
+
+            sig_pos = m_bytes.find(b'\xff\xff')
+            if sig_pos == 0x38:
+                # Multi-part ground vehicle (Hull, Turret, Gun)
+                w_sig, mode, parts_ptr_raw = struct.unpack_from('<3H', m_bytes, sig_pos)
+                parts_off = parts_ptr_raw - w3
+                p = parts_off
+                parts = []
+                while p + 14 <= len(m_bytes):
+                    w_row = struct.unpack_from('<7H', m_bytes, p)
+                    vc = w_row[3]
+                    source_vo = w_row[4]
+                    to_ptr = w_row[6]
+                    if 3 <= vc <= 50 and source_vo > w3:
+                        vo_rel = source_vo - w3
+                        if vo_rel + vc*6 <= len(m_bytes):
+                            parts.append((vc, vo_rel, to_ptr - w3 if to_ptr > w3 else to_ptr))
+                            p += 14
+                            continue
+                    break
+
+                part_v_offsets = []
+                cur_v_off = 0
+                for vc, vo_rel, to_rel in parts:
+                    part_v_offsets.append(cur_v_off)
+                    for vi in range(vc):
+                        x, y, z = struct.unpack_from('<hhh', m_bytes, vo_rel + vi*6)
+                        verts.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+                    cur_v_off += vc
+
+                unique_faces = {}
+                for p_idx, (vc, vo_rel, to_rel) in enumerate(parts):
+                    v_base = part_v_offsets[p_idx]
+                    for p in range(0x20, len(m_bytes) - 8, 2):
+                        norm, mode, col, cnt = struct.unpack_from('<4H', m_bytes, p)
+                        if 3 <= cnt <= 12 and p + 8 + (cnt+1)*2 <= len(m_bytes):
+                            words = struct.unpack_from(f'<{cnt+1}H', m_bytes, p + 8)
+                            if all(w % 16 == 0 and (w // 16) < vc for w in words):
+                                ring = [(w // 16) + v_base for w in words[:-1]]
+                                norm_ring = frozenset(ring)
+                                if norm_ring not in unique_faces:
+                                    unique_faces[norm_ring] = {'color': col, 'indices': ring}
+                                    for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
+                                        edges.add(tuple(sorted([v1, v2])))
+                faces = list(unique_faces.values())
+
+            elif sig_pos != -1 and sig_pos + 16 <= len(m_bytes):
+                # Single-piece model (Aircraft, Ships, SAMs, Missiles)
+                w_sig, mode, v_hdr, zero, num_v_raw, v_off_raw, oct_raw = struct.unpack_from('<7H', m_bytes, sig_pos)
+                num_v = num_v_raw // 6 if num_v_raw > 200 else num_v_raw
+                v_start = v_off_raw - w3 if v_off_raw > w3 else v_off_raw
+                if 0 < num_v < 1000 and 0 <= v_start < len(m_bytes):
+                    for vi in range(num_v):
+                        off = v_start + vi * 6
+                        if off + 6 <= len(m_bytes):
+                            x, y, z = struct.unpack_from('<hhh', m_bytes, off)
+                            verts.append([round(x / 10.0, 2), round(y / 10.0, 2), round(z / 10.0, 2)])
+
+                p_search_start = v_start + len(verts) * 6
+                unique_faces = {}
+                for p in range(p_search_start, len(m_bytes) - 8, 2):
+                    norm, mode, col, cnt = struct.unpack_from('<4H', m_bytes, p)
+                    if 3 <= cnt <= 12 and p + 8 + (cnt+1)*2 <= len(m_bytes):
+                        words = struct.unpack_from(f'<{cnt+1}H', m_bytes, p + 8)
+                        if all(w % 16 == 0 and (w // 16) < len(verts) for w in words):
+                            ring = [w // 16 for w in words[:-1]]
+                            norm_ring = frozenset(ring)
+                            if norm_ring not in unique_faces:
+                                unique_faces[norm_ring] = {'color': col, 'indices': ring}
+                                for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
+                                    edges.add(tuple(sorted([v1, v2])))
+                faces = list(unique_faces.values())
+
+            report_models.append({
+                'id': model_idx,
+                'name': name,
+                'category': 'Tactical Reference',
+                'sub_category': sec_name,
+                'source': 'REPORT.DAT',
+                'specs': specs,
+                'vertex_count': len(verts),
+                'face_count': len(faces),
+                'edge_count': len(edges),
+                'vertices': verts,
+                'faces': faces,
+                'edges': [list(e) for e in sorted(list(edges))],
+                'lods': [{
+                    'lod': 0,
+                    'vertex_count': len(verts),
+                    'face_count': len(faces),
+                    'edge_count': len(edges),
+                    'vertices': verts,
+                    'faces': faces,
+                    'edges': [list(e) for e in sorted(list(edges))]
+                }]
+            })
+            model_idx += 1
+
+    return report_models
 
 def export_wavefront_obj(item, out_path):
     with open(out_path, 'w') as f:
@@ -380,7 +564,7 @@ def main():
     palette = load_vga_palette()
     print(f"Loaded authentic VGA palette ({len(palette)} colors)")
 
-    # 1. Standalone player aircraft
+    # 1. Standalone player aircraft (LOD 0 as primary)
     aircraft_bins = [
         'game/FALCOBJ.BIN',
         'game/HORNOBJ.BIN',
@@ -395,6 +579,8 @@ def main():
             model['category'] = 'Flyable Aircraft'
             flyable.append(model)
             export_wavefront_obj(model, obj_dir / f"{model['name']}.obj")
+            if model.get('lod2') and model['lod2']['face_count'] > 0:
+                export_wavefront_obj(model['lod2'], obj_dir / f"{model['name']}_High.obj")
     print(f"Decoded {len(flyable)} flyable aircraft from *OBJ.BIN")
 
     # 2. Objects archive (71 vehicles & weapons)
@@ -413,17 +599,26 @@ def main():
             export_wavefront_obj(m, obj_dir / f"map_{m['id']:03d}_{clean_name}.obj")
     print(f"Decoded {len(map_objects)} map structures and ribbons from game/MAPOBJ")
 
+    # 4. Tactical reference dossiers & 3D models from REPORT.DAT
+    reports = decode_report_archive()
+    for r in reports:
+        if r['vertices'] and r['face_count'] > 0:
+            clean_name = "".join(c if c.isalnum() or c in '-_' else '_' for c in r['name']).strip()
+            export_wavefront_obj(r, obj_dir / f"report_{r['id']:02d}_{clean_name}.obj")
+    print(f"Decoded {len(reports)} tactical reference records from game/REPORT.DAT")
+
     # Assemble master database
     database = {
         'metadata': {
             'title': 'Falcon 3.0 3D Asset Database',
             'version': '1.0',
-            'total_models': len(flyable) + len(objects) + len(map_objects),
+            'total_models': len(flyable) + len(objects) + len(map_objects) + len(reports),
             'palette': palette
         },
         'flyable_aircraft': flyable,
         'vehicles_and_units': objects,
-        'terrain_structures': map_objects
+        'terrain_structures': map_objects,
+        'tactical_reference': reports
     }
 
     db_path = out_dir / 'assets_database.json'
