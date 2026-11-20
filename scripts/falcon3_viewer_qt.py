@@ -462,9 +462,20 @@ class Falcon3DViewerWindow(QMainWindow):
         sidebar_layout.addWidget(header_lbl)
 
         self.search_input = QLineEdit()
-        self.search_input.setPlaceholderText("Search models...")
+        self.search_input.setPlaceholderText("Search name, category, source...")
         self.search_input.textChanged.connect(self.filter_models)
         sidebar_layout.addWidget(self.search_input)
+
+        self.src_combo = QComboBox()
+        self.src_combo.addItems([
+            "All Sources",
+            "REPORT.DAT (Tactical Dossiers)",
+            "OBJECTS (In-Flight Models)",
+            "*OBJ.BIN (Flyable High-LOD)",
+            "MAPOBJ (Terrain Structures)"
+        ])
+        self.src_combo.currentTextChanged.connect(self.filter_models)
+        sidebar_layout.addWidget(self.src_combo)
 
         self.cat_combo = QComboBox()
         self.cat_combo.addItems([
@@ -485,7 +496,8 @@ class Falcon3DViewerWindow(QMainWindow):
         self.model_list.currentItemChanged.connect(self.on_model_selected)
         sidebar_layout.addWidget(self.model_list)
 
-        sidebar.setMaximumWidth(280)
+        sidebar.setMinimumWidth(260)
+        sidebar.setMaximumWidth(340)
         splitter.addWidget(sidebar)
 
         # ---------------- Center Viewport Area ----------------
@@ -633,21 +645,55 @@ class Falcon3DViewerWindow(QMainWindow):
 
     def filter_models(self):
         query = self.search_input.text().lower().strip()
+        norm_query = query.replace('-', '').replace(' ', '').replace('_', '')
         cat = self.cat_combo.currentText()
+        src_selection = self.src_combo.currentText()
+
+        src_mapping = {
+            "REPORT.DAT (Tactical Dossiers)": "REPORT.DAT",
+            "OBJECTS (In-Flight Models)": "OBJECTS",
+            "*OBJ.BIN (Flyable High-LOD)": "AIRCRAFT_BIN",
+            "MAPOBJ (Terrain Structures)": "MAPOBJ"
+        }
+        target_src = src_mapping.get(src_selection, None)
 
         self.model_list.clear()
         for m in self.all_models:
+            m_src = m.get('source', '')
+            if target_src and m_src != target_src:
+                continue
+
             m_cat = m.get('category', 'Generic')
-            if cat != "All Categories" and m_cat != cat:
-                continue
+            if cat != "All Categories":
+                if cat == "Tactical Reference":
+                    if m_src != 'REPORT.DAT' and m_cat != 'Tactical Reference':
+                        continue
+                elif cat == "Terrain Structure":
+                    if m_cat not in ['Terrain Structure', 'Structure']:
+                        continue
+                elif m_cat != cat:
+                    continue
+
             name = m.get('name', '')
-            if query and query not in name.lower() and query not in m_cat.lower():
-                continue
+            sub_cat = m.get('sub_category', '')
+            if query:
+                searchable = f"{name} {m_cat} {sub_cat} {m_src}".lower()
+                norm_searchable = searchable.replace('-', '').replace(' ', '').replace('_', '')
+                if query not in searchable and norm_query not in norm_searchable:
+                    continue
 
             vc = m.get('vertex_count', 0)
             fc = m.get('face_count', 0)
             ec = m.get('edge_count', 0)
-            label = f"{name:16s} ({vc}v, {fc or ec}p)"
+
+            src_tag = {
+                'REPORT.DAT': '[REP]',
+                'OBJECTS': '[OBJ]',
+                'AIRCRAFT_BIN': '[BIN]',
+                'MAPOBJ': '[MAP]'
+            }.get(m_src, '[---]')
+
+            label = f"{src_tag} {name:18s} ({vc}v, {fc or ec}p)"
             item = QListWidgetItem(label)
             item.setData(Qt.ItemDataRole.UserRole, m)
             self.model_list.addItem(item)
