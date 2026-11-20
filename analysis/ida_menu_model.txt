@@ -1,0 +1,117 @@
+
+========================================
+FUNCTION: menu_3d_model_frame_step (0x4aae2 - 0x4ab06)
+========================================
+  0x4aae2: push    es
+  0x4aae3: mov     ax, [si+4]
+  0x4aae6: mov     di, [si+6]
+  0x4aae9: mov     es, ax
+  0x4aaeb: mov     ax, es:[di+0Ch]
+  0x4aaef: mov     cx, es:[di+0Eh]
+  0x4aaf3: mov     di, [si+32h]
+  0x4aaf6: call    fixed_matrix_mul
+  0x4aafb: mov     [si+27h], ax
+  0x4aafe: mov     [si+29h], bx
+  0x4ab01: mov     [si+2Bh], cx
+  0x4ab04: pop     es
+  0x4ab05: retn
+
+========================================
+FUNCTION: farobj_3d_model_rotate_step (0x4aec4 - 0x4afbd)
+========================================
+  0x4aec4: cmp     byte ptr [di], 1
+  0x4aec7: jnz     short loc_4AEEA
+  0x4aec9: push    di
+  0x4aeca: mov     di, [di+3]
+  0x4aecd: mov     al, [di+0Ch]
+  0x4aed0: pop     di
+  0x4aed1: test    al, 1
+  0x4aed3: jnz     short loc_4AEEA
+  0x4aed5: xor     byte ptr [si+0Ch], 8
+  0x4aed9: mov     byte ptr [di], 0
+  0x4aedc: mov     ax, [si+34h]
+  0x4aedf: mov     [si+32h], ax
+  0x4aee2: push    di
+  0x4aee3: call    near ptr farobj_calculate_screen_angle
+  0x4aee6: call    near ptr menu_3d_model_frame_step
+  0x4aee9: pop     di
+  0x4aeea: cmp     word ptr [si+18h], 0FFFFh
+  0x4aeee: jnz     short loc_4AF31
+  0x4aef0: cmp     word ptr [si+1Ch], 0FFFFh
+  0x4aef4: jnz     short loc_4AF50
+  0x4aef6: cmp     byte ptr [di], 0
+  0x4aef9: jz      short loc_4AF18
+  0x4aefb: mov     ax, [si+12h]
+  0x4aefe: cmp     [di+5], ax
+  0x4af01: jle     short loc_4AF2D
+  0x4af03: xor     byte ptr [si+0Ch], 8
+  0x4af07: mov     byte ptr [di], 0
+  0x4af0a: mov     ax, [si+34h]
+  0x4af0d: mov     [si+32h], ax
+  0x4af10: push    di
+  0x4af11: call    near ptr farobj_calculate_screen_angle
+  0x4af14: call    near ptr menu_3d_model_frame_step
+  0x4af17: pop     di
+  0x4af18: cmp     word ptr [di+0Fh], 0
+  0x4af1c: jnz     short loc_4AF25
+  0x4af1e: cmp     word ptr [di+11h], 0
+  0x4af22: jnz     short loc_4AF25
+  0x4af24: retn
+  0x4af25: xor     ax, ax
+  0x4af27: xor     cx, cx
+  0x4af29: call    near ptr undoc_4B048
+  0x4af2c: retn
+  0x4af2d: call    near ptr ui_sprite_blit
+  0x4af30: retn
+  0x4af31: cmp     byte ptr [di], 1
+  0x4af34: jnz     short loc_4AF69
+  0x4af36: cmp     word ptr [di+1], 0
+  0x4af3a: jnz     short loc_4AF69
+  0x4af3c: mov     ax, [di+3]
+  0x4af3f: cmp     ax, [si+16h]
+  0x4af42: jz      short loc_4AF69
+  0x4af44: mov     ax, [di+5]
+  0x4af47: cmp     ax, [si+18h]
+  0x4af4a: jg      short loc_4AF79
+  0x4af4c: call    near ptr ui_sprite_blit
+  0x4af4f: retn
+  0x4af50: cmp     byte ptr [di], 1
+  0x4af53: jnz     short loc_4AF99
+  0x4af55: mov     ax, [di+3]
+  0x4af58: cmp     ax, [si+1Ah]
+  0x4af5b: jz      short loc_4AF69
+  0x4af5d: mov     ax, [di+5]
+  0x4af60: cmp     ax, [si+1Ch]
+  0x4af63: jg      short loc_4AF99
+  0x4af65: call    near ptr ui_sprite_blit
+  0x4af68: retn
+  0x4af69: cmp     word ptr [si+1Ch], 0FFFFh
+  0x4af6d: jz      short loc_4AF79
+  0x4af6f: mov     ax, [si+1Ch]
+  0x4af72: shl     ax, 1
+  0x4af74: cmp     ax, [si+18h]
+  0x4af77: jb      short loc_4AF99
+  0x4af79: mov     ax, [si+18h]
+  0x4af7c: mov     [di+5], ax
+  0x4af7f: mov     ax, [si+16h]
+  0x4af82: mov     [di+3], ax
+  0x4af85: mov     word ptr [di+1], 0
+  0x4af8a: or      byte ptr [si+0Ch], 8
+  0x4af8e: mov     byte ptr [di], 1
+  0x4af91: and     byte ptr [si+0Ch], 0FBh
+  0x4af95: call    near ptr ui_sprite_blit
+  0x4af98: retn
+  0x4af99: mov     ax, [si+1Ch]
+  0x4af9c: mov     [di+5], ax
+  0x4af9f: mov     ax, [si+1Ah]
+  0x4afa2: mov     [di+3], ax
+  0x4afa5: push    si
+  0x4afa6: mov     si, ax
+  0x4afa8: mov     ax, [si]
+  0x4afaa: pop     si
+  0x4afab: mov     [di+1], ax
+  0x4afae: or      byte ptr [si+0Ch], 8
+  0x4afb2: mov     byte ptr [di], 1
+  0x4afb5: and     byte ptr [si+0Ch], 0FBh
+  0x4afb9: call    near ptr ui_sprite_blit
+  0x4afbc: retn

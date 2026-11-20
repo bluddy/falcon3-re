@@ -222,36 +222,47 @@ def decode_objects_archive(filepath='game/OBJECTS'):
         is_multipart_tank = (byte2 == 0x010a and i != 38)
         
         if is_multipart_tank:
+            # Multi-part vehicles (tanks, APCs): Chassis, Hull, Turret
+            # 14-byte part rows between 0x0036 and 0x0060 specify translation vector, vc, vo, and part table
             parts = []
-            p = 0x60
-            while p + 10 <= len(obj):
-                flags, vc, w2, node_ptr, w4 = struct.unpack_from('<5H', obj, p)
-                if vc == 0 or node_ptr == 0 or node_ptr >= len(obj):
+            p_row = 0x0036
+            while p_row + 14 <= 0x0060:
+                flags, r_mat, trans_ptr, vc, vo_h, w5, part_table_ptr = struct.unpack_from('<7H', obj, p_row)
+                if vc == 0 or vc > 100 or vo_h >= len(obj):
                     break
-                vo = node_ptr - vc * 6
-                if vo < 0:
-                    break
-                parts.append((vc, vo, node_ptr))
-                p += 10
+                # Real vertex stream starts at vo_h + 2 (preceded by bounding word)
+                vo = vo_h + 2
+                to = struct.unpack_from('<H', obj, part_table_ptr + 6)[0] if part_table_ptr + 8 <= len(obj) else vo + vc * 6
+                parts.append((vc, vo, to, trans_ptr))
+                p_row += 14
             
             v_base = 0
-            for part_idx, (vc, vo, node_ptr) in enumerate(parts):
-                next_part_vo = parts[part_idx+1][1] if part_idx + 1 < len(parts) else len(obj)
-                part_verts = [struct.unpack_from('<hhh', obj, vo + j*6) for j in range(vc)]
-                gl_verts = [[round(v[1]/10.0, 2), round(-v[2]/10.0, 2), round(v[0]/10.0, 2)] for v in part_verts]
+            for part_idx, (vc, vo, to, trans_ptr) in enumerate(parts):
+                tx, ty, tz = struct.unpack_from('<3h', obj, trans_ptr) if (trans_ptr and trans_ptr + 6 <= len(obj)) else (0, 0, 0)
+                if to > vo:
+                    vc = min(vc, (to - vo + 5) // 6)
+                raw_verts = [struct.unpack_from('<hhh', obj, vo + j*6) for j in range(vc)]
+                # Ground vehicles: w0=Right, w1=-Up, w2=Forward
+                gl_verts = [[
+                    round((v[0] + tx) / 10.0, 2),
+                    round(-(v[1] + ty) / 10.0, 2),
+                    round((v[2] + tz) / 10.0, 2)
+                ] for v in raw_verts]
                 all_verts.extend(gl_verts)
                 
+                next_boundary = parts[part_idx+1][1] if part_idx + 1 < len(parts) else (0x01ea if len(obj) > 0x01ea else len(obj))
                 unique = set()
-                for p_node in range(node_ptr, next_part_vo - 8, 2):
-                    norm, mode, col, cnt = struct.unpack_from('<4H', obj, p_node)
-                    if 3 <= cnt <= 16 and p_node + 8 + (cnt + 1) * 2 <= next_part_vo:
-                        v_words = struct.unpack_from(f'<{cnt+1}H', obj, p_node + 8)
-                        if all(w % 16 == 0 and (w // 16) < vc for w in v_words) and v_words[0] == v_words[-1]:
-                            ring = [w // 16 + v_base for w in v_words[:-1]]
-                            k = tuple(sorted(ring))
-                            if k not in unique:
-                                unique.add(k)
-                                all_faces.append({'color': col & 0xFF, 'indices': ring})
+                for p_node in range(to, next_boundary, 2):
+                    if p_node + 8 <= next_boundary:
+                        norm, mode, col, cnt = struct.unpack_from('<4H', obj, p_node)
+                        if 3 <= cnt <= 16 and p_node + 8 + (cnt + 1) * 2 <= next_boundary:
+                            v_words = struct.unpack_from(f'<{cnt+1}H', obj, p_node + 8)
+                            if all(w % 16 == 0 and (w // 16) < vc for w in v_words) and v_words[0] == v_words[-1]:
+                                ring = [w // 16 + v_base for w in v_words[:-1]]
+                                k = tuple(sorted(ring))
+                                if k not in unique:
+                                    unique.add(k)
+                                    all_faces.append({'color': col & 0xFF, 'indices': ring})
                 v_base += vc
             
             edges = set()
@@ -274,7 +285,8 @@ def decode_objects_archive(filepath='game/OBJECTS'):
             if lod_headers:
                 for idx, (lod_idx, vc, vo, to) in enumerate(lod_headers):
                     raw_verts = [struct.unpack_from('<hhh', obj, vo + j*6) for j in range(vc)]
-                    verts = [[round(v[1] / 10.0, 2), round(-v[2] / 10.0, 2), round(v[0] / 10.0, 2)] for v in raw_verts]
+                    # Aircraft & single-piece units: v[0]=Forward, v[1]=Right, v[2]=Up
+                    verts = [[round(v[1] / 10.0, 2), round(v[2] / 10.0, 2), round(v[0] / 10.0, 2)] for v in raw_verts]
                     
                     next_to = lod_headers[idx+1][3] if idx + 1 < len(lod_headers) else len(obj)
                     if next_to <= to or next_to > len(obj):

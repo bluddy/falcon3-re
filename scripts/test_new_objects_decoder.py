@@ -1,163 +1,145 @@
 import struct
 import json
-from pathlib import Path
+import math
+from PIL import Image, ImageDraw
 
-def decode_all_objects(filepath='game/OBJECTS'):
-    with open(filepath, 'rb') as f:
-        data = f.read()
+data = open('game/OBJECTS', 'rb').read()
+first = struct.unpack_from('<I', data, 0)[0]
+offs = struct.unpack(f'<{first//4}I', data[:first])
 
-    first_off = struct.unpack_from('<I', data, 0)[0]
-    num_objs = first_off // 4
-    offsets = struct.unpack(f'<{num_objs}I', data[:first_off])
-
-    objects = []
+def decode_multipart_vehicle(obj):
+    all_verts = []
+    all_faces = []
+    v_base = 0
     
-    for i in range(num_objs):
-        off = offsets[i]
-        next_off = offsets[i+1] if i+1 < num_objs else len(data)
-        obj = data[off:next_off]
-        
-        name = ''
-        if len(obj) > 12:
-            nchunk = obj[4:12]
-            if all(32 <= b <= 126 or b == 0 for b in nchunk):
-                name = nchunk.decode('ascii', errors='ignore').replace('\x00', '').strip()
-        if not name:
-            name = f"OBJ_{i:02d}"
-
-        byte2 = struct.unpack_from('<H', obj, 2)[0] if len(obj) >= 4 else 0
-        
-        all_verts = []
-        all_faces = []
-        lods = []
-        
-        # Check if multi-part tank / ground vehicle (14-byte part records)
-        sig_tank = obj.find(b'\x08\x04\xf0') # common part table signature or check byte2 == 0x010a
-        is_multipart_tank = (byte2 == 0x010a)
-        
-        if is_multipart_tank:
-            # Multi-part tank parsing
-            v_base = 0
-            part_records = []
-            for p in range(0x40, min(0x120, len(obj) - 14), 14):
-                w_row = struct.unpack_from('<7H', obj, p)
-                part_rec_ptr = w_row[5]
-                if part_rec_ptr != 0 and part_rec_ptr + 10 <= len(obj):
-                    vc, vo, to, w3, w4 = struct.unpack_from('<5H', obj, part_rec_ptr)
-                    if 2 <= vc <= 100 and vo < len(obj) and to < len(obj):
-                        part_records.append((vc, vo, to))
+    p_row = 0x0036
+    parts = []
+    while p_row + 14 <= len(obj):
+        row = struct.unpack_from('<7H', obj, p_row)
+        flags, r_mat, trans_ptr, vc, vo_h, w5, part_table_ptr = row
+        if vc == 0 or vc > 100 or vo_h >= len(obj):
+            break
+        vo = vo_h + 2
+        to = struct.unpack_from('<H', obj, part_table_ptr + 6)[0] if part_table_ptr + 8 <= len(obj) else vo + vc * 6
+        parts.append((vc, vo, to, trans_ptr))
+        p_row += 14
+        if len(parts) >= 4:
+            break
             
-            for vc, vo, to in part_records:
-                part_verts = [struct.unpack_from('<hhh', obj, vo + j*6) for j in range(vc)]
-                # Tanks: X=length, Y=width, Z=height
-                all_verts.extend([[round(v[1] / 10.0, 2), round(v[2] / 10.0, 2), round(-v[0] / 10.0, 2)] for v in part_verts])
-                
-                # Scan nodes for this part
-                for p_node in range(to, min(len(obj) - 8, to + 400), 2):
-                    norm, mode, col, cnt = struct.unpack_from('<4H', obj, p_node)
-                    if 3 <= cnt <= 16 and p_node + 8 + (cnt + 1) * 2 <= len(obj):
-                        v_words = struct.unpack_from(f'<{cnt+1}H', obj, p_node + 8)
-                        if all(w % 16 == 0 and (w // 16) < vc for w in v_words):
-                            if v_words[0] == v_words[-1]:
-                                ring = [w // 16 + v_base for w in v_words[:-1]]
-                                all_faces.append({'color': col & 0xFF, 'indices': ring})
-                v_base += vc
-        else:
-            # Standard single-piece or multi-LOD model
-            sig = obj.find(b'\xff\xff\x00\x40')
-            if sig != -1 and sig + 10 <= len(obj):
-                # Read LODs
-                lod_table_pos = sig + 4
-                lod_headers = []
-                for lod_idx in range(4):
-                    if lod_table_pos + (lod_idx + 1) * 10 <= len(obj):
-                        vc, vo, to, w3, w4 = struct.unpack_from('<5H', obj, lod_table_pos + lod_idx * 10)
-                        if 0 < vc < 3000 and 0 <= vo < len(obj) and vo + vc * 6 <= len(obj):
-                            lod_headers.append((lod_idx, vc, vo, to))
-                
-                for lod_idx, vc, vo, to in lod_headers:
-                    raw_verts = [struct.unpack_from('<hhh', obj, vo + j*6) for j in range(vc)]
-                    verts = [[round(v[1] / 10.0, 2), round(v[2] / 10.0, 2), round(-v[0] / 10.0, 2)] for v in raw_verts]
-                    
-                    faces = []
-                    unique = set()
-                    scan_start = max(to, vo + vc * 6)
-                    for p in range(scan_start, len(obj) - 8, 2):
-                        norm, mode, col, cnt = struct.unpack_from('<4H', obj, p)
-                        if 3 <= cnt <= 16 and p + 8 + (cnt + 1) * 2 <= len(obj):
-                            v_words = struct.unpack_from(f'<{cnt+1}H', obj, p + 8)
-                            if all(w % 16 == 0 and (w // 16) < vc for w in v_words):
-                                if v_words[0] == v_words[-1]:
-                                    ring = [w // 16 for w in v_words[:-1]]
-                                    k = tuple(sorted(ring))
-                                    if k not in unique:
-                                        unique.add(k)
-                                        faces.append({'color': col & 0xFF, 'indices': ring})
-                    
-                    edges = set()
-                    for f_item in faces:
-                        ring = f_item['indices']
-                        for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
-                            edges.add(tuple(sorted([v1, v2])))
-                    
-                    lod_dict = {
-                        'lod': lod_idx,
-                        'vertex_count': len(verts),
-                        'face_count': len(faces),
-                        'edge_count': len(edges),
-                        'vertices': verts,
-                        'faces': faces,
-                        'edges': [list(e) for e in sorted(list(edges))]
-                    }
-                    lods.append(lod_dict)
-                    
-                    if lod_idx == 0:
-                        all_verts = verts
-                        all_faces = faces
+    if not parts:
+        return [], []
         
-        edges = set()
-        for f_item in all_faces:
-            ring = f_item['indices']
-            for v1, v2 in zip(ring, ring[1:] + [ring[0]]):
-                edges.add(tuple(sorted([v1, v2])))
+    for part_idx, (vc, vo, to, trans_ptr) in enumerate(parts):
+        tx, ty, tz = struct.unpack_from('<3h', obj, trans_ptr) if (trans_ptr and trans_ptr + 6 <= len(obj)) else (0, 0, 0)
+        raw_verts = [struct.unpack_from('<3h', obj, vo + i * 6) for i in range(vc)]
+        for rx, ry, rz in raw_verts:
+            all_verts.append([
+                round((rx + tx) / 10.0, 2),
+                round(-(ry + ty) / 10.0, 2),
+                round((rz + tz) / 10.0, 2)
+            ])
+            
+        next_boundary = parts[part_idx+1][1] - 2 if part_idx + 1 < len(parts) else (0x01ea if len(obj) > 0x01ea else len(obj))
+        unique = set()
+        for p in range(to, next_boundary, 2):
+            if p + 8 <= next_boundary:
+                norm, mode, col, cnt = struct.unpack_from('<4H', obj, p)
+                if 3 <= cnt <= 16 and p + 8 + (cnt + 1) * 2 <= next_boundary:
+                    v_words = struct.unpack_from(f'<{cnt+1}H', obj, p + 8)
+                    if all(w % 16 == 0 and (w // 16) < vc for w in v_words) and v_words[0] == v_words[-1]:
+                        indices = [w // 16 + v_base for w in v_words[:-1]]
+                        key = tuple(sorted(indices))
+                        if key not in unique:
+                            unique.add(key)
+                            all_faces.append({'color': col, 'indices': indices})
+        v_base += vc
         
-        cat = 'Generic'
-        if any(w in name.upper() for w in ['MIG', 'SU', 'F16', 'F-16', 'F15', 'F-15', 'F4', 'F-4', 'MIRAGE', 'BEAR', 'IL76', 'A10', 'A4', 'FA18', 'F14', 'F111', 'F117', 'FSX', 'J7', 'Q5', 'JAGUAR', 'B52', 'C130', 'E3', 'TU22', 'AN12', 'KFIR', 'TORNADO', 'AH64', 'UH60', 'SA342', 'MI24', 'UMF']):
-            cat = 'Aircraft'
-        elif any(w in name.upper() for w in ['TANK', 'T72', 'T80', 'M1', 'BMP', 'BTR', 'ZSU', 'SHILKA', 'TRUCK', 'JEEP', 'M60', 'M113', 'AMX', 'BDRM', 'WALID']):
-            cat = 'Ground Vehicle'
-        elif any(w in name.upper() for w in ['BOAT', 'SHIP', 'FRIGATE', 'PATROL', 'LCI', 'LST', 'LEBED', 'NIMITZ']):
-            cat = 'Naval Unit'
-        elif any(w in name.upper() for w in ['SAM', 'SCUD', 'HAWK', 'PATRIOT', 'SA2', 'SA6', 'SA8', 'SA13', 'SHAHINE', 'BGM']):
-            cat = 'Air Defense'
+    return all_verts, all_faces
 
-        objects.append({
-            'id': i,
-            'name': name,
-            'category': cat,
-            'source': 'OBJECTS',
-            'vertex_count': len(all_verts),
-            'face_count': len(all_faces),
-            'edge_count': len(edges),
-            'vertices': all_verts,
-            'faces': all_faces,
-            'edges': [list(e) for e in sorted(list(edges))],
-            'lods': lods if lods else [{
-                'lod': 0,
-                'vertex_count': len(all_verts),
-                'face_count': len(all_faces),
-                'edge_count': len(edges),
-                'vertices': all_verts,
-                'faces': all_faces,
-                'edges': [list(e) for e in sorted(list(edges))]
-            }]
-        })
+def decode_singlepiece_aircraft(obj):
+    lod_table_off = -1
+    for p in range(0x0030, min(0x0200, len(obj) - 10), 2):
+        vc, vo, to, w3, w4 = struct.unpack_from('<5H', obj, p)
+        if 10 <= vc <= 250 and vo < len(obj) and to < len(obj) and vo + vc * 6 <= to and w3 == 0 and w4 == 0:
+            lod_table_off = p
+            break
+    if lod_table_off == -1:
+        return [], []
+        
+    vc, vo, to, w3, w4 = struct.unpack_from('<5H', obj, lod_table_off)
+    next_to = len(obj)
+    if lod_table_off + 20 <= len(obj):
+        n_vc, n_vo, n_to, n_w3, n_w4 = struct.unpack_from('<5H', obj, lod_table_off + 10)
+        if 4 <= n_vc <= 250 and n_to < len(obj):
+            next_to = n_to
+            
+    raw_verts = [struct.unpack_from('<3h', obj, vo + i * 6) for i in range(vc)]
+    all_verts = [[round(v[1] / 10.0, 2), round(v[2] / 10.0, 2), round(v[0] / 10.0, 2)] for v in raw_verts]
+    
+    all_faces = []
+    unique = set()
+    for p in range(to, next_to - 8, 2):
+        norm, mode, col, cnt = struct.unpack_from('<4H', obj, p)
+        if 3 <= cnt <= 16 and p + 8 + (cnt + 1) * 2 <= next_to:
+            v_words = struct.unpack_from(f'<{cnt+1}H', obj, p + 8)
+            if all(w % 16 == 0 and (w // 16) < vc for w in v_words) and v_words[0] == v_words[-1]:
+                indices = [w // 16 for w in v_words[:-1]]
+                key = tuple(sorted(indices))
+                if key not in unique:
+                    unique.add(key)
+                    all_faces.append({'color': col, 'indices': indices})
+                    
+    return all_verts, all_faces
 
-    return objects
+m113_verts, m113_faces = decode_multipart_vehicle(data[offs[36]:offs[37]])
+print(f"M113 decoded: {len(m113_verts)} verts, {len(m113_faces)} faces")
 
-objs = decode_all_objects()
-print(f"Decoded {len(objs)} objects from game/OBJECTS")
-with_faces = [o for o in objs if o['face_count'] > 0]
-print(f"Objects with valid 3D geometry: {len(with_faces)} / {len(objs)}")
-for o in with_faces[:20]:
-    print(f"  [{o['id']:02d}] {o['name']:12s} ({o['category']:14s}): {o['vertex_count']:3d} verts, {o['face_count']:2d} faces, {len(o['lods'])} LODs")
+m60_verts, m60_faces = decode_multipart_vehicle(data[offs[34]:offs[35]])
+print(f"M60 decoded: {len(m60_verts)} verts, {len(m60_faces)} faces")
+
+f16_verts, f16_faces = decode_singlepiece_aircraft(data[offs[3]:offs[4]])
+print(f"F-16 decoded: {len(f16_verts)} verts, {len(f16_faces)} faces")
+
+def project(v, yaw, pitch, scale=18.0, cx=150, cy=150):
+    x, y, z = v
+    rad_y = math.radians(yaw)
+    cos_y, sin_y = math.cos(rad_y), math.sin(rad_y)
+    x1 = x * cos_y + z * sin_y
+    z1 = -x * sin_y + z * cos_y
+    rad_p = math.radians(pitch)
+    cos_p, sin_p = math.cos(rad_p), math.sin(rad_p)
+    y2 = y * cos_p - z1 * sin_p
+    z2 = y * sin_p + z1 * cos_p
+    return cx + x1 * scale, cy - y2 * scale, z2
+
+def render_model_strip(name, verts, faces, palette, scale=12.0):
+    angles = [(45, 20), (135, 20), (225, 20), (315, 20), (0, 90)]
+    w, h = 250, 250
+    img = Image.new('RGB', (w * len(angles), h), (22, 26, 32))
+    draw = ImageDraw.Draw(img)
+    for a_idx, (yaw, pitch) in enumerate(angles):
+        ox = a_idx * w
+        proj_faces = []
+        for f in faces:
+            pts = [project(verts[idx], yaw, pitch, scale=scale, cx=ox + w//2, cy=h//2) for idx in f['indices']]
+            avg_z = sum(p[2] for p in pts) / len(pts)
+            col_idx = f['color'] % len(palette)
+            rgb = tuple(palette[col_idx])
+            proj_faces.append((avg_z, [(p[0], p[1]) for p in pts], rgb))
+        proj_faces.sort(key=lambda x: x[0])
+        for avg_z, pts, rgb in proj_faces:
+            draw.polygon(pts, fill=rgb, outline=(255, 255, 255))
+        draw.text((ox + 10, 10), f"{name} ({yaw},{pitch})", fill=(255, 255, 255))
+    return img
+
+palette = json.load(open('analysis/viewer/assets_database.json'))['metadata']['palette']
+im_m113 = render_model_strip("M113 (OBJECTS Authentic)", m113_verts, m113_faces, palette, scale=15.0)
+im_m60 = render_model_strip("M60 (OBJECTS Authentic)", m60_verts, m60_faces, palette, scale=12.0)
+im_f16 = render_model_strip("F-16 (OBJECTS Authentic)", f16_verts, f16_faces, palette, scale=7.0)
+
+final_img = Image.new('RGB', (im_m113.width, im_m113.height * 3))
+final_img.paste(im_m113, (0, 0))
+final_img.paste(im_m60, (0, im_m113.height))
+final_img.paste(im_f16, (0, im_m113.height * 2))
+final_img.save('analysis/test_authentic_calibration.png')
+print("Saved analysis/test_authentic_calibration.png")

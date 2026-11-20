@@ -1,0 +1,98 @@
+FUNCTION: sub_27323 (0x27323 - 0x27415)
+  0x27323: cmp     byte ptr [bx+1], 0
+  0x27327: jnz     short loc_2732C
+  0x27329: jmp     loc_273CD
+  0x2732c: cmp     byte ptr [bx+1], 1
+  0x27330: jz      short loc_27376
+  0x27332: push    bx
+  0x27333: push    ds
+  0x27334: mov     di, [bx+8]
+  0x27337: mov     si, cs:word_2641C
+  0x2733c: add     si, 30h ; '0'
+  0x2733f: mov     ds, cs:word_26418
+  0x27344: call    view_rotation_build
+  0x27347: pop     ds
+  0x27348: pop     bx
+  0x27349: push    bx
+  0x2734a: mov     di, 437Eh
+  0x2734d: mov     si, [bx+8]
+  0x27350: mov     bx, [bx+6]
+  0x27353: mov     bx, [bx]
+  0x27355: call    fixed_vec3_dot_es
+  0x27358: add     di, 6
+  0x2735b: add     si, 6
+  0x2735e: call    fixed_vec3_dot_es
+  0x27361: add     di, 6
+  0x27364: add     si, 6
+  0x27367: call    fixed_vec3_dot_es
+  0x2736a: pop     bx
+  0x2736b: mov     si, 437Eh
+  0x2736e: mov     di, [bx+8]
+  0x27371: mov     cx, 9
+  0x27374: rep movsw
+  0x27376: mov     si, [bx+0Ah]
+  0x27379: push    bx
+  0x2737a: mov     bx, [bx+8]
+  0x2737d: mov     di, 437Eh
+  0x27380: call    fixed_vec3_dot_es
+  0x27383: pop     bx
+  0x27384: mov     ax, ds:437Eh
+  0x27387: mov     word ptr cs:loc_273B5+1, ax
+  0x2738b: mov     ax, ds:4380h
+  0x2738e: mov     word ptr cs:loc_273BC+1, ax
+  0x27392: mov     ax, ds:4382h
+  0x27395: mov     word ptr cs:loc_273C3+1, ax
+  0x27399: jmp     short $+2
+  0x2739b: mov     cx, [bx+0Ch]
+  0x2739e: mov     si, [bx+0Eh]
+  0x273a1: mov     di, [bx+10h]
+  0x273a4: push    bx
+  0x273a5: mov     bx, [bx+8]
+  0x273a8: push    cx
+  0x273a9: push    di
+  0x273aa: mov     di, 437Eh
+  0x273ad: call    fixed_vec3_dot_es
+  0x273b0: pop     di
+  0x273b1: pop     cx
+  0x273b2: mov     ax, ds:437Eh
+  0x273b5: add     ax, 0ABCDh
+  0x273b8: stosw
+  0x273b9: mov     ax, ds:4380h
+  0x273bc: add     ax, 0ABCDh
+  0x273bf: stosw
+  0x273c0: mov     ax, ds:4382h
+  0x273c3: add     ax, 0ABCDh
+  0x273c6: stosw
+  0x273c7: add     si, 6
+  0x273ca: loop    loc_273A8
+  0x273cc: pop     bx
+  0x273cd: cmp     byte ptr [bx], 0
+  0x273d0: jnz     short loc_273F5
+  0x273d2: mov     si, [bx+2]
+  0x273d5: mov     bx, [si+4]
+  0x273d8: mov     si, [si+2]
+  0x273db: push    ds
+  0x273dc: push    es
+  0x273dd: mov     di, cs:word_2641C
+  0x273e2: mov     ds, cs:word_26418
+  0x273e7: mov     es, cs:word_2641A
+  0x273ec: call    cs:farobj_entity_type_handlers[bx]
+  0x273f1: pop     es
+  0x273f2: pop     ds
+  0x273f3: clc
+  0x273f4: retn
+  0x273f5: push    bx
+  0x273f6: sub     cx, cx
+  0x273f8: mov     di, 43B4h
+  0x273fb: mov     si, [bx+4]
+  0x273fe: call    fixed_dot3_product
+  0x27401: shl     cx, 1
+  0x27403: call    fixed_dot3_product
+  0x27406: shl     cx, 1
+  0x27408: call    fixed_dot3_product
+  0x2740b: shl     cx, 1
+  0x2740d: pop     bx
+  0x2740e: mov     si, [bx+2]
+  0x27411: add     si, cx
+  0x27413: stc
+  0x27414: retn

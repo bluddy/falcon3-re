@@ -1,0 +1,100 @@
+
+========================================
+FUNCTION: object_process_list_walk (0x272a2 - 0x27323)
+========================================
+  0x272a2: mov     bx, 42C0h
+  0x272a5: call    sub_27323
+  0x272a8: mov     si, [si]
+  0x272aa: mov     bx, [si]
+  0x272ac: cmp     bx, 0FFFFh
+  0x272af: jz      short locret_27322
+  0x272b1: push    si
+  0x272b2: mov     ax, [bx]
+  0x272b4: or      ax, ax
+  0x272b6: jnz     short loc_272D8
+  0x272b8: mov     si, [bx+2]
+  0x272bb: mov     bx, [bx+4]
+  0x272be: push    ds
+  0x272bf: push    es
+  0x272c0: mov     di, cs:word_2641C
+  0x272c5: mov     ds, cs:word_26418
+  0x272ca: mov     es, cs:word_2641A
+  0x272cf: call    cs:farobj_entity_type_handlers[bx]
+  0x272d4: pop     es
+  0x272d5: pop     ds
+  0x272d6: jmp     short loc_2731C
+  0x272d8: push    si
+  0x272d9: mov     bx, [bx+2]
+  0x272dc: call    sub_27323
+  0x272df: mov     si, [si]
+  0x272e1: mov     bx, [si]
+  0x272e3: cmp     bx, 0FFFFh
+  0x272e6: jz      short loc_2731B
+  0x272e8: push    si
+  0x272e9: mov     ax, [bx]
+  0x272eb: or      ax, ax
+  0x272ed: jnz     short loc_2730F
+  0x272ef: mov     si, [bx+2]
+  0x272f2: mov     bx, [bx+4]
+  0x272f5: push    ds
+  0x272f6: push    es
+  0x272f7: mov     di, cs:word_2641C
+  0x272fc: mov     ds, cs:word_26418
+  0x27301: mov     es, cs:word_2641A
+  0x27306: call    cs:farobj_entity_type_handlers[bx]
+  0x2730b: pop     es
+  0x2730c: pop     ds
+  0x2730d: jmp     short loc_27315
+  0x2730f: mov     bx, [bx+2]
+  0x27312: call    sub_27323
+  0x27315: pop     si
+  0x27316: add     si, 2
+  0x27319: jmp     short loc_272E1
+  0x2731b: pop     si
+  0x2731c: pop     si
+  0x2731d: add     si, 2
+  0x27320: jmp     short loc_272AA
+  0x27322: retn
+
+========================================
+FUNCTION: object_type_field_step (0x26c4a - 0x26ca7)
+========================================
+  0x26c4a: mov     ax, [di+22h]; traced calls: 405
+  0x26c4d: call    farobj_type_field_get
+  0x26c50: or      ah, ah
+  0x26c52: jz      short loc_26C6A
+  0x26c54: mov     bx, di
+  0x26c56: add     bx, 2Ah ; '*'
+  0x26c59: cmp     al, 2
+  0x26c5b: jz      short loc_26C61
+  0x26c5d: cmp     al, 3
+  0x26c5f: jnz     short loc_26C64
+  0x26c61: add     bx, 2
+  0x26c64: mov     ax, [bx]
+  0x26c66: or      ax, ax
+  0x26c68: jnz     short loc_26C77
+  0x26c6a: mov     bx, es:[si+2]
+  0x26c6e: mov     si, es:[si]
+  0x26c71: call    cs:farobj_entity_type_handlers[bx]
+  0x26c76: retf
+  0x26c77: mov     cx, es:[si+6]
+  0x26c7b: mov     dx, cx
+  0x26c7d: shl     cx, 1
+  0x26c7f: add     cx, dx
+  0x26c81: push    ds
+  0x26c82: push    si
+  0x26c83: push    di
+  0x26c84: mov     di, es:[si+8]
+  0x26c88: shl     ax, 1
+  0x26c8a: add     si, ax
+  0x26c8c: mov     si, es:[si+8]
+  0x26c90: mov     ax, es
+  0x26c92: mov     ds, ax
+  0x26c94: rep movsw
+  0x26c96: pop     di
+  0x26c97: pop     si
+  0x26c98: pop     ds
+  0x26c99: mov     bx, es:[si+2]
+  0x26c9d: mov     si, es:[si+4]
+  0x26ca1: call    cs:farobj_entity_type_handlers[bx]
+  0x26ca6: retf

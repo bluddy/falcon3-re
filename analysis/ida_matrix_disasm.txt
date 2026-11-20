@@ -1,0 +1,81 @@
+FUNCTION: object_view_matrix_build (0x27180 - 0x2726e)
+  0x27180: push    ds
+  0x27181: push    es
+  0x27182: mov     cs:word_26418, ds
+  0x27187: mov     cs:word_2641A, es
+  0x2718c: mov     cs:word_2641C, di
+  0x27191: call    matrix_copy_42c8_7b0e
+  0x27194: mov     ax, 7B0Eh
+  0x27197: mov     es, ax
+  0x27199: mov     si, cs:word_2641C
+  0x2719e: lea     si, [si+12h]
+  0x271a1: mov     di, 43B4h
+  0x271a4: movsw
+  0x271a5: movsw
+  0x271a6: movsw
+  0x271a7: mov     ax, es
+  0x271a9: mov     ds, ax
+  0x271ab: mov     es, cs:word_2641A
+  0x271b0: mov     bx, 42C0h
+  0x271b3: mov     di, [bx+8]
+  0x271b6: mov     si, cs:word_2641C
+  0x271bb: lea     si, [si+0Ch]
+  0x271be: mov     ds, cs:word_26418
+  0x271c3: call    view_rotation_build
+  0x271c6: mov     bx, 42D2h
+  0x271c9: mov     di, [bx+8]
+  0x271cc: mov     si, cs:word_2641C
+  0x271d1: add     si, 2Ah ; '*'
+  0x271d4: mov     ds, cs:word_26418
+  0x271d9: call    view_rotation_build
+  0x271dc: mov     di, 43A2h
+  0x271df: mov     bx, 42D2h
+  0x271e2: mov     si, [bx+8]
+  0x271e5: mov     bx, [bx+6]
+  0x271e8: mov     bx, [bx]
+  0x271ea: call    fixed_vec3_dot_es
+  0x271ed: add     di, 6
+  0x271f0: add     si, 6
+  0x271f3: call    fixed_vec3_dot_es
+  0x271f6: add     di, 6
+  0x271f9: add     si, 6
+  0x271fc: call    fixed_vec3_dot_es
+  0x271ff: mov     bx, 42C0h
+  0x27202: mov     si, [bx+8]
+  0x27205: mov     di, 437Eh
+  0x27208: call    fixed_vec3_dot_3820
+  0x2720b: add     si, 6
+  0x2720e: add     di, 6
+  0x27211: call    fixed_vec3_dot_3820
+  0x27214: add     si, 6
+  0x27217: add     di, 6
+  0x2721a: call    fixed_vec3_dot_3820
+  0x2721d: mov     si, 43A2h
+  0x27220: mov     di, 4390h
+  0x27223: call    fixed_vec3_dot_3820_si
+  0x27226: add     di, 6
+  0x27229: call    fixed_vec3_dot_3820_si
+  0x2722c: add     di, 6
+  0x2722f: call    fixed_vec3_dot_3820_si
+  0x27232: mov     bx, 437Eh
+  0x27235: mov     di, 4354h
+  0x27238: call    vec3_neg_sar1_store
+  0x2723b: mov     bx, 438Ah
+  0x2723e: mov     di, 434Eh
+  0x27241: call    vec3_sar1_store
+  0x27244: mov     bx, 4384h
+  0x27247: mov     di, 4348h
+  0x2724a: call    vec3_sar1_store
+  0x2724d: mov     bx, 4390h
+  0x27250: mov     di, 4366h
+  0x27253: call    vec3_neg_sar1_store
+  0x27256: mov     bx, 439Ch
+  0x27259: mov     di, 4360h
+  0x2725c: call    vec3_sar1_store
+  0x2725f: mov     bx, 4396h
+  0x27262: mov     di, 435Ah
+  0x27265: call    vec3_sar1_store
+  0x27268: call    object_process_list_walk
+  0x2726b: pop     es
+  0x2726c: pop     ds
+  0x2726d: retf

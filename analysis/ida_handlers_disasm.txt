@@ -1,0 +1,150 @@
+
+========================================
+FUNCTION: object_quad_proj_draw (0x286ce - 0x28774)
+========================================
+  0x286ce: push    ds; traced calls: 2106
+  0x286cf: push    es
+  0x286d0: mov     cs:word_1F712, es
+  0x286d5: mov     cs:word_1F716, si
+  0x286da: mov     ax, 7B0Eh
+  0x286dd: mov     es, ax
+  0x286df: call    view_proj_setup_1f73d
+  0x286e2: mov     ds, cs:word_1F712
+  0x286e7: mov     si, cs:word_1F716
+  0x286ec: mov     cx, [si]
+  0x286ee: sub     cx, 4
+  0x286f1: push    cx
+  0x286f2: mov     si, [si+2]
+  0x286f5: mov     bx, 3850h
+  0x286f8: mov     di, 441Eh
+  0x286fb: call    fixed_vec3_transform_es
+  0x286fe: mov     ax, es:[di]
+  0x28701: mov     word ptr cs:loc_2869C+1, ax
+  0x28705: mov     ax, es:[di+2]
+  0x28709: mov     word ptr cs:loc_286AD+1, ax
+  0x2870d: mov     ax, es:[di+4]
+  0x28711: mov     word ptr cs:loc_286BE+1, ax
+  0x28715: add     di, 10h
+  0x28718: call    fixed_vec3_transform_es
+  0x2871b: add     di, 10h
+  0x2871e: call    fixed_vec3_transform_es
+  0x28721: add     di, 10h
+  0x28724: call    fixed_vec3_transform_es
+  0x28727: add     di, 10h
+  0x2872a: push    si
+  0x2872b: sub     cx, cx
+  0x2872d: mov     si, 441Eh
+  0x28730: add     si, 30h ; '0'
+  0x28733: call    undoc_28695
+  0x28736: shl     cx, 1
+  0x28738: sub     si, 10h
+  0x2873b: call    undoc_28695
+  0x2873e: shl     cx, 1
+  0x28740: sub     si, 10h
+  0x28743: call    undoc_28695
+  0x28746: mov     word ptr cs:loc_28758+1, cx
+  0x2874b: pop     si
+  0x2874c: pop     cx
+  0x2874d: call    undoc_28CA4
+  0x28750: cmp     cs:slope_temp_cx, 0
+  0x28756: jnz     short loc_28771
+  0x28758: mov     ax, 0ABCDh
+  0x2875b: shl     ax, 1
+  0x2875d: mov     si, cs:word_1F716
+  0x28762: mov     si, [si+4]
+  0x28765: add     si, ax
+  0x28767: lodsw
+  0x28768: mov     cs:word_1F718, ax
+  0x2876c: mov     si, ax
+  0x2876e: call    loc_287B5
+  0x28771: pop     es
+  0x28772: pop     ds
+  0x28773: retf
+
+========================================
+FUNCTION: object_3d_project_and_draw (0x26b2e - 0x26c22)
+========================================
+  0x26b2e: push    ds; traced calls: 23
+  0x26b2f: push    es
+  0x26b30: mov     cs:word_1F712, es
+  0x26b35: mov     cs:word_1F716, si
+  0x26b3a: mov     ax, 7B0Eh
+  0x26b3d: mov     es, ax
+  0x26b3f: push    di
+  0x26b40: call    view_proj_setup_1f73d
+  0x26b43: pop     di
+  0x26b44: lea     si, [di+0Ch]
+  0x26b47: mov     di, 437Eh
+  0x26b4a: call    view_rotation_build
+  0x26b4d: mov     bx, 437Eh
+  0x26b50: mov     di, 238h
+  0x26b53: mov     ds, cs:word_1F712
+  0x26b58: mov     si, cs:word_1F716
+  0x26b5d: mov     cx, [si]
+  0x26b5f: mov     si, [si+2]
+  0x26b62: push    cx
+  0x26b63: push    cx
+  0x26b64: call    fixed_vec3_transform_es
+  0x26b67: mov     word ptr es:[di+2], 0
+  0x26b6d: add     di, 6
+  0x26b70: pop     cx
+  0x26b71: loop    loc_26B63
+  0x26b73: pop     cx
+  0x26b74: mov     ax, es
+  0x26b76: mov     ds, ax
+  0x26b78: mov     si, 238h
+  0x26b7b: call    terrain_anim_line_flag_get
+  0x26b7e: cmp     cs:slope_temp_cx, 0
+  0x26b84: jnz     short loc_26B99
+  0x26b86: mov     ds, cs:word_1F712
+  0x26b8b: mov     si, cs:word_1F716
+  0x26b90: mov     si, [si+4]
+  0x26b93: lodsw
+  0x26b94: cmp     ax, 0FFFFh
+  0x26b97: jnz     short loc_26B9C
+  0x26b99: jmp     loc_26C1F
+  0x26b9c: push    si
+  0x26b9d: mov     si, ax
+  0x26b9f: lodsw
+  0x26ba0: call    state_flag_unpack_1f735
+  0x26ba3: mov     bx, ax
+  0x26ba5: and     bx, 8000h
+  0x26ba9: mov     cs:raster_shading_mode_flag, bh
+  0x26bae: mov     bx, ax
+  0x26bb0: and     bx, 1000h
+  0x26bb4: mov     cs:byte_1F73E, bh
+  0x26bb9: mov     cs:state_byte_1f72d, 0
+  0x26bbf: mov     cs:state_byte_1f73a, 0
+  0x26bc5: mov     cs:terrain_tessellation_mode, 0
+  0x26bcb: mov     cs:state_byte_1f72f, 0
+  0x26bd1: and     ax, 2
+  0x26bd4: mov     bx, ax
+  0x26bd6: push    es
+  0x26bd7: mov     es, cs:word_22212
+  0x26bdc: lodsb
+  0x26bdd: mov     di, cs:word_22210
+  0x26be2: add     di, ax
+  0x26be4: mov     al, es:[di]
+  0x26be7: mov     cs:state_byte_1f72a, al
+  0x26beb: lodsb
+  0x26bec: pop     es
+  0x26bed: cmp     cs:byte_1F73E, 0
+  0x26bf3: jz      short loc_26C16
+  0x26bf5: mov     di, [si]
+  0x26bf7: cmp     di, 0FFFFh
+  0x26bfa: jz      short loc_26C1B
+  0x26bfc: add     di, 2
+  0x26bff: shl     di, 1
+  0x26c01: add     di, si
+  0x26c03: mov     cs:word_1F714, di
+  0x26c08: push    bx
+  0x26c09: call    cs:off_27974[bx]
+  0x26c0e: pop     bx
+  0x26c0f: mov     si, cs:word_1F714
+  0x26c14: jmp     short loc_26BF5
+  0x26c16: call    cs:off_27974[bx]
+  0x26c1b: pop     si
+  0x26c1c: jmp     loc_26B93
+  0x26c1f: pop     es
+  0x26c20: pop     ds
+  0x26c21: retf
