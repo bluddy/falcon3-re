@@ -283,22 +283,33 @@ def decode_objects_archive(filepath='game/OBJECTS'):
         else:
             table_p, lod_headers = find_lod_table(obj)
             if lod_headers:
-                for idx, (lod_idx, vc, vo, to) in enumerate(lod_headers):
+                for idx, (lod_idx, vc, vo_h, to_h) in enumerate(lod_headers):
+                    vo = vo_h + 2
+                    to = to_h + 2
                     raw_verts = [struct.unpack_from('<hhh', obj, vo + j*6) for j in range(vc)]
-                    # Aircraft & single-piece units: v[0]=Forward, v[1]=Right, v[2]=Up
-                    verts = [[round(v[1] / 10.0, 2), round(v[2] / 10.0, 2), round(v[0] / 10.0, 2)] for v in raw_verts]
+                    # Authentic Aviation coordinate transform matching REPORT.DAT:
+                    # v[0] = Lateral X (Right / Wingspan) -> X_gl = v[0] / 10.0
+                    # v[1] = Vertical Y (Height / Dorsal fin) -> Y_gl = -v[1] / 10.0
+                    # v[2] = Longitudinal Z (Length / Nose) -> Z_gl = v[2] / 10.0
+                    verts = [[round(v[0] / 10.0, 2), round(-v[1] / 10.0, 2), round(v[2] / 10.0, 2)] for v in raw_verts]
                     
-                    next_to = lod_headers[idx+1][3] if idx + 1 < len(lod_headers) else len(obj)
-                    if next_to <= to or next_to > len(obj):
-                        next_to = len(obj)
+                    if idx + 1 < len(lod_headers):
+                        n_vo = lod_headers[idx+1][2] + 2
+                        n_to = lod_headers[idx+1][3] + 2
+                        scan_end = n_vo if n_vo > to else n_to
+                    else:
+                        scan_end = len(obj)
+                    
+                    scan_start = min(to, vo + vc * 6)
+                    if scan_end <= scan_start:
+                        scan_end = len(obj)
                     
                     faces = []
                     unique = set()
-                    scan_start = max(to, vo + vc * 6)
-                    # 1. Strictly bounded scan within LOD range
-                    for p in range(scan_start, next_to - 8, 2):
+                    # 1. Bounded scan within LOD node range
+                    for p in range(scan_start, scan_end - 8, 2):
                         norm, mode, col, cnt = struct.unpack_from('<4H', obj, p)
-                        if 3 <= cnt <= 16 and p + 8 + (cnt + 1) * 2 <= next_to:
+                        if 3 <= cnt <= 16 and p + 8 + (cnt + 1) * 2 <= scan_end:
                             v_words = struct.unpack_from(f'<{cnt+1}H', obj, p + 8)
                             if all(w % 16 == 0 and (w // 16) < vc for w in v_words):
                                 if v_words[0] == v_words[-1]:
@@ -308,7 +319,7 @@ def decode_objects_archive(filepath='game/OBJECTS'):
                                         unique.add(k)
                                         faces.append({'color': col & 0xFF, 'indices': ring})
                     
-                    # 2. If strictly bounded gave 0 faces (tree pointers precede shared node pool), scan to end
+                    # 2. Fallback if bounded gave 0 faces (tree pointers precede shared node pool): scan to end
                     if not faces:
                         for p in range(scan_start, len(obj) - 8, 2):
                             norm, mode, col, cnt = struct.unpack_from('<4H', obj, p)
